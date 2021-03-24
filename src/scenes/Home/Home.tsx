@@ -5,8 +5,8 @@ import useSwr from 'swr';
 function Home() {
   // on dev, this will route to localhost:4000/api/test
   // on prod, this will route to api.gallery.so/api/test
-  const { data, error } = useSwr('/test');
-  console.log('the result', data, error);
+  // const { data, error } = useSwr('/test');
+  // console.log('the result', data, error);
 
   return (
     <StyledHome>
