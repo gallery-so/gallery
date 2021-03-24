@@ -1,7 +1,7 @@
-import { SwrProvider } from './contexts/swr/SwrContext';
-import Home from './scenes/Home/Home';
-import AuthDemo from './scenes/AuthDemo/AuthDemo';
-import Boundary from './contexts/boundary/Boundary';
+import Home from 'scenes/Home/Home';
+import AuthDemo from 'scenes/AuthDemo/AuthDemo';
+import { SwrProvider } from 'contexts/swr/SwrContext';
+import Boundary from 'contexts/boundary/Boundary';
 
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
