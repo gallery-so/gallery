@@ -1,10 +1,16 @@
-const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+const baseurl =
+  process.env.ENV === 'production'
+    ? 'https://api.gallery.so'
+    : 'http://localhost:4000';
 
 module.exports = function (app) {
+  console.log(process.env);
   app.use(
-    "/api",
+    '/api',
     createProxyMiddleware({
-      target: "http://localhost:4000",
+      target: baseurl,
       changeOrigin: true,
     })
   );
