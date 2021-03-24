@@ -1,6 +1,6 @@
 import { memo } from 'react';
+import styled from 'styled-components';
 import useSwr from 'swr';
-import './Home.css';
 
 function Home() {
   // on dev, this will route to localhost:4000/api/test
@@ -9,10 +9,19 @@ function Home() {
   console.log('the result', data, error);
 
   return (
-    <div className="Home">
-      <header className="Home-header">GALLERY</header>
-    </div>
+    <StyledHome>
+      <StyledHeader>GALLERY</StyledHeader>
+    </StyledHome>
   );
 }
+
+const StyledHome = styled.div`
+  text-align: center;
+`;
+
+const StyledHeader = styled.p`
+  color: white;
+  font-size: 30px;
+`;
 
 export default memo(Home);
