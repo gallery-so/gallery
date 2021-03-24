@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 import useSwr from 'swr';
-import './Home.css';
 
 function Home() {
   // on dev, this will route to localhost:4000/api/test
