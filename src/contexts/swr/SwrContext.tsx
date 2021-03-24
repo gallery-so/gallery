@@ -1,6 +1,6 @@
 import React from 'react';
 import { SWRConfig } from 'swr';
-import { MINUTE } from '../../util/time';
+import { MINUTE } from 'util/time';
 
 export const SwrProvider = React.memo(({ children }) => {
   const value = {
