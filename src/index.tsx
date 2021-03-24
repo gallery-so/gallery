@@ -7,7 +7,9 @@ import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
 function getLibrary(provider: any) {
-  return new Web3Provider(provider)
+  const library = new Web3Provider(provider);
+  library.pollingInterval = 12000;
+  return library;
 }
 
 ReactDOM.render(
