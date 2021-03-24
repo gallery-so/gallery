@@ -1,11 +1,11 @@
-import React from "react";
-import "./App.css";
+import { SwrProvider } from './contexts/swr/SwrContext';
+import Home from './scenes/Home/Home';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">GALLERY</header>
-    </div>
+    <SwrProvider>
+      <Home />
+    </SwrProvider>
   );
 }
 
