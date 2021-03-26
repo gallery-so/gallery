@@ -1,8 +1,9 @@
 import { memo } from 'react';
+import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import useSwr from 'swr';
 
-function Home() {
+function Home(_: RouteComponentProps) {
   // on dev, this will route to localhost:4000/api/test
   // on prod, this will route to api.gallery.so/api/test
   // const { data, error } = useSwr('/test');
