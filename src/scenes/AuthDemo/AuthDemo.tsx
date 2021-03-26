@@ -2,9 +2,10 @@ import { memo } from 'react';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { injected, walletconnect } from 'connectors/index';
 
 function AuthDemo() {
-  const context = useWeb3React<Web3Provider>();
+  const context = useWeb3React();
   const {
     connector,
     library,
@@ -19,6 +20,21 @@ function AuthDemo() {
   return (
     <StyledAuthDemo>
       <StyledHeader>AuthDemo</StyledHeader>
+      <div>
+        {active && 'connected'}
+        {error && `${error.message}`}
+      </div>
+      {active && <div>{account}</div>}
+      <button
+        onClick={() => {
+          injected.isAuthorized().then((isAuthorized: boolean) => {
+            console.log('isAuthorized', isAuthorized);
+          });
+          activate(injected);
+        }}
+      >
+        Connect Metamask
+      </button>
     </StyledAuthDemo>
   );
 }

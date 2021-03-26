@@ -337,7 +337,8 @@ module.exports = function (webpackEnv) {
         scenes: path.resolve(paths.appSrc, 'scenes'),
         contexts: path.resolve(paths.appSrc, 'contexts'),
         components: path.resolve(paths.appSrc, 'components'),
-        util: path.resolve(paths.appSrc, 'util'),
+        connectors: path.resolve(paths.appSrc, 'connectors'),
+        utils: path.resolve(paths.appSrc, 'utils'),
         ...(modules.webpackAliases || {}),
       },
       plugins: [
