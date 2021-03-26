@@ -1,16 +1,14 @@
-import Home from 'scenes/Home/Home';
-import AuthDemo from 'scenes/AuthDemo/AuthDemo';
 import { SwrProvider } from 'contexts/swr/SwrContext';
 import Boundary from 'contexts/boundary/Boundary';
 import Auth from 'contexts/auth/Auth';
+import Routes from 'scenes/Routes';
 
 function App() {
   return (
     <Boundary>
       <Auth>
         <SwrProvider>
-          <Home />
-          <AuthDemo />
+          <Routes />
         </SwrProvider>
       </Auth>
     </Boundary>
