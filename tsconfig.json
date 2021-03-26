@@ -20,7 +20,8 @@
       "scenes/*": ["src/scenes/*"],
       "contexts/*": ["src/contexts/*"],
       "components/*": ["src/components/*"],
-      "util/*": ["src/util/*"]
+      "connectors/*": ["src/connectors/*"],
+      "utils/*": ["src/utils/*"]
     }
   },
   "include": ["src"]
