@@ -1,11 +1,12 @@
 import { memo } from 'react';
+import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { injected, walletconnect } from 'connectors/index';
 
-function AuthDemo() {
-  const context = useWeb3React();
+function AuthDemo(_: RouteComponentProps) {
+  const context = useWeb3React<Web3Provider>();
   const {
     connector,
     library,
