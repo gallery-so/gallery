@@ -8,7 +8,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 type ModalActions = {
   showModal: (content: ReactElement) => void;
@@ -27,18 +27,28 @@ export const useModal = (): ModalActions => {
 
 type Props = { children: ReactNode };
 
+const MODAL_TRANSITION_MS = 300;
+
 function ModalProvider({ children }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+  // whether node is actually on the DOM
+  const [isMounted, setIsMounted] = useState(false);
+  // pseudo-state for signaling animations. this will allow us
+  // to display an animation prior to unmounting
+  const [isActive, setIsActive] = useState(false);
   const [content, setContent] = useState<ReactElement | null>(null);
 
   const showModal = useCallback((providedContent) => {
-    setIsOpen(true);
+    setIsActive(true);
+    setIsMounted(true);
     setContent(providedContent);
   }, []);
 
   const hideModal = useCallback(() => {
-    setIsOpen(false);
-    setContent(null);
+    setIsActive(false);
+    setTimeout(() => {
+      setIsMounted(false);
+      setContent(null);
+    }, MODAL_TRANSITION_MS);
   }, []);
 
   const actions = useMemo(
@@ -52,8 +62,8 @@ function ModalProvider({ children }: Props) {
   return (
     <ModalContext.Provider value={actions}>
       {children}
-      {isOpen && (
-        <StyledModal>
+      {isMounted && (
+        <StyledModal isActive={isActive}>
           <Overlay onClick={hideModal} />
           <StyledContent>
             <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
@@ -70,8 +80,19 @@ const fadeIn = keyframes`
     to { opacity: 1 };
 `;
 
-const StyledModal = styled.div`
-  animation: ${fadeIn} 0.3s cubic-bezier(0, 0, 0, 1.07); // ease-out
+const fadeOut = keyframes`
+    from { opacity: 1 };
+    to { opacity: 0 };
+`;
+
+// ease-out like style
+const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.07)`;
+
+const StyledModal = styled.div<{ isActive: boolean }>`
+  animation: ${({ isActive }) =>
+    css`
+      ${isActive ? fadeIn : fadeOut} ${transitionStyle}
+    `};
 `;
 
 const Overlay = styled.div`
