@@ -8,7 +8,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 type ModalActions = {
   showModal: (content: ReactElement) => void;
@@ -53,26 +53,39 @@ function ModalProvider({ children }: Props) {
     <ModalContext.Provider value={actions}>
       {children}
       {isOpen && (
-        <>
+        <StyledModal>
           <Overlay onClick={hideModal} />
           <StyledContent>
             <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
             {content}
           </StyledContent>
-        </>
+        </StyledModal>
       )}
     </ModalContext.Provider>
   );
 }
 
+const fadeIn = keyframes`
+    from { opacity: 0 };
+    to { opacity: 1 };
+`;
+
+const StyledModal = styled.div`
+  animation: ${fadeIn} 0.3s cubic-bezier(0, 0, 0, 1.07); // ease-out
+`;
+
 const Overlay = styled.div`
-  top: 0;
   position: fixed;
+  top: 0;
+  left: 0;
   height: 100vh;
   width: 100vw;
   z-index: 1;
   background: white;
-  opacity: 0.2;
+  opacity: 0.1;
+
+  // fixes unusual opacity transition bug: https://stackoverflow.com/a/22648685
+  -webkit-backface-visibility: hidden;
 `;
 
 const StyledContent = styled.div`
