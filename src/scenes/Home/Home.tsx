@@ -1,17 +1,24 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import useSwr from 'swr';
+import { useModal } from 'contexts/modal/ModalContext';
 
 function Home(_: RouteComponentProps) {
   // on dev, this will route to localhost:4000/api/test
   // on prod, this will route to api.gallery.so/api/test
   // const { data, error } = useSwr('/test');
   // console.log('the result', data, error);
+  const { showModal } = useModal();
+
+  const handleClick = useCallback(() => {
+    showModal(<div>test</div>);
+  }, []);
 
   return (
     <StyledHome>
       <StyledHeader>GALLERY</StyledHeader>
+      <button onClick={handleClick}>Sign In</button>
     </StyledHome>
   );
 }
