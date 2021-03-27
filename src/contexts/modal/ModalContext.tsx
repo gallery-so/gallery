@@ -27,7 +27,7 @@ export const useModal = (): ModalActions => {
 
 type Props = { children: ReactNode };
 
-const MODAL_TRANSITION_MS = 300;
+const MODAL_TRANSITION_MS = 200;
 
 function ModalProvider({ children }: Props) {
   // whether node is actually on the DOM
@@ -50,7 +50,7 @@ function ModalProvider({ children }: Props) {
       setContent(null);
       // unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
-    }, MODAL_TRANSITION_MS - 50);
+    }, MODAL_TRANSITION_MS - 30);
   }, []);
 
   const actions = useMemo(
