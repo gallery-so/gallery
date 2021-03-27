@@ -15,7 +15,7 @@ function Home(_: RouteComponentProps) {
 
   const handleClick = useCallback(() => {
     showModal(ModalContentRef.current);
-  }, []);
+  }, [showModal]);
 
   return (
     <StyledHome>
