@@ -48,7 +48,9 @@ function ModalProvider({ children }: Props) {
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
-    }, MODAL_TRANSITION_MS);
+      // unmount a bit sooner to avoid race condition of
+      // elements flashing before they're removed from view
+    }, MODAL_TRANSITION_MS - 50);
   }, []);
 
   const actions = useMemo(
@@ -63,13 +65,17 @@ function ModalProvider({ children }: Props) {
     <ModalContext.Provider value={actions}>
       {children}
       {isMounted && (
-        <StyledModal isActive={isActive}>
+        <_ToggleFade isActive={isActive}>
           <Overlay onClick={hideModal} />
-          <StyledContent>
-            <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
-            {content}
-          </StyledContent>
-        </StyledModal>
+          <StyledContentContainer>
+            <_ToggleTranslate isActive={isActive}>
+              <StyledContent>
+                <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
+                {content}
+              </StyledContent>
+            </_ToggleTranslate>
+          </StyledContentContainer>
+        </_ToggleFade>
       )}
     </ModalContext.Provider>
   );
@@ -88,10 +94,29 @@ const fadeOut = keyframes`
 // ease-out like style
 const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.07)`;
 
-const StyledModal = styled.div<{ isActive: boolean }>`
+const _ToggleFade = styled.div<{ isActive: boolean }>`
   animation: ${({ isActive }) =>
     css`
       ${isActive ? fadeIn : fadeOut} ${transitionStyle}
+    `};
+`;
+
+const TRANSLATE_PIXELS = 10;
+
+const translateUp = keyframes`
+    from { transform: translateY(${TRANSLATE_PIXELS}px) };
+    to { transform: translateY(0px) };
+`;
+
+const translateDown = keyframes`
+    from { transform: translateY(0px) };
+    to { transform: translateY(${TRANSLATE_PIXELS}px) };
+`;
+
+const _ToggleTranslate = styled.div<{ isActive: boolean }>`
+  animation: ${({ isActive }) =>
+    css`
+      ${isActive ? translateUp : translateDown} ${transitionStyle}
     `};
 `;
 
@@ -101,21 +126,28 @@ const Overlay = styled.div`
   left: 0;
   height: 100vh;
   width: 100vw;
-  z-index: 1;
   background: white;
   opacity: 0.1;
+
+  // should appear above rest of site
+  z-index: 1;
 
   // fixes unusual opacity transition bug: https://stackoverflow.com/a/22648685
   -webkit-backface-visibility: hidden;
 `;
 
-const StyledContent = styled.div`
+const StyledContentContainer = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
 
+  // should appear above the overlay
+  z-index: 2;
+`;
+
+const StyledContent = styled.div`
+  position: relative;
   padding: 40px;
   background: white;
 `;
