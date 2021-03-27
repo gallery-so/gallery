@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import useSwr from 'swr';
@@ -11,8 +11,10 @@ function Home(_: RouteComponentProps) {
   // console.log('the result', data, error);
   const { showModal } = useModal();
 
+  const ModalContentRef = useRef(<div>connect your wallet</div>);
+
   const handleClick = useCallback(() => {
-    showModal(<div>test</div>);
+    showModal(ModalContentRef.current);
   }, []);
 
   return (
