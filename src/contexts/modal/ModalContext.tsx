@@ -55,7 +55,10 @@ function ModalProvider({ children }: Props) {
       {isOpen && (
         <>
           <Overlay onClick={hideModal} />
-          <Modal>{content}</Modal>
+          <StyledContent>
+            <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
+            {content}
+          </StyledContent>
         </>
       )}
     </ModalContext.Provider>
@@ -72,12 +75,22 @@ const Overlay = styled.div`
   opacity: 0.2;
 `;
 
-const Modal = styled.div`
+const StyledContent = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+
+  padding: 40px;
+  background: white;
+`;
+
+const StyledClose = styled.span`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
 `;
 
 export default memo(ModalProvider);
