@@ -12,6 +12,7 @@ const StyledButton = styled.button`
   text-transform: uppercase;
   background: black;
   color: white;
+  cursor: pointer;
 `;
 
 export default SigninButton;
