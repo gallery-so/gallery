@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "assets/*": ["src/assets/*"],
       "scenes/*": ["src/scenes/*"],
       "contexts/*": ["src/contexts/*"],
       "components/*": ["src/components/*"],
