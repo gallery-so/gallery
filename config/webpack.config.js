@@ -334,6 +334,7 @@ module.exports = function (webpackEnv) {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
+        assets: path.resolve(paths.appSrc, 'assets'),
         scenes: path.resolve(paths.appSrc, 'scenes'),
         contexts: path.resolve(paths.appSrc, 'contexts'),
         components: path.resolve(paths.appSrc, 'components'),
