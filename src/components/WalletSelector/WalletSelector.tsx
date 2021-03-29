@@ -57,7 +57,9 @@ function WalletButton({ walletName, activate }: WalletButtonProps) {
   return (
     <StyledButton onClick={handleClick}>
       {walletName}
-      <Icon src={`/icons/${walletName}.svg`}></Icon>
+      <Icon
+        src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
+      />
     </StyledButton>
   );
 }
