@@ -70,7 +70,7 @@ const Overlay = styled.div`
   height: 100vh;
   width: 100vw;
   background: white;
-  opacity: 0.1;
+  opacity: 0.5;
 
   // should appear above rest of site
   z-index: 1;
@@ -87,6 +87,9 @@ const StyledContentContainer = styled.div`
 
   // should appear above the overlay
   z-index: 2;
+
+  // neumorphism
+  box-shadow: 19px 19px 38px #edede3, -19px -19px 38px #ffffff;
 `;
 
 const StyledContent = styled.div`

@@ -42,6 +42,8 @@ function ModalProvider({ children }: Props) {
     setContent(providedContent);
   }, []);
 
+  // trigger fade-out that takes X seconds
+  // schedule unmount in X seconds
   const hideModal = useCallback(() => {
     setIsActive(false);
     setTimeout(() => {

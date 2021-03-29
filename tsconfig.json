@@ -21,6 +21,7 @@
       "contexts/*": ["src/contexts/*"],
       "components/*": ["src/components/*"],
       "connectors/*": ["src/connectors/*"],
+      "hooks/*": ["src/hooks/*"],
       "utils/*": ["src/utils/*"]
     }
   },
