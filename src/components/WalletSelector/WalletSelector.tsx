@@ -11,6 +11,8 @@ const walletConnectorMap: Record<string, AbstractConnector> = {
   WalletConnect: walletconnect,
 };
 
+// test pr
+
 function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
   const {
