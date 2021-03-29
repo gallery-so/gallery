@@ -23,12 +23,12 @@ function Home({ children }: RouteComponentProps & Props) {
   );
 }
 
-const StyledHome = styled.div`
-  text-align: center;
-`;
+// if we wanna do global styling
+const StyledHome = styled.div``;
 
 const StyledHeader = styled.p`
-  color: white;
+  text-align: center;
+  color: black;
   font-size: 30px;
 `;
 
