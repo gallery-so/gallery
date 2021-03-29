@@ -338,6 +338,7 @@ module.exports = function (webpackEnv) {
         contexts: path.resolve(paths.appSrc, 'contexts'),
         components: path.resolve(paths.appSrc, 'components'),
         connectors: path.resolve(paths.appSrc, 'connectors'),
+        hooks: path.resolve(paths.appSrc, 'hooks'),
         utils: path.resolve(paths.appSrc, 'utils'),
         ...(modules.webpackAliases || {}),
       },

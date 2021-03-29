@@ -1,17 +1,9 @@
 import styled from 'styled-components';
-import { useModal } from 'contexts/modal/ModalContext';
-import { useCallback, useRef } from 'react';
+import useAuthModal from 'hooks/useAuthModal';
 
 function SigninButton() {
-  const { showModal } = useModal();
-
-  const ModalContentRef = useRef(<div>connect your wallet</div>);
-
-  const handleClick = useCallback(() => {
-    showModal(ModalContentRef.current);
-  }, [showModal]);
-
-  return <StyledButton onClick={handleClick}>Sign In</StyledButton>;
+  const displayAuthModal = useAuthModal();
+  return <StyledButton onClick={displayAuthModal}>Sign In</StyledButton>;
 }
 
 const StyledButton = styled.button`
