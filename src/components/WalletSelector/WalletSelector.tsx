@@ -5,10 +5,17 @@ import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback } from 'react';
+import metamaskIcon from './icons/metamask.svg';
+import walletConnectIcon from './icons/walletconnect.svg';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
+};
+
+const walletIconMap: Record<string, string> = {
+  Metamask: metamaskIcon,
+  WalletConnect: walletConnectIcon,
 };
 
 function WalletSelector() {
@@ -57,7 +64,7 @@ function WalletButton({ walletName, activate }: WalletButtonProps) {
   return (
     <StyledButton onClick={handleClick}>
       {walletName}
-      <Icon src={`/icons/${walletName}.svg`}></Icon>
+      <Icon src={walletIconMap[walletName]}></Icon>
     </StyledButton>
   );
 }
