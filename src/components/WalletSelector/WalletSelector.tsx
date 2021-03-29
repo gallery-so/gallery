@@ -1,8 +1,10 @@
 import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
+import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { useCallback } from 'react';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -31,21 +33,32 @@ function WalletSelector() {
       </div>
       {active && <div>{account}</div>}
       {Object.keys(walletConnectorMap).map((walletName) => {
-        return (
-          <StyledButton
-            onClick={() => {
-              injected.isAuthorized().then((isAuthorized: boolean) => {
-                console.log('isAuthorized', isAuthorized);
-              });
-              activate(walletConnectorMap[walletName]);
-            }}
-          >
-            {walletName}
-            <Icon src={`/icons/${walletName}.svg`}></Icon>
-          </StyledButton>
-        );
+        return <WalletButton walletName={walletName} activate={activate} />;
       })}
     </StyledWalletSelector>
+  );
+}
+
+type WalletButtonProps = {
+  walletName: string;
+  activate: Web3ReactManagerFunctions['activate'];
+};
+
+function WalletButton({ walletName, activate }: WalletButtonProps) {
+  const handleClick = useCallback(() => {
+    if (walletName.toLowerCase() === 'metamask') {
+      injected.isAuthorized().then((isAuthorized: boolean) => {
+        console.log('isAuthorized', isAuthorized);
+      });
+    }
+    activate(walletConnectorMap[walletName]);
+  }, [activate, walletName]);
+
+  return (
+    <StyledButton onClick={handleClick}>
+      {walletName}
+      <Icon src={`/icons/${walletName}.svg`}></Icon>
+    </StyledButton>
   );
 }
 
