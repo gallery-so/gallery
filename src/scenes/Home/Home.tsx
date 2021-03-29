@@ -1,36 +1,34 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, ReactNode } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import useSwr from 'swr';
-import { useModal } from 'contexts/modal/ModalContext';
+import GlobalNavbar from 'components/GlobalNavbar/GlobalNavbar';
 
-function Home(_: RouteComponentProps) {
+type Props = {
+  children: ReactNode;
+};
+
+function Home({ children }: RouteComponentProps & Props) {
   // on dev, this will route to localhost:4000/api/test
   // on prod, this will route to api.gallery.so/api/test
   // const { data, error } = useSwr('/test');
   // console.log('the result', data, error);
-  const { showModal } = useModal();
-
-  const ModalContentRef = useRef(<div>connect your wallet</div>);
-
-  const handleClick = useCallback(() => {
-    showModal(ModalContentRef.current);
-  }, [showModal]);
 
   return (
     <StyledHome>
+      <GlobalNavbar />
       <StyledHeader>GALLERY</StyledHeader>
-      <button onClick={handleClick}>Sign In</button>
+      {children}
     </StyledHome>
   );
 }
 
-const StyledHome = styled.div`
-  text-align: center;
-`;
+// if we wanna do global styling
+const StyledHome = styled.div``;
 
 const StyledHeader = styled.p`
-  color: white;
+  text-align: center;
+  color: black;
   font-size: 30px;
 `;
 

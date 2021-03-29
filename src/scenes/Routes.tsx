@@ -5,10 +5,13 @@ import NotFound from 'scenes/NotFound/NotFound';
 
 export default function Routes() {
   return (
-    <Router>
-      <Home path="/" />
-      <AuthDemo path="/auth" />
-      <NotFound default />
-    </Router>
+    <>
+      <Router>
+        <Home path="/">
+          <AuthDemo path="/auth" />
+        </Home>
+        <NotFound default />
+      </Router>
+    </>
   );
 }
