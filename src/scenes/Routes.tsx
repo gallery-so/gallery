@@ -1,6 +1,6 @@
 import { Router } from '@reach/router';
 import Home from 'scenes/Home/Home';
-import AuthDemo from 'scenes/AuthDemo/AuthDemo';
+import Auth from 'scenes/Auth/Auth';
 import NotFound from 'scenes/NotFound/NotFound';
 
 export default function Routes() {
@@ -8,7 +8,7 @@ export default function Routes() {
     <>
       <Router>
         <Home path="/">
-          <AuthDemo path="/auth" />
+          <Auth path="/auth" />
         </Home>
         <NotFound default />
       </Router>
