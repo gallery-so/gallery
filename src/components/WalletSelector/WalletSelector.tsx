@@ -5,8 +5,8 @@ import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
-  metamask: injected,
-  walletconnect: walletconnect,
+  Metamask: injected,
+  WalletConnect: walletconnect,
 };
 
 function WalletSelector() {
@@ -24,6 +24,7 @@ function WalletSelector() {
 
   return (
     <StyledWalletSelector>
+      <StyledHeader>Connect your wallet</StyledHeader>
       <div>
         {active && 'connected'}
         {error && `${error.message}`}
@@ -40,6 +41,7 @@ function WalletSelector() {
             }}
           >
             {walletName}
+            <Icon src={`/icons/${walletName}.svg`}></Icon>
           </StyledButton>
         );
       })}
@@ -54,15 +56,27 @@ const StyledWalletSelector = styled.div`
 `;
 
 const StyledHeader = styled.p`
-  color: white;
-  font-size: 30px;
+  color: black;
+  font-size: 24px;
+`;
+
+const Icon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin: 5px;
 `;
 
 const StyledButton = styled.button`
   background: white;
-  padding: 20px;
+  padding: 16px;
   border: 1px solid black;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 356px;
+  margin: 10px 0;
+  cursor: pointer;
 `;
 
 export default WalletSelector;

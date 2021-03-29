@@ -8,6 +8,5 @@ export default function useAuthModal() {
 
   return useCallback(() => {
     showModal(<WalletSelector />);
-    // showModal(<div>connect your wallet</div>);
   }, [showModal]);
 }
