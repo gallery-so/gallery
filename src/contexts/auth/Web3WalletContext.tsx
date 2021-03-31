@@ -8,9 +8,9 @@ function getLibrary(provider: any) {
   return library;
 }
 
-export const Boundary = memo(({ children }) => {
+const Web3WalletProvider = memo(({ children }) => {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
   );
 });
-export default Boundary;
+export default Web3WalletProvider;
