@@ -12,6 +12,9 @@ function GlobalNavbar() {
 }
 
 const StyledNavContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
   height: 80px;
   width: 100%;
   display: flex;
