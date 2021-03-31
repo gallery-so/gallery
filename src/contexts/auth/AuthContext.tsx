@@ -11,10 +11,16 @@ import {
   useMemo,
 } from 'react';
 
-type LoggedIn = { jwt: string };
-type AuthState = LoggedIn | 'LOGGED_OUT' | 'LOADING' | 'UNKNOWN';
+const JWT_LOCAL_STORAGE_KEY = 'jwt';
 
-const AuthStateContext = createContext<AuthState>('UNKNOWN');
+const LOGGED_OUT = Symbol('LOGGED_OUT');
+const LOADING = Symbol('LOADING');
+const UNKNOWN = Symbol('UNKNOWN');
+
+type LoggedIn = { jwt: string };
+type AuthState = LoggedIn | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+
+const AuthStateContext = createContext<AuthState>(UNKNOWN);
 
 export const useAuthState = (): AuthState => {
   const context = useContext(AuthStateContext);
@@ -42,12 +48,12 @@ export const useAuthActions = (): AuthActions => {
 type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
-  const [authState, setAuthState] = useState<AuthState>('UNKNOWN');
-  const [token, setToken] = usePersistedState('jwt', '');
+  const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
+  const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
 
   const logOut = useCallback(() => {
     localStorage.clear();
-    setAuthState('LOGGED_OUT');
+    setAuthState(LOGGED_OUT);
     setToken('');
   }, [setToken]);
 
@@ -69,7 +75,7 @@ const AuthProvider = memo(({ children }: Props) => {
     function authProviderMounted() {
       async function loadAuthState() {
         // show user loading screen while we figure out whether they are logged in or not
-        setAuthState('LOADING');
+        setAuthState(LOADING);
 
         if (token) {
           logIn(token);
@@ -77,7 +83,7 @@ const AuthProvider = memo(({ children }: Props) => {
         }
         logOut();
       }
-      if (authState === 'UNKNOWN') {
+      if (authState === UNKNOWN) {
         loadAuthState();
       }
     },
@@ -90,7 +96,7 @@ const AuthProvider = memo(({ children }: Props) => {
   ]);
 
   const isLoadingOrUnknown = useMemo(() => {
-    return authState === 'UNKNOWN' || authState === 'LOADING';
+    return authState === UNKNOWN || authState === LOADING;
   }, [authState]);
 
   // TODO: add Loading component
