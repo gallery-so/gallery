@@ -86,7 +86,9 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
             <StyledLink underlined>
               <Link to={`/${ADDRESSES.robin}`}>Follow</Link>
             </StyledLink>
-            <StyledLink underlined>Share</StyledLink>
+            <StyledLink underlined>
+              <Link to={`/${ADDRESSES.mikey}`}>Share</Link>
+            </StyledLink>
           </StyledLinks>
         </StyledHeader>
         <Spacer height={40} />
