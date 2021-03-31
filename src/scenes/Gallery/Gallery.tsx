@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import web3 from 'web3';
+import { isAddress } from 'web3-utils';
 import useSwr from 'swr';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
@@ -9,11 +9,9 @@ type Params = {
 };
 
 function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
-  const isAddress = useMemo(
-    () => web3.utils.isAddress(usernameOrWalletAddress ?? ''),
-    [usernameOrWalletAddress]
-  );
-  const baseurl = isAddress ? '/address' : '/username';
+  const baseurl = useMemo(() => {
+    return isAddress(usernameOrWalletAddress ?? '') ? '/address' : '/username';
+  }, [usernameOrWalletAddress]);
 
   //   const { data, error } = useSwr(`${baseurl}/${usernameOrWalletAddress}`)
   // TODO: support the following possible states:
@@ -33,7 +31,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
   return (
     <StyledGallery>
-      gallery of {usernameOrWalletAddress} {isAddress.toString()}
+      gallery of {usernameOrWalletAddress} {baseurl}
     </StyledGallery>
   );
 }
