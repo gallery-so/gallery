@@ -7,15 +7,14 @@ import Gallery from 'scenes/Gallery/Gallery';
 
 export default function Routes() {
   return (
-    <>
-      <Router>
-        <AppContainer path="/">
-          <Home path="/" />
-          <Auth path="/auth" />
-          <Gallery path="/:usernameOrWalletAddress" />
-          <NotFound default path="404" />
-        </AppContainer>
-      </Router>
-    </>
+    // primary={false} prevents jumpiness on nav: https://github.com/reach/router/issues/242
+    <Router primary={false}>
+      <AppContainer path="/">
+        <Home path="/" />
+        <Auth path="/auth" />
+        <Gallery path="/:usernameOrWalletAddress" />
+        <NotFound default path="404" />
+      </AppContainer>
+    </Router>
   );
 }

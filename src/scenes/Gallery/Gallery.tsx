@@ -3,6 +3,7 @@ import { isAddress } from 'web3-utils';
 import useSwr from 'swr';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
+import { Link } from '@reach/router';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -21,6 +22,11 @@ function resize(imgUrl: string, width: number) {
   if (!imgUrl) return null;
   return imgUrl.replace('=s250', `=s${width}`);
 }
+
+const ADDRESSES = {
+  mikey: '0xBb3F043290841B97b9C92F6Bc001a020D4B33255',
+  robin: '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15',
+};
 
 function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   const isWalletAddress = useMemo(
@@ -57,23 +63,40 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     if (usernameOrWalletAddress && isWalletAddress) {
       getOpenseaData(usernameOrWalletAddress);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isWalletAddress, usernameOrWalletAddress]);
 
   console.log(nfts);
 
   return (
     <StyledGallery>
-      <div>
-        <div>{usernameOrWalletAddress}</div>
-        {isWalletAddress ? <div>valid wallet address detected</div> : null}
-      </div>
       <StyledCollection>
-        <StyledOptions>
-          <StyledOption selected>All</StyledOption>
-          <StyledOption selected={false}>Collections</StyledOption>
-        </StyledOptions>
-        <Spacer />
+        <StyledHeader>
+          <StyledUsername>{'joff' || usernameOrWalletAddress}</StyledUsername>
+          <StyledUserDetails>
+            <DetailRow>Collector Since Mar 2021</DetailRow>
+            <DetailRow>
+              Web Developer. Consumer Of Pizza, Caffeine And Curry. Organiser of
+              Events. Co-Founder Of
+            </DetailRow>
+            <DetailRow>
+              @Dpipboro and @Pborostemfestival. Twitter: @Joffff
+            </DetailRow>
+          </StyledUserDetails>
+          <StyledLinks>
+            <StyledLink underlined>
+              <Link to={`/${ADDRESSES.robin}`}>Follow</Link>
+            </StyledLink>
+            <StyledLink underlined>Share</StyledLink>
+          </StyledLinks>
+        </StyledHeader>
+        <Spacer height={40} />
+        <StyledToggleOptions>
+          <StyledToggleOption underlined focused>
+            All
+          </StyledToggleOption>
+          <StyledToggleOption>Collections</StyledToggleOption>
+        </StyledToggleOptions>
+        <Spacer height={40} />
         <StyledNfts>
           {nfts.map((nft) => {
             const imgUrl =
@@ -95,35 +118,64 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
 const StyledGallery = styled.div``;
 
+const StyledHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  max-width: 1111px;
+`;
+
+const StyledUsername = styled.div`
+  font-size: 50px;
+`;
+
+const StyledUserDetails = styled.p`
+  font-family: 'Helvetica Neue';
+  font-size: 12px;
+`;
+
+const DetailRow = styled.div`
+  opacity: 0.5;
+`;
+
+const StyledLinks = styled.p`
+  font-size: 12px;
+
+  display: flex;
+`;
+
+const StyledOption = styled.p<{ underlined?: boolean; focused?: boolean }>`
+  font-family: 'Helvetica Neue';
+  text-transform: uppercase;
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+  opacity: ${({ focused }) => (focused ? 1 : 0.5)};
+  text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
+`;
+
+const StyledLink = styled(StyledOption)`
+  margin-right: 10px;
+`;
+
 const StyledCollection = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
 `;
 
-const StyledOptions = styled.div`
+const StyledToggleOptions = styled.div`
   display: flex;
 `;
 
-const StyledOption = styled.p<{ selected: boolean }>`
-  text-transform: uppercase;
-  margin: 0px 10px;
-
-  ${({ selected }) => {
-    if (selected) {
-      return `
-        opacity: 1;
-        text-decoration: underline;
-      `;
-    }
-    return `
-      opacity: 0.4;
-    `;
-  }}
+const StyledToggleOption = styled(StyledOption)`
+  margin-right: 10px;
+  margin-left: 10px;
 `;
 
-const Spacer = styled.div`
-  height: 40px;
+const Spacer = styled.div<{ height?: number }>`
+  height: ${({ height }) => (height ? height : 0)}px;
 `;
 
 const StyledNfts = styled.div`
