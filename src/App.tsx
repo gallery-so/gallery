@@ -1,6 +1,6 @@
 import { SwrProvider } from 'contexts/swr/SwrContext';
 import Boundary from 'contexts/boundary/Boundary';
-import AuthProvider from 'contexts/auth/Auth';
+import AuthProvider from 'contexts/auth/AuthContext';
 import ModalProvider from 'contexts/modal/ModalContext';
 import Routes from 'scenes/Routes';
 
