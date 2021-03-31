@@ -1,14 +1,8 @@
-import { memo, ReactNode } from 'react';
 import { RouteComponentProps } from '@reach/router';
+import { memo } from 'react';
 import styled from 'styled-components';
-import useSwr from 'swr';
-import GlobalNavbar from 'components/GlobalNavbar/GlobalNavbar';
 
-type Props = {
-  children: ReactNode;
-};
-
-function Home({ children }: RouteComponentProps & Props) {
+function Home(_: RouteComponentProps) {
   // on dev, this will route to localhost:4000/api/test
   // on prod, this will route to api.gallery.so/api/test
   // const { data, error } = useSwr('/test');
@@ -16,9 +10,7 @@ function Home({ children }: RouteComponentProps & Props) {
 
   return (
     <StyledHome>
-      <GlobalNavbar />
       <StyledHeader>GALLERY</StyledHeader>
-      {children}
     </StyledHome>
   );
 }
