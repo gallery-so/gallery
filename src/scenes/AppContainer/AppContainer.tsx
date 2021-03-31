@@ -9,14 +9,16 @@ type Props = {
 
 function AppContainer({ children }: RouteComponentProps & Props) {
   return (
-    <StyledHome>
+    <StyledAppContainer>
       <GlobalNavbar />
       {children}
-    </StyledHome>
+    </StyledAppContainer>
   );
 }
 
 // if we wanna do global styling
-const StyledHome = styled.div``;
+const StyledAppContainer = styled.div`
+  padding: 80px;
+`;
 
 export default memo(AppContainer);
