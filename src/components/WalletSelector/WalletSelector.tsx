@@ -83,6 +83,7 @@ type LogInButtonProps = {
 function LogInButton({ address, signer }: LogInButtonProps) {
   const { logIn } = useAuthActions();
   const { hideModal } = useModal();
+  // TODO: extract auth functionality out of this file
   const handleClick = useCallback(async () => {
     console.log('Will log in with address: ', address);
     // Get nonce for wallet address from backend
