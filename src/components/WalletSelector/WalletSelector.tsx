@@ -1,10 +1,12 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback } from 'react';
+import { useAuthActions } from 'contexts/auth/AuthContext';
+import { useModal } from 'contexts/modal/ModalContext';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -24,17 +26,26 @@ function WalletSelector() {
     error,
   } = context;
 
+  const headerMessage = active ? 'Log in with wallet' : 'Connect your wallet';
+  let signer;
+  if (library && account) {
+    signer = library.getSigner(account);
+  }
+
+  console.log('library', library);
   return (
     <StyledWalletSelector>
-      <StyledHeader>Connect your wallet</StyledHeader>
-      <div>
-        {active && 'connected'}
-        {error && `${error.message}`}
-      </div>
-      {active && <div>{account}</div>}
-      {Object.keys(walletConnectorMap).map((walletName) => {
-        return <WalletButton walletName={walletName} activate={activate} />;
-      })}
+      <StyledHeader>{headerMessage}</StyledHeader>
+      {active && account && signer ? (
+        <div>
+          <div>connected</div>
+          <LogInButton address={account} signer={signer}></LogInButton>
+        </div>
+      ) : (
+        Object.keys(walletConnectorMap).map((walletName) => {
+          return <WalletButton walletName={walletName} activate={activate} />;
+        })
+      )}
     </StyledWalletSelector>
   );
 }
@@ -62,6 +73,54 @@ function WalletButton({ walletName, activate }: WalletButtonProps) {
       />
     </StyledButton>
   );
+}
+
+type LogInButtonProps = {
+  address: string;
+  signer: JsonRpcSigner;
+};
+
+function LogInButton({ address, signer }: LogInButtonProps) {
+  const { logIn } = useAuthActions();
+  const { hideModal } = useModal();
+  const handleClick = useCallback(async () => {
+    console.log('Will log in with address: ', address);
+    // Get nonce for wallet address from backend
+    // simulate retrieving nonce from backend for now
+    const nonce: string = await new Promise<string>((resolve) => {
+      setTimeout(() => {
+        resolve('testNonceValue');
+      }, 500);
+    }).catch((err) => {
+      // TODO: get error to be handled by error boundary
+      throw new Error('Error getting nonce');
+    });
+    console.log('Retrieved nonce: ', nonce);
+    // Request user to sign message so we can authenticate and get jwt from backend
+    const jwt: string = await signer
+      .signMessage(nonce)
+      .then((signature: any) => {
+        return new Promise<string>((resolve, reject) => {
+          // simulate sending signature in exchange for jwt from backend for now
+          setTimeout(() => {
+            resolve('testJwt');
+          }, 500);
+        });
+      })
+      .catch((err) => {
+        // TODO: handle case where user rejects sign request
+        throw new Error(err.message);
+      });
+
+    if (!jwt) {
+      // TODO: handle error exchanging signature for jwt
+      throw new Error('no jwt received from backend');
+    }
+    logIn(jwt);
+    hideModal();
+  }, [address, hideModal, logIn, signer]);
+
+  return <StyledButton onClick={handleClick}>Log In with wallet</StyledButton>;
 }
 
 const StyledWalletSelector = styled.div`
