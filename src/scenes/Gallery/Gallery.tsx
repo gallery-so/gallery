@@ -4,9 +4,9 @@ import useSwr from 'swr';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
-import Header from './Header';
+import Header from './components/Header';
+import Body from './components/Body';
 import Spacer from 'components/core/Spacer/Spacer';
-import Body from './Body';
 
 import { Nft } from 'types/Nft';
 
