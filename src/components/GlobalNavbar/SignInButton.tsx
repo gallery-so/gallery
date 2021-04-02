@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import useAuthModal from 'hooks/useAuthModal';
 
-function SigninButton() {
+function SignInButton() {
   const displayAuthModal = useAuthModal();
   return <StyledButton onClick={displayAuthModal}>Sign In</StyledButton>;
 }
@@ -15,4 +15,4 @@ const StyledButton = styled.button`
   cursor: pointer;
 `;
 
-export default SigninButton;
+export default SignInButton;
