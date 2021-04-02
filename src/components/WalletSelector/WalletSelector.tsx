@@ -32,7 +32,6 @@ function WalletSelector() {
     return library && account ? library.getSigner(account) : undefined;
   }, [library, account]);
 
-  console.log('library', library);
   return (
     <StyledWalletSelector>
       <StyledHeader>{headerMessage}</StyledHeader>
