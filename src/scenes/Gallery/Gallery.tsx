@@ -5,25 +5,14 @@ import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import Header from './Header';
-import Link from 'components/core/Link/Link';
+import Spacer from 'components/core/Spacer/Spacer';
+import Body from './Body';
+
+import { Nft } from 'types/Nft';
 
 type Params = {
   usernameOrWalletAddress: string;
 };
-
-type Nft = {
-  id: string;
-  name: string;
-  image_url: string;
-  image_preview_url: string;
-};
-
-const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
-
-function resize(imgUrl: string, width: number) {
-  if (!imgUrl) return null;
-  return imgUrl.replace('=s250', `=s${width}`);
-}
 
 function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   const isWalletAddress = useMemo(
@@ -69,27 +58,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
       <StyledCollection>
         <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
         <Spacer height={40} />
-        <StyledToggleOptions>
-          <StyledToggleOption underlined focused>
-            All
-          </StyledToggleOption>
-          <StyledToggleOption>Collections</StyledToggleOption>
-        </StyledToggleOptions>
-        <Spacer height={40} />
-        <StyledNfts>
-          {nfts.map((nft) => {
-            const imgUrl =
-              resize(nft.image_preview_url, 275) ||
-              nft.image_url ||
-              IMG_FALLBACK_URL;
-
-            return (
-              <StyledNftPreview key={nft.id}>
-                <StyledNft src={imgUrl} alt={nft.name} />
-              </StyledNftPreview>
-            );
-          })}
-        </StyledNfts>
+        <Body nfts={nfts} />
       </StyledCollection>
     </StyledGallery>
   );
@@ -101,38 +70,6 @@ const StyledCollection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const StyledToggleOptions = styled.div`
-  display: flex;
-`;
-
-const StyledToggleOption = styled(Link)`
-  margin-right: 10px;
-  margin-left: 10px;
-`;
-
-const Spacer = styled.div<{ height?: number }>`
-  height: ${({ height }) => (height ? height : 0)}px;
-`;
-
-const StyledNfts = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 900px;
-`;
-
-const StyledNftPreview = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  margin: 10px;
-`;
-
-const StyledNft = styled.img`
-  width: 275px;
 `;
 
 export default Gallery;
