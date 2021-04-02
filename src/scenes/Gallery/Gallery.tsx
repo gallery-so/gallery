@@ -3,7 +3,9 @@ import { isAddress } from 'web3-utils';
 import useSwr from 'swr';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
-import { Link } from '@reach/router';
+
+import Header from './Header';
+import Link from 'components/core/Link/Link';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -22,11 +24,6 @@ function resize(imgUrl: string, width: number) {
   if (!imgUrl) return null;
   return imgUrl.replace('=s250', `=s${width}`);
 }
-
-const ADDRESSES = {
-  mikey: '0xBb3F043290841B97b9C92F6Bc001a020D4B33255',
-  robin: '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15',
-};
 
 function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   const isWalletAddress = useMemo(
@@ -70,30 +67,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   return (
     <StyledGallery>
       <StyledCollection>
-        <StyledHeader>
-          <StyledLeftContainer>
-            <StyledUsername>
-              {'RogerKilimanjaro' || usernameOrWalletAddress}
-            </StyledUsername>
-            <StyledUserDetails>
-              <DetailRow>Collector Since Mar 2021</DetailRow>
-              <DetailRow>I make cool 3d loops Black small square</DetailRow>
-              <DetailRow>
-                http://superrare.co/rogerkilimanjaro... Black small square
-              </DetailRow>
-            </StyledUserDetails>
-          </StyledLeftContainer>
-          <StyledRightContainer>
-            <StyledLinks>
-              <Link to={`/${ADDRESSES.robin}`}>
-                <StyledLink>Follow</StyledLink>
-              </Link>
-              <Link to={`/${ADDRESSES.mikey}`}>
-                <StyledLink>Share</StyledLink>
-              </Link>
-            </StyledLinks>
-          </StyledRightContainer>
-        </StyledHeader>
+        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
         <Spacer height={40} />
         <StyledToggleOptions>
           <StyledToggleOption underlined focused>
@@ -123,52 +97,6 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
 const StyledGallery = styled.div``;
 
-const StyledHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  width: 100%;
-  max-width: 900px;
-`;
-
-const StyledLeftContainer = styled.div``;
-
-const StyledUsername = styled.div`
-  font-size: 50px;
-`;
-
-const StyledUserDetails = styled.p`
-  font-family: 'Helvetica Neue';
-  font-size: 12px;
-`;
-
-const DetailRow = styled.div`
-  color: #7d7d7d;
-`;
-
-const StyledRightContainer = styled.div``;
-
-const StyledLinks = styled.p`
-  font-size: 12px;
-
-  display: flex;
-`;
-
-const StyledOption = styled.p<{ underlined?: boolean; focused?: boolean }>`
-  font-family: 'Helvetica Neue';
-  text-transform: uppercase;
-  margin-top: 0px;
-  margin-bottom: 0px;
-
-  color: ${({ focused }) => (focused ? 'black' : '#7d7d7d')};
-  text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
-`;
-
-const StyledLink = styled(StyledOption)`
-  margin-right: 10px;
-`;
-
 const StyledCollection = styled.div`
   display: flex;
   flex-direction: column;
@@ -179,7 +107,7 @@ const StyledToggleOptions = styled.div`
   display: flex;
 `;
 
-const StyledToggleOption = styled(StyledOption)`
+const StyledToggleOption = styled(Link)`
   margin-right: 10px;
   margin-left: 10px;
 `;
