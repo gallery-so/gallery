@@ -29,12 +29,15 @@ function Header({ usernameOrWalletAddress }: Props) {
         </StyledUserDetails>
       </StyledLeftContainer>
       <StyledRightContainer>
-        <RouterLink to={`/${ADDRESSES.robin}`}>
+        <StyledRouterLink to={`/${ADDRESSES.robin}`}>
           <StyledLink>Follow</StyledLink>
-        </RouterLink>
-        <RouterLink to={`/${ADDRESSES.mikey}`}>
+        </StyledRouterLink>
+        <Spacer width={20} />
+        <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
           <StyledLink>Share</StyledLink>
-        </RouterLink>
+        </StyledRouterLink>
+        <Spacer width={20} />
+        <Text light>Tip • $14,290.91</Text>
       </StyledRightContainer>
     </StyledHeader>
   );
@@ -57,8 +60,12 @@ const StyledRightContainer = styled.div`
   display: flex;
 `;
 
+const StyledRouterLink = styled(RouterLink)`
+  text-decoration: none;
+`;
+
 const StyledLink = styled(Link)`
-  margin-right: 10px;
+  text-decoration: none;
 `;
 
 export default Header;
