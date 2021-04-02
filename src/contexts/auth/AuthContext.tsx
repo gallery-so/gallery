@@ -18,7 +18,11 @@ const LOADING = Symbol('LOADING');
 const UNKNOWN = Symbol('UNKNOWN');
 
 type LoggedIn = { jwt: string };
-type AuthState = LoggedIn | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState =
+  | LoggedIn
+  | typeof LOGGED_OUT
+  | typeof LOADING
+  | typeof UNKNOWN;
 
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
 

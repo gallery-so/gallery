@@ -1,12 +1,12 @@
 import { useAuthState } from 'contexts/auth/AuthContext';
+import { isLoggedInState } from 'contexts/auth/types';
 import styled from 'styled-components';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
 
 function GlobalNavbar() {
   const authState = useAuthState();
-  console.log(typeof authState);
-  const isLoggedIn = typeof authState === 'object';
+  const isLoggedIn = isLoggedInState(authState);
   return (
     <StyledNavContainer>
       <StyledNav>{isLoggedIn ? <SignOutButton /> : <SignInButton />}</StyledNav>

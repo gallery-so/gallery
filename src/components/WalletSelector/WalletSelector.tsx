@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 
@@ -27,10 +27,10 @@ function WalletSelector() {
   } = context;
 
   const headerMessage = active ? 'Log in with wallet' : 'Connect your wallet';
-  let signer;
-  if (library && account) {
-    signer = library.getSigner(account);
-  }
+
+  const signer = useMemo(() => {
+    return library && account ? library.getSigner(account) : undefined;
+  }, [library, account]);
 
   console.log('library', library);
   return (
