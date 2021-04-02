@@ -71,25 +71,28 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     <StyledGallery>
       <StyledCollection>
         <StyledHeader>
-          <StyledUsername>{'joff' || usernameOrWalletAddress}</StyledUsername>
-          <StyledUserDetails>
-            <DetailRow>Collector Since Mar 2021</DetailRow>
-            <DetailRow>
-              Web Developer. Consumer Of Pizza, Caffeine And Curry. Organiser of
-              Events. Co-Founder Of
-            </DetailRow>
-            <DetailRow>
-              @Dpipboro and @Pborostemfestival. Twitter: @Joffff
-            </DetailRow>
-          </StyledUserDetails>
-          <StyledLinks>
-            <StyledLink underlined>
-              <Link to={`/${ADDRESSES.robin}`}>Follow</Link>
-            </StyledLink>
-            <StyledLink underlined>
-              <Link to={`/${ADDRESSES.mikey}`}>Share</Link>
-            </StyledLink>
-          </StyledLinks>
+          <StyledLeftContainer>
+            <StyledUsername>
+              {'RogerKilimanjaro' || usernameOrWalletAddress}
+            </StyledUsername>
+            <StyledUserDetails>
+              <DetailRow>Collector Since Mar 2021</DetailRow>
+              <DetailRow>I make cool 3d loops Black small square</DetailRow>
+              <DetailRow>
+                http://superrare.co/rogerkilimanjaro... Black small square
+              </DetailRow>
+            </StyledUserDetails>
+          </StyledLeftContainer>
+          <StyledRightContainer>
+            <StyledLinks>
+              <Link to={`/${ADDRESSES.robin}`}>
+                <StyledLink>Follow</StyledLink>
+              </Link>
+              <Link to={`/${ADDRESSES.mikey}`}>
+                <StyledLink>Share</StyledLink>
+              </Link>
+            </StyledLinks>
+          </StyledRightContainer>
         </StyledHeader>
         <Spacer height={40} />
         <StyledToggleOptions>
@@ -122,11 +125,14 @@ const StyledGallery = styled.div``;
 
 const StyledHeader = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
 
   width: 100%;
-  max-width: 1111px;
+  max-width: 900px;
 `;
+
+const StyledLeftContainer = styled.div``;
 
 const StyledUsername = styled.div`
   font-size: 50px;
@@ -138,8 +144,10 @@ const StyledUserDetails = styled.p`
 `;
 
 const DetailRow = styled.div`
-  opacity: 0.5;
+  color: #7d7d7d;
 `;
+
+const StyledRightContainer = styled.div``;
 
 const StyledLinks = styled.p`
   font-size: 12px;
@@ -153,7 +161,7 @@ const StyledOption = styled.p<{ underlined?: boolean; focused?: boolean }>`
   margin-top: 0px;
   margin-bottom: 0px;
 
-  opacity: ${({ focused }) => (focused ? 1 : 0.5)};
+  color: ${({ focused }) => (focused ? 'black' : '#7d7d7d')};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
 `;
 
