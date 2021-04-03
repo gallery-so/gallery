@@ -31,7 +31,10 @@ const StyledNfts = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 900px;
+
+  max-width: 1024px; // TODO: make this responsive - this is shared with header
+  column-gap: 80px; // TODO: make this responsive
+  row-gap: 80px; // TODO: make this responsive
 `;
 
 export default Body;

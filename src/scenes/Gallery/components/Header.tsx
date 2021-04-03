@@ -28,17 +28,20 @@ function Header({ usernameOrWalletAddress }: Props) {
           </Text>
         </StyledUserDetails>
       </StyledLeftContainer>
-      <StyledRightContainer>
-        <StyledRouterLink to={`/${ADDRESSES.robin}`}>
-          <StyledLink>Follow</StyledLink>
-        </StyledRouterLink>
-        <Spacer width={20} />
-        <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
-          <StyledLink>Share</StyledLink>
-        </StyledRouterLink>
-        <Spacer width={20} />
-        <Text light>Tip • $14,290.91</Text>
-      </StyledRightContainer>
+      {
+        /* coming soon in v2 */
+        // <StyledRightContainer>
+        //   <StyledRouterLink to={`/${ADDRESSES.robin}`}>
+        //     <StyledLink>Follow</StyledLink>
+        //   </StyledRouterLink>
+        //   <Spacer width={20} />
+        //   <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
+        //     <StyledLink>Share</StyledLink>
+        //   </StyledRouterLink>
+        //   <Spacer width={20} />
+        //   <Text light>Tip • $14,290.91</Text>
+        // </StyledRightContainer>
+      }
     </StyledHeader>
   );
 }
@@ -49,7 +52,8 @@ const StyledHeader = styled.div`
   align-items: flex-end;
 
   width: 100%;
-  max-width: 900px;
+
+  max-width: 1024px; // TODO: make this responsive - this is shared with body
 `;
 
 const StyledLeftContainer = styled.div``;
