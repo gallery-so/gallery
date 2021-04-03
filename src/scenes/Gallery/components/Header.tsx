@@ -49,7 +49,8 @@ const StyledHeader = styled.div`
   align-items: flex-end;
 
   width: 100%;
-  max-width: 900px;
+
+  max-width: 1024px; // TODO: make this responsive - this is shared with body
 `;
 
 const StyledLeftContainer = styled.div``;

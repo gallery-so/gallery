@@ -29,14 +29,12 @@ const StyledNftPreview = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  margin: 10px;
 `;
 
 const NFT_PREVIEW_WIDTH = {
   mobile: '288px',
   tablet: '176px',
-  desktop: '256px',
+  desktop: '288px',
 };
 
 const StyledNft = styled.img`
