@@ -28,17 +28,20 @@ function Header({ usernameOrWalletAddress }: Props) {
           </Text>
         </StyledUserDetails>
       </StyledLeftContainer>
-      <StyledRightContainer>
-        <StyledRouterLink to={`/${ADDRESSES.robin}`}>
-          <StyledLink>Follow</StyledLink>
-        </StyledRouterLink>
-        <Spacer width={20} />
-        <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
-          <StyledLink>Share</StyledLink>
-        </StyledRouterLink>
-        <Spacer width={20} />
-        <Text light>Tip • $14,290.91</Text>
-      </StyledRightContainer>
+      {
+        /* coming soon in v2 */
+        // <StyledRightContainer>
+        //   <StyledRouterLink to={`/${ADDRESSES.robin}`}>
+        //     <StyledLink>Follow</StyledLink>
+        //   </StyledRouterLink>
+        //   <Spacer width={20} />
+        //   <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
+        //     <StyledLink>Share</StyledLink>
+        //   </StyledRouterLink>
+        //   <Spacer width={20} />
+        //   <Text light>Tip • $14,290.91</Text>
+        // </StyledRightContainer>
+      }
     </StyledHeader>
   );
 }
