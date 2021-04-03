@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
+import breakpoints from 'components/core/breakpoints';
+
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 
 function resize(imgUrl: string, width: number) {
@@ -31,8 +33,22 @@ const StyledNftPreview = styled.div`
   margin: 10px;
 `;
 
+const NFT_PREVIEW_WIDTH = {
+  mobile: '288px',
+  tablet: '176px',
+  desktop: '256px',
+};
+
 const StyledNft = styled.img`
-  width: 275px;
+  @media only screen and ${breakpoints.mobile} {
+    width: ${NFT_PREVIEW_WIDTH.mobile};
+  }
+  @media only screen and ${breakpoints.tablet} {
+    width: ${NFT_PREVIEW_WIDTH.tablet};
+  }
+  @media only screen and ${breakpoints.desktop} {
+    width: ${NFT_PREVIEW_WIDTH.desktop};
+  }
 `;
 
 export default NftPreview;
