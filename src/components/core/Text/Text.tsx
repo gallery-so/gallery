@@ -17,5 +17,6 @@ export const Text = styled.p<TextProps>`
   margin: 0;
 
   font-size: 12px;
+  line-height: 16px;
   color: ${({ light }) => (light ? colors.gray : colors.black)};
 `;
