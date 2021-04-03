@@ -25,12 +25,6 @@ function NftPreview({ nft }: Props) {
   );
 }
 
-const widths = {
-  mobile: 288,
-  tablet: 176,
-  desktop: 256,
-};
-
 const StyledNftPreview = styled.div`
   display: flex;
   justify-content: center;
@@ -39,15 +33,21 @@ const StyledNftPreview = styled.div`
   margin: 10px;
 `;
 
+const NFT_PREVIEW_WIDTH = {
+  mobile: '288px',
+  tablet: '176px',
+  desktop: '256px',
+};
+
 const StyledNft = styled.img`
   @media only screen and ${breakpoints.mobile} {
-    width: ${widths.mobile}px;
+    width: ${NFT_PREVIEW_WIDTH.mobile};
   }
   @media only screen and ${breakpoints.tablet} {
-    width: ${widths.tablet}px;
+    width: ${NFT_PREVIEW_WIDTH.tablet};
   }
   @media only screen and ${breakpoints.desktop} {
-    width: ${widths.desktop}px;
+    width: ${NFT_PREVIEW_WIDTH.desktop};
   }
 `;
 
