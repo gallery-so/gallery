@@ -1,13 +1,13 @@
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
-import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback, useMemo } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletButton from './WalletButton';
+import { isLoadingState, isLoggedInState } from 'contexts/auth/types';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -16,6 +16,9 @@ const walletConnectorMap: Record<string, AbstractConnector> = {
 
 function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
+  const authState = useAuthState();
+  const isLoggedIn = isLoggedInState(authState);
+  const isLoadingAuth = isLoadingState(authState);
   const {
     connector,
     library,
@@ -27,32 +30,35 @@ function WalletSelector() {
     error,
   } = context;
 
-  const headerMessage = active ? 'Log in with wallet' : 'Connect your wallet';
-
   const signer = useMemo(() => {
     return library && account ? library.getSigner(account) : undefined;
   }, [library, account]);
 
+  const { logIn } = useAuthActions();
+  const { hideModal } = useModal();
+
+  useEffect(() => {
+    if (account && isLoadingAuth && !isLoggedIn && signer) {
+      signMessageAndAuthenticate(account, signer).then((jwt) => {
+        logIn(jwt);
+        hideModal();
+      });
+    }
+  }, [account, hideModal, isLoadingAuth, isLoggedIn, logIn, signer]);
+
   return (
     <StyledWalletSelector>
-      <StyledHeader>{headerMessage}</StyledHeader>
-      {active && account && signer ? (
-        <div>
-          <div>connected</div>
-          <LogInButton address={account} signer={signer}></LogInButton>
-        </div>
-      ) : (
-        Object.keys(walletConnectorMap).map((walletName) => {
-          return (
-            <WalletButton
-              key={walletName}
-              walletName={walletName}
-              activate={activate}
-              connector={walletConnectorMap[walletName]}
-            />
-          );
-        })
-      )}
+      <StyledHeader>Connect your wallet</StyledHeader>
+      {Object.keys(walletConnectorMap).map((walletName) => {
+        return (
+          <WalletButton
+            key={walletName}
+            walletName={walletName}
+            activate={activate}
+            connector={walletConnectorMap[walletName]}
+          />
+        );
+      })}
     </StyledWalletSelector>
   );
 }
@@ -62,49 +68,59 @@ type LogInButtonProps = {
   signer: JsonRpcSigner;
 };
 
+// might not be necessary to distinguish between connect wallet/authenticate steps
 function LogInButton({ address, signer }: LogInButtonProps) {
   const { logIn } = useAuthActions();
   const { hideModal } = useModal();
-  // TODO: extract auth functionality out of this file
   const handleClick = useCallback(async () => {
-    console.log('Will log in with address: ', address);
-    // Get nonce for wallet address from backend
-    // simulate retrieving nonce from backend for now
-    const nonce: string = await new Promise<string>((resolve) => {
-      setTimeout(() => {
-        resolve('testNonceValue');
-      }, 500);
-    }).catch((err) => {
-      // TODO: get error to be handled by error boundary
-      throw new Error('Error getting nonce');
-    });
-    console.log('Retrieved nonce: ', nonce);
-    // Request user to sign message so we can authenticate and get jwt from backend
-    const jwt: string = await signer
-      .signMessage(nonce)
-      .then((signature: any) => {
-        return new Promise<string>((resolve, reject) => {
-          // simulate sending signature in exchange for jwt from backend for now
-          setTimeout(() => {
-            resolve('testJwt');
-          }, 500);
-        });
-      })
-      .catch((err) => {
-        // TODO: handle case where user rejects sign request
-        throw new Error(err.message);
-      });
-
-    if (!jwt) {
-      // TODO: handle error exchanging signature for jwt
-      throw new Error('no jwt received from backend');
-    }
+    const jwt = await signMessageAndAuthenticate(address, signer);
     logIn(jwt);
     hideModal();
   }, [address, hideModal, logIn, signer]);
 
-  return <StyledButton onClick={handleClick}>Log In with wallet</StyledButton>;
+  return (
+    <StyledButton onClick={handleClick}>Authenticate with wallet</StyledButton>
+  );
 }
+
+const signMessageAndAuthenticate = async (
+  address: string,
+  signer: JsonRpcSigner
+) => {
+  console.log('Will log in with address: ', address);
+  // Get nonce for wallet address from backend
+  // simulate retrieving nonce from backend for now
+  const nonce: string = await new Promise<string>((resolve) => {
+    setTimeout(() => {
+      resolve('testNonceValue');
+    }, 500);
+  }).catch((err) => {
+    // TODO: get error to be handled by error boundary
+    throw new Error('Error getting nonce');
+  });
+  console.log('Retrieved nonce: ', nonce);
+  // Request user to sign message so we can authenticate and get jwt from backend
+  const jwt: string = await signer
+    .signMessage(nonce)
+    .then((signature: any) => {
+      return new Promise<string>((resolve, reject) => {
+        // simulate sending signature in exchange for jwt from backend for now
+        setTimeout(() => {
+          resolve('testJwt');
+        }, 500);
+      });
+    })
+    .catch((err) => {
+      // TODO: handle case where user rejects sign request
+      throw new Error(err.message);
+    });
+
+  if (!jwt) {
+    // TODO: handle error exchanging signature for jwt
+    throw new Error('no jwt received from backend');
+  }
+  return jwt;
+};
 
 const StyledWalletSelector = styled.div`
   text-align: center;
