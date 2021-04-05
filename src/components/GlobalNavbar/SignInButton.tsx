@@ -1,18 +1,9 @@
-import styled from 'styled-components';
 import useAuthModal from 'hooks/useAuthModal';
+import TextButton from 'components/core/Button/TextButton';
 
 function SignInButton() {
   const displayAuthModal = useAuthModal();
-  return <StyledButton onClick={displayAuthModal}>Sign In</StyledButton>;
+  return <TextButton onClick={displayAuthModal} text="Sign In"></TextButton>;
 }
-
-const StyledButton = styled.button`
-  padding: 8px 16px;
-  border-style: none;
-  text-transform: uppercase;
-  background: black;
-  color: white;
-  cursor: pointer;
-`;
 
 export default SignInButton;

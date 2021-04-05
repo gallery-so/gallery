@@ -1,6 +1,6 @@
 enum colors {
   black = '#000000',
-  gray = '#7d7d7d',
+  gray = '#838383',
 }
 
 export default colors;
