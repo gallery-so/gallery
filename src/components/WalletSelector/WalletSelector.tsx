@@ -7,6 +7,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
+import WalletButton from './WalletButton';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -42,35 +43,17 @@ function WalletSelector() {
         </div>
       ) : (
         Object.keys(walletConnectorMap).map((walletName) => {
-          return <WalletButton walletName={walletName} activate={activate} />;
+          return (
+            <WalletButton
+              key={walletName}
+              walletName={walletName}
+              activate={activate}
+              connector={walletConnectorMap[walletName]}
+            />
+          );
         })
       )}
     </StyledWalletSelector>
-  );
-}
-
-type WalletButtonProps = {
-  walletName: string;
-  activate: Web3ReactManagerFunctions['activate'];
-};
-
-function WalletButton({ walletName, activate }: WalletButtonProps) {
-  const handleClick = useCallback(() => {
-    if (walletName.toLowerCase() === 'metamask') {
-      injected.isAuthorized().then((isAuthorized: boolean) => {
-        console.log('isAuthorized', isAuthorized);
-      });
-    }
-    activate(walletConnectorMap[walletName]);
-  }, [activate, walletName]);
-
-  return (
-    <StyledButton onClick={handleClick}>
-      {walletName}
-      <Icon
-        src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
-      />
-    </StyledButton>
   );
 }
 
@@ -132,12 +115,6 @@ const StyledWalletSelector = styled.div`
 const StyledHeader = styled.p`
   color: black;
   font-size: 24px;
-`;
-
-const Icon = styled.img`
-  width: 24px;
-  height: 24px;
-  margin: 5px;
 `;
 
 const StyledButton = styled.button`
