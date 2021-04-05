@@ -1,18 +1,9 @@
-import styled from 'styled-components';
 import { useAuthActions } from 'contexts/auth/AuthContext';
+import TextButton from 'components/core/Button/TextButton';
 
 function SignOutButton() {
   const { logOut } = useAuthActions();
-  return <StyledButton onClick={logOut}>Sign Out</StyledButton>;
+  return <TextButton onClick={logOut} text="Sign Out"></TextButton>;
 }
-
-const StyledButton = styled.button`
-  padding: 8px 16px;
-  border-style: none;
-  text-transform: uppercase;
-  background: black;
-  color: white;
-  cursor: pointer;
-`;
 
 export default SignOutButton;
