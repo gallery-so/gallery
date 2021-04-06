@@ -3,6 +3,7 @@ import { Link as RouterLink } from '@reach/router';
 import { Title, Text } from 'components/core/Text/Text';
 import Link from 'components/core/Link/Link';
 import Spacer from 'components/core/Spacer/Spacer';
+import Dropdown from 'components/core/Dropdown/Dropdown';
 
 // TODO: delete this once we hav a working backend
 const ADDRESSES = {
@@ -28,6 +29,16 @@ function Header({ usernameOrWalletAddress }: Props) {
           </Text>
         </StyledUserDetails>
       </StyledLeftContainer>
+      <StyledRightContainer>
+        <Dropdown
+          mainText="Edit Profile"
+          options={[
+            { label: 'Edit name', value: '/edit/name' },
+            { label: 'Edit bio', value: '/edit/bio' },
+            { label: '+ New Collection', value: '/add/collection' },
+          ]}
+        ></Dropdown>
+      </StyledRightContainer>
       {
         /* coming soon in v2 */
         // <StyledRightContainer>
