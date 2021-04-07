@@ -10,14 +10,10 @@ import {
   useEffect,
   useMemo,
 } from 'react';
+import { LoggedIn, LOADING, LOGGED_OUT, UNKNOWN } from './types';
 
 const JWT_LOCAL_STORAGE_KEY = 'jwt';
 
-const LOGGED_OUT = Symbol('LOGGED_OUT');
-const LOADING = Symbol('LOADING');
-const UNKNOWN = Symbol('UNKNOWN');
-
-type LoggedIn = { jwt: string };
 export type AuthState =
   | LoggedIn
   | typeof LOGGED_OUT
@@ -37,6 +33,7 @@ export const useAuthState = (): AuthState => {
 type AuthActions = {
   logIn: (jwt: LoggedIn['jwt']) => void;
   logOut: () => void;
+  setStateToLoading: () => void;
 };
 
 const AuthActionsContext = createContext<AuthActions | undefined>(undefined);
@@ -75,6 +72,10 @@ const AuthProvider = memo(({ children }: Props) => {
     [logOut, setToken]
   );
 
+  const setStateToLoading = useCallback(() => {
+    setAuthState(LOADING);
+  }, []);
+
   useEffect(
     function authProviderMounted() {
       async function loadAuthState() {
@@ -94,17 +95,17 @@ const AuthProvider = memo(({ children }: Props) => {
     [authState, logIn, logOut, token]
   );
 
-  const authActions: AuthActions = useMemo(() => ({ logIn, logOut }), [
-    logIn,
-    logOut,
-  ]);
+  const authActions: AuthActions = useMemo(
+    () => ({ logIn, logOut, setStateToLoading }),
+    [logIn, logOut, setStateToLoading]
+  );
 
-  const isLoadingOrUnknown = useMemo(() => {
-    return authState === UNKNOWN || authState === LOADING;
+  const isUnknown = useMemo(() => {
+    return authState === UNKNOWN;
   }, [authState]);
 
-  // TODO: add Loading component
-  return isLoadingOrUnknown ? null : (
+  // TODO: add Loading
+  return isUnknown ? null : (
     <AuthStateContext.Provider value={authState}>
       <AuthActionsContext.Provider value={authActions}>
         <Web3WalletProvider>{children}</Web3WalletProvider>
