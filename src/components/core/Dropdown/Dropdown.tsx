@@ -16,7 +16,7 @@ type Props = {
 };
 
 const refContainsEventTarget = (ref: RefObject<HTMLDivElement>, event: any) => {
-  return ref.current && !ref.current.contains(event.target);
+  return ref.current && ref.current.contains(event.target);
 };
 
 function Dropdown({ mainText, children }: Props) {
@@ -35,8 +35,11 @@ function Dropdown({ mainText, children }: Props) {
         return;
       }
 
-      const clickedOutsideMenu = refContainsEventTarget(dropdownMenuRef, event);
-      const clickedOnButton = !refContainsEventTarget(dropdownButtonRef, event);
+      const clickedOutsideMenu = !refContainsEventTarget(
+        dropdownMenuRef,
+        event
+      );
+      const clickedOnButton = refContainsEventTarget(dropdownButtonRef, event);
 
       if (clickedOutsideMenu && !clickedOnButton) {
         setIsDropdownVisible(false);
@@ -85,7 +88,7 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
 
   flex-direction: column;
   align-items: flex-end;
-  border: 1px solid ${colors.black};
+  border: 1px solid ${colors.gray};
   padding: 10px;
   position: absolute;
   right: 0;
