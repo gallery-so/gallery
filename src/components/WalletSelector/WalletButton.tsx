@@ -9,20 +9,26 @@ type WalletButtonProps = {
   walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
   connector: AbstractConnector;
+  enableIsConnectingState: () => void;
+  isConnecting: boolean;
 };
 
-function WalletButton({ walletName, activate, connector }: WalletButtonProps) {
-  const [isConnecting, setIsConnecting] = useState(false);
-
+function WalletButton({
+  walletName,
+  activate,
+  connector,
+  enableIsConnectingState,
+  isConnecting,
+}: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    setIsConnecting(true);
+    enableIsConnectingState();
     if (walletName.toLowerCase() === 'metamask') {
       injected.isAuthorized().then((isAuthorized: boolean) => {
         console.log('isAuthorized', isAuthorized);
       });
     }
     activate(connector);
-  }, [activate, connector, walletName]);
+  }, [activate, connector, enableIsConnectingState, walletName]);
 
   return (
     <StyledButton onClick={handleClick} isConnecting disabled={isConnecting}>

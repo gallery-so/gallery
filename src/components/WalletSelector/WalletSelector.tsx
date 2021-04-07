@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletButton from './WalletButton';
@@ -19,6 +19,12 @@ function WalletSelector() {
   const authState = useAuthState();
   const isLoggedIn = isLoggedInState(authState);
   const { library, account, activate, deactivate, active, error } = context;
+
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  const enableIsConnectingState = useCallback(() => {
+    setIsConnecting(true);
+  }, []);
 
   const signer = useMemo(() => {
     return library && account ? library.getSigner(account) : undefined;
@@ -46,6 +52,8 @@ function WalletSelector() {
             walletName={walletName}
             activate={activate}
             connector={walletConnectorMap[walletName]}
+            enableIsConnectingState={enableIsConnectingState}
+            isConnecting={isConnecting}
           />
         );
       })}
