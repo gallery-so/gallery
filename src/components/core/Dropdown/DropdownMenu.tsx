@@ -15,13 +15,21 @@ function DropdownMenu({ mainText, options }: Props) {
   return (
     <Dropdown mainText={mainText}>
       {options.map((option: DropdownOption) => {
-        return <StyledDropdownMenuItem>{option.label}</StyledDropdownMenuItem>;
+        return (
+          <StyledLink href={option.value}>
+            <StyledLinkText>{option.label}</StyledLinkText>
+          </StyledLink>
+        );
       })}
     </Dropdown>
   );
 }
 
-const StyledDropdownMenuItem = styled(ActionText)`
+const StyledLink = styled.a`
+  text-decoration: none;
+`;
+
+const StyledLinkText = styled(ActionText)`
   padding-bottom: 8px;
 `;
 

@@ -16,9 +16,7 @@ function TextButton(props: Props) {
   );
 }
 
-const StyledButtonText = styled(ActionText)`
-  transition: color 0.2s;
-`;
+const StyledButtonText = styled(ActionText)``;
 const StyledButton = styled.button`
   padding: 6px;
   border-style: none;
