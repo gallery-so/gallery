@@ -3,8 +3,6 @@ import { injected } from 'connectors/index';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
-import { isLoadingState } from 'contexts/auth/types';
 import colors from 'components/core/colors';
 
 type WalletButtonProps = {
@@ -14,13 +12,9 @@ type WalletButtonProps = {
 };
 
 function WalletButton({ walletName, activate, connector }: WalletButtonProps) {
-  const { setStateToLoading } = useAuthActions();
   const [isConnecting, setIsConnecting] = useState(false);
-  const authState = useAuthState();
-  const isLoadingAuth = isLoadingState(authState);
 
   const handleClick = useCallback(() => {
-    setStateToLoading();
     setIsConnecting(true);
     if (walletName.toLowerCase() === 'metamask') {
       injected.isAuthorized().then((isAuthorized: boolean) => {
@@ -28,10 +22,10 @@ function WalletButton({ walletName, activate, connector }: WalletButtonProps) {
       });
     }
     activate(connector);
-  }, [activate, connector, setStateToLoading, walletName]);
+  }, [activate, connector, walletName]);
 
   return (
-    <StyledButton onClick={handleClick} isConnecting disabled={isLoadingAuth}>
+    <StyledButton onClick={handleClick} isConnecting disabled={isConnecting}>
       {isConnecting ? 'Connecting' : walletName}
       <Icon
         src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}

@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletButton from './WalletButton';
-import { isLoadingState, isLoggedInState } from 'contexts/auth/types';
+import { isLoggedInState } from 'contexts/auth/types';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -18,17 +18,7 @@ function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
   const authState = useAuthState();
   const isLoggedIn = isLoggedInState(authState);
-  const isLoadingAuth = isLoadingState(authState);
-  const {
-    connector,
-    library,
-    chainId,
-    account,
-    activate,
-    deactivate,
-    active,
-    error,
-  } = context;
+  const { library, account, activate, deactivate, active, error } = context;
 
   const signer = useMemo(() => {
     return library && account ? library.getSigner(account) : undefined;
@@ -38,13 +28,13 @@ function WalletSelector() {
   const { hideModal } = useModal();
 
   useEffect(() => {
-    if (account && isLoadingAuth && !isLoggedIn && signer) {
+    if (account && !isLoggedIn && signer) {
       signMessageAndAuthenticate(account, signer).then((jwt) => {
         logIn(jwt);
         hideModal();
       });
     }
-  }, [account, hideModal, isLoadingAuth, isLoggedIn, logIn, signer]);
+  }, [account, hideModal, isLoggedIn, logIn, signer]);
 
   return (
     <StyledWalletSelector>
@@ -60,26 +50,6 @@ function WalletSelector() {
         );
       })}
     </StyledWalletSelector>
-  );
-}
-
-type LogInButtonProps = {
-  address: string;
-  signer: JsonRpcSigner;
-};
-
-// might not be necessary to distinguish between connect wallet/authenticate steps
-function LogInButton({ address, signer }: LogInButtonProps) {
-  const { logIn } = useAuthActions();
-  const { hideModal } = useModal();
-  const handleClick = useCallback(async () => {
-    const jwt = await signMessageAndAuthenticate(address, signer);
-    logIn(jwt);
-    hideModal();
-  }, [address, hideModal, logIn, signer]);
-
-  return (
-    <StyledButton onClick={handleClick}>Authenticate with wallet</StyledButton>
   );
 }
 
@@ -131,19 +101,6 @@ const StyledWalletSelector = styled.div`
 const StyledHeader = styled.p`
   color: black;
   font-size: 24px;
-`;
-
-const StyledButton = styled.button`
-  background: white;
-  padding: 16px;
-  border: 1px solid black;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 356px;
-  margin: 10px 0;
-  cursor: pointer;
 `;
 
 export default WalletSelector;
