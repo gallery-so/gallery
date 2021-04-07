@@ -10,11 +10,10 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { LOADING, LOGGED_OUT, UNKNOWN } from './types';
+import { LoggedIn, LOADING, LOGGED_OUT, UNKNOWN } from './types';
 
 const JWT_LOCAL_STORAGE_KEY = 'jwt';
 
-type LoggedIn = { jwt: string };
 export type AuthState =
   | LoggedIn
   | typeof LOGGED_OUT
