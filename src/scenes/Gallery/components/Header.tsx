@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link as RouterLink } from '@reach/router';
 import { Title, Text } from 'components/core/Text/Text';
-import Link from 'components/core/Link/Link';
+import ActionText from 'components/core/ActionText/ActionText';
 import Spacer from 'components/core/Spacer/Spacer';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 
@@ -79,7 +79,7 @@ const StyledRouterLink = styled(RouterLink)`
   text-decoration: none;
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(ActionText)`
   text-decoration: none;
 `;
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import colors from '../colors';
-import Link from '../Link/Link';
+import ActionText from '../ActionText/ActionText';
 
 type Props = {
   onClick?: any;
@@ -16,7 +16,7 @@ function TextButton(props: Props) {
   );
 }
 
-const StyledButtonText = styled(Link)`
+const StyledButtonText = styled(ActionText)`
   transition: color 0.2s;
 `;
 const StyledButton = styled.button`

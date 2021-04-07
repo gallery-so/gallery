@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import TextButton from '../Button/TextButton';
 import colors from '../colors';
-import Link from '../Link/Link';
+import ActionText from '../ActionText/ActionText';
 
 // dropdown input vs dropdown menu
 // TODO: replace button with text/a
@@ -65,7 +65,7 @@ const StyledDropdownButton = styled(TextButton)`
   }
 `;
 
-const StyledDrodownOption = styled(Link)`
+const StyledDrodownOption = styled(ActionText)`
   padding-bottom: 8px;
 `;
 
