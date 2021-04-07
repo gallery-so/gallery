@@ -5,6 +5,7 @@ import colors from '../colors';
 import Link from '../Link/Link';
 
 // dropdown input vs dropdown menu
+// TODO: replace button with text/a
 
 type Props = {
   mainText: string;
@@ -44,14 +45,6 @@ const StyledDropdown = styled.div`
   position: absolute;
 `;
 
-const StyledDropdownButton = styled(TextButton)`
-  width: fit-content;
-  align-self: flex-end;
-  &:focus {
-    text-decoration: underline;
-  }
-`;
-
 const StyledDropdownMenu = styled.div<StyledDropdownMenuProps>`
   visibility: ${({ isDropdownVisible }) =>
     isDropdownVisible ? 'visible' : 'hidden'};
@@ -61,6 +54,15 @@ const StyledDropdownMenu = styled.div<StyledDropdownMenuProps>`
   align-items: flex-end;
   border: 1px solid ${colors.black};
   padding: 10px;
+`;
+
+const StyledDropdownButton = styled(TextButton)`
+  width: fit-content;
+  align-self: flex-end;
+
+  &:focus {
+    underline: 1px solid;
+  }
 `;
 
 const StyledDrodownOption = styled(Link)`

@@ -5,11 +5,12 @@ import Link from '../Link/Link';
 type Props = {
   onClick?: any;
   text: string;
+  className?: string;
 };
 
 function TextButton(props: Props) {
   return (
-    <StyledButton onClick={props.onClick}>
+    <StyledButton className={props.className} onClick={props.onClick}>
       <StyledButtonText>{props.text}</StyledButtonText>
     </StyledButton>
   );
