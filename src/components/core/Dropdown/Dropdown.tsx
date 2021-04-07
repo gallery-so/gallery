@@ -60,7 +60,7 @@ function Dropdown({ mainText, children }: Props) {
       >
         <StyledDropdownButton text={mainText} onClick={handleClick} />
       </div>
-      <div ref={dropdownMenuRef}>
+      <div ref={dropdownMenuRef} style={{ position: 'relative' }}>
         <StyledDropdownBox isDropdownVisible={isDropdownVisible}>
           {children}
         </StyledDropdownBox>
@@ -76,7 +76,6 @@ type StyledDropdownBoxProps = {
 const StyledDropdown = styled.div`
   display: flex;
   flex-direction: column;
-  position: absolute;
 `;
 
 const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
@@ -88,6 +87,9 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   align-items: flex-end;
   border: 1px solid ${colors.black};
   padding: 10px;
+  position: absolute;
+  right: 0;
+  width: max-content;
 `;
 
 const StyledDropdownButton = styled(TextButton)`
