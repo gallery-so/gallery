@@ -1,41 +1,75 @@
-import { useCallback, useState } from 'react';
+import {
+  ReactNode,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import TextButton from '../Button/TextButton';
 import colors from '../colors';
-import ActionText from '../ActionText/ActionText';
-
-// dropdown input vs dropdown menu
-// TODO: replace button with text/a
 
 type Props = {
   mainText: string;
-  options: Array<DropdownOption>;
+  children?: ReactNode;
 };
 
-type DropdownOption = {
-  label: string;
-  value: string;
+const refContainsEventTarget = (ref: RefObject<HTMLDivElement>, event: any) => {
+  return ref.current && !ref.current.contains(event.target);
 };
 
-function Dropdown({ mainText, options }: Props) {
+function Dropdown({ mainText, children }: Props) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
   const handleClick = useCallback(() => {
     setIsDropdownVisible(!isDropdownVisible);
   }, [isDropdownVisible]);
 
+  const dropdownMenuRef = useRef<HTMLDivElement>(null);
+  const dropdownButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleDocumentClick(event: any) {
+      if (!isDropdownVisible) {
+        return;
+      }
+
+      const clickedOutsideMenu = refContainsEventTarget(dropdownMenuRef, event);
+      const clickedOnButton = !refContainsEventTarget(dropdownButtonRef, event);
+
+      if (clickedOutsideMenu && !clickedOnButton) {
+        setIsDropdownVisible(false);
+      }
+    }
+
+    // we only need to add document listener if dropdown is open
+    if (isDropdownVisible) {
+      document.addEventListener('mousedown', handleDocumentClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick);
+    };
+  }, [dropdownMenuRef, isDropdownVisible]);
+
   return (
     <StyledDropdown>
-      <StyledDropdownButton text={mainText} onClick={handleClick} />
-      <StyledDropdownMenu isDropdownVisible={isDropdownVisible}>
-        {options.map((option: DropdownOption) => {
-          return <StyledDrodownOption>{option.label}</StyledDrodownOption>;
-        })}
-      </StyledDropdownMenu>
+      <div
+        style={{ width: 'fit-content', alignSelf: 'flex-end' }}
+        ref={dropdownButtonRef}
+      >
+        <StyledDropdownButton text={mainText} onClick={handleClick} />
+      </div>
+      <div ref={dropdownMenuRef}>
+        <StyledDropdownBox isDropdownVisible={isDropdownVisible}>
+          {children}
+        </StyledDropdownBox>
+      </div>
     </StyledDropdown>
   );
 }
 
-type StyledDropdownMenuProps = {
+type StyledDropdownBoxProps = {
   isDropdownVisible: boolean;
 };
 
@@ -45,7 +79,7 @@ const StyledDropdown = styled.div`
   position: absolute;
 `;
 
-const StyledDropdownMenu = styled.div<StyledDropdownMenuProps>`
+const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   visibility: ${({ isDropdownVisible }) =>
     isDropdownVisible ? 'visible' : 'hidden'};
   display: flex;
@@ -63,10 +97,6 @@ const StyledDropdownButton = styled(TextButton)`
   &:focus {
     underline: 1px solid;
   }
-`;
-
-const StyledDrodownOption = styled(ActionText)`
-  padding-bottom: 8px;
 `;
 
 export default Dropdown;
