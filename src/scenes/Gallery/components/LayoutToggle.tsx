@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link as RouterLink, useLocation } from '@reach/router';
 
-import Link from 'components/core/Link/Link';
+import ActionText from 'components/core/ActionText/ActionText';
 
 type Props = {
   isCollectionsView: boolean;
@@ -40,7 +40,7 @@ const StyledToggleOptions = styled.div`
   display: flex;
 `;
 
-const StyledToggleOption = styled(Link)`
+const StyledToggleOption = styled(ActionText)`
   margin-right: 10px;
   margin-left: 10px;
 `;

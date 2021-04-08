@@ -10,9 +10,14 @@ type Props = {
 const StyledLink = styled(Text)<Props>`
   font-family: 'Helvetica Neue';
   text-transform: uppercase;
+  transition: color 0.2s;
 
   color: ${({ focused }) => (focused ? colors.black : colors.gray)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
+
+  &:hover {
+    color: ${colors.black};
+  }
 `;
 
 export default StyledLink;

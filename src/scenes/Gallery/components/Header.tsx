@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { Link as RouterLink } from '@reach/router';
 import { Title, Text } from 'components/core/Text/Text';
-import Link from 'components/core/Link/Link';
+import ActionText from 'components/core/ActionText/ActionText';
 import Spacer from 'components/core/Spacer/Spacer';
+import DropdownMenu from 'components/core/Dropdown/DropdownMenu';
 
 // TODO: delete this once we hav a working backend
 const ADDRESSES = {
@@ -28,6 +29,16 @@ function Header({ usernameOrWalletAddress }: Props) {
           </Text>
         </StyledUserDetails>
       </StyledLeftContainer>
+      <StyledRightContainer>
+        <DropdownMenu
+          mainText="Edit Profile"
+          options={[
+            { label: 'Edit name', value: '/edit/name' },
+            { label: 'Edit bio', value: '/edit/bio' },
+            { label: '+ New Collection', value: '/add/collection' },
+          ]}
+        ></DropdownMenu>
+      </StyledRightContainer>
       {
         /* coming soon in v2 */
         // <StyledRightContainer>
@@ -68,7 +79,7 @@ const StyledRouterLink = styled(RouterLink)`
   text-decoration: none;
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(ActionText)`
   text-decoration: none;
 `;
 
