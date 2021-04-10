@@ -30,6 +30,26 @@ function WalletButton({
     activate(connector);
   }, [activate, connector, enableIsConnectingState, walletName]);
 
+  if (connector === injected) {
+    if (!(window.web3 || window.ethereum)) {
+      if (walletName.toLowerCase() === 'metamask') {
+        return (
+          <StyledExternalLink href="https://metamask.io/" target="_blank">
+            <StyledButton>
+              {'Install Metamask'}
+              <Icon
+                src={
+                  require(`assets/icons/${walletName.toLowerCase()}.svg`)
+                    .default
+                }
+              />
+            </StyledButton>
+          </StyledExternalLink>
+        );
+      }
+    }
+  }
+
   return (
     <StyledButton onClick={handleClick} isConnecting disabled={isConnecting}>
       {isConnecting ? 'Connecting' : walletName}
@@ -65,4 +85,13 @@ const StyledButton = styled.button<StyledButtonProps>`
     border-color: ${colors.gray};
   }
 `;
+
+const StyledExternalLink = styled.a`
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: ${colors.gray};
+  }
+`;
+
 export default WalletButton;
