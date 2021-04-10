@@ -138,7 +138,6 @@ const signMessageAndAuthenticate = async (
       });
     })
     .catch((err) => {
-      // TODO: handle case where user rejects sign request
       err.code = 'REJECTED_SIGNATURE';
       throw err;
     });
