@@ -7,7 +7,7 @@ import useQuery from 'utils/query';
 type Collection = {
   nfts: Nft[];
   id: string;
-  name?: string;
+  title?: string;
   description?: string;
 };
 

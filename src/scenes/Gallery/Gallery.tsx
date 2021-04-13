@@ -53,13 +53,13 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
   let collections = [
     {
-      name: 'Collection 1',
+      title: 'Collection 1',
       description: 'This is a test collection',
       id: 'id',
       nfts: nfts.slice(0, 10),
     },
     {
-      name: 'Collection 2',
+      title: 'Collection 2',
       id: 'id',
       nfts: nfts.slice(11, 20),
     },

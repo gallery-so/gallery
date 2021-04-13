@@ -6,7 +6,7 @@ import { Text } from 'components/core/Text/Text';
 type Collection = {
   nfts: Nft[];
   id: string;
-  name?: string;
+  title?: string;
   description?: string;
 };
 
@@ -21,7 +21,7 @@ function CollectionView({ collection, showCollectionDivider }: Props) {
     <StyledCollectionWrapper>
       {showCollectionDivider && <StyledCollectionDivider />}
       <StyledCollectionHeader>
-        <StyledCollectionName>{collection.name}</StyledCollectionName>
+        <StyledCollectionTitle>{collection.title}</StyledCollectionTitle>
         <StyledCollectionDescription>
           {collection.description}
         </StyledCollectionDescription>
@@ -44,7 +44,7 @@ const StyledCollectionWrapper = styled.div`
 const StyledCollectionHeader = styled.div`
   margin-bottom: 10px;
 `;
-const StyledCollectionName = styled(Text)`
+const StyledCollectionTitle = styled(Text)`
   font-size: 16px;
   font-weight: 500;
 `;
