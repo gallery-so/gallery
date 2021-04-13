@@ -1,15 +1,8 @@
 import Spacer from 'components/core/Spacer/Spacer';
 import CollectionView from './Collection';
 
-import { Nft } from 'types/Nft';
+import { Collection } from 'types/Collection';
 import useQuery from 'utils/query';
-
-type Collection = {
-  nfts: Nft[];
-  id: string;
-  title?: string;
-  description?: string;
-};
 
 type Props = {
   collections: Array<Collection>;

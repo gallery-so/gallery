@@ -1,14 +1,8 @@
 import colors from 'components/core/colors';
 import NftPreview from 'components/NftPreview/NftPreview';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
+import { Collection } from 'types/Collection';
 import { Text } from 'components/core/Text/Text';
-type Collection = {
-  nfts: Nft[];
-  id: string;
-  title?: string;
-  description?: string;
-};
 
 type Props = {
   collection: Collection;
