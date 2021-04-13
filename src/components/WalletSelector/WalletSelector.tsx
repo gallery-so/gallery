@@ -8,23 +8,51 @@ import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletButton from './WalletButton';
 import { isLoggedInState } from 'contexts/auth/types';
+import colors from 'components/core/colors';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
 };
 
+type ErrorMessage = {
+  heading: string;
+  body: string;
+};
+
+const ERROR_MESSAGES: { [key: string]: ErrorMessage } = {
+  REJECTED_SIGNATURE: {
+    heading: 'Signature rejected',
+    body: 'Please sign the message with your wallet to continue',
+  },
+  UNKNOWN_ERROR: {
+    heading: 'There was an error connecting',
+    body: 'Please try again',
+  },
+};
+
+function getErrorMessage(errorCode: string) {
+  return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
+}
+
 function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
   const authState = useAuthState();
   const isLoggedIn = isLoggedInState(authState);
-  const { library, account, activate, deactivate, active, error } = context;
+  const { library, account, activate, deactivate, active } = context;
 
   const [isConnecting, setIsConnecting] = useState(false);
+  const [errorCode, setErrorCode] = useState('');
 
   const enableIsConnectingState = useCallback(() => {
     setIsConnecting(true);
   }, []);
+
+  const retryConnectWallet = useCallback(() => {
+    setIsConnecting(false);
+    setErrorCode('');
+    deactivate();
+  }, [deactivate]);
 
   const signer = useMemo(() => {
     return library && account ? library.getSigner(account) : undefined;
@@ -34,13 +62,32 @@ function WalletSelector() {
   const { hideModal } = useModal();
 
   useEffect(() => {
-    if (account && !isLoggedIn && signer) {
-      signMessageAndAuthenticate(account, signer).then((jwt) => {
-        logIn(jwt);
-        hideModal();
-      });
+    if (account && isConnecting && !isLoggedIn && signer) {
+      signMessageAndAuthenticate(account, signer)
+        .then((jwt) => {
+          logIn(jwt);
+          hideModal();
+        })
+        .catch((err) => {
+          setErrorCode(err.code);
+          setIsConnecting(false);
+          return;
+        });
     }
-  }, [account, hideModal, isLoggedIn, logIn, signer]);
+  }, [account, hideModal, isConnecting, isLoggedIn, logIn, signer]);
+
+  if (errorCode) {
+    const errorMessage = getErrorMessage(errorCode);
+    return (
+      <StyledWalletSelector>
+        <StyledHeader>{errorMessage.heading}</StyledHeader>
+        {errorMessage.body}
+        <StyledRetryButton onClick={retryConnectWallet}>
+          Retry
+        </StyledRetryButton>
+      </StyledWalletSelector>
+    );
+  }
 
   return (
     <StyledWalletSelector>
@@ -89,8 +136,8 @@ const signMessageAndAuthenticate = async (
       });
     })
     .catch((err) => {
-      // TODO: handle case where user rejects sign request
-      throw new Error(err.message);
+      err.code = 'REJECTED_SIGNATURE';
+      throw err;
     });
 
   if (!jwt) {
@@ -109,6 +156,17 @@ const StyledWalletSelector = styled.div`
 const StyledHeader = styled.p`
   color: black;
   font-size: 24px;
+`;
+
+const StyledRetryButton = styled.button`
+  text-align: center;
+  border: 1px solid ${colors.black};
+  padding: 10px;
+  background: none;
+  font-family: inherit;
+  margin-top: 20px;
+  width: 50%;
+  align-self: center;
 `;
 
 export default WalletSelector;
