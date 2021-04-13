@@ -1,6 +1,6 @@
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected } from 'connectors/index';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import colors from 'components/core/colors';
@@ -30,7 +30,9 @@ function WalletButton({
     activate(connector);
   }, [activate, connector, enableIsConnectingState, walletName]);
 
+  // injected is the connector type used for browser wallet extensions/dApp browsers
   if (connector === injected) {
+    // metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
     if (!(window.web3 || window.ethereum)) {
       if (walletName.toLowerCase() === 'metamask') {
         return (
