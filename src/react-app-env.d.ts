@@ -9,6 +9,11 @@ declare namespace NodeJS {
   }
 }
 
+interface Window {
+  ethereum?: {};
+  web3?: {};
+}
+
 declare module '*.avif' {
   const src: string;
   export default src;
