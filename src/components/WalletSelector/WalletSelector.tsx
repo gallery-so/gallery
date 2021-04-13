@@ -32,9 +32,7 @@ const ERROR_MESSAGES: { [key: string]: ErrorMessage } = {
 };
 
 function getErrorMessage(errorCode: string) {
-  return ERROR_MESSAGES[errorCode]
-    ? ERROR_MESSAGES[errorCode]
-    : ERROR_MESSAGES.UNKNOWN_ERROR;
+  return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
 function WalletSelector() {
