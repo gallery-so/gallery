@@ -1,12 +1,12 @@
 import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 
-import WalletSelector from 'components/WalletSelector/WalletSelector';
+import LockedWalletSelector from 'components/WalletSelector/LockedWalletSelector';
 
 export default function useAuthModal() {
   const { showModal } = useModal();
 
   return useCallback(() => {
-    showModal(<WalletSelector />);
+    showModal(<LockedWalletSelector />);
   }, [showModal]);
 }
