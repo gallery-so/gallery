@@ -65,7 +65,7 @@ function LockedWalletSelector() {
         name="password"
         type="password"
         placeholder="Enter password"
-      ></StyledPasswordInput>
+      />
     </StyledForm>
   );
 }
