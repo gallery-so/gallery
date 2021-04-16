@@ -24,7 +24,7 @@ function WalletButton({
     enableIsConnectingState();
     if (walletName.toLowerCase() === 'metamask') {
       injected.isAuthorized().then((isAuthorized: boolean) => {
-        console.log('isAuthorized', isAuthorized);
+        // TODO: figure out what goes here
       });
     }
     activate(connector);
@@ -37,7 +37,7 @@ function WalletButton({
       if (walletName.toLowerCase() === 'metamask') {
         return (
           <StyledExternalLink href="https://metamask.io/" target="_blank">
-            <StyledButton>
+            <StyledButton data-testid="wallet-button">
               {'Install Metamask'}
               <Icon
                 src={
@@ -53,7 +53,7 @@ function WalletButton({
   }
 
   return (
-    <StyledButton onClick={handleClick} isConnecting disabled={isConnecting}>
+    <StyledButton data-testid="wallet-button" onClick={handleClick} isConnecting disabled={isConnecting}>
       {isConnecting ? 'Connecting' : walletName}
       <Icon
         src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
