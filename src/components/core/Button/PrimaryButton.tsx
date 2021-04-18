@@ -27,6 +27,12 @@ const StyledPrimaryButton = styled.button`
   cursor: pointer;
 
   text-transform: uppercase;
+
+  transition: opacity 0.2s;
+  opacity: 1;
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export default memo(PrimaryButton);
