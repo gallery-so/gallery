@@ -6,7 +6,7 @@ import WizardFooter from './WizardFooter';
 function CreateCollection(_: RouteComponentProps) {
   return (
     <Wizard
-      render={({ next, previous }) => {
+      render={({ step, next, previous }) => {
         return (
           <>
             <Steps>
@@ -35,7 +35,7 @@ function CreateCollection(_: RouteComponentProps) {
                 )}
               />
             </Steps>
-            <WizardFooter next={next} previous={previous} />
+            <WizardFooter step={step} next={next} previous={previous} />
           </>
         );
       }}

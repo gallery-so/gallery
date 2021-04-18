@@ -5,7 +5,7 @@ import colors from '../colors';
 
 type Props = {
   className?: string;
-  text: string;
+  text?: string;
   onClick?: () => void;
   disabled?: boolean;
 };
