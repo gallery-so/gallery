@@ -13,7 +13,6 @@ type Props = {
 };
 
 function WizardFooter({ step, next, previous }: Props) {
-  console.log(step);
   const buttonText = useMemo(() => {
     switch (step.id) {
       case 'create':
