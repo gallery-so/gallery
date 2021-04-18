@@ -3,15 +3,15 @@ import colors from '../colors';
 import ActionText from '../ActionText/ActionText';
 
 type Props = {
-  onClick?: any;
-  text: string;
   className?: string;
+  text: string;
+  onClick?: () => void;
 };
 
-function TextButton(props: Props) {
+function TextButton({ className, text, onClick }: Props) {
   return (
-    <StyledButton className={props.className} onClick={props.onClick}>
-      <StyledButtonText>{props.text}</StyledButtonText>
+    <StyledButton className={className} onClick={onClick}>
+      <StyledButtonText>{text}</StyledButtonText>
     </StyledButton>
   );
 }
