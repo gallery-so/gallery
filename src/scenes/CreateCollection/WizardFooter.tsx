@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
@@ -12,13 +12,25 @@ type Props = {
 };
 
 function WizardFooter({ next, previous }: Props) {
+  const handleNextClick = useCallback(() => {
+    // TODO 1: if final step, return to originating screen (e.g. collections page)
+    // TODO 2: on certain steps, we want to do multiple things (e.g. go to next step AND oepn modal)
+    next();
+  }, [next]);
+
+  const handlePreviousClick = useCallback(() => {
+    // TODO: if first step, return to originating screen (e.g. collections page)
+    // if (noPreviousStep) ...
+    previous();
+  }, [previous]);
+
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.lightGray} onClick={previous}>
+      <ActionText color={colors.lightGray} onClick={handlePreviousClick}>
         Back
       </ActionText>
       <Spacer width={24} />
-      <PrimaryButton text="New Collection" onClick={next} />
+      <PrimaryButton text="New Collection" onClick={handleNextClick} />
       <Spacer width={24} />
     </StyledWizardFooter>
   );
