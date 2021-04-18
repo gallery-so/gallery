@@ -4,6 +4,7 @@ import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';
 import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
+import CreateCollection from 'scenes/CreateCollection/CreateCollection';
 
 export default function Routes() {
   return (
@@ -12,6 +13,7 @@ export default function Routes() {
       <AppContainer path="/">
         <Home path="/" />
         <Auth path="/auth" />
+        <CreateCollection path="/create" />
         <Gallery path="/:usernameOrWalletAddress" />
         <NotFound default path="404" />
       </AppContainer>
