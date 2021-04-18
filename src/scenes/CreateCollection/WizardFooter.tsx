@@ -1,16 +1,24 @@
 import { memo } from 'react';
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 
-function WizardFooter() {
+type Props = {
+  next: WizardContext['next'];
+  previous: WizardContext['previous'];
+};
+
+function WizardFooter({ next, previous }: Props) {
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.lightGray}>Back</ActionText>
+      <ActionText color={colors.lightGray} onClick={previous}>
+        Back
+      </ActionText>
       <Spacer width={24} />
-      <PrimaryButton text="New Collection" />
+      <PrimaryButton text="New Collection" onClick={next} />
       <Spacer width={24} />
     </StyledWizardFooter>
   );

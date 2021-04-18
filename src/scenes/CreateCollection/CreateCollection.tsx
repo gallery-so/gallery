@@ -5,40 +5,41 @@ import WizardFooter from './WizardFooter';
 
 function CreateCollection(_: RouteComponentProps) {
   return (
-    <Wizard>
-      <Steps>
-        <Step
-          id="create"
-          render={({ next }) => (
-            <div>
-              <h1>Create Collection</h1>
-              <button onClick={next}>Next</button>
-            </div>
-          )}
-        />
-        <Step
-          id="add"
-          render={({ next, previous }) => (
-            <div>
-              <h1>Add NFTs to your collection</h1>
-              <button onClick={next}>Next</button>
-              <button onClick={previous}>Previous</button>
-            </div>
-          )}
-        />
-        <Step
-          id="organize"
-          render={({ next, previous }) => (
-            <div>
-              <h1>Organize your gallery</h1>
-              <button onClick={next}>Next</button>
-              <button onClick={previous}>Previous</button>
-            </div>
-          )}
-        />
-      </Steps>
-      <WizardFooter />
-    </Wizard>
+    <Wizard
+      render={({ next, previous }) => {
+        return (
+          <>
+            <Steps>
+              <Step
+                id="create"
+                render={() => (
+                  <div>
+                    <h1>Create Collection</h1>
+                  </div>
+                )}
+              />
+              <Step
+                id="add"
+                render={() => (
+                  <div>
+                    <h1>Add NFTs to your collection</h1>
+                  </div>
+                )}
+              />
+              <Step
+                id="organize"
+                render={() => (
+                  <div>
+                    <h1>Organize your gallery</h1>
+                  </div>
+                )}
+              />
+            </Steps>
+            <WizardFooter next={next} previous={previous} />
+          </>
+        );
+      }}
+    ></Wizard>
   );
 }
 
