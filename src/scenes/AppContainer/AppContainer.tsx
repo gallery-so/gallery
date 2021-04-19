@@ -23,8 +23,6 @@ function AppContainer({ children, location }: RouteComponentProps & Props) {
 }
 
 // if we wanna do global styling
-const StyledAppContainer = styled.div`
-  padding: 80px;
-`;
+const StyledAppContainer = styled.div``;
 
 export default memo(AppContainer);
