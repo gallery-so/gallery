@@ -1,4 +1,4 @@
-function FirstCollection() {
+function CreateFirstCollection() {
   return (
     <div>
       <h1>Create Your First Collection</h1>
@@ -6,4 +6,4 @@ function FirstCollection() {
   );
 }
 
-export default FirstCollection;
+export default CreateFirstCollection;
