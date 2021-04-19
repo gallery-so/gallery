@@ -12,6 +12,8 @@ const StyledLink = styled(Text)<Props>`
   text-transform: uppercase;
   transition: color 0.2s;
 
+  cursor: pointer;
+
   color: ${({ focused }) => (focused ? colors.black : colors.gray)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
 

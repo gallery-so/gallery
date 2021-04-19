@@ -9,7 +9,7 @@ export const Title = styled.p`
 `;
 
 type TextProps = {
-  light?: boolean;
+  color?: colors;
 };
 
 export const Text = styled.p<TextProps>`
@@ -18,5 +18,5 @@ export const Text = styled.p<TextProps>`
 
   font-size: 14px;
   line-height: 16px;
-  color: ${({ light }) => (light ? colors.gray : colors.black)};
+  color: ${({ color }) => color ?? colors.black};
 `;

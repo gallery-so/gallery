@@ -3,6 +3,7 @@ import { Link as RouterLink } from '@reach/router';
 import { Title, Text } from 'components/core/Text/Text';
 import ActionText from 'components/core/ActionText/ActionText';
 import Spacer from 'components/core/Spacer/Spacer';
+import colors from 'components/core/colors';
 import DropdownMenu from 'components/core/Dropdown/DropdownMenu';
 
 // TODO: delete this once we hav a working backend
@@ -22,9 +23,11 @@ function Header({ usernameOrWalletAddress }: Props) {
         <Title>{usernameOrWalletAddress}</Title>
         <Spacer height={20} />
         <StyledUserDetails>
-          <Text light>Collector Since Mar 2021</Text>
-          <Text light>I make cool 3d loops Black small square</Text>
-          <Text light>
+          <Text color={colors.lightGray}>Collector Since Mar 2021</Text>
+          <Text color={colors.lightGray}>
+            I make cool 3d loops Black small square
+          </Text>
+          <Text color={colors.lightGray}>
             http://superrare.co/rogerkilimanjaro... Black small square
           </Text>
         </StyledUserDetails>
