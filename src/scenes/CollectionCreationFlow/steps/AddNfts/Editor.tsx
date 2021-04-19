@@ -40,7 +40,7 @@ const StyledEditor = styled.div`
   flex-direction: column;
 
   width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT});
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 `;
 
 export default memo(Editor);

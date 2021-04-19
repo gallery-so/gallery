@@ -96,7 +96,7 @@ const StyledForm = styled.form`
 
 const StyledPasswordInput = styled.input`
   margin-top: 20px;
-  border: 1px solid ${colors.lightGray};
+  border: 1px solid ${colors.faintGray};
   line-height: 1.25rem;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
   transition: outline 0.5s;

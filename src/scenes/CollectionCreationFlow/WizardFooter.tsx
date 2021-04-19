@@ -38,10 +38,12 @@ function WizardFooter({ step, next, previous }: Props) {
 
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.lightGray} onClick={handlePreviousClick}>
+      <ActionText color={colors.faintGray} onClick={handlePreviousClick}>
         Back
       </ActionText>
       <Spacer width={24} />
+      {/* TODO: we'll need some sort of local context to control whether this is disabled
+          based on what's going on in the step (e.g. no NfTs placed into editor */}
       <PrimaryButton text={buttonText} onClick={handleNextClick} />
       <Spacer width={24} />
     </StyledWizardFooter>
