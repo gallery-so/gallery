@@ -10,6 +10,7 @@ import { ReactComponent as SearchIcon } from './search.svg';
 import dummy1 from './dummy_1.png';
 import dummy2 from './dummy_2.png';
 import dummy3 from './dummy_3.png';
+import { FOOTER_HEIGHT } from '../../WizardFooter';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -51,13 +52,15 @@ function Sidebar() {
   );
 }
 
+const SIDEBAR_TOP_PADDING = 50;
+
 const StyledSidebar = styled.div`
   width: 270px;
-  height: 100vh;
+  height: calc(100vh - ${FOOTER_HEIGHT}px - ${SIDEBAR_TOP_PADDING}px);
 
   background: #f7f7f7;
 
-  padding: 50px 32px;
+  padding: ${SIDEBAR_TOP_PADDING}px 32px;
 
   overflow: scroll;
 `;
