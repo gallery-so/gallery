@@ -48,6 +48,8 @@ function WizardFooter({ step, next, previous }: Props) {
   );
 }
 
+export const FOOTER_HEIGHT = 66;
+
 const StyledWizardFooter = styled.div`
   position: fixed;
   bottom: 0;
@@ -57,10 +59,11 @@ const StyledWizardFooter = styled.div`
   align-items: center;
   justify-content: flex-end;
 
-  height: 66px;
+  height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
   border-top: 1px solid black;
+  background: white;
 `;
 
 export default memo(WizardFooter);
