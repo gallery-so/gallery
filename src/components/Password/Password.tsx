@@ -41,7 +41,9 @@ function Password() {
     [unlock]
   );
 
-  const handleClick = useCallback(() => navigate('/connect'), []);
+  const handleClick = useCallback(() => {
+    // show wallet connect selector
+  }, []);
 
   return (
     <StyledPasswordContainer>

@@ -3,7 +3,6 @@ import AppContainer from 'scenes/AppContainer/AppContainer';
 import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';
 import NotFound from 'scenes/NotFound/NotFound';
-import ConnectWallet from 'scenes/ConnectWallet/ConnectWallet';
 import Gallery from 'scenes/Gallery/Gallery';
 import CollectionCreationFlow from 'scenes/CollectionCreationFlow/CollectionCreationFlow';
 
@@ -14,7 +13,6 @@ export default function Routes() {
       <AppContainer path="/">
         <Home path="/" />
         <Auth path="/auth" />
-        <ConnectWallet path="/connect" />
         <CollectionCreationFlow path="/create" />
         <Gallery path="/:usernameOrWalletAddress" />
         <NotFound default path="404" />
