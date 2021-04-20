@@ -69,15 +69,13 @@ function Sidebar({ onStageNft, onUnstageNft }: Props) {
   );
 }
 
-const SIDEBAR_TOP_PADDING = 50;
-
 const StyledSidebar = styled.div`
-  width: 270px;
-  height: calc(100vh - ${FOOTER_HEIGHT}px - ${SIDEBAR_TOP_PADDING}px);
+  width: 100%;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 
   background: #f7f7f7;
 
-  padding: ${SIDEBAR_TOP_PADDING}px 32px;
+  padding: 50px 32px;
 
   overflow: scroll;
 `;
@@ -100,8 +98,8 @@ const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  column-gap: 14px;
-  row-gap: 14px;
+  column-gap: 12px;
+  row-gap: 12px;
 `;
 
 export default memo(Sidebar);
