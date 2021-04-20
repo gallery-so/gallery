@@ -97,7 +97,6 @@ const Searchbar = styled.div`
 const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
-
   column-gap: 12px;
   row-gap: 12px;
 `;

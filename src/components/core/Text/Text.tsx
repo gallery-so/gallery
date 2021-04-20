@@ -10,14 +10,16 @@ export const Title = styled.p`
 
 type SubtitleProps = {
   color?: colors;
+  // TODO: make these enums
+  size?: 'normal' | 'large';
 };
 
 export const Subtitle = styled.p<SubtitleProps>`
   font-family: 'Helvetica Neue';
   margin: 0;
 
-  font-size: 20px;
   font-weight: 500;
+  font-size: ${({ size }) => (size === 'large' ? '28px' : '20px')};
 
   color: ${({ color }) => color ?? colors.black};
 `;
