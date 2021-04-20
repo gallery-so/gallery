@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
+import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 
+import NftPreviewIcon from './NftPreviewIcon';
+
+import dummy1 from '../dummy_1.png';
+import dummy2 from '../dummy_2.png';
+import dummy3 from '../dummy_3.png';
 import { ReactComponent as SearchIcon } from './search.svg';
-
-import dummy1 from './dummy_1.png';
-import dummy2 from './dummy_2.png';
-import dummy3 from './dummy_3.png';
-import { FOOTER_HEIGHT } from '../../WizardFooter';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -44,7 +45,7 @@ function Sidebar() {
       <Spacer height={16} />
       <Selection>
         {nfts.map((nft) => (
-          <img src={nft} alt="nft" />
+          <NftPreviewIcon nft={nft} />
         ))}
       </Selection>
       <Spacer height={12} />
