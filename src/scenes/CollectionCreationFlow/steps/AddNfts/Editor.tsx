@@ -1,36 +1,15 @@
 import { memo, useState } from 'react';
 import styled from 'styled-components';
+import { Nft } from 'types/Nft';
 
-import { Subtitle, Text } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
+import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 
-import { FOOTER_HEIGHT } from '../../WizardFooter';
+type Props = {
+  stagedNfts: Nft[];
+};
 
-function Directions() {
-  return (
-    <StyledDirections>
-      <Subtitle>Add NFTs to your collection</Subtitle>
-      <Spacer height={12} />
-      <Text color={colors.gray}>
-        On the left, select the NFTs you’d like to include in this collection.
-        Once added, drag and drop to re-order.
-      </Text>
-    </StyledDirections>
-  );
-}
-
-const StyledDirections = styled.div`
-  text-align: center;
-
-  width: 269px;
-`;
-
-function Editor() {
-  const [stagedNfts, setStagedNfts] = useState([]);
-  return (
-    <StyledEditor>{stagedNfts.length ? 'todo' : <Directions />}</StyledEditor>
-  );
+function Editor({ stagedNfts }: Props) {
+  return <StyledEditor>{stagedNfts.map(() => 'staged')}</StyledEditor>;
 }
 
 const StyledEditor = styled.div`

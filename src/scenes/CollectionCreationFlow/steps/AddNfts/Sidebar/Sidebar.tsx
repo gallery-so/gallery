@@ -12,6 +12,7 @@ import dummy1 from '../dummy_1.png';
 import dummy2 from '../dummy_2.png';
 import dummy3 from '../dummy_3.png';
 import { ReactComponent as SearchIcon } from './search.svg';
+import { Nft } from 'types/Nft';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -32,7 +33,12 @@ function randomPics(n: number) {
   return pics;
 }
 
-function Sidebar() {
+type Props = {
+  onStageNft: (nft: Nft) => void;
+  onUnstageNft: (id: string) => void;
+};
+
+function Sidebar({ onStageNft, onUnstageNft }: Props) {
   const [allNfts] = useState(randomPics(50));
 
   return (
@@ -50,7 +56,12 @@ function Sidebar() {
       <Spacer height={16} />
       <Selection>
         {allNfts.map((nft) => (
-          <NftPreviewIcon key={nft.id} nft={nft} />
+          <NftPreviewIcon
+            key={nft.id}
+            nft={nft}
+            onStageNft={onStageNft}
+            onUnstageNft={onUnstageNft}
+          />
         ))}
       </Selection>
       <Spacer height={12} />
@@ -89,8 +100,8 @@ const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  column-gap: 12px;
-  row-gap: 12px;
+  column-gap: 14px;
+  row-gap: 14px;
 `;
 
 export default memo(Sidebar);

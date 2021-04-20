@@ -4,14 +4,24 @@ import { Nft } from 'types/Nft';
 
 type NftPreviewIconProps = {
   nft: Nft; // TODO: this will be an object in the future
+  onStageNft: (nft: Nft) => void;
+  onUnstageNft: (id: string) => void;
 };
 
-function NftPreviewIcon({ nft }: NftPreviewIconProps) {
+function NftPreviewIcon({
+  nft,
+  onStageNft,
+  onUnstageNft,
+}: NftPreviewIconProps) {
   const [isSelected, setIsSelected] = useState(false);
 
   const handleClick = useCallback(() => {
-    setIsSelected((prev) => !prev);
-  }, []);
+    setIsSelected((wasSelected) => {
+      if (wasSelected) onUnstageNft(nft.id);
+      else onStageNft(nft);
+      return !wasSelected;
+    });
+  }, [nft, onStageNft, onUnstageNft]);
 
   return (
     <StyledNftPreviewIcon>
