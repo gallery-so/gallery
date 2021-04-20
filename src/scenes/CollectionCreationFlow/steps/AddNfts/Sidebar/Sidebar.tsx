@@ -22,13 +22,18 @@ function randomPic() {
 function randomPics(n: number) {
   const pics = [];
   for (let i = 0; i < n; i++) {
-    pics.push(randomPic());
+    pics.push({
+      id: `${i}`,
+      name: 'test',
+      image_url: randomPic(),
+      image_preview_url: 'test',
+    });
   }
   return pics;
 }
 
 function Sidebar() {
-  const [nfts] = useState(randomPics(50));
+  const [allNfts] = useState(randomPics(50));
 
   return (
     <StyledSidebar>
@@ -44,8 +49,8 @@ function Sidebar() {
       </Searchbar>
       <Spacer height={16} />
       <Selection>
-        {nfts.map((nft) => (
-          <NftPreviewIcon nft={nft} />
+        {allNfts.map((nft) => (
+          <NftPreviewIcon key={nft.id} nft={nft} />
         ))}
       </Selection>
       <Spacer height={12} />

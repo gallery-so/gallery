@@ -1,8 +1,9 @@
 import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { Nft } from 'types/Nft';
 
 type NftPreviewIconProps = {
-  nft: string; // TODO: this will be an object in the future
+  nft: Nft; // TODO: this will be an object in the future
 };
 
 function NftPreviewIcon({ nft }: NftPreviewIconProps) {
@@ -14,7 +15,7 @@ function NftPreviewIcon({ nft }: NftPreviewIconProps) {
 
   return (
     <StyledNftPreviewIcon>
-      <StyledImage isSelected={isSelected} src={nft} alt="nft" />
+      <StyledImage isSelected={isSelected} src={nft.image_url} alt="nft" />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledNftPreviewIcon>
   );
