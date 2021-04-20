@@ -35,17 +35,4 @@ const StyledHeader = styled.p`
   margin-bottom: 10px;
 `;
 
-const StyledLinkText = styled(Text)`
-  color: ${colors.gray};
-  transition: color 0.2s;
-`;
-
-const StyledWaitlistLink = styled.a`
-  margin-top: 30px;
-  color: ${colors.gray};
-  &:hover ${StyledLinkText} {
-    // color: ${colors.black};
-  }
-`;
-
 export default memo(Home);
