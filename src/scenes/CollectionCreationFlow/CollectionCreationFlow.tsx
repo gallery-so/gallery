@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import WizardFooter from './WizardFooter';
 import CreateFirstCollection from './steps/CreateFirstCollection';
-import AddNfts from './steps/AddNfts';
+import AddNfts from './steps/AddNfts/AddNfts';
 import OrganizeCollections from './steps/OrganizeCollections';
 
 function CollectionCreationFlow(_: RouteComponentProps) {

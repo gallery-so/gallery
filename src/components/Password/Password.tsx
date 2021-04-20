@@ -70,7 +70,8 @@ const StyledForm = styled.form`
 const StyledPasswordInput = styled.input`
   margin: 20px 0 10px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
-  border: 1px solid ${colors.lightGray};
+  border: 1px solid ${colors.faintGray};
+
   line-height: 1.25rem;
   outline-color: ${colors.black} !important;
   -webkit-text-security: disc;
@@ -82,7 +83,7 @@ const StyledPasswordInput = styled.input`
     border-width: 2px;
   }
   :disabled {
-    background-color: ${colors.lightGray};
+    background-color: ${colors.faintGray};
   }
 `;
 
