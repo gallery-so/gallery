@@ -53,7 +53,12 @@ function WalletButton({
   }
 
   return (
-    <StyledButton data-testid="wallet-button" onClick={handleClick} isConnecting disabled={isConnecting}>
+    <StyledButton
+      data-testid="wallet-button"
+      onClick={handleClick}
+      isConnecting
+      disabled={isConnecting}
+    >
       {isConnecting ? 'Connecting' : walletName}
       <Icon
         src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
@@ -67,15 +72,15 @@ type StyledButtonProps = {
 };
 
 const Icon = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   margin: 5px;
 `;
 
 const StyledButton = styled.button<StyledButtonProps>`
   background: white;
-  padding: 16px;
-  border: 1px solid ${colors.black};
+  padding: 12px 16px;
+  border: 2px solid ${colors.black};
   font-size: 16px;
   display: flex;
   align-items: center;
