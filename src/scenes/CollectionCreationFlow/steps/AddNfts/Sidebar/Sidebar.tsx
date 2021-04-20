@@ -4,13 +4,15 @@ import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
+import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 
+import NftPreviewIcon from './NftPreviewIcon';
+
+import dummy1 from '../dummy_1.png';
+import dummy2 from '../dummy_2.png';
+import dummy3 from '../dummy_3.png';
 import { ReactComponent as SearchIcon } from './search.svg';
-
-import dummy1 from './dummy_1.png';
-import dummy2 from './dummy_2.png';
-import dummy3 from './dummy_3.png';
-import { FOOTER_HEIGHT } from '../../WizardFooter';
+import { Nft } from 'types/Nft';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -21,13 +23,23 @@ function randomPic() {
 function randomPics(n: number) {
   const pics = [];
   for (let i = 0; i < n; i++) {
-    pics.push(randomPic());
+    pics.push({
+      id: `${i}`,
+      name: 'test',
+      image_url: randomPic(),
+      image_preview_url: 'test',
+    });
   }
   return pics;
 }
 
-function Sidebar() {
-  const [nfts] = useState(randomPics(50));
+type Props = {
+  onStageNft: (nft: Nft) => void;
+  onUnstageNft: (id: string) => void;
+};
+
+function Sidebar({ onStageNft, onUnstageNft }: Props) {
+  const [allNfts] = useState(randomPics(50));
 
   return (
     <StyledSidebar>
@@ -43,8 +55,13 @@ function Sidebar() {
       </Searchbar>
       <Spacer height={16} />
       <Selection>
-        {nfts.map((nft) => (
-          <img src={nft} alt="nft" />
+        {allNfts.map((nft) => (
+          <NftPreviewIcon
+            key={nft.id}
+            nft={nft}
+            onStageNft={onStageNft}
+            onUnstageNft={onUnstageNft}
+          />
         ))}
       </Selection>
       <Spacer height={12} />
@@ -52,15 +69,13 @@ function Sidebar() {
   );
 }
 
-const SIDEBAR_TOP_PADDING = 50;
-
 const StyledSidebar = styled.div`
-  width: 270px;
-  height: calc(100vh - ${FOOTER_HEIGHT}px - ${SIDEBAR_TOP_PADDING}px);
+  width: 100%;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 
   background: #f7f7f7;
 
-  padding: ${SIDEBAR_TOP_PADDING}px 32px;
+  padding: 50px 32px;
 
   overflow: scroll;
 `;
@@ -82,7 +97,6 @@ const Searchbar = styled.div`
 const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
-
   column-gap: 12px;
   row-gap: 12px;
 `;
