@@ -5,7 +5,6 @@ import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
-import { useModal } from 'contexts/modal/ModalContext';
 import WalletButton from './WalletButton';
 import { isLoggedInState } from 'contexts/auth/types';
 import colors from 'components/core/colors';

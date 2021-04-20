@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react';
-import { navigate } from '@reach/router';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
-import useAuthModal from 'hooks/useAuthModal';
 
 const HASH = -1695594350;
 
@@ -83,7 +81,7 @@ const StyledPasswordInput = styled.input`
   -webkit-text-security: disc;
 
   transition: outline 0.5s, background-color 0.5s;
-  z-index: 2;
+  z-index: 10;
 
   &active: {
     border-width: 2px;
