@@ -9,7 +9,7 @@ function GlobalNavbar() {
   const isLoggedIn = isLoggedInState(authState);
   return (
     <StyledNavContainer>
-      <StyledNav>{isLoggedIn ? <SignOutButton /> : <SignInButton />}</StyledNav>
+      {/* <StyledNav>{isLoggedIn ? <SignOutButton /> : <SignInButton />}</StyledNav> */}
     </StyledNavContainer>
   );
 }
