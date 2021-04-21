@@ -4,9 +4,9 @@ import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
+import { useAuthActions } from 'contexts/auth/AuthContext';
+import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import WalletButton from './WalletButton';
-import { isLoggedInState } from 'contexts/auth/types';
 import colors from 'components/core/colors';
 import { Text } from 'components/core/Text/Text';
 import { navigate } from '@reach/router';
@@ -38,8 +38,7 @@ function getErrorMessage(errorCode: string) {
 
 function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
-  const authState = useAuthState();
-  const isLoggedIn = isLoggedInState(authState);
+  const isAuthenticated = useIsAuthenticated();
   const { library, account, activate, deactivate, active } = context;
 
   const [isConnecting, setIsConnecting] = useState(false);
@@ -74,7 +73,7 @@ function WalletSelector() {
           return;
         });
     }
-  }, [account, isConnecting, isLoggedIn, logIn, signer]);
+  }, [account, isConnecting, isAuthenticated, logIn, signer]);
 
   if (errorCode) {
     const errorMessage = getErrorMessage(errorCode);

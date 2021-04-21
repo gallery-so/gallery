@@ -1,21 +1,12 @@
-import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import { useCallback } from 'react';
-import { useAuthState } from 'contexts/auth/AuthContext';
-import { isLoggedInState } from 'contexts/auth/types';
 
 function Welcome(_: RouteComponentProps) {
-  const authState = useAuthState();
-  const isLoggedIn = isLoggedInState(authState);
-
   const handleClick = useCallback(() => {
     navigate('/create');
   }, []);
-
-  if (!isLoggedIn) {
-    return <Redirect to="/" />;
-  }
 
   return (
     <StyledWelcome>
