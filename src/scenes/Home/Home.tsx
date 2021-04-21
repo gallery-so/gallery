@@ -3,7 +3,6 @@ import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import Password from 'components/Password/Password';
 import { Text } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 
 function Home(_: RouteComponentProps) {
