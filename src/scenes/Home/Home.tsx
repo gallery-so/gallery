@@ -1,9 +1,10 @@
 import { RouteComponentProps } from '@reach/router';
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import Password from 'components/Password/Password';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import WalletSelector from 'components/WalletSelector/WalletSelector';
 
 function Home(_: RouteComponentProps) {
   // on dev, this will route to localhost:4000/api/test
@@ -11,11 +12,24 @@ function Home(_: RouteComponentProps) {
   // const { data, error } = useSwr('/test');
   // console.log('the result', data, error);
 
+  const [showWalletSelector, setShowWalletSelector] = useState(false);
+  const handleNextClick = useCallback(() => {
+    setShowWalletSelector(true);
+  }, []);
+
+  if (showWalletSelector) {
+    return (
+      <StyledHome>
+        <WalletSelector />
+      </StyledHome>
+    );
+  }
+
   return (
     <StyledHome>
       <StyledHeader>GALLERY</StyledHeader>
       <Text>Show your collection to the world</Text>
-      <Password />
+      <Password handleNextClick={handleNextClick} />
     </StyledHome>
   );
 }
@@ -25,7 +39,7 @@ const StyledHome = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 15vh;
+  margin-top: 20vh;
 `;
 
 const StyledHeader = styled.p`

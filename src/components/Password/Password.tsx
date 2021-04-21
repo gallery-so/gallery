@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { navigate } from '@reach/router';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -21,8 +20,11 @@ function generateHash(string: string) {
   }
   return hash;
 }
+type Props = {
+  handleNextClick: () => void;
+};
 
-function Password() {
+function Password({ handleNextClick }: Props) {
   const [isUnlocked, setIsUnlocked] = useState(false);
 
   const unlock = useCallback(() => {
@@ -42,8 +44,8 @@ function Password() {
   );
 
   const handleClick = useCallback(() => {
-    // show wallet connect selector
-  }, []);
+    handleNextClick();
+  }, [handleNextClick]);
 
   return (
     <StyledPasswordContainer>
