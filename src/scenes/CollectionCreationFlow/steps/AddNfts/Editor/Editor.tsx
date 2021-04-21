@@ -1,23 +1,31 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
 
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 import { Subtitle } from 'components/core/Text/Text';
 
+import { DragEndEvent } from '@dnd-kit/core';
+import { Nft } from 'types/Nft';
+
+import NftSortableContext from '../NftSortableContext';
+import SortableNft from './SortableNft';
+
 type Props = {
   stagedNfts: Nft[];
+  onSortNfts: (event: DragEndEvent) => void;
 };
 
-function Editor({ stagedNfts }: Props) {
+function Editor({ stagedNfts, onSortNfts }: Props) {
   return (
     <StyledEditor>
       <Subtitle size="large">Your collection</Subtitle>
-      <NftsContainer>
-        {stagedNfts.map((nft) => (
-          <img key={nft.id} src={nft.image_url} alt={nft.id} />
-        ))}
-      </NftsContainer>
+      <NftSortableContext nfts={stagedNfts} handleDragEnd={onSortNfts}>
+        <NftsContainer>
+          {stagedNfts.map((nft) => (
+            <SortableNft key={nft.id} nft={nft} />
+          ))}
+        </NftsContainer>
+      </NftSortableContext>
     </StyledEditor>
   );
 }
