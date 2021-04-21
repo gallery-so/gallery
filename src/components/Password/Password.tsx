@@ -2,73 +2,74 @@ import { useCallback, useState } from 'react';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
+import usePersistedState from 'hooks/usePersistedState';
+import { validatePassword } from 'utils/password';
 
-const HASH = -1695594350;
-
-// basic hash function used to validate user entered password
-// it is ok if users figure out the pw -
-// this validation is clientside only and exists to manage
-// the # of new account creations while we grow
-
-function generateHash(string: string) {
-  var hash = 0;
-  if (string.length === 0) return hash;
-  for (let i = 0; i < string.length; i++) {
-    var charCode = string.charCodeAt(i);
-    hash = (hash << 7) - hash + charCode;
-    hash = hash & hash;
-  }
-  return hash;
-}
 type Props = {
   handleNextClick: () => void;
 };
 
 function Password({ handleNextClick }: Props) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isFormVisibleAndUnlocked, setIsFormVisibleAndUnlocked] = useState(
+    false
+  );
+  const [storedPassword, storePassword] = usePersistedState('password', null);
+  const isStoredPasswordValid =
+    storedPassword && validatePassword(storedPassword);
 
   const unlock = useCallback(() => {
-    setIsUnlocked(true);
+    setIsFormVisibleAndUnlocked(true);
   }, []);
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
       const userValue = event.target.elements.password.value;
-      const pwHash = generateHash(userValue);
+      const isPasswordValid = validatePassword(userValue);
 
-      if (pwHash === HASH) {
+      if (isPasswordValid) {
+        storePassword(userValue);
         unlock();
       }
     },
-    [unlock]
+    [storePassword, unlock]
   );
 
   const handleClick = useCallback(() => {
     handleNextClick();
   }, [handleNextClick]);
 
+  if (isStoredPasswordValid && !isFormVisibleAndUnlocked) {
+    return (
+      <StyledPasswordContainer>
+        <StyledPrimaryButton text="Enter" onClick={handleClick} />
+      </StyledPasswordContainer>
+    );
+  }
+
   return (
     <StyledPasswordContainer>
       <StyledForm onSubmit={handleSubmit}>
         <StyledPasswordInput
-          disabled={isUnlocked}
+          disabled={isFormVisibleAndUnlocked}
           name="password"
           placeholder="Enter password"
         />
       </StyledForm>
-      {isUnlocked && <StyledPrimaryButton text="Enter" onClick={handleClick} />}
+      {isFormVisibleAndUnlocked && (
+        <AnimatedStyledPrimaryButton text="Enter" onClick={handleClick} />
+      )}
     </StyledPasswordContainer>
   );
 }
 
-const StyledPasswordContainer = styled.div``;
+const StyledPasswordContainer = styled.div`
+  margin-top: 20px;
+`;
 
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  margin-top: 20px;
 `;
 
 const StyledPasswordInput = styled.input`
@@ -109,6 +110,9 @@ const fadeIn = keyframes`
 
 const StyledPrimaryButton = styled(PrimaryButton)`
   width: 100%;
+`;
+
+const AnimatedStyledPrimaryButton = styled(StyledPrimaryButton)`
   animation: ${translateDown} ${transitionStyle}, ${fadeIn} ${transitionStyle};
 `;
 
