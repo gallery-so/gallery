@@ -14,7 +14,7 @@ export default function Routes() {
     <Router primary={false}>
       <AppContainer path="/">
         <Home path="/" />
-        <Auth path="/auth" />
+        {/* might use this in the future: <Auth path="/auth" /> */}
         <AuthenticatedRoute Component={Welcome} path="/welcome" />
         <AuthenticatedRoute Component={CollectionCreationFlow} path="/create" />
         <Gallery path="/:usernameOrWalletAddress" />
