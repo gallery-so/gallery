@@ -53,7 +53,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
 
   const logOut = useCallback(() => {
-    localStorage.clear();
+    localStorage.removeItem(JWT_LOCAL_STORAGE_KEY);
     setAuthState(LOGGED_OUT);
     setToken('');
   }, [setToken]);
