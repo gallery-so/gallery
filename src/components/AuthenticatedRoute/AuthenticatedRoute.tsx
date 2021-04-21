@@ -6,6 +6,8 @@ type Props = {
   Component: ComponentType<RouteComponentProps>;
 } & RouteComponentProps;
 
+// TODO: may want to remember where the user was going and redirect them
+// to their desired route upon authentication
 export default function AuthenticatedRoute({
   Component,
   ...routeProps
