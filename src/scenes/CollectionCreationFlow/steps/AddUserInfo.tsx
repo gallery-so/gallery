@@ -14,7 +14,6 @@ function AddUserInfo() {
       // validate input
       const isValid = USERNAME_REGEX.test(inputValue);
       isValid ? enableNext() : disableNext();
-      // enableNext();
     },
     [disableNext, enableNext]
   );
