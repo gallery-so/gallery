@@ -5,6 +5,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
+import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 
 type Props = {
   step: WizardContext['step'];
@@ -13,6 +14,7 @@ type Props = {
 };
 
 function WizardFooter({ step, next, previous }: Props) {
+  const isNextEnabled = useIsNextEnabled();
   const buttonText = useMemo(() => {
     switch (step.id) {
       case 'create':
@@ -21,6 +23,8 @@ function WizardFooter({ step, next, previous }: Props) {
         return 'Create Collection';
       case 'organize':
         return 'Publish Gallery';
+      default:
+        return 'Next';
     }
   }, [step]);
 
@@ -44,7 +48,11 @@ function WizardFooter({ step, next, previous }: Props) {
       <Spacer width={24} />
       {/* TODO: we'll need some sort of local context to control whether this is disabled
           based on what's going on in the step (e.g. no NfTs placed into editor */}
-      <PrimaryButton text={buttonText} onClick={handleNextClick} />
+      <PrimaryButton
+        disabled={!isNextEnabled}
+        text={buttonText}
+        onClick={handleNextClick}
+      />
       <Spacer width={24} />
     </StyledWizardFooter>
   );
