@@ -6,6 +6,7 @@ import PrimaryButton from 'components/core/Button/PrimaryButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
+import { navigate } from '@reach/router';
 
 type Props = {
   step: WizardContext['step'];
@@ -35,10 +36,13 @@ function WizardFooter({ step, next, previous }: Props) {
   }, [next]);
 
   const handlePreviousClick = useCallback(() => {
-    // TODO: if first step, return to originating screen (e.g. collections page)
+    if (step.id === 'addUserInfo') {
+      // TODO: originating screen will be different when onboarding vs creating a collection later
+      navigate('welcome');
+    }
     // if (noPreviousStep) ...
     previous();
-  }, [previous]);
+  }, [previous, step.id]);
 
   return (
     <StyledWizardFooter>
@@ -46,12 +50,11 @@ function WizardFooter({ step, next, previous }: Props) {
         Back
       </ActionText>
       <Spacer width={24} />
-      {/* TODO: we'll need some sort of local context to control whether this is disabled
-          based on what's going on in the step (e.g. no NfTs placed into editor */}
       <PrimaryButton
         disabled={!isNextEnabled}
         text={buttonText}
         onClick={handleNextClick}
+        dataTestId="wizard-footer-next-button"
       />
       <Spacer width={24} />
     </StyledWizardFooter>

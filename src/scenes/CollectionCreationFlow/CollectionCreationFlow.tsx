@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import WizardFooter from './WizardFooter';
@@ -16,7 +16,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
           return (
             <>
               <Steps>
-                <Step id="AddUserInfo" render={AddUserInfo} />
+                <Step id="addUserInfo" render={AddUserInfo} />
                 <Step id="create" render={CreateFirstCollection} />
                 <Step id="add" render={AddNfts} />
                 <Step id="organize" render={OrganizeCollections} />

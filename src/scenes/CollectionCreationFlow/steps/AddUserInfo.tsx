@@ -3,15 +3,13 @@ import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCallback } from 'react';
-
-const USERNAME_REGEX = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+import { USERNAME_REGEX } from 'utils/regex';
 
 function AddUserInfo() {
   const { enableNext, disableNext } = useWizardValidationActions();
 
   const validateInput = useCallback(
     (inputValue: string, inputType: string) => {
-      // validate input
       const isValid = USERNAME_REGEX.test(inputValue);
       isValid ? enableNext() : disableNext();
     },
