@@ -12,9 +12,9 @@ export default function AuthenticatedRoute({
   Component,
   ...routeProps
 }: Props) {
-  const isAuthenticated = useIsAuthenticated();
-  if (!isAuthenticated) {
-    return <Redirect to="/" />;
-  }
+  // const isAuthenticated = useIsAuthenticated();
+  // if (!isAuthenticated) {
+  //   return <Redirect to="/" />;
+  // }
   return <Component {...routeProps} />;
 }
