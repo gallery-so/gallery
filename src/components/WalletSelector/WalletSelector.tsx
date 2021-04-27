@@ -4,11 +4,12 @@ import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuthActions, useAuthState } from 'contexts/auth/AuthContext';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useAuthActions } from 'contexts/auth/AuthContext';
+import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import WalletButton from './WalletButton';
-import { isLoggedInState } from 'contexts/auth/types';
 import colors from 'components/core/colors';
+import { Text } from 'components/core/Text/Text';
+import { navigate } from '@reach/router';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -37,8 +38,7 @@ function getErrorMessage(errorCode: string) {
 
 function WalletSelector() {
   const context = useWeb3React<Web3Provider>();
-  const authState = useAuthState();
-  const isLoggedIn = isLoggedInState(authState);
+  const isAuthenticated = useIsAuthenticated();
   const { library, account, activate, deactivate, active } = context;
 
   const [isConnecting, setIsConnecting] = useState(false);
@@ -59,14 +59,13 @@ function WalletSelector() {
   }, [library, account]);
 
   const { logIn } = useAuthActions();
-  const { hideModal } = useModal();
 
   useEffect(() => {
-    if (account && isConnecting && !isLoggedIn && signer) {
+    if (account && isConnecting && signer) {
       signMessageAndAuthenticate(account, signer)
         .then((jwt) => {
           logIn(jwt);
-          hideModal();
+          navigate('/welcome');
         })
         .catch((err) => {
           setErrorCode(err.code);
@@ -74,7 +73,7 @@ function WalletSelector() {
           return;
         });
     }
-  }, [account, hideModal, isConnecting, isLoggedIn, logIn, signer]);
+  }, [account, isConnecting, isAuthenticated, logIn, signer]);
 
   if (errorCode) {
     const errorMessage = getErrorMessage(errorCode);
@@ -153,20 +152,25 @@ const StyledWalletSelector = styled.div`
   flex-direction: column;
 `;
 
-const StyledHeader = styled.p`
-  color: black;
-  font-size: 24px;
+const StyledHeader = styled(Text)`
+  color: ${colors.black};
+  line-height: initial;
+  font-size: 18px;
+
+  margin-bottom: 16px;
 `;
 
 const StyledRetryButton = styled.button`
+  align-self: center;
   text-align: center;
-  border: 1px solid ${colors.black};
+
   padding: 10px;
-  background: none;
-  font-family: inherit;
   margin-top: 20px;
   width: 50%;
-  align-self: center;
+
+  border: 1px solid ${colors.black};
+  background: none;
+  font-family: inherit;
 `;
 
 export default WalletSelector;
