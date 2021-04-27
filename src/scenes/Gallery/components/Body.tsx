@@ -1,5 +1,5 @@
 import Spacer from 'components/core/Spacer/Spacer';
-import CollectionView from './Collection';
+import CollectionView from './CollectionView';
 
 import { Collection } from 'types/Collection';
 import useQuery from 'utils/query';
@@ -14,10 +14,7 @@ function Body({ collections }: Props) {
       <Spacer height={40} />
       <div>
         {collections.map((collection, i) => (
-          <CollectionView
-            collection={collection}
-            showCollectionDivider={i > 0}
-          />
+          <CollectionView collection={collection} />
         ))}
       </div>
     </>
