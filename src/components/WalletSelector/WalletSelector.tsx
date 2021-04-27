@@ -9,6 +9,7 @@ import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
 import { Text } from 'components/core/Text/Text';
+import PrimaryButton from 'components/core/Button/PrimaryButton';
 import { navigate } from '@reach/router';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -23,12 +24,12 @@ type ErrorMessage = {
 
 const ERROR_MESSAGES: { [key: string]: ErrorMessage } = {
   REJECTED_SIGNATURE: {
-    heading: 'Signature rejected',
-    body: 'Please sign the message with your wallet to continue',
+    heading: 'Account access needed',
+    body: 'Please sign with your wallet to access your account.',
   },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
-    body: 'Please try again',
+    body: 'Please try again.',
   },
 };
 
@@ -37,19 +38,28 @@ function getErrorMessage(errorCode: string) {
 }
 
 function WalletSelector() {
-  const context = useWeb3React<Web3Provider>();
   const isAuthenticated = useIsAuthenticated();
-  const { library, account, activate, deactivate, active } = context;
+  const {
+    library,
+    account,
+    activate,
+    deactivate,
+    active,
+  } = useWeb3React<Web3Provider>();
 
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [pendingWallet, setPendingWallet] = useState<
+    AbstractConnector | undefined
+  >();
+  const [isPending, setIsPending] = useState(false);
   const [errorCode, setErrorCode] = useState('');
 
-  const enableIsConnectingState = useCallback(() => {
-    setIsConnecting(true);
+  const setToPendingState = useCallback((connector: AbstractConnector) => {
+    setIsPending(true);
+    setPendingWallet(connector);
   }, []);
 
   const retryConnectWallet = useCallback(() => {
-    setIsConnecting(false);
+    setIsPending(false);
     setErrorCode('');
     deactivate();
   }, [deactivate]);
@@ -61,7 +71,7 @@ function WalletSelector() {
   const { logIn } = useAuthActions();
 
   useEffect(() => {
-    if (account && isConnecting && signer) {
+    if (account && isPending && signer) {
       signMessageAndAuthenticate(account, signer)
         .then((jwt) => {
           logIn(jwt);
@@ -69,21 +79,22 @@ function WalletSelector() {
         })
         .catch((err) => {
           setErrorCode(err.code);
-          setIsConnecting(false);
+          setIsPending(false);
           return;
         });
     }
-  }, [account, isConnecting, isAuthenticated, logIn, signer]);
+  }, [account, isPending, isAuthenticated, logIn, signer]);
 
   if (errorCode) {
     const errorMessage = getErrorMessage(errorCode);
     return (
       <StyledWalletSelector>
         <StyledHeader>{errorMessage.heading}</StyledHeader>
-        {errorMessage.body}
-        <StyledRetryButton onClick={retryConnectWallet}>
-          Retry
-        </StyledRetryButton>
+        <StyledBody>{errorMessage.body}</StyledBody>
+        <StyledRetryButton
+          onClick={retryConnectWallet}
+          text="Retry"
+        ></StyledRetryButton>
       </StyledWalletSelector>
     );
   }
@@ -91,18 +102,27 @@ function WalletSelector() {
   return (
     <StyledWalletSelector>
       <StyledHeader>Connect your wallet</StyledHeader>
-      {Object.keys(walletConnectorMap).map((walletName) => {
-        return (
-          <WalletButton
-            key={walletName}
-            walletName={walletName}
-            activate={activate}
-            connector={walletConnectorMap[walletName]}
-            enableIsConnectingState={enableIsConnectingState}
-            isConnecting={isConnecting}
-          />
-        );
-      })}
+      {isPending ? (
+        <WalletButton
+          activate={activate}
+          connector={pendingWallet}
+          setToPendingState={setToPendingState}
+          isPending={isPending}
+        ></WalletButton>
+      ) : (
+        Object.keys(walletConnectorMap).map((walletName) => {
+          return (
+            <WalletButton
+              key={walletName}
+              walletName={walletName}
+              activate={activate}
+              connector={walletConnectorMap[walletName]}
+              setToPendingState={setToPendingState}
+              isPending={isPending}
+            />
+          );
+        })
+      )}
     </StyledWalletSelector>
   );
 }
@@ -154,23 +174,21 @@ const StyledWalletSelector = styled.div`
 
 const StyledHeader = styled(Text)`
   color: ${colors.black};
+  font-weight: 500;
   line-height: initial;
   font-size: 18px;
 
   margin-bottom: 16px;
 `;
 
-const StyledRetryButton = styled.button`
-  align-self: center;
-  text-align: center;
+const StyledBody = styled(Text)`
+  color: ${colors.gray};
+  margin-bottom: 30px;
+`;
 
-  padding: 10px;
-  margin-top: 20px;
+const StyledRetryButton = styled(PrimaryButton)`
   width: 50%;
-
-  border: 1px solid ${colors.black};
-  background: none;
-  font-family: inherit;
+  align-self: center;
 `;
 
 export default WalletSelector;
