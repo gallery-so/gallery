@@ -55,7 +55,7 @@ function WalletButton({
       onClick={handleClick}
       disabled={isPending}
     >
-      {isPending ? 'Connecting' : walletName}
+      {isPending ? 'Connecting...' : walletName}
       {isPending ? (
         <StyledLoader />
       ) : (
