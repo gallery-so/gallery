@@ -84,8 +84,9 @@ const StyledWizardFooter = styled.div`
 `;
 
 const StyledPrimaryButton = styled(PrimaryButton)`
-  min-width: 150px;
+  min-width: 190px;
   height: 40px;
+  padding: 0px 32px;
 `;
 
 export default memo(WizardFooter);

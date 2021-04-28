@@ -26,8 +26,7 @@ export const useWizardValidationState = (): WizardValidationState => {
 };
 
 type WizardValidationActions = {
-  enableNext: () => void;
-  disableNext: () => void;
+  setNextEnabled: (isEnabled: boolean) => void;
 };
 
 const WizardValidationActionsContext = createContext<
@@ -54,21 +53,15 @@ const WizardValidationProvider = memo(({ children }: Props) => {
     isNextEnabled: false,
   });
 
-  const enableNext = useCallback(() => {
-    setWizardValidationState({ ...wizardValidationState, isNextEnabled: true });
-  }, [wizardValidationState]);
-
-  const disableNext = useCallback(() => {
-    setWizardValidationState({
-      ...wizardValidationState,
-      isNextEnabled: false,
-    });
-  }, [wizardValidationState]);
+  const setNextEnabled = useCallback((isNextEnabled) => {
+    setWizardValidationState((prevState) => ({ ...prevState, isNextEnabled }));
+  }, []);
 
   const wizardValidationActions: WizardValidationActions = useMemo(
-    () => ({ enableNext, disableNext }),
-    [disableNext, enableNext]
+    () => ({ setNextEnabled }),
+    [setNextEnabled]
   );
+
   return (
     <WizardValidationStateContext.Provider value={wizardValidationState}>
       <WizardValidationActionsContext.Provider value={wizardValidationActions}>
