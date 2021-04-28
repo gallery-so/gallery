@@ -8,14 +8,15 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
 
-type Props = {
-  step: WizardContext['step'];
-  next: WizardContext['next'];
-  previous: WizardContext['previous'];
-};
+type Props = WizardContext;
 
-function WizardFooter({ step, next, previous }: Props) {
+function WizardFooter({ step, next, previous, history }: Props) {
   const isNextEnabled = useIsNextEnabled();
+
+  const isFirstStep = useMemo(() => {
+    return history.length === 1;
+  }, [history]);
+
   const buttonText = useMemo(() => {
     switch (step.id) {
       case 'create':
@@ -47,7 +48,7 @@ function WizardFooter({ step, next, previous }: Props) {
   return (
     <StyledWizardFooter>
       <ActionText color={colors.faintGray} onClick={handlePreviousClick}>
-        Back
+        {isFirstStep ? 'Cancel' : 'Back'}
       </ActionText>
       <Spacer width={24} />
       <PrimaryButton

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Wizard, Steps, Step } from 'react-albus';
+import { Wizard, Steps, Step, WizardContext } from 'react-albus';
 import WizardFooter from './WizardFooter';
 import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddNfts from './steps/AddNfts/AddNfts';
@@ -12,7 +12,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
   return (
     <WizardValidationProvider>
       <Wizard
-        render={({ step, next, previous }) => {
+        render={(wizardProps: WizardContext) => {
           return (
             <>
               <Steps>
@@ -21,7 +21,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
                 <Step id="add" render={AddNfts} />
                 <Step id="organize" render={OrganizeCollections} />
               </Steps>
-              <WizardFooter step={step} next={next} previous={previous} />
+              <WizardFooter {...wizardProps} />
             </>
           );
         }}
