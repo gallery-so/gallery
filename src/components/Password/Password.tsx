@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import colors from 'components/core/colors';
+import Spacer from 'components/core/Spacer/Spacer';
 import styled, { keyframes } from 'styled-components';
 import usePersistedState from 'hooks/usePersistedState';
 import { validatePassword } from 'utils/password';
@@ -41,6 +42,7 @@ function Password({ handleNextClick }: Props) {
   if (isStoredPasswordValid && !isFormVisibleAndUnlocked) {
     return (
       <StyledPasswordContainer>
+        <Spacer height={40} />
         <StyledPrimaryButton text="Enter" onClick={handleClick} />
       </StyledPasswordContainer>
     );
@@ -72,9 +74,12 @@ const StyledForm = styled.form`
   align-items: center;
 `;
 
+const INPUT_WIDTH = 203;
+
 const StyledPasswordInput = styled.input`
   margin: 20px 0 10px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
+  width: ${INPUT_WIDTH}px;
   border: 1px solid ${colors.faintGray};
 
   line-height: 1.25rem;
@@ -109,7 +114,7 @@ const fadeIn = keyframes`
 `;
 
 const StyledPrimaryButton = styled(PrimaryButton)`
-  width: 100%;
+  width: ${INPUT_WIDTH}px;
 `;
 
 const AnimatedStyledPrimaryButton = styled(StyledPrimaryButton)`
