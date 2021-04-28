@@ -10,11 +10,12 @@ import { navigate } from '@reach/router';
 
 type Props = WizardContext;
 
-function WizardFooter({ step, next, previous, history }: Props) {
+function WizardFooter({ step, next, previous, history, ...rest }: Props) {
   const isNextEnabled = useIsNextEnabled();
 
   const isFirstStep = useMemo(() => {
-    return history.length === 1;
+    // @ts-expect-error
+    return history.index === 0;
   }, [history]);
 
   const buttonText = useMemo(() => {
