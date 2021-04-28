@@ -88,7 +88,7 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
 
   flex-direction: column;
   align-items: flex-end;
-  border: 1px solid ${colors.gray};
+  border: 1px solid ${colors.gray50};
   padding: 10px;
   position: absolute;
   right: 0;

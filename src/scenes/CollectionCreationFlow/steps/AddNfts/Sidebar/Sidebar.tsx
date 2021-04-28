@@ -45,13 +45,13 @@ function Sidebar({ onStageNft, onUnstageNft }: Props) {
     <StyledSidebar>
       <Header>
         <Text weight="bold">Your NFTs</Text>
-        <Text color={colors.gray}>0xj2T2...a81H</Text>
+        <Text color={colors.gray50}>0xj2T2...a81H</Text>
       </Header>
       <Spacer height={12} />
       <Searchbar>
         <SearchIcon />
         <Spacer width={6} />
-        <Text color={colors.gray}>Search</Text>
+        <Text color={colors.gray50}>Search</Text>
       </Searchbar>
       <Spacer height={16} />
       <Selection>
@@ -89,7 +89,7 @@ const Searchbar = styled.div`
   display: flex;
   align-items: center;
 
-  border: 1px solid ${colors.gray};
+  border: 1px solid ${colors.gray50};
 
   padding: 8px 12px;
 `;

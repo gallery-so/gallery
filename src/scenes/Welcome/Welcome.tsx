@@ -34,7 +34,7 @@ const StyledHeader = styled.p`
 
 const StyledBodyText = styled(Text)`
   margin-bottom: 24px;
-  color: ${colors.gray};
+  color: ${colors.gray50};
 `;
 
 const StyledWelcome = styled.div`

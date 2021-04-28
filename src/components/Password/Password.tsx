@@ -80,7 +80,7 @@ const StyledPasswordInput = styled.input`
   margin: 20px 0 10px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
   width: ${INPUT_WIDTH}px;
-  border: 1px solid ${colors.faintGray};
+  border: 1px solid ${colors.gray10};
 
   line-height: 1.25rem;
   outline-color: ${colors.black} !important;
@@ -93,7 +93,7 @@ const StyledPasswordInput = styled.input`
     border-width: 2px;
   }
   :disabled {
-    background-color: ${colors.faintGray};
+    background-color: ${colors.gray10};
   }
 `;
 

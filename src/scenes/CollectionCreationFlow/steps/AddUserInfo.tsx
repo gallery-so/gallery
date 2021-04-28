@@ -62,7 +62,7 @@ const StyledTextArea = styled.textarea`
   padding: 14px;
   margin-top: 20px;
   font-family: Helvetica Neue;
-  border-color: ${colors.gray};
+  border-color: ${colors.gray50};
   resize: none;
   height: 160px;
 `;

@@ -49,7 +49,7 @@ function WizardFooter({ step, next, previous, history }: Props) {
 
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.faintGray} onClick={handlePreviousClick}>
+      <ActionText color={colors.gray10} onClick={handlePreviousClick}>
         {isFirstStep ? 'Cancel' : 'Back'}
       </ActionText>
       <Spacer width={40} />
@@ -79,7 +79,7 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid #808080;
+  border-top: 1px solid ${colors.gray50};
   background: white;
 `;
 
