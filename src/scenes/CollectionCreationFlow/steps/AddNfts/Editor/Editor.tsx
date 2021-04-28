@@ -1,11 +1,19 @@
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 import { Subtitle } from 'components/core/Text/Text';
 
-import { DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  closestCenter,
+} from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
+import NftImage from './NftImage';
 
 import NftSortableContext from '../NftSortableContext';
 import SortableNft from './SortableNft';
@@ -16,16 +24,50 @@ type Props = {
 };
 
 function Editor({ stagedNfts, onSortNfts }: Props) {
+  const [activeId, setActiveId] = useState<string | undefined>(undefined);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const { active } = event;
+
+    setActiveId(active.id);
+  }, []);
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      onSortNfts(event);
+      setActiveId(undefined);
+    },
+    [onSortNfts]
+  );
+
+  function getActiveNft(id: string) {
+    const nft = stagedNfts.find((nft) => nft.id === id);
+    return nft;
+  }
+
   return (
     <StyledEditor>
       <Subtitle size="large">Your collection</Subtitle>
-      <NftSortableContext nfts={stagedNfts} handleDragEnd={onSortNfts}>
-        <NftsContainer>
-          {stagedNfts.map((nft) => (
-            <SortableNft key={nft.id} nft={nft} />
-          ))}
-        </NftsContainer>
-      </NftSortableContext>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
+        collisionDetection={closestCenter}
+      >
+        <SortableContext items={stagedNfts}>
+          <NftsContainer>
+            {stagedNfts.map((nft) => (
+              <SortableNft key={nft.id} nft={nft} activeId={activeId}>
+                <NftImage nft={nft}></NftImage>
+              </SortableNft>
+            ))}
+          </NftsContainer>
+        </SortableContext>
+        <DragOverlay>
+          {activeId ? (
+            <NftImage nft={getActiveNft(activeId)} isDragging={true}></NftImage>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </StyledEditor>
   );
 }
