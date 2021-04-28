@@ -19,9 +19,11 @@ function WizardFooter({ step, next, previous, history }: Props) {
 
   const buttonText = useMemo(() => {
     switch (step.id) {
+      case 'addUserInfo':
+        return 'Save';
       case 'create':
         return 'New Collection';
-      case 'add':
+      case 'addNfts':
         return 'Create Collection';
       case 'organize':
         return 'Publish Gallery';
@@ -50,7 +52,7 @@ function WizardFooter({ step, next, previous, history }: Props) {
       <ActionText color={colors.faintGray} onClick={handlePreviousClick}>
         {isFirstStep ? 'Cancel' : 'Back'}
       </ActionText>
-      <Spacer width={24} />
+      <Spacer width={40} />
       <StyledPrimaryButton
         disabled={!isNextEnabled}
         thicc={false}
@@ -77,7 +79,7 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid black;
+  border-top: 1px solid #808080;
   background: white;
 `;
 

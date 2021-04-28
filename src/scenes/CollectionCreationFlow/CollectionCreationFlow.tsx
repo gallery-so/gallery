@@ -18,7 +18,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
               <Steps>
                 <Step id="addUserInfo" render={AddUserInfo} />
                 <Step id="create" render={CreateFirstCollection} />
-                <Step id="add" render={AddNfts} />
+                <Step id="addNfts" render={AddNfts} />
                 <Step id="organize" render={OrganizeCollections} />
               </Steps>
               <WizardFooter {...wizardProps} />
