@@ -1,18 +1,19 @@
 import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Wizard, Steps, Step, WizardContext } from 'react-albus';
+import { Wizard, Steps, Step } from 'react-albus';
 import WizardFooter from './WizardFooter';
 import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddNfts from './steps/AddNfts/AddNfts';
 import OrganizeCollections from './steps/OrganizeCollections';
 import AddUserInfo from './steps/AddUserInfo';
 import WizardValidationProvider from 'contexts/wizard/WizardValidationContext';
+import { WizardProps } from './types';
 
 function CollectionCreationFlow(_: RouteComponentProps) {
   return (
     <WizardValidationProvider>
       <Wizard
-        render={(wizardProps: WizardContext) => {
+        render={(wizardProps) => {
           return (
             <>
               <Steps>
@@ -21,11 +22,11 @@ function CollectionCreationFlow(_: RouteComponentProps) {
                 <Step id="addNfts" render={AddNfts} />
                 <Step id="organize" render={OrganizeCollections} />
               </Steps>
-              <WizardFooter {...wizardProps} />
+              <WizardFooter {...(wizardProps as WizardProps)} />
             </>
           );
         }}
-      ></Wizard>
+      />
     </WizardValidationProvider>
   );
 }

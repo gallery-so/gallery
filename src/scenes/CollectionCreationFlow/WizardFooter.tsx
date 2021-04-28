@@ -1,5 +1,4 @@
 import { memo, useCallback, useMemo } from 'react';
-import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
@@ -8,15 +7,14 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
 
-type Props = WizardContext;
+import { WizardProps } from './types';
 
-function WizardFooter({ step, next, previous, history, ...rest }: Props) {
+function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
 
   const isFirstStep = useMemo(() => {
-    // @ts-expect-error
     return history.index === 0;
-  }, [history]);
+  }, [history.index]);
 
   const buttonText = useMemo(() => {
     switch (step.id) {
