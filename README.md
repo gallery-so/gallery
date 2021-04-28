@@ -2,4 +2,4 @@
 
 The premier gallery experience for your NFTs.
 
-~ v2 COMING SOON ~
+~ v1 COMING SOON ~
