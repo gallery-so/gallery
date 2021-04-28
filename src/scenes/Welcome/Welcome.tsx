@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
 import colors from 'components/core/colors';
+import Spacer from 'components/core/Spacer/Spacer';
 
 function Welcome(_: RouteComponentProps) {
   const handleClick = useCallback(() => {
@@ -18,8 +19,8 @@ function Welcome(_: RouteComponentProps) {
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
         veniam, quis nostrud exercitation
       </StyledBodyText>
-
-      <PrimaryButton text="Enter Gallery" onClick={handleClick}></PrimaryButton>
+      <Spacer height={20} />
+      <StyledPrimaryButton text="Enter Gallery" onClick={handleClick} />
     </StyledWelcome>
   );
 }
@@ -33,7 +34,7 @@ const StyledHeader = styled.p`
 
 const StyledBodyText = styled(Text)`
   margin-bottom: 24px;
-  color: ${colors.gray};
+  color: ${colors.gray50};
 `;
 
 const StyledWelcome = styled.div`
@@ -43,6 +44,10 @@ const StyledWelcome = styled.div`
   margin-top: 140px;
   width: min-content;
   margin: 20vh auto 0;
+`;
+
+const StyledPrimaryButton = styled(PrimaryButton)`
+  width: 200px;
 `;
 
 export default Welcome;

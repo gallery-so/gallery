@@ -183,7 +183,7 @@ const StyledHeader = styled(Text)`
 `;
 
 const StyledBody = styled(Text)`
-  color: ${colors.gray};
+  color: ${colors.gray50};
   margin-bottom: 30px;
 `;
 

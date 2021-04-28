@@ -6,14 +6,14 @@ import { useCallback } from 'react';
 import { USERNAME_REGEX } from 'utils/regex';
 
 function AddUserInfo() {
-  const { enableNext, disableNext } = useWizardValidationActions();
+  const { setNextEnabled } = useWizardValidationActions();
 
   const validateInput = useCallback(
     (inputValue: string, inputType: string) => {
       const isValid = USERNAME_REGEX.test(inputValue);
-      isValid ? enableNext() : disableNext();
+      setNextEnabled(isValid);
     },
-    [disableNext, enableNext]
+    [setNextEnabled]
   );
 
   const handleChange = useCallback(
@@ -62,7 +62,7 @@ const StyledTextArea = styled.textarea`
   padding: 14px;
   margin-top: 20px;
   font-family: Helvetica Neue;
-  border-color: ${colors.gray};
+  border-color: ${colors.gray50};
   resize: none;
   height: 160px;
 `;

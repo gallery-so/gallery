@@ -41,7 +41,7 @@ const StyledCollectionTitle = styled.p`
   margin: 0 0 10px 0;
 `;
 const StyledCollectionDescription = styled(Text)`
-  color: ${colors.gray};
+  color: ${colors.gray50};
   margin-top: 10px;
 `;
 

@@ -86,7 +86,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   justify-content: space-between;
 
   background: white;
-  border: 1px solid ${colors.gray};
+  border: 1px solid ${colors.gray50};
   padding: 12px 16px;
   margin: 10px 0;
   width: 356px;
@@ -95,7 +95,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   cursor: pointer;
   :disabled {
-    border-color: ${colors.gray};
+    border-color: ${colors.gray50};
   }
   &:hover {
     border-color: ${colors.black};
@@ -107,7 +107,7 @@ const StyledExternalLink = styled.a`
   text-decoration: none;
   &:hover {
     text-decoration: underline;
-    text-decoration-color: ${colors.gray};
+    text-decoration-color: ${colors.gray50};
   }
 `;
 

@@ -1,5 +1,4 @@
 import { memo, useCallback, useMemo } from 'react';
-import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
@@ -8,19 +7,22 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
 
-type Props = {
-  step: WizardContext['step'];
-  next: WizardContext['next'];
-  previous: WizardContext['previous'];
-};
+import { WizardProps } from './types';
 
-function WizardFooter({ step, next, previous }: Props) {
+function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
+
+  const isFirstStep = useMemo(() => {
+    return history.index === 0;
+  }, [history.index]);
+
   const buttonText = useMemo(() => {
     switch (step.id) {
+      case 'addUserInfo':
+        return 'Save';
       case 'create':
         return 'New Collection';
-      case 'add':
+      case 'addNfts':
         return 'Create Collection';
       case 'organize':
         return 'Publish Gallery';
@@ -46,12 +48,13 @@ function WizardFooter({ step, next, previous }: Props) {
 
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.faintGray} onClick={handlePreviousClick}>
-        Back
+      <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+        {isFirstStep ? 'Cancel' : 'Back'}
       </ActionText>
-      <Spacer width={24} />
-      <PrimaryButton
+      <Spacer width={40} />
+      <StyledPrimaryButton
         disabled={!isNextEnabled}
+        thicc={false}
         text={buttonText}
         onClick={handleNextClick}
         dataTestId="wizard-footer-next-button"
@@ -75,8 +78,14 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid black;
+  border-top: 1px solid ${colors.gray50};
   background: white;
+`;
+
+const StyledPrimaryButton = styled(PrimaryButton)`
+  min-width: 190px;
+  height: 40px;
+  padding: 0px 32px;
 `;
 
 export default memo(WizardFooter);

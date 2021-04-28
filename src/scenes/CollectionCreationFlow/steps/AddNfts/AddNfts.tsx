@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+
 import styled from 'styled-components';
+import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 
 import Sidebar from './Sidebar/Sidebar';
 import Editor from './Editor/Editor';
@@ -13,6 +16,12 @@ function AddNfts() {
     handleUnstageNft,
     handleSortNfts,
   } = useNftEditor();
+
+  const { setNextEnabled } = useWizardValidationActions();
+
+  useEffect(() => {
+    setNextEnabled(stagedNfts.length > 0);
+  }, [setNextEnabled, stagedNfts.length]);
 
   return (
     <StyledAddNfts>

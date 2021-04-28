@@ -7,25 +7,26 @@ import AddNfts from './steps/AddNfts/AddNfts';
 import OrganizeCollections from './steps/OrganizeCollections';
 import AddUserInfo from './steps/AddUserInfo';
 import WizardValidationProvider from 'contexts/wizard/WizardValidationContext';
+import { WizardProps } from './types';
 
 function CollectionCreationFlow(_: RouteComponentProps) {
   return (
     <WizardValidationProvider>
       <Wizard
-        render={({ step, next, previous }) => {
+        render={(wizardProps) => {
           return (
             <>
               <Steps>
                 <Step id="addUserInfo" render={AddUserInfo} />
                 <Step id="create" render={CreateFirstCollection} />
-                <Step id="add" render={AddNfts} />
+                <Step id="addNfts" render={AddNfts} />
                 <Step id="organize" render={OrganizeCollections} />
               </Steps>
-              <WizardFooter step={step} next={next} previous={previous} />
+              <WizardFooter {...(wizardProps as WizardProps)} />
             </>
           );
         }}
-      ></Wizard>
+      />
     </WizardValidationProvider>
   );
 }
