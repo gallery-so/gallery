@@ -43,8 +43,12 @@ function SortableNft({ nft, children, activeId }: Props) {
   );
 }
 
+// TODO: stop image from flashing when picking up
+// TODO: enable image to scale smoothly when picking up
 const StyledSortableNft = styled.div<{ isActive: boolean }>`
-  opacity: ${({ isActive }) => (isActive ? '0.5' : '1')};
+  // use !important because something is setting opacity: 0 inline during drop
+  opacity: ${({ isActive }) => (isActive ? '0.5' : '1')} !important;
+  transition: opacity 0.2s;
 
   &:focus {
     // ok to remove focus here because there it is not functionally 'in focus' for the user
