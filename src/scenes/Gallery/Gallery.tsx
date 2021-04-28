@@ -51,22 +51,30 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     }
   }, [isWalletAddress, usernameOrWalletAddress]);
 
-  console.log(nfts);
+  let collections = [
+    {
+      title: 'Collection 1',
+      description: 'This is a test collection',
+      id: 'id',
+      nfts: nfts.slice(0, 10),
+    },
+    {
+      title: 'Collection 2',
+      id: 'id',
+      nfts: nfts.slice(11, 20),
+    },
+  ];
 
   return (
     <StyledGallery>
-      <StyledCollection>
-        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
-        <Spacer height={40} />
-        <Body nfts={nfts} />
-      </StyledCollection>
+      <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
+      <Spacer height={40} />
+      <Body collections={collections} />
     </StyledGallery>
   );
 }
 
-const StyledGallery = styled.div``;
-
-const StyledCollection = styled.div`
+const StyledGallery = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
