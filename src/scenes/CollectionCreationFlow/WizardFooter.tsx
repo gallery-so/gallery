@@ -51,8 +51,9 @@ function WizardFooter({ step, next, previous, history }: Props) {
         {isFirstStep ? 'Cancel' : 'Back'}
       </ActionText>
       <Spacer width={24} />
-      <PrimaryButton
+      <StyledPrimaryButton
         disabled={!isNextEnabled}
+        thicc={false}
         text={buttonText}
         onClick={handleNextClick}
         dataTestId="wizard-footer-next-button"
@@ -78,6 +79,11 @@ const StyledWizardFooter = styled.div`
 
   border-top: 1px solid black;
   background: white;
+`;
+
+const StyledPrimaryButton = styled(PrimaryButton)`
+  min-width: 150px;
+  height: 40px;
 `;
 
 export default memo(WizardFooter);
