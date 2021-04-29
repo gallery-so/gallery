@@ -24,6 +24,7 @@ function Welcome(_: RouteComponentProps) {
     </StyledWelcome>
   );
 }
+
 const StyledHeader = styled.p`
   text-align: center;
   color: black;
