@@ -10,6 +10,8 @@ import {
   DragStartEvent,
   DragOverlay,
   closestCenter,
+  defaultDropAnimation,
+  DropAnimation,
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
@@ -21,6 +23,11 @@ import SortableNft from './SortableNft';
 type Props = {
   stagedNfts: Nft[];
   onSortNfts: (event: DragEndEvent) => void;
+};
+
+const defaultDropAnimationConfig: DropAnimation = {
+  ...defaultDropAnimation,
+  dragSourceOpacity: 0.2,
 };
 
 function Editor({ stagedNfts, onSortNfts }: Props) {
@@ -35,7 +42,6 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       onSortNfts(event);
-      setActiveId(undefined);
     },
     [onSortNfts]
   );
@@ -62,7 +68,10 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
             ))}
           </NftsContainer>
         </SortableContext>
-        <DragOverlay>
+        <DragOverlay
+          adjustScale={true}
+          dropAnimation={defaultDropAnimationConfig}
+        >
           {activeId ? (
             <NftImage nft={getActiveNft(activeId)} isDragging={true}></NftImage>
           ) : null}

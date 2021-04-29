@@ -14,6 +14,7 @@ function SortableNft({ nft, children, activeId }: Props) {
   const {
     attributes,
     listeners,
+    isDragging,
     setNodeRef,
     transform,
     transition,
@@ -23,11 +24,10 @@ function SortableNft({ nft, children, activeId }: Props) {
     () => ({
       transform: CSS.Transform.toString(transform),
       transition,
+      opacity: isDragging ? '0.2' : '1',
     }),
-    [transform, transition]
+    [isDragging, transform, transition]
   );
-
-  const isActive = useMemo(() => activeId === nft.id, [activeId, nft.id]);
 
   return (
     <StyledSortableNft
@@ -36,20 +36,15 @@ function SortableNft({ nft, children, activeId }: Props) {
       style={style}
       {...attributes}
       {...listeners}
-      isActive={isActive}
     >
       {children}
     </StyledSortableNft>
   );
 }
 
-// TODO: stop image from flashing when picking up
 // TODO: enable image to scale smoothly when picking up
-const StyledSortableNft = styled.div<{ isActive: boolean }>`
-  // use !important because something is setting opacity: 0 inline during drop
-  opacity: ${({ isActive }) => (isActive ? '0.5' : '1')} !important;
-  transition: opacity 0.2s;
-
+const StyledSortableNft = styled.div`
+  -webkit-backface-visibility: hidden;
   &:focus {
     // ok to remove focus here because there it is not functionally 'in focus' for the user
     outline: none;
