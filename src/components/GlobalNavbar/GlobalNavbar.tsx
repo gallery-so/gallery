@@ -5,9 +5,13 @@ import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
 function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();
-  return (
+
+  // hiding navbar for now
+  return true ? null : (
     <StyledNavContainer>
-      {/* <StyledNav>{isAuthenticated ? <SignOutButton /> : <SignInButton />}</StyledNav> */}
+      <StyledNav>
+        {isAuthenticated ? <SignOutButton /> : <SignInButton />}
+      </StyledNav>
     </StyledNavContainer>
   );
 }
