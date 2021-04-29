@@ -6,12 +6,12 @@ import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddNfts from './steps/AddNfts/AddNfts';
 import OrganizeCollections from './steps/OrganizeCollections';
 import AddUserInfo from './steps/AddUserInfo';
-import WizardValidationProvider from 'contexts/wizard/WizardValidationContext';
+import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import { WizardProps } from './types';
 
 function CollectionCreationFlow(_: RouteComponentProps) {
   return (
-    <WizardValidationProvider>
+    <GalleryWizardProvider>
       <Wizard
         render={(wizardProps) => {
           return (
@@ -27,7 +27,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
           );
         }}
       />
-    </WizardValidationProvider>
+    </GalleryWizardProvider>
   );
 }
 
