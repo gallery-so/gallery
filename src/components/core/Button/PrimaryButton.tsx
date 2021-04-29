@@ -9,7 +9,6 @@ type Props = {
   onClick?: () => void;
   disabled?: boolean;
   dataTestId?: string;
-  thicc?: boolean;
 };
 
 function PrimaryButton({
@@ -18,7 +17,6 @@ function PrimaryButton({
   onClick,
   disabled,
   dataTestId,
-  thicc = true,
 }: Props) {
   return (
     <StyledPrimaryButton
@@ -26,7 +24,6 @@ function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       data-testid={dataTestId}
-      thicc={thicc}
     >
       <Text color={colors.white}>{text}</Text>
     </StyledPrimaryButton>
@@ -35,12 +32,12 @@ function PrimaryButton({
 
 type StyledPrimaryButtonProps = {
   disabled?: boolean;
-  thicc: boolean;
 };
 
 const StyledPrimaryButton = styled.button<StyledPrimaryButtonProps>`
   border-style: none;
-  padding: ${({ thicc }) => (thicc ? '12px 16px' : 0)};
+
+  height: 40px;
 
   background: black;
   color: white;

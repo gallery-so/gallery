@@ -54,7 +54,6 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
       <Spacer width={40} />
       <StyledPrimaryButton
         disabled={!isNextEnabled}
-        thicc={false}
         text={buttonText}
         onClick={handleNextClick}
         dataTestId="wizard-footer-next-button"
@@ -84,7 +83,6 @@ const StyledWizardFooter = styled.div`
 
 const StyledPrimaryButton = styled(PrimaryButton)`
   min-width: 190px;
-  height: 40px;
   padding: 0px 32px;
 `;
 
