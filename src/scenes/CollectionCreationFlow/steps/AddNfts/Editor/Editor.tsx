@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
@@ -46,10 +46,9 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
     [onSortNfts]
   );
 
-  function getActiveNft(id: string) {
-    const nft = stagedNfts.find((nft) => nft.id === id);
-    return nft;
-  }
+  const activeNft = useMemo(() => {
+    return stagedNfts.find((nft) => nft.id === activeId);
+  }, [stagedNfts, activeId]);
 
   return (
     <StyledEditor>
@@ -73,7 +72,7 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
           dropAnimation={defaultDropAnimationConfig}
         >
           {activeId ? (
-            <NftImage nft={getActiveNft(activeId)} isDragging={true}></NftImage>
+            <NftImage nft={activeNft} isDragging={true}></NftImage>
           ) : null}
         </DragOverlay>
       </DndContext>
