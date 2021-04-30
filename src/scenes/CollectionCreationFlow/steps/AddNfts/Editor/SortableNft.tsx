@@ -1,26 +1,33 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { memo } from 'react';
+import { memo, ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
 type Props = {
   nft: Nft;
+  children: ReactNode;
+  activeId?: string;
 };
 
-function SortableNft({ nft }: Props) {
+function SortableNft({ nft, children, activeId }: Props) {
   const {
     attributes,
     listeners,
+    isDragging,
     setNodeRef,
     transform,
     transition,
   } = useSortable({ id: nft.id });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = useMemo(
+    () => ({
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? '0.2' : '1',
+    }),
+    [isDragging, transform, transition]
+  );
 
   return (
     <StyledSortableNft
@@ -30,11 +37,18 @@ function SortableNft({ nft }: Props) {
       {...attributes}
       {...listeners}
     >
-      <img src={nft.image_url} alt={nft.id} />
+      {children}
     </StyledSortableNft>
   );
 }
 
-const StyledSortableNft = styled.div``;
+// TODO: enable image to scale smoothly when picking up
+const StyledSortableNft = styled.div`
+  -webkit-backface-visibility: hidden;
+  &:focus {
+    // ok to remove focus here because there it is not functionally 'in focus' for the user
+    outline: none;
+  }
+`;
 
 export default memo(SortableNft);

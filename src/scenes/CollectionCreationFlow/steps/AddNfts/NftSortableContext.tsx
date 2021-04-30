@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
 
@@ -15,7 +15,7 @@ export default function NftSortableContext({
   handleDragEnd,
 }: Props) {
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
       <SortableContext items={nfts}>{children}</SortableContext>
     </DndContext>
   );
