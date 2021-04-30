@@ -2,16 +2,18 @@ import {
   createContext,
   useContext,
   memo,
-  useState,
+  useCallback,
   useMemo,
+  useRef,
   ReactNode,
+  MutableRefObject,
 } from 'react';
 
 type OnNext = () => void | Promise<void>;
 
 type WizardCallbackState = {
-  onNext?: OnNext;
-  setOnNext: (onNextHandler: OnNext) => void;
+  onNext?: MutableRefObject<OnNext | undefined>;
+  setOnNext: (onNextHandler: OnNext | undefined) => void;
 };
 
 const WizardCallbackContext = createContext<WizardCallbackState>({
@@ -30,7 +32,10 @@ export const useWizardCallback = () => {
 type Props = { children: ReactNode };
 
 const WizardCallbackProvider = memo(({ children }: Props) => {
-  const [onNext, setOnNext] = useState<OnNext>();
+  const onNext = useRef<OnNext>();
+  const setOnNext = useCallback((newOnNext) => {
+    onNext.current = newOnNext;
+  }, []);
 
   const state = useMemo(() => ({ onNext, setOnNext }), [onNext, setOnNext]);
 

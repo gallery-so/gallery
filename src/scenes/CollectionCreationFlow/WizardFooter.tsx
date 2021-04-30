@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
@@ -6,11 +6,12 @@ import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
-
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { WizardProps } from './types';
 
 function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
+  const { onNext } = useWizardCallback();
 
   const isFirstStep = useMemo(() => {
     return history.index === 0;
@@ -33,9 +34,8 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
 
   const handleNextClick = useCallback(() => {
     // TODO 1: if final step, return to originating screen (e.g. collections page)
-    // TODO 2: on certain steps, we want to do multiple things (e.g. go to next step AND oepn modal)
-    next();
-  }, [next]);
+    onNext?.current?.() ?? next();
+  }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
     if (step.id === 'addUserInfo') {
