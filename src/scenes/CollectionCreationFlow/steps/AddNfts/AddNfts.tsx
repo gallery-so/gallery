@@ -23,6 +23,8 @@ function useWizardConfig(stagedNfts: Nft[]) {
 
   useEffect(() => {
     setNextEnabled(stagedNfts.length > 0);
+
+    return () => setNextEnabled(true);
   }, [setNextEnabled, stagedNfts.length]);
 }
 
