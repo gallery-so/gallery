@@ -8,6 +8,25 @@ import Editor from './Editor/Editor';
 import Directions from './Directions';
 
 import useNftEditor from './useNftEditor';
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import { Nft } from 'types/Nft';
+
+function useWizardConfig(stagedNfts: Nft[]) {
+  const { setNextEnabled } = useWizardValidationActions();
+  const { setOnNext } = useWizardCallback();
+
+  useEffect(() => {
+    setOnNext(() => alert('open modal!'));
+
+    return () => setOnNext(undefined);
+  }, [setOnNext]);
+
+  useEffect(() => {
+    setNextEnabled(stagedNfts.length > 0);
+
+    return () => setNextEnabled(true);
+  }, [setNextEnabled, stagedNfts.length]);
+}
 
 function AddNfts() {
   const {
@@ -17,11 +36,7 @@ function AddNfts() {
     handleSortNfts,
   } = useNftEditor();
 
-  const { setNextEnabled } = useWizardValidationActions();
-
-  useEffect(() => {
-    setNextEnabled(stagedNfts.length > 0);
-  }, [setNextEnabled, stagedNfts.length]);
+  useWizardConfig(stagedNfts);
 
   return (
     <StyledAddNfts>
