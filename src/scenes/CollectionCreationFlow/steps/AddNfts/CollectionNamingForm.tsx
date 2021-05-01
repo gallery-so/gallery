@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
 import BigInput from 'components/core/BigInput/BigInput';
@@ -7,8 +8,15 @@ import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import PrimaryButton from 'components/core/Button/PrimaryButton';
+import { useModal } from 'contexts/modal/ModalContext';
 
-function CollectionNamingForm() {
+type Props = {
+  onNext: WizardContext['next'];
+};
+
+function CollectionNamingForm({ onNext }: Props) {
+  const { hideModal } = useModal();
+
   const [collectionName, setCollectionName] = useState('');
   const [collectionDescription, setCollectionDescription] = useState('');
 
@@ -20,13 +28,30 @@ function CollectionNamingForm() {
     setCollectionDescription(event.target.value);
   }, []);
 
-  const buttonText = useMemo(() => {
-    const hasEnteredValue =
-      collectionName.length || collectionDescription.length;
-    return hasEnteredValue ? 'submit' : 'skip';
+  const hasEnteredValue = useMemo(() => {
+    return collectionName.length || collectionDescription.length;
   }, [collectionName, collectionDescription]);
 
-  const handleClick = useCallback(() => {}, []);
+  const buttonText = useMemo(() => {
+    return hasEnteredValue ? 'submit' : 'skip';
+  }, [hasEnteredValue]);
+
+  const goToNextStep = useCallback(() => {
+    onNext();
+    hideModal();
+  }, [onNext, hideModal]);
+
+  const handleClick = useCallback(() => {
+    if (hasEnteredValue) {
+      console.log('TODO - making update collection call to database', {
+        collectionName,
+        collectionDescription,
+      });
+      goToNextStep();
+      return;
+    }
+    goToNextStep();
+  }, [goToNextStep, hasEnteredValue, collectionName, collectionDescription]);
 
   return (
     <StyledCollectionNamingForm>

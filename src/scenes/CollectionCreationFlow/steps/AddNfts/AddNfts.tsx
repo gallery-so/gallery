@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
@@ -11,16 +12,21 @@ import Directions from './Directions';
 import CollectionNamingForm from './CollectionNamingForm';
 import useNftEditor from './useNftEditor';
 
-function useWizardConfig(stagedNfts: Nft[]) {
+type ConfigProps = {
+  stagedNfts: Nft[];
+  onNext: WizardContext['next'];
+};
+
+function useWizardConfig({ stagedNfts, onNext }: ConfigProps) {
   const { setNextEnabled } = useWizardValidationActions();
   const { setOnNext } = useWizardCallback();
   const { showModal } = useModal();
 
   useEffect(() => {
-    setOnNext(() => showModal(<CollectionNamingForm />));
+    setOnNext(() => showModal(<CollectionNamingForm onNext={onNext} />));
 
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal]);
+  }, [setOnNext, showModal, onNext]);
 
   useEffect(() => {
     setNextEnabled(stagedNfts.length > 0);
@@ -29,7 +35,7 @@ function useWizardConfig(stagedNfts: Nft[]) {
   }, [setNextEnabled, stagedNfts.length]);
 }
 
-function AddNfts() {
+function AddNfts({ next }: WizardContext) {
   const {
     stagedNfts,
     handleStageNft,
@@ -37,7 +43,7 @@ function AddNfts() {
     handleSortNfts,
   } = useNftEditor();
 
-  useWizardConfig(stagedNfts);
+  useWizardConfig({ stagedNfts, onNext: next });
 
   return (
     <StyledAddNfts>
