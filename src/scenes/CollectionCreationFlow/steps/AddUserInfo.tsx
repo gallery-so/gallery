@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import BigInput from 'components/core/BigInput/BigInput';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCallback } from 'react';
 import { USERNAME_REGEX } from 'utils/regex';
@@ -29,12 +30,8 @@ function AddUserInfo() {
   return (
     <StyledUserInfo>
       <StyledText>Add username &amp; bio</StyledText>
-      <StyledBigInput
-        placeholder="Username"
-        onChange={handleChange}
-        name="username"
-      ></StyledBigInput>
-      <StyledTextArea placeholder="Bio (optional)"></StyledTextArea>
+      <BigInput onChange={handleChange} />
+      <StyledTextArea placeholder="Bio (optional)" />
     </StyledUserInfo>
   );
 }
@@ -44,20 +41,12 @@ const StyledUserInfo = styled.div`
   width: 40%;
   margin: 25vh auto 0;
 `;
+
 const StyledText = styled(Text)`
   font-weight: 500;
   padding-left: 4px;
 `;
-const StyledBigInput = styled.input`
-  padding: 10px 2px;
-  margin-top: 20px;
-  border: 0;
-  font-size: 30px;
-  font-family: 'Times New Roman';
-  ::placeholder {
-    opacity: 0.5;
-  }
-`;
+
 const StyledTextArea = styled.textarea`
   padding: 14px;
   margin-top: 20px;
