@@ -4,12 +4,19 @@ import colors from '../colors';
 import noop from 'utils/noop';
 
 type Props = {
+  className?: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   placeholder: string;
 };
 
-function TextArea({ onChange = noop, placeholder }: Props) {
-  return <StyledTextArea placeholder={placeholder} onChange={onChange} />;
+function TextArea({ className, onChange = noop, placeholder }: Props) {
+  return (
+    <StyledTextArea
+      className={className}
+      placeholder={placeholder}
+      onChange={onChange}
+    />
+  );
 }
 
 const StyledTextArea = styled.textarea`
