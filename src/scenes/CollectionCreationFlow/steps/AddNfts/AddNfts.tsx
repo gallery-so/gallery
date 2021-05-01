@@ -1,20 +1,15 @@
 import { useEffect } from 'react';
-
 import styled from 'styled-components';
-import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 
+import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import { useModal } from 'contexts/modal/ModalContext';
+import { Nft } from 'types/Nft';
 import Sidebar from './Sidebar/Sidebar';
 import Editor from './Editor/Editor';
 import Directions from './Directions';
-
+import CollectionNamingForm from './CollectionNamingForm';
 import useNftEditor from './useNftEditor';
-import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { Nft } from 'types/Nft';
-import { useModal } from 'contexts/modal/ModalContext';
-
-function CollectionNamingForm() {
-  return <div>collection name</div>;
-}
 
 function useWizardConfig(stagedNfts: Nft[]) {
   const { setNextEnabled } = useWizardValidationActions();
