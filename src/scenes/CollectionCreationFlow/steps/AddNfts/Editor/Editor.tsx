@@ -17,7 +17,6 @@ import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
 import NftImage from './NftImage';
 
-import NftSortableContext from '../NftSortableContext';
 import SortableNft from './SortableNft';
 
 type Props = {
