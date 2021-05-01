@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
+import BigInput from 'components/core/BigInput/BigInput';
+import TextArea from 'components/core/TextArea/TextArea';
+import Spacer from 'components/core/Spacer/Spacer';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCallback } from 'react';
 import { USERNAME_REGEX } from 'utils/regex';
@@ -8,33 +11,29 @@ import { USERNAME_REGEX } from 'utils/regex';
 function AddUserInfo() {
   const { setNextEnabled } = useWizardValidationActions();
 
-  const validateInput = useCallback(
-    (inputValue: string, inputType: string) => {
-      const isValid = USERNAME_REGEX.test(inputValue);
+  const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+
+  const handleUsernameChange = useCallback(
+    (event) => {
+      // TODO consider debouncing validation
+      setUsername(event.target.value);
+      const isValid = USERNAME_REGEX.test(event.target.value);
       setNextEnabled(isValid);
     },
     [setNextEnabled]
   );
 
-  const handleChange = useCallback(
-    (event) => {
-      const inputValue = event.target.value;
-      const inputType = event.target.name;
-      // TODO consider debouncing validation
-      validateInput(inputValue, inputType);
-    },
-    [validateInput]
-  );
+  const handleBioChange = useCallback((event) => {
+    setBio(event.target.value);
+  }, []);
 
   return (
     <StyledUserInfo>
       <StyledText>Add username &amp; bio</StyledText>
-      <StyledBigInput
-        placeholder="Username"
-        onChange={handleChange}
-        name="username"
-      ></StyledBigInput>
-      <StyledTextArea placeholder="Bio (optional)"></StyledTextArea>
+      <BigInput onChange={handleUsernameChange} placeholder="Username" />
+      <Spacer height={20} />
+      <StyledTextArea onChange={handleBioChange} placeholder="Bio (optional)" />
     </StyledUserInfo>
   );
 }
@@ -44,26 +43,13 @@ const StyledUserInfo = styled.div`
   width: 40%;
   margin: 25vh auto 0;
 `;
+
 const StyledText = styled(Text)`
   font-weight: 500;
   padding-left: 4px;
 `;
-const StyledBigInput = styled.input`
-  padding: 10px 2px;
-  margin-top: 20px;
-  border: 0;
-  font-size: 30px;
-  font-family: 'Times New Roman';
-  ::placeholder {
-    opacity: 0.5;
-  }
-`;
-const StyledTextArea = styled.textarea`
-  padding: 14px;
-  margin-top: 20px;
-  font-family: Helvetica Neue;
-  border-color: ${colors.gray50};
-  resize: none;
+
+const StyledTextArea = styled(TextArea)`
   height: 160px;
 `;
 

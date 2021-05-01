@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { MODAL_TRANSITION_MS } from './constants';
+import colors from 'components/core/colors';
 
 type Props = {
   isActive: boolean;
@@ -70,7 +71,7 @@ const Overlay = styled.div`
   height: 100vh;
   width: 100vw;
   background: white;
-  opacity: 0.5;
+  opacity: 0.8;
 
   // should appear above rest of site
   z-index: 1;
@@ -88,8 +89,7 @@ const StyledContentContainer = styled.div`
   // should appear above the overlay
   z-index: 2;
 
-  // neumorphism
-  box-shadow: 19px 19px 38px #edede3, -19px -19px 38px #ffffff;
+  border: 1px solid ${colors.gray50};
 `;
 
 const StyledContent = styled.div`

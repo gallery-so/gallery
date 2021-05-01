@@ -34,7 +34,7 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
 
   const handleNextClick = useCallback(() => {
     // TODO 1: if final step, return to originating screen (e.g. collections page)
-    onNext?.current?.() ?? next();
+    onNext?.current ? onNext.current() : next();
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {

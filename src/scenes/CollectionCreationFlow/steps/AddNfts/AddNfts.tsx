@@ -1,25 +1,32 @@
 import { useEffect } from 'react';
-
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 
+import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import { useModal } from 'contexts/modal/ModalContext';
+import { Nft } from 'types/Nft';
 import Sidebar from './Sidebar/Sidebar';
 import Editor from './Editor/Editor';
 import Directions from './Directions';
-
+import CollectionNamingForm from './CollectionNamingForm';
 import useNftEditor from './useNftEditor';
-import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { Nft } from 'types/Nft';
 
-function useWizardConfig(stagedNfts: Nft[]) {
+type ConfigProps = {
+  stagedNfts: Nft[];
+  onNext: WizardContext['next'];
+};
+
+function useWizardConfig({ stagedNfts, onNext }: ConfigProps) {
   const { setNextEnabled } = useWizardValidationActions();
   const { setOnNext } = useWizardCallback();
+  const { showModal } = useModal();
 
   useEffect(() => {
-    setOnNext(() => alert('open modal!'));
+    setOnNext(() => showModal(<CollectionNamingForm onNext={onNext} />));
 
     return () => setOnNext(undefined);
-  }, [setOnNext]);
+  }, [setOnNext, showModal, onNext]);
 
   useEffect(() => {
     setNextEnabled(stagedNfts.length > 0);
@@ -28,7 +35,7 @@ function useWizardConfig(stagedNfts: Nft[]) {
   }, [setNextEnabled, stagedNfts.length]);
 }
 
-function AddNfts() {
+function AddNfts({ next }: WizardContext) {
   const {
     stagedNfts,
     handleStageNft,
@@ -36,7 +43,7 @@ function AddNfts() {
     handleSortNfts,
   } = useNftEditor();
 
-  useWizardConfig(stagedNfts);
+  useWizardConfig({ stagedNfts, onNext: next });
 
   return (
     <StyledAddNfts>
