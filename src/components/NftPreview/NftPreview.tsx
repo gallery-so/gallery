@@ -3,6 +3,7 @@ import { Nft } from 'types/Nft';
 import { Text } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
+import NftPreviewLabel from './NftPreviewLabel';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 
@@ -22,37 +23,19 @@ function NftPreview({ nft }: Props) {
   return (
     <StyledNftPreview key={nft.id}>
       <StyledNft src={imgUrl} alt={nft.name} />
-      <StyledNftLabel>
-        <StyledNftLabelText>{nft.name}</StyledNftLabelText>
-        <StyledNftLabelText>Placehoder artist</StyledNftLabelText>
-      </StyledNftLabel>
+      <StyledNftLabel nft={nft} />
     </StyledNftPreview>
   );
 }
 
-const StyledNftLabel = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  bottom: 0;
-  width: 100%;
-  text-align: right;
-  padding: 24px 8px 8px;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.4) 30%,
-    rgba(0, 0, 0, 0.7)
-  );
-
+const StyledNftLabel = styled(NftPreviewLabel)`
   opacity: 0;
-  transition: opacity 0.05s;
 `;
 
-const StyledNftLabelText = styled(Text)`
-  margin: 0;
-  color: ${colors.white};
-`;
+// const StyledNftLabelText = styled(Text)`
+//   margin: 0;
+//   color: ${colors.white};
+// `;
 
 const StyledNftPreview = styled.div`
   display: flex;
@@ -62,7 +45,7 @@ const StyledNftPreview = styled.div`
   height: fit-content;
 
   &:hover ${StyledNftLabel} {
-    opacity: 100;
+    opacity: 1;
   }
 `;
 

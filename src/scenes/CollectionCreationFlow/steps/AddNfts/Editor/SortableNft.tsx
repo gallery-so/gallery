@@ -49,6 +49,7 @@ const StyledSortableNft = styled.div`
     // ok to remove focus here because there it is not functionally 'in focus' for the user
     outline: none;
   }
+  cursor: grab;
 `;
 
 export default memo(SortableNft);

@@ -10,7 +10,7 @@ import Sidebar from './Sidebar/Sidebar';
 import Editor from './Editor/Editor';
 import Directions from './Directions';
 import CollectionNamingForm from './CollectionNamingForm';
-import useNftEditor from './useNftEditor';
+import useNftEditor, { useNftEditorAllNfts } from './useNftEditor';
 
 type ConfigProps = {
   stagedNfts: Nft[];
@@ -44,6 +44,13 @@ function AddNfts({ next }: WizardContext) {
   } = useNftEditor();
 
   useWizardConfig({ stagedNfts, onNext: next });
+  // const { allNfts, handleSelectNft } = useNftEditorAllNfts();
+  // console.log(allNfts);
+  const { setNextEnabled } = useWizardValidationActions();
+
+  useEffect(() => {
+    setNextEnabled(stagedNfts.length > 0);
+  }, [setNextEnabled, stagedNfts.length]);
 
   return (
     <StyledAddNfts>
@@ -52,7 +59,11 @@ function AddNfts({ next }: WizardContext) {
       </SidebarContainer>
       <EditorContainer>
         {stagedNfts.length ? (
-          <Editor stagedNfts={stagedNfts} onSortNfts={handleSortNfts} />
+          <Editor
+            stagedNfts={stagedNfts}
+            onSortNfts={handleSortNfts}
+            onUnstageNft={handleUnstageNft}
+          />
         ) : (
           <Directions />
         )}

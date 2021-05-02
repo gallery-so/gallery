@@ -13,6 +13,7 @@ import dummy2 from '../dummy_2.png';
 import dummy3 from '../dummy_3.png';
 import { ReactComponent as SearchIcon } from './search.svg';
 import { Nft } from 'types/Nft';
+import { useNftEditorAllNfts } from '../useNftEditor';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -36,11 +37,14 @@ function randomPics(n: number) {
 type Props = {
   onStageNft: (nft: Nft) => void;
   onUnstageNft: (id: string) => void;
+  // handleSelectNft: (id: string) => void;
+  // allNfts: Nft[];
 };
 
 function Sidebar({ onStageNft, onUnstageNft }: Props) {
-  const [allNfts] = useState(randomPics(50));
-
+  // const [allNfts] = useState(randomPics(50));
+  console.log('sidebar');
+  const { allNfts, handleSelectNft } = useNftEditorAllNfts();
   return (
     <StyledSidebar>
       <Header>
@@ -55,12 +59,15 @@ function Sidebar({ onStageNft, onUnstageNft }: Props) {
       </Searchbar>
       <Spacer height={16} />
       <Selection>
-        {allNfts.map((nft) => (
+        {allNfts.map((nft: Nft, index: number) => (
           <NftPreviewIcon
             key={nft.id}
             nft={nft}
+            index={index}
             onStageNft={onStageNft}
+            onSelectNft={handleSelectNft}
             onUnstageNft={onUnstageNft}
+            isSelected={!!nft.isSelected}
           />
         ))}
       </Selection>

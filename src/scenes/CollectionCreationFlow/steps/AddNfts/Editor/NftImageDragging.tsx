@@ -1,0 +1,57 @@
+import { useCallback, useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Nft } from 'types/Nft';
+
+type Props = {
+  nft?: Nft;
+  isDragging?: boolean;
+};
+
+function NftImage({ nft, isDragging = false }: Props) {
+  const srcUrl = nft?.image_url;
+  const [isMouseUp, setIsMouseUp] = useState(false);
+  const handleMouseUp = useCallback(() => {
+    setIsMouseUp(true);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [handleMouseUp]);
+
+  return <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />;
+}
+
+const grow = keyframes`
+  from {height: 280px; width 280px};
+  to {height: 284px; width: 284px}
+`;
+
+const StyledDraggingImage = styled.div<{
+  srcUrl?: string;
+  isMouseUp: boolean;
+}>`
+  background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
+  background-size: contain;
+
+  box-shadow: 0px 8px 15px 4px rgb(0 0 0 / 34%);
+  height: 284px;
+  width: 284px;
+
+  // we need to manually use isMouseUp instead of :active to set the grabbing cursor
+  // because this element was never clicked, so it is not considered active
+  cursor: ${({ isMouseUp }) => (isMouseUp ? 'grab' : 'grabbing')};
+
+  // TODO investigate smooth scaling
+  // transition: width 200ms, height 200ms;
+  // animation: ${grow} 50ms linear;
+`;
+
+// potentially useful links:
+// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.tsx
+// https://github.com/clauderic/dnd-kit/blob/54c877875cf7ec6d4367ca11ce216cc3eb6475d2/stories/2%20-%20Presets/Sortable/Sortable.tsx#L201
+// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.module.css#L43
+
+export default NftImage;

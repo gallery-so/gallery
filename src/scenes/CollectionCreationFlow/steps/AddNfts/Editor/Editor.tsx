@@ -16,12 +16,14 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
 import NftImage from './NftImage';
+import NftImageDragging from './NftImageDragging';
 
 import SortableNft from './SortableNft';
 
 type Props = {
   stagedNfts: Nft[];
   onSortNfts: (event: DragEndEvent) => void;
+  onUnstageNft: (id: string) => void;
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -29,7 +31,7 @@ const defaultDropAnimationConfig: DropAnimation = {
   dragSourceOpacity: 0.2,
 };
 
-function Editor({ stagedNfts, onSortNfts }: Props) {
+function Editor({ stagedNfts, onSortNfts, onUnstageNft }: Props) {
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -60,9 +62,12 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
         <SortableContext items={stagedNfts}>
           <NftsContainer>
             {stagedNfts.map((nft) => (
-              <SortableNft key={nft.id} nft={nft} activeId={activeId}>
-                <NftImage nft={nft}></NftImage>
-              </SortableNft>
+              <>
+                <SortableNft key={nft.id} nft={nft} activeId={activeId}>
+                  <NftImage nft={nft} onUnstageNft={onUnstageNft}></NftImage>
+                </SortableNft>
+                <button onClick={() => onUnstageNft(nft.id)}>X</button>
+              </>
             ))}
           </NftsContainer>
         </SortableContext>
@@ -71,7 +76,7 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
           dropAnimation={defaultDropAnimationConfig}
         >
           {activeId ? (
-            <NftImage nft={activeNft} isDragging={true}></NftImage>
+            <NftImageDragging nft={activeNft}></NftImageDragging>
           ) : null}
         </DragOverlay>
       </DndContext>
