@@ -4,12 +4,17 @@ import { Text } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
 import TextArea from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
+import {
+  useWizardValidationActions,
+  useWizardValidationState,
+} from 'contexts/wizard/WizardValidationContext';
 import { useCallback } from 'react';
 import { USERNAME_REGEX } from 'utils/regex';
+import { WizardContext } from 'react-albus';
 
-function AddUserInfo() {
+function AddUserInfo({ next }: WizardContext) {
   const { setNextEnabled } = useWizardValidationActions();
+  const { isNextEnabled } = useWizardValidationState();
 
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
@@ -28,15 +33,36 @@ function AddUserInfo() {
     setBio(event.target.value);
   }, []);
 
+  const onSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      if (isNextEnabled) {
+        next();
+      }
+    },
+    [isNextEnabled, next]
+  );
+
   return (
     <StyledUserInfo>
-      <StyledText>Add username &amp; bio</StyledText>
-      <BigInput onChange={handleUsernameChange} placeholder="Username" />
-      <Spacer height={20} />
-      <StyledTextArea onChange={handleBioChange} placeholder="Bio (optional)" />
+      <StyledForm onSubmit={onSubmit}>
+        <StyledText>Add username &amp; bio</StyledText>
+        <BigInput onChange={handleUsernameChange} placeholder="Username" />
+        <Spacer height={20} />
+        <StyledTextArea
+          onChange={handleBioChange}
+          placeholder="Bio (optional)"
+        />
+      </StyledForm>
     </StyledUserInfo>
   );
 }
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
 const StyledUserInfo = styled.div`
   display: flex;
   flex-direction: column;
