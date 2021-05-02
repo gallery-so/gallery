@@ -1,4 +1,5 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import useEffectAfterMount from 'hooks/useEffectAfterMount';
+import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
@@ -19,16 +20,11 @@ function NftPreviewIcon({
     setIsSelected((wasSelected) => !wasSelected);
   }, []);
 
-  // only run effect on component update, not initial render
-  // https://reactjs.org/docs/hooks-faq.html#can-i-run-an-effect-only-on-updates
-  const mountRef = useRef(false);
-  useEffect(() => {
-    if (mountRef.current) {
-      isSelected ? onStageNft(nft) : onUnstageNft(nft.id);
-    } else {
-      mountRef.current = true;
-    }
+  const handleUpdate = useCallback(() => {
+    isSelected ? onStageNft(nft) : onUnstageNft(nft.id);
   }, [isSelected, nft, onStageNft, onUnstageNft]);
+
+  useEffectAfterMount(handleUpdate);
 
   return (
     <StyledNftPreviewIcon>
