@@ -32,7 +32,8 @@ export const StyledNftPreviewLabel = styled.div`
   );
 
   opacity: 0;
-  transition: opacity 0.05s;
+  z-index: 10;
+  transition: opacity 200ms;
 `;
 
 const StyledNftLabelText = styled(Text)`

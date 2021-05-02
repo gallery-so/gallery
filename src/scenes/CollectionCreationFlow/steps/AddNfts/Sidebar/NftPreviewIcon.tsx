@@ -1,41 +1,39 @@
 import useEffectAfterMount from 'hooks/useEffectAfterMount';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
 type NftPreviewIconProps = {
   nft: Nft; // TODO: this will be an object in the future
-  onStageNft: (nft: Nft) => void;
-  onUnstageNft: (id: string) => void;
-  onSelectNft: (index: number) => void;
-  isSelected?: boolean;
+  stageNft: (nft: Nft) => void;
+  unstageNft: (id: string) => void;
+  onSelectNft: (index: number, didSelect: boolean) => void;
   index: number;
 };
 
 function NftPreviewIcon({
   nft,
-  onStageNft,
-  onUnstageNft,
+  stageNft,
+  unstageNft,
   onSelectNft,
   index,
 }: NftPreviewIconProps) {
-  const [isSelected, setIsSelected] = useState(false);
-  console.log(nft);
+  const isSelected = useMemo(() => !!nft.isSelected, [nft.isSelected]);
 
   const handleClick = useCallback(() => {
-    setIsSelected((wasSelected) => !wasSelected);
-  }, []);
+    onSelectNft(index, !isSelected);
+  }, [index, isSelected, onSelectNft]);
 
   const handleUpdate = useCallback(() => {
-    isSelected ? onStageNft(nft) : onUnstageNft(nft.id);
-  }, [isSelected, nft, onStageNft, onUnstageNft]);
+    isSelected ? stageNft(nft) : unstageNft(nft.id);
+  }, [isSelected, nft, stageNft, unstageNft]);
 
   useEffectAfterMount(handleUpdate);
 
   return (
     <StyledNftPreviewIcon>
       <StyledImage isSelected={isSelected} src={nft.image_url} alt="nft" />
-      <StyledOutline onClick={handleClick} isSelected={!!nft.isSelected} />
+      <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledNftPreviewIcon>
   );
 }

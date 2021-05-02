@@ -5,6 +5,7 @@ export type Nft = {
   image_url: string;
   image_preview_url: string;
   isSelected?: boolean;
+  index?: number;
 };
 
 // TODO find better name

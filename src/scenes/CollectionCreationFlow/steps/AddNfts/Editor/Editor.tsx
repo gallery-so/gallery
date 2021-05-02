@@ -15,15 +15,15 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import { Nft } from 'types/Nft';
-import NftImage from './NftImage';
-import NftImageDragging from './NftImageDragging';
+import StagedNftImageDragging from './StagedNftImageDragging';
 
-import SortableNft from './SortableNft';
+import StagedNftWrapper from './StagedNftWrapper';
 
 type Props = {
   stagedNfts: Nft[];
   onSortNfts: (event: DragEndEvent) => void;
   onUnstageNft: (id: string) => void;
+  handleSelectNft: (index: number, isSelected: boolean) => void;
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -31,7 +31,8 @@ const defaultDropAnimationConfig: DropAnimation = {
   dragSourceOpacity: 0.2,
 };
 
-function Editor({ stagedNfts, onSortNfts, onUnstageNft }: Props) {
+function Editor({ stagedNfts, onSortNfts, handleSelectNft }: Props) {
+  console.log('editor');
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -60,23 +61,24 @@ function Editor({ stagedNfts, onSortNfts, onUnstageNft }: Props) {
         collisionDetection={closestCenter}
       >
         <SortableContext items={stagedNfts}>
-          <NftsContainer>
+          <StyledStagedNftContainer>
             {stagedNfts.map((nft) => (
-              <>
-                <SortableNft key={nft.id} nft={nft} activeId={activeId}>
-                  <NftImage nft={nft} onUnstageNft={onUnstageNft}></NftImage>
-                </SortableNft>
-                <button onClick={() => onUnstageNft(nft.id)}>X</button>
-              </>
+              <StagedNftWrapper
+                key={nft.id}
+                nft={nft}
+                activeId={activeId}
+                // TODO: this can be obtained directly in the button?
+                handleSelectNft={handleSelectNft}
+              />
             ))}
-          </NftsContainer>
+          </StyledStagedNftContainer>
         </SortableContext>
         <DragOverlay
           adjustScale={true}
           dropAnimation={defaultDropAnimationConfig}
         >
           {activeId ? (
-            <NftImageDragging nft={activeNft}></NftImageDragging>
+            <StagedNftImageDragging nft={activeNft}></StagedNftImageDragging>
           ) : null}
         </DragOverlay>
       </DndContext>
@@ -96,7 +98,7 @@ const StyledEditor = styled.div`
   overflow: scroll;
 `;
 
-const NftsContainer = styled.div`
+const StyledStagedNftContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   column-gap: 48px;

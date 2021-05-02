@@ -44,8 +44,7 @@ function AddNfts({ next }: WizardContext) {
   } = useNftEditor();
 
   useWizardConfig({ stagedNfts, onNext: next });
-  // const { allNfts, handleSelectNft } = useNftEditorAllNfts();
-  // console.log(allNfts);
+  const { allNfts, handleSelectNft } = useNftEditorAllNfts();
   const { setNextEnabled } = useWizardValidationActions();
 
   useEffect(() => {
@@ -55,7 +54,12 @@ function AddNfts({ next }: WizardContext) {
   return (
     <StyledAddNfts>
       <SidebarContainer>
-        <Sidebar onStageNft={handleStageNft} onUnstageNft={handleUnstageNft} />
+        <Sidebar
+          stageNft={handleStageNft}
+          unstageNft={handleUnstageNft}
+          allNfts={allNfts}
+          handleSelectNft={handleSelectNft}
+        />
       </SidebarContainer>
       <EditorContainer>
         {stagedNfts.length ? (
@@ -63,6 +67,7 @@ function AddNfts({ next }: WizardContext) {
             stagedNfts={stagedNfts}
             onSortNfts={handleSortNfts}
             onUnstageNft={handleUnstageNft}
+            handleSelectNft={handleSelectNft}
           />
         ) : (
           <Directions />

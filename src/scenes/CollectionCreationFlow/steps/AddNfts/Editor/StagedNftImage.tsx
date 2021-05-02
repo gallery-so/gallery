@@ -1,29 +1,16 @@
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
-import NftPreviewLabel, {
-  StyledNftPreviewLabel,
-} from 'components/NftPreview/NftPreviewLabel';
-import { useCallback } from 'react';
+import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 
 type Props = {
   nft: Nft;
-  isDragging?: boolean;
-  onUnstageNft: (id: string) => void;
 };
 
-function NftImage({ nft, isDragging = false, onUnstageNft }: Props) {
+function NftImage({ nft }: Props) {
   const srcUrl = nft.image_url;
-
-  const handleRemoveButtonClick = useCallback(() => {
-    console.log('removing', nft.id);
-    onUnstageNft(nft.id);
-  }, [nft.id, onUnstageNft]);
 
   return (
     <StyledGridImage srcUrl={srcUrl}>
-      <StyledRemoveButton onClick={handleRemoveButtonClick}>
-        X
-      </StyledRemoveButton>
       <NftPreviewLabel nft={nft}></NftPreviewLabel>
     </StyledGridImage>
   );
@@ -36,14 +23,6 @@ const StyledGridImage = styled.div<{ srcUrl?: string }>`
   height: 280px;
   width: 280px;
   position: relative;
-
-  &:hover ${StyledNftPreviewLabel} {
-    opacity: 1;
-  }
-`;
-
-const StyledRemoveButton = styled.button`
-  position: absolute;
 `;
 
 const grow = keyframes`

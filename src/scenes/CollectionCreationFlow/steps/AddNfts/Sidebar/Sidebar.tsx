@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import { Text } from 'components/core/Text/Text';
@@ -8,43 +8,17 @@ import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 
 import NftPreviewIcon from './NftPreviewIcon';
 
-import dummy1 from '../dummy_1.png';
-import dummy2 from '../dummy_2.png';
-import dummy3 from '../dummy_3.png';
 import { ReactComponent as SearchIcon } from './search.svg';
 import { Nft } from 'types/Nft';
-import { useNftEditorAllNfts } from '../useNftEditor';
-
-function randomPic() {
-  const pics = [dummy1, dummy2, dummy3];
-  const index = Math.floor(Math.random() * pics.length);
-  return pics[index];
-}
-
-function randomPics(n: number) {
-  const pics = [];
-  for (let i = 0; i < n; i++) {
-    pics.push({
-      id: `${i}`,
-      name: 'test',
-      image_url: randomPic(),
-      image_preview_url: 'test',
-    });
-  }
-  return pics;
-}
 
 type Props = {
-  onStageNft: (nft: Nft) => void;
-  onUnstageNft: (id: string) => void;
-  // handleSelectNft: (id: string) => void;
-  // allNfts: Nft[];
+  stageNft: (nft: Nft) => void;
+  unstageNft: (id: string) => void;
+  handleSelectNft: (index: number, isSelected: boolean) => void;
+  allNfts: Nft[];
 };
 
-function Sidebar({ onStageNft, onUnstageNft }: Props) {
-  // const [allNfts] = useState(randomPics(50));
-  console.log('sidebar');
-  const { allNfts, handleSelectNft } = useNftEditorAllNfts();
+function Sidebar({ stageNft, unstageNft, handleSelectNft, allNfts }: Props) {
   return (
     <StyledSidebar>
       <Header>
@@ -64,10 +38,9 @@ function Sidebar({ onStageNft, onUnstageNft }: Props) {
             key={nft.id}
             nft={nft}
             index={index}
-            onStageNft={onStageNft}
+            stageNft={stageNft}
             onSelectNft={handleSelectNft}
-            onUnstageNft={onUnstageNft}
-            isSelected={!!nft.isSelected}
+            unstageNft={unstageNft}
           />
         ))}
       </Selection>

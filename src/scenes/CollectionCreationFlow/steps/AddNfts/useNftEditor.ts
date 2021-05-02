@@ -22,6 +22,7 @@ function randomPics(n: number) {
       name: 'test',
       image_url: randomPic(),
       image_preview_url: 'test',
+      index: i, // track position in "all nfts" array so it's for dnd to mark it as unselected
     });
   }
   return pics;
@@ -30,19 +31,21 @@ function randomPics(n: number) {
 export function useNftEditorAllNfts() {
   const [allNfts, setAllNfts] = useState<Nft[]>(randomPics(10));
 
-  const handleSelectNft = useCallback((nftIndex: number) => {
-    setAllNfts((prev) => {
-      console.log('handleSelectNft');
-      // let selectedNft = prev.find(nft => nft.id === id);
-      let next = [...prev];
-      let selectedNft = next[nftIndex];
-      let selectedNftCopy = { ...selectedNft };
-      selectedNftCopy.isSelected = true;
-      next[0] = selectedNftCopy;
-      console.log(next);
-      return next;
-    });
-  }, []);
+  const handleSelectNft = useCallback(
+    (nftIndex: number, didSelect: boolean) => {
+      setAllNfts((prev) => {
+        console.log('handleSelectNft', nftIndex);
+        let next = [...prev];
+        let selectedNft = next[nftIndex];
+        let selectedNftCopy = { ...selectedNft };
+        selectedNftCopy.isSelected = didSelect;
+        next[nftIndex] = selectedNftCopy;
+        console.log(next);
+        return next;
+      });
+    },
+    []
+  );
 
   return useMemo(
     () => ({
@@ -62,8 +65,6 @@ export default function useNftEditor() {
   }, []);
 
   const handleUnstageNft = useCallback((id: string) => {
-    // ideally
-    // this would set the nft in all nfts to isSelected:true
     setStagedNfts((prev) => prev.filter((nft) => nft.id !== id));
   }, []);
 
