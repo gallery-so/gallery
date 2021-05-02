@@ -5,11 +5,12 @@ import { Text } from 'components/core/Text/Text';
 
 type Props = {
   nft: Nft;
+  className?: string;
 };
 
-function NftPreviewLabel({ nft }: Props) {
+function NftPreviewLabel({ nft, className }: Props) {
   return (
-    <StyledNftPreviewLabel>
+    <StyledNftPreviewLabel className={className}>
       <StyledNftLabelText>{nft.name}</StyledNftLabelText>
       <StyledNftLabelText>Placehoder artist</StyledNftLabelText>
     </StyledNftPreviewLabel>
@@ -31,7 +32,6 @@ export const StyledNftPreviewLabel = styled.div`
     rgba(0, 0, 0, 0.7)
   );
 
-  opacity: 0;
   z-index: 10;
   transition: opacity 200ms;
 `;

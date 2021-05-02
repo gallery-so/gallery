@@ -11,10 +11,14 @@ function NftImage({ nft }: Props) {
 
   return (
     <StyledGridImage srcUrl={srcUrl}>
-      <NftPreviewLabel nft={nft}></NftPreviewLabel>
+      <StyledNftPreviewLabel nft={nft}></StyledNftPreviewLabel>
     </StyledGridImage>
   );
 }
+
+const StyledNftPreviewLabel = styled(NftPreviewLabel)`
+  opacity: 0;
+`;
 
 const StyledGridImage = styled.div<{ srcUrl?: string }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};

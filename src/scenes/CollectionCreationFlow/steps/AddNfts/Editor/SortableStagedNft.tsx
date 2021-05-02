@@ -36,7 +36,6 @@ function SortableStagedNft({ nft, activeId, ...props }: Props) {
       active={isDragging}
       // @ts-expect-error
       style={style}
-      // {...props}
       {...attributes}
       {...listeners}
     >

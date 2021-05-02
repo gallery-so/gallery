@@ -32,11 +32,6 @@ const StyledNftLabel = styled(NftPreviewLabel)`
   opacity: 0;
 `;
 
-// const StyledNftLabelText = styled(Text)`
-//   margin: 0;
-//   color: ${colors.white};
-// `;
-
 const StyledNftPreview = styled.div`
   display: flex;
   justify-content: center;
