@@ -1,3 +1,4 @@
+import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
@@ -16,12 +17,14 @@ function NftPreviewIcon({
   const [isSelected, setIsSelected] = useState(false);
 
   const handleClick = useCallback(() => {
-    setIsSelected((wasSelected) => {
-      if (wasSelected) onUnstageNft(nft.id);
-      else onStageNft(nft);
-      return !wasSelected;
-    });
-  }, [nft, onStageNft, onUnstageNft]);
+    setIsSelected((wasSelected) => !wasSelected);
+  }, []);
+
+  const handleUpdate = useCallback(() => {
+    isSelected ? onStageNft(nft) : onUnstageNft(nft.id);
+  }, [isSelected, nft, onStageNft, onUnstageNft]);
+
+  useEffectAfterMount(handleUpdate);
 
   return (
     <StyledNftPreviewIcon>
