@@ -4,12 +4,12 @@ import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
-type NftPreviewIconProps = {
+type SidebarNftIconProps = {
   nft: Nft; // TODO: this will be an object in the future
   index: number;
 };
 
-function NftPreviewIcon({ nft, index }: NftPreviewIconProps) {
+function SidebarNftIcon({ nft, index }: SidebarNftIconProps) {
   const isSelected = useMemo(() => !!nft.isSelected, [nft.isSelected]);
   const {
     setNftIsSelected,
@@ -28,14 +28,14 @@ function NftPreviewIcon({ nft, index }: NftPreviewIconProps) {
   useEffectAfterMount(handleUpdate);
 
   return (
-    <StyledNftPreviewIcon>
+    <StyledSidebarNftIcon>
       <StyledImage isSelected={isSelected} src={nft.image_url} alt="nft" />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
-    </StyledNftPreviewIcon>
+    </StyledSidebarNftIcon>
   );
 }
 
-const StyledNftPreviewIcon = styled.div`
+const StyledSidebarNftIcon = styled.div`
   position: relative;
   width: 64px;
   height: 64px;
@@ -64,4 +64,4 @@ const StyledImage = styled.img<SelectedProps>`
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 `;
 
-export default memo(NftPreviewIcon);
+export default memo(SidebarNftIcon);

@@ -20,22 +20,22 @@ function CollectionEditor() {
 
   return (
     <>
-      <SidebarContainer>
+      <StyledSidebarContainer>
         <Sidebar />
-      </SidebarContainer>
-      <EditorContainer>
+      </StyledSidebarContainer>
+      <StyledEditorContainer>
         {stagedNfts.length ? <StagingArea /> : <Directions />}
-      </EditorContainer>
+      </StyledEditorContainer>
     </>
   );
 }
 const SIDEBAR_WIDTH = 280;
 
-const SidebarContainer = styled.div`
+const StyledSidebarContainer = styled.div`
   width: ${SIDEBAR_WIDTH}px;
 `;
 
-const EditorContainer = styled.div`
+const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
 

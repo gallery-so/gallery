@@ -44,7 +44,7 @@ export type CollectionEditorState = {
 };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  allNfts: randomPics(10),
+  allNfts: [],
   stagedNfts: [],
 });
 
