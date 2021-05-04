@@ -98,10 +98,10 @@ const StyledPasswordInput = styled.input`
 `;
 
 const TRANSLATE_PIXELS = -50;
-const MODAL_TRANSITION_MS = 1500;
+const MODAL_TRANSITION_MS = 700;
 
 // ease-out like style
-const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.01)`;
+const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0.85, 0.48, 0.99)`;
 
 const translateDown = keyframes`
   from { transform: translateY(${TRANSLATE_PIXELS}px) };
