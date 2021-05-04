@@ -12,7 +12,7 @@ export default function Header() {
       <OptionsContainer>
         <Text>Preview Gallery</Text>
         <Spacer width={16} />
-        <StyledButton type="secondary" text="Add Collection" />
+        <StyledButton type="secondary" text="+ Add Collection" />
       </OptionsContainer>
     </StyledHeader>
   );
