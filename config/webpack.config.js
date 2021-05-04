@@ -341,6 +341,7 @@ module.exports = function (webpackEnv) {
         connectors: path.resolve(paths.appSrc, 'connectors'),
         hooks: path.resolve(paths.appSrc, 'hooks'),
         utils: path.resolve(paths.appSrc, 'utils'),
+        mocks: path.resolve(paths.appSrc, 'mocks'),
         types: path.resolve(paths.appSrc, 'types'),
         ...(modules.webpackAliases || {}),
       },

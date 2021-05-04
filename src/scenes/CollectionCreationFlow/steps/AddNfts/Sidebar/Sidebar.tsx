@@ -8,30 +8,10 @@ import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 
 import NftPreviewIcon from './NftPreviewIcon';
 
-import dummy1 from '../dummy_1.png';
-import dummy2 from '../dummy_2.png';
-import dummy3 from '../dummy_3.png';
+import { mockNftsLite } from 'mocks/nfts';
+
 import { ReactComponent as SearchIcon } from './search.svg';
 import { Nft } from 'types/Nft';
-
-function randomPic() {
-  const pics = [dummy1, dummy2, dummy3];
-  const index = Math.floor(Math.random() * pics.length);
-  return pics[index];
-}
-
-function randomPics(n: number) {
-  const pics = [];
-  for (let i = 0; i < n; i++) {
-    pics.push({
-      id: `${i}`,
-      name: 'test',
-      image_url: randomPic(),
-      image_preview_url: 'test',
-    });
-  }
-  return pics;
-}
 
 type Props = {
   onStageNft: (nft: Nft) => void;
@@ -39,7 +19,7 @@ type Props = {
 };
 
 function Sidebar({ onStageNft, onUnstageNft }: Props) {
-  const [allNfts] = useState(randomPics(50));
+  const [allNfts] = useState(mockNftsLite(50));
 
   return (
     <StyledSidebar>
