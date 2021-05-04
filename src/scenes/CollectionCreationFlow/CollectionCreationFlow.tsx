@@ -16,7 +16,7 @@ function CollectionCreationFlow(_: RouteComponentProps) {
         render={(wizardProps) => {
           return (
             <>
-              <Steps step={{ id: 'organize' }}>
+              <Steps>
                 <Step id="addUserInfo" render={AddUserInfo} />
                 <Step id="create" render={CreateFirstCollection} />
                 <Step id="addNfts" render={AddNfts} />

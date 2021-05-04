@@ -17,6 +17,7 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
     return history.index === 0;
   }, [history.index]);
 
+  // TODO: consider putting this in context / useWizardConfig
   const buttonText = useMemo(() => {
     switch (step.id) {
       case 'addUserInfo':
@@ -48,9 +49,14 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
 
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.gray10} onClick={handlePreviousClick}>
-        {isFirstStep ? 'Cancel' : 'Back'}
-      </ActionText>
+      {
+        // TODO: consider putting this in context / useWizardConfig
+        step.id === 'organize' ? null : (
+          <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+            {isFirstStep ? 'Cancel' : 'Back'}
+          </ActionText>
+        )
+      }
       <Spacer width={40} />
       <StyledButton
         disabled={!isNextEnabled}
