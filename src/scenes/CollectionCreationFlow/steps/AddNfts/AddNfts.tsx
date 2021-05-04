@@ -2,23 +2,18 @@ import { useEffect } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
-import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
-import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { useModal } from 'contexts/modal/ModalContext';
-import { Nft } from 'types/Nft';
-import Sidebar from './Sidebar/Sidebar';
-import Editor from './Editor/Editor';
-import Directions from './Directions';
 import CollectionNamingForm from './CollectionNamingForm';
-import useNftEditor, { useNftEditorAllNfts } from './useNftEditor';
+import CollectionEditor from './Editor/CollectionEditor';
+
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import CollectionEditorProvider from 'contexts/collectionEditor/CollectionEditorContext';
+import { useModal } from 'contexts/modal/ModalContext';
 
 type ConfigProps = {
-  stagedNfts: Nft[];
   onNext: WizardContext['next'];
 };
 
-function useWizardConfig({ stagedNfts, onNext }: ConfigProps) {
-  const { setNextEnabled } = useWizardValidationActions();
+function useWizardConfig({ onNext }: ConfigProps) {
   const { setOnNext } = useWizardCallback();
   const { showModal } = useModal();
 
@@ -27,68 +22,22 @@ function useWizardConfig({ stagedNfts, onNext }: ConfigProps) {
 
     return () => setOnNext(undefined);
   }, [setOnNext, showModal, onNext]);
-
-  useEffect(() => {
-    setNextEnabled(stagedNfts.length > 0);
-
-    return () => setNextEnabled(true);
-  }, [setNextEnabled, stagedNfts.length]);
 }
 
 function AddNfts({ next }: WizardContext) {
-  const {
-    stagedNfts,
-    handleStageNft,
-    handleUnstageNft,
-    handleSortNfts,
-  } = useNftEditor();
-
-  useWizardConfig({ stagedNfts, onNext: next });
-  const { allNfts, handleSelectNft } = useNftEditorAllNfts();
-  const { setNextEnabled } = useWizardValidationActions();
-
-  useEffect(() => {
-    setNextEnabled(stagedNfts.length > 0);
-  }, [setNextEnabled, stagedNfts.length]);
+  useWizardConfig({ onNext: next });
 
   return (
     <StyledAddNfts>
-      <SidebarContainer>
-        <Sidebar
-          stageNft={handleStageNft}
-          unstageNft={handleUnstageNft}
-          allNfts={allNfts}
-          handleSelectNft={handleSelectNft}
-        />
-      </SidebarContainer>
-      <EditorContainer>
-        {stagedNfts.length ? (
-          <Editor
-            stagedNfts={stagedNfts}
-            onSortNfts={handleSortNfts}
-            onUnstageNft={handleUnstageNft}
-            handleSelectNft={handleSelectNft}
-          />
-        ) : (
-          <Directions />
-        )}
-      </EditorContainer>
+      <CollectionEditorProvider>
+        <CollectionEditor />
+      </CollectionEditorProvider>
     </StyledAddNfts>
   );
 }
 
 const StyledAddNfts = styled.div`
   display: flex;
-`;
-
-const SIDEBAR_WIDTH = 280;
-
-const SidebarContainer = styled.div`
-  width: ${SIDEBAR_WIDTH}px;
-`;
-
-const EditorContainer = styled.div`
-  width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
 
 export default AddNfts;

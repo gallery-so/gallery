@@ -8,10 +8,12 @@ import {
   useState,
 } from 'react';
 import { Nft } from 'types/Nft';
+import { arrayMove } from '@dnd-kit/sortable';
+import { DragEndEvent } from '@dnd-kit/core';
 
-import dummy1 from './dummy_1.png';
-import dummy2 from './dummy_2.png';
-import dummy3 from './dummy_3.png';
+import dummy1 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_1.png';
+import dummy2 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_2.png';
+import dummy3 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_3.png';
 
 function randomPic() {
   const pics = [dummy1, dummy2, dummy3];
@@ -34,27 +36,51 @@ function randomPics(n: number) {
 }
 
 export type AllNftsState = Nft[];
+export type StagedNftsState = Nft[];
 
-const AllNftsStateContext = createContext<AllNftsState>(randomPics(10));
+export type CollectionEditorState = {
+  allNfts: Nft[];
+  stagedNfts: Nft[];
+};
+
+const CollectionEditorStateContext = createContext<CollectionEditorState>({
+  allNfts: randomPics(10),
+  stagedNfts: [],
+});
 
 export const useAllNftsState = (): AllNftsState => {
-  const context = useContext(AllNftsStateContext);
+  const context = useContext(CollectionEditorStateContext);
   if (!context) {
-    throw Error('Attempted to use AllNftsStateContext without a provider');
+    throw Error(
+      'Attempted to use CollectionEditorStateContext without a provider'
+    );
   }
-  return context;
+  return context.allNfts;
 };
 
-type AllNftsActions = {
+export const useStagedNftsState = (): AllNftsState => {
+  const context = useContext(CollectionEditorStateContext);
+  if (!context) {
+    throw Error(
+      'Attempted to use CollectionEditorStateContext without a provider'
+    );
+  }
+  return context.stagedNfts;
+};
+
+type CollectionEditorActions = {
   setNftIsSelected: (index: number, isSelected: boolean) => void;
+  stageNft: (nft: Nft) => void;
+  unstageNft: (id: string) => void;
+  handleSortNfts: (event: DragEndEvent) => void;
 };
 
-const AllNftsActionsContext = createContext<AllNftsActions | undefined>(
-  undefined
-);
+const CollectionEditorActionsContext = createContext<
+  CollectionEditorActions | undefined
+>(undefined);
 
-export const useAllNftsActions = (): AllNftsActions => {
-  const context = useContext(AllNftsActionsContext);
+export const useCollectionEditorActions = (): CollectionEditorActions => {
+  const context = useContext(CollectionEditorActionsContext);
   if (!context) {
     throw Error('');
   }
@@ -63,34 +89,67 @@ export const useAllNftsActions = (): AllNftsActions => {
 
 type Props = { children: ReactNode };
 
-const CollectionEditorContext = memo(({ children }: Props) => {
+const CollectionEditorProvider = memo(({ children }: Props) => {
   const [allNftsState, setAllNftsState] = useState<AllNftsState>(
     randomPics(10)
+  );
+  const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
+
+  const collectionEditorState = useMemo(
+    () => ({
+      allNfts: allNftsState,
+      stagedNfts: stagedNftsState,
+    }),
+    [allNftsState, stagedNftsState]
   );
 
   const setNftIsSelected = useCallback((index, isSelected) => {
     setAllNftsState((prev) => {
-      console.log('handleSelectNft', index);
-      // let selectedNft = prev.find(nft => nft.id === id);
       let next = [...prev];
       let selectedNft = next[index];
       let selectedNftCopy = { ...selectedNft };
       selectedNftCopy.isSelected = isSelected;
       next[index] = selectedNftCopy;
-      console.log(next);
       return next;
     });
   }, []);
 
-  const allNftsActions: AllNftsActions = useMemo(() => ({ setNftIsSelected }), [
-    setNftIsSelected,
-  ]);
+  const stageNft = useCallback((nft: Nft) => {
+    setStagedNftsState((prev) => [...prev, nft]);
+  }, []);
+
+  const unstageNft = useCallback((id: string) => {
+    setStagedNftsState((prev) => prev.filter((nft) => nft.id !== id));
+  }, []);
+
+  const handleSortNfts = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setStagedNftsState((prev) => {
+        const oldIndex = prev.findIndex(({ id }) => id === active.id);
+        const newIndex = prev.findIndex(({ id }) => id === over?.id);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
+  }, []);
+
+  const collectionEditorActions: CollectionEditorActions = useMemo(
+    () => ({
+      setNftIsSelected,
+      stageNft,
+      unstageNft,
+      handleSortNfts,
+    }),
+    [handleSortNfts, setNftIsSelected, stageNft, unstageNft]
+  );
 
   return (
-    <AllNftsStateContext.Provider value={allNftsState}>
-      <AllNftsActionsContext.Provider value={allNftsActions}>
+    <CollectionEditorStateContext.Provider value={collectionEditorState}>
+      <CollectionEditorActionsContext.Provider value={collectionEditorActions}>
         {children}
-      </AllNftsActionsContext.Provider>
-    </AllNftsStateContext.Provider>
+      </CollectionEditorActionsContext.Provider>
+    </CollectionEditorStateContext.Provider>
   );
 });
+
+export default CollectionEditorProvider;

@@ -5,20 +5,15 @@ import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
-
 import NftPreviewIcon from './NftPreviewIcon';
-
 import { ReactComponent as SearchIcon } from './search.svg';
+
 import { Nft } from 'types/Nft';
 
-type Props = {
-  stageNft: (nft: Nft) => void;
-  unstageNft: (id: string) => void;
-  handleSelectNft: (index: number, isSelected: boolean) => void;
-  allNfts: Nft[];
-};
+import { useAllNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 
-function Sidebar({ stageNft, unstageNft, handleSelectNft, allNfts }: Props) {
+function Sidebar() {
+  const allNfts = useAllNftsState();
   return (
     <StyledSidebar>
       <Header>
@@ -34,14 +29,7 @@ function Sidebar({ stageNft, unstageNft, handleSelectNft, allNfts }: Props) {
       <Spacer height={16} />
       <Selection>
         {allNfts.map((nft: Nft, index: number) => (
-          <NftPreviewIcon
-            key={nft.id}
-            nft={nft}
-            index={index}
-            stageNft={stageNft}
-            onSelectNft={handleSelectNft}
-            unstageNft={unstageNft}
-          />
+          <NftPreviewIcon key={nft.id} nft={nft} index={index} />
         ))}
       </Selection>
       <Spacer height={12} />

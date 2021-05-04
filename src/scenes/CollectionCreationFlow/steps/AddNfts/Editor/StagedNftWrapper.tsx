@@ -7,14 +7,12 @@ import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 type Props = {
   nft: Nft;
   activeId?: string;
-  handleSelectNft: (index: number, isSelected: boolean) => void;
 };
 
-function StagedNftWrapper({ nft, activeId, handleSelectNft }: Props) {
+function StagedNftWrapper({ nft, activeId }: Props) {
   return (
     <StyledStageNftWrapper>
       <StyledUnstageButton
-        handleSelectNft={handleSelectNft}
         // TODO make index guaranteed
         nftIndex={nft.index || 0}
       />

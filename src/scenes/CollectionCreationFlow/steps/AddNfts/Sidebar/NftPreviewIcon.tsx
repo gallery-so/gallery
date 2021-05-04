@@ -1,3 +1,4 @@
+import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
@@ -5,24 +6,20 @@ import { Nft } from 'types/Nft';
 
 type NftPreviewIconProps = {
   nft: Nft; // TODO: this will be an object in the future
-  stageNft: (nft: Nft) => void;
-  unstageNft: (id: string) => void;
-  onSelectNft: (index: number, didSelect: boolean) => void;
   index: number;
 };
 
-function NftPreviewIcon({
-  nft,
-  stageNft,
-  unstageNft,
-  onSelectNft,
-  index,
-}: NftPreviewIconProps) {
+function NftPreviewIcon({ nft, index }: NftPreviewIconProps) {
   const isSelected = useMemo(() => !!nft.isSelected, [nft.isSelected]);
+  const {
+    setNftIsSelected,
+    stageNft,
+    unstageNft,
+  } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    onSelectNft(index, !isSelected);
-  }, [index, isSelected, onSelectNft]);
+    setNftIsSelected(index, !isSelected);
+  }, [index, isSelected, setNftIsSelected]);
 
   const handleUpdate = useCallback(() => {
     isSelected ? stageNft(nft) : unstageNft(nft.id);

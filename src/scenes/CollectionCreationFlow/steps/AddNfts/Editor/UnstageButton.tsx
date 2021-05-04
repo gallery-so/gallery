@@ -1,20 +1,20 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 
 type Props = {
-  handleSelectNft: (index: number, isSelected: boolean) => void;
   nftIndex: number;
   className?: string;
 };
-function UnstageButton({ handleSelectNft, nftIndex, className }: Props) {
+function UnstageButton({ nftIndex, className }: Props) {
+  const { setNftIsSelected } = useCollectionEditorActions();
+  const handleOnClick = useCallback(() => {
+    setNftIsSelected(nftIndex, false);
+  }, [nftIndex, setNftIsSelected]);
   return (
-    <StyledUnstageButton
-      className={className}
-      onClick={() => {
-        handleSelectNft(nftIndex, false);
-      }}
-    >
+    <StyledUnstageButton className={className} onClick={handleOnClick}>
       <Text color={colors.white}>DELETE</Text>
     </StyledUnstageButton>
   );

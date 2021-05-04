@@ -1,9 +1,6 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
-import { Subtitle } from 'components/core/Text/Text';
-
 import {
   DndContext,
   DragEndEvent,
@@ -14,25 +11,27 @@ import {
   DropAnimation,
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import { Nft } from 'types/Nft';
-import StagedNftImageDragging from './StagedNftImageDragging';
 
+import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
+import { Subtitle } from 'components/core/Text/Text';
+
+import StagedNftImageDragging from './StagedNftImageDragging';
 import StagedNftWrapper from './StagedNftWrapper';
 
-type Props = {
-  stagedNfts: Nft[];
-  onSortNfts: (event: DragEndEvent) => void;
-  onUnstageNft: (id: string) => void;
-  handleSelectNft: (index: number, isSelected: boolean) => void;
-};
+import {
+  useCollectionEditorActions,
+  useStagedNftsState,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
   dragSourceOpacity: 0.2,
 };
 
-function Editor({ stagedNfts, onSortNfts, handleSelectNft }: Props) {
-  console.log('editor');
+function Editor() {
+  const stagedNfts = useStagedNftsState();
+  const { handleSortNfts } = useCollectionEditorActions();
+
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -43,9 +42,9 @@ function Editor({ stagedNfts, onSortNfts, handleSelectNft }: Props) {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      onSortNfts(event);
+      handleSortNfts(event);
     },
-    [onSortNfts]
+    [handleSortNfts]
   );
 
   const activeNft = useMemo(() => {
@@ -63,13 +62,7 @@ function Editor({ stagedNfts, onSortNfts, handleSelectNft }: Props) {
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
             {stagedNfts.map((nft) => (
-              <StagedNftWrapper
-                key={nft.id}
-                nft={nft}
-                activeId={activeId}
-                // TODO: this can be obtained directly in the button?
-                handleSelectNft={handleSelectNft}
-              />
+              <StagedNftWrapper key={nft.id} nft={nft} activeId={activeId} />
             ))}
           </StyledStagedNftContainer>
         </SortableContext>
