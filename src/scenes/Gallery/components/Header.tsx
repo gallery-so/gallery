@@ -23,13 +23,11 @@ function Header({ usernameOrWalletAddress }: Props) {
         <Title>{usernameOrWalletAddress}</Title>
         <Spacer height={20} />
         <StyledUserDetails>
-          <Text color={colors.gray50} lineHeight="tight">
-            Collector Since Mar 2021
-          </Text>
-          <Text color={colors.gray50} lineHeight="tight">
+          <Text color={colors.gray50}>Collector Since Mar 2021</Text>
+          <Text color={colors.gray50}>
             I make cool 3d loops Black small square
           </Text>
-          <Text color={colors.gray50} lineHeight="tight">
+          <Text color={colors.gray50}>
             http://superrare.co/rogerkilimanjaro... Black small square
           </Text>
         </StyledUserDetails>

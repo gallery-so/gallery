@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
-import { ReactComponent as Settings } from './collection-settings.svg';
-import { Nft } from 'types/Nft';
+import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
+import { Nft } from 'types/Nft';
+
+import { ReactComponent as Settings } from './collection-settings.svg';
 
 type Props = {
   title: string;
@@ -19,6 +21,7 @@ function CollectionRow({ title, nfts }: Props) {
         <Text>{title}</Text>
         <Settings />
       </Header>
+      <Spacer height={8} />
       <Body>
         {displayedNfts.map((nft) => (
           <LargeNftPreview src={nft.image_url} />
@@ -32,7 +35,7 @@ const StyledCollectionRow = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 776px;
+  width: 100%;
   padding: 32px;
 
   border: 1px solid ${colors.gray50};

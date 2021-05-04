@@ -27,8 +27,6 @@ export const Subtitle = styled.p<SubtitleProps>`
 type TextProps = {
   color?: colors;
   // TODO: make these enums
-  lineHeight?: 'normal' | 'tight';
-  // TODO: make these enums
   weight?: 'normal' | 'bold';
 };
 
@@ -37,8 +35,7 @@ export const Text = styled.p<TextProps>`
   margin: 0;
 
   font-size: 14px;
-  line-height: ${({ lineHeight }) =>
-    lineHeight === 'tight' ? '16px' : '20px'};
+
   font-weight: ${({ weight }) => (weight === 'bold' ? 500 : 400)};
   color: ${({ color }) => color ?? colors.black};
 `;
