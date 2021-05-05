@@ -4,10 +4,9 @@ import { Nft } from 'types/Nft';
 
 type Props = {
   nft?: Nft;
-  isDragging?: boolean;
 };
 
-function NftImage({ nft, isDragging = false }: Props) {
+function NftImage({ nft }: Props) {
   const srcUrl = nft?.image_url;
   const [isMouseUp, setIsMouseUp] = useState(false);
   const handleMouseUp = useCallback(() => {

@@ -48,7 +48,7 @@ function Editor() {
   );
 
   const activeNft = useMemo(() => {
-    return stagedNfts.find((nft) => nft.id === activeId);
+    return stagedNfts.find(({ nft }) => nft.id === activeId);
   }, [stagedNfts, activeId]);
 
   return (
@@ -70,8 +70,10 @@ function Editor() {
           adjustScale={true}
           dropAnimation={defaultDropAnimationConfig}
         >
-          {activeId ? (
-            <StagedNftImageDragging nft={activeNft}></StagedNftImageDragging>
+          {activeNft ? (
+            <StagedNftImageDragging
+              nft={activeNft.nft}
+            ></StagedNftImageDragging>
           ) : null}
         </DragOverlay>
       </DndContext>

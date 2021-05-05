@@ -1,11 +1,11 @@
-import { Nft } from 'types/Nft';
+import { EditModeNft, Nft } from 'types/Nft';
 import SortableStagedNft from './SortableStagedNft';
 import UnstageButton from './UnstageButton';
 import styled from 'styled-components';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 
 type Props = {
-  nft: Nft;
+  nft: EditModeNft;
   activeId?: string;
 };
 
@@ -16,7 +16,7 @@ function StagedNftWrapper({ nft, activeId }: Props) {
         // TODO make index guaranteed
         nftIndex={nft.index || 0}
       />
-      <SortableStagedNft nft={nft} activeId={activeId} />
+      <SortableStagedNft nft={nft.nft} activeId={activeId} />
     </StyledStageNftWrapper>
   );
 }

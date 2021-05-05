@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import { Nft } from 'types/Nft';
+import { EditModeNft, Nft } from 'types/Nft';
 
 type Props = {
   children: ReactNode;
-  nfts: Nft[];
+  nfts: EditModeNft[];
   handleDragEnd: (event: DragEndEvent) => void;
 };
 

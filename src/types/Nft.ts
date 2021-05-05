@@ -4,11 +4,11 @@ export type Nft = {
   artist?: string;
   image_url: string;
   image_preview_url: string;
+};
+
+export type EditModeNft = {
+  id: string;
+  nft: Nft;
   isSelected?: boolean;
   index?: number;
 };
-
-// TODO find better name
-export interface EditModeNft extends Nft {
-  isSelected?: boolean;
-}

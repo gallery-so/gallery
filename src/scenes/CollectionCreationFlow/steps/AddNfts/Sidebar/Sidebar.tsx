@@ -8,7 +8,7 @@ import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 import SidebarNftIcon from './SidebarNftIcon';
 import { ReactComponent as SearchIcon } from './search.svg';
 
-import { Nft } from 'types/Nft';
+import { EditModeNft, Nft } from 'types/Nft';
 
 import { useAllNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 
@@ -21,15 +21,9 @@ function Sidebar() {
         <Text color={colors.gray50}>0xj2T2...a81H</Text>
       </Header>
       <Spacer height={12} />
-      <Searchbar>
-        <SearchIcon />
-        <Spacer width={6} />
-        <Text color={colors.gray50}>Search</Text>
-      </Searchbar>
-      <Spacer height={16} />
       <Selection>
-        {allNfts.map((nft: Nft, index: number) => (
-          <SidebarNftIcon key={nft.id} nft={nft} index={index} />
+        {allNfts.map((nft: EditModeNft, index: number) => (
+          <SidebarNftIcon key={nft.nft.id} nft={nft} index={index} />
         ))}
       </Selection>
       <Spacer height={12} />

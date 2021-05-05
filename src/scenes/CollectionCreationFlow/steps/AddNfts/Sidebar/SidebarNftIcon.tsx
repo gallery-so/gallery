@@ -2,10 +2,10 @@ import { useCollectionEditorActions } from 'contexts/collectionEditor/Collection
 import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
+import { EditModeNft } from 'types/Nft';
 
 type SidebarNftIconProps = {
-  nft: Nft; // TODO: this will be an object in the future
+  nft: EditModeNft; // TODO: this will be an object in the future
   index: number;
 };
 
@@ -22,14 +22,14 @@ function SidebarNftIcon({ nft, index }: SidebarNftIconProps) {
   }, [index, isSelected, setNftIsSelected]);
 
   const handleUpdate = useCallback(() => {
-    isSelected ? stageNft(nft) : unstageNft(nft.id);
+    isSelected ? stageNft(nft) : unstageNft(nft.nft.id);
   }, [isSelected, nft, stageNft, unstageNft]);
 
   useEffectAfterMount(handleUpdate);
 
   return (
     <StyledSidebarNftIcon>
-      <StyledImage isSelected={isSelected} src={nft.image_url} alt="nft" />
+      <StyledImage isSelected={isSelected} src={nft.nft.image_url} alt="nft" />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );
