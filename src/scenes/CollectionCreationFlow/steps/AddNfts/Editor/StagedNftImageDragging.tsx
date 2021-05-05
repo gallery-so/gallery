@@ -1,3 +1,4 @@
+import useMouseUp from 'hooks/useMouseUp';
 import { useCallback, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
@@ -8,17 +9,7 @@ type Props = {
 
 function NftImage({ nft }: Props) {
   const srcUrl = nft?.image_url;
-  const [isMouseUp, setIsMouseUp] = useState(false);
-  const handleMouseUp = useCallback(() => {
-    setIsMouseUp(true);
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [handleMouseUp]);
+  const isMouseUp = useMouseUp();
 
   return <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />;
 }

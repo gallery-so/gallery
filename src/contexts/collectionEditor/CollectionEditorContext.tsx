@@ -96,7 +96,9 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const unstageNft = useCallback((id: string) => {
-    setStagedNftsState((prev) => prev.filter((nft) => nft.nft.id !== id));
+    setStagedNftsState((prev) =>
+      prev.filter((editModeNft) => editModeNft.nft.id !== id)
+    );
   }, []);
 
   const handleSortNfts = useCallback((event: DragEndEvent) => {

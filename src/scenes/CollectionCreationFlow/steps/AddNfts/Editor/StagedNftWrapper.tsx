@@ -5,18 +5,18 @@ import styled from 'styled-components';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 
 type Props = {
-  nft: EditModeNft;
+  editModeNft: EditModeNft;
   activeId?: string;
 };
 
-function StagedNftWrapper({ nft, activeId }: Props) {
+function StagedNftWrapper({ editModeNft, activeId }: Props) {
   return (
     <StyledStageNftWrapper>
       <StyledUnstageButton
         // TODO make index guaranteed
-        nftIndex={nft.index || 0}
+        nftIndex={editModeNft.index || 0}
       />
-      <SortableStagedNft nft={nft.nft} activeId={activeId} />
+      <SortableStagedNft nft={editModeNft.nft} activeId={activeId} />
     </StyledStageNftWrapper>
   );
 }

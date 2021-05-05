@@ -5,12 +5,14 @@ import styled from 'styled-components';
 import { EditModeNft } from 'types/Nft';
 
 type SidebarNftIconProps = {
-  nft: EditModeNft;
+  editModeNft: EditModeNft;
   index: number;
 };
 
-function SidebarNftIcon({ nft, index }: SidebarNftIconProps) {
-  const isSelected = useMemo(() => !!nft.isSelected, [nft.isSelected]);
+function SidebarNftIcon({ editModeNft, index }: SidebarNftIconProps) {
+  const isSelected = useMemo(() => !!editModeNft.isSelected, [
+    editModeNft.isSelected,
+  ]);
   const {
     setNftIsSelected,
     stageNft,
@@ -22,14 +24,18 @@ function SidebarNftIcon({ nft, index }: SidebarNftIconProps) {
   }, [index, isSelected, setNftIsSelected]);
 
   const handleUpdate = useCallback(() => {
-    isSelected ? stageNft(nft) : unstageNft(nft.nft.id);
-  }, [isSelected, nft, stageNft, unstageNft]);
+    isSelected ? stageNft(editModeNft) : unstageNft(editModeNft.nft.id);
+  }, [editModeNft, isSelected, stageNft, unstageNft]);
 
   useEffectAfterMount(handleUpdate);
 
   return (
     <StyledSidebarNftIcon>
-      <StyledImage isSelected={isSelected} src={nft.nft.image_url} alt="nft" />
+      <StyledImage
+        isSelected={isSelected}
+        src={editModeNft.nft.image_url}
+        alt="nft"
+      />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );

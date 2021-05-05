@@ -21,8 +21,12 @@ function Sidebar() {
       </Header>
       <Spacer height={12} />
       <Selection>
-        {allNfts.map((nft: EditModeNft, index: number) => (
-          <SidebarNftIcon key={nft.nft.id} nft={nft} index={index} />
+        {allNfts.map((editModeNft: EditModeNft, index: number) => (
+          <SidebarNftIcon
+            key={editModeNft.nft.id}
+            editModeNft={editModeNft}
+            index={index}
+          />
         ))}
       </Selection>
       <Spacer height={12} />

@@ -61,8 +61,12 @@ function Editor() {
       >
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
-            {stagedNfts.map((nft) => (
-              <StagedNftWrapper key={nft.id} nft={nft} activeId={activeId} />
+            {stagedNfts.map((editModeNft) => (
+              <StagedNftWrapper
+                key={editModeNft.id}
+                editModeNft={editModeNft}
+                activeId={activeId}
+              />
             ))}
           </StyledStagedNftContainer>
         </SortableContext>
