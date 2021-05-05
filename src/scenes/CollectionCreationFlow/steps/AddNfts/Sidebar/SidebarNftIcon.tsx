@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { EditModeNft } from 'types/Nft';
 
 type SidebarNftIconProps = {
-  nft: EditModeNft; // TODO: this will be an object in the future
+  nft: EditModeNft;
   index: number;
 };
 

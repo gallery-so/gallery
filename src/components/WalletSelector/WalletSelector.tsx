@@ -9,7 +9,7 @@ import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
 import { Text } from 'components/core/Text/Text';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import { navigate } from '@reach/router';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -187,7 +187,7 @@ const StyledBody = styled(Text)`
   margin-bottom: 30px;
 `;
 
-const StyledRetryButton = styled(PrimaryButton)`
+const StyledRetryButton = styled(Button)`
   width: 50%;
   align-self: center;
 `;

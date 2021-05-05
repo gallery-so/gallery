@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
@@ -20,7 +20,7 @@ function Welcome(_: RouteComponentProps) {
         veniam, quis nostrud exercitation
       </StyledBodyText>
       <Spacer height={20} />
-      <StyledPrimaryButton text="Enter Gallery" onClick={handleClick} />
+      <StyledButton text="Enter Gallery" onClick={handleClick} />
     </StyledWelcome>
   );
 }
@@ -47,7 +47,7 @@ const StyledWelcome = styled.div`
   margin: 20vh auto 0;
 `;
 
-const StyledPrimaryButton = styled(PrimaryButton)`
+const StyledButton = styled(Button)`
   width: 200px;
 `;
 

@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { Text } from '../Text/Text';
 import colors from '../colors';
 
+type ButtonStyle = 'primary' | 'secondary';
+
 type Props = {
+  type?: ButtonStyle;
   className?: string;
   text?: string;
   onClick?: () => void;
@@ -11,7 +14,8 @@ type Props = {
   dataTestId?: string;
 };
 
-function PrimaryButton({
+function Button({
+  type = 'primary',
   className,
   text,
   onClick,
@@ -19,28 +23,36 @@ function PrimaryButton({
   dataTestId,
 }: Props) {
   return (
-    <StyledPrimaryButton
+    <StyledButton
+      // renaming this prop `buttonStyle` since the `type` prop
+      // already exists for styled components
+      buttonStyle={type}
       className={className}
       onClick={onClick}
       disabled={disabled}
       data-testid={dataTestId}
     >
-      <Text color={colors.white}>{text}</Text>
-    </StyledPrimaryButton>
+      <Text color={type === 'primary' ? colors.white : colors.black}>
+        {text}
+      </Text>
+    </StyledButton>
   );
 }
 
-type StyledPrimaryButtonProps = {
+type StyledButtonProps = {
   disabled?: boolean;
+  buttonStyle: ButtonStyle;
+  children: React.ReactNode;
 };
 
-const StyledPrimaryButton = styled.button<StyledPrimaryButtonProps>`
+const StyledButton = styled.button<StyledButtonProps>`
   border-style: none;
+  border: 1px solid ${colors.black};
 
   height: 40px;
 
-  background: black;
-  color: white;
+  background: ${({ buttonStyle }) =>
+    buttonStyle === 'primary' ? colors.black : colors.white};
 
   cursor: pointer;
 
@@ -55,4 +67,4 @@ const StyledPrimaryButton = styled.button<StyledPrimaryButtonProps>`
   }
 `;
 
-export default memo(PrimaryButton);
+export default memo(Button);

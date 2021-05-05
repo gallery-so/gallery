@@ -6,9 +6,8 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
 import SidebarNftIcon from './SidebarNftIcon';
-import { ReactComponent as SearchIcon } from './search.svg';
 
-import { EditModeNft, Nft } from 'types/Nft';
+import { EditModeNft } from 'types/Nft';
 
 import { useAllNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 

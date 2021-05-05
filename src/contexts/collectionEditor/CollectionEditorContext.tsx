@@ -10,41 +10,14 @@ import {
 import { EditModeNft, Nft } from 'types/Nft';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
-
-import dummy1 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_1.png';
-import dummy2 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_2.png';
-import dummy3 from 'scenes/CollectionCreationFlow/steps/AddNfts/dummy_3.png';
-
-function randomPic() {
-  const pics = [dummy1, dummy2, dummy3];
-  const index = Math.floor(Math.random() * pics.length);
-  return pics[index];
-}
-
-function randomPics(n: number) {
-  const pics = [];
-  for (let i = 0; i < n; i++) {
-    pics.push({
-      id: `${i}`,
-      nft: {
-        id: `${i}`,
-        name: 'test',
-        image_url: randomPic(),
-        image_preview_url: 'test', // track position in "all nfts" array so it's for dnd to mark it as unselected
-      },
-      index: i,
-      isSelected: false,
-    });
-  }
-  return pics;
-}
+import { randomPics } from 'mocks/nfts';
 
 export type AllNftsState = EditModeNft[];
 export type StagedNftsState = EditModeNft[];
 
 export type CollectionEditorState = {
-  allNfts: EditModeNft[];
-  stagedNfts: EditModeNft[];
+  allNfts: AllNftsState;
+  stagedNfts: StagedNftsState;
 };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({

@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
@@ -17,6 +17,7 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
     return history.index === 0;
   }, [history.index]);
 
+  // TODO: consider putting this in context / useWizardConfig
   const buttonText = useMemo(() => {
     switch (step.id) {
       case 'addUserInfo':
@@ -48,11 +49,16 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
 
   return (
     <StyledWizardFooter>
-      <ActionText color={colors.gray10} onClick={handlePreviousClick}>
-        {isFirstStep ? 'Cancel' : 'Back'}
-      </ActionText>
+      {
+        // TODO: consider putting this in context / useWizardConfig
+        step.id === 'organize' ? null : (
+          <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+            {isFirstStep ? 'Cancel' : 'Back'}
+          </ActionText>
+        )
+      }
       <Spacer width={40} />
-      <StyledPrimaryButton
+      <StyledButton
         disabled={!isNextEnabled}
         text={buttonText}
         onClick={handleNextClick}
@@ -81,7 +87,7 @@ const StyledWizardFooter = styled.div`
   background: white;
 `;
 
-const StyledPrimaryButton = styled(PrimaryButton)`
+const StyledButton = styled(Button)`
   min-width: 190px;
   padding: 0px 32px;
 `;

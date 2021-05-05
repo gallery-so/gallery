@@ -24,6 +24,7 @@
       "connectors/*": ["src/connectors/*"],
       "hooks/*": ["src/hooks/*"],
       "utils/*": ["src/utils/*"],
+      "mocks/*": ["src/mocks/*"],
       "types/*": ["src/types/*"]
     }
   },
