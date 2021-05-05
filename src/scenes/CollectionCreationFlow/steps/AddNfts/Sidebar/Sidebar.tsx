@@ -50,15 +50,6 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const Searchbar = styled.div`
-  display: flex;
-  align-items: center;
-
-  border: 1px solid ${colors.gray50};
-
-  padding: 8px 12px;
-`;
-
 const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;

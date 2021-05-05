@@ -1,5 +1,4 @@
 import useMouseUp from 'hooks/useMouseUp';
-import { useCallback, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
 

@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 
@@ -27,11 +27,6 @@ const StyledGridImage = styled.div<{ srcUrl?: string }>`
   height: 280px;
   width: 280px;
   position: relative;
-`;
-
-const grow = keyframes`
-  from {height: 280px; width 280px};
-  to {height: 284px; width: 284px}
 `;
 
 // potentially useful links:

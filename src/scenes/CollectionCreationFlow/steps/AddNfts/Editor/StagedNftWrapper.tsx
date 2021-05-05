@@ -1,4 +1,4 @@
-import { EditModeNft, Nft } from 'types/Nft';
+import { EditModeNft } from 'types/Nft';
 import SortableStagedNft from './SortableStagedNft';
 import UnstageButton from './UnstageButton';
 import styled from 'styled-components';
