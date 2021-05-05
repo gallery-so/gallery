@@ -20,3 +20,21 @@ export function mockNftsLite(n: number) {
   }
   return pics;
 }
+
+export function randomPics(n: number) {
+  const pics = [];
+  for (let i = 0; i < n; i++) {
+    pics.push({
+      id: `${i}`,
+      nft: {
+        id: `${i}`,
+        name: 'test',
+        image_url: randomPic(),
+        image_preview_url: 'test', // track position in "all nfts" array so it's for dnd to mark it as unselected
+      },
+      index: i,
+      isSelected: false,
+    });
+  }
+  return pics;
+}

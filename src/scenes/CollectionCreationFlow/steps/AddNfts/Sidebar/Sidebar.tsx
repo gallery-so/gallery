@@ -1,26 +1,18 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
+import SidebarNftIcon from './SidebarNftIcon';
 
-import NftPreviewIcon from './NftPreviewIcon';
+import { EditModeNft } from 'types/Nft';
 
-import { mockNftsLite } from 'mocks/nfts';
+import { useAllNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 
-import { ReactComponent as SearchIcon } from './search.svg';
-import { Nft } from 'types/Nft';
-
-type Props = {
-  onStageNft: (nft: Nft) => void;
-  onUnstageNft: (id: string) => void;
-};
-
-function Sidebar({ onStageNft, onUnstageNft }: Props) {
-  const [allNfts] = useState(mockNftsLite(50));
-
+function Sidebar() {
+  const allNfts = useAllNftsState();
   return (
     <StyledSidebar>
       <Header>
@@ -28,19 +20,12 @@ function Sidebar({ onStageNft, onUnstageNft }: Props) {
         <Text color={colors.gray50}>0xj2T2...a81H</Text>
       </Header>
       <Spacer height={12} />
-      <Searchbar>
-        <SearchIcon />
-        <Spacer width={6} />
-        <Text color={colors.gray50}>Search</Text>
-      </Searchbar>
-      <Spacer height={16} />
       <Selection>
-        {allNfts.map((nft) => (
-          <NftPreviewIcon
-            key={nft.id}
-            nft={nft}
-            onStageNft={onStageNft}
-            onUnstageNft={onUnstageNft}
+        {allNfts.map((editModeNft: EditModeNft, index: number) => (
+          <SidebarNftIcon
+            key={editModeNft.nft.id}
+            editModeNft={editModeNft}
+            index={index}
           />
         ))}
       </Selection>
@@ -63,15 +48,6 @@ const StyledSidebar = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const Searchbar = styled.div`
-  display: flex;
-  align-items: center;
-
-  border: 1px solid ${colors.gray50};
-
-  padding: 8px 12px;
 `;
 
 const Selection = styled.div`

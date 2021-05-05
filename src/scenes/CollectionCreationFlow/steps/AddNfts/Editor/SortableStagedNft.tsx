@@ -1,16 +1,16 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { memo, ReactNode, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
+import StagedNftImage from './StagedNftImage';
 
 type Props = {
   nft: Nft;
-  children: ReactNode;
   activeId?: string;
 };
 
-function SortableNft({ nft, children, activeId }: Props) {
+function SortableStagedNft({ nft, activeId, ...props }: Props) {
   const {
     attributes,
     listeners,
@@ -32,12 +32,14 @@ function SortableNft({ nft, children, activeId }: Props) {
   return (
     <StyledSortableNft
       ref={setNodeRef}
+      id={nft.id}
+      active={isDragging}
       // @ts-expect-error
       style={style}
       {...attributes}
       {...listeners}
     >
-      {children}
+      <StagedNftImage nft={nft} />
     </StyledSortableNft>
   );
 }
@@ -49,6 +51,7 @@ const StyledSortableNft = styled.div`
     // ok to remove focus here because there it is not functionally 'in focus' for the user
     outline: none;
   }
+  cursor: grab;
 `;
 
-export default memo(SortableNft);
+export default memo(SortableStagedNft);

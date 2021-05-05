@@ -1,9 +1,6 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
-import { Subtitle } from 'components/core/Text/Text';
-
 import {
   DndContext,
   DragEndEvent,
@@ -14,22 +11,27 @@ import {
   DropAnimation,
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import { Nft } from 'types/Nft';
-import NftImage from './NftImage';
 
-import SortableNft from './SortableNft';
+import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
+import { Subtitle } from 'components/core/Text/Text';
 
-type Props = {
-  stagedNfts: Nft[];
-  onSortNfts: (event: DragEndEvent) => void;
-};
+import StagedNftImageDragging from './StagedNftImageDragging';
+import StagedNftWrapper from './StagedNftWrapper';
+
+import {
+  useCollectionEditorActions,
+  useStagedNftsState,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
   dragSourceOpacity: 0.2,
 };
 
-function Editor({ stagedNfts, onSortNfts }: Props) {
+function Editor() {
+  const stagedNfts = useStagedNftsState();
+  const { handleSortNfts } = useCollectionEditorActions();
+
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -40,13 +42,13 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      onSortNfts(event);
+      handleSortNfts(event);
     },
-    [onSortNfts]
+    [handleSortNfts]
   );
 
   const activeNft = useMemo(() => {
-    return stagedNfts.find((nft) => nft.id === activeId);
+    return stagedNfts.find(({ nft }) => nft.id === activeId);
   }, [stagedNfts, activeId]);
 
   return (
@@ -58,20 +60,24 @@ function Editor({ stagedNfts, onSortNfts }: Props) {
         collisionDetection={closestCenter}
       >
         <SortableContext items={stagedNfts}>
-          <NftsContainer>
-            {stagedNfts.map((nft) => (
-              <SortableNft key={nft.id} nft={nft} activeId={activeId}>
-                <NftImage nft={nft}></NftImage>
-              </SortableNft>
+          <StyledStagedNftContainer>
+            {stagedNfts.map((editModeNft) => (
+              <StagedNftWrapper
+                key={editModeNft.id}
+                editModeNft={editModeNft}
+                activeId={activeId}
+              />
             ))}
-          </NftsContainer>
+          </StyledStagedNftContainer>
         </SortableContext>
         <DragOverlay
           adjustScale={true}
           dropAnimation={defaultDropAnimationConfig}
         >
-          {activeId ? (
-            <NftImage nft={activeNft} isDragging={true}></NftImage>
+          {activeNft ? (
+            <StagedNftImageDragging
+              nft={activeNft.nft}
+            ></StagedNftImageDragging>
           ) : null}
         </DragOverlay>
       </DndContext>
@@ -91,7 +97,7 @@ const StyledEditor = styled.div`
   overflow: scroll;
 `;
 
-const NftsContainer = styled.div`
+const StyledStagedNftContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   column-gap: 48px;
