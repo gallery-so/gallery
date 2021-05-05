@@ -25,7 +25,7 @@ const StyledDraggingImage = styled.div<{
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
   background-size: contain;
 
-  box-shadow: 0px 8px 15px 4px rgb(0 0 0 / 34%);
+  box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
   height: 284px;
   width: 284px;
 
