@@ -24,6 +24,7 @@ function OrganizeCollections() {
             />
           ))}
         </CollectionRows>
+        <Spacer height={120} />
       </Content>
     </StyledOrganizeCollections>
   );
