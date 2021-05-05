@@ -7,7 +7,7 @@ import TextArea from 'components/core/TextArea/TextArea';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import { useModal } from 'contexts/modal/ModalContext';
 
 type Props = {
@@ -67,7 +67,7 @@ function CollectionNamingForm({ onNext }: Props) {
       />
       <Spacer height={20} />
       <ButtonContainer>
-        <StyledPrimaryButton text={buttonText} onClick={handleClick} />
+        <StyledButton text={buttonText} onClick={handleClick} />
       </ButtonContainer>
     </StyledCollectionNamingForm>
   );
@@ -89,7 +89,7 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const StyledPrimaryButton = styled(PrimaryButton)`
+const StyledButton = styled(Button)`
   width: 90px;
 `;
 

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import styled, { keyframes } from 'styled-components';
@@ -43,7 +43,7 @@ function Password({ handleNextClick }: Props) {
     return (
       <StyledPasswordContainer>
         <Spacer height={40} />
-        <StyledPrimaryButton text="Enter" onClick={handleClick} />
+        <StyledButton text="Enter" onClick={handleClick} />
       </StyledPasswordContainer>
     );
   }
@@ -58,7 +58,7 @@ function Password({ handleNextClick }: Props) {
         />
       </StyledForm>
       {isFormVisibleAndUnlocked && (
-        <AnimatedStyledPrimaryButton text="Enter" onClick={handleClick} />
+        <AnimatedStyledButton text="Enter" onClick={handleClick} />
       )}
     </StyledPasswordContainer>
   );
@@ -98,10 +98,10 @@ const StyledPasswordInput = styled.input`
 `;
 
 const TRANSLATE_PIXELS = -50;
-const MODAL_TRANSITION_MS = 1500;
+const MODAL_TRANSITION_MS = 700;
 
 // ease-out like style
-const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.01)`;
+const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0.85, 0.48, 0.99)`;
 
 const translateDown = keyframes`
   from { transform: translateY(${TRANSLATE_PIXELS}px) };
@@ -113,11 +113,11 @@ const fadeIn = keyframes`
   to {opactity:100};
 `;
 
-const StyledPrimaryButton = styled(PrimaryButton)`
+const StyledButton = styled(Button)`
   width: ${INPUT_WIDTH}px;
 `;
 
-const AnimatedStyledPrimaryButton = styled(StyledPrimaryButton)`
+const AnimatedStyledButton = styled(StyledButton)`
   animation: ${translateDown} ${transitionStyle}, ${fadeIn} ${transitionStyle};
 `;
 

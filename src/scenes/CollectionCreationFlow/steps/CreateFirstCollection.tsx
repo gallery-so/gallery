@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Text, Subtitle } from 'components/core/Text/Text';
-import PrimaryButton from 'components/core/Button/PrimaryButton';
+import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { WizardContext } from 'react-albus';
@@ -16,7 +16,7 @@ function CreateFirstCollection({ next }: WizardContext) {
         themes.
       </StyledBodyText>
       <Spacer height={20} />
-      <StyledPrimaryButton text="New Collection" onClick={next} />
+      <StyledButton text="New Collection" onClick={next} />
     </StyledWelcome>
   );
 }
@@ -36,7 +36,7 @@ const StyledWelcome = styled.div`
   max-width: 400px;
 `;
 
-const StyledPrimaryButton = styled(PrimaryButton)`
+const StyledButton = styled(Button)`
   width: 200px;
 `;
 
