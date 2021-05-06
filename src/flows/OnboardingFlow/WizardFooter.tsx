@@ -24,9 +24,9 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
         return 'Save';
       case 'create':
         return 'New Collection';
-      case 'addNfts':
+      case 'organizeCollection':
         return 'Create Collection';
-      case 'organize':
+      case 'organizeGallery':
         return 'Publish Gallery';
       default:
         return 'Next';
@@ -51,7 +51,7 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
     <StyledWizardFooter>
       {
         // TODO: consider putting this in context / useWizardConfig
-        step.id === 'organize' ? null : (
+        step.id === 'organizeGallery' ? null : (
           <ActionText color={colors.gray10} onClick={handlePreviousClick}>
             {isFirstStep ? 'Cancel' : 'Back'}
           </ActionText>

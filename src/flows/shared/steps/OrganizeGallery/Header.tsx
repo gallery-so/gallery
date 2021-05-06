@@ -11,7 +11,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
     alert('TODO - go to gallery preview');
   }, []);
   const handleAddCollection = useCallback(() => {
-    push('addNfts');
+    push('organizeCollection');
   }, [push]);
 
   return (
