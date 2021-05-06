@@ -5,6 +5,7 @@ import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import { WizardProps } from 'flows/shared/types';
+import WizardFooter from './WizardFooter';
 
 function EditGalleryFlow(_: RouteComponentProps) {
   return (

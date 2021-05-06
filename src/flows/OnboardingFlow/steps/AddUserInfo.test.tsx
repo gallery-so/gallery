@@ -3,7 +3,7 @@ import AddUserInfo from './AddUserInfo';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import { Wizard, Steps, Step } from 'react-albus';
 import WizardFooter from '../WizardFooter';
-import { WizardProps } from '../types';
+import { WizardProps } from 'flows/shared/types';
 
 const VALID_USERNAME = 'validUsername';
 const INVALID_USERNAME = 'invalid username 1';
