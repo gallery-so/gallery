@@ -4,26 +4,26 @@ import { Text } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
-
 import { ReactComponent as Settings } from './collection-settings.svg';
+import { Collection } from 'types/Collection';
 
 type Props = {
-  title?: string;
-  nfts: Nft[];
+  collection: Collection;
   className?: string;
 };
 
 /**
  * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
-function CollectionRow({ title, nfts, className }: Props) {
+function CollectionRow({ collection, className }: Props) {
+  const nfts = collection.nfts;
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
   return (
-    <StyledCollectionRow className={className}>
+    <StyledCollectionRow className={className} isHidden={collection.isHidden}>
       <Header>
-        <Text>{title}</Text>
+        <Text>{collection.title}</Text>
         <Settings />
       </Header>
       <Spacer height={12} />
@@ -33,11 +33,16 @@ function CollectionRow({ title, nfts, className }: Props) {
         ))}
         {remainingNfts.length ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
+      {collection.isHidden && <StyledHiddenLabel>Hidden</StyledHiddenLabel>}
     </StyledCollectionRow>
   );
 }
 
-const StyledCollectionRow = styled.div`
+type StyledCollectionRowProps = {
+  isHidden?: boolean;
+};
+
+const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   display: flex;
   flex-direction: column;
 
@@ -46,6 +51,8 @@ const StyledCollectionRow = styled.div`
 
   border: 1px solid ${colors.gray50};
   background-color: ${colors.white};
+
+  opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};
 `;
 
 const Header = styled.div`
@@ -58,6 +65,10 @@ const Body = styled.div`
   column-gap: 24px;
 `;
 
+const StyledHiddenLabel = styled(Text)`
+  text-align: right;
+  text-transform: uppercase;
+`;
 const BigNftPreview = styled.img`
   width: 160px;
   height: 160px;

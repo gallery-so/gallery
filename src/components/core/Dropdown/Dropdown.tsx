@@ -12,7 +12,7 @@ import TextButton from '../Button/TextButton';
 import colors from '../colors';
 
 type Props = {
-  mainText: string;
+  mainText?: string;
   children?: ReactNode;
 };
 
@@ -24,6 +24,7 @@ const refContainsEventTarget = (
 };
 
 const dropdownMenuWrapperStyle: CSSProperties = { position: 'relative' };
+const dropdownButtonWrapperStyle: CSSProperties = { display: 'flex' };
 
 function Dropdown({ mainText, children }: Props) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -57,9 +58,9 @@ function Dropdown({ mainText, children }: Props) {
   return (
     <StyledDropdown>
       {/* styled component type doesnt support refs so use wrapper */}
-      <div ref={dropdownButtonRef}>
+      <div ref={dropdownButtonRef} style={dropdownButtonWrapperStyle}>
         <StyledDropdownButton
-          text={mainText}
+          text={mainText || ''}
           onClick={handleDropdownButtonClick}
         />
       </div>
@@ -84,20 +85,25 @@ const StyledDropdown = styled.div`
 const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   visibility: ${({ isDropdownVisible }) =>
     isDropdownVisible ? 'visible' : 'hidden'};
-  display: flex;
 
+  display: flex;
   flex-direction: column;
   align-items: flex-end;
-  border: 1px solid ${colors.gray50};
-  padding: 10px;
+
   position: absolute;
   right: 0;
+
+  padding: 10px;
+  border: 1px solid ${colors.gray50};
   width: max-content;
+  background-color: ${colors.white};
+
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 `;
 
-const StyledDropdownButton = styled(TextButton)`
+export const StyledDropdownButton = styled(TextButton)`
   width: fit-content;
-  align-self: flex-end;
+  // align-self: flex-end;
 
   &:focus {
     underline: 1px solid;

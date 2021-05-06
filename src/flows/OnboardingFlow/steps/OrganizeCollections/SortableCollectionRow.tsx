@@ -38,10 +38,7 @@ function SortableCollectionRow({ collection, ...props }: Props) {
       {...attributes}
       {...listeners}
     >
-      <CollectionRow
-        title={collection.title}
-        nfts={collection.nfts}
-      ></CollectionRow>
+      <CollectionRow collection={collection}></CollectionRow>
     </StyledSortableCollectionRow>
   );
 }

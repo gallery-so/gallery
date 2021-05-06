@@ -11,8 +11,7 @@ function CollectionRowDragging({ collection }: Props) {
   return (
     <StyledCollectionRowDragging>
       <StyledCollectionRow
-        title={collection.title}
-        nfts={collection.nfts}
+        collection={collection}
         isMouseUp={isMouseUp}
       ></StyledCollectionRow>
     </StyledCollectionRowDragging>
@@ -21,6 +20,7 @@ function CollectionRowDragging({ collection }: Props) {
 
 const StyledCollectionRowDragging = styled.div`
   display: flex;
+  background-color: ${colors.white};
 `;
 
 const StyledCollectionRow = styled(CollectionRow)<{ isMouseUp: boolean }>`
