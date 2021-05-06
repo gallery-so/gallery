@@ -8,19 +8,20 @@ import { Nft } from 'types/Nft';
 import { ReactComponent as Settings } from './collection-settings.svg';
 
 type Props = {
-  title: string;
+  title?: string;
   nfts: Nft[];
+  className?: string;
 };
 
 /**
  * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
-function CollectionRow({ title, nfts }: Props) {
+function CollectionRow({ title, nfts, className }: Props) {
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
   return (
-    <StyledCollectionRow>
+    <StyledCollectionRow className={className}>
       <Header>
         <Text>{title}</Text>
         <Settings />
@@ -44,6 +45,7 @@ const StyledCollectionRow = styled.div`
   padding: 32px;
 
   border: 1px solid ${colors.gray50};
+  background-color: ${colors.white};
 `;
 
 const Header = styled.div`

@@ -1,15 +1,15 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
-import StagedNftImage from './StagedNftImage';
+import { Collection } from 'types/Collection';
+import CollectionRow from './CollectionRow';
 
 type Props = {
-  nft: Nft;
+  collection: Collection;
 };
 
-function SortableStagedNft({ nft, ...props }: Props) {
+function SortableCollectionRow({ collection, ...props }: Props) {
   const {
     attributes,
     listeners,
@@ -17,7 +17,7 @@ function SortableStagedNft({ nft, ...props }: Props) {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: nft.id });
+  } = useSortable({ id: collection.id });
 
   const style = useMemo(
     () => ({
@@ -29,23 +29,24 @@ function SortableStagedNft({ nft, ...props }: Props) {
   );
 
   return (
-    <StyledSortableNft
+    <StyledSortableCollectionRow
       ref={setNodeRef}
-      id={nft.id}
+      id={collection.id}
       active={isDragging}
       // @ts-expect-error
       style={style}
       {...attributes}
       {...listeners}
     >
-      <StagedNftImage nft={nft} />
-    </StyledSortableNft>
+      <CollectionRow
+        title={collection.title}
+        nfts={collection.nfts}
+      ></CollectionRow>
+    </StyledSortableCollectionRow>
   );
 }
 
-// TODO: enable image to scale smoothly when picking up
-const StyledSortableNft = styled.div`
-  -webkit-backface-visibility: hidden;
+const StyledSortableCollectionRow = styled.div`
   &:focus {
     // ok to remove focus here because there it is not functionally 'in focus' for the user
     outline: none;
@@ -53,4 +54,4 @@ const StyledSortableNft = styled.div`
   cursor: grab;
 `;
 
-export default memo(SortableStagedNft);
+export default SortableCollectionRow;

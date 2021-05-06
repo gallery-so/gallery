@@ -1,3 +1,4 @@
+import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useMemo } from 'react';
@@ -58,7 +59,7 @@ const StyledOutline = styled.div<SelectedProps>`
   top: 0;
   left: 0;
 
-  outline: ${({ isSelected }) => (isSelected ? 1 : 0)}px solid #14ff00;
+  outline: ${({ isSelected }) => (isSelected ? 1 : 0)}px solid ${colors.green};
 `;
 
 const StyledImage = styled.img<SelectedProps>`
