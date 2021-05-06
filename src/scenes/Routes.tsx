@@ -4,7 +4,6 @@ import Home from 'scenes/Home/Home';
 import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
-import Welcome from 'scenes/Welcome/Welcome';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
 
 export default function Routes() {
@@ -14,8 +13,7 @@ export default function Routes() {
       <AppContainer path="/">
         <Home path="/" />
         {/* might use this in the future: <Auth path="/auth" /> */}
-        <AuthenticatedRoute Component={Welcome} path="/welcome" />
-        <AuthenticatedRoute Component={OnboardingFlow} path="/create" />
+        <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
         <Gallery path="/:usernameOrWalletAddress" />
         <NotFound default path="404" />
       </AppContainer>

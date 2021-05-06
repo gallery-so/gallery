@@ -1,4 +1,7 @@
-import { memo, useCallback, useMemo, useEffect } from 'react';
+/**
+ * TODO: this should be abstracted to be shared with WizardFooter
+ */
+import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import Button from 'components/core/Button/Button';
@@ -7,7 +10,7 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { WizardProps } from './types';
+import { WizardProps } from 'flows/shared/types';
 
 function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
