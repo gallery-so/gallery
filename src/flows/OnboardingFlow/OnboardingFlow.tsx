@@ -2,12 +2,14 @@ import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import WizardFooter from './WizardFooter';
+import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
+import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
+import Welcome from './steps/Welcome';
 import CreateFirstCollection from './steps/CreateFirstCollection';
-import AddNfts from './steps/AddNfts/AddNfts';
-import OrganizeCollections from './steps/OrganizeCollections/OrganizeCollections';
 import AddUserInfo from './steps/AddUserInfo';
+import Congratulations from './steps/Congratulations';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
-import { WizardProps } from './types';
+import { WizardProps } from 'flows/shared/types';
 
 function OnboardingFlow(_: RouteComponentProps) {
   return (
@@ -17,12 +19,23 @@ function OnboardingFlow(_: RouteComponentProps) {
           return (
             <>
               <Steps>
+                <Step id="welcome" render={Welcome} />
                 <Step id="addUserInfo" render={AddUserInfo} />
                 <Step id="create" render={CreateFirstCollection} />
-                <Step id="addNfts" render={AddNfts} />
-                <Step id="organize" render={OrganizeCollections} />
+                <Step id="organizeCollection" render={OrganizeCollection} />
+                <Step id="organizeGallery" render={OrganizeGallery} />
+                <Step id="congratulations" render={Congratulations} />
               </Steps>
-              <WizardFooter {...(wizardProps as WizardProps)} />
+              <WizardFooter
+                shouldHideFooter={
+                  wizardProps.step.id === 'welcome' ||
+                  wizardProps.step.id === 'congratulations'
+                }
+                shouldHideSecondaryButton={
+                  wizardProps.step.id === 'organizeGallery'
+                }
+                {...(wizardProps as WizardProps)}
+              />
             </>
           );
         }}
