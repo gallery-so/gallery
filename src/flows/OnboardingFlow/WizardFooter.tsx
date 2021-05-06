@@ -8,7 +8,6 @@ import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
-import { navigate } from '@reach/router';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { GalleryWizardProps } from 'flows/shared/types';
 
@@ -17,7 +16,8 @@ function WizardFooter({
   next,
   previous,
   history,
-  shouldHide,
+  shouldHideFooter,
+  shouldHideSecondaryButton,
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext } = useWizardCallback();
@@ -51,20 +51,17 @@ function WizardFooter({
     previous();
   }, [previous]);
 
-  if (shouldHide) {
+  if (shouldHideFooter) {
     return null;
   }
 
   return (
     <StyledWizardFooter>
-      {
-        // TODO: consider putting this in context / useWizardConfig
-        step.id === 'organizeGallery' ? null : (
-          <ActionText color={colors.gray10} onClick={handlePreviousClick}>
-            {isFirstStep ? 'Cancel' : 'Back'}
-          </ActionText>
-        )
-      }
+      {shouldHideSecondaryButton ? null : (
+        <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+          {isFirstStep ? 'Cancel' : 'Back'}
+        </ActionText>
+      )}
       <Spacer width={40} />
       <StyledButton
         disabled={!isNextEnabled}

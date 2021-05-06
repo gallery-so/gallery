@@ -8,5 +8,6 @@ export type WizardProps = Omit<WizardContext, 'history'> & {
 };
 
 export type GalleryWizardProps = WizardProps & {
-  shouldHide?: boolean;
+  shouldHideFooter?: boolean;
+  shouldHideSecondaryButton?: boolean;
 };
