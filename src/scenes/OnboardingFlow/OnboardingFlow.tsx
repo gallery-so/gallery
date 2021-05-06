@@ -9,7 +9,7 @@ import AddUserInfo from './steps/AddUserInfo';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import { WizardProps } from './types';
 
-function CollectionCreationFlow(_: RouteComponentProps) {
+function OnboardingFlow(_: RouteComponentProps) {
   return (
     <GalleryWizardProvider>
       <Wizard
@@ -31,4 +31,4 @@ function CollectionCreationFlow(_: RouteComponentProps) {
   );
 }
 
-export default memo(CollectionCreationFlow);
+export default memo(OnboardingFlow);

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import CollectionCreationFlow from './CollectionCreationFlow';
+import OnboardingFlow from './OnboardingFlow';
 
 test('Next button is disabled by default', () => {
-  render(<CollectionCreationFlow></CollectionCreationFlow>);
+  render(<OnboardingFlow></OnboardingFlow>);
   const button = screen.getByTestId('wizard-footer-next-button');
   expect(button.disabled).toBe(true);
 });

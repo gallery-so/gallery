@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { FOOTER_HEIGHT } from 'scenes/CollectionCreationFlow/WizardFooter';
+import { FOOTER_HEIGHT } from 'scenes/OnboardingFlow/WizardFooter';
 import SidebarNftIcon from './SidebarNftIcon';
 
 import { EditModeNft } from 'types/Nft';
