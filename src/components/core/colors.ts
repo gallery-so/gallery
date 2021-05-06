@@ -7,6 +7,7 @@ enum colors {
   gray20 = '#CCCCCC',
   gray10 = '#e5e5e5',
   white = '#ffffff',
+  green = '#14ff00',
 }
 
 export default colors;

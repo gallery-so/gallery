@@ -6,7 +6,7 @@ type Props = {
   nft?: Nft;
 };
 
-function NftImage({ nft }: Props) {
+function StagedNftImageDragging({ nft }: Props) {
   const srcUrl = nft?.image_url;
   const isMouseUp = useMouseUp();
 
@@ -38,4 +38,4 @@ const StyledDraggingImage = styled.div<{
   // animation: ${grow} 50ms linear;
 `;
 
-export default NftImage;
+export default StagedNftImageDragging;

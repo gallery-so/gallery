@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/core": "7.12.3",
     "@dnd-kit/core": "^3.0.1",
+    "@dnd-kit/modifiers": "^2.0.0",
     "@dnd-kit/sortable": "^3.0.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",

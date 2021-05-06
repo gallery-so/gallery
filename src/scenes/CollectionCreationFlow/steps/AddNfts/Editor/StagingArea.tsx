@@ -65,7 +65,6 @@ function Editor() {
               <StagedNftWrapper
                 key={editModeNft.id}
                 editModeNft={editModeNft}
-                activeId={activeId}
               />
             ))}
           </StyledStagedNftContainer>

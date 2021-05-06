@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
-import CollectionRow from './CollectionRow';
+import CollectionDnd from './CollectionDnd';
 
 function OrganizeCollections() {
-  const [collections, setCollections] = useState(mockCollectionsLite(3));
+  const [collections, setCollections] = useState(mockCollectionsLite(4));
 
   return (
     <StyledOrganizeCollections>
@@ -15,15 +15,7 @@ function OrganizeCollections() {
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionRows>
-          {collections.map((collection) => (
-            <CollectionRow
-              key={collection.id}
-              title="Crypto Punks"
-              nfts={collection.nfts}
-            />
-          ))}
-        </CollectionRows>
+        <CollectionDnd collections={collections}></CollectionDnd>
         <Spacer height={120} />
       </Content>
     </StyledOrganizeCollections>
