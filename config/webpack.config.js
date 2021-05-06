@@ -339,6 +339,7 @@ module.exports = function (webpackEnv) {
         contexts: path.resolve(paths.appSrc, 'contexts'),
         components: path.resolve(paths.appSrc, 'components'),
         connectors: path.resolve(paths.appSrc, 'connectors'),
+        flows: path.resolve(paths.appSrc, 'flows'),
         hooks: path.resolve(paths.appSrc, 'hooks'),
         utils: path.resolve(paths.appSrc, 'utils'),
         mocks: path.resolve(paths.appSrc, 'mocks'),

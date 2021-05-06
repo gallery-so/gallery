@@ -3,7 +3,7 @@ import AppContainer from 'scenes/AppContainer/AppContainer';
 import Home from 'scenes/Home/Home';
 import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
-import OnboardingFlow from 'scenes/OnboardingFlow/OnboardingFlow';
+import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import Welcome from 'scenes/Welcome/Welcome';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
 

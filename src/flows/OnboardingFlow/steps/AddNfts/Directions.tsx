@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Subtitle, Text } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { FOOTER_HEIGHT } from 'scenes/OnboardingFlow/WizardFooter';
+import { FOOTER_HEIGHT } from 'flows/OnboardingFlow/WizardFooter';
 
 function Directions() {
   return (
