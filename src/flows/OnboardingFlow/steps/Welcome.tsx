@@ -1,16 +1,11 @@
-import { useCallback } from 'react';
-import { navigate, RouteComponentProps } from '@reach/router';
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
-function Welcome(_: RouteComponentProps) {
-  const handleClick = useCallback(() => {
-    navigate('/create');
-  }, []);
-
+function Welcome({ next }: WizardContext) {
   return (
     <StyledWelcome>
       <StyledHeader>Welcome to Gallery</StyledHeader>
@@ -20,7 +15,7 @@ function Welcome(_: RouteComponentProps) {
         veniam, quis nostrud exercitation
       </StyledBodyText>
       <Spacer height={20} />
-      <StyledButton text="Enter Gallery" onClick={handleClick} />
+      <StyledButton text="Enter Gallery" onClick={next} />
     </StyledWelcome>
   );
 }

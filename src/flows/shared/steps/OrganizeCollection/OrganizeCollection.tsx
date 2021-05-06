@@ -24,20 +24,20 @@ function useWizardConfig({ onNext }: ConfigProps) {
   }, [setOnNext, showModal, onNext]);
 }
 
-function AddNfts({ next }: WizardContext) {
+function OrganizeCollection({ next }: WizardContext) {
   useWizardConfig({ onNext: next });
 
   return (
-    <StyledAddNfts>
+    <StyledOrganizeCollection>
       <CollectionEditorProvider>
         <CollectionEditor />
       </CollectionEditorProvider>
-    </StyledAddNfts>
+    </StyledOrganizeCollection>
   );
 }
 
-const StyledAddNfts = styled.div`
+const StyledOrganizeCollection = styled.div`
   display: flex;
 `;
 
-export default AddNfts;
+export default OrganizeCollection;

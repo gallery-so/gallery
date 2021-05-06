@@ -6,3 +6,8 @@ import { History } from 'history';
 export type WizardProps = Omit<WizardContext, 'history'> & {
   history: History & { index: number };
 };
+
+export type GalleryWizardProps = WizardProps & {
+  shouldHideFooter?: boolean;
+  shouldHideSecondaryButton?: boolean;
+};

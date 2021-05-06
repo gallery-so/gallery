@@ -1,5 +1,5 @@
 /**
- * TODO: this should be abstracted to be shared with WizardFooter
+ * TODO: this should be abstracted to be shared with OnboardingFlow
  */
 import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
@@ -9,16 +9,9 @@ import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { GalleryWizardProps } from 'flows/shared/types';
+import { WizardProps } from 'flows/shared/types';
 
-function WizardFooter({
-  step,
-  next,
-  previous,
-  history,
-  shouldHideFooter,
-  shouldHideSecondaryButton,
-}: GalleryWizardProps) {
+function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext } = useWizardCallback();
 
@@ -29,20 +22,17 @@ function WizardFooter({
   // TODO: consider putting this in context / useWizardConfig
   const buttonText = useMemo(() => {
     switch (step.id) {
-      case 'addUserInfo':
-        return 'Save';
-      case 'create':
-        return 'New Collection';
-      case 'organizeCollection':
-        return 'Create Collection';
       case 'organizeGallery':
         return 'Publish Gallery';
-      default:
-        return 'Next';
+      case 'organizeCollection':
+        return 'Save Collection';
     }
   }, [step]);
 
   const handleNextClick = useCallback(() => {
+    // TODO: if current step is Publish Gallery, we should send a server request
+    // to update the latest gallery and redirect to the main profile view. We can
+    // do this by providing a custom onNext via useWizardCallback
     onNext?.current ? onNext.current() : next();
   }, [next, onNext]);
 
@@ -51,17 +41,11 @@ function WizardFooter({
     previous();
   }, [previous]);
 
-  if (shouldHideFooter) {
-    return null;
-  }
-
   return (
     <StyledWizardFooter>
-      {shouldHideSecondaryButton ? null : (
-        <ActionText color={colors.gray10} onClick={handlePreviousClick}>
-          {isFirstStep ? 'Cancel' : 'Back'}
-        </ActionText>
-      )}
+      <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+        {isFirstStep ? 'Cancel' : 'Back'}
+      </ActionText>
       <Spacer width={40} />
       <StyledButton
         disabled={!isNextEnabled}
