@@ -7,6 +7,7 @@ import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCo
 import Welcome from './steps/Welcome';
 import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddUserInfo from './steps/AddUserInfo';
+import Congratulations from './steps/Congratulations';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import { WizardProps } from 'flows/shared/types';
 
@@ -23,9 +24,13 @@ function OnboardingFlow(_: RouteComponentProps) {
                 <Step id="create" render={CreateFirstCollection} />
                 <Step id="organizeCollection" render={OrganizeCollection} />
                 <Step id="organizeGallery" render={OrganizeGallery} />
+                <Step id="congratulations" render={Congratulations} />
               </Steps>
               <WizardFooter
-                shouldHideFooter={wizardProps.step.id === 'welcome'}
+                shouldHideFooter={
+                  wizardProps.step.id === 'welcome' ||
+                  wizardProps.step.id === 'congratulations'
+                }
                 shouldHideSecondaryButton={
                   wizardProps.step.id === 'organizeGallery'
                 }
