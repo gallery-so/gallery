@@ -22,6 +22,7 @@
       "contexts/*": ["src/contexts/*"],
       "components/*": ["src/components/*"],
       "connectors/*": ["src/connectors/*"],
+      "flows/*": ["src/flows/*"],
       "hooks/*": ["src/hooks/*"],
       "utils/*": ["src/utils/*"],
       "mocks/*": ["src/mocks/*"],

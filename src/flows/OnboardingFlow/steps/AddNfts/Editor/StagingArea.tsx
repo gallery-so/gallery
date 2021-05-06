@@ -12,7 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 
-import { FOOTER_HEIGHT } from 'scenes/OnboardingFlow/WizardFooter';
+import { FOOTER_HEIGHT } from 'flows/OnboardingFlow/WizardFooter';
 import { Subtitle } from 'components/core/Text/Text';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
