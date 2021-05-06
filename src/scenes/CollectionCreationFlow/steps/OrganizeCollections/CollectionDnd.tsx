@@ -31,6 +31,8 @@ type Props = {
   collections: Collection[];
 };
 
+const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
+
 function CollectionDnd({ collections }: Props) {
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const [collectionOrder, setCollectionOrder] = useState(collections);
@@ -71,7 +73,7 @@ function CollectionDnd({ collections }: Props) {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+      modifiers={modifiers}
     >
       <SortableContext
         items={collectionOrder}
