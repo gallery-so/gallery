@@ -10,9 +10,15 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { navigate } from '@reach/router';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { WizardProps } from 'flows/shared/types';
+import { GalleryWizardProps } from 'flows/shared/types';
 
-function WizardFooter({ step, next, previous, history }: WizardProps) {
+function WizardFooter({
+  step,
+  next,
+  previous,
+  history,
+  shouldHide,
+}: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext } = useWizardCallback();
 
@@ -37,18 +43,20 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
   }, [step]);
 
   const handleNextClick = useCallback(() => {
-    // TODO 1: if final step, return to originating screen (e.g. collections page)
     onNext?.current ? onNext.current() : next();
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
     if (step.id === 'addUserInfo') {
-      // TODO: originating screen will be different when onboarding vs creating a collection later
       navigate('welcome');
     }
     // if (noPreviousStep) ...
     previous();
   }, [previous, step.id]);
+
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <StyledWizardFooter>

@@ -24,7 +24,10 @@ function OnboardingFlow(_: RouteComponentProps) {
                 <Step id="organizeCollection" render={OrganizeCollection} />
                 <Step id="organizeGallery" render={OrganizeGallery} />
               </Steps>
-              <WizardFooter {...(wizardProps as WizardProps)} />
+              <WizardFooter
+                shouldHide={wizardProps.step.id === 'welcome'}
+                {...(wizardProps as WizardProps)}
+              />
             </>
           );
         }}
