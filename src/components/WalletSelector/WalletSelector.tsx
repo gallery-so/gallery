@@ -5,12 +5,10 @@ import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
 import { Text } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import { navigate } from '@reach/router';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -39,7 +37,6 @@ function getErrorMessage(errorCode: string) {
 }
 
 function WalletSelector() {
-  const isAuthenticated = useIsAuthenticated();
   const {
     library,
     account,
@@ -74,17 +71,14 @@ function WalletSelector() {
   useEffect(() => {
     if (account && isPending && signer) {
       signMessageAndAuthenticate(account, signer)
-        .then((jwt) => {
-          logIn(jwt);
-          navigate('/welcome');
-        })
+        .then((jwt) => logIn(jwt))
         .catch((err) => {
           setErrorCode(err.code);
           setIsPending(false);
           return;
         });
     }
-  }, [account, isPending, isAuthenticated, logIn, signer]);
+  }, [account, isPending, logIn, signer]);
 
   if (errorCode) {
     const errorMessage = getErrorMessage(errorCode);

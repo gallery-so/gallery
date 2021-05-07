@@ -13,14 +13,16 @@ function Auth(_: RouteComponentProps) {
   const isAuthenticated = useIsAuthenticated();
   // TODO: useIsAuthenticated should return the username (or wallet address)
   // if indeed authenticated - we should redirect there
-  const username = '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15';
+  // const username = '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15';
 
   if (isAuthenticated) {
-    return <Redirect to={`/${username}`} />;
+    // TODO: if user already has an account, redirect them to their profile
+    // return <Redirect to={`/${username}`} />;
+    return <Redirect noThrow to="/welcome" />;
   }
 
   if (!isPasswordValidated) {
-    return <Redirect to="/password" />;
+    return <Redirect noThrow to="/password" />;
   }
 
   return (
