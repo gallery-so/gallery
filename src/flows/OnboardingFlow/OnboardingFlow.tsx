@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
-import FadeTransitioner from './FadeTransitioner';
+import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import WizardFooter from './WizardFooter';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';

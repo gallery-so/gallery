@@ -1,5 +1,6 @@
 import { Location, Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
+import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';
 import Password from 'scenes/Password/Password';
@@ -7,7 +8,6 @@ import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
-import FadeTransitioner from 'flows/OnboardingFlow/FadeTransitioner';
 
 export default function Routes() {
   return (
