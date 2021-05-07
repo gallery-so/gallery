@@ -26,10 +26,6 @@ function Password(_: RouteComponentProps) {
     false
   );
 
-  const unlock = useCallback(() => {
-    setIsFormVisibleAndUnlocked(true);
-  }, []);
-
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
@@ -38,13 +34,13 @@ function Password(_: RouteComponentProps) {
 
       if (isPasswordValid) {
         storePassword(userValue);
-        unlock();
+        setIsFormVisibleAndUnlocked(true);
       }
     },
-    [storePassword, unlock]
+    [storePassword]
   );
 
-  const handlePasswordUnlock = useCallback(() => {
+  const handleNavigateSuccess = useCallback(() => {
     if (!isAuthenticated) {
       navigate('/auth');
       return;
@@ -75,7 +71,7 @@ function Password(_: RouteComponentProps) {
       <AnimatedStyledButton
         visible={isFormVisibleAndUnlocked}
         text="Enter"
-        onClick={handlePasswordUnlock}
+        onClick={handleNavigateSuccess}
       />
     </StyledPassword>
   );
