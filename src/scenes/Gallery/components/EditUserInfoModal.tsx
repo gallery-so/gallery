@@ -31,7 +31,7 @@ function EditUserInfoModal() {
         text="SAVE"
         onClick={onSubmit}
         isPending={isPending}
-      ></StyledButton>
+      />
     </StyledEditUserInfoModal>
   );
 }

@@ -43,10 +43,7 @@ function Header({ usernameOrWalletAddress }: Props) {
       </StyledLeftContainer>
       <StyledRightContainer>
         <Dropdown mainText="Edit Profile">
-          <TextButton
-            text={`Edit name & Bio`}
-            onClick={handleEditNameClick}
-          ></TextButton>
+          <TextButton text={`Edit name & Bio`} onClick={handleEditNameClick} />
         </Dropdown>
       </StyledRightContainer>
     </StyledHeader>
