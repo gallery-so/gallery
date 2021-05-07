@@ -74,10 +74,16 @@ type StyledButtonProps = {
   isPending?: boolean;
 };
 
+// TODO: save this as a general transition under /core
+const transitionStyle = `300ms cubic-bezier(0, 0, 0, 1.07)`;
+
 const Icon = styled.img`
   width: 30px;
   height: 30px;
   margin: 5px;
+
+  transform: scale(1);
+  transition: transform ${transitionStyle};
 `;
 
 const StyledButton = styled.button<StyledButtonProps>`
@@ -99,6 +105,10 @@ const StyledButton = styled.button<StyledButtonProps>`
   }
   &:hover {
     border-color: ${colors.black};
+
+    ${Icon} {
+      transform: scale(1.15);
+    }
   }
   transition: border-color 0.2s;
 `;
