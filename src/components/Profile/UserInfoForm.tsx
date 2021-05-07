@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { Text } from 'components/core/Text/Text';
@@ -9,19 +9,11 @@ import { USERNAME_REGEX } from 'utils/regex';
 
 type Props = {
   onSubmit?: (event: FormEvent) => void;
-  //   handleUsernameChange?: (event: ChangeEvent) => void;
-  //   handleBioChange?: (event: ChangeEvent) => void;
   handleIsValidChange: (isValid: boolean) => void;
   mode?: string;
 };
 
-function UserInfoForm({
-  onSubmit,
-  //   handleUsernameChange,
-  //   handleBioChange,
-  handleIsValidChange,
-  mode = 'Add',
-}: Props) {
+function UserInfoForm({ onSubmit, handleIsValidChange, mode = 'Add' }: Props) {
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
   const handleUsernameChange = useCallback(
