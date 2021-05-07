@@ -1,16 +1,31 @@
-import { memo, useEffect } from 'react';
-import { RouteComponentProps, navigate } from '@reach/router';
-import useAuthModal from 'hooks/useAuthModal';
+import { memo } from 'react';
+import styled from 'styled-components';
+import { RouteComponentProps, Redirect } from '@reach/router';
+import WalletSelector from 'components/WalletSelector/WalletSelector';
+import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
 function Auth(_: RouteComponentProps) {
-  const displayAuthModal = useAuthModal();
-  useEffect(() => {
-    displayAuthModal();
-    navigate('/');
-    // We only want this to trigger once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return null;
+  const isAuthenticated = useIsAuthenticated();
+  // TODO: useIsAuthenticated should return the username (or wallet address)
+  // if indeed authenticated - we should redirect there
+  const username = '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15';
+
+  // if (isAuthenticated) {
+  //   return <Redirect to={`/${username}`} />;
+  // }
+
+  return (
+    <StyledAuth>
+      <WalletSelector />
+    </StyledAuth>
+  );
 }
+
+const StyledAuth = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 
 export default memo(Auth);

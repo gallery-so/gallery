@@ -2,6 +2,7 @@ import { Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
 import AppContainer from 'scenes/AppContainer/AppContainer';
 import Home from 'scenes/Home/Home';
+import Auth from 'scenes/Auth/Auth';
 import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
@@ -13,7 +14,7 @@ export default function Routes() {
     <Router primary={false}>
       <AppContainer path="/">
         <Home path="/" />
-        {/* might use this in the future: <Auth path="/auth" /> */}
+        <Auth path="/auth" />
         <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
         <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
         <Gallery path="/:usernameOrWalletAddress" />

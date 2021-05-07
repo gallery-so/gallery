@@ -92,10 +92,7 @@ function WalletSelector() {
       <StyledWalletSelector>
         <StyledHeader>{errorMessage.heading}</StyledHeader>
         <StyledBody>{errorMessage.body}</StyledBody>
-        <StyledRetryButton
-          onClick={retryConnectWallet}
-          text="Retry"
-        ></StyledRetryButton>
+        <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
     );
   }
@@ -109,7 +106,7 @@ function WalletSelector() {
           connector={pendingWallet}
           setToPendingState={setToPendingState}
           isPending={isPending}
-        ></WalletButton>
+        />
       ) : (
         Object.keys(walletConnectorMap).map((walletName) => {
           return (
