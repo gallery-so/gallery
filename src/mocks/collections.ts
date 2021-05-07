@@ -11,6 +11,7 @@ export function mockCollectionsLite(n: number) {
       id: `${i}-id`,
       nfts: mockNftsLite(nftCount),
       title: collectionNames[Math.floor(Math.random() * 3)],
+      isHidden: !!Math.floor(Math.random() * 2),
     });
   }
 

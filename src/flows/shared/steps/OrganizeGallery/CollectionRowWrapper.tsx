@@ -1,6 +1,9 @@
+import styled from 'styled-components';
+
 import { Collection } from 'types/Collection';
 import SortableCollectionRow from './SortableCollectionRow';
 import Spacer from 'components/core/Spacer/Spacer';
+import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
   collection: Collection;
@@ -8,12 +11,16 @@ type Props = {
 
 function CollectionRowWrapper({ collection }: Props) {
   return (
-    //   TODO: add button here
-    <>
+    <StyledCollectionRowWrapper>
+      <CollectionRowSettings collection={collection} />
       <SortableCollectionRow collection={collection} />
       <Spacer height={32}></Spacer>
-    </>
+    </StyledCollectionRowWrapper>
   );
 }
+
+const StyledCollectionRowWrapper = styled.div`
+  position: relative;
+`;
 
 export default CollectionRowWrapper;
