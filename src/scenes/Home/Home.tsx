@@ -1,9 +1,9 @@
 import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
+import { Text } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 
@@ -38,7 +38,6 @@ function Home(_: RouteComponentProps) {
   );
 }
 
-// if we wanna do global styling
 const StyledHome = styled.div`
   display: flex;
   flex-direction: column;

@@ -1,10 +1,15 @@
 import { memo } from 'react';
 import styled from 'styled-components';
+
 import { RouteComponentProps, Redirect } from '@reach/router';
+import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
 function Auth(_: RouteComponentProps) {
+  // whether the user has entered the correct password
+  const isPasswordValidated = useIsPasswordValidated();
+  // whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
   // TODO: useIsAuthenticated should return the username (or wallet address)
   // if indeed authenticated - we should redirect there
@@ -13,6 +18,10 @@ function Auth(_: RouteComponentProps) {
   // if (isAuthenticated) {
   //   return <Redirect to={`/${username}`} />;
   // }
+
+  if (!isPasswordValidated) {
+    return <Redirect to="/password" />;
+  }
 
   return (
     <StyledAuth>

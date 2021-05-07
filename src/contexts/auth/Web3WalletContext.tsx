@@ -13,4 +13,5 @@ const Web3WalletProvider = memo(({ children }) => {
     <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
   );
 });
+
 export default Web3WalletProvider;
