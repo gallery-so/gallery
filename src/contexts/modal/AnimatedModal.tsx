@@ -100,8 +100,8 @@ const StyledContent = styled.div`
 
 const StyledClose = styled.span`
   position: absolute;
-  right: 0px;
-  top: 0px;
+  right: 30px;
+  top: 28px;
   padding: 10px;
   cursor: pointer;
 `;
