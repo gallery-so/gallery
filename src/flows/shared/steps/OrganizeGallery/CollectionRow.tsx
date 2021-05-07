@@ -20,8 +20,10 @@ function CollectionRow({ collection, className }: Props) {
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
+  const isHidden = useMemo(() => !!collection.isHidden, [collection.isHidden]);
+
   return (
-    <StyledCollectionRow className={className} isHidden={collection.isHidden}>
+    <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <Text>{collection.title}</Text>
         <Settings />
@@ -33,7 +35,7 @@ function CollectionRow({ collection, className }: Props) {
         ))}
         {remainingNfts.length ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
-      {collection.isHidden && <StyledHiddenLabel>Hidden</StyledHiddenLabel>}
+      {isHidden && <StyledHiddenLabel>Hidden</StyledHiddenLabel>}
     </StyledCollectionRow>
   );
 }

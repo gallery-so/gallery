@@ -5,12 +5,18 @@ import Dropdown, {
   StyledDropdownButton,
 } from 'components/core/Dropdown/Dropdown';
 import ActionText from 'components/core/ActionText/ActionText';
+import { useCallback } from 'react';
+import TextButton from 'components/core/Button/TextButton';
 
 type Props = {
   collection: Collection;
 };
 
 function CollectionRowSettings({ collection }: Props) {
+  const handleToggleHiddenClick = useCallback(() => {
+    // update collection state
+  }, []);
+
   return (
     <StyledCollectionRowSettings>
       <Dropdown>
@@ -21,7 +27,10 @@ function CollectionRowSettings({ collection }: Props) {
           <ActionText>{`Edit name & description`}</ActionText>
         </StyledDropdownItem>
         <StyledDropdownItem>
-          <ActionText>{collection.isHidden ? 'Show' : 'Hide'}</ActionText>
+          <TextButton
+            onClick={handleToggleHiddenClick}
+            text={collection.isHidden ? 'Show' : 'Hide'}
+          ></TextButton>
         </StyledDropdownItem>
         <StyledDropdownItem>
           <ActionText>Delete</ActionText>
