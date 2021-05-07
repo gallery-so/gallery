@@ -15,9 +15,9 @@ function Auth(_: RouteComponentProps) {
   // if indeed authenticated - we should redirect there
   const username = '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15';
 
-  // if (isAuthenticated) {
-  //   return <Redirect to={`/${username}`} />;
-  // }
+  if (isAuthenticated) {
+    return <Redirect to={`/${username}`} />;
+  }
 
   if (!isPasswordValidated) {
     return <Redirect to="/password" />;
