@@ -1,10 +1,13 @@
-import styled from 'styled-components';
+import { useCallback } from 'react';
 import { Link as RouterLink } from '@reach/router';
+import styled from 'styled-components';
 import { Title, Text } from 'components/core/Text/Text';
-import ActionText from 'components/core/ActionText/ActionText';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import DropdownMenu from 'components/core/Dropdown/DropdownMenu';
+import Dropdown from 'components/core/Dropdown/Dropdown';
+import TextButton from 'components/core/Button/TextButton';
+import { useModal } from 'contexts/modal/ModalContext';
+import EditUserInfoModal from './EditUserInfoModal';
 
 // TODO: delete this once we hav a working backend
 const ADDRESSES = {
@@ -17,6 +20,12 @@ type Props = {
 };
 
 function Header({ usernameOrWalletAddress }: Props) {
+  const { showModal } = useModal();
+
+  const handleEditNameClick = useCallback(() => {
+    showModal(<EditUserInfoModal />);
+  }, [showModal]);
+
   return (
     <StyledHeader>
       <StyledLeftContainer>
@@ -33,29 +42,10 @@ function Header({ usernameOrWalletAddress }: Props) {
         </StyledUserDetails>
       </StyledLeftContainer>
       <StyledRightContainer>
-        <DropdownMenu
-          mainText="Edit Profile"
-          options={[
-            { label: 'Edit name', value: '/edit/name' },
-            { label: 'Edit bio', value: '/edit/bio' },
-            { label: '+ New Collection', value: '/add/collection' },
-          ]}
-        ></DropdownMenu>
+        <Dropdown mainText="Edit Profile">
+          <TextButton text={`Edit name & Bio`} onClick={handleEditNameClick} />
+        </Dropdown>
       </StyledRightContainer>
-      {
-        /* coming soon in v2 */
-        // <StyledRightContainer>
-        //   <StyledRouterLink to={`/${ADDRESSES.robin}`}>
-        //     <StyledLink>Follow</StyledLink>
-        //   </StyledRouterLink>
-        //   <Spacer width={20} />
-        //   <StyledRouterLink to={`/${ADDRESSES.mikey}`}>
-        //     <StyledLink>Share</StyledLink>
-        //   </StyledRouterLink>
-        //   <Spacer width={20} />
-        //   <Text light>Tip • $14,290.91</Text>
-        // </StyledRightContainer>
-      }
     </StyledHeader>
   );
 }
@@ -76,14 +66,6 @@ const StyledUserDetails = styled.div``;
 
 const StyledRightContainer = styled.div`
   display: flex;
-`;
-
-const StyledRouterLink = styled(RouterLink)`
-  text-decoration: none;
-`;
-
-const StyledLink = styled(ActionText)`
-  text-decoration: none;
 `;
 
 export default Header;
