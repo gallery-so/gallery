@@ -3,7 +3,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './transition.css';
 
 type Props = {
-  nodeKey: string;
+  nodeKey?: string;
   children: React.ReactNode;
 };
 
@@ -27,7 +27,7 @@ const childNodeStyles = {
  * This file is tightly coupled with `transition.css`, specifically
  * around timing + classNames. More info: https://reactjs.org/docs/animation.html
  */
-function FadeTransitioner({ nodeKey, children }: Props) {
+function FadeTransitioner({ nodeKey = '', children }: Props) {
   return (
     <TransitionGroup>
       <CSSTransition key={nodeKey} timeout={timeoutConfig} classNames="fade">

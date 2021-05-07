@@ -13,7 +13,7 @@ export default function Routes() {
   return (
     <Location>
       {({ location }) => (
-        <FadeTransitioner nodeKey={location.key ?? ''}>
+        <FadeTransitioner nodeKey={location.key}>
           {/* primary={false} prevents jumpiness on nav: https://github.com/reach/router/issues/242 */}
           <Router primary={false} location={location}>
             <Home path="/" />
