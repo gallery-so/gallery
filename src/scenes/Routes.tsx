@@ -17,7 +17,7 @@ export default function Routes() {
         {/* might use this in the future: <Auth path="/auth" /> */}
         <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
         <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
-        <NftDetailPage path="/nft" />
+        <NftDetailPage path="/:userName/:collectionId/:nftId" />
         <Gallery path="/:usernameOrWalletAddress" />
         <NotFound default path="404" />
       </AppContainer>
