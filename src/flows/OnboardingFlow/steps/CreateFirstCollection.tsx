@@ -9,14 +9,13 @@ import { FOOTER_HEIGHT } from '../WizardFooter';
 function CreateFirstCollection({ next }: WizardContext) {
   return (
     <StyledCreateFirstCollection>
-      <Subtitle size="large">Create your first collection</Subtitle>
-      <Spacer height={24} />
+      <Subtitle>Create your first collection</Subtitle>
+      <Spacer height={8} />
       <StyledBodyText>
-        Collections are how Gallery groups your NFTs on your profile. Gallery
-        supports multiple collections so you can organize your NfTs based on
-        themes.
+        Organize your gallery with collections. Use them to group NFTs by
+        creator, theme, or anything that feels right.
       </StyledBodyText>
-      <Spacer height={40} />
+      <Spacer height={24} />
       <StyledButton text="New Collection" onClick={next} />
     </StyledCreateFirstCollection>
   );
@@ -32,7 +31,7 @@ const StyledCreateFirstCollection = styled.div`
 
 const StyledBodyText = styled(Text)`
   color: ${colors.gray50};
-  max-width: 400px;
+  max-width: 390px;
   text-align: center;
 `;
 

@@ -41,7 +41,10 @@ function UserInfoForm({
       <Spacer height={14} />
       <BigInput onChange={handleUsernameChange} placeholder="Username" />
       <Spacer height={10} />
-      <StyledTextArea onChange={handleBioChange} placeholder="Bio (optional)" />
+      <StyledTextArea
+        onChange={handleBioChange}
+        placeholder="Tell us about yourself..."
+      />
     </StyledForm>
   );
 }

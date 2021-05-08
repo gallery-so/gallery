@@ -11,9 +11,9 @@ function Welcome({ next }: WizardContext) {
       <Title>Welcome to Gallery</Title>
       <Spacer height={24} />
       <StyledBodyText>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation
+        This is your space to share your pieces and and the stories that
+        surround them. Curate, arrange, and display your collection exactly how
+        it was meant to be.
       </StyledBodyText>
       <Spacer height={40} />
       <StyledButton text="Enter Gallery" onClick={next} />

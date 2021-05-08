@@ -7,17 +7,15 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 function Congratulations() {
   const handleClick = useCallback(() => {
-    alert(
-      `navigate to profile page. we'll need to know the user ID (or username) by this point`
-    );
+    alert(`ayyy lmao`);
   }, []);
 
   return (
     <StyledCongrats>
       <Title>Congratulations</Title>
-      <Spacer height={24} />
+      <Spacer height={8} />
       <StyledBodyText>Let's show your collection to the world.</StyledBodyText>
-      <Spacer height={40} />
+      <Spacer height={24} />
       <StyledButton text="Take me to my gallery" onClick={handleClick} />
     </StyledCongrats>
   );
