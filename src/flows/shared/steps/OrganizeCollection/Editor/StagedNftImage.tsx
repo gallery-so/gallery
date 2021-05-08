@@ -7,7 +7,7 @@ type Props = {
 };
 
 function NftImage({ nft }: Props) {
-  const srcUrl = nft.image_url;
+  const srcUrl = nft.imageUrl;
 
   return (
     <StyledGridImage srcUrl={srcUrl}>

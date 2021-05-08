@@ -18,7 +18,7 @@ type Props = {
 
 function NftPreview({ nft }: Props) {
   const imgUrl =
-    resize(nft.image_preview_url, 275) || nft.image_url || IMG_FALLBACK_URL;
+    resize(nft.imagePreviewUrl, 275) || nft.imageUrl || IMG_FALLBACK_URL;
 
   return (
     <StyledNftPreview key={nft.id}>

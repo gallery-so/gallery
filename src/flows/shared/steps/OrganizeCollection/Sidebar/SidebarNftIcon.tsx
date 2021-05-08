@@ -34,7 +34,7 @@ function SidebarNftIcon({ editModeNft, index }: SidebarNftIconProps) {
     <StyledSidebarNftIcon>
       <StyledImage
         isSelected={isSelected}
-        src={editModeNft.nft.image_url}
+        src={editModeNft.nft.imageUrl}
         alt="nft"
       />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />

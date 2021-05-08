@@ -5,7 +5,7 @@ import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Params = {
   collectionId: string;
@@ -13,43 +13,48 @@ type Params = {
 };
 
 function NftDetailPage({ collectionId, nftId }: RouteComponentProps<Params>) {
-  // get nft
-  // render it
+  const [nft, setNft] = useState<Nft | null>(null);
+
   useEffect(() => {
     console.log('GET nft and collection', collectionId, nftId);
+    const description =
+      'A psychedelic piece inspired by the allure of aposematic coloration\n found in plants and the natural world\n\n' +
+      '~~~~~\n\n' +
+      'All details and elements in this piece are purely photographic, which have been carefully cut out and arranged into a floral composition, then digitally animated and colour graded.\n\n' +
+      '~~~~~\n\n' +
+      'The creative process is a very meditative experience, which is transmitted from the final result to the viewer as a hypnotic loop.';
+    setNft({
+      id: '1',
+      name: 'The Fold Ep2',
+      platformName: 'SuperRare',
+      ownerName: 'Fabric Softener',
+      imageUrl:
+        'https://ipfs.pixura.io/ipfs/QmPN9kEevrvSjjFhScVEHP6t8QC2dRY2PGFmcE8Yz6aUvv/Dom-Qwek_Broken-1_2021.jpg',
+      imagePreviewUrl: 'string',
+      description,
+    });
   }, [collectionId, nftId]);
 
-  const nft: Nft = {
-    id: '1',
-    name: 'The Fold Ep2',
-    artist: 'SuperRare',
-    image_url: 'string',
-    image_preview_url: 'string',
-  };
-
-  const description =
-    'A psychedelic piece inspired by the allure of aposematic coloration\n found in plants and the natural world\n\n' +
-    '~~~~~\n\n' +
-    'All details and elements in this piece are purely photographic, which have been carefully cut out and arranged into a floral composition, then digitally animated and colour graded.\n\n' +
-    '~~~~~\n\n' +
-    'The creative process is a very meditative experience, which is transmitted from the final result to the viewer as a hypnotic loop.';
+  if (!nft) {
+    return <div>loading</div>;
+  }
   return (
     <StyledNftDetailPage>
       <StyledContentContainer>
         <StyledImageContainer>
-          <StyledImage src="https://ipfs.pixura.io/ipfs/QmPN9kEevrvSjjFhScVEHP6t8QC2dRY2PGFmcE8Yz6aUvv/Dom-Qwek_Broken-1_2021.jpg"></StyledImage>
+          <StyledImage src={nft.imageUrl}></StyledImage>
         </StyledImageContainer>
         <StyledLabelContainer>
           <StyledNftTitle>{nft.name}</StyledNftTitle>
           <Spacer height={16} />
-          <Text>{nft.artist}</Text>
+          <Text>{nft.platformName}</Text>
           <Spacer height={16} />
           <StyledNftDescription color={colors.gray50}>
-            {description}
+            {nft.description}
           </StyledNftDescription>
           <Spacer height={32} />
           <Text color={colors.gray50}>Owned By</Text>
-          <Text>Fabric Softener</Text>
+          <Text>{nft.ownerName}</Text>
           <Spacer height={16} />
           <Text color={colors.gray50}>Created By</Text>
           <Text>0xad6a7c8bfaf34aeddb036adfe4044d6a5d0a9ce2</Text>
@@ -61,7 +66,7 @@ function NftDetailPage({ collectionId, nftId }: RouteComponentProps<Params>) {
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 32px;
   margin: 64px auto 0;
 
   @media only screen and ${breakpoints.tablet} {
@@ -81,7 +86,7 @@ const StyledImageContainer = styled.div`
 const StyledImage = styled.img`
   width: 100%;
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     width: 600px;
   }
 `;

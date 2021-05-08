@@ -14,8 +14,8 @@ export function mockNftsLite(n: number) {
     pics.push({
       id: `${i}`,
       name: 'test',
-      image_url: randomPic(),
-      image_preview_url: 'test',
+      imageUrl: randomPic(),
+      imagePreviewUrl: 'test',
     });
   }
   return pics;
@@ -29,8 +29,8 @@ export function randomPics(n: number) {
       nft: {
         id: `${i}`,
         name: 'test',
-        image_url: randomPic(),
-        image_preview_url: 'test', // track position in "all nfts" array so it's for dnd to mark it as unselected
+        imageUrl: randomPic(),
+        imagePreviewUrl: 'test', // track position in "all nfts" array so it's for dnd to mark it as unselected
       },
       index: i,
       isSelected: false,
