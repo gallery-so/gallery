@@ -4,6 +4,7 @@ import { Text } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
+import breakpoints from 'components/core/breakpoints';
 
 function NftDetailPage(_: RouteComponentProps) {
   // get nft
@@ -49,16 +50,30 @@ function NftDetailPage(_: RouteComponentProps) {
 }
 const StyledContentContainer = styled.div`
   display: flex;
-  margin: 128px auto;
+  flex-direction: column;
+  padding: 16px;
+  margin: 64px auto 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;
 const StyledNftDetailPage = styled.div`
   display: flex;
 `;
 
-const StyledImageContainer = styled.div``;
+const StyledImageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+`;
 
 const StyledImage = styled.img`
-  width: 600px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 600px;
+  }
 `;
 
 const StyledNftTitle = styled(Text)`
@@ -74,7 +89,12 @@ const StyledNftDescription = styled(Text)`
 
 const StyledLabelContainer = styled.div`
   flex-direction: column;
-  padding-left: 72px;
+  margin-top: 32px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-left: 72px;
+    margin-top: 0;
+  }
 `;
 
 export default NftDetailPage;
