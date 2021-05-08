@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
+import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import WizardFooter from './WizardFooter';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
@@ -18,14 +19,16 @@ function OnboardingFlow(_: RouteComponentProps) {
         render={(wizardProps) => {
           return (
             <>
-              <Steps>
-                <Step id="welcome" render={Welcome} />
-                <Step id="addUserInfo" render={AddUserInfo} />
-                <Step id="create" render={CreateFirstCollection} />
-                <Step id="organizeCollection" render={OrganizeCollection} />
-                <Step id="organizeGallery" render={OrganizeGallery} />
-                <Step id="congratulations" render={Congratulations} />
-              </Steps>
+              <FadeTransitioner nodeKey={wizardProps.step.id}>
+                <Steps key={wizardProps.step.id} step={wizardProps.step}>
+                  <Step id="welcome" render={Welcome} />
+                  <Step id="addUserInfo" render={AddUserInfo} />
+                  <Step id="create" render={CreateFirstCollection} />
+                  <Step id="organizeCollection" render={OrganizeCollection} />
+                  <Step id="organizeGallery" render={OrganizeGallery} />
+                  <Step id="congratulations" render={Congratulations} />
+                </Steps>
+              </FadeTransitioner>
               <WizardFooter
                 shouldHideFooter={
                   wizardProps.step.id === 'welcome' ||

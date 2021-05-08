@@ -5,14 +5,24 @@ import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
+import { useEffect } from 'react';
 
-function NftDetailPage(_: RouteComponentProps) {
+type Params = {
+  collectionId: string;
+  nftId: string;
+};
+
+function NftDetailPage({ collectionId, nftId }: RouteComponentProps<Params>) {
   // get nft
   // render it
+  useEffect(() => {
+    console.log('GET nft and collection', collectionId, nftId);
+  }, [collectionId, nftId]);
+
   const nft: Nft = {
     id: '1',
     name: 'The Fold Ep2',
-    artist: 'Superrare',
+    artist: 'SuperRare',
     image_url: 'string',
     image_preview_url: 'string',
   };

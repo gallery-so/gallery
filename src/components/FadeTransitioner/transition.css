@@ -1,0 +1,30 @@
+/* Required for initial blank pause */
+.fade-appear {
+  opacity: 0;
+}
+
+.fade-appear.fade-appear-active {
+  opacity: 0;
+}
+
+/* Fade-in */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  transition: opacity 300ms ease-in-out 1000ms;
+}
+
+/* Fade-out */
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0;
+  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  transition: opacity 300ms ease-in-out;
+}

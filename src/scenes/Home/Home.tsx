@@ -1,51 +1,52 @@
-import { RouteComponentProps } from '@reach/router';
-import { memo, useCallback, useState } from 'react';
+import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { memo, useCallback } from 'react';
 import styled from 'styled-components';
-import Password from 'components/Password/Password';
+import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import { Text } from 'components/core/Text/Text';
-import WalletSelector from 'components/WalletSelector/WalletSelector';
+import Spacer from 'components/core/Spacer/Spacer';
+import Button from 'components/core/Button/Button';
 
 function Home(_: RouteComponentProps) {
-  // on dev, this will route to localhost:4000/api/test
-  // on prod, this will route to api.gallery.so/api/test
-  // const { data, error } = useSwr('/test');
-  // console.log('the result', data, error);
+  // whether the user has entered the correct password
+  const isPasswordValidated = useIsPasswordValidated();
 
-  const [showWalletSelector, setShowWalletSelector] = useState(false);
-  const handleNextClick = useCallback(() => {
-    setShowWalletSelector(true);
+  const handleEnterGallery = useCallback(() => {
+    // if the user is already authenticated, /auth will handle forwarding
+    // them directly to their profile
+    navigate('/auth');
   }, []);
 
-  if (showWalletSelector) {
-    return (
-      <StyledHome>
-        <WalletSelector />
-      </StyledHome>
-    );
+  if (!isPasswordValidated) {
+    return <Redirect to="/password" />;
   }
 
   return (
     <StyledHome>
       <StyledHeader>GALLERY</StyledHeader>
       <Text>Show your collection to the world</Text>
-      <Password handleNextClick={handleNextClick} />
+      <Spacer height={80} />
+      <StyledButton text="Enter" onClick={handleEnterGallery} />
     </StyledHome>
   );
 }
 
-// if we wanna do global styling
 const StyledHome = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20vh;
+  justify-content: center;
+  height: 100vh;
 `;
 
 const StyledHeader = styled.p`
   text-align: center;
   color: black;
   font-size: 50px;
-  margin-bottom: 10px;
+  margin: 0;
+`;
+
+const StyledButton = styled(Button)`
+  width: 200px;
 `;
 
 export default memo(Home);
