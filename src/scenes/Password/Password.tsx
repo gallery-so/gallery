@@ -40,13 +40,11 @@ function Password(_: RouteComponentProps) {
     [storePassword]
   );
 
-  const handleNavigateSuccess = useCallback(() => {
-    if (!isAuthenticated) {
-      navigate('/auth');
-      return;
-    }
-    navigate('/');
-  }, [isAuthenticated]);
+  const handleEnterGallery = useCallback(() => {
+    // if the user is already authenticated, /auth will handle forwarding
+    // them directly to their profile
+    navigate('/auth');
+  }, []);
 
   if (isPasswordValid && !isAuthenticated) {
     return <Redirect to="/auth" />;
@@ -71,7 +69,7 @@ function Password(_: RouteComponentProps) {
       <AnimatedStyledButton
         visible={isFormVisibleAndUnlocked}
         text="Enter"
-        onClick={handleNavigateSuccess}
+        onClick={handleEnterGallery}
       />
     </StyledPassword>
   );
