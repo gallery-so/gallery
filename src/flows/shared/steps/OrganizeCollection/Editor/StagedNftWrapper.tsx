@@ -20,9 +20,12 @@ function StagedNftWrapper({ editModeNft }: Props) {
   );
 }
 
+// TODO: save this as a general transition under /core
+const transitionStyle = `200ms cubic-bezier(0, 0, 0, 1.07)`;
+
 const StyledUnstageButton = styled(UnstageButton)`
   opacity: 0;
-  transition: opacity 200ms;
+  transition: opacity ${transitionStyle};
 `;
 
 const StyledStageNftWrapper = styled.div`

@@ -16,8 +16,12 @@ function NftImage({ nft }: Props) {
   );
 }
 
+// TODO: save this as a general transition under /core
+const transitionStyle = `200ms cubic-bezier(0, 0, 0, 1.07)`;
+
 const StyledNftPreviewLabel = styled(NftPreviewLabel)`
   opacity: 0;
+  transition: opacity ${transitionStyle};
 `;
 
 const StyledGridImage = styled.div<{ srcUrl?: string }>`

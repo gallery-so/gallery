@@ -12,7 +12,7 @@ function NftPreviewLabel({ nft, className }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
       <StyledNftLabelText>{nft.name}</StyledNftLabelText>
-      <StyledNftLabelText>Placehoder artist</StyledNftLabelText>
+      <StyledNftLabelText>Placehodler artist</StyledNftLabelText>
     </StyledNftPreviewLabel>
   );
 }
@@ -24,20 +24,13 @@ export const StyledNftPreviewLabel = styled.div`
   bottom: 0;
   width: 100%;
   text-align: right;
-  padding: 24px 8px 8px;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.4) 30%,
-    rgba(0, 0, 0, 0.7)
-  );
-
+  padding: 8px;
   z-index: 10;
-  transition: opacity 200ms;
 `;
 
 const StyledNftLabelText = styled(Text)`
   margin: 0;
   color: ${colors.white};
 `;
+
 export default NftPreviewLabel;

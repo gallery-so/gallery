@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import { Text } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import colors from 'components/core/colors';
 import NftPreviewLabel from './NftPreviewLabel';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
