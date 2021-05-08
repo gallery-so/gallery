@@ -11,7 +11,7 @@ function NftImage({ nft }: Props) {
 
   return (
     <StyledGridImage srcUrl={srcUrl}>
-      <StyledNftPreviewLabel nft={nft}></StyledNftPreviewLabel>
+      <StyledNftPreviewLabel nft={nft} />
     </StyledGridImage>
   );
 }
