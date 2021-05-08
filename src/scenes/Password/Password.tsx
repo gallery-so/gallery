@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { Text } from 'components/core/Text/Text';
+import { Text, Title } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
@@ -56,7 +56,7 @@ function Password(_: RouteComponentProps) {
 
   return (
     <StyledPassword>
-      <StyledHeader>GALLERY</StyledHeader>
+      <Title>GALLERY</Title>
       <Text>Show your collection to the world</Text>
       <Spacer height={48} />
       <StyledForm onSubmit={handleSubmit}>
@@ -81,13 +81,6 @@ const StyledPassword = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-`;
-
-const StyledHeader = styled.p`
-  text-align: center;
-  color: black;
-  font-size: 50px;
-  margin: 0;
 `;
 
 const StyledForm = styled.form`

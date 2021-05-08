@@ -4,36 +4,35 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { WizardContext } from 'react-albus';
+import { FOOTER_HEIGHT } from '../WizardFooter';
 
 function CreateFirstCollection({ next }: WizardContext) {
   return (
-    <StyledWelcome>
-      <Subtitle size="large">Create your first collection</Subtitle>
-      <Spacer height={20} />
+    <StyledCreateFirstCollection>
+      <Subtitle>Create your first collection</Subtitle>
+      <Spacer height={8} />
       <StyledBodyText>
-        Collections are how Gallery groups your NFTs on your profile. Gallery
-        supports multiple collections so you can organize your NfTs based on
-        themes.
+        Organize your gallery with collections. Use them to group NFTs by
+        creator, theme, or anything that feels right.
       </StyledBodyText>
-      <Spacer height={20} />
+      <Spacer height={24} />
       <StyledButton text="New Collection" onClick={next} />
-    </StyledWelcome>
+    </StyledCreateFirstCollection>
   );
 }
 
-const StyledBodyText = styled(Text)`
-  margin-bottom: 24px;
-  color: ${colors.gray50};
-  text-align: center;
-`;
-
-const StyledWelcome = styled.div`
+const StyledCreateFirstCollection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 140px;
-  margin: 20vh auto 0;
-  max-width: 400px;
+  justify-content: center;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
+`;
+
+const StyledBodyText = styled(Text)`
+  color: ${colors.gray50};
+  max-width: 390px;
+  text-align: center;
 `;
 
 const StyledButton = styled(Button)`

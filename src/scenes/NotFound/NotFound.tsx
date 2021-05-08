@@ -1,11 +1,12 @@
 import { memo } from 'react';
 import { Link, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
+import { Title } from 'components/core/Text/Text';
 
 function NotFound(_: RouteComponentProps) {
   return (
     <StyledNotFound>
-      <StyledHeader>NOT FOUND</StyledHeader>
+      <Title>NOT FOUND</Title>
       <Link to="/">go back home</Link>
     </StyledNotFound>
   );
@@ -13,11 +14,6 @@ function NotFound(_: RouteComponentProps) {
 
 const StyledNotFound = styled.div`
   text-align: center;
-`;
-
-const StyledHeader = styled.p`
-  color: #7bfeff;
-  font-size: 30px;
 `;
 
 export default memo(NotFound);

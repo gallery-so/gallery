@@ -73,11 +73,7 @@ function Editor() {
           adjustScale={true}
           dropAnimation={defaultDropAnimationConfig}
         >
-          {activeNft ? (
-            <StagedNftImageDragging
-              nft={activeNft.nft}
-            ></StagedNftImageDragging>
-          ) : null}
+          {activeNft ? <StagedNftImageDragging nft={activeNft.nft} /> : null}
         </DragOverlay>
       </DndContext>
     </StyledEditor>
