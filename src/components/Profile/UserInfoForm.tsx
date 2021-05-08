@@ -8,12 +8,18 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { USERNAME_REGEX } from 'utils/regex';
 
 type Props = {
+  className?: string;
   onSubmit?: (event: FormEvent) => void;
   handleIsValidChange: (isValid: boolean) => void;
   mode?: string;
 };
 
-function UserInfoForm({ onSubmit, handleIsValidChange, mode = 'Add' }: Props) {
+function UserInfoForm({
+  className,
+  onSubmit,
+  handleIsValidChange,
+  mode = 'Add',
+}: Props) {
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
   const handleUsernameChange = useCallback(
@@ -30,7 +36,7 @@ function UserInfoForm({ onSubmit, handleIsValidChange, mode = 'Add' }: Props) {
   }, []);
 
   return (
-    <StyledForm onSubmit={onSubmit}>
+    <StyledForm className={className} onSubmit={onSubmit}>
       <StyledText>{`${mode} username and bio`}</StyledText>
       <Spacer height={14} />
       <BigInput onChange={handleUsernameChange} placeholder="Username" />

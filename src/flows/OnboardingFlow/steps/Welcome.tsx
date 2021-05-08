@@ -1,6 +1,6 @@
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { Text, Title } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -8,7 +8,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 function Welcome({ next }: WizardContext) {
   return (
     <StyledWelcome>
-      <StyledHeader>Welcome to Gallery</StyledHeader>
+      <Title>Welcome to Gallery</Title>
       <Spacer height={24} />
       <StyledBodyText>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -29,18 +29,9 @@ const StyledWelcome = styled.div`
   height: 100vh;
 `;
 
-const StyledHeader = styled.p`
-  text-align: center;
-  color: black;
-  font-size: 50px;
-  white-space: nowrap;
-
-  margin: 0;
-`;
-
 const StyledBodyText = styled(Text)`
   color: ${colors.gray50};
-  width: 400px;
+  max-width: 400px;
   text-align: center;
 `;
 

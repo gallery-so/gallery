@@ -6,6 +6,7 @@ import {
   useWizardValidationState,
 } from 'contexts/wizard/WizardValidationContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
+import { FOOTER_HEIGHT } from '../WizardFooter';
 
 function AddUserInfo({ next }: WizardContext) {
   const { setNextEnabled } = useWizardValidationActions();
@@ -24,10 +25,10 @@ function AddUserInfo({ next }: WizardContext) {
 
   return (
     <StyledUserInfo>
-      <UserInfoForm
+      <StyledUserInfoForm
         onSubmit={onSubmit}
         handleIsValidChange={setNextEnabled}
-      ></UserInfoForm>
+      />
     </StyledUserInfo>
   );
 }
@@ -35,8 +36,13 @@ function AddUserInfo({ next }: WizardContext) {
 const StyledUserInfo = styled.div`
   display: flex;
   flex-direction: column;
-  width: 40%;
-  margin: 25vh auto 0;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
+`;
+
+const StyledUserInfoForm = styled(UserInfoForm)`
+  width: 600px;
 `;
 
 export default AddUserInfo;

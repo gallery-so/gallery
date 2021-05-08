@@ -2,7 +2,7 @@ import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
-import { Text } from 'components/core/Text/Text';
+import { Text, Title } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 
@@ -22,7 +22,7 @@ function Home(_: RouteComponentProps) {
 
   return (
     <StyledHome>
-      <StyledHeader>GALLERY</StyledHeader>
+      <Title>GALLERY</Title>
       <Text>Show your collection to the world</Text>
       <Spacer height={80} />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
@@ -36,13 +36,6 @@ const StyledHome = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-`;
-
-const StyledHeader = styled.p`
-  text-align: center;
-  color: black;
-  font-size: 50px;
-  margin: 0;
 `;
 
 const StyledButton = styled(Button)`
