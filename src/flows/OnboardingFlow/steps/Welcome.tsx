@@ -1,6 +1,6 @@
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { Text, Title } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -8,38 +8,31 @@ import Spacer from 'components/core/Spacer/Spacer';
 function Welcome({ next }: WizardContext) {
   return (
     <StyledWelcome>
-      <StyledHeader>Welcome to Gallery</StyledHeader>
+      <Title>Welcome to Gallery</Title>
+      <Spacer height={24} />
       <StyledBodyText>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation
+        This is your space to share your pieces and and the stories that
+        surround them. Curate, arrange, and display your collection exactly how
+        it was meant to be.
       </StyledBodyText>
-      <Spacer height={20} />
+      <Spacer height={40} />
       <StyledButton text="Enter Gallery" onClick={next} />
     </StyledWelcome>
   );
 }
 
-const StyledHeader = styled.p`
-  text-align: center;
-  color: black;
-  font-size: 50px;
-  white-space: nowrap;
-  margin-bottom: 24px;
-`;
-
-const StyledBodyText = styled(Text)`
-  margin-bottom: 24px;
-  color: ${colors.gray50};
-`;
-
 const StyledWelcome = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 140px;
-  width: min-content;
-  margin: 20vh auto 0;
+  justify-content: center;
+  height: 100vh;
+`;
+
+const StyledBodyText = styled(Text)`
+  color: ${colors.gray50};
+  max-width: 400px;
+  text-align: center;
 `;
 
 const StyledButton = styled(Button)`

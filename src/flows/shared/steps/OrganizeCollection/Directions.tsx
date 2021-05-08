@@ -11,10 +11,9 @@ function Directions() {
     <DirectionsContainer>
       <StyledDirections>
         <Subtitle>Add NFTs to your collection</Subtitle>
-        <Spacer height={12} />
+        <Spacer height={8} />
         <Text color={colors.gray50}>
-          On the left, select the NFTs you’d like to include in this collection.
-          Once added, drag and drop to re-order.
+          Select NFTs to include in your collection. Drag and drop to rearrange.
         </Text>
       </StyledDirections>
     </DirectionsContainer>

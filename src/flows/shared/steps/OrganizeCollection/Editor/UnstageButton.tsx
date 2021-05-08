@@ -10,9 +10,11 @@ type Props = {
 };
 function UnstageButton({ nftIndex, className }: Props) {
   const { setNftIsSelected } = useCollectionEditorActions();
+
   const handleOnClick = useCallback(() => {
     setNftIsSelected(nftIndex, false);
   }, [nftIndex, setNftIsSelected]);
+
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
       <Text color={colors.white}>DELETE</Text>
@@ -22,8 +24,9 @@ function UnstageButton({ nftIndex, className }: Props) {
 
 export const StyledUnstageButton = styled.button`
   position: absolute;
-  top: 10px;
   right: 0;
+
+  padding: 8px;
 
   background: none;
   border: none;

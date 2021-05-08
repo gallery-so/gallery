@@ -1,47 +1,38 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { Text, Subtitle, Title } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
 function Congratulations() {
   const handleClick = useCallback(() => {
-    alert(
-      `navigate to profile page. we'll need to know the user ID (or username) by this point`
-    );
+    alert(`ayyy lmao`);
   }, []);
 
   return (
-    <StyledCongratulations>
-      <StyledHeader>Congratulations</StyledHeader>
+    <StyledCongrats>
+      <Title>Congratulations</Title>
+      <Spacer height={8} />
       <StyledBodyText>Let's show your collection to the world.</StyledBodyText>
-      <Spacer height={20} />
+      <Spacer height={24} />
       <StyledButton text="Take me to my gallery" onClick={handleClick} />
-    </StyledCongratulations>
+    </StyledCongrats>
   );
 }
 
-const StyledHeader = styled.p`
-  text-align: center;
-  color: black;
-  font-size: 50px;
-  white-space: nowrap;
-  margin-bottom: 24px;
-`;
-
-const StyledBodyText = styled(Text)`
-  margin-bottom: 24px;
-  color: ${colors.gray50};
-`;
-
-const StyledCongratulations = styled.div`
+const StyledCongrats = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 140px;
-  width: min-content;
-  margin: 20vh auto 0;
+  justify-content: center;
+  height: 100vh;
+`;
+
+const StyledBodyText = styled(Text)`
+  color: ${colors.gray50};
+  max-width: 400px;
+  text-align: center;
 `;
 
 const StyledButton = styled(Button)`

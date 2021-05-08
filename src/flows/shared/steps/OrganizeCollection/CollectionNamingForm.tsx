@@ -55,7 +55,7 @@ function CollectionNamingForm({ onNext }: Props) {
 
   return (
     <StyledCollectionNamingForm>
-      <Text weight="bold">Optional collection name & description</Text>
+      <Text weight="bold">Give your collection a name and description</Text>
       <Text color={colors.gray50}>
         You can always add a collection name and description later.
       </Text>
@@ -63,7 +63,7 @@ function CollectionNamingForm({ onNext }: Props) {
       <BigInput onChange={handleNameChange} placeholder="Collection name" />
       <StyledTextArea
         onChange={handleDescriptionChange}
-        placeholder="Collection description (optional)"
+        placeholder="Tell us about your collection..."
       />
       <Spacer height={20} />
       <ButtonContainer>
