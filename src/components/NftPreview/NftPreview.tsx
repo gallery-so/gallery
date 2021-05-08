@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 import NftPreviewLabel from './NftPreviewLabel';
+import Gradient from 'components/core/Gradient/Gradient';
+import transitions from 'components/core/transitions';
+import { useCallback } from 'react';
+import { navigate } from '@reach/router';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 
@@ -12,19 +16,39 @@ function resize(imgUrl: string, width: number) {
 
 type Props = {
   nft: Nft;
+  collectionId: string;
 };
 
-function NftPreview({ nft }: Props) {
+function NftPreview({ nft, collectionId }: Props) {
   const imgUrl =
     resize(nft.imagePreviewUrl, 275) || nft.imageUrl || IMG_FALLBACK_URL;
 
+  const handleNftClick = useCallback(() => {
+    navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
+  }, [collectionId, nft.id]);
+
   return (
     <StyledNftPreview key={nft.id}>
-      <StyledNft src={imgUrl} alt={nft.name} />
-      <StyledNftLabel nft={nft} />
+      <StyledLinkWrapper onClick={handleNftClick}>
+        <StyledNft src={imgUrl} alt={nft.name} />
+        <StyledNftLabel nft={nft} />
+        <StyledGradient type="bottom" direction="down" />
+      </StyledLinkWrapper>
     </StyledNftPreview>
   );
 }
+const StyledLinkWrapper = styled.a`
+  cursor: pointer;
+  display: flex;
+`;
+
+const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
+  position: absolute;
+  ${({ type }) => type}: 0;
+
+  opacity: 0;
+  transition: opacity ${transitions.cubic};
+`;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
   opacity: 0;
@@ -38,6 +62,10 @@ const StyledNftPreview = styled.div`
   height: fit-content;
 
   &:hover ${StyledNftLabel} {
+    opacity: 1;
+  }
+
+  &:hover ${StyledGradient} {
     opacity: 1;
   }
 `;

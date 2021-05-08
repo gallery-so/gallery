@@ -4,6 +4,7 @@ import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import Gradient from 'components/core/Gradient/Gradient';
 import SortableStagedNft from './SortableStagedNft';
 import UnstageButton from './UnstageButton';
+import transitions from 'components/core/transitions';
 
 type Props = {
   editModeNft: EditModeNft;
@@ -23,20 +24,17 @@ function StagedNftWrapper({ editModeNft }: Props) {
   );
 }
 
-// TODO: save this as a general transition under /core
-const transitionStyle = `200ms cubic-bezier(0, 0, 0, 1.07)`;
-
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
   ${({ type }) => type}: 0;
 
   opacity: 0;
-  transition: opacity ${transitionStyle};
+  transition: opacity ${transitions.cubic};
 `;
 
 const StyledUnstageButton = styled(UnstageButton)`
   opacity: 0;
-  transition: opacity ${transitionStyle};
+  transition: opacity ${transitions.cubic};
 `;
 
 const StyledStageNftWrapper = styled.div`

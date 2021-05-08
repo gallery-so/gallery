@@ -1,68 +1,112 @@
-import { RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import { Text } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import ActionText from 'components/core/ActionText/ActionText';
+import NavigationHandle, { Directions } from './NavigationHandle';
+import { mockSingleNft } from 'mocks/nfts';
+import { mockSingleCollection } from 'mocks/collections';
+import { Collection } from 'types/Collection';
+import NftDetailLabel from './NftDetailLabel';
+// import NftDetailAsset from './NftDetailAsset';
 
 type Params = {
   collectionId: string;
   nftId: string;
 };
 
-function NftDetailPage({ collectionId, nftId }: RouteComponentProps<Params>) {
+function NftDetailPage({
+  collectionId,
+  nftId,
+  location,
+}: RouteComponentProps<Params>) {
   const [nft, setNft] = useState<Nft | null>(null);
+  const [collection, setCollection] = useState<Collection>({
+    nfts: [],
+    id: '1',
+  });
+
+  useEffect(() => {
+    console.log(
+      'check for collection on location state, otherwise GET collection',
+      collectionId,
+      nftId
+    );
+    setCollection(mockSingleCollection());
+  }, [collectionId, nftId]);
 
   useEffect(() => {
     console.log('GET nft and collection', collectionId, nftId);
-    const description =
-      'A psychedelic piece inspired by the allure of aposematic coloration\n found in plants and the natural world\n\n' +
-      '~~~~~\n\n' +
-      'All details and elements in this piece are purely photographic, which have been carefully cut out and arranged into a floral composition, then digitally animated and colour graded.\n\n' +
-      '~~~~~\n\n' +
-      'The creative process is a very meditative experience, which is transmitted from the final result to the viewer as a hypnotic loop.';
-    setNft({
-      id: '1',
-      name: 'The Fold Ep2',
-      platformName: 'SuperRare',
-      ownerName: 'Fabric Softener',
-      imageUrl:
-        'https://ipfs.pixura.io/ipfs/QmPN9kEevrvSjjFhScVEHP6t8QC2dRY2PGFmcE8Yz6aUvv/Dom-Qwek_Broken-1_2021.jpg',
-      imagePreviewUrl: 'string',
-      description,
-    });
+
+    setNft(mockSingleNft());
   }, [collectionId, nftId]);
 
+  console.log('location', location);
+
+  const handleBackClick = useCallback(() => {
+    // TODO this works but leaves trailing slash
+    // navigate('..');
+
+    navigate(`/${window.location.pathname.split('/')[1]}`);
+  }, []);
+
+  const nextNftId = useMemo(() => {
+    // TODO: return id of next nft in collection array
+    return '123';
+  }, []);
+
+  const prevNftId = useMemo(() => {
+    // TODO: return id of next nft in collection array
+    return '456';
+  }, []);
+
   if (!nft) {
+    // TODO implement loading state - is it needed?
     return <div>loading</div>;
   }
+
   return (
     <StyledNftDetailPage>
-      <StyledContentContainer>
-        <StyledImageContainer>
-          <StyledImage src={nft.imageUrl}></StyledImage>
-        </StyledImageContainer>
-        <StyledLabelContainer>
-          <StyledNftTitle>{nft.name}</StyledNftTitle>
-          <Spacer height={16} />
-          <Text>{nft.platformName}</Text>
-          <Spacer height={16} />
-          <StyledNftDescription color={colors.gray50}>
-            {nft.description}
-          </StyledNftDescription>
-          <Spacer height={32} />
-          <Text color={colors.gray50}>Owned By</Text>
-          <Text>{nft.ownerName}</Text>
-          <Spacer height={16} />
-          <Text color={colors.gray50}>Created By</Text>
-          <Text>0xad6a7c8bfaf34aeddb036adfe4044d6a5d0a9ce2</Text>
-        </StyledLabelContainer>
-      </StyledContentContainer>
+      <StyledBackLink onClick={handleBackClick}>
+        <ActionText>← Back to gallery</ActionText>
+      </StyledBackLink>
+      <StyledBody>
+        {prevNftId && (
+          <NavigationHandle
+            direction={Directions.LEFT}
+            nftId={prevNftId}
+          ></NavigationHandle>
+        )}
+        <StyledContentContainer>
+          {/* <NftDetailAsset></NftDetailAsset> */}
+          <StyledImageContainer>
+            <StyledImage src={nft.imageUrl}></StyledImage>
+          </StyledImageContainer>
+          <NftDetailLabel nft={nft} />
+        </StyledContentContainer>
+        {nextNftId && (
+          <NavigationHandle
+            direction={Directions.RIGHT}
+            nftId={nextNftId}
+          ></NavigationHandle>
+        )}
+      </StyledBody>
     </StyledNftDetailPage>
   );
 }
+
+const StyledBody = styled.div`
+  display: flex;
+`;
+
+const StyledBackLink = styled.a`
+  margin-left: 32px;
+`;
+
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -75,6 +119,8 @@ const StyledContentContainer = styled.div`
 `;
 const StyledNftDetailPage = styled.div`
   display: flex;
+  flex-direction: column;
+  margin-top: 32px;
 `;
 
 const StyledImageContainer = styled.div`
@@ -88,27 +134,6 @@ const StyledImage = styled.img`
 
   @media only screen and ${breakpoints.desktop} {
     width: 600px;
-  }
-`;
-
-const StyledNftTitle = styled(Text)`
-  font-size: 20px;
-`;
-
-const StyledNftDescription = styled(Text)`
-  width: 296px;
-  line-height: 20px;
-
-  white-space: pre-line;
-`;
-
-const StyledLabelContainer = styled.div`
-  flex-direction: column;
-  margin-top: 32px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding-left: 72px;
-    margin-top: 0;
   }
 `;
 
