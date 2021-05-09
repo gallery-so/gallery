@@ -5,9 +5,10 @@ import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import { Collection } from 'types/Collection';
 
+import { Directions } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
-import NavigationHandle, { Directions } from './NavigationHandle';
+import NavigationHandle from './NavigationHandle';
 import { mockSingleCollection } from 'mocks/collections';
 import NftDetailLabel from './NftDetailLabel';
 import NftDetailAsset from './NftDetailAsset';

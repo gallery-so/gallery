@@ -6,11 +6,7 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
 import { navigate } from '@reach/router';
-
-export enum Directions {
-  LEFT,
-  RIGHT,
-}
+import { Directions } from 'components/core/enums';
 
 const ARROWS = new Map<number, string>([
   [Directions.LEFT, '←'],
