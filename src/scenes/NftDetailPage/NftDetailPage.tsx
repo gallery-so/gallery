@@ -1,18 +1,18 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+
 import { Nft } from 'types/Nft';
-import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
+import { Collection } from 'types/Collection';
+
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import ActionText from 'components/core/ActionText/ActionText';
 import NavigationHandle, { Directions } from './NavigationHandle';
-import { mockSingleNft } from 'mocks/nfts';
 import { mockSingleCollection } from 'mocks/collections';
-import { Collection } from 'types/Collection';
 import NftDetailLabel from './NftDetailLabel';
-// import NftDetailAsset from './NftDetailAsset';
+import NftDetailAsset from './NftDetailAsset';
+
+import { mockSingleNft } from 'mocks/nfts';
 
 type Params = {
   collectionId: string;
@@ -82,10 +82,7 @@ function NftDetailPage({
           ></NavigationHandle>
         )}
         <StyledContentContainer>
-          {/* <NftDetailAsset></NftDetailAsset> */}
-          <StyledImageContainer>
-            <StyledImage src={nft.imageUrl}></StyledImage>
-          </StyledImageContainer>
+          <NftDetailAsset nft={nft} />
           <NftDetailLabel nft={nft} />
         </StyledContentContainer>
         {nextNftId && (
@@ -121,20 +118,6 @@ const StyledNftDetailPage = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 32px;
-`;
-
-const StyledImageContainer = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledImage = styled.img`
-  width: 100%;
-
-  @media only screen and ${breakpoints.desktop} {
-    width: 600px;
-  }
 `;
 
 export default NftDetailPage;
