@@ -76,22 +76,22 @@ function NftDetailPage({
         <ActionText>← Back to gallery</ActionText>
       </StyledBackLink>
       <StyledBody>
-        {prevNftId && (
+        {/* {prevNftId && (
           <NavigationHandle
             direction={Directions.LEFT}
             nftId={prevNftId}
           ></NavigationHandle>
-        )}
+        )} */}
         <StyledContentContainer>
           <NftDetailAsset nft={nft} />
           <NftDetailLabel nft={nft} />
         </StyledContentContainer>
-        {nextNftId && (
+        {/* {nextNftId && (
           <NavigationHandle
             direction={Directions.RIGHT}
             nftId={nextNftId}
           ></NavigationHandle>
-        )}
+        )} */}
       </StyledBody>
     </StyledNftDetailPage>
   );
