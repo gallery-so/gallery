@@ -20,6 +20,7 @@ type Params = {
   nftId: string;
 };
 
+// for now you can visit on http://localhost:3000/test/test/123
 function NftDetailPage({
   collectionId,
   nftId,
