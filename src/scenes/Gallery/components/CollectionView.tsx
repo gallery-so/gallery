@@ -20,7 +20,11 @@ function CollectionView({ collection }: Props) {
       </StyledCollectionHeader>
       <StyledCollectionNfts>
         {collection.nfts.map((nft) => (
-          <NftPreview key={nft.id} nft={nft}></NftPreview>
+          <NftPreview
+            key={nft.id}
+            nft={nft}
+            collectionId={collection.id}
+          ></NftPreview>
         ))}
       </StyledCollectionNfts>
     </StyledCollectionWrapper>

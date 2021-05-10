@@ -55,12 +55,12 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     {
       title: 'Collection 1',
       description: 'This is a test collection',
-      id: 'id',
+      id: '421123912',
       nfts: nfts.slice(0, 10),
     },
     {
       title: 'Collection 2',
-      id: 'id',
+      id: 'fd8d9as802',
       nfts: nfts.slice(11, 20),
     },
   ];

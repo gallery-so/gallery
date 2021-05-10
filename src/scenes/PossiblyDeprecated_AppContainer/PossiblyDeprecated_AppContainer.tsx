@@ -7,7 +7,7 @@ type Props = {
   children: ReactNode;
 };
 
-const ROUTES_WITHOUT_NAVBAR = ['/create'];
+const ROUTES_WITHOUT_NAVBAR = ['/', '/create'];
 
 function AppContainer({ children, location }: RouteComponentProps & Props) {
   const shouldDisplayNavbar = useMemo(() => {

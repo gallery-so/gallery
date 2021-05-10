@@ -7,7 +7,7 @@ type Props = {
 };
 
 function StagedNftImageDragging({ nft }: Props) {
-  const srcUrl = nft?.image_url;
+  const srcUrl = nft?.imageUrl;
   const isMouseUp = useMouseUp();
 
   return <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />;

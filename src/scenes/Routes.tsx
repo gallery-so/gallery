@@ -6,6 +6,7 @@ import Auth from 'scenes/Auth/Auth';
 import Password from 'scenes/Password/Password';
 import NotFound from 'scenes/NotFound/NotFound';
 import Gallery from 'scenes/Gallery/Gallery';
+import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 
@@ -21,6 +22,7 @@ export default function Routes() {
             <Password path="/password" />
             <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
             <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
+            <NftDetailPage path="/:userName/:collectionId/:nftId" />
             <Gallery path="/:usernameOrWalletAddress" />
             <NotFound default path="404" />
           </Router>

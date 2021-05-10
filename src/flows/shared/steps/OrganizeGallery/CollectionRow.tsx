@@ -31,7 +31,7 @@ function CollectionRow({ collection, className }: Props) {
       <Spacer height={12} />
       <Body>
         {firstThreeNfts.map((nft) => (
-          <BigNftPreview src={nft.image_url} />
+          <BigNftPreview src={nft.imageUrl} />
         ))}
         {remainingNfts.length ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
@@ -98,14 +98,14 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
             {firstThreeNfts.map((nft) => (
-              <SmolNftPreview src={nft.image_url} />
+              <SmolNftPreview src={nft.imageUrl} />
             ))}
             <Spacer width={2} />
             <Text>+{overflowCountText} more</Text>
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) =>
-            nft ? <SmolNftPreview src={nft.image_url} /> : null
+            nft ? <SmolNftPreview src={nft.imageUrl} /> : null
           )
         )}
       </Content>
