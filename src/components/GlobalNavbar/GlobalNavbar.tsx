@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import styled from 'styled-components';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
@@ -7,7 +8,7 @@ function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();
 
   return (
-    <StyledNavContainer>
+    <StyledNavContainer data-testid="navbar">
       <StyledNav>
         {isAuthenticated ? <SignOutButton /> : <SignInButton />}
       </StyledNav>
@@ -31,4 +32,4 @@ const StyledNav = styled.div`
   justify-content: flex-end;
 `;
 
-export default GlobalNavbar;
+export default memo(GlobalNavbar);

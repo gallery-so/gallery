@@ -1,20 +1,11 @@
-import { SwrProvider } from 'contexts/swr/SwrContext';
-import Boundary from 'contexts/boundary/Boundary';
-import AuthProvider from 'contexts/auth/AuthContext';
-import ModalProvider from 'contexts/modal/ModalContext';
 import Routes from 'scenes/Routes';
+import AppProvider from './contexts/AppProvider';
 
 function App() {
   return (
-    <Boundary>
-      <AuthProvider>
-        <SwrProvider>
-          <ModalProvider>
-            <Routes />
-          </ModalProvider>
-        </SwrProvider>
-      </AuthProvider>
-    </Boundary>
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   );
 }
 
