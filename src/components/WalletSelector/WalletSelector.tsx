@@ -16,15 +16,21 @@ const walletConnectorMap: Record<string, AbstractConnector> = {
   WalletLink: walletlink,
 };
 
+type ErrorCode = string;
+type Web3Error = Error & { code: ErrorCode };
 type ErrorMessage = {
   heading: string;
   body: string;
 };
 
-const ERROR_MESSAGES: { [key: string]: ErrorMessage } = {
+const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
+  '4001': {
+    heading: 'Authorization denied',
+    body: 'Please authorize the app to log in.',
+  },
   REJECTED_SIGNATURE: {
-    heading: 'Account access needed',
-    body: 'Please sign with your wallet to access your account.',
+    heading: 'Signature required',
+    body: 'Please sign the message with your wallet to log in.',
   },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
@@ -42,14 +48,32 @@ function WalletSelector() {
     account,
     activate,
     deactivate,
-    active,
+    // error returned from web3 provider
+    error,
   } = useWeb3React<Web3Provider>();
 
-  const [pendingWallet, setPendingWallet] = useState<
-    AbstractConnector | undefined
-  >();
+  const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
-  const [errorCode, setErrorCode] = useState('');
+
+  // manually detected error not provided by web3 provider;
+  // we need to set this on state ourselves
+  const [detectedError, setDetectedError] = useState<Web3Error>();
+
+  // default to error displayed by web3 provider and fall back
+  // to manually set error. since not all errors come with an
+  // error code, we'll add them as they come up case-by-case
+  const displayedError = useMemo(() => {
+    const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
+    if (!errorToDisplay) return null;
+    if (!errorToDisplay.code) {
+      // manually handle error cases as we run into them with wallets
+      if (errorToDisplay.name === 'UserRejectedRequestError') {
+        errorToDisplay.code = '4001';
+      }
+    }
+    const parsedError = getErrorMessage(errorToDisplay.code ?? '');
+    return parsedError;
+  }, [error, detectedError]);
 
   const setToPendingState = useCallback((connector: AbstractConnector) => {
     setIsPending(true);
@@ -58,7 +82,7 @@ function WalletSelector() {
 
   const retryConnectWallet = useCallback(() => {
     setIsPending(false);
-    setErrorCode('');
+    setDetectedError(undefined);
     deactivate();
   }, [deactivate]);
 
@@ -69,23 +93,23 @@ function WalletSelector() {
   const { logIn } = useAuthActions();
 
   useEffect(() => {
+    // TODO: when hooking up to the server, make sure this only runs a single time
     if (account && isPending && signer) {
       signMessageAndAuthenticate(account, signer)
         .then((jwt) => logIn(jwt))
         .catch((err) => {
-          setErrorCode(err.code);
+          setDetectedError(err);
           setIsPending(false);
           return;
         });
     }
   }, [account, isPending, logIn, signer]);
 
-  if (errorCode) {
-    const errorMessage = getErrorMessage(errorCode);
+  if (displayedError) {
     return (
       <StyledWalletSelector>
-        <StyledHeader>{errorMessage.heading}</StyledHeader>
-        <StyledBody>{errorMessage.body}</StyledBody>
+        <StyledHeader>{displayedError.heading}</StyledHeader>
+        <StyledBody>{displayedError.body}</StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
     );
