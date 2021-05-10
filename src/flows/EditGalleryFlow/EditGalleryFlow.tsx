@@ -9,7 +9,7 @@ import WizardFooter from './WizardFooter';
 
 function EditGalleryFlow(_: RouteComponentProps) {
   return (
-    <GalleryWizardProvider>
+    <GalleryWizardProvider id="edit-gallery">
       <Wizard
         render={(wizardProps) => {
           return (
