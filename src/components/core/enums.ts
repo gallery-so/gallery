@@ -4,3 +4,10 @@ export enum Directions {
   UP,
   DOWN,
 }
+
+export enum NftMediaType {
+  IMAGE,
+  VIDEO,
+  ANIMATION,
+  AUDIO,
+}

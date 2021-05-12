@@ -7,6 +7,7 @@ export type Nft = {
   description?: string;
   ownerName?: string;
   platformName?: string;
+  animationUrl?: string;
 };
 
 export type EditModeNft = {

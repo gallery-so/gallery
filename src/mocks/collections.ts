@@ -1,4 +1,10 @@
-import { mockNftsLite } from './nfts';
+import {
+  mockNftsLite,
+  IMAGE_NFT,
+  VIDEO_NFT,
+  ANIMATION_NFT,
+  AUDIO_NFT,
+} from './nfts';
 
 const collectionNames = ['Punks', 'Longer collection name', undefined];
 
@@ -21,7 +27,7 @@ export function mockCollectionsLite(n: number) {
 export function mockSingleCollection() {
   return {
     id: '1',
-    nfts: mockNftsLite(5),
+    nfts: [IMAGE_NFT, VIDEO_NFT, ANIMATION_NFT, AUDIO_NFT],
     title: 'Collection Title',
   };
 }
