@@ -8,7 +8,7 @@ type Props = {
 function NftDetailAnimation({ nft }: Props) {
   return (
     <StyledNftDetailAnimation>
-      <StyledIframe src="https://api.artblocks.io/generator/26000331"></StyledIframe>
+      <StyledIframe src={nft.animationUrl}></StyledIframe>
     </StyledNftDetailAnimation>
   );
 }
