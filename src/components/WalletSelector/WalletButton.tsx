@@ -1,6 +1,6 @@
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { injected } from 'connectors/index';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import colors from 'components/core/colors';
@@ -32,6 +32,28 @@ function WalletButton({
     }
   }, [activate, connector, setToPendingState, walletName]);
 
+  const loadingView = useMemo(() => {
+    return (
+      <>
+        {'Connecting...'}
+        <StyledLoader />
+      </>
+    );
+  }, []);
+
+  const iconView = useMemo(() => {
+    if (!walletName) return null;
+
+    return (
+      <>
+        {walletName}
+        <Icon
+          src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
+        />
+      </>
+    );
+  }, [walletName]);
+
   // injected is the connector type used for browser wallet extensions/dApp browsers
   if (connector === injected) {
     // metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
@@ -55,17 +77,7 @@ function WalletButton({
       onClick={handleClick}
       disabled={isPending}
     >
-      {isPending ? 'Connecting...' : walletName}
-      {isPending ? (
-        <StyledLoader />
-      ) : (
-        <Icon
-          src={
-            walletName &&
-            require(`assets/icons/${walletName.toLowerCase()}.svg`).default
-          }
-        />
-      )}
+      {isPending ? loadingView : iconView}
     </StyledButton>
   );
 }
