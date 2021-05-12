@@ -14,7 +14,7 @@ import { WizardProps } from 'flows/shared/types';
 
 function OnboardingFlow(_: RouteComponentProps) {
   return (
-    <GalleryWizardProvider>
+    <GalleryWizardProvider id="onboarding">
       <Wizard
         render={(wizardProps) => {
           return (

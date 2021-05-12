@@ -1,13 +1,19 @@
 import { memo, ReactNode } from 'react';
+import WizardDataProvider from './WizardDataProvider';
 import WizardCallbackProvider from './WizardCallbackContext';
 import WizardValidationProvider from './WizardValidationContext';
 
-type Props = { children: ReactNode };
+type Props = {
+  id: string;
+  children: ReactNode;
+};
 
-export default memo(function GalleryWizardProvider({ children }: Props) {
+export default memo(function GalleryWizardProvider({ id, children }: Props) {
   return (
-    <WizardValidationProvider>
-      <WizardCallbackProvider>{children}</WizardCallbackProvider>
-    </WizardValidationProvider>
+    <WizardDataProvider id={id}>
+      <WizardValidationProvider>
+        <WizardCallbackProvider>{children}</WizardCallbackProvider>
+      </WizardValidationProvider>
+    </WizardDataProvider>
   );
 });
