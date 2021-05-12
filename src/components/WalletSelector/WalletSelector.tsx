@@ -23,7 +23,9 @@ type ErrorMessage = {
   body: string;
 };
 
+// TODO: consider making these enums
 const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
+  // client-side provider errors: https://eips.ethereum.org/EIPS/eip-1193#provider-errors
   '4001': {
     heading: 'Authorization denied',
     body: 'Please authorize the app to log in.',
@@ -63,6 +65,8 @@ function WalletSelector() {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
+    // @ts-ignore
+    console.log('the error from provider', error, error?.code);
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
     if (!errorToDisplay) return null;
     if (!errorToDisplay.code) {
@@ -155,25 +159,34 @@ const signMessageAndAuthenticate = async (
       resolve('testNonceValue');
     }, 500);
   }).catch((err) => {
-    // TODO: get error to be handled by error boundary
+    // TODO: throw server error and add to error map
     throw new Error('Error getting nonce');
   });
   console.log('Retrieved nonce: ', nonce);
   // Request user to sign message so we can authenticate and get jwt from backend
-  const jwt: string = await signer
-    .signMessage(nonce)
-    .then((signature: any) => {
-      return new Promise<string>((resolve, reject) => {
-        // simulate sending signature in exchange for jwt from backend for now
-        setTimeout(() => {
-          resolve('testJwt');
-        }, 500);
-      });
-    })
-    .catch((err) => {
-      err.code = 'REJECTED_SIGNATURE';
-      throw err;
+
+  let signature;
+  try {
+    signature = await signer.signMessage(nonce);
+  } catch (err: any) {
+    console.log('error while signing', err);
+    err.code = 'REJECTED_SIGNATURE';
+    throw err;
+  }
+
+  let jwt;
+  try {
+    const response = new Promise<string>((resolve, reject) => {
+      // simulate sending signature in exchange for jwt from backend for now
+      setTimeout(() => {
+        resolve('testJwt');
+      }, 500);
     });
+    jwt = await response;
+  } catch (e) {
+    // TODO: throw server error and add to error map
+    throw new Error('Error getting nonce');
+  }
 
   if (!jwt) {
     // TODO: handle error exchanging signature for jwt
