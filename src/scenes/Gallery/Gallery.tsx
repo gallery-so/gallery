@@ -7,9 +7,17 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import Body from './components/Body';
 import Spacer from 'components/core/Spacer/Spacer';
+import { contentSize } from 'components/core/breakpoints';
 
 import { Nft } from 'types/Nft';
-import { mockCollectionsLite, mockSingleCollection } from 'mocks/collections';
+import { mockSingleCollection } from 'mocks/collections';
+
+let MOCK_COLLECTIONS = [
+  // show multiple rows
+  mockSingleCollection({ noVideos: true, withDescription: true, aLot: true }),
+  mockSingleCollection({ noVideos: true, withDescription: false }),
+  mockSingleCollection({ noVideos: true, withDescription: true }),
+];
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -52,21 +60,29 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     }
   }, [isWalletAddress, usernameOrWalletAddress]);
 
-  let collections = [mockSingleCollection()];
-
   return (
     <StyledGallery>
-      <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
-      <Spacer height={40} />
-      <Body collections={collections} />
+      <StyledContent>
+        <Spacer height={111} />
+        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
+        <Body collections={MOCK_COLLECTIONS} />
+      </StyledContent>
     </StyledGallery>
   );
 }
 
 const StyledGallery = styled.div`
   display: flex;
+  justify-content: center;
+`;
+
+const StyledContent = styled.div`
+  display: flex;
   flex-direction: column;
   align-items: center;
+
+  // TODO: make this responsive
+  max-width: ${contentSize.desktop};
 `;
 
 export default Gallery;

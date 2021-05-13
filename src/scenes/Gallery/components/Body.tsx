@@ -1,7 +1,7 @@
+import styled from 'styled-components';
+import { Collection } from 'types/Collection';
 import Spacer from 'components/core/Spacer/Spacer';
 import CollectionView from './CollectionView';
-
-import { Collection } from 'types/Collection';
 
 type Props = {
   collections: Array<Collection>;
@@ -9,15 +9,19 @@ type Props = {
 
 function Body({ collections }: Props) {
   return (
-    <>
-      <Spacer height={40} />
-      <div>
-        {collections.map((collection) => (
+    <StyledBody>
+      {collections.map((collection) => (
+        <>
+          <Spacer height={108} />
           <CollectionView collection={collection} />
-        ))}
-      </div>
-    </>
+        </>
+      ))}
+    </StyledBody>
   );
 }
+
+const StyledBody = styled.div`
+  width: 100%;
+`;
 
 export default Body;
