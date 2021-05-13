@@ -103,7 +103,6 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
 
 export const StyledDropdownButton = styled(TextButton)`
   width: fit-content;
-  // align-self: flex-end;
 
   &:focus {
     underline: 1px solid;

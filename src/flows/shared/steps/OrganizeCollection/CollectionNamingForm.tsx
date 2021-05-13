@@ -9,16 +9,20 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { useModal } from 'contexts/modal/ModalContext';
+import { Collection } from 'types/Collection';
 
 type Props = {
   onNext: WizardContext['next'];
+  collection: Collection;
 };
 
-function CollectionNamingForm({ onNext }: Props) {
+function CollectionNamingForm({ onNext, collection }: Props) {
   const { hideModal } = useModal();
 
-  const [collectionName, setCollectionName] = useState('');
-  const [collectionDescription, setCollectionDescription] = useState('');
+  const [collectionName, setCollectionName] = useState(collection.title || '');
+  const [collectionDescription, setCollectionDescription] = useState(
+    collection.description || ''
+  );
 
   const handleNameChange = useCallback((event) => {
     setCollectionName(event.target.value);
@@ -60,7 +64,11 @@ function CollectionNamingForm({ onNext }: Props) {
         You can always add a collection name and description later.
       </Text>
       <Spacer height={20} />
-      <BigInput onChange={handleNameChange} placeholder="Collection name" />
+      <BigInput
+        onChange={handleNameChange}
+        defaultValue={collectionName}
+        placeholder="Collection name"
+      />
       <StyledTextArea
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
