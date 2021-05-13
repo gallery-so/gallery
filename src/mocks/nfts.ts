@@ -95,7 +95,8 @@ export const ANIMATION_NFT: Nft = {
     'https://lh3.googleusercontent.com/YPh7Eq-kHet0FIE4vb5qBu_3MG-tCzVx1DE53LAGbU_31h66W8kKEJt-f8MfxDtAetHudq62uBcxfn0IYMpWVrZKbZclylGzKrWVCCI',
   imagePreviewUrl:
     'https://lh3.googleusercontent.com/YPh7Eq-kHet0FIE4vb5qBu_3MG-tCzVx1DE53LAGbU_31h66W8kKEJt-f8MfxDtAetHudq62uBcxfn0IYMpWVrZKbZclylGzKrWVCCI=s250',
-  animationUrl: 'https://api.artblocks.io/generator/26000331',
+  animationUrl:
+    'https://storage.opensea.io/files/28f7c1a47b9515a8b3aaa686cdcbcb0a.html',
   description:
     'To become an Energy Sculptor, you first have to find your way into MU. Once arrived, an extensive period of trials will test your capabilities for earning the right to be an Energy Sculptor.\n\nThis project is part of The Realm of MU saga. Additional project feature(s) => MotionState: Flow, DelayMode: Slacker, DimensionalBalance: Unstable, ColorBase(0-255): 161',
 };
