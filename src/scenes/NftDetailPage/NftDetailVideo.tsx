@@ -1,4 +1,3 @@
-import src from '*.avif';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
