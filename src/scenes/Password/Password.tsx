@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ import { validatePassword } from 'utils/password';
 
 function Password(_: RouteComponentProps) {
   const [storedPassword, storePassword] = usePersistedState('password', null);
+  const enteredPassword = useRef('');
 
   // put storedPassword in a ref so that if the user guesses it correctly,
   // it prevents an insta-redirect (they should see the cool button reveal instead)
@@ -26,25 +27,36 @@ function Password(_: RouteComponentProps) {
     false
   );
 
-  const handleSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
-      const userValue = event.target.elements.password.value;
-      const isPasswordValid = validatePassword(userValue);
-
-      if (isPasswordValid) {
-        storePassword(userValue);
-        setIsFormVisibleAndUnlocked(true);
-      }
-    },
-    [storePassword]
-  );
+  const handlePasswordChange = useCallback((event) => {
+    event.preventDefault();
+    const value = event.target.value;
+    enteredPassword.current = value;
+    setIsFormVisibleAndUnlocked(validatePassword(value));
+  }, []);
 
   const handleEnterGallery = useCallback(() => {
     // if the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
+    storePassword(enteredPassword.current);
     navigate('/auth');
-  }, []);
+  }, [storePassword]);
+
+  const onEnterPress = useCallback(
+    (e) => {
+      if (e.key === 'Enter') {
+        handleEnterGallery();
+      }
+    },
+    [handleEnterGallery]
+  );
+
+  useEffect(() => {
+    if (!isFormVisibleAndUnlocked) return;
+
+    document.addEventListener('keypress', onEnterPress);
+
+    return () => document.removeEventListener('keypress', onEnterPress);
+  }, [onEnterPress, isFormVisibleAndUnlocked]);
 
   if (isPasswordValid && !isAuthenticated) {
     return <Redirect to="/auth" />;
@@ -59,13 +71,12 @@ function Password(_: RouteComponentProps) {
       <Title>GALLERY</Title>
       <Text>Show your collection to the world</Text>
       <Spacer height={48} />
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledPasswordInput
-          disabled={isFormVisibleAndUnlocked}
-          name="password"
-          placeholder="Enter password"
-        />
-      </StyledForm>
+      <StyledPasswordInput
+        disabled={isFormVisibleAndUnlocked}
+        name="password"
+        placeholder="Enter password"
+        onChange={handlePasswordChange}
+      />
       <AnimatedStyledButton
         visible={isFormVisibleAndUnlocked}
         text="Enter"
@@ -81,12 +92,6 @@ const StyledPassword = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-`;
-
-const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const INPUT_WIDTH = 203;
