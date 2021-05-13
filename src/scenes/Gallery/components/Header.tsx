@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { navigate } from '@reach/router';
 import styled from 'styled-components';
 import { Title, Text } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -7,23 +8,23 @@ import Dropdown from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from './EditUserInfoModal';
-
-// TODO: delete this once we hav a working backend
-const ADDRESSES = {
-  mikey: '0xBb3F043290841B97b9C92F6Bc001a020D4B33255',
-  robin: '0x70d04384b5c3a466ec4d8cfb8213efc31c6a9d15',
-};
+import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
 type Props = {
   usernameOrWalletAddress: string;
 };
 
 function Header({ usernameOrWalletAddress }: Props) {
+  const isAuthenticated = useIsAuthenticated();
   const { showModal } = useModal();
 
   const handleEditNameClick = useCallback(() => {
     showModal(<EditUserInfoModal />);
   }, [showModal]);
+
+  const handleEditGalleryClick = useCallback(() => {
+    navigate('/edit');
+  }, []);
 
   return (
     <StyledHeader>
@@ -48,14 +49,20 @@ function Header({ usernameOrWalletAddress }: Props) {
             & More → http://linktr.ee/maalavidaa
           </Text>
         </StyledLeftContainer>
-        <StyledRightContainer>
-          <Dropdown mainText="Edit Profile">
-            <TextButton
-              text={`Edit name & Bio`}
-              onClick={handleEditNameClick}
-            />
-          </Dropdown>
-        </StyledRightContainer>
+        {isAuthenticated && (
+          <StyledRightContainer>
+            <Dropdown mainText="Edit Profile">
+              <TextButton
+                text="Edit name & Bio"
+                onClick={handleEditNameClick}
+              />
+              <TextButton
+                text="Edit Gallery"
+                onClick={handleEditGalleryClick}
+              />
+            </Dropdown>
+          </StyledRightContainer>
+        )}
       </StyledUserDetails>
     </StyledHeader>
   );
