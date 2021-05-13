@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
+import Spacer from 'components/core/Spacer/Spacer';
 import CollectionView from './CollectionView';
 
 type Props = {
@@ -10,7 +11,10 @@ function Body({ collections }: Props) {
   return (
     <StyledBody>
       {collections.map((collection) => (
-        <CollectionView collection={collection} />
+        <>
+          <Spacer height={108} />
+          <CollectionView collection={collection} />
+        </>
       ))}
     </StyledBody>
   );

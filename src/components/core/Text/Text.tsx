@@ -1,18 +1,23 @@
 import styled from 'styled-components';
 import colors from '../colors';
 
-export const Title = styled.p`
+type TitleProps = {
+  // TODO: make these enums based on sizing chart in figma
+  size?: 'normal' | 'mini';
+};
+
+export const Title = styled.p<TitleProps>`
   font-family: 'Times New Roman';
   margin: 0;
 
-  font-size: 48px;
+  font-size: ${({ size }) => (size === 'mini' ? '16px' : '48px')};
 `;
 
 type SubtitleProps = {
   color?: colors;
-  // TODO: make these enums
+  // TODO: make these enums based on sizing chart in figma
   size?: 'normal' | 'large';
-  // TODO: make these enums
+  // TODO: make these enums based on sizing chart in figma
   weight?: 'normal' | 'bold';
 };
 
@@ -28,7 +33,7 @@ export const Subtitle = styled.p<SubtitleProps>`
 
 type TextProps = {
   color?: colors;
-  // TODO: make these enums
+  // TODO: make these enums based on sizing chart in figma
   weight?: 'normal' | 'bold';
 };
 

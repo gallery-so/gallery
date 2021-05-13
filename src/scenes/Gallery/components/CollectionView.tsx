@@ -2,7 +2,8 @@ import colors from 'components/core/colors';
 import NftPreview from 'components/NftPreview/NftPreview';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
-import { Text } from 'components/core/Text/Text';
+import { Title, Text } from 'components/core/Text/Text';
+import Spacer from 'components/core/Spacer/Spacer';
 
 type Props = {
   collection: Collection;
@@ -12,11 +13,11 @@ function CollectionView({ collection }: Props) {
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
-        <StyledCollectionTitle>{collection.title}</StyledCollectionTitle>
-        <StyledCollectionDescription>
-          {collection.description}
-        </StyledCollectionDescription>
+        <Title size="mini">{collection.title}</Title>
+        <Spacer height={8} />
+        <Text color={colors.gray50}>{collection.description}</Text>
       </StyledCollectionHeader>
+      <Spacer height={16} />
       <StyledCollectionNfts>
         {collection.nfts.map((nft) => (
           <NftPreview key={nft.id} nft={nft} collectionId={collection.id} />
@@ -30,18 +31,11 @@ const StyledCollectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 96px;
 `;
 
 const StyledCollectionHeader = styled.div`
-  margin-bottom: 10px;
-`;
-const StyledCollectionTitle = styled.p`
-  margin: 0 0 10px 0;
-`;
-const StyledCollectionDescription = styled(Text)`
-  color: ${colors.gray50};
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledCollectionNfts = styled.div`
