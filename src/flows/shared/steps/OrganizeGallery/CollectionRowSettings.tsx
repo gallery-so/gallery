@@ -29,7 +29,7 @@ function CollectionRowSettings({ collection }: Props) {
   }, []);
 
   const handleDeleteClick = useCallback(() => {
-    showModal(<DeleteCollectionConfirmation></DeleteCollectionConfirmation>);
+    showModal(<DeleteCollectionConfirmation />);
   }, [showModal]);
 
   return (
@@ -42,16 +42,16 @@ function CollectionRowSettings({ collection }: Props) {
           <TextButton
             onClick={handleEditNameClick}
             text="Edit name & description"
-          ></TextButton>
+          />
         </StyledDropdownItem>
         <StyledDropdownItem>
           <TextButton
             onClick={handleToggleHiddenClick}
             text={collection.isHidden ? 'Show' : 'Hide'}
-          ></TextButton>
+          />
         </StyledDropdownItem>
         <StyledDropdownItem>
-          <TextButton onClick={handleDeleteClick} text="Delete"></TextButton>
+          <TextButton onClick={handleDeleteClick} text="Delete" />
         </StyledDropdownItem>
       </Dropdown>
     </StyledCollectionRowSettings>

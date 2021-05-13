@@ -28,7 +28,7 @@ function DeleteCollectionConfirmation() {
       <Spacer height={20} />
       <ButtonContainer>
         <StyledCancelButton
-          text="Never Mind"
+          text="Nevermind"
           type="secondary"
           onClick={handleCancelClick}
         />
