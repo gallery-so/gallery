@@ -99,6 +99,7 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   background-color: ${colors.white};
 
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  // z-index: 0;
 `;
 
 export const StyledDropdownButton = styled(TextButton)`

@@ -32,13 +32,16 @@ const fadeIn = keyframes`
 
 const fadeOut = keyframes`
     from { opacity: 1 };
-    to { opacity: 0 };
+    to { opacity:  0};
 `;
 
 // ease-out like style
 const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.07)`;
 
 const _ToggleFade = styled.div<{ isActive: boolean }>`
+  // keeps modal on top over other elements with z-index https://stackoverflow.com/questions/50883309/how-come-css-animations-change-z-index
+  position: relative;
+  z-index: 1;
   animation: ${({ isActive }) =>
     css`
       ${isActive ? fadeIn : fadeOut} ${transitionStyle}
@@ -81,7 +84,7 @@ const Overlay = styled.div`
 `;
 
 const StyledContentContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

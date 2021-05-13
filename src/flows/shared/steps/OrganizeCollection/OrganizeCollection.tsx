@@ -23,7 +23,14 @@ function useWizardConfig({ onNext }: ConfigProps) {
     // if the user is part of the onboarding flow, prompt them
     // to name their collection before moving onto the next step
     if (wizardId === 'onboarding') {
-      setOnNext(() => showModal(<CollectionNamingForm onNext={onNext} />));
+      setOnNext(() =>
+        showModal(
+          <CollectionNamingForm
+            onNext={onNext}
+            collection={{ id: '', nfts: [] }}
+          />
+        )
+      );
     }
 
     return () => setOnNext(undefined);

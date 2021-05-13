@@ -7,15 +7,31 @@ import Dropdown, {
 import ActionText from 'components/core/ActionText/ActionText';
 import { useCallback } from 'react';
 import TextButton from 'components/core/Button/TextButton';
+import CollectionNamingForm from '../OrganizeCollection/CollectionNamingForm';
+import { useModal } from 'contexts/modal/ModalContext';
+import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 
 type Props = {
   collection: Collection;
 };
 
 function CollectionRowSettings({ collection }: Props) {
+  const { showModal } = useModal();
+  const handleEditNameClick = useCallback(() => {
+    showModal(
+      <CollectionNamingForm onNext={() => {}} collection={collection} />
+    );
+  }, [collection, showModal]);
+
   const handleToggleHiddenClick = useCallback(() => {
-    // update collection state
-  }, []);
+    // make request to update collection
+    // on success, update collection state
+    collection.isHidden = true;
+  }, [collection]);
+
+  const handleDeleteClick = useCallback(() => {
+    showModal(<DeleteCollectionConfirmation></DeleteCollectionConfirmation>);
+  }, [showModal]);
 
   return (
     <StyledCollectionRowSettings>
@@ -24,7 +40,10 @@ function CollectionRowSettings({ collection }: Props) {
           <ActionText>Edit collection</ActionText>
         </StyledDropdownItem>
         <StyledDropdownItem>
-          <ActionText>{`Edit name & description`}</ActionText>
+          <TextButton
+            onClick={handleEditNameClick}
+            text="Edit name & description"
+          ></TextButton>
         </StyledDropdownItem>
         <StyledDropdownItem>
           <TextButton
@@ -33,7 +52,7 @@ function CollectionRowSettings({ collection }: Props) {
           ></TextButton>
         </StyledDropdownItem>
         <StyledDropdownItem>
-          <ActionText>Delete</ActionText>
+          <TextButton onClick={handleDeleteClick} text="Delete"></TextButton>
         </StyledDropdownItem>
       </Dropdown>
     </StyledCollectionRowSettings>
@@ -48,7 +67,7 @@ const StyledCollectionRowSettings = styled.div`
   position: absolute;
   right: 24px;
   top: 28px;
-  z-index: 10;
+  z-index: 1;
 
   ${StyledDropdownButton} {
     width: 32px;

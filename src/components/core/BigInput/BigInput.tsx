@@ -5,10 +5,17 @@ import noop from 'utils/noop';
 type Props = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder: string;
+  defaultValue?: string;
 };
 
-function BigInput({ onChange = noop, placeholder }: Props) {
-  return <StyledBigInput placeholder={placeholder} onChange={onChange} />;
+function BigInput({ onChange = noop, placeholder, defaultValue }: Props) {
+  return (
+    <StyledBigInput
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      onChange={onChange}
+    />
+  );
 }
 
 const StyledBigInput = styled.input`
