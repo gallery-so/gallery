@@ -9,6 +9,7 @@ import Body from './components/Body';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import { Nft } from 'types/Nft';
+import { mockCollectionsLite, mockSingleCollection } from 'mocks/collections';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -47,23 +48,11 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     }
 
     if (usernameOrWalletAddress && isWalletAddress) {
-      getOpenseaData(usernameOrWalletAddress);
+      // getOpenseaData(usernameOrWalletAddress);
     }
   }, [isWalletAddress, usernameOrWalletAddress]);
 
-  let collections = [
-    {
-      title: 'Collection 1',
-      description: 'This is a test collection',
-      id: '421123912',
-      nfts: nfts.slice(0, 10),
-    },
-    {
-      title: 'Collection 2',
-      id: 'fd8d9as802',
-      nfts: nfts.slice(11, 20),
-    },
-  ];
+  let collections = [mockSingleCollection()];
 
   return (
     <StyledGallery>

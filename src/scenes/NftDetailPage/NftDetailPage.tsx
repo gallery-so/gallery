@@ -13,7 +13,7 @@ import { mockSingleCollection } from 'mocks/collections';
 import NftDetailLabel from './NftDetailLabel';
 import NftDetailAsset from './NftDetailAsset';
 
-import { mockSingleNft } from 'mocks/nfts';
+import { getMockNftById, mockSingleNft } from 'mocks/nfts';
 
 type Params = {
   collectionId: string;
@@ -43,8 +43,9 @@ function NftDetailPage({
 
   useEffect(() => {
     console.log('GET nft and collection', collectionId, nftId);
-
-    setNft(mockSingleNft());
+    if (nftId) {
+      setNft(getMockNftById(nftId));
+    }
   }, [collectionId, nftId]);
 
   console.log('location', location);
