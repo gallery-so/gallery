@@ -49,7 +49,6 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
     if (usernameOrWalletAddress && isWalletAddress) {
       // getOpenseaData(usernameOrWalletAddress);
-      mockCollectionsLite(3);
     }
   }, [isWalletAddress, usernameOrWalletAddress]);
 
