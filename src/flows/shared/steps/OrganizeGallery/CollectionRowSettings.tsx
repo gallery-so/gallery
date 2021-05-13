@@ -26,8 +26,7 @@ function CollectionRowSettings({ collection }: Props) {
   const handleToggleHiddenClick = useCallback(() => {
     // make request to update collection
     // on success, update collection state
-    collection.isHidden = true;
-  }, [collection]);
+  }, []);
 
   const handleDeleteClick = useCallback(() => {
     showModal(<DeleteCollectionConfirmation></DeleteCollectionConfirmation>);
