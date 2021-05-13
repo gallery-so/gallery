@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import Body from './components/Body';
 import Spacer from 'components/core/Spacer/Spacer';
+import { contentSize } from 'components/core/breakpoints';
 
 import { Nft } from 'types/Nft';
 import { mockSingleCollection } from 'mocks/collections';
@@ -61,17 +62,27 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 
   return (
     <StyledGallery>
-      <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
-      <Spacer height={40} />
-      <Body collections={MOCK_COLLECTIONS} />
+      <StyledContent>
+        <Spacer height={111} />
+        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
+        <Body collections={MOCK_COLLECTIONS} />
+      </StyledContent>
     </StyledGallery>
   );
 }
 
 const StyledGallery = styled.div`
   display: flex;
+  justify-content: center;
+`;
+
+const StyledContent = styled.div`
+  display: flex;
   flex-direction: column;
   align-items: center;
+
+  // TODO: make this responsive
+  max-width: ${contentSize.desktop};
 `;
 
 export default Gallery;

@@ -3,7 +3,6 @@ import NftPreview from 'components/NftPreview/NftPreview';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
 import { Text } from 'components/core/Text/Text';
-import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   collection: Collection;
@@ -20,11 +19,7 @@ function CollectionView({ collection }: Props) {
       </StyledCollectionHeader>
       <StyledCollectionNfts>
         {collection.nfts.map((nft) => (
-          <NftPreview
-            key={nft.id}
-            nft={nft}
-            collectionId={collection.id}
-          ></NftPreview>
+          <NftPreview key={nft.id} nft={nft} collectionId={collection.id} />
         ))}
       </StyledCollectionNfts>
     </StyledCollectionWrapper>
@@ -49,28 +44,13 @@ const StyledCollectionDescription = styled(Text)`
   margin-top: 10px;
 `;
 
-const COLLECTION_WRAPPER_WIDTH = {
-  mobile: '288px',
-  tablet: '740px',
-  desktop: '1024px',
-};
-
 const StyledCollectionNfts = styled.div`
   margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
-
-  @media only screen and ${breakpoints.mobile} {
-    max-width: ${COLLECTION_WRAPPER_WIDTH.mobile};
-  }
-  @media only screen and ${breakpoints.tablet} {
-    max-width: ${COLLECTION_WRAPPER_WIDTH.tablet};
-  }
-  @media only screen and ${breakpoints.desktop} {
-    max-width: ${COLLECTION_WRAPPER_WIDTH.desktop};
-  }
+  width: 100%;
 
   column-gap: 80px; // TODO: make this responsive
   row-gap: 80px; // TODO: make this responsive

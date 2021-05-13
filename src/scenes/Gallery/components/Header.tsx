@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Link as RouterLink } from '@reach/router';
 import styled from 'styled-components';
 import { Title, Text } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -28,41 +27,53 @@ function Header({ usernameOrWalletAddress }: Props) {
 
   return (
     <StyledHeader>
-      <StyledLeftContainer>
-        <Title>{usernameOrWalletAddress}</Title>
-        <Spacer height={20} />
-        <StyledUserDetails>
+      <Title>{usernameOrWalletAddress}</Title>
+      <Spacer height={36} />
+      <StyledUserDetails>
+        <StyledLeftContainer>
+          {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain 
           <Text color={colors.gray50}>Collector Since Mar 2021</Text>
+          */}
+
+          {/* TODO: handle multi-line descriptions from the server */}
           <Text color={colors.gray50}>
-            I make cool 3d loops Black small square
+            French Graphic Designer + Digital Artist Sparkles Founder of
+            @healthedeal
           </Text>
           <Text color={colors.gray50}>
-            http://superrare.co/rogerkilimanjaro... Black small square
+            Sparkles lorem ipsum sit dolor http://superrare.co/maalavidaa
+            Sparkles Shop
           </Text>
-        </StyledUserDetails>
-      </StyledLeftContainer>
-      <StyledRightContainer>
-        <Dropdown mainText="Edit Profile">
-          <TextButton text={`Edit name & Bio`} onClick={handleEditNameClick} />
-        </Dropdown>
-      </StyledRightContainer>
+          <Text color={colors.gray50}>
+            & More → http://linktr.ee/maalavidaa
+          </Text>
+        </StyledLeftContainer>
+        <StyledRightContainer>
+          <Dropdown mainText="Edit Profile">
+            <TextButton
+              text={`Edit name & Bio`}
+              onClick={handleEditNameClick}
+            />
+          </Dropdown>
+        </StyledRightContainer>
+      </StyledUserDetails>
     </StyledHeader>
   );
 }
 
 const StyledHeader = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
 
   width: 100%;
+`;
 
-  max-width: 1024px; // TODO: make this responsive - this is shared with body
+const StyledUserDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StyledLeftContainer = styled.div``;
-
-const StyledUserDetails = styled.div``;
 
 const StyledRightContainer = styled.div`
   display: flex;
