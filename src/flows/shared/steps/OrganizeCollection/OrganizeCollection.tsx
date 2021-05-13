@@ -27,6 +27,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
         showModal(
           <CollectionNamingForm
             onNext={onNext}
+            // TODO: pass in the actual collection being organized
             collection={{ id: '', nfts: [] }}
           />
         )
