@@ -9,7 +9,14 @@ import Body from './components/Body';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import { Nft } from 'types/Nft';
-import { mockCollectionsLite, mockSingleCollection } from 'mocks/collections';
+import { mockSingleCollection } from 'mocks/collections';
+
+let MOCK_COLLECTIONS = [
+  // show multiple rows
+  mockSingleCollection({ noVideos: true, withDescription: true, aLot: true }),
+  mockSingleCollection({ noVideos: true, withDescription: false }),
+  mockSingleCollection({ noVideos: true, withDescription: true }),
+];
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -52,13 +59,11 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     }
   }, [isWalletAddress, usernameOrWalletAddress]);
 
-  let collections = [mockSingleCollection()];
-
   return (
     <StyledGallery>
       <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
       <Spacer height={40} />
-      <Body collections={collections} />
+      <Body collections={MOCK_COLLECTIONS} />
     </StyledGallery>
   );
 }
