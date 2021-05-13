@@ -21,10 +21,10 @@ function OnboardingFlow(_: RouteComponentProps) {
             <>
               <FadeTransitioner nodeKey={wizardProps.step.id}>
                 <Steps key={wizardProps.step.id} step={wizardProps.step}>
-                  {/* <Step id="welcome" render={Welcome} />
+                  <Step id="welcome" render={Welcome} />
                   <Step id="addUserInfo" render={AddUserInfo} />
                   <Step id="create" render={CreateFirstCollection} />
-                  <Step id="organizeCollection" render={OrganizeCollection} /> */}
+                  <Step id="organizeCollection" render={OrganizeCollection} />
                   <Step id="organizeGallery" render={OrganizeGallery} />
                   <Step id="congratulations" render={Congratulations} />
                 </Steps>

@@ -18,7 +18,6 @@ type Props = {
 
 function CollectionNamingForm({ onNext, collection }: Props) {
   const { hideModal } = useModal();
-  console.log(collection);
 
   const [collectionName, setCollectionName] = useState(collection.title || '');
   const [collectionDescription, setCollectionDescription] = useState(

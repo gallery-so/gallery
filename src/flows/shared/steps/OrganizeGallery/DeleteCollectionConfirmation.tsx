@@ -9,7 +9,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 function DeleteCollectionConfirmation() {
   const { hideModal } = useModal();
   const handleConfirmClick = useCallback(() => {
-    console.log('delete');
+    console.log('call delete endpoint then close modal');
   }, []);
 
   const handleCancelClick = useCallback(() => {

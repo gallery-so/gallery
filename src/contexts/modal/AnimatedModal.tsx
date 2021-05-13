@@ -32,7 +32,7 @@ const fadeIn = keyframes`
 
 const fadeOut = keyframes`
     from { opacity: 1 };
-    to { opacity:  0};
+    to { opacity:  0 };
 `;
 
 // ease-out like style
