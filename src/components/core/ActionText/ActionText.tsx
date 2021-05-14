@@ -7,7 +7,7 @@ type Props = {
   focused?: boolean;
 };
 
-const StyledLink = styled(Text)<Props>`
+const ActionText = styled(Text)<Props>`
   font-family: 'Helvetica Neue';
   text-transform: uppercase;
   transition: color 0.2s;
@@ -23,4 +23,4 @@ const StyledLink = styled(Text)<Props>`
   }
 `;
 
-export default StyledLink;
+export default ActionText;
