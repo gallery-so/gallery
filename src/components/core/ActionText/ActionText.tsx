@@ -15,7 +15,8 @@ const StyledLink = styled(Text)<Props>`
   cursor: pointer;
 
   color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
-  text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
+  text-decoration: ${({ underlined }) =>
+    underlined ? 'underline' : undefined};
 
   &:hover {
     color: ${colors.black};
