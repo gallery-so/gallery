@@ -6,7 +6,7 @@ import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
 
-function UnauthenticatedNav() {
+function LoggedInNav() {
   const { logOut } = useAuthActions();
 
   const handleGalleryRedirect = useCallback(() => {
@@ -42,4 +42,4 @@ const StyledTextButton = styled(TextButton)`
   text-decoration: underline;
 `;
 
-export default UnauthenticatedNav;
+export default LoggedInNav;
