@@ -31,8 +31,10 @@ function NftPreview({ nft, collectionId }: Props) {
     <StyledNftPreview key={nft.id}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <StyledNft src={imgUrl} alt={nft.name} />
-        <StyledNftLabel nft={nft} />
-        <StyledGradient type="bottom" direction="down" />
+        <StyledNftFooter>
+          <StyledNftLabel nft={nft} />
+          <StyledGradient type="bottom" direction="down" />
+        </StyledNftFooter>
       </StyledLinkWrapper>
     </StyledNftPreview>
   );
@@ -45,12 +47,20 @@ const StyledLinkWrapper = styled.a`
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
   ${({ type }) => type}: 0;
-
-  opacity: 0;
-  transition: opacity ${transitions.cubic};
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
+  transition: transform ${transitions.cubic};
+  transform: translateY(5px);
+`;
+
+const StyledNftFooter = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  transition: opacity ${transitions.cubic};
+
   opacity: 0;
 `;
 
@@ -60,12 +70,13 @@ const StyledNftPreview = styled.div`
   align-items: center;
   position: relative;
   height: fit-content;
+  overflow: hidden;
 
   &:hover ${StyledNftLabel} {
-    opacity: 1;
+    transform: translateY(0px);
   }
 
-  &:hover ${StyledGradient} {
+  &:hover ${StyledNftFooter} {
     opacity: 1;
   }
 `;
