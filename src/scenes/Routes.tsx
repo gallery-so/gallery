@@ -13,7 +13,7 @@ import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 
 // considered putting this in a different file, but we should tightly couple
 // route updates to this array
-const ROUTES_WITHOUT_NAVBAR = ['/', '/auth', '/password', '/welcome'];
+const ROUTES_WITHOUT_NAVBAR = ['/', '/auth', '/password', '/welcome', '/edit'];
 
 function shouldHideNavbar(pathname: string) {
   return ROUTES_WITHOUT_NAVBAR.reduce(

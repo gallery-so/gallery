@@ -1,9 +1,13 @@
-import useAuthModal from 'hooks/useAuthModal';
+import { useCallback } from 'react';
+import { navigate } from '@reach/router';
 import TextButton from 'components/core/Button/TextButton';
 
 function SignInButton() {
-  const displayAuthModal = useAuthModal();
-  return <TextButton onClick={displayAuthModal} text="Sign In" />;
+  const handleAuthRedirect = useCallback(() => {
+    navigate('/auth');
+  }, []);
+
+  return <TextButton onClick={handleAuthRedirect} text="Sign In" />;
 }
 
 export default SignInButton;

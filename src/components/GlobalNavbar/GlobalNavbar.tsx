@@ -20,16 +20,16 @@ const StyledNavContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  height: 80px;
   width: 100%;
-  display: flex;
+
+  z-index: 1;
 `;
 
 const StyledNav = styled.div`
-  width: 100%;
-  padding: 20px;
   display: flex;
   justify-content: flex-end;
+  width: 100%;
+  padding: 32px 40px;
 `;
 
 export default memo(GlobalNavbar);
