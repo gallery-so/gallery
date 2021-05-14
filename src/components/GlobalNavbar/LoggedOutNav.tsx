@@ -1,13 +1,10 @@
-import { useCallback } from 'react';
-import { navigate } from '@reach/router';
 import TextButton from 'components/core/Button/TextButton';
+import useAuthModal from 'hooks/useAuthModal';
 
 function LoggedOutNav() {
-  const handleAuthRedirect = useCallback(() => {
-    navigate('/auth');
-  }, []);
+  const showAuthModal = useAuthModal();
 
-  return <TextButton onClick={handleAuthRedirect} text="Sign In" />;
+  return <TextButton onClick={showAuthModal} text="Sign In" />;
 }
 
 export default LoggedOutNav;

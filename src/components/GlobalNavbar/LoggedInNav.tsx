@@ -24,20 +24,19 @@ function LoggedInNav() {
     navigate('/link-to-my-gallery');
   }, []);
 
-  const handleWalletAddressRedirect = useCallback(() => {
-    alert('TODO!');
-  }, []);
-
   return (
     <Container>
       <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
       <Spacer width={24} />
       <Dropdown mainText="Account">
-        <StyledTextButton
-          text={displayedAddress}
-          onClick={handleWalletAddressRedirect}
-          disableTextTransform
-        />
+        {/* TODO: create generic link component */}
+        <a
+          href={`https://etherscan.io/address/${walletAddress}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <StyledTextButton text={displayedAddress} disableTextTransform />
+        </a>
         <Spacer height={12} />
         <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
       </Dropdown>

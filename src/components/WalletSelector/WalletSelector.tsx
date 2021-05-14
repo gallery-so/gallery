@@ -52,6 +52,7 @@ function WalletSelector() {
     deactivate,
     // error returned from web3 provider
     error,
+    setError,
   } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
@@ -108,6 +109,18 @@ function WalletSelector() {
         });
     }
   }, [account, isPending, logIn, signer]);
+
+  /**
+   * Ensures screen does not retain an error message when it remounts. Since Web3
+   * library errors are stored in the Web3Provider, they remain cached and continue
+   * to stick around if the user navigates away and comes back (or closes a modal
+   * and re-opens it).
+   */
+  useEffect(() => {
+    // @ts-expect-error: this is the only way to clear the error from the provider
+    // manually, but the library doesn't give us the option to pass in a non-error
+    return () => setError(undefined);
+  }, [setError]);
 
   if (displayedError) {
     return (
