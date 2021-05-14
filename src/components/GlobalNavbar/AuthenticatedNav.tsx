@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import TextButton from 'components/core/Button/TextButton';
 
-function SignInButton() {
+function AuthenticatedNav() {
   const handleAuthRedirect = useCallback(() => {
     navigate('/auth');
   }, []);
@@ -10,4 +10,4 @@ function SignInButton() {
   return <TextButton onClick={handleAuthRedirect} text="Sign In" />;
 }
 
-export default SignInButton;
+export default AuthenticatedNav;

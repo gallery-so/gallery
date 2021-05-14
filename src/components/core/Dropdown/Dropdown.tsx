@@ -97,8 +97,6 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   border: 1px solid ${colors.gray50};
   width: max-content;
   background-color: ${colors.white};
-
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 `;
 
 export const StyledDropdownButton = styled(TextButton)`
