@@ -1,15 +1,15 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
 
 import Dropdown, {
   StyledDropdownButton,
 } from 'components/core/Dropdown/Dropdown';
-import ActionText from 'components/core/ActionText/ActionText';
-import { useCallback } from 'react';
 import TextButton from 'components/core/Button/TextButton';
-import CollectionNamingForm from '../OrganizeCollection/CollectionNamingForm';
 import { useModal } from 'contexts/modal/ModalContext';
+import Spacer from 'components/core/Spacer/Spacer';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
+import CollectionNamingForm from '../OrganizeCollection/CollectionNamingForm';
 
 type Props = {
   collection: Collection;
@@ -17,6 +17,11 @@ type Props = {
 
 function CollectionRowSettings({ collection }: Props) {
   const { showModal } = useModal();
+
+  const handleEditCollectionClick = useCallback(() => {
+    alert('TODO');
+  }, []);
+
   const handleEditNameClick = useCallback(() => {
     showModal(
       <CollectionNamingForm onNext={() => {}} collection={collection} />
@@ -35,32 +40,33 @@ function CollectionRowSettings({ collection }: Props) {
   return (
     <StyledCollectionRowSettings>
       <Dropdown>
-        <StyledDropdownItem>
-          <ActionText>Edit collection</ActionText>
-        </StyledDropdownItem>
-        <StyledDropdownItem>
-          <TextButton
-            onClick={handleEditNameClick}
-            text="Edit name & description"
-          />
-        </StyledDropdownItem>
-        <StyledDropdownItem>
-          <TextButton
-            onClick={handleToggleHiddenClick}
-            text={collection.isHidden ? 'Show' : 'Hide'}
-          />
-        </StyledDropdownItem>
-        <StyledDropdownItem>
-          <TextButton onClick={handleDeleteClick} text="Delete" />
-        </StyledDropdownItem>
+        <TextButton
+          onClick={handleEditCollectionClick}
+          text="Edit collection"
+          underlineOnHover
+        />
+        <Spacer height={12} />
+        <TextButton
+          onClick={handleEditNameClick}
+          text="Edit name & description"
+          underlineOnHover
+        />
+        <Spacer height={12} />
+        <TextButton
+          onClick={handleToggleHiddenClick}
+          text={collection.isHidden ? 'Show' : 'Hide'}
+          underlineOnHover
+        />
+        <Spacer height={12} />
+        <TextButton
+          onClick={handleDeleteClick}
+          text="Delete"
+          underlineOnHover
+        />
       </Dropdown>
     </StyledCollectionRowSettings>
   );
 }
-
-const StyledDropdownItem = styled.div`
-  margin: 8px;
-`;
 
 const StyledCollectionRowSettings = styled.div`
   position: absolute;

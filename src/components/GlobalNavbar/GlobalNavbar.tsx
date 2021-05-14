@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
+import LoggedOutNav from './LoggedOutNav';
+import LoggedInNav from './LoggedInNav';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
 function GlobalNavbar() {
@@ -10,7 +10,7 @@ function GlobalNavbar() {
   return (
     <StyledNavContainer data-testid="navbar">
       <StyledNav>
-        {isAuthenticated ? <SignOutButton /> : <SignInButton />}
+        {isAuthenticated ? <LoggedInNav /> : <LoggedOutNav />}
       </StyledNav>
     </StyledNavContainer>
   );
@@ -20,16 +20,16 @@ const StyledNavContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  height: 80px;
   width: 100%;
-  display: flex;
+
+  z-index: 1;
 `;
 
 const StyledNav = styled.div`
-  width: 100%;
-  padding: 20px;
   display: flex;
   justify-content: flex-end;
+  width: 100%;
+  padding: 32px 40px;
 `;
 
 export default memo(GlobalNavbar);

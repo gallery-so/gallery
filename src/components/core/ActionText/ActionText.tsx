@@ -7,7 +7,7 @@ type Props = {
   focused?: boolean;
 };
 
-const StyledLink = styled(Text)<Props>`
+const ActionText = styled(Text)<Props>`
   font-family: 'Helvetica Neue';
   text-transform: uppercase;
   transition: color 0.2s;
@@ -15,11 +15,12 @@ const StyledLink = styled(Text)<Props>`
   cursor: pointer;
 
   color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
-  text-decoration: ${({ underlined }) => (underlined ? 'underline' : '')};
+  text-decoration: ${({ underlined }) =>
+    underlined ? 'underline' : undefined};
 
   &:hover {
     color: ${colors.black};
   }
 `;
 
-export default StyledLink;
+export default ActionText;
