@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
+import Spacer from 'components/core/Spacer/Spacer';
 
 function UnauthenticatedNav() {
   const { logOut } = useAuthActions();
@@ -20,9 +21,14 @@ function UnauthenticatedNav() {
   return (
     <Container>
       <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
+      <Spacer width={24} />
       <Dropdown mainText="Account">
-        <TextButton text="0xBb...3255" onClick={handleWalletAddressRedirect} />
-        <TextButton text="Sign Out" onClick={logOut} />
+        <StyledTextButton
+          text="0xBb...3255"
+          onClick={handleWalletAddressRedirect}
+        />
+        <Spacer height={12} />
+        <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
       </Dropdown>
     </Container>
   );
@@ -30,6 +36,10 @@ function UnauthenticatedNav() {
 
 const Container = styled.div`
   display: flex;
+`;
+
+const StyledTextButton = styled(TextButton)`
+  text-decoration: underline;
 `;
 
 export default UnauthenticatedNav;

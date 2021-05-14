@@ -62,6 +62,7 @@ function Dropdown({ mainText, children }: Props) {
         <StyledDropdownButton
           text={mainText || ''}
           onClick={handleDropdownButtonClick}
+          isDropdownVisible={isDropdownVisible}
         />
       </div>
       <div ref={dropdownMenuRef} style={dropdownMenuWrapperStyle}>
@@ -73,7 +74,7 @@ function Dropdown({ mainText, children }: Props) {
   );
 }
 
-type StyledDropdownBoxProps = {
+type StyledDropdownProps = {
   isDropdownVisible: boolean;
 };
 
@@ -82,7 +83,23 @@ const StyledDropdown = styled.div`
   flex-direction: column;
 `;
 
-const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
+export const StyledDropdownButton = styled(TextButton)<StyledDropdownProps>`
+  width: fit-content;
+
+  text-decoration: ${({ isDropdownVisible }) =>
+    isDropdownVisible ? 'underline' : 'inherit'};
+
+  &:focus {
+    underline: 1px solid;
+  }
+
+  > p {
+    color: ${({ isDropdownVisible }) =>
+      isDropdownVisible ? 'black' : undefined};
+  }
+`;
+
+const StyledDropdownBox = styled.div<StyledDropdownProps>`
   visibility: ${({ isDropdownVisible }) =>
     isDropdownVisible ? 'visible' : 'hidden'};
 
@@ -90,21 +107,15 @@ const StyledDropdownBox = styled.div<StyledDropdownBoxProps>`
   flex-direction: column;
   align-items: flex-end;
 
+  margin-top: 8px;
+
   position: absolute;
   right: 0;
 
-  padding: 10px;
+  padding: 12px;
   border: 1px solid ${colors.gray50};
   width: max-content;
   background-color: ${colors.white};
-`;
-
-export const StyledDropdownButton = styled(TextButton)`
-  width: fit-content;
-
-  &:focus {
-    underline: 1px solid;
-  }
 `;
 
 export default Dropdown;

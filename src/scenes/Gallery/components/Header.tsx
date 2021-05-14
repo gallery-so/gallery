@@ -55,10 +55,13 @@ function Header({ usernameOrWalletAddress }: Props) {
               <TextButton
                 text="Edit name & Bio"
                 onClick={handleEditNameClick}
+                underlineOnHover
               />
+              <Spacer height={12} />
               <TextButton
                 text="Edit Gallery"
                 onClick={handleEditGalleryClick}
+                underlineOnHover
               />
             </Dropdown>
           </StyledRightContainer>
