@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Text, Subtitle } from 'components/core/Text/Text';
+import { Heading, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -9,9 +9,9 @@ import { FOOTER_HEIGHT } from '../WizardFooter';
 function CreateFirstCollection({ next }: WizardContext) {
   return (
     <StyledCreateFirstCollection>
-      <Subtitle>Create your first collection</Subtitle>
+      <Heading>Create your first collection</Heading>
       <Spacer height={8} />
-      <StyledBodyText>
+      <StyledBodyText color={colors.gray50}>
         Organize your gallery with collections. Use them to group NFTs by
         creator, theme, or anything that feels right.
       </StyledBodyText>
@@ -29,8 +29,7 @@ const StyledCreateFirstCollection = styled.div`
   height: calc(100vh - ${FOOTER_HEIGHT}px);
 `;
 
-const StyledBodyText = styled(Text)`
-  color: ${colors.gray50};
+const StyledBodyText = styled(BodyRegular)`
   max-width: 390px;
   text-align: center;
 `;

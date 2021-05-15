@@ -1,6 +1,6 @@
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import { Text, Title } from 'components/core/Text/Text';
+import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -8,9 +8,9 @@ import Spacer from 'components/core/Spacer/Spacer';
 function Welcome({ next }: WizardContext) {
   return (
     <StyledWelcome>
-      <Title>Welcome to Gallery</Title>
+      <Display>Welcome to Gallery</Display>
       <Spacer height={24} />
-      <StyledBodyText>
+      <StyledBodyText color={colors.gray50}>
         This is your space to share your pieces and and the stories that
         surround them. Curate, arrange, and display your collection exactly how
         it was meant to be.
@@ -29,8 +29,7 @@ const StyledWelcome = styled.div`
   height: 100vh;
 `;
 
-const StyledBodyText = styled(Text)`
-  color: ${colors.gray50};
+const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;
   text-align: center;
 `;
