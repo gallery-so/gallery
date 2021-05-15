@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Text } from '../Text/Text';
+import { BodyRegular } from '../Text/Text';
 import colors from '../colors';
 
 type Props = {
@@ -7,8 +7,7 @@ type Props = {
   focused?: boolean;
 };
 
-const ActionText = styled(Text)<Props>`
-  font-family: 'Helvetica Neue';
+const ActionText = styled(BodyRegular)<Props>`
   text-transform: uppercase;
   transition: color 0.2s;
 
