@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { Text } from '../Text/Text';
+import { BodyRegular } from '../Text/Text';
 import colors from '../colors';
 
 type ButtonStyle = 'primary' | 'secondary';
@@ -32,9 +32,9 @@ function Button({
       disabled={disabled}
       data-testid={dataTestId}
     >
-      <Text color={type === 'primary' ? colors.white : colors.black}>
+      <BodyRegular color={type === 'primary' ? colors.white : colors.black}>
         {text}
-      </Text>
+      </BodyRegular>
     </StyledButton>
   );
 }
