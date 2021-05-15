@@ -7,7 +7,7 @@ type TitleProps = {
 };
 
 export const Title = styled.p<TitleProps>`
-  font-family: 'Times New Roman';
+  font-family: 'Gallery Display';
   margin: 0;
 
   font-size: ${({ size }) => (size === 'mini' ? '16px' : '48px')};
