@@ -14,7 +14,7 @@ function NftDetailVideo({ nft }: Props) {
       loop
       playsInline
       controls
-    ></StyledVideo>
+    />
   );
 }
 
