@@ -2,7 +2,7 @@ import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
-import { Text, Title } from 'components/core/Text/Text';
+import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 
@@ -22,8 +22,8 @@ function Home(_: RouteComponentProps) {
 
   return (
     <StyledHome>
-      <Title>GALLERY</Title>
-      <Text>Show your collection to the world</Text>
+      <Display caps>GALLERY</Display>
+      <BodyRegular>Show your collection to the world</BodyRegular>
       <Spacer height={80} />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
     </StyledHome>
