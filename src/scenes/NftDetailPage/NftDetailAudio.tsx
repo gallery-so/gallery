@@ -7,16 +7,30 @@ type Props = {
 
 function NftDetailAudio({ nft }: Props) {
   return (
-    <>
-      <StyledAudio src={nft.animationUrl}></StyledAudio>
-    </>
+    <StyledAudioContainer>
+      <StyledImage src={nft.imageUrl} />
+      <StyledAudio
+        controls
+        loop
+        controlsList="nodownload"
+        preload="none"
+        autoPlay
+        src={nft.animationUrl}
+      />
+    </StyledAudioContainer>
   );
 }
 
+const StyledAudioContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledImage = styled.img``;
+
 const StyledAudio = styled.audio`
   width: 100%;
-  height: 100%;
-  border: none;
+  height: 32px;
 `;
 
 export default NftDetailAudio;
