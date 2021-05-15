@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
-import { Subtitle } from 'components/core/Text/Text';
+import { Heading } from 'components/core/Text/Text';
 import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
@@ -17,7 +17,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
   return (
     <StyledHeader>
       <TitleContainer>
-        <Subtitle>Organize your Gallery</Subtitle>
+        <Heading>Organize your Gallery</Heading>
       </TitleContainer>
       <OptionsContainer>
         <TextButton text="Preview Gallery" onClick={handleGalleryPreview} />

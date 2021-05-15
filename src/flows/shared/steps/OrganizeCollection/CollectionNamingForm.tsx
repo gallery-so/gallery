@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import TextArea from 'components/core/TextArea/TextArea';
-import { Text } from 'components/core/Text/Text';
+import { BodyRegular, BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
@@ -59,10 +59,10 @@ function CollectionNamingForm({ onNext, collection }: Props) {
 
   return (
     <StyledCollectionNamingForm>
-      <Text weight="bold">Give your collection a name and description</Text>
-      <Text color={colors.gray50}>
+      <BodyMedium>Give your collection a name and description</BodyMedium>
+      <BodyRegular color={colors.gray50}>
         You can always add a collection name and description later.
-      </Text>
+      </BodyRegular>
       <Spacer height={20} />
       <BigInput
         onChange={handleNameChange}

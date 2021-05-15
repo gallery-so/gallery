@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 
-import { Text } from 'components/core/Text/Text';
+import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/OnboardingFlow/WizardFooter';
@@ -16,8 +16,8 @@ function Sidebar() {
   return (
     <StyledSidebar>
       <Header>
-        <Text weight="bold">Your NFTs</Text>
-        <Text color={colors.gray50}>0xj2T2...a81H</Text>
+        <BodyMedium>Your NFTs</BodyMedium>
+        <BodyRegular color={colors.gray50}>0xj2T2...a81H</BodyRegular>
       </Header>
       <Spacer height={12} />
       <Selection>
