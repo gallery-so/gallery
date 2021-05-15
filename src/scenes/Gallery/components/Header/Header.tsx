@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
-import { Title, Text } from 'components/core/Text/Text';
+import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Dropdown from 'components/core/Dropdown/Dropdown';
@@ -28,7 +28,7 @@ function Header({ usernameOrWalletAddress }: Props) {
 
   return (
     <StyledHeader>
-      <Title>{usernameOrWalletAddress}</Title>
+      <Display>{usernameOrWalletAddress}</Display>
       <Spacer height={36} />
       <StyledUserDetails>
         <StyledLeftContainer>
@@ -36,18 +36,18 @@ function Header({ usernameOrWalletAddress }: Props) {
           <Text color={colors.gray50}>Collector Since Mar 2021</Text>
           */}
 
-          {/* TODO: handle multi-line descriptions from the server */}
-          <Text color={colors.gray50}>
+          {/* TODO__v1: handle multi-line descriptions from the server */}
+          <BodyRegular color={colors.gray50}>
             French Graphic Designer + Digital Artist Sparkles Founder of
             @healthedeal
-          </Text>
-          <Text color={colors.gray50}>
+          </BodyRegular>
+          <BodyRegular color={colors.gray50}>
             Sparkles lorem ipsum sit dolor http://superrare.co/maalavidaa
             Sparkles Shop
-          </Text>
-          <Text color={colors.gray50}>
+          </BodyRegular>
+          <BodyRegular color={colors.gray50}>
             & More → http://linktr.ee/maalavidaa
-          </Text>
+          </BodyRegular>
         </StyledLeftContainer>
         {isAuthenticated && (
           <StyledRightContainer>

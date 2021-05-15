@@ -2,7 +2,7 @@ import colors from 'components/core/colors';
 import NftPreview from 'components/NftPreview/NftPreview';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
-import { Title, Text } from 'components/core/Text/Text';
+import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 type Props = {
@@ -13,9 +13,11 @@ function CollectionView({ collection }: Props) {
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
-        <Title size="mini">{collection.title}</Title>
+        <TitleSerif>{collection.title}</TitleSerif>
         <Spacer height={8} />
-        <Text color={colors.gray50}>{collection.description}</Text>
+        <BodyRegular color={colors.gray50}>
+          {collection.description}
+        </BodyRegular>
       </StyledCollectionHeader>
       <Spacer height={16} />
       <StyledCollectionNfts>
