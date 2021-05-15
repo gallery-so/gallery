@@ -6,23 +6,26 @@ import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery'
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import { WizardProps } from 'flows/shared/types';
 import WizardFooter from './WizardFooter';
+import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 
 function EditGalleryFlow(_: RouteComponentProps) {
   return (
     <GalleryWizardProvider id="edit-gallery">
-      <Wizard
-        render={(wizardProps) => {
-          return (
-            <>
-              <Steps>
-                <Step id="organizeGallery" render={OrganizeGallery} />
-                <Step id="organizeCollection" render={OrganizeCollection} />
-              </Steps>
-              <WizardFooter {...(wizardProps as WizardProps)} />
-            </>
-          );
-        }}
-      />
+      <CollectionWizardProvider>
+        <Wizard
+          render={(wizardProps) => {
+            return (
+              <>
+                <Steps>
+                  <Step id="organizeGallery" render={OrganizeGallery} />
+                  <Step id="organizeCollection" render={OrganizeCollection} />
+                </Steps>
+                <WizardFooter {...(wizardProps as WizardProps)} />
+              </>
+            );
+          }}
+        />
+      </CollectionWizardProvider>
     </GalleryWizardProvider>
   );
 }

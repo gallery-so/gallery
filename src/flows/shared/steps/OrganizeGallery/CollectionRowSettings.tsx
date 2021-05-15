@@ -10,17 +10,26 @@ import { useModal } from 'contexts/modal/ModalContext';
 import Spacer from 'components/core/Spacer/Spacer';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 import CollectionNamingForm from '../OrganizeCollection/CollectionNamingForm';
+import { withWizard, WizardComponentProps } from 'react-albus';
+import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 
 type Props = {
   collection: Collection;
 };
 
-function CollectionRowSettings({ collection }: Props) {
+function CollectionRowSettings({
+  collection,
+  wizard: { push },
+}: Props & WizardComponentProps) {
   const { showModal } = useModal();
+  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
   const handleEditCollectionClick = useCallback(() => {
-    alert('TODO');
-  }, []);
+    // alert('TODO');
+    console.log(setCollectionIdBeingEdited, collection.id);
+    setCollectionIdBeingEdited(collection.id);
+    push('organizeCollection');
+  }, [collection.id, push, setCollectionIdBeingEdited]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
@@ -80,4 +89,4 @@ const StyledCollectionRowSettings = styled.div`
   }
 `;
 
-export default CollectionRowSettings;
+export default withWizard(CollectionRowSettings);
