@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { Text, Title } from 'components/core/Text/Text';
+import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
@@ -68,8 +68,8 @@ function Password(_: RouteComponentProps) {
 
   return (
     <StyledPassword>
-      <Title>GALLERY</Title>
-      <Text>Show your collection to the world</Text>
+      <Display caps>Gallery</Display>
+      <BodyRegular>Show your collection to the world</BodyRegular>
       <Spacer height={48} />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}
