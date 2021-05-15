@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
-import { TitleMedium } from 'components/core/Text/Text';
+import { TitleMedium, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -126,7 +126,7 @@ function WalletSelector() {
     return (
       <StyledWalletSelector>
         <StyledTitleMedium>{displayedError.heading}</StyledTitleMedium>
-        <StyledBody>{displayedError.body}</StyledBody>
+        <StyledBody color={colors.gray50}>{displayedError.body}</StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
     );
@@ -221,8 +221,7 @@ const StyledTitleMedium = styled(TitleMedium)`
   margin-bottom: 16px;
 `;
 
-const StyledBody = styled(Text)`
-  color: ${colors.gray50};
+const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
 `;
 

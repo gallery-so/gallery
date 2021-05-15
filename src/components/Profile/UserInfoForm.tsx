@@ -1,7 +1,7 @@
 import { FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { Text } from 'components/core/Text/Text';
+import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
 import TextArea from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -37,7 +37,7 @@ function UserInfoForm({
 
   return (
     <StyledForm className={className} onSubmit={onSubmit}>
-      <StyledText>{`${mode} username and bio`}</StyledText>
+      <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
       <Spacer height={14} />
       <BigInput onChange={handleUsernameChange} placeholder="Username" />
       <Spacer height={10} />
@@ -54,8 +54,7 @@ const StyledForm = styled.form`
   flex-direction: column;
 `;
 
-const StyledText = styled(Text)`
-  font-weight: 500;
+const StyledBodyMedium = styled(BodyMedium)`
   padding-left: 4px;
 `;
 
