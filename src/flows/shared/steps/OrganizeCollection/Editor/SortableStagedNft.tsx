@@ -41,13 +41,13 @@ function SortableStagedNft({ nft, index, ...props }: Props) {
       style={style}
     >
       <StyledGradient type="top" />
-      <div ref={setNodeRef} {...attributes} {...listeners}>
-        <StagedNftImage nft={nft} />
-      </div>
-      <StyledUnstageButton
-        // TODO make index guaranteed
-        nftIndex={index || 0}
+      <StagedNftImage
+        nft={nft}
+        setNodeRef={setNodeRef}
+        {...attributes}
+        {...listeners}
       />
+      <StyledUnstageButton nftIndex={index || 0} />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
   );
