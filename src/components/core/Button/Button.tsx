@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
+import Loader from '../Loader/Loader';
 import { ButtonText } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
@@ -12,6 +13,7 @@ type Props = {
   text?: string;
   onClick?: () => void;
   disabled?: boolean;
+  loading?: boolean;
   dataTestId?: string;
 };
 
@@ -21,6 +23,7 @@ function Button({
   text,
   onClick,
   disabled,
+  loading = true,
   dataTestId,
 }: Props) {
   return (
@@ -33,9 +36,13 @@ function Button({
       disabled={disabled}
       data-testid={dataTestId}
     >
-      <ButtonText color={type === 'primary' ? colors.white : colors.black}>
-        {text}
-      </ButtonText>
+      {loading ? (
+        <Loader inverted size="small" />
+      ) : (
+        <ButtonText color={type === 'primary' ? colors.white : colors.black}>
+          {text}
+        </ButtonText>
+      )}
     </StyledButton>
   );
 }
@@ -47,6 +54,10 @@ type StyledButtonProps = {
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border-style: none;
   border: 1px solid ${colors.black};
 
