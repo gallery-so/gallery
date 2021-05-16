@@ -48,9 +48,9 @@ function EditUserInfoModal() {
       <UserInfoForm
         mode="Edit"
         onSubmit={onSubmit}
-        defaultUsername={username}
+        username={username}
         onUsernameChange={setUsername}
-        defaultBio={bio}
+        bio={bio}
         onBioChange={setBio}
         tall
       />

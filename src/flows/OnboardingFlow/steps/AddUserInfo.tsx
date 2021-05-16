@@ -54,6 +54,8 @@ function AddUserInfo({ next }: WizardContext) {
         onSubmit={handleUserCreate}
         onUsernameChange={setUsername}
         onBioChange={setBio}
+        username={username}
+        bio={bio}
       />
     </FullPageCenteredStep>
   );
