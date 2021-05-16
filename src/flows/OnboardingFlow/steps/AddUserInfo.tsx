@@ -39,7 +39,9 @@ function AddUserInfo({ next }: WizardContext) {
       return;
     }
 
-    // TODO__v1: send request to server to create a user
+    // TODO__v1: send request to server to UPDATE user's username and bio.
+    // it should be an UPDATE because a user entity will have already been
+    // created by this step
     await pause(1000);
     next();
   }, [username, next, bio]);

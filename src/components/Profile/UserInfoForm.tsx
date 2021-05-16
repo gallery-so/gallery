@@ -9,10 +9,12 @@ import colors from 'components/core/colors';
 
 type Props = {
   className?: string;
-  onSubmit?: () => void;
   mode?: 'Add' | 'Edit';
+  onSubmit: () => void;
   onUsernameChange: (username: string) => void;
   onBioChange: (bio: string) => void;
+  // whether the bio form is tall
+  tall?: boolean;
 };
 
 export const BIO_MAX_CHAR_COUNT = 500;
@@ -23,6 +25,7 @@ function UserInfoForm({
   onUsernameChange,
   onBioChange,
   mode = 'Add',
+  tall = false,
 }: Props) {
   const handleSubmit = useCallback(
     (event: FormEvent) => {
@@ -59,7 +62,7 @@ function UserInfoForm({
         autoFocus
       />
       <Spacer height={10} />
-      <StyledBioContainer>
+      <StyledBioContainer tall={tall}>
         <StyledTextArea
           onChange={handleBioChange}
           placeholder="Tell us about yourself..."
@@ -81,9 +84,9 @@ const StyledBodyMedium = styled(BodyMedium)`
   padding-left: 4px;
 `;
 
-const StyledBioContainer = styled.div`
+const StyledBioContainer = styled.div<{ tall: boolean }>`
   position: relative;
-  height: 160px;
+  height: ${({ tall }) => (tall ? 144 : 104)}px;
 `;
 
 const StyledTextArea = styled(TextArea)`
