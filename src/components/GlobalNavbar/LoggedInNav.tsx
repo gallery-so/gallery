@@ -35,7 +35,11 @@ function LoggedInNav() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledTextButton text={displayedAddress} disableTextTransform />
+          <TextButton
+            text={displayedAddress}
+            disableTextTransform
+            underlineOnHover
+          />
         </a>
         <Spacer height={12} />
         <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
@@ -46,10 +50,6 @@ function LoggedInNav() {
 
 const Container = styled.div`
   display: flex;
-`;
-
-const StyledTextButton = styled(TextButton)`
-  text-decoration: underline;
 `;
 
 export default LoggedInNav;
