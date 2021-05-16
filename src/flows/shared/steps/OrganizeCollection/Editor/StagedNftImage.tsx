@@ -5,13 +5,14 @@ import transitions from 'components/core/transitions';
 
 type Props = {
   nft: Nft;
+  setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function NftImage({ nft }: Props) {
+function NftImage({ nft, setNodeRef, ...props }: Props) {
   const srcUrl = nft.imageUrl;
 
   return (
-    <StyledGridImage srcUrl={srcUrl}>
+    <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} {...props}>
       <StyledNftPreviewLabel nft={nft} />
     </StyledGridImage>
   );
