@@ -13,8 +13,10 @@ function EditUserInfoModal() {
   const { hideModal } = useModal();
 
   // TODO__v1: auto-populate username and bio from useSwr()
-  const [username, setUsername] = useState('');
-  const [bio, setBio] = useState('');
+  const [username, setUsername] = useState('RogerKilimanjaro');
+  const [bio, setBio] = useState(
+    'French Graphic Designer + Digital Artist Sparkles Founder of @healthedeal\nSparkles lorem ipsum sit dolor http://superrare.co/maalavidaa Sparkles Shop\n& More → http://linktr.ee/maalavidaa'
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,7 +48,9 @@ function EditUserInfoModal() {
       <UserInfoForm
         mode="Edit"
         onSubmit={onSubmit}
+        defaultUsername={username}
         onUsernameChange={setUsername}
+        defaultBio={bio}
         onBioChange={setBio}
         tall
       />

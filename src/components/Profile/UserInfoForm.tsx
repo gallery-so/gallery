@@ -11,7 +11,9 @@ type Props = {
   className?: string;
   mode?: 'Add' | 'Edit';
   onSubmit: () => void;
+  defaultUsername?: string;
   onUsernameChange: (username: string) => void;
+  defaultBio?: string;
   onBioChange: (bio: string) => void;
   // whether the bio form is tall
   tall?: boolean;
@@ -22,7 +24,9 @@ export const BIO_MAX_CHAR_COUNT = 500;
 function UserInfoForm({
   className,
   onSubmit,
+  defaultUsername,
   onUsernameChange,
+  defaultBio,
   onBioChange,
   mode = 'Add',
   tall = false,
@@ -59,6 +63,7 @@ function UserInfoForm({
       <BigInput
         onChange={handleUsernameChange}
         placeholder="Username"
+        defaultValue={defaultUsername}
         autoFocus
       />
       <Spacer height={10} />
@@ -66,6 +71,7 @@ function UserInfoForm({
         <StyledTextArea
           onChange={handleBioChange}
           placeholder="Tell us about yourself..."
+          defaultValue={defaultBio}
         />
         <StyledCharacterCounter error={bioLength > BIO_MAX_CHAR_COUNT}>
           {bioLength}/{BIO_MAX_CHAR_COUNT}

@@ -7,13 +7,20 @@ type Props = {
   className?: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   placeholder: string;
+  defaultValue?: string;
 };
 
-function TextArea({ className, onChange = noop, placeholder }: Props) {
+function TextArea({
+  className,
+  onChange = noop,
+  placeholder,
+  defaultValue,
+}: Props) {
   return (
     <StyledTextArea
       className={className}
       placeholder={placeholder}
+      defaultValue={defaultValue}
       onChange={onChange}
       autoComplete="off"
       autoCorrect="off"
