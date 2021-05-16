@@ -9,6 +9,7 @@ import {
   closestCenter,
   defaultDropAnimation,
   DropAnimation,
+  LayoutMeasuringStrategy,
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 
@@ -58,6 +59,7 @@ function Editor() {
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}
         collisionDetection={closestCenter}
+        layoutMeasuring={{ strategy: LayoutMeasuringStrategy.Always }}
       >
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
