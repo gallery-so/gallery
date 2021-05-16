@@ -43,7 +43,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
   }, [setOnNext, showModal, onNext, wizardId]);
 }
 
-function OrganizeCollection({ next, step }: WizardContext & Props) {
+function OrganizeCollection({ next }: WizardContext & Props) {
   useWizardConfig({ onNext: next });
   const { collectionIdBeingEdited } = useCollectionWizardState();
 

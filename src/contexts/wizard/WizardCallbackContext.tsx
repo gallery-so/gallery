@@ -9,16 +9,20 @@ import {
   MutableRefObject,
 } from 'react';
 
-type OnNext = () => void | Promise<void>;
+type OnStepChange = () => void | Promise<void>;
 
 type WizardCallbackState = {
-  onNext?: MutableRefObject<OnNext | undefined>;
-  setOnNext: (onNextHandler: OnNext | undefined) => void;
+  onNext?: MutableRefObject<OnStepChange | undefined>;
+  setOnNext: (onNextHandler: OnStepChange | undefined) => void;
+  onPrevious?: MutableRefObject<OnStepChange | undefined>;
+  setOnPrevious: (onPreviousHandler: OnStepChange | undefined) => void;
 };
 
 const WizardCallbackContext = createContext<WizardCallbackState>({
   onNext: undefined,
   setOnNext: () => {},
+  onPrevious: undefined,
+  setOnPrevious: () => {},
 });
 
 export const useWizardCallback = () => {
@@ -32,12 +36,20 @@ export const useWizardCallback = () => {
 type Props = { children: ReactNode };
 
 const WizardCallbackProvider = memo(({ children }: Props) => {
-  const onNext = useRef<OnNext>();
+  const onNext = useRef<OnStepChange>();
+  const onPrevious = useRef<OnStepChange>();
+
   const setOnNext = useCallback((newOnNext) => {
     onNext.current = newOnNext;
   }, []);
+  const setOnPrevious = useCallback((newOnPrevious) => {
+    onPrevious.current = newOnPrevious;
+  }, []);
 
-  const state = useMemo(() => ({ onNext, setOnNext }), [onNext, setOnNext]);
+  const state = useMemo(
+    () => ({ onNext, setOnNext, onPrevious, setOnPrevious }),
+    [onNext, setOnNext, onPrevious, setOnPrevious]
+  );
 
   return (
     <WizardCallbackContext.Provider value={state}>

@@ -20,7 +20,7 @@ function WizardFooter({
   shouldHideSecondaryButton,
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
-  const { onNext } = useWizardCallback();
+  const { onNext, onPrevious } = useWizardCallback();
 
   const isFirstStep = useMemo(() => {
     return history.index === 0;
@@ -47,9 +47,8 @@ function WizardFooter({
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
-    // if (noPreviousStep) ...
-    previous();
-  }, [previous]);
+    onPrevious?.current ? onPrevious.current() : previous();
+  }, [previous, onPrevious]);
 
   if (shouldHideFooter) {
     return null;

@@ -13,7 +13,7 @@ import { WizardProps } from 'flows/shared/types';
 
 function WizardFooter({ step, next, previous, history }: WizardProps) {
   const isNextEnabled = useIsNextEnabled();
-  const { onNext } = useWizardCallback();
+  const { onNext, onPrevious } = useWizardCallback();
 
   const isFirstStep = useMemo(() => {
     return history.index === 0;
@@ -30,16 +30,12 @@ function WizardFooter({ step, next, previous, history }: WizardProps) {
   }, [step]);
 
   const handleNextClick = useCallback(() => {
-    // TODO: if current step is Publish Gallery, we should send a server request
-    // to update the latest gallery and redirect to the main profile view. We can
-    // do this by providing a custom onNext via useWizardCallback
     onNext?.current ? onNext.current() : next();
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
-    // if (noPreviousStep) ...
-    previous();
-  }, [previous]);
+    onPrevious?.current ? onPrevious.current() : previous();
+  }, [previous, onPrevious]);
 
   return (
     <StyledWizardFooter>
