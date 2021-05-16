@@ -2,11 +2,11 @@ import { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
+import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import { WizardProps } from 'flows/shared/types';
 import WizardFooter from './WizardFooter';
-import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 
 function EditGalleryFlow(_: RouteComponentProps) {
   return (
