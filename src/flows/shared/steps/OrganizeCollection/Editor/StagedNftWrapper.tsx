@@ -15,8 +15,8 @@ function StagedNftWrapper({ editModeNft }: Props) {
     <StyledStageNftWrapper>
       <StyledGradient type="top" />
       <StyledUnstageButton
-        // TODO make index guaranteed
-        nftIndex={editModeNft.index || 0}
+        nftId={editModeNft.id}
+        nftIndex={editModeNft.index}
       />
       <SortableStagedNft nft={editModeNft.nft} />
       <StyledGradient type="bottom" direction="down" />

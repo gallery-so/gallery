@@ -1,23 +1,66 @@
-import { memo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
+import { BodyMedium } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import SidebarNftIcon from './SidebarNftIcon';
+import TextButton from 'components/core/Button/TextButton';
 
 import { EditModeNft } from 'types/Nft';
 
-import { useAllNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
+import {
+  useAllNftsState,
+  useCollectionEditorActions,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 
 function Sidebar() {
   const allNfts = useAllNftsState();
+  const {
+    setNftsIsSelected,
+    stageNfts,
+    unstageNfts,
+  } = useCollectionEditorActions();
+
+  const isAllNftsSelected = useMemo(() => {
+    return !allNfts.find((nft) => !nft.isSelected);
+  }, [allNfts]);
+
+  const handleSelectAllClick = useCallback(() => {
+    // Stage all nfts that are !isSelected
+    const nftsToStage = allNfts.filter((nft) => !nft.isSelected);
+    if (!nftsToStage.length) {
+      return;
+    }
+    stageNfts(nftsToStage);
+    setNftsIsSelected(nftsToStage, true);
+  }, [allNfts, setNftsIsSelected, stageNfts]);
+
+  const handleDeselectAllClick = useCallback(() => {
+    // Unstage all nfts
+    const nftIdsToUnstage = allNfts.map((nft) => nft.id);
+    if (!nftIdsToUnstage.length) {
+      return;
+    }
+    unstageNfts(nftIdsToUnstage);
+    setNftsIsSelected(allNfts, false);
+  }, [allNfts, setNftsIsSelected, unstageNfts]);
   return (
     <StyledSidebar>
       <Header>
         <BodyMedium>Your NFTs</BodyMedium>
-        <BodyRegular color={colors.gray50}>0xj2T2...a81H</BodyRegular>
+        {isAllNftsSelected ? (
+          <TextButton
+            text="Deselect All"
+            onClick={handleDeselectAllClick}
+          ></TextButton>
+        ) : (
+          <TextButton
+            text="Select All"
+            onClick={handleSelectAllClick}
+          ></TextButton>
+        )}
+        {/* <BodyRegular color={colors.gray50}>0xj2T2...a81H</BodyRegular> */}
       </Header>
       <Spacer height={12} />
       <Selection>

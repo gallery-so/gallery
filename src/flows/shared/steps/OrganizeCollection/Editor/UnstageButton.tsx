@@ -7,13 +7,15 @@ import { useCollectionEditorActions } from 'contexts/collectionEditor/Collection
 type Props = {
   nftIndex: number;
   className?: string;
+  nftId: string;
 };
-function UnstageButton({ nftIndex, className }: Props) {
-  const { setNftIsSelected } = useCollectionEditorActions();
+function UnstageButton({ nftIndex, className, nftId }: Props) {
+  const { setNftIsSelected, unstageNft } = useCollectionEditorActions();
 
   const handleOnClick = useCallback(() => {
     setNftIsSelected(nftIndex, false);
-  }, [nftIndex, setNftIsSelected]);
+    unstageNft(nftId);
+  }, [nftId, nftIndex, setNftIsSelected, unstageNft]);
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>

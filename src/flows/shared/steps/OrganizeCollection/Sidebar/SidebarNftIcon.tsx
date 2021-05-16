@@ -1,7 +1,6 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { EditModeNft } from 'types/Nft';
@@ -17,19 +16,21 @@ function SidebarNftIcon({ editModeNft, index }: SidebarNftIconProps) {
   ]);
   const {
     setNftIsSelected,
-    stageNft,
-    unstageNft,
+    stageNfts,
+    unstageNfts,
   } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
     setNftIsSelected(index, !isSelected);
-  }, [index, isSelected, setNftIsSelected]);
-
-  const handleUpdate = useCallback(() => {
-    isSelected ? stageNft(editModeNft) : unstageNft(editModeNft.nft.id);
-  }, [editModeNft, isSelected, stageNft, unstageNft]);
-
-  useEffectAfterMount(handleUpdate);
+    isSelected ? unstageNfts([editModeNft.id]) : stageNfts([editModeNft]);
+  }, [
+    editModeNft,
+    index,
+    isSelected,
+    setNftIsSelected,
+    stageNfts,
+    unstageNfts,
+  ]);
 
   return (
     <StyledSidebarNftIcon>

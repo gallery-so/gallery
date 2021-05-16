@@ -32,7 +32,7 @@ export function randomPics(n: number) {
         id: `${i}`,
         name: 'test',
         imageUrl: randomPic(),
-        imagePreviewUrl: 'test', // track position in "all nfts" array so it's for dnd to mark it as unselected
+        imagePreviewUrl: 'test',
       },
       index: i,
       isSelected: false,

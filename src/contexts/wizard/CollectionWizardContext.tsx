@@ -55,7 +55,6 @@ const CollectionWizardProvider = memo(({ children }: Props) => {
 
   const setCollectionIdBeingEdited = useCallback(
     (collectionIdBeingEdited: string) => {
-      console.log('here', collectionIdBeingEdited);
       setCollectionWizardState((prevState) => ({
         ...prevState,
         collectionIdBeingEdited,

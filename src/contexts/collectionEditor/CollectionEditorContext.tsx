@@ -10,7 +10,6 @@ import {
 import { EditModeNft } from 'types/Nft';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
-import { randomPics } from 'mocks/nfts';
 
 export type AllNftsState = EditModeNft[];
 export type StagedNftsState = EditModeNft[];
@@ -46,9 +45,13 @@ export const useStagedNftsState = (): AllNftsState => {
 };
 
 type CollectionEditorActions = {
+  setAllNfts: (nfts: EditModeNft[]) => void;
   setNftIsSelected: (index: number, isSelected: boolean) => void;
+  setNftsIsSelected: (nfts: EditModeNft[], isSelected: boolean) => void;
   stageNft: (nft: EditModeNft) => void;
+  stageNfts: (nfts: EditModeNft[]) => void;
   unstageNft: (id: string) => void;
+  unstageNfts: (ids: string[]) => void;
   handleSortNfts: (event: DragEndEvent) => void;
 };
 
@@ -67,9 +70,7 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
 type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [allNftsState, setAllNftsState] = useState<AllNftsState>(
-    randomPics(10)
-  );
+  const [allNftsState, setAllNftsState] = useState<AllNftsState>([]);
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
 
   const collectionEditorState = useMemo(
@@ -80,7 +81,28 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     [allNftsState, stagedNftsState]
   );
 
+  const setAllNfts = useCallback((nfts: EditModeNft[]) => {
+    setAllNftsState(nfts);
+  }, []);
+
+  const setNftsIsSelected = useCallback(
+    (nfts: EditModeNft[], isSelected: boolean) => {
+      setAllNftsState((prev) => {
+        let next = [...prev];
+        nfts.forEach((nft) => {
+          let selectedNft = next[nft.index];
+          let selectedNftCopy = { ...selectedNft };
+          selectedNftCopy.isSelected = isSelected;
+          next[nft.index] = selectedNftCopy;
+        });
+        return next;
+      });
+    },
+    []
+  );
+
   const setNftIsSelected = useCallback((index, isSelected) => {
+    console.log('setNftIsSelected');
     setAllNftsState((prev) => {
       let next = [...prev];
       let selectedNft = next[index];
@@ -91,6 +113,10 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
+  const stageNfts = useCallback((nfts: EditModeNft[]) => {
+    setStagedNftsState((prev) => [...prev, ...nfts]);
+  }, []);
+
   const stageNft = useCallback((nft: EditModeNft) => {
     setStagedNftsState((prev) => [...prev, nft]);
   }, []);
@@ -98,6 +124,12 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   const unstageNft = useCallback((id: string) => {
     setStagedNftsState((prev) =>
       prev.filter((editModeNft) => editModeNft.nft.id !== id)
+    );
+  }, []);
+
+  const unstageNfts = useCallback((ids: string[]) => {
+    setStagedNftsState((prev) =>
+      prev.filter((editModeNft) => ids.indexOf(editModeNft.id) < 0)
     );
   }, []);
 
@@ -114,12 +146,25 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
+      setAllNfts,
       setNftIsSelected,
+      setNftsIsSelected,
       stageNft,
+      stageNfts,
       unstageNft,
+      unstageNfts,
       handleSortNfts,
     }),
-    [handleSortNfts, setNftIsSelected, stageNft, unstageNft]
+    [
+      setAllNfts,
+      setNftIsSelected,
+      setNftsIsSelected,
+      stageNft,
+      stageNfts,
+      unstageNft,
+      unstageNfts,
+      handleSortNfts,
+    ]
   );
 
   return (
