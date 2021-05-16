@@ -5,12 +5,13 @@ import colors from 'components/core/colors';
 import { pause } from 'utils/time';
 
 type Props = {
+  textToCopy: string;
   children: ReactNode;
 };
 
 const SECTION_DURATION_MS = 400;
 
-export default function CopyToClipboard({ children }: Props) {
+export default function CopyToClipboard({ textToCopy, children }: Props) {
   // whether node is actually on the DOM
   const [isToastMounted, setIsToastMounted] = useState(false);
   // pseudo-state for signaling animations. this will allow us
@@ -18,6 +19,7 @@ export default function CopyToClipboard({ children }: Props) {
   const [isActive, setIsActive] = useState(false);
 
   const handleCopyToClipboard = useCallback(async () => {
+    navigator.clipboard.writeText(textToCopy);
     setIsToastMounted(true);
     setIsActive(true);
     await pause(SECTION_DURATION_MS * 2);

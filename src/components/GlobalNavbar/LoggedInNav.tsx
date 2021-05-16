@@ -16,7 +16,7 @@ function LoggedInNav() {
 
   // TODO__v1: when backend is ready, get address from useUser
   const walletAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7';
-  const displayedAddress = useMemo(() => {
+  const truncatedAddress = useMemo(() => {
     return truncate(walletAddress);
   }, [walletAddress]);
 
@@ -30,9 +30,9 @@ function LoggedInNav() {
       <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
       <Spacer width={24} />
       <Dropdown mainText="Account">
-        <CopyToClipboard>
+        <CopyToClipboard textToCopy={walletAddress}>
           <TextButton
-            text={displayedAddress}
+            text={truncatedAddress}
             disableTextTransform
             underlineOnHover
           />
