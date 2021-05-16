@@ -23,8 +23,9 @@ function Home(_: RouteComponentProps) {
   return (
     <StyledHome>
       <Display caps>GALLERY</Display>
+      <Spacer height={8} />
       <BodyRegular>Show your collection to the world</BodyRegular>
-      <Spacer height={80} />
+      <Spacer height={24} />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
     </StyledHome>
   );

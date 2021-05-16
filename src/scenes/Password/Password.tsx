@@ -69,14 +69,16 @@ function Password(_: RouteComponentProps) {
   return (
     <StyledPassword>
       <Display caps>Gallery</Display>
+      <Spacer height={8} />
       <BodyRegular>Show your collection to the world</BodyRegular>
-      <Spacer height={48} />
+      <Spacer height={24} />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}
         name="password"
         placeholder="Enter password"
         onChange={handlePasswordChange}
       />
+      <Spacer height={8} />
       <AnimatedStyledButton
         visible={isFormVisibleAndUnlocked}
         text="Enter"
@@ -97,7 +99,6 @@ const StyledPassword = styled.div`
 const INPUT_WIDTH = 203;
 
 const StyledPasswordInput = styled.input`
-  margin: 20px 0 10px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
   width: ${INPUT_WIDTH}px;
   height: 40px;
@@ -128,7 +129,7 @@ const StyledButton = styled(Button)`
 const AnimatedStyledButton = styled(StyledButton)<{ visible: boolean }>`
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   pointer-events: ${({ visible }) => (visible ? 'inherit' : 'none')};
-  transform: translateY(${({ visible }) => (visible ? 0 : -50)}px);
+  transform: translateY(${({ visible }) => (visible ? 0 : -48)}px);
   transition: transform ${transitionStyle};
 `;
 
