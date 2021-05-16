@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
+import transitions from 'components/core/transitions';
 
 type Props = {
   nft: Nft;
@@ -16,12 +17,9 @@ function NftImage({ nft }: Props) {
   );
 }
 
-// TODO: save this as a general transition under /core
-const transitionStyle = `200ms cubic-bezier(0, 0, 0, 1.07)`;
-
 const StyledNftPreviewLabel = styled(NftPreviewLabel)`
   opacity: 0;
-  transition: opacity ${transitionStyle};
+  transition: opacity ${transitions.cubic};
 `;
 
 const StyledGridImage = styled.div<{ srcUrl?: string }>`

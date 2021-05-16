@@ -13,7 +13,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 
 import { FOOTER_HEIGHT } from 'flows/OnboardingFlow/WizardFooter';
-import { Subtitle } from 'components/core/Text/Text';
+import { Heading } from 'components/core/Text/Text';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
 import StagedNftWrapper from './StagedNftWrapper';
@@ -53,7 +53,7 @@ function Editor() {
 
   return (
     <StyledEditor>
-      <Subtitle size="large">Your collection</Subtitle>
+      <Heading>Your collection</Heading>
       <DndContext
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}

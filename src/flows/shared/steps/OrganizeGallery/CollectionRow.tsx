@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
@@ -25,7 +25,7 @@ function CollectionRow({ collection, className }: Props) {
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
-        <Text>{collection.title}</Text>
+        <BodyRegular>{collection.title}</BodyRegular>
         <Settings />
       </Header>
       <Spacer height={12} />
@@ -35,7 +35,7 @@ function CollectionRow({ collection, className }: Props) {
         ))}
         {remainingNfts.length ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
-      {isHidden && <StyledHiddenLabel>Hidden</StyledHiddenLabel>}
+      {isHidden && <StyledHiddenLabel caps>Hidden</StyledHiddenLabel>}
     </StyledCollectionRow>
   );
 }
@@ -67,9 +67,8 @@ const Body = styled.div`
   column-gap: 24px;
 `;
 
-const StyledHiddenLabel = styled(Text)`
+const StyledHiddenLabel = styled(BodyRegular)`
   text-align: right;
-  text-transform: uppercase;
 `;
 const BigNftPreview = styled.img`
   width: 160px;
@@ -101,7 +100,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
               <SmolNftPreview src={nft.imageUrl} />
             ))}
             <Spacer width={2} />
-            <Text>+{overflowCountText} more</Text>
+            <BodyRegular>+{overflowCountText} more</BodyRegular>
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) =>

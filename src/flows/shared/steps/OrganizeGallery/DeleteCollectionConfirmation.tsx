@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback } from 'react';
@@ -17,14 +17,12 @@ function DeleteCollectionConfirmation() {
   }, [hideModal]);
   return (
     <StyledConfirmation>
-      <Text weight="bold">
-        Are you sure you want to delete your collection?
-      </Text>
+      <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
       <Spacer height={8} />
-      <Text color={colors.gray50}>
+      <BodyRegular color={colors.gray50}>
         This action is irreversible and will remove the collection from your
         gallery permanently.
-      </Text>
+      </BodyRegular>
       <Spacer height={20} />
       <ButtonContainer>
         <StyledCancelButton

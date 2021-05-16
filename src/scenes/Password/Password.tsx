@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { Text, Title } from 'components/core/Text/Text';
+import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
@@ -68,15 +68,17 @@ function Password(_: RouteComponentProps) {
 
   return (
     <StyledPassword>
-      <Title>GALLERY</Title>
-      <Text>Show your collection to the world</Text>
-      <Spacer height={48} />
+      <Display caps>Gallery</Display>
+      <Spacer height={8} />
+      <BodyRegular>Show your collection to the world</BodyRegular>
+      <Spacer height={24} />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}
         name="password"
         placeholder="Enter password"
         onChange={handlePasswordChange}
       />
+      <Spacer height={8} />
       <AnimatedStyledButton
         visible={isFormVisibleAndUnlocked}
         text="Enter"
@@ -97,7 +99,6 @@ const StyledPassword = styled.div`
 const INPUT_WIDTH = 203;
 
 const StyledPasswordInput = styled.input`
-  margin: 20px 0 10px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
   width: ${INPUT_WIDTH}px;
   height: 40px;
@@ -118,9 +119,6 @@ const StyledPasswordInput = styled.input`
   }
 `;
 
-// TODO: save this as a general transition under /core
-const transitionStyle = `700ms cubic-bezier(0, 0, 0, 1.07)`;
-
 const StyledButton = styled(Button)`
   width: ${INPUT_WIDTH}px;
 `;
@@ -128,8 +126,8 @@ const StyledButton = styled(Button)`
 const AnimatedStyledButton = styled(StyledButton)<{ visible: boolean }>`
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   pointer-events: ${({ visible }) => (visible ? 'inherit' : 'none')};
-  transform: translateY(${({ visible }) => (visible ? 0 : -50)}px);
-  transition: transform ${transitionStyle};
+  transform: translateY(${({ visible }) => (visible ? 0 : -48)}px);
+  transition: transform 700ms cubic-bezier(0, 0, 0, 1.07);
 `;
 
 export default Password;

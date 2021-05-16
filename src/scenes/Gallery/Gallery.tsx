@@ -4,8 +4,8 @@ import useSwr from 'swr';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
-import Header from './components/Header';
-import Body from './components/Body';
+import Header from './components/Header/Header';
+import Body from './components/Body/Body';
 import Spacer from 'components/core/Spacer/Spacer';
 import { contentSize } from 'components/core/breakpoints';
 

@@ -1,4 +1,4 @@
-import { Text } from 'components/core/Text/Text';
+import { Heading, BodyRegular } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 
@@ -13,19 +13,19 @@ type Props = {
 function NftDetailLabel({ nft }: Props) {
   return (
     <StyledDetailLabel>
-      <StyledNftTitle>{nft.name}</StyledNftTitle>
+      <Heading>{nft.name}</Heading>
       <Spacer height={16} />
-      <Text>{nft.platformName}</Text>
+      <BodyRegular>{nft.platformName}</BodyRegular>
       <Spacer height={16} />
       <StyledNftDescription color={colors.gray50}>
         {nft.description}
       </StyledNftDescription>
       <Spacer height={32} />
-      <Text color={colors.gray50}>Owned By</Text>
-      <Text>{nft.ownerName}</Text>
+      <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
+      <BodyRegular>{nft.ownerName}</BodyRegular>
       <Spacer height={16} />
-      <Text color={colors.gray50}>Created By</Text>
-      <Text>0xad6a7c8bfaf34aeddb036adfe4044d6a5d0a9ce2</Text>
+      <BodyRegular color={colors.gray50}>Created By</BodyRegular>
+      <BodyRegular>0xad6a7c8bfaf34aeddb036adfe4044d6a5d0a9ce2</BodyRegular>
     </StyledDetailLabel>
   );
 }
@@ -40,13 +40,8 @@ const StyledDetailLabel = styled.div`
   }
 `;
 
-const StyledNftTitle = styled(Text)`
-  font-size: 20px;
-`;
-
-const StyledNftDescription = styled(Text)`
+const StyledNftDescription = styled(BodyRegular)`
   width: 296px;
-  line-height: 20px;
 
   white-space: pre-line;
 `;

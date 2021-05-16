@@ -9,7 +9,7 @@ type Props = {
 
 // NOTE: if you change these, make sure to update `transition.css`
 const FADE_TIME_MS = 300;
-const TRANSITION_TIME_MS = 1000;
+const TRANSITION_TIME_MS = 700;
 
 const timeoutConfig = {
   enter: FADE_TIME_MS + TRANSITION_TIME_MS,

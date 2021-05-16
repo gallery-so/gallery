@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { Text } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 
@@ -17,7 +17,7 @@ function UnstageButton({ nftIndex, className }: Props) {
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
-      <Text color={colors.white}>DELETE</Text>
+      <BodyRegular color={colors.white}>DELETE</BodyRegular>
     </StyledUnstageButton>
   );
 }

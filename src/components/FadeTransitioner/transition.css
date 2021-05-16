@@ -15,7 +15,7 @@
 .fade-enter.fade-enter-active {
   opacity: 1;
   /* NOTE: if you change this, update `FadeTransitioner.tsx` */
-  transition: opacity 300ms ease-in-out 1000ms;
+  transition: opacity 300ms ease-in-out 700ms;
 }
 
 /* Fade-out */

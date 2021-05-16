@@ -1,7 +1,7 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import { Text } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 
 type Props = {
   nft: Nft;
@@ -11,8 +11,10 @@ type Props = {
 function NftPreviewLabel({ nft, className }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
-      <StyledNftLabelText>{nft.name}</StyledNftLabelText>
-      <StyledNftLabelText>Placehodler artist</StyledNftLabelText>
+      <StyledBodyRegular color={colors.white}>{nft.name}</StyledBodyRegular>
+      <StyledBodyRegular color={colors.white}>
+        Placehodler artist
+      </StyledBodyRegular>
     </StyledNftPreviewLabel>
   );
 }
@@ -28,9 +30,8 @@ export const StyledNftPreviewLabel = styled.div`
   z-index: 10;
 `;
 
-const StyledNftLabelText = styled(Text)`
+const StyledBodyRegular = styled(BodyRegular)`
   margin: 0;
-  color: ${colors.white};
 `;
 
 export default NftPreviewLabel;

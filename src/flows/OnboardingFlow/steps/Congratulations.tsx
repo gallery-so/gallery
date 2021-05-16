@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { Text, Subtitle, Title } from 'components/core/Text/Text';
+import { BodyRegular, Display } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -12,9 +12,11 @@ function Congratulations() {
 
   return (
     <StyledCongrats>
-      <Title>Congratulations</Title>
+      <Display>Congratulations</Display>
       <Spacer height={8} />
-      <StyledBodyText>Let's show your collection to the world.</StyledBodyText>
+      <StyledBodyText color={colors.gray50}>
+        Let's show your collection to the world.
+      </StyledBodyText>
       <Spacer height={24} />
       <StyledButton text="Take me to my gallery" onClick={handleClick} />
     </StyledCongrats>
@@ -29,8 +31,7 @@ const StyledCongrats = styled.div`
   height: 100vh;
 `;
 
-const StyledBodyText = styled(Text)`
-  color: ${colors.gray50};
+const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;
   text-align: center;
 `;

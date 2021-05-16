@@ -1,7 +1,8 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { Text } from '../Text/Text';
+import { ButtonText } from '../Text/Text';
 import colors from '../colors';
+import transitions from '../transitions';
 
 type ButtonStyle = 'primary' | 'secondary';
 
@@ -32,9 +33,9 @@ function Button({
       disabled={disabled}
       data-testid={dataTestId}
     >
-      <Text color={type === 'primary' ? colors.white : colors.black}>
+      <ButtonText color={type === 'primary' ? colors.white : colors.black}>
         {text}
-      </Text>
+      </ButtonText>
     </StyledButton>
   );
 }
@@ -58,7 +59,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   text-transform: uppercase;
 
-  transition: opacity 0.2s;
+  transition: opacity ${transitions.cubic};
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 

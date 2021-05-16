@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import Gradient from 'components/core/Gradient/Gradient';
-import { Text } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -43,7 +43,9 @@ function NavigationHandle({ direction, nftId }: Props) {
       <StyledTextWrapper direction={direction}>
         {arrow}
         <Spacer width={8} />
-        <StyledHoverText color={colors.gray50}>{hoverText}</StyledHoverText>
+        <StyledHoverText color={colors.gray50} caps>
+          {hoverText}
+        </StyledHoverText>
       </StyledTextWrapper>
     </StyledNavigationHandle>
   );
@@ -55,8 +57,7 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
 `;
 
-const StyledHoverText = styled(Text)`
-  text-transform: uppercase;
+const StyledHoverText = styled(BodyRegular)`
   transition: opacity ${transitions.cubic};
   opacity: 0;
 `;
@@ -79,4 +80,5 @@ const StyledNavigationHandle = styled.div`
     opacity: 1;
   }
 `;
+
 export default NavigationHandle;
