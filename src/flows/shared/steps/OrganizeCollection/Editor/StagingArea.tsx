@@ -17,7 +17,7 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import { Heading } from 'components/core/Text/Text';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
-import StagedNftWrapper from './StagedNftWrapper';
+import SortableStagedNft from './SortableStagedNft';
 
 import {
   useCollectionEditorActions,
@@ -66,9 +66,10 @@ function StagingArea() {
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
             {stagedNfts.map((editModeNft) => (
-              <StagedNftWrapper
+              <SortableStagedNft
                 key={editModeNft.id}
-                editModeNft={editModeNft}
+                nft={editModeNft.nft}
+                index={editModeNft.index}
               />
             ))}
           </StyledStagedNftContainer>
