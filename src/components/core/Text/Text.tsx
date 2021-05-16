@@ -10,21 +10,25 @@ type TextProps = {
 };
 
 const H1 = styled.h1<TextProps>`
+  margin: 0;
   color: ${({ color }) => (color ? color : colors.black)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H2 = styled.h2<TextProps>`
+  margin: 0;
   color: ${({ color }) => (color ? color : colors.black)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H3 = styled.h3<TextProps>`
+  margin: 0;
   color: ${({ color }) => (color ? color : colors.black)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const Paragraph = styled.p<TextProps>`
+  margin: 0;
   color: ${({ color }) => (color ? color : colors.black)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
@@ -35,7 +39,6 @@ export const Display = styled(H1)`
   font-weight: 400;
   line-height: 56px;
   letter-spacing: 0px;
-  margin: 0;
 `;
 
 export const Subdisplay = styled(H2)`
@@ -44,7 +47,6 @@ export const Subdisplay = styled(H2)`
   font-weight: 400;
   line-height: 44px;
   letter-spacing: 0px;
-  margin: 0;
 `;
 
 export const Heading = styled(H3)`
@@ -53,13 +55,11 @@ export const Heading = styled(H3)`
   font-weight: 400;
   line-height: 28px;
   letter-spacing: 0px;
-  margin: 0;
 `;
 
 const _TitleBase = styled(Paragraph)`
   font-size: 16px;
   line-height: 24px;
-  margin: 0;
 `;
 
 export const TitleSerif = styled(_TitleBase)`
@@ -79,7 +79,6 @@ export const BodyRegular = styled(Paragraph)`
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.4px;
-  margin: 0px 0px 12px 0px;
 `;
 
 export const BodyMedium = styled(BodyRegular)`
@@ -91,7 +90,6 @@ export const ButtonText = styled(Paragraph)`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0px;
-  margin: 0;
 `;
 
 export const Caption = styled(Paragraph)`
@@ -99,5 +97,4 @@ export const Caption = styled(Paragraph)`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.4px;
-  margin: 0px 0px 12px 0px;
 `;
