@@ -68,6 +68,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
         onChange={handleNameChange}
         defaultValue={collectionName}
         placeholder="Collection name"
+        autoFocus
       />
       <StyledTextArea
         onChange={handleDescriptionChange}

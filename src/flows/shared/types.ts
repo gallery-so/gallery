@@ -1,4 +1,4 @@
-import { WizardContext } from 'react-albus';
+import { WizardContext, StepObject } from 'react-albus';
 import { History } from 'history';
 
 // overload History with extra props provided by the WizardContext
@@ -7,7 +7,10 @@ export type WizardProps = Omit<WizardContext, 'history'> & {
   history: History & { index: number };
 };
 
+type ButtonText = string;
+
 export type GalleryWizardProps = WizardProps & {
   shouldHideFooter?: boolean;
   shouldHideSecondaryButton?: boolean;
+  footerButtonTextMap?: Record<StepObject['id'], ButtonText>;
 };

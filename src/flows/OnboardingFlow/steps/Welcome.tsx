@@ -4,10 +4,11 @@ import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
+import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 
 function Welcome({ next }: WizardContext) {
   return (
-    <StyledWelcome>
+    <FullPageCenteredStep>
       <Display>Welcome to Gallery</Display>
       <Spacer height={24} />
       <StyledBodyText color={colors.gray50}>
@@ -17,17 +18,9 @@ function Welcome({ next }: WizardContext) {
       </StyledBodyText>
       <Spacer height={40} />
       <StyledButton text="Enter Gallery" onClick={next} />
-    </StyledWelcome>
+    </FullPageCenteredStep>
   );
 }
-
-const StyledWelcome = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
 
 const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;

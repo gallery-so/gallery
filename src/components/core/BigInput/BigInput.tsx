@@ -6,11 +6,18 @@ type Props = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder: string;
   defaultValue?: string;
+  autoFocus?: boolean;
 };
 
-function BigInput({ onChange = noop, placeholder, defaultValue }: Props) {
+function BigInput({
+  onChange = noop,
+  placeholder,
+  defaultValue,
+  autoFocus = false,
+}: Props) {
   return (
     <StyledBigInput
+      autoFocus={autoFocus}
       placeholder={placeholder}
       defaultValue={defaultValue}
       onChange={onChange}

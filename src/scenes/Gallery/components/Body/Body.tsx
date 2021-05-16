@@ -10,9 +10,9 @@ type Props = {
 function Body({ collections }: Props) {
   return (
     <StyledBody>
-      {collections.map((collection) => (
+      {collections.map((collection, index) => (
         <>
-          <Spacer height={108} />
+          <Spacer height={index === 0 ? 48 : 108} />
           <CollectionView collection={collection} />
         </>
       ))}

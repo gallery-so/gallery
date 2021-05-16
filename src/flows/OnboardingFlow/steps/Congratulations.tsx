@@ -1,17 +1,20 @@
 import { useCallback } from 'react';
+import { navigate } from '@reach/router';
 import styled from 'styled-components';
 import { BodyRegular, Display } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
+import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 
 function Congratulations() {
   const handleClick = useCallback(() => {
-    alert(`ayyy lmao`);
+    // TODO__v1: when backend is ready, get username from useUser
+    navigate('/link-to-my-gallery');
   }, []);
 
   return (
-    <StyledCongrats>
+    <FullPageCenteredStep>
       <Display>Congratulations</Display>
       <Spacer height={8} />
       <StyledBodyText color={colors.gray50}>
@@ -19,17 +22,9 @@ function Congratulations() {
       </StyledBodyText>
       <Spacer height={24} />
       <StyledButton text="Take me to my gallery" onClick={handleClick} />
-    </StyledCongrats>
+    </FullPageCenteredStep>
   );
 }
-
-const StyledCongrats = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
 
 const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;

@@ -1,12 +1,34 @@
-import { useState } from 'react';
-import { mockCollectionsLite } from 'mocks/collections';
+import { useCallback, useState, useEffect } from 'react';
+import { navigate } from '@reach/router';
 import styled from 'styled-components';
+
+import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import { mockCollectionsLite } from 'mocks/collections';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
+type ConfigProps = {
+  onPrevious: () => void;
+};
+
+function useWizardConfig({ onPrevious }: ConfigProps) {
+  const { setOnPrevious } = useWizardCallback();
+
+  useEffect(() => {
+    setOnPrevious(onPrevious);
+  }, [setOnPrevious, onPrevious]);
+}
+
 function OrganizeGallery() {
+  const returnToProfile = useCallback(() => {
+    // TODO__v1 get username and interpolate here
+    navigate('/my-profile');
+  }, []);
+
+  useWizardConfig({ onPrevious: returnToProfile });
+
   const [collections, setCollections] = useState(mockCollectionsLite(4));
 
   return (
