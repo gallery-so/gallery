@@ -4,7 +4,7 @@ import colors from '../colors';
 type LoaderProps = {
   inverted?: boolean;
   thicc?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'mini' | 'small' | 'medium' | 'large';
 };
 
 const spin = keyframes`
@@ -21,6 +21,11 @@ const Loader = styled.div<LoaderProps>`
 
   ${({ size = 'small' }) => {
     switch (size) {
+      case 'mini':
+        return `
+          width: 16px;
+          height: 16px;
+        `;
       case 'small':
         return `
           width: 20px;
