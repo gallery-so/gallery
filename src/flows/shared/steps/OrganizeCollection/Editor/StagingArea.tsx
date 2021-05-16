@@ -29,6 +29,8 @@ const defaultDropAnimationConfig: DropAnimation = {
   dragSourceOpacity: 0.2,
 };
 
+const layoutMeasuring = { strategy: LayoutMeasuringStrategy.Always };
+
 function Editor() {
   const stagedNfts = useStagedNftsState();
   const { handleSortNfts } = useCollectionEditorActions();
@@ -59,7 +61,7 @@ function Editor() {
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}
         collisionDetection={closestCenter}
-        layoutMeasuring={{ strategy: LayoutMeasuringStrategy.Always }}
+        layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
