@@ -6,7 +6,7 @@ import {
   useWizardValidationState,
 } from 'contexts/wizard/WizardValidationContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
-import { FOOTER_HEIGHT } from '../WizardFooter';
+import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 
 function AddUserInfo({ next }: WizardContext) {
   const { setNextEnabled } = useWizardValidationActions();
@@ -16,7 +16,7 @@ function AddUserInfo({ next }: WizardContext) {
     (event) => {
       event.preventDefault();
       if (isNextEnabled) {
-        //   TODO call backend and save changes
+        //   TODO__v1 call backend and save changes
         next();
       }
     },
@@ -24,22 +24,14 @@ function AddUserInfo({ next }: WizardContext) {
   );
 
   return (
-    <StyledUserInfo>
+    <FullPageCenteredStep withFooter>
       <StyledUserInfoForm
         onSubmit={onSubmit}
         handleIsValidChange={setNextEnabled}
       />
-    </StyledUserInfo>
+    </FullPageCenteredStep>
   );
 }
-
-const StyledUserInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
-`;
 
 const StyledUserInfoForm = styled(UserInfoForm)`
   width: 600px;

@@ -1,14 +1,14 @@
+import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { Heading, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { WizardContext } from 'react-albus';
-import { FOOTER_HEIGHT } from '../WizardFooter';
+import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 
 function CreateFirstCollection({ next }: WizardContext) {
   return (
-    <StyledCreateFirstCollection>
+    <FullPageCenteredStep withFooter>
       <Heading>Create your first collection</Heading>
       <Spacer height={8} />
       <StyledBodyText color={colors.gray50}>
@@ -17,17 +17,9 @@ function CreateFirstCollection({ next }: WizardContext) {
       </StyledBodyText>
       <Spacer height={24} />
       <StyledButton text="New Collection" onClick={next} />
-    </StyledCreateFirstCollection>
+    </FullPageCenteredStep>
   );
 }
-
-const StyledCreateFirstCollection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
-`;
 
 const StyledBodyText = styled(BodyRegular)`
   max-width: 390px;
