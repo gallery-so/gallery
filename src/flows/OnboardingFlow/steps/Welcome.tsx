@@ -11,9 +11,9 @@ function Welcome({ next }: WizardContext) {
       <Display>Welcome to Gallery</Display>
       <Spacer height={24} />
       <StyledBodyText color={colors.gray50}>
-        This is your space to share your pieces and and the stories that
-        surround them. Curate, arrange, and display your collection exactly how
-        it was meant to be.
+        This is your space to share your pieces and the stories that surround
+        them. Curate, arrange, and display your collection exactly how it was
+        meant to be.
       </StyledBodyText>
       <Spacer height={40} />
       <StyledButton text="Enter Gallery" onClick={next} />
