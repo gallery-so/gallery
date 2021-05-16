@@ -23,7 +23,7 @@ function Button({
   text,
   onClick,
   disabled,
-  loading = true,
+  loading,
   dataTestId,
 }: Props) {
   return (

@@ -1,42 +1,50 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
 import TextArea from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
-import { USERNAME_REGEX } from 'utils/regex';
 
 type Props = {
   className?: string;
-  onSubmit?: (event: FormEvent) => void;
-  handleIsValidChange: (isValid: boolean) => void;
-  mode?: string;
+  onSubmit?: () => void;
+  mode?: 'Add' | 'Edit';
+  onUsernameChange: (username: string) => void;
+  onBioChange: (bio: string) => void;
 };
 
 function UserInfoForm({
   className,
   onSubmit,
-  handleIsValidChange,
+  onUsernameChange,
+  onBioChange,
   mode = 'Add',
 }: Props) {
-  const [username, setUsername] = useState('');
-  const [bio, setBio] = useState('');
   const handleUsernameChange = useCallback(
     (event) => {
-      // TODO consider debouncing validation
-      setUsername(event.target.value);
-      const isValid = USERNAME_REGEX.test(event.target.value);
-      handleIsValidChange(isValid);
+      onUsernameChange(event.target.value);
     },
-    [handleIsValidChange]
+    [onUsernameChange]
   );
-  const handleBioChange = useCallback((event) => {
-    setBio(event.target.value);
-  }, []);
+
+  const handleBioChange = useCallback(
+    (event) => {
+      onBioChange(event.target.value);
+    },
+    [onBioChange]
+  );
+
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+      onSubmit?.();
+    },
+    [onSubmit]
+  );
 
   return (
-    <StyledForm className={className} onSubmit={onSubmit}>
+    <StyledForm className={className} onSubmit={handleSubmit}>
       <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
       <Spacer height={14} />
       <BigInput
@@ -52,7 +60,7 @@ function UserInfoForm({
     </StyledForm>
   );
 }
-export default UserInfoForm;
+
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -65,3 +73,5 @@ const StyledBodyMedium = styled(BodyMedium)`
 const StyledTextArea = styled(TextArea)`
   height: 160px;
 `;
+
+export default UserInfoForm;
