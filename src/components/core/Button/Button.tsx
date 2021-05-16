@@ -2,6 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 import { ButtonText } from '../Text/Text';
 import colors from '../colors';
+import transitions from '../transitions';
 
 type ButtonStyle = 'primary' | 'secondary';
 
@@ -58,7 +59,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   text-transform: uppercase;
 
-  transition: opacity 0.2s;
+  transition: opacity ${transitions.cubic};
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 

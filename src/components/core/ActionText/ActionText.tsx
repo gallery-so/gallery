@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { BodyRegular } from '../Text/Text';
 import colors from '../colors';
+import transitions from '../transitions';
 
 type Props = {
   underlined?: boolean;
@@ -9,7 +10,7 @@ type Props = {
 
 const ActionText = styled(BodyRegular)<Props>`
   text-transform: uppercase;
-  transition: color 0.2s;
+  transition: color ${transitions.cubic};
 
   cursor: pointer;
 

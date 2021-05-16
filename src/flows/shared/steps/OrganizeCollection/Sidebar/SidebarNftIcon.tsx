@@ -1,4 +1,5 @@
 import colors from 'components/core/colors';
+import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { memo, useCallback, useMemo } from 'react';
@@ -66,7 +67,7 @@ const StyledImage = styled.img<SelectedProps>`
   width: 100%;
   height: 100%;
 
-  transition: opacity 0.2s;
+  transition: opacity ${transitions.cubic};
 
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 `;
