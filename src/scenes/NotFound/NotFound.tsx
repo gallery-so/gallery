@@ -3,23 +3,32 @@ import { Link, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
+import Spacer from 'components/core/Spacer/Spacer';
 
 function NotFound(_: RouteComponentProps) {
   return (
     <StyledNotFound>
       <Display>404</Display>
-      <BodyRegular>
-        Looks like you took a wrong turn. There's not much to see here.
-      </BodyRegular>
+      <Spacer height={8} />
+      <BodyRegular>Unfortunately, there's not much to see here.</BodyRegular>
+      <Spacer height={24} />
       <Link to="/">
-        <Button>Take me back</Button>
+        <StyledButton text="Take me back" />
       </Link>
     </StyledNotFound>
   );
 }
 
 const StyledNotFound = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 0px 24px;
 `;
 
 export default memo(NotFound);
