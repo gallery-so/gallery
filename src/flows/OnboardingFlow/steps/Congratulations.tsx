@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { navigate } from '@reach/router';
 import styled from 'styled-components';
 import { BodyRegular, Display } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
@@ -8,7 +9,8 @@ import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/F
 
 function Congratulations() {
   const handleClick = useCallback(() => {
-    alert(`ayyy lmao`);
+    // TODO__v1: when backend is ready, get username from useUser
+    navigate('/link-to-my-gallery');
   }, []);
 
   return (

@@ -63,7 +63,7 @@ export function mockSingleCollection({
     id: `${Math.random()}`,
     title: 'Collection Title',
     description: withDescription
-      ? "Cray edison bulb 90's, 8-bit tumblr art party seitan YOLO glossier kickstarter. Authentic sriracha 8-bit chartreuse tote bag man bun, cloud bread asymmetrical lyft hot chicken. Pork belly letterpress organic, asymmetrical four dollar toast art party meditation shoreditch polaroid kitsch."
+      ? "Cray edison bulb 90's, 8-bit tumblr art party seitan YOLO glossier kickstarter. Authentic sriracha 8-bit chartreuse tote bag man bun, cloud bread asymmetrical lyft hot chicken. Pork belly letterpress organic."
       : undefined,
     nfts,
   };

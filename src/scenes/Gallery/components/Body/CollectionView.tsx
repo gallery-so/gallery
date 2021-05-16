@@ -19,7 +19,7 @@ function CollectionView({ collection }: Props) {
           {collection.description}
         </BodyRegular>
       </StyledCollectionHeader>
-      <Spacer height={16} />
+      <Spacer height={24} />
       <StyledCollectionNfts>
         {collection.nfts.map((nft) => (
           <NftPreview key={nft.id} nft={nft} collectionId={collection.id} />
@@ -38,6 +38,7 @@ const StyledCollectionWrapper = styled.div`
 const StyledCollectionHeader = styled.div`
   display: flex;
   flex-direction: column;
+  width: 50%;
 `;
 
 const StyledCollectionNfts = styled.div`
