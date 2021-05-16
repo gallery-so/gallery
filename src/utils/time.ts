@@ -12,3 +12,6 @@ export const msToTimestamp = (ms: number): string => {
   if (h) t.unshift(h);
   return t.map(_appendLeadingZero).join(':');
 };
+
+export const pause = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
