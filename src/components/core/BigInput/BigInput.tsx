@@ -21,6 +21,10 @@ function BigInput({
       placeholder={placeholder}
       defaultValue={defaultValue}
       onChange={onChange}
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
     />
   );
 }

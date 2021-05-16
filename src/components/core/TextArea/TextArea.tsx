@@ -15,6 +15,10 @@ function TextArea({ className, onChange = noop, placeholder }: Props) {
       className={className}
       placeholder={placeholder}
       onChange={onChange}
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
     />
   );
 }

@@ -77,6 +77,10 @@ function Password(_: RouteComponentProps) {
         name="password"
         placeholder="Enter password"
         onChange={handlePasswordChange}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
       />
       <Spacer height={8} />
       <AnimatedStyledButton

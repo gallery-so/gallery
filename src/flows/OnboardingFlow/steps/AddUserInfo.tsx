@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import UserInfoForm from 'components/Profile/UserInfoForm';
+import UserInfoForm, {
+  BIO_MAX_CHAR_COUNT,
+} from 'components/Profile/UserInfoForm';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { pause } from 'utils/time';
 import { USERNAME_REGEX } from 'utils/regex';
@@ -25,17 +27,22 @@ function AddUserInfo({ next }: WizardContext) {
 
   const handleUserCreate = useCallback(async () => {
     // client-side check for error
-    const isValid = USERNAME_REGEX.test(username);
-    if (!isValid) {
+    const usernameIsValid = USERNAME_REGEX.test(username);
+    if (!usernameIsValid) {
       // TODO__v1: display error on form (or button), wait for final designs
       alert('username does not contain valid characters');
+      return;
+    }
+
+    if (bio.length > BIO_MAX_CHAR_COUNT) {
+      // no need to handle error here, since the form will mark the text as red
       return;
     }
 
     // TODO__v1: send request to server to create a user
     await pause(1000);
     next();
-  }, [username, next]);
+  }, [username, next, bio]);
 
   useWizardConfig({ onNext: handleUserCreate });
 
