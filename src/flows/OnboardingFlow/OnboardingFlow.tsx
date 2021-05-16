@@ -3,15 +3,22 @@ import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
-import { WizardProps } from 'flows/shared/types';
+import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
+import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import Welcome from './steps/Welcome';
 import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddUserInfo from './steps/AddUserInfo';
 import Congratulations from './steps/Congratulations';
-import WizardFooter from './WizardFooter';
+
+const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
+  addUserInfo: 'Save',
+  create: 'New Collection',
+  organizeCollection: 'Create Collection',
+  organizeGallery: 'Publish Gallery',
+};
 
 function OnboardingFlow(_: RouteComponentProps) {
   return (
@@ -39,6 +46,7 @@ function OnboardingFlow(_: RouteComponentProps) {
                   shouldHideSecondaryButton={
                     wizardProps.step.id === 'organizeGallery'
                   }
+                  footerButtonTextMap={footerButtonTextMap}
                   {...(wizardProps as WizardProps)}
                 />
               </>

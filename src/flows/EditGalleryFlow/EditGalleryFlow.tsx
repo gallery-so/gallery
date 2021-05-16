@@ -5,8 +5,13 @@ import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
-import { WizardProps } from 'flows/shared/types';
-import WizardFooter from './WizardFooter';
+import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
+import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
+
+const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
+  organizeCollection: 'Save Collection',
+  organizeGallery: 'Save',
+};
 
 function EditGalleryFlow(_: RouteComponentProps) {
   return (
@@ -20,7 +25,10 @@ function EditGalleryFlow(_: RouteComponentProps) {
                   <Step id="organizeGallery" render={OrganizeGallery} />
                   <Step id="organizeCollection" render={OrganizeCollection} />
                 </Steps>
-                <WizardFooter {...(wizardProps as WizardProps)} />
+                <WizardFooter
+                  footerButtonTextMap={footerButtonTextMap}
+                  {...(wizardProps as WizardProps)}
+                />
               </>
             );
           }}

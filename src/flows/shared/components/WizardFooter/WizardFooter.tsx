@@ -18,6 +18,7 @@ function WizardFooter({
   history,
   shouldHideFooter,
   shouldHideSecondaryButton,
+  footerButtonTextMap,
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext, onPrevious } = useWizardCallback();
@@ -26,21 +27,9 @@ function WizardFooter({
     return history.index === 0;
   }, [history.index]);
 
-  // TODO: consider putting this in context / useWizardConfig
   const buttonText = useMemo(() => {
-    switch (step.id) {
-      case 'addUserInfo':
-        return 'Save';
-      case 'create':
-        return 'New Collection';
-      case 'organizeCollection':
-        return 'Create Collection';
-      case 'organizeGallery':
-        return 'Publish Gallery';
-      default:
-        return 'Next';
-    }
-  }, [step]);
+    return footerButtonTextMap?.[step.id] ?? 'Next';
+  }, [footerButtonTextMap, step.id]);
 
   const handleNextClick = useCallback(() => {
     onNext?.current ? onNext.current() : next();
@@ -92,7 +81,7 @@ const StyledWizardFooter = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  min-width: 190px;
+  min-width: 192px;
   padding: 0px 32px;
 `;
 

@@ -15,6 +15,7 @@ type ConfigProps = {
 
 function useWizardConfig({ onPrevious }: ConfigProps) {
   const { setOnPrevious } = useWizardCallback();
+
   useEffect(() => {
     setOnPrevious(onPrevious);
   }, [setOnPrevious, onPrevious]);
