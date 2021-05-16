@@ -20,7 +20,8 @@ function Header({ wizard: { push } }: WizardComponentProps) {
         <Heading>Organize your Gallery</Heading>
       </TitleContainer>
       <OptionsContainer>
-        <TextButton text="Preview Gallery" onClick={handleGalleryPreview} />
+        {/* TODO: support gallery preview
+        <TextButton text="Preview Gallery" onClick={handleGalleryPreview} /> */}
         <Spacer width={16} />
         <StyledButton
           type="secondary"
