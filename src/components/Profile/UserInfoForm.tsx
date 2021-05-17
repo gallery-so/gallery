@@ -89,6 +89,7 @@ const StyledBodyMedium = styled(BodyMedium)`
 const StyledBioContainer = styled.div`
   position: relative;
   height: 144px;
+  border: 1px solid ${colors.gray50};
 `;
 
 const StyledTextArea = styled(TextArea)`

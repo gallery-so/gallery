@@ -1,6 +1,5 @@
 import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
-import colors from '../colors';
 import noop from 'utils/noop';
 
 type Props = {
@@ -33,7 +32,8 @@ function TextArea({
 const StyledTextArea = styled.textarea`
   padding: 14px;
   font-family: Helvetica Neue;
-  border-color: ${colors.gray50};
+  border: none;
+  border-bottom: 28px solid white;
   resize: none;
 `;
 
