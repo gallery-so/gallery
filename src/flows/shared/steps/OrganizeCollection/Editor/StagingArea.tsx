@@ -68,8 +68,7 @@ function StagingArea() {
             {stagedNfts.map((editModeNft) => (
               <SortableStagedNft
                 key={editModeNft.id}
-                nft={editModeNft.nft}
-                index={editModeNft.index}
+                editModeNft={editModeNft}
               />
             ))}
           </StyledStagedNftContainer>

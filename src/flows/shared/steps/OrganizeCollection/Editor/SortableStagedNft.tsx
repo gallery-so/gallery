@@ -5,16 +5,16 @@ import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import { memo, useMemo } from 'react';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
+import { EditModeNft, Nft } from 'types/Nft';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 
 type Props = {
-  nft: Nft;
-  index?: number;
+  editModeNft: EditModeNft;
+  // index?: number;
 };
 
-function SortableStagedNft({ nft, index, ...props }: Props) {
+function SortableStagedNft({ editModeNft, ...props }: Props) {
   const {
     attributes,
     listeners,
@@ -22,7 +22,7 @@ function SortableStagedNft({ nft, index, ...props }: Props) {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: nft.id });
+  } = useSortable({ id: editModeNft.id });
 
   const style = useMemo(
     () => ({
@@ -35,19 +35,19 @@ function SortableStagedNft({ nft, index, ...props }: Props) {
 
   return (
     <StyledSortableNft
-      id={nft.id}
+      id={editModeNft.id}
       active={isDragging}
       // @ts-expect-error
       style={style}
     >
       <StyledGradient type="top" />
       <StagedNftImage
-        nft={nft}
+        editModeNft={editModeNft}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
       />
-      <StyledUnstageButton nftIndex={index || 0} nftId={nft.id} />
+      <StyledUnstageButton editModeNft={editModeNft} />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
   );

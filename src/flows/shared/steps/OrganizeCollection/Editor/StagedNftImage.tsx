@@ -1,14 +1,15 @@
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
+import { EditModeNft, Nft } from 'types/Nft';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
 
 type Props = {
-  nft: Nft;
+  editModeNft: EditModeNft;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function NftImage({ nft, setNodeRef, ...props }: Props) {
+function NftImage({ editModeNft, setNodeRef, ...props }: Props) {
+  const nft = editModeNft.nft;
   const srcUrl = nft.imageUrl;
 
   return (

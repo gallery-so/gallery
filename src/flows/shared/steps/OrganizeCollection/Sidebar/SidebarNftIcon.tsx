@@ -7,30 +7,22 @@ import { EditModeNft } from 'types/Nft';
 
 type SidebarNftIconProps = {
   editModeNft: EditModeNft;
-  index: number;
 };
 
-function SidebarNftIcon({ editModeNft, index }: SidebarNftIconProps) {
+function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   const isSelected = useMemo(() => !!editModeNft.isSelected, [
     editModeNft.isSelected,
   ]);
   const {
-    setNftIsSelected,
+    setNftsIsSelected,
     stageNfts,
     unstageNfts,
   } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    setNftIsSelected(index, !isSelected);
+    setNftsIsSelected([editModeNft], !isSelected);
     isSelected ? unstageNfts([editModeNft.id]) : stageNfts([editModeNft]);
-  }, [
-    editModeNft,
-    index,
-    isSelected,
-    setNftIsSelected,
-    stageNfts,
-    unstageNfts,
-  ]);
+  }, [editModeNft, isSelected, setNftsIsSelected, stageNfts, unstageNfts]);
 
   return (
     <StyledSidebarNftIcon>

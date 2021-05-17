@@ -36,7 +36,6 @@ function CollectionEditor() {
 
   // initialize allNfts
   useEffect(() => {
-    console.log('INIT');
     const availableNfts: EditModeNft[] = MOCKED_AVAILABLE_NFTS.map(
       (nft, index) => ({
         index,
@@ -56,7 +55,6 @@ function CollectionEditor() {
     //   4. Set all nfts and staged nfts on CollectionEditorContext state
     if (collectionIdBeingEdited) {
       // EDITING COLLECTION
-      const availableNftsLength = availableNfts.length;
       const existingCollection: EditModeNft[] = MOCKED_EXISTING_COLLECTION.nfts.map(
         (nft, index) => ({
           index: index,
@@ -82,26 +80,6 @@ function CollectionEditor() {
     // NEW COLLECTION
     setAllNfts(availableNfts);
   }, [collectionIdBeingEdited, setAllNfts, stageNfts]);
-  // getting allNfts for now to mock an existing collection that is a subset of allNfts
-  // const allNfts = useAllNftsState();
-  // const existingCollection = allNfts.slice(0, 4);
-  useEffect(() => {
-    if (collectionIdBeingEdited) {
-      console.log('collectionIdBeingEdited', collectionIdBeingEdited);
-      // TODO__v1
-      // if collectionIdBeingEdited has a value,
-      // retrieve the collection with the id from swr
-      // convert the Nfts to EditModeNfts, then stage those nfts
-
-      // console.log(existingCollectionEditMode);
-      // stageNfts(
-      //   existingCollection.slice(0, 4).map((nft) => {
-      //     nft.isSelected = true;
-      //     return nft;
-      //   })
-      // );
-    }
-  }, [collectionIdBeingEdited, stageNfts]);
 
   return (
     <>

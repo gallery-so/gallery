@@ -51,12 +51,12 @@ function Sidebar() {
         <BodyMedium>Your NFTs</BodyMedium>
         {isAllNftsSelected ? (
           <TextButton
-            text="Deselect All"
+            text={`Deselect All (${allNfts.length})`}
             onClick={handleDeselectAllClick}
           ></TextButton>
         ) : (
           <TextButton
-            text="Select All"
+            text={`Select All (${allNfts.length})`}
             onClick={handleSelectAllClick}
           ></TextButton>
         )}
@@ -65,11 +65,7 @@ function Sidebar() {
       <Spacer height={12} />
       <Selection>
         {allNfts.map((editModeNft: EditModeNft, index: number) => (
-          <SidebarNftIcon
-            key={editModeNft.nft.id}
-            editModeNft={editModeNft}
-            index={index}
-          />
+          <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
         ))}
       </Selection>
       <Spacer height={12} />

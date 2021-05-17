@@ -46,11 +46,8 @@ export const useStagedNftsState = (): AllNftsState => {
 
 type CollectionEditorActions = {
   setAllNfts: (nfts: EditModeNft[]) => void;
-  setNftIsSelected: (index: number, isSelected: boolean) => void;
   setNftsIsSelected: (nfts: EditModeNft[], isSelected: boolean) => void;
-  stageNft: (nft: EditModeNft) => void;
   stageNfts: (nfts: EditModeNft[]) => void;
-  unstageNft: (id: string) => void;
   unstageNfts: (ids: string[]) => void;
   handleSortNfts: (event: DragEndEvent) => void;
 };
@@ -101,30 +98,8 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     []
   );
 
-  const setNftIsSelected = useCallback((index, isSelected) => {
-    console.log('setNftIsSelected');
-    setAllNftsState((prev) => {
-      let next = [...prev];
-      let selectedNft = next[index];
-      let selectedNftCopy = { ...selectedNft };
-      selectedNftCopy.isSelected = isSelected;
-      next[index] = selectedNftCopy;
-      return next;
-    });
-  }, []);
-
   const stageNfts = useCallback((nfts: EditModeNft[]) => {
     setStagedNftsState((prev) => [...prev, ...nfts]);
-  }, []);
-
-  const stageNft = useCallback((nft: EditModeNft) => {
-    setStagedNftsState((prev) => [...prev, nft]);
-  }, []);
-
-  const unstageNft = useCallback((id: string) => {
-    setStagedNftsState((prev) =>
-      prev.filter((editModeNft) => editModeNft.nft.id !== id)
-    );
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
@@ -147,24 +122,12 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
       setAllNfts,
-      setNftIsSelected,
       setNftsIsSelected,
-      stageNft,
       stageNfts,
-      unstageNft,
       unstageNfts,
       handleSortNfts,
     }),
-    [
-      setAllNfts,
-      setNftIsSelected,
-      setNftsIsSelected,
-      stageNft,
-      stageNfts,
-      unstageNft,
-      unstageNfts,
-      handleSortNfts,
-    ]
+    [setAllNfts, setNftsIsSelected, stageNfts, unstageNfts, handleSortNfts]
   );
 
   return (
