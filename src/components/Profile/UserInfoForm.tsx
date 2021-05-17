@@ -15,8 +15,6 @@ type Props = {
   onUsernameChange: (username: string) => void;
   bio: string;
   onBioChange: (bio: string) => void;
-  // whether the bio form is tall
-  tall?: boolean;
 };
 
 export const BIO_MAX_CHAR_COUNT = 500;
@@ -29,7 +27,6 @@ function UserInfoForm({
   bio,
   onBioChange,
   mode = 'Add',
-  tall = false,
 }: Props) {
   const handleSubmit = useCallback(
     (event: FormEvent) => {
@@ -66,7 +63,7 @@ function UserInfoForm({
         autoFocus
       />
       <Spacer height={10} />
-      <StyledBioContainer tall={tall}>
+      <StyledBioContainer>
         <StyledTextArea
           onChange={handleBioChange}
           placeholder="Tell us about yourself..."
@@ -89,9 +86,9 @@ const StyledBodyMedium = styled(BodyMedium)`
   padding-left: 4px;
 `;
 
-const StyledBioContainer = styled.div<{ tall: boolean }>`
+const StyledBioContainer = styled.div`
   position: relative;
-  height: ${({ tall }) => (tall ? 144 : 104)}px;
+  height: 144px;
 `;
 
 const StyledTextArea = styled(TextArea)`

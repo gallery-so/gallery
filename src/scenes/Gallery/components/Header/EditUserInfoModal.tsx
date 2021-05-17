@@ -52,7 +52,6 @@ function EditUserInfoModal() {
         onUsernameChange={setUsername}
         bio={bio}
         onBioChange={setBio}
-        tall
       />
       <Spacer height={16} />
       <StyledButton
