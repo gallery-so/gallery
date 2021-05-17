@@ -1,11 +1,10 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium, Caption } from 'components/core/Text/Text';
+import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
-import TextArea from 'components/core/TextArea/TextArea';
+import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
 
 type Props = {
   className?: string;
@@ -50,8 +49,6 @@ function UserInfoForm({
     [onBioChange]
   );
 
-  const bioLength = bio.length;
-
   return (
     <StyledForm className={className} onSubmit={handleSubmit}>
       <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
@@ -63,16 +60,13 @@ function UserInfoForm({
         autoFocus
       />
       <Spacer height={10} />
-      <StyledBioContainer>
-        <StyledTextArea
-          onChange={handleBioChange}
-          placeholder="Tell us about yourself..."
-          defaultValue={bio}
-        />
-        <StyledCharacterCounter error={bioLength > BIO_MAX_CHAR_COUNT}>
-          {bioLength}/{BIO_MAX_CHAR_COUNT}
-        </StyledCharacterCounter>
-      </StyledBioContainer>
+      <StyledTextAreaWithCharCount
+        onChange={handleBioChange}
+        placeholder="Tell us about yourself..."
+        defaultValue={bio}
+        currentCharCount={bio.length}
+        maxCharCount={BIO_MAX_CHAR_COUNT}
+      />
     </StyledForm>
   );
 }
@@ -86,24 +80,8 @@ const StyledBodyMedium = styled(BodyMedium)`
   padding-left: 4px;
 `;
 
-const StyledBioContainer = styled.div`
-  position: relative;
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
-  border: 1px solid ${colors.gray50};
-`;
-
-const StyledTextArea = styled(TextArea)`
-  width: 100%;
-  height: 100%;
-`;
-
-const StyledCharacterCounter = styled(Caption)<{ error: boolean }>`
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  opacity: 0.6;
-
-  color: ${({ error }) => (error ? colors.error : 'inherit')};
 `;
 
 export default UserInfoForm;

@@ -55,8 +55,8 @@ function EditUserInfoModal() {
       />
       <Spacer height={16} />
       <StyledButton
-        text="Save"
         mini
+        text="Save"
         onClick={onSubmit}
         disabled={!isValid || isLoading}
         loading={isLoading}
