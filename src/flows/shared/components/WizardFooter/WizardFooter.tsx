@@ -1,7 +1,7 @@
 /**
  * TODO: this should be abstracted to be shared with WizardFooter
  */
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import Button from 'components/core/Button/Button';
@@ -10,6 +10,7 @@ import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { GalleryWizardProps } from 'flows/shared/types';
+import isPromise from 'utils/isPromise';
 
 function WizardFooter({
   step,
@@ -22,6 +23,7 @@ function WizardFooter({
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext, onPrevious } = useWizardCallback();
+  const [isLoading, setIsLoading] = useState(false);
 
   const isFirstStep = useMemo(() => {
     return history.index === 0;
@@ -31,8 +33,25 @@ function WizardFooter({
     return footerButtonTextMap?.[step.id] ?? 'Next';
   }, [footerButtonTextMap, step.id]);
 
-  const handleNextClick = useCallback(() => {
-    onNext?.current ? onNext.current() : next();
+  const handleNextClick = useCallback(async () => {
+    if (onNext?.current) {
+      const res = onNext.current();
+      // if onNext is an async function, activate the loader
+      if (isPromise(res)) {
+        try {
+          setIsLoading(true);
+          await res;
+        } catch (e) {
+          // if we want, we can display an error on the wizard
+          // itself if the async request goes awry. that said,
+          // we'll generally want to handle this on the Step
+          // component itself
+        }
+        setIsLoading(false);
+      }
+      return;
+    }
+    next();
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
@@ -52,9 +71,10 @@ function WizardFooter({
       )}
       <Spacer width={40} />
       <StyledButton
-        disabled={!isNextEnabled}
         text={buttonText}
         onClick={handleNextClick}
+        disabled={!isNextEnabled || isLoading}
+        loading={isLoading}
         dataTestId="wizard-footer-next-button"
       />
       <Spacer width={24} />

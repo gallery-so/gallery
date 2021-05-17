@@ -1,36 +1,65 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import UserInfoForm from 'components/Profile/UserInfoForm';
-import Button from 'components/core/Button/Button';
 import { useModal } from 'contexts/modal/ModalContext';
+import UserInfoForm, {
+  BIO_MAX_CHAR_COUNT,
+} from 'components/Profile/UserInfoForm';
+import Button from 'components/core/Button/Button';
+import Spacer from 'components/core/Spacer/Spacer';
+import { USERNAME_REGEX } from 'utils/regex';
+import { pause } from 'utils/time';
 
 function EditUserInfoModal() {
   const { hideModal } = useModal();
 
-  const [isValid, setIsValid] = useState(false); //base default value on username
-  const [isPending, setIsPending] = useState(false);
+  // TODO__v1: auto-populate username and bio from useSwr()
+  const [username, setUsername] = useState('RogerKilimanjaro');
+  const [bio, setBio] = useState(
+    'French Graphic Designer + Digital Artist Sparkles Founder of @healthedeal\nSparkles lorem ipsum sit dolor http://superrare.co/maalavidaa Sparkles Shop\n& More → http://linktr.ee/maalavidaa'
+  );
 
-  const onSubmit = useCallback(() => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isValid = useMemo(() => {
+    const usernameIsValid = USERNAME_REGEX.test(username);
+    const bioIsValid = bio.length <= BIO_MAX_CHAR_COUNT;
+    return usernameIsValid && bioIsValid;
+  }, [username, bio]);
+
+  const onSubmit = useCallback(async () => {
     if (isValid) {
-      //   TODO call backend and save changes
-      setIsPending(true);
-      console.log('PUT to save changes');
-      setTimeout(() => {
-        //   if request is succesful, close modal
-        setIsPending(false);
+      setIsLoading(true);
+
+      try {
+        // TODO__v1: send request to server to UPDATE user's username and bio.
+        await pause(1000);
         hideModal();
-      }, 1500);
+      } catch (e) {
+        // TODO__v1: depending on type of server error, set error for username,
+        // bio, or general modal
+      }
+
+      setIsLoading(false);
     }
   }, [hideModal, isValid]);
 
   return (
     <StyledEditUserInfoModal>
-      <UserInfoForm mode="Edit" handleIsValidChange={setIsValid}></UserInfoForm>
+      <UserInfoForm
+        mode="Edit"
+        onSubmit={onSubmit}
+        username={username}
+        onUsernameChange={setUsername}
+        bio={bio}
+        onBioChange={setBio}
+      />
+      <Spacer height={16} />
       <StyledButton
-        disabled={!isValid || isPending}
-        text="SAVE"
+        mini
+        text="Save"
         onClick={onSubmit}
-        isPending={isPending}
+        disabled={!isValid || isLoading}
+        loading={isLoading}
       />
     </StyledEditUserInfoModal>
   );
@@ -43,18 +72,10 @@ const StyledEditUserInfoModal = styled.div`
   width: 480px;
 `;
 
-type ButtonProps = {
-  isPending: boolean;
-};
-
-const StyledButton = styled(Button)<ButtonProps>`
-  padding: 0 16px;
-  width: fit-content;
+const StyledButton = styled(Button)`
+  height: 30px;
+  width: 80px;
   align-self: flex-end;
-  margin-top: 16px;
-
-  //   TODO pending state styling
-  //   ${({ isPending }) => isPending && 'background-color: white'}
 `;
 
 export default EditUserInfoModal;

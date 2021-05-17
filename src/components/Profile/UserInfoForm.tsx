@@ -1,58 +1,76 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
-import TextArea from 'components/core/TextArea/TextArea';
+import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
-import { USERNAME_REGEX } from 'utils/regex';
 
 type Props = {
   className?: string;
-  onSubmit?: (event: FormEvent) => void;
-  handleIsValidChange: (isValid: boolean) => void;
-  mode?: string;
+  mode?: 'Add' | 'Edit';
+  onSubmit: () => void;
+  username: string;
+  onUsernameChange: (username: string) => void;
+  bio: string;
+  onBioChange: (bio: string) => void;
 };
+
+export const BIO_MAX_CHAR_COUNT = 500;
 
 function UserInfoForm({
   className,
   onSubmit,
-  handleIsValidChange,
+  username,
+  onUsernameChange,
+  bio,
+  onBioChange,
   mode = 'Add',
 }: Props) {
-  const [username, setUsername] = useState('');
-  const [bio, setBio] = useState('');
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+      onSubmit?.();
+    },
+    [onSubmit]
+  );
+
   const handleUsernameChange = useCallback(
     (event) => {
-      // TODO consider debouncing validation
-      setUsername(event.target.value);
-      const isValid = USERNAME_REGEX.test(event.target.value);
-      handleIsValidChange(isValid);
+      onUsernameChange(event.target.value);
     },
-    [handleIsValidChange]
+    [onUsernameChange]
   );
-  const handleBioChange = useCallback((event) => {
-    setBio(event.target.value);
-  }, []);
+
+  const handleBioChange = useCallback(
+    (event) => {
+      onBioChange(event.target.value);
+    },
+    [onBioChange]
+  );
 
   return (
-    <StyledForm className={className} onSubmit={onSubmit}>
+    <StyledForm className={className} onSubmit={handleSubmit}>
       <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
       <Spacer height={14} />
       <BigInput
         onChange={handleUsernameChange}
         placeholder="Username"
+        defaultValue={username}
         autoFocus
       />
       <Spacer height={10} />
-      <StyledTextArea
+      <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."
+        defaultValue={bio}
+        currentCharCount={bio.length}
+        maxCharCount={BIO_MAX_CHAR_COUNT}
       />
     </StyledForm>
   );
 }
-export default UserInfoForm;
+
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -62,6 +80,8 @@ const StyledBodyMedium = styled(BodyMedium)`
   padding-left: 4px;
 `;
 
-const StyledTextArea = styled(TextArea)`
-  height: 160px;
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
+  height: 144px;
 `;
+
+export default UserInfoForm;

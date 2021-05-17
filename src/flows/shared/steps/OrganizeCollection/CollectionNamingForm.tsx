@@ -3,18 +3,21 @@ import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
 import BigInput from 'components/core/BigInput/BigInput';
-import TextArea from 'components/core/TextArea/TextArea';
 import { BodyRegular, BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
+import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import { useModal } from 'contexts/modal/ModalContext';
 import { Collection } from 'types/Collection';
+import { pause } from 'utils/time';
 
 type Props = {
   onNext: WizardContext['next'];
   collection: Collection;
 };
+
+export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
 function CollectionNamingForm({ onNext, collection }: Props) {
   const { hideModal } = useModal();
@@ -45,17 +48,35 @@ function CollectionNamingForm({ onNext, collection }: Props) {
     hideModal();
   }, [onNext, hideModal]);
 
-  const handleClick = useCallback(() => {
-    if (hasEnteredValue) {
-      console.log('TODO - making update collection call to database', {
-        collectionName,
-        collectionDescription,
-      });
-      goToNextStep();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isValid = useMemo(() => {
+    // TODO: are there banned chars for collection name?
+    const collectionNameIsValid = true;
+    const collectionDescriptionIsValid =
+      collectionDescription.length <= COLLECTION_DESCRIPTION_MAX_CHAR_COUNT;
+    return collectionNameIsValid && collectionDescriptionIsValid;
+  }, [collectionDescription]);
+
+  const handleClick = useCallback(async () => {
+    if (isValid) {
+      setIsLoading(true);
+
+      try {
+        // TODO__v1: send request to server to UPDATE user's collection name, description
+        await pause(1000);
+        hideModal();
+        goToNextStep();
+      } catch (e) {
+        // TODO__v1: depending on type of server error, set error for collection name,
+        // collection description, or general modal
+      }
+
+      setIsLoading(false);
       return;
     }
     goToNextStep();
-  }, [goToNextStep, hasEnteredValue, collectionName, collectionDescription]);
+  }, [isValid, goToNextStep, hideModal]);
 
   return (
     <StyledCollectionNamingForm>
@@ -70,13 +91,22 @@ function CollectionNamingForm({ onNext, collection }: Props) {
         placeholder="Collection name"
         autoFocus
       />
-      <StyledTextArea
+      <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
+        defaultValue={collectionName}
+        currentCharCount={collectionDescription.length}
+        maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
       />
       <Spacer height={20} />
       <ButtonContainer>
-        <StyledButton text={buttonText} onClick={handleClick} />
+        <StyledButton
+          mini
+          text={buttonText}
+          onClick={handleClick}
+          disabled={!isValid || isLoading}
+          loading={isLoading}
+        />
       </ButtonContainer>
     </StyledCollectionNamingForm>
   );
@@ -89,7 +119,7 @@ const StyledCollectionNamingForm = styled.div`
   width: 480px;
 `;
 
-const StyledTextArea = styled(TextArea)`
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
 `;
 

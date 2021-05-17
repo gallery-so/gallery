@@ -1,8 +1,9 @@
-import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
-import { injected } from 'connectors/index';
 import { useCallback, useMemo } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
+import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { injected } from 'connectors/index';
+import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
@@ -37,7 +38,7 @@ function WalletButton({
     return (
       <>
         {'Connecting...'}
-        <StyledLoader />
+        <Loader thicc size="medium" />
       </>
     );
   }, []);
@@ -129,20 +130,6 @@ const StyledExternalLink = styled.a`
     text-decoration: underline;
     text-decoration-color: ${colors.gray50};
   }
-`;
-
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const StyledLoader = styled.div`
-  border: 4px solid ${colors.black}; /* Light grey */
-  border-top: 4px solid ${colors.white}; /* Blue */
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: ${spin} 2s linear infinite;
 `;
 
 export default WalletButton;

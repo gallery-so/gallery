@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
+import Loader from '../Loader/Loader';
 import { ButtonText } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
@@ -10,8 +11,10 @@ type Props = {
   type?: ButtonStyle;
   className?: string;
   text?: string;
+  mini?: boolean;
   onClick?: () => void;
   disabled?: boolean;
+  loading?: boolean;
   dataTestId?: string;
 };
 
@@ -19,8 +22,10 @@ function Button({
   type = 'primary',
   className,
   text,
+  mini = false,
   onClick,
   disabled,
+  loading,
   dataTestId,
 }: Props) {
   return (
@@ -32,10 +37,15 @@ function Button({
       onClick={onClick}
       disabled={disabled}
       data-testid={dataTestId}
+      mini={mini}
     >
-      <ButtonText color={type === 'primary' ? colors.white : colors.black}>
-        {text}
-      </ButtonText>
+      {loading ? (
+        <Loader inverted size={mini ? 'mini' : 'small'} />
+      ) : (
+        <ButtonText color={type === 'primary' ? colors.white : colors.black}>
+          {text}
+        </ButtonText>
+      )}
     </StyledButton>
   );
 }
@@ -43,14 +53,18 @@ function Button({
 type StyledButtonProps = {
   disabled?: boolean;
   buttonStyle: ButtonStyle;
-  children: React.ReactNode;
+  mini?: boolean;
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border-style: none;
   border: 1px solid ${colors.black};
 
-  height: 40px;
+  height: ${({ mini }) => (mini ? 32 : 40)}px;
 
   background: ${({ buttonStyle }) =>
     buttonStyle === 'primary' ? colors.black : colors.white};

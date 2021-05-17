@@ -50,7 +50,7 @@ const WizardValidationProvider = memo(({ children }: Props) => {
     wizardValidationState,
     setWizardValidationState,
   ] = useState<WizardValidationState>({
-    isNextEnabled: false,
+    isNextEnabled: true,
   });
 
   const setNextEnabled = useCallback((isNextEnabled) => {
