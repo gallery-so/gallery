@@ -18,6 +18,8 @@ function useWizardConfig({ onPrevious }: ConfigProps) {
 
   useEffect(() => {
     setOnPrevious(onPrevious);
+
+    return () => setOnPrevious(undefined);
   }, [setOnPrevious, onPrevious]);
 }
 
