@@ -1,17 +1,18 @@
+import { memo, useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import styled from 'styled-components';
+
+import { EditModeNft } from 'types/Nft';
+
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
-import { memo, useMemo } from 'react';
-import styled from 'styled-components';
-import { EditModeNft, Nft } from 'types/Nft';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 
 type Props = {
   editModeNft: EditModeNft;
-  // index?: number;
 };
 
 function SortableStagedNft({ editModeNft, ...props }: Props) {

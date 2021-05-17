@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { EditModeNft, Nft } from 'types/Nft';
+import { EditModeNft } from 'types/Nft';
+
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
 

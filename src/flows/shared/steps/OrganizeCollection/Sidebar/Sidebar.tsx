@@ -10,12 +10,12 @@ import TextButton from 'components/core/Button/TextButton';
 import { EditModeNft } from 'types/Nft';
 
 import {
-  useAllNftsState,
+  useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 
 function Sidebar() {
-  const allNfts = useAllNftsState();
+  const sidebarNfts = useSidebarNftsState();
   const {
     setNftsIsSelected,
     stageNfts,
@@ -23,40 +23,40 @@ function Sidebar() {
   } = useCollectionEditorActions();
 
   const isAllNftsSelected = useMemo(() => {
-    return !allNfts.find((nft) => !nft.isSelected);
-  }, [allNfts]);
+    return !sidebarNfts.find((nft) => !nft.isSelected);
+  }, [sidebarNfts]);
 
   const handleSelectAllClick = useCallback(() => {
     // Stage all nfts that are !isSelected
-    const nftsToStage = allNfts.filter((nft) => !nft.isSelected);
+    const nftsToStage = sidebarNfts.filter((nft) => !nft.isSelected);
     if (!nftsToStage.length) {
       return;
     }
     stageNfts(nftsToStage);
     setNftsIsSelected(nftsToStage, true);
-  }, [allNfts, setNftsIsSelected, stageNfts]);
+  }, [sidebarNfts, setNftsIsSelected, stageNfts]);
 
   const handleDeselectAllClick = useCallback(() => {
     // Unstage all nfts
-    const nftIdsToUnstage = allNfts.map((nft) => nft.id);
+    const nftIdsToUnstage = sidebarNfts.map((nft) => nft.id);
     if (!nftIdsToUnstage.length) {
       return;
     }
     unstageNfts(nftIdsToUnstage);
-    setNftsIsSelected(allNfts, false);
-  }, [allNfts, setNftsIsSelected, unstageNfts]);
+    setNftsIsSelected(sidebarNfts, false);
+  }, [sidebarNfts, setNftsIsSelected, unstageNfts]);
   return (
     <StyledSidebar>
       <Header>
         <BodyMedium>Your NFTs</BodyMedium>
         {isAllNftsSelected ? (
           <TextButton
-            text={`Deselect All (${allNfts.length})`}
+            text={`Deselect All (${sidebarNfts.length})`}
             onClick={handleDeselectAllClick}
           ></TextButton>
         ) : (
           <TextButton
-            text={`Select All (${allNfts.length})`}
+            text={`Select All (${sidebarNfts.length})`}
             onClick={handleSelectAllClick}
           ></TextButton>
         )}
@@ -64,7 +64,7 @@ function Sidebar() {
       </Header>
       <Spacer height={12} />
       <Selection>
-        {allNfts.map((editModeNft: EditModeNft, index: number) => (
+        {sidebarNfts.map((editModeNft: EditModeNft, index: number) => (
           <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
         ))}
       </Selection>
