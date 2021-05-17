@@ -64,7 +64,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   border-style: none;
   border: 1px solid ${colors.black};
 
-  height: ${({ mini }) => (mini ? 30 : 40)}px;
+  height: ${({ mini }) => (mini ? 32 : 40)}px;
 
   background: ${({ buttonStyle }) =>
     buttonStyle === 'primary' ? colors.black : colors.white};
