@@ -15,12 +15,12 @@ export type SidebarNftsState = EditModeNft[];
 export type StagedNftsState = EditModeNft[];
 
 export type CollectionEditorState = {
-  allNfts: SidebarNftsState;
+  sidebarNfts: SidebarNftsState;
   stagedNfts: StagedNftsState;
 };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  allNfts: [],
+  sidebarNfts: [],
   stagedNfts: [],
 });
 
@@ -31,7 +31,7 @@ export const useSidebarNftsState = (): SidebarNftsState => {
       'Attempted to use CollectionEditorStateContext without a provider'
     );
   }
-  return context.allNfts;
+  return context.sidebarNfts;
 };
 
 export const useStagedNftsState = (): SidebarNftsState => {
@@ -67,15 +67,17 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
 type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [allNftsState, setSidebarNftsState] = useState<SidebarNftsState>([]);
+  const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>(
+    []
+  );
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
 
   const collectionEditorState = useMemo(
     () => ({
-      allNfts: allNftsState,
+      sidebarNfts: sidebarNftsState,
       stagedNfts: stagedNftsState,
     }),
-    [allNftsState, stagedNftsState]
+    [sidebarNftsState, stagedNftsState]
   );
 
   const setSidebarNfts = useCallback((nfts: EditModeNft[]) => {
@@ -88,9 +90,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
         let next = [...prev];
         nfts.forEach((nft) => {
           let selectedNft = next[nft.index];
-          let selectedNftCopy = { ...selectedNft };
-          selectedNftCopy.isSelected = isSelected;
-          next[nft.index] = selectedNftCopy;
+          next[nft.index] = { ...selectedNft, isSelected };
         });
         return next;
       });
@@ -103,8 +103,12 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
+    const idsMap = ids.reduce((map: { [key: string]: boolean }, id: string) => {
+      map[id] = true;
+      return map;
+    }, {});
     setStagedNftsState((prev) =>
-      prev.filter((editModeNft) => ids.indexOf(editModeNft.id) < 0)
+      prev.filter((editModeNft) => !idsMap[editModeNft.id])
     );
   }, []);
 

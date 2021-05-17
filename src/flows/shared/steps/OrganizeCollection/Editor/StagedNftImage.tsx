@@ -9,7 +9,7 @@ type Props = {
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function NftImage({ editModeNft, setNodeRef, ...props }: Props) {
+function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
   const nft = editModeNft.nft;
   const srcUrl = nft.imageUrl;
 
@@ -27,7 +27,7 @@ const StyledNftPreviewLabel = styled(NftPreviewLabel)`
 
 const StyledGridImage = styled.div<{ srcUrl?: string }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
-  background-size: contain;
+  background-size: cover;
   // TODO handle non square images
   height: 280px;
   width: 280px;
@@ -39,4 +39,4 @@ const StyledGridImage = styled.div<{ srcUrl?: string }>`
 // https://github.com/clauderic/dnd-kit/blob/54c877875cf7ec6d4367ca11ce216cc3eb6475d2/stories/2%20-%20Presets/Sortable/Sortable.tsx#L201
 // https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.module.css#L43
 
-export default NftImage;
+export default StagedNftImage;

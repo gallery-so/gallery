@@ -53,14 +53,13 @@ function Sidebar() {
           <TextButton
             text={`Deselect All (${sidebarNfts.length})`}
             onClick={handleDeselectAllClick}
-          ></TextButton>
+          />
         ) : (
           <TextButton
             text={`Select All (${sidebarNfts.length})`}
             onClick={handleSelectAllClick}
-          ></TextButton>
+          />
         )}
-        {/* <BodyRegular color={colors.gray50}>0xj2T2...a81H</BodyRegular> */}
       </Header>
       <Spacer height={12} />
       <Selection>
