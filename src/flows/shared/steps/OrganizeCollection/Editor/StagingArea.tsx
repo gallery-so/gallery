@@ -31,7 +31,7 @@ const defaultDropAnimationConfig: DropAnimation = {
 
 const layoutMeasuring = { strategy: LayoutMeasuringStrategy.Always };
 
-function Editor() {
+function StagingArea() {
   const stagedNfts = useStagedNftsState();
   const { handleSortNfts } = useCollectionEditorActions();
 
@@ -55,7 +55,7 @@ function Editor() {
   }, [stagedNfts, activeId]);
 
   return (
-    <StyledEditor>
+    <StyledStagingArea>
       <Heading>Your collection</Heading>
       <DndContext
         onDragEnd={handleDragEnd}
@@ -68,8 +68,7 @@ function Editor() {
             {stagedNfts.map((editModeNft) => (
               <SortableStagedNft
                 key={editModeNft.id}
-                nft={editModeNft.nft}
-                index={editModeNft.index}
+                editModeNft={editModeNft}
               />
             ))}
           </StyledStagedNftContainer>
@@ -81,11 +80,11 @@ function Editor() {
           {activeNft ? <StagedNftImageDragging nft={activeNft.nft} /> : null}
         </DragOverlay>
       </DndContext>
-    </StyledEditor>
+    </StyledStagingArea>
   );
 }
 
-const StyledEditor = styled.div`
+const StyledStagingArea = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -106,4 +105,4 @@ const StyledStagedNftContainer = styled.div`
   margin-top: 20px;
 `;
 
-export default memo(Editor);
+export default memo(StagingArea);

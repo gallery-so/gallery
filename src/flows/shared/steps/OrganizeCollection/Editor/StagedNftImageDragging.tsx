@@ -23,7 +23,7 @@ const StyledDraggingImage = styled.div<{
   isMouseUp: boolean;
 }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
-  background-size: contain;
+  background-size: cover;
 
   box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
   height: 284px;

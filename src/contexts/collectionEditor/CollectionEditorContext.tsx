@@ -10,32 +10,31 @@ import {
 import { EditModeNft } from 'types/Nft';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
-import { randomPics } from 'mocks/nfts';
 
-export type AllNftsState = EditModeNft[];
+export type SidebarNftsState = EditModeNft[];
 export type StagedNftsState = EditModeNft[];
 
 export type CollectionEditorState = {
-  allNfts: AllNftsState;
+  sidebarNfts: SidebarNftsState;
   stagedNfts: StagedNftsState;
 };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  allNfts: [],
+  sidebarNfts: [],
   stagedNfts: [],
 });
 
-export const useAllNftsState = (): AllNftsState => {
+export const useSidebarNftsState = (): SidebarNftsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
     throw Error(
       'Attempted to use CollectionEditorStateContext without a provider'
     );
   }
-  return context.allNfts;
+  return context.sidebarNfts;
 };
 
-export const useStagedNftsState = (): AllNftsState => {
+export const useStagedNftsState = (): SidebarNftsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
     throw Error(
@@ -46,9 +45,10 @@ export const useStagedNftsState = (): AllNftsState => {
 };
 
 type CollectionEditorActions = {
-  setNftIsSelected: (index: number, isSelected: boolean) => void;
-  stageNft: (nft: EditModeNft) => void;
-  unstageNft: (id: string) => void;
+  setSidebarNfts: (nfts: EditModeNft[]) => void;
+  setNftsIsSelected: (nfts: EditModeNft[], isSelected: boolean) => void;
+  stageNfts: (nfts: EditModeNft[]) => void;
+  unstageNfts: (ids: string[]) => void;
   handleSortNfts: (event: DragEndEvent) => void;
 };
 
@@ -67,37 +67,48 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
 type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [allNftsState, setAllNftsState] = useState<AllNftsState>(
-    randomPics(10)
+  const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>(
+    []
   );
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
 
   const collectionEditorState = useMemo(
     () => ({
-      allNfts: allNftsState,
+      sidebarNfts: sidebarNftsState,
       stagedNfts: stagedNftsState,
     }),
-    [allNftsState, stagedNftsState]
+    [sidebarNftsState, stagedNftsState]
   );
 
-  const setNftIsSelected = useCallback((index, isSelected) => {
-    setAllNftsState((prev) => {
-      let next = [...prev];
-      let selectedNft = next[index];
-      let selectedNftCopy = { ...selectedNft };
-      selectedNftCopy.isSelected = isSelected;
-      next[index] = selectedNftCopy;
-      return next;
-    });
+  const setSidebarNfts = useCallback((nfts: EditModeNft[]) => {
+    setSidebarNftsState(nfts);
   }, []);
 
-  const stageNft = useCallback((nft: EditModeNft) => {
-    setStagedNftsState((prev) => [...prev, nft]);
+  const setNftsIsSelected = useCallback(
+    (nfts: EditModeNft[], isSelected: boolean) => {
+      setSidebarNftsState((prev) => {
+        let next = [...prev];
+        nfts.forEach((nft) => {
+          let selectedNft = next[nft.index];
+          next[nft.index] = { ...selectedNft, isSelected };
+        });
+        return next;
+      });
+    },
+    []
+  );
+
+  const stageNfts = useCallback((nfts: EditModeNft[]) => {
+    setStagedNftsState((prev) => [...prev, ...nfts]);
   }, []);
 
-  const unstageNft = useCallback((id: string) => {
+  const unstageNfts = useCallback((ids: string[]) => {
+    const idsMap = ids.reduce((map: { [key: string]: boolean }, id: string) => {
+      map[id] = true;
+      return map;
+    }, {});
     setStagedNftsState((prev) =>
-      prev.filter((editModeNft) => editModeNft.nft.id !== id)
+      prev.filter((editModeNft) => !idsMap[editModeNft.id])
     );
   }, []);
 
@@ -114,12 +125,13 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
-      setNftIsSelected,
-      stageNft,
-      unstageNft,
+      setSidebarNfts,
+      setNftsIsSelected,
+      stageNfts,
+      unstageNfts,
       handleSortNfts,
     }),
-    [handleSortNfts, setNftIsSelected, stageNft, unstageNft]
+    [setSidebarNfts, setNftsIsSelected, stageNfts, unstageNfts, handleSortNfts]
   );
 
   return (

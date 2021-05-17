@@ -25,7 +25,7 @@ export function mockCollectionsLite(n: number) {
   return collections;
 }
 
-function getUniqueMockNfts() {
+export function getUniqueMockNfts() {
   return shuffle([IMAGE_NFT, VIDEO_NFT, ANIMATION_NFT, AUDIO_NFT]);
 }
 

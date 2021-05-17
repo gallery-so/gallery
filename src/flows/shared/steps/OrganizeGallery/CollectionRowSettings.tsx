@@ -25,8 +25,6 @@ function CollectionRowSettings({
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
   const handleEditCollectionClick = useCallback(() => {
-    // alert('TODO');
-    console.log(setCollectionIdBeingEdited, collection.id);
     setCollectionIdBeingEdited(collection.id);
     push('organizeCollection');
   }, [collection.id, push, setCollectionIdBeingEdited]);

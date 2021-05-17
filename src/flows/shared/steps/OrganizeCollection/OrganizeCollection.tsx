@@ -9,7 +9,6 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
@@ -45,7 +44,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
 
 function OrganizeCollection({ next }: WizardContext & Props) {
   useWizardConfig({ onNext: next });
-  const { collectionIdBeingEdited } = useCollectionWizardState();
 
   return (
     <StyledOrganizeCollection>

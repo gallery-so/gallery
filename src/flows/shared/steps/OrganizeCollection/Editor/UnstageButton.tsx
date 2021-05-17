@@ -3,17 +3,19 @@ import styled from 'styled-components';
 import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import { EditModeNft } from 'types/Nft';
 
 type Props = {
-  nftIndex: number;
+  editModeNft: EditModeNft;
   className?: string;
 };
-function UnstageButton({ nftIndex, className }: Props) {
-  const { setNftIsSelected } = useCollectionEditorActions();
+function UnstageButton({ editModeNft, className }: Props) {
+  const { setNftsIsSelected, unstageNfts } = useCollectionEditorActions();
 
   const handleOnClick = useCallback(() => {
-    setNftIsSelected(nftIndex, false);
-  }, [nftIndex, setNftIsSelected]);
+    setNftsIsSelected([editModeNft], false);
+    unstageNfts([editModeNft.id]);
+  }, [editModeNft, setNftsIsSelected, unstageNfts]);
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>

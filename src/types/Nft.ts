@@ -14,5 +14,5 @@ export type EditModeNft = {
   id: string;
   nft: Nft;
   isSelected?: boolean;
-  index?: number;
+  index: number;
 };
