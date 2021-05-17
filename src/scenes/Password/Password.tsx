@@ -107,6 +107,7 @@ const StyledPasswordInput = styled.input`
   width: ${INPUT_WIDTH}px;
   height: 40px;
   border: 1px solid ${colors.gray10};
+  border-radius: 0px;
 
   line-height: 1.25rem;
   outline-color: ${colors.black} !important;

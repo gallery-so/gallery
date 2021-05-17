@@ -30,10 +30,11 @@ function BigInput({
 }
 
 const StyledBigInput = styled.input`
-  padding: 10px 2px;
+  padding: 0 2px;
   border: 0;
-  font-size: 30px;
+  font-size: 32px;
   font-family: 'Times New Roman';
+  line-height: 44px;
   ::placeholder {
     opacity: 0.5;
   }

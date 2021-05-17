@@ -5,14 +5,17 @@ import { Heading } from 'components/core/Text/Text';
 import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
+import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
+  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
   const handleGalleryPreview = useCallback(() => {
     alert('TODO - go to gallery preview');
   }, []);
   const handleAddCollection = useCallback(() => {
+    setCollectionIdBeingEdited('');
     push('organizeCollection');
-  }, [push]);
+  }, [push, setCollectionIdBeingEdited]);
 
   return (
     <StyledHeader>

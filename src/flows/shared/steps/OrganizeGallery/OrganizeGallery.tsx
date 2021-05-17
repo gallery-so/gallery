@@ -31,7 +31,7 @@ function OrganizeGallery() {
 
   useWizardConfig({ onPrevious: returnToProfile });
 
-  const [collections, setCollections] = useState(mockCollectionsLite(4));
+  const [collections] = useState(mockCollectionsLite(4));
 
   return (
     <StyledOrganizeGallery>
