@@ -5,6 +5,7 @@ import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
+import colors from 'components/core/colors';
 
 function Home(_: RouteComponentProps) {
   // whether the user has entered the correct password
@@ -24,7 +25,9 @@ function Home(_: RouteComponentProps) {
     <StyledHome>
       <Display caps>GALLERY</Display>
       <Spacer height={8} />
-      <BodyRegular>Show your collection to the world</BodyRegular>
+      <BodyRegular color={colors.gray50}>
+        Show your collection to the world
+      </BodyRegular>
       <Spacer height={24} />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
     </StyledHome>

@@ -39,6 +39,8 @@ const StyledTextArea = styled.textarea`
   border: none;
   border-bottom: 28px solid ${colors.white};
   resize: none;
+  font-size: 14px;
+  line-height: 20px;
 `;
 
 export default TextArea;

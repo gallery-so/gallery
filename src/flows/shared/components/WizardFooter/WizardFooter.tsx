@@ -96,7 +96,7 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid ${colors.gray50};
+  border-top: 1px solid ${colors.gray40};
   background: white;
 `;
 
