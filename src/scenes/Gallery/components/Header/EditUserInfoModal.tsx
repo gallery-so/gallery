@@ -10,7 +10,6 @@ import ErrorText from 'components/core/Text/ErrorText';
 function EditUserInfoModal() {
   const { hideModal } = useModal();
 
-  // TODO__v1: auto-populate username and bio from useSwr()
   const {
     username,
     onUsernameChange,

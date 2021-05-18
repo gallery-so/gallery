@@ -9,6 +9,9 @@ type Props = {
 };
 
 export default function useUserInfoForm({ onSuccess }: Props) {
+  // TODO__v1: auto-populate username and bio from useSwr()
+  // const { username, bio } = useSwr('/...')
+
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
 
