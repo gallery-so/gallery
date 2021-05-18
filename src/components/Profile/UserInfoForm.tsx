@@ -1,4 +1,4 @@
-import { FormEvent, useCallback } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
@@ -11,6 +11,8 @@ type Props = {
   mode?: 'Add' | 'Edit';
   onSubmit: () => void;
   username: string;
+  usernameError: string;
+  clearUsernameError: () => void;
   onUsernameChange: (username: string) => void;
   bio: string;
   onBioChange: (bio: string) => void;
@@ -22,6 +24,8 @@ function UserInfoForm({
   className,
   onSubmit,
   username,
+  usernameError,
+  clearUsernameError,
   onUsernameChange,
   bio,
   onBioChange,
@@ -38,8 +42,9 @@ function UserInfoForm({
   const handleUsernameChange = useCallback(
     (event) => {
       onUsernameChange(event.target.value);
+      clearUsernameError();
     },
-    [onUsernameChange]
+    [onUsernameChange, clearUsernameError]
   );
 
   const handleBioChange = useCallback(
@@ -58,6 +63,7 @@ function UserInfoForm({
         placeholder="Username"
         defaultValue={username}
         autoFocus
+        errorMessage={usernameError}
       />
       <Spacer height={24} />
       <StyledTextAreaWithCharCount

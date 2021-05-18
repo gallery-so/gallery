@@ -61,7 +61,9 @@ export default function useUserInfoForm({ onSuccess }: Props) {
         await pause(700);
         throw { type: 'ERR_SOMETHING_GENERIC' };
       }
+
       await pause(1000);
+      onSuccess();
     } catch (e) {
       // set error message in different locations based on error type
       if (e.type === 'ERR_USERNAME_TAKEN') {
@@ -73,8 +75,6 @@ export default function useUserInfoForm({ onSuccess }: Props) {
       );
       return;
     }
-
-    onSuccess();
   }, [username, bio, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
@@ -90,7 +90,7 @@ export default function useUserInfoForm({ onSuccess }: Props) {
       bio,
       onBioChange: setBio,
       generalError,
-      onCreateUser: handleCreateUser,
+      onEditUser: handleCreateUser,
     }),
     [
       bio,
