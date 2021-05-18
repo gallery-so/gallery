@@ -1,9 +1,8 @@
 import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
-import colors from '../colors';
 import Spacer from '../Spacer/Spacer';
-import { Caption } from '../Text/Text';
+import ErrorText from '../Text/ErrorText';
 
 type Props = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -35,7 +34,7 @@ function BigInput({
       {errorMessage && (
         <>
           <Spacer height={4} />
-          <Error color={colors.error}>{errorMessage}</Error>
+          <ErrorText message={errorMessage} />
         </>
       )}
     </>
@@ -52,7 +51,5 @@ const StyledBigInput = styled.input`
     opacity: 0.5;
   }
 `;
-
-const Error = styled(Caption)``;
 
 export default BigInput;
