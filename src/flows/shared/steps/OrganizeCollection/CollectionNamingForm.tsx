@@ -40,7 +40,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   }, [collectionName, collectionDescription]);
 
   const buttonText = useMemo(() => {
-    return hasEnteredValue ? 'submit' : 'skip';
+    return hasEnteredValue ? 'save' : 'skip';
   }, [hasEnteredValue]);
 
   const goToNextStep = useCallback(() => {
@@ -51,7 +51,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const isValid = useMemo(() => {
-    // TODO: are there banned chars for collection name?
+    // TODO__v1: are there banned chars for collection name?
     const collectionNameIsValid = true;
     const collectionDescriptionIsValid =
       collectionDescription.length <= COLLECTION_DESCRIPTION_MAX_CHAR_COUNT;
@@ -59,6 +59,8 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   }, [collectionDescription]);
 
   const handleClick = useCallback(async () => {
+    // TODO__v1: client-side validation of collection name, description
+
     if (isValid) {
       setIsLoading(true);
 
@@ -81,20 +83,22 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   return (
     <StyledCollectionNamingForm>
       <BodyMedium>Give your collection a name and description</BodyMedium>
+      <Spacer height={4} />
       <BodyRegular color={colors.gray50}>
         You can always add a collection name and description later.
       </BodyRegular>
-      <Spacer height={20} />
+      <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}
         defaultValue={collectionName}
         placeholder="Collection name"
         autoFocus
       />
+      <Spacer height={24} />
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
-        defaultValue={collectionName}
+        defaultValue={collectionDescription}
         currentCharCount={collectionDescription.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
       />
