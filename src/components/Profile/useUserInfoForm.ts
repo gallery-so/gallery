@@ -74,7 +74,7 @@ export default function useUserInfoForm({ onSuccess }: Props) {
         return;
       }
       setGeneralError(
-        'Sorry, the server is currently unavailable. Please try again later or check our Discord.'
+        'Sorry, the server is currently unavailable. Please try again later or ping us on Discord.'
       );
       return;
     }
