@@ -1,12 +1,16 @@
 import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
+import colors from '../colors';
+import Spacer from '../Spacer/Spacer';
+import { Caption } from '../Text/Text';
 
 type Props = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder: string;
   defaultValue?: string;
   autoFocus?: boolean;
+  errorMessage?: string;
 };
 
 function BigInput({
@@ -14,18 +18,27 @@ function BigInput({
   placeholder,
   defaultValue,
   autoFocus = false,
+  errorMessage,
 }: Props) {
   return (
-    <StyledBigInput
-      autoFocus={autoFocus}
-      placeholder={placeholder}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      autoComplete="off"
-      autoCorrect="off"
-      autoCapitalize="off"
-      spellCheck="false"
-    />
+    <>
+      <StyledBigInput
+        autoFocus={autoFocus}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
+      />
+      {errorMessage && (
+        <>
+          <Spacer height={4} />
+          <Error color={colors.error}>{errorMessage}</Error>
+        </>
+      )}
+    </>
   );
 }
 
@@ -39,5 +52,7 @@ const StyledBigInput = styled.input`
     opacity: 0.5;
   }
 `;
+
+const Error = styled(Caption)``;
 
 export default BigInput;
