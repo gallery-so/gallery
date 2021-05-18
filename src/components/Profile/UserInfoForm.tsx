@@ -52,14 +52,14 @@ function UserInfoForm({
   return (
     <StyledForm className={className} onSubmit={handleSubmit}>
       <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
-      <Spacer height={14} />
+      <Spacer height={8} />
       <BigInput
         onChange={handleUsernameChange}
         placeholder="Username"
         defaultValue={username}
         autoFocus
       />
-      <Spacer height={10} />
+      <Spacer height={24} />
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."

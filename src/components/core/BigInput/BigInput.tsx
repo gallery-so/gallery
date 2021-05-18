@@ -32,9 +32,9 @@ function BigInput({
 const StyledBigInput = styled.input`
   padding: 0 2px;
   border: 0;
-  font-size: 32px;
-  font-family: 'Times New Roman';
-  line-height: 44px;
+  font-size: 40px;
+  font-family: 'Gallery Display';
+  line-height: 48px;
   ::placeholder {
     opacity: 0.5;
   }
