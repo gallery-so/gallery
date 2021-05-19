@@ -90,12 +90,14 @@ const StyledNftPreview = styled.div`
   }
 
   width: ${NFT_PREVIEW_WIDTH.mobile};
+  margin-bottom: 40px; // use margin to create row-gap for now
 
   @media only screen and ${breakpoints.mobileLarge} {
     width: ${NFT_PREVIEW_WIDTH.mobileLarge};
   }
   @media only screen and ${breakpoints.desktop} {
     width: ${NFT_PREVIEW_WIDTH.desktop};
+    margin-bottom: 80px; // use margin to create row-gap for now
   }
 `;
 

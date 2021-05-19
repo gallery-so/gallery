@@ -50,20 +50,20 @@ const StyledCollectionNfts = styled.div`
   margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
   width: 100%;
 
-  column-gap: 40px;
-  row-gap: 40px;
+  // Can't use these for now due to lack of Safari support
+  // column-gap: 40px;
+  // row-gap: 40px;
 
   @media only screen and ${breakpoints.mobileLarge} {
-    justify-content: flex-start;
+    justify-content: space-between;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    row-gap: 80px;
-    column-gap: 80px;
+    // row-gap: 80px;
+    // column-gap: 80px;
   }
 `;
 
