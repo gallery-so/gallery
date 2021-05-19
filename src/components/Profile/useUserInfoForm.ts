@@ -1,6 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { USERNAME_REGEX } from 'utils/regex';
 import { pause } from 'utils/time';
+import {
+  validate,
+  required,
+  minLength,
+  maxLength,
+  alphanumericUnderscoresPeriods,
+  noConsecutivePeriodsOrUnderscores,
+} from 'utils/validators';
 
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
@@ -23,26 +30,17 @@ export default function useUserInfoForm({ onSuccess }: Props) {
   const handleCreateUser = useCallback(async () => {
     setGeneralError('');
 
-    //------------ client-side checks ------------
-    if (!username.length) {
-      setUsernameError('Required.');
-      return;
-    }
+    //-------------- client-side checks --------------
+    const usernameError = validate(username, [
+      required,
+      minLength(2),
+      maxLength(20),
+      alphanumericUnderscoresPeriods,
+      noConsecutivePeriodsOrUnderscores,
+    ]);
 
-    if (username.length < 2 || username.length > 20) {
-      setUsernameError('Username must be between 2 and 20 characters.');
-      return;
-    }
-
-    // TODO: while this regex works well for our use case it doesn't
-    // define granularly which rule failed; it's hard to differentiate
-    // in english whether the error was "too many underscores in a row"
-    // vs. something else. maybe we should have more granular rules
-    const usernameIsValid = USERNAME_REGEX.test(username);
-    if (!usernameIsValid) {
-      setUsernameError(
-        'Username may only contain alphanumeric characters, underscores, or periods.'
-      );
+    if (usernameError) {
+      setUsernameError(usernameError);
       return;
     }
 

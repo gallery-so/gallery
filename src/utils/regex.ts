@@ -1,1 +1,3 @@
-export const USERNAME_REGEX = /^(?=[a-zA-Z0-9._]{2,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+export const ALPHANUMERIC_UNDERSCORES_PERIODS = /^[\w.]+$/i;
+
+export const NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES = /^(?=[\w.]*$)(?!.*[_.]{2})[^_.].*[^_.]$/;
