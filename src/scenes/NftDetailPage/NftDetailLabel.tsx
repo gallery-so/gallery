@@ -33,6 +33,7 @@ function NftDetailLabel({ nft }: Props) {
 const StyledDetailLabel = styled.div`
   flex-direction: column;
   margin-top: 32px;
+  word-wrap: break-word;
 
   @media only screen and ${breakpoints.tablet} {
     padding-left: 72px;

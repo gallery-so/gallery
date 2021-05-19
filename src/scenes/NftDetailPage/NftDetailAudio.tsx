@@ -24,9 +24,12 @@ function NftDetailAudio({ nft }: Props) {
 const StyledAudioContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
-const StyledImage = styled.img``;
+const StyledImage = styled.img`
+  width: 100%;
+`;
 
 const StyledAudio = styled.audio`
   width: 100%;

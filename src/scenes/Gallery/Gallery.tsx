@@ -14,7 +14,7 @@ import { mockSingleCollection } from 'mocks/collections';
 
 let MOCK_COLLECTIONS = [
   // show multiple rows
-  mockSingleCollection({ noVideos: true, withDescription: true, aLot: true }),
+  mockSingleCollection({ noVideos: false, withDescription: true, aLot: true }),
   mockSingleCollection({ noVideos: true, withDescription: false }),
   mockSingleCollection({ noVideos: true, withDescription: true }),
 ];

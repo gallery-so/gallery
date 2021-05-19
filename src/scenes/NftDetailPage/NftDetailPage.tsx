@@ -111,8 +111,11 @@ const StyledContentContainer = styled.div`
   padding: 32px;
   margin: 64px auto 0;
 
+  width: 100%;
+
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
+    width: initial;
   }
 `;
 const StyledNftDetailPage = styled.div`
