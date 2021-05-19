@@ -102,6 +102,7 @@ const StyledNftPreview = styled.div`
 // TODO: set max-height on NFT?
 const StyledNft = styled.img`
   width: 100%;
+  height: 100%;
 `;
 
 export default NftPreview;
