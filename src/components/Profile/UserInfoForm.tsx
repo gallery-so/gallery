@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';

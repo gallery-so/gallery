@@ -8,6 +8,7 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
+import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import { Collection } from 'types/Collection';
 import { pause } from 'utils/time';
@@ -26,6 +27,9 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   const [collectionDescription, setCollectionDescription] = useState(
     collection.description || ''
   );
+
+  // generic error that doesn't belong to username / bio
+  const [generalError, setGeneralError] = useState('');
 
   const handleNameChange = useCallback((event) => {
     setCollectionName(event.target.value);
@@ -50,35 +54,34 @@ function CollectionNamingForm({ onNext, collection }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const isValid = useMemo(() => {
-    // TODO__v1: are there banned chars for collection name?
-    const collectionNameIsValid = true;
-    const collectionDescriptionIsValid =
-      collectionDescription.length <= COLLECTION_DESCRIPTION_MAX_CHAR_COUNT;
-    return collectionNameIsValid && collectionDescriptionIsValid;
-  }, [collectionDescription]);
-
   const handleClick = useCallback(async () => {
-    // TODO__v1: client-side validation of collection name, description
+    setGeneralError('');
 
-    if (isValid) {
-      setIsLoading(true);
-
-      try {
-        // TODO__v1: send request to server to UPDATE user's collection name, description
-        await pause(1000);
-        hideModal();
-        goToNextStep();
-      } catch (e) {
-        // TODO__v1: depending on type of server error, set error for collection name,
-        // collection description, or general modal
-      }
-
-      setIsLoading(false);
+    if (collectionDescription.length > COLLECTION_DESCRIPTION_MAX_CHAR_COUNT) {
+      // no need to handle error here, since the form will mark the text as red
       return;
     }
-    goToNextStep();
-  }, [isValid, goToNextStep, hideModal]);
+
+    setIsLoading(true);
+    try {
+      // TODO__v1: send request to server to UPDATE user's collection name, description
+      if (collectionDescription === 'invalid_desc') {
+        await pause(700);
+        throw { type: 'ERROR_SOMETHING_GENERIC' };
+      }
+
+      await pause(1000);
+      goToNextStep();
+    } catch (e) {
+      // TODO__v1: depending on type of server error, set error for collection name,
+      // collection description, or general modal
+      setGeneralError(
+        'Sorry, the server is currently unavailable. Please try again later or ping us on Discord.'
+      );
+    }
+    setIsLoading(false);
+    return;
+  }, [collectionDescription, goToNextStep]);
 
   return (
     <StyledCollectionNamingForm>
@@ -102,13 +105,19 @@ function CollectionNamingForm({ onNext, collection }: Props) {
         currentCharCount={collectionDescription.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
       />
+      {generalError && (
+        <>
+          <Spacer height={8} />
+          <ErrorText message={generalError} />
+        </>
+      )}
       <Spacer height={20} />
       <ButtonContainer>
         <StyledButton
           mini
           text={buttonText}
           onClick={handleClick}
-          disabled={!isValid || isLoading}
+          disabled={isLoading}
           loading={isLoading}
         />
       </ButtonContainer>
