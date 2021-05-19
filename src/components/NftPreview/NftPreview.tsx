@@ -42,6 +42,7 @@ function NftPreview({ nft, collectionId }: Props) {
 const StyledLinkWrapper = styled.a`
   cursor: pointer;
   display: flex;
+  width: 100%;
 `;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
@@ -64,6 +65,14 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
+const NFT_PREVIEW_WIDTH = {
+  mobile: '100%',
+  // For screen sizes in between mobile and desktop, set dynamic width to
+  // enable 3 nfts per row by accounting for 2 40px column gaps
+  mobileLarge: 'calc((100% - 80px) / 3)',
+  desktop: '288px',
+};
+
 const StyledNftPreview = styled.div`
   display: flex;
   justify-content: center;
@@ -79,25 +88,20 @@ const StyledNftPreview = styled.div`
   &:hover ${StyledNftFooter} {
     opacity: 1;
   }
-`;
 
-const NFT_PREVIEW_WIDTH = {
-  mobile: '288px',
-  tablet: '176px',
-  desktop: '288px',
-};
+  width: ${NFT_PREVIEW_WIDTH.mobile};
 
-// TODO: set max-height on NFT?
-const StyledNft = styled.img`
-  @media only screen and ${breakpoints.mobile} {
-    width: ${NFT_PREVIEW_WIDTH.mobile};
-  }
-  @media only screen and ${breakpoints.tablet} {
-    width: ${NFT_PREVIEW_WIDTH.tablet};
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: ${NFT_PREVIEW_WIDTH.mobileLarge};
   }
   @media only screen and ${breakpoints.desktop} {
     width: ${NFT_PREVIEW_WIDTH.desktop};
   }
+`;
+
+// TODO: set max-height on NFT?
+const StyledNft = styled.img`
+  width: 100%;
 `;
 
 export default NftPreview;

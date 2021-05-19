@@ -1,12 +1,14 @@
+// All styles should be applied mobile first
+
 // window sizes when breakpoints kick in
 export enum size {
-  mobile = '320px',
+  mobileLarge = '420px',
   tablet = '768px',
   desktop = '1100px',
 }
 
 const breakpoints = {
-  mobile: `(min-width: ${size.mobile})`,
+  mobileLarge: `(min-width: ${size.mobileLarge})`,
   tablet: `(min-width: ${size.tablet})`,
   desktop: `(min-width: ${size.desktop})`,
 };

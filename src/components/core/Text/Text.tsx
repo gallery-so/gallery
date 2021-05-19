@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import breakpoints from '../breakpoints';
 import colors from '../colors';
 
 const TITLE_FONT_FAMILY = 'Gallery Display';
@@ -47,6 +48,11 @@ export const Subdisplay = styled(H2)`
   font-weight: 400;
   line-height: 44px;
   letter-spacing: 0px;
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 40px;
+    line-height: 48px;
+  }
 `;
 
 export const Heading = styled(H3)`
