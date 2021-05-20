@@ -21,6 +21,8 @@
 /* Fade-out */
 .fade-exit {
   opacity: 1;
+  position: absolute;
+  top: 0;
 }
 
 .fade-exit.fade-exit-active {
