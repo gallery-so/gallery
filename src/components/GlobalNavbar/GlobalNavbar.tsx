@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import LoggedOutNav from './LoggedOutNav';
 import LoggedInNav from './LoggedInNav';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();
@@ -28,8 +29,15 @@ const StyledNavContainer = styled.div`
 const StyledNav = styled.div`
   display: flex;
   justify-content: flex-end;
-  width: 100%;
-  padding: 32px 40px;
+  margin: 32px ${pageGutter.mobile} 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin: 32px ${pageGutter.tablet} 0;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    margin: 32px;
+  }
 `;
 
 export default memo(GlobalNavbar);
