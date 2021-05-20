@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import { Collection } from 'types/Collection';
 
-import breakpoints from 'components/core/breakpoints';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
 import { mockSingleCollection } from 'mocks/collections';
 import NftDetailLabel from './NftDetailLabel';
@@ -102,23 +102,37 @@ const StyledBody = styled.div`
 `;
 
 const StyledBackLink = styled.a`
-  margin-left: 32px;
+  margin-top: 32px;
+  position: absolute;
+  z-index: 5;
+  display: none;
+
+  @media only screen and ${breakpoints.tablet} {
+    display: block;
+  }
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 32px;
-  margin: 64px auto 0;
+
+  margin: 112px auto 0;
+  width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
+    width: initial;
   }
 `;
 const StyledNftDetailPage = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 32px;
+
+  margin: 0 ${pageGutter.mobile};
+
+  @media only screen and ${breakpoints.tablet} {
+    margin: 0 ${pageGutter.tablet};
+  }
 `;
 
 export default NftDetailPage;

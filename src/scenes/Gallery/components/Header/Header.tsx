@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
-import { Display, BodyRegular } from 'components/core/Text/Text';
+import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Dropdown from 'components/core/Dropdown/Dropdown';
@@ -28,9 +28,29 @@ function Header({ usernameOrWalletAddress }: Props) {
 
   return (
     <StyledHeader>
-      <Display>{usernameOrWalletAddress}</Display>
-      <Spacer height={36} />
+      <Subdisplay>{usernameOrWalletAddress}</Subdisplay>
+      <Spacer height={12} />
       <StyledUserDetails>
+        {isAuthenticated && (
+          <StyledRow>
+            <StyledRightContainer>
+              <Dropdown mainText="Edit Profile">
+                <TextButton
+                  text="Edit name & Bio"
+                  onClick={handleEditNameClick}
+                  underlineOnHover
+                />
+                <Spacer height={12} />
+                <TextButton
+                  text="Edit Gallery"
+                  onClick={handleEditGalleryClick}
+                  underlineOnHover
+                />
+              </Dropdown>
+            </StyledRightContainer>
+          </StyledRow>
+        )}
+        <Spacer height={18} />
         <StyledLeftContainer>
           {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain 
           <Text color={colors.gray50}>Collector Since Mar 2021</Text>
@@ -49,27 +69,15 @@ function Header({ usernameOrWalletAddress }: Props) {
             & More → http://linktr.ee/maalavidaa
           </BodyRegular>
         </StyledLeftContainer>
-        {isAuthenticated && (
-          <StyledRightContainer>
-            <Dropdown mainText="Edit Profile">
-              <TextButton
-                text="Edit name & Bio"
-                onClick={handleEditNameClick}
-                underlineOnHover
-              />
-              <Spacer height={12} />
-              <TextButton
-                text="Edit Gallery"
-                onClick={handleEditGalleryClick}
-                underlineOnHover
-              />
-            </Dropdown>
-          </StyledRightContainer>
-        )}
       </StyledUserDetails>
     </StyledHeader>
   );
 }
+
+const StyledRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
 
 const StyledHeader = styled.div`
   display: flex;
@@ -80,6 +88,7 @@ const StyledHeader = styled.div`
 
 const StyledUserDetails = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 `;
 

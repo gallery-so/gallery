@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Collection } from 'types/Collection';
 import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   collection: Collection;
@@ -38,19 +39,32 @@ const StyledCollectionWrapper = styled.div`
 const StyledCollectionHeader = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 50%;
+  }
 `;
 
 const StyledCollectionNfts = styled.div`
   margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
   align-items: center;
   width: 100%;
 
-  column-gap: 80px; // TODO: make this responsive
-  row-gap: 80px; // TODO: make this responsive
+  // Can't use these for now due to lack of Safari support
+  // column-gap: 40px;
+  // row-gap: 40px;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    justify-content: space-between;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    // row-gap: 80px;
+    // column-gap: 80px;
+  }
 `;
 
 export default CollectionView;

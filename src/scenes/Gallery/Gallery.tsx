@@ -7,14 +7,17 @@ import styled from 'styled-components';
 import Header from './components/Header/Header';
 import Body from './components/Body/Body';
 import Spacer from 'components/core/Spacer/Spacer';
-import { contentSize } from 'components/core/breakpoints';
+import breakpoints, {
+  contentSize,
+  pageGutter,
+} from 'components/core/breakpoints';
 
 import { Nft } from 'types/Nft';
 import { mockSingleCollection } from 'mocks/collections';
 
 let MOCK_COLLECTIONS = [
   // show multiple rows
-  mockSingleCollection({ noVideos: true, withDescription: true, aLot: true }),
+  mockSingleCollection({ noVideos: false, withDescription: true, aLot: true }),
   mockSingleCollection({ noVideos: true, withDescription: false }),
   mockSingleCollection({ noVideos: true, withDescription: true }),
 ];
@@ -74,14 +77,19 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 const StyledGallery = styled.div`
   display: flex;
   justify-content: center;
+  margin: 0 ${pageGutter.mobile};
+
+  @media only screen and ${breakpoints.tablet} {
+    margin: 0 ${pageGutter.tablet};
+  }
 `;
 
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 
-  // TODO: make this responsive
   max-width: ${contentSize.desktop};
 `;
 

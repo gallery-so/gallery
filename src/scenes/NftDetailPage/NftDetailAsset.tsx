@@ -56,6 +56,7 @@ const StyledAssetContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+
   @media only screen and ${breakpoints.desktop} {
     width: 600px;
   }
