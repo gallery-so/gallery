@@ -9,7 +9,7 @@
 
 // window sizes when breakpoints kick in
 export enum size {
-  mobileLarge = '375px',
+  mobileLarge = '420px',
   tablet = '768px',
   desktop = '1100px',
 }
