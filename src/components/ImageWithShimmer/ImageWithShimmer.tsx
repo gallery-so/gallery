@@ -17,10 +17,7 @@ export default function ImageWithShimmer({ src, alt, width, height }: Props) {
     const image = new Image();
     image.src = src;
     image.onload = () => {
-      setTimeout(() => {
-        console.log('loaded');
-        setLoaded(true);
-      }, 2000);
+      setLoaded(true);
     };
     image.onerror = () => setErrored(true);
   }, [src]);
@@ -39,7 +36,7 @@ const StyledImageWithShimmer = styled.div<{
 }>`
   position: relative;
   width: ${({ width }) => width}px;
-  height: ${({ loaded, width }) => (loaded ? 'inherit' : `${width}px`)};
+  height: ${({ loaded, width }) => (loaded ? undefined : `${width}px`)};
 `;
 
 const loading = keyframes`
@@ -73,5 +70,6 @@ const Shimmer = styled.div`
 `;
 
 const StyledImg = styled.img<{ width?: number }>`
+  display: block;
   width: ${({ width }) => (width ? `${width}px` : 'inherit')};
 `;
