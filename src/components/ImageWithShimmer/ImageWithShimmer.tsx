@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 type Props = {
   src: string;
   alt: string;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
 };
 
 export default function ImageWithShimmer({ src, alt, width, height }: Props) {
@@ -17,26 +17,32 @@ export default function ImageWithShimmer({ src, alt, width, height }: Props) {
     const image = new Image();
     image.src = src;
     image.onload = () => {
-      setLoaded(true);
+      setTimeout(() => {
+        setLoaded(true);
+      }, 1000);
     };
     image.onerror = () => setErrored(true);
   }, [src]);
 
+  const widthStyle = useMemo(() => {
+    return typeof width === 'string' ? width : `${width}px`;
+  }, [width]);
+
   return (
-    <StyledImageWithShimmer loaded={loaded} width={width}>
+    <StyledImageWithShimmer loaded={loaded} widthStyle={widthStyle}>
       {!loaded && <Shimmer />}
-      {loaded && <StyledImg src={src} alt={alt} width={width} />}
+      {loaded && <StyledImg src={src} alt={alt} widthStyle={widthStyle} />}
     </StyledImageWithShimmer>
   );
 }
 
 const StyledImageWithShimmer = styled.div<{
   loaded: boolean;
-  width?: number;
+  widthStyle: string;
 }>`
   position: relative;
-  width: ${({ width }) => width}px;
-  height: ${({ loaded, width }) => (loaded ? undefined : `${width}px`)};
+  width: ${({ widthStyle }) => widthStyle};
+  height: ${({ loaded, widthStyle }) => (loaded ? undefined : widthStyle)};
 `;
 
 const loading = keyframes`
@@ -69,7 +75,7 @@ const Shimmer = styled.div`
   animation: ${loading} 6s cubic-bezier(0, 0.38, 0.58, 1) infinite;
 `;
 
-const StyledImg = styled.img<{ width?: number }>`
+const StyledImg = styled.img<{ widthStyle: string }>`
   display: block;
-  width: ${({ width }) => (width ? `${width}px` : 'inherit')};
+  width: ${({ widthStyle }) => (widthStyle ? widthStyle : 'inherit')};
 `;

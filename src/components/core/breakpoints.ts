@@ -2,8 +2,8 @@
 // and progressively add styles for larger breakpoints.
 
 // Our breakpoints are as follows:
-// mobile:      0px   - 374px;
-// mobileLarge: 375px - 767px;
+// mobile:      0px   - 419px;
+// mobileLarge: 420px - 767px;
 // tablet:      768px - 1099px;
 // desktop:     1100px - ;
 
