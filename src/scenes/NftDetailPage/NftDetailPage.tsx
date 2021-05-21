@@ -128,10 +128,10 @@ const StyledNftDetailPage = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 0 ${pageGutter.mobile};
+  margin: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet};
+    margin: 0 ${pageGutter.tablet}px;
   }
 `;
 
