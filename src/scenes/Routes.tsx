@@ -1,6 +1,7 @@
 import { Location, Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
 import GlobalNavbar from 'components/GlobalNavbar/GlobalNavbar';
+import GlobalFooter from 'components/GlobalFooter/GlobalFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';
@@ -14,12 +15,17 @@ import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 // considered putting this in a different file, but we should tightly couple
 // route updates to this array
 const ROUTES_WITHOUT_NAVBAR = ['/', '/auth', '/password', '/welcome', '/edit'];
+const ROUTES_WITH_FOOTER = ['/welcome', '/edit'];
 
 function shouldHideNavbar(pathname: string) {
   return ROUTES_WITHOUT_NAVBAR.reduce(
     (prev, curr) => prev || curr.includes(pathname),
     false
   );
+}
+
+function shouldHideFooter(pathname: string) {
+  return ROUTES_WITH_FOOTER.find((route) => route === pathname);
 }
 
 export default function Routes() {
@@ -41,6 +47,7 @@ export default function Routes() {
               <NotFound default path="404" />
             </Router>
           </FadeTransitioner>
+          {shouldHideFooter(location.pathname) ? null : <GlobalFooter />}
         </>
       )}
     </Location>

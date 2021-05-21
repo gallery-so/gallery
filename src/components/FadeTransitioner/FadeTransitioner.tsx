@@ -17,9 +17,10 @@ const timeoutConfig = {
 };
 
 const childNodeStyles = {
-  position: 'absolute',
   width: '100%',
 };
+
+const transitionGroupStyles = { minHeight: '100vh' };
 
 /**
  * Fades child elements in and out as they mount/unmount.
@@ -29,7 +30,7 @@ const childNodeStyles = {
  */
 function FadeTransitioner({ nodeKey = '', children }: Props) {
   return (
-    <TransitionGroup>
+    <TransitionGroup style={transitionGroupStyles}>
       <CSSTransition key={nodeKey} timeout={timeoutConfig} classNames="fade">
         <div style={childNodeStyles as CSSProperties}>{children}</div>
       </CSSTransition>
