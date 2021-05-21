@@ -29,10 +29,10 @@ const StyledNavContainer = styled.div`
 const StyledNav = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin: 32px ${pageGutter.mobile} 0;
+  margin: 32px ${pageGutter.mobile}px 0;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 32px ${pageGutter.tablet} 0;
+    margin: 32px ${pageGutter.tablet}px 0;
   }
 
   @media only screen and ${breakpoints.desktop} {

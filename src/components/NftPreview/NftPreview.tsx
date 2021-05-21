@@ -3,8 +3,9 @@ import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 import NftPreviewLabel from './NftPreviewLabel';
 import Gradient from 'components/core/Gradient/Gradient';
+import ImageWithShimmer from 'components/ImageWithShimmer/ImageWithShimmer';
 import transitions from 'components/core/transitions';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { navigate } from '@reach/router';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
@@ -21,20 +22,34 @@ type Props = {
 
 function NftPreview({ nft, collectionId }: Props) {
   const imgUrl =
-    resize(nft.imagePreviewUrl, 275) || nft.imageUrl || IMG_FALLBACK_URL;
+    resize(nft.imagePreviewUrl, 288) || nft.imageUrl || IMG_FALLBACK_URL;
 
   const handleNftClick = useCallback(() => {
     navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
   }, [collectionId, nft.id]);
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleLoadComplete = useCallback(() => {
+    setImageLoaded(true);
+  }, []);
+
   return (
     <StyledNftPreview key={nft.id}>
       <StyledLinkWrapper onClick={handleNftClick}>
-        <StyledNft src={imgUrl} alt={nft.name} />
-        <StyledNftFooter>
-          <StyledNftLabel nft={nft} />
-          <StyledGradient type="bottom" direction="down" />
-        </StyledNftFooter>
+        {/* TODO: we should either show StyledNftPreview in its entirety OR ImageWithShimmer
+            could be improved by having ParentWithShimmer that can wrap any child */}
+        <ImageWithShimmer
+          src={imgUrl}
+          alt={nft.name}
+          onLoadComplete={handleLoadComplete}
+        />
+        {imageLoaded ? (
+          <StyledNftFooter>
+            <StyledNftLabel nft={nft} />
+            <StyledGradient type="bottom" direction="down" />
+          </StyledNftFooter>
+        ) : null}
       </StyledLinkWrapper>
     </StyledNftPreview>
   );
@@ -99,12 +114,6 @@ const StyledNftPreview = styled.div`
     width: ${NFT_PREVIEW_WIDTH.desktop};
     margin-bottom: 80px; // use margin to create row-gap for now
   }
-`;
-
-// TODO: set max-height on NFT?
-const StyledNft = styled.img`
-  width: 100%;
-  height: 100%;
 `;
 
 export default NftPreview;

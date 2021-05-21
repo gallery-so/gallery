@@ -77,10 +77,10 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
 const StyledGallery = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0 ${pageGutter.mobile};
+  margin: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet};
+    margin: 0 ${pageGutter.tablet}px;
   }
 `;
 
@@ -90,7 +90,7 @@ const StyledContent = styled.div`
   align-items: center;
   width: 100%;
 
-  max-width: ${contentSize.desktop};
+  max-width: ${contentSize.desktop}px;
 `;
 
 export default Gallery;
