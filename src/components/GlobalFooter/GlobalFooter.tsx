@@ -14,7 +14,7 @@ function GlobalFooter() {
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink
-            href="TODO__v1 add discord link"
+            href="https://discord.gg/r4AWmRcMsn"
             target="_blank"
             rel="noreferrer"
           >
@@ -38,10 +38,10 @@ const StyledGlobalFooter = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 32px ${pageGutter.mobile} 16px;
+  margin: 32px ${pageGutter.mobile}px 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 32px ${pageGutter.tablet} 16px;
+    margin: 32px ${pageGutter.tablet}px 16px;
   }
 `;
 
