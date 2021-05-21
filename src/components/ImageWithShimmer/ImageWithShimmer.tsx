@@ -1,14 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 type Props = {
   src: string;
   alt: string;
-  width?: number | string;
-  height?: number | string;
+  width?: number;
+  onLoadComplete?: () => void;
+  onLoadError?: () => void;
 };
 
-export default function ImageWithShimmer({ src, alt, width, height }: Props) {
+export default function ImageWithShimmer({
+  src,
+  alt,
+  width,
+  onLoadComplete,
+  onLoadError,
+}: Props) {
   const [loaded, setLoaded] = useState(false);
   // TODO: display a fallback if image fails to load
   const [errored, setErrored] = useState(false);
@@ -19,30 +26,25 @@ export default function ImageWithShimmer({ src, alt, width, height }: Props) {
     image.onload = () => {
       setTimeout(() => {
         setLoaded(true);
+        onLoadComplete?.();
       }, 1000);
     };
-    image.onerror = () => setErrored(true);
-  }, [src]);
-
-  const widthStyle = useMemo(() => {
-    return typeof width === 'string' ? width : `${width}px`;
-  }, [width]);
+    image.onerror = () => {
+      setErrored(true);
+      onLoadError?.();
+    };
+  }, [onLoadComplete, onLoadError, src]);
 
   return (
-    <StyledImageWithShimmer loaded={loaded} widthStyle={widthStyle}>
-      {!loaded && <Shimmer />}
-      {loaded && <StyledImg src={src} alt={alt} widthStyle={widthStyle} />}
+    <StyledImageWithShimmer width={width}>
+      {loaded ? <StyledImg src={src} alt={alt} /> : <Shimmer />}
     </StyledImageWithShimmer>
   );
 }
 
-const StyledImageWithShimmer = styled.div<{
-  loaded: boolean;
-  widthStyle: string;
-}>`
+const StyledImageWithShimmer = styled.div<{ width?: number }>`
   position: relative;
-  width: ${({ widthStyle }) => widthStyle};
-  height: ${({ loaded, widthStyle }) => (loaded ? undefined : widthStyle)};
+  width: ${({ width }) => (width ? width : '100%')};
 `;
 
 const loading = keyframes`
@@ -56,11 +58,11 @@ const loading = keyframes`
 
 const Shimmer = styled.div`
   display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
   width: 100%;
-  height: 100%;
+
+  aspect-ratio: 1;
+  /* hack for safari, since it doesn't support aspect-ratio yet */
+  padding-top: 100%;
 
   background-image: linear-gradient(270deg, #fafafa, #eaeaea, #eaeaea, #fafafa);
   /* shimmer with cool colors
@@ -75,7 +77,7 @@ const Shimmer = styled.div`
   animation: ${loading} 6s cubic-bezier(0, 0.38, 0.58, 1) infinite;
 `;
 
-const StyledImg = styled.img<{ widthStyle: string }>`
+const StyledImg = styled.img`
   display: block;
-  width: ${({ widthStyle }) => (widthStyle ? widthStyle : 'inherit')};
+  width: 100%;
 `;
