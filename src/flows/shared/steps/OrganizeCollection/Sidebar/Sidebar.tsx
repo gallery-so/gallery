@@ -86,6 +86,7 @@ const StyledSidebar = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Selection = styled.div`
