@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { isAddress } from 'web3-utils';
-import useSwr from 'swr';
 import { Redirect, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
@@ -11,7 +10,7 @@ import breakpoints, {
   contentSize,
   pageGutter,
 } from 'components/core/breakpoints';
-import { isUserResponseError, UserResponse } from 'types/User';
+import useUser from 'hooks/api/useUser';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -23,13 +22,12 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     [usernameOrWalletAddress]
   );
 
-  const queryParams = isWalletAddress
-    ? `address=${usernameOrWalletAddress}`
-    : `username=${usernameOrWalletAddress}`;
+  const user = useUser({
+    username: isWalletAddress ? undefined : usernameOrWalletAddress,
+    address: isWalletAddress ? usernameOrWalletAddress : undefined,
+  });
 
-  const { data } = useSwr<UserResponse>(`/users/get?${queryParams}`);
-
-  if (!data || isUserResponseError(data)) {
+  if (!user) {
     return <Redirect to="/404" />;
   }
 
@@ -47,7 +45,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     <StyledGallery>
       <StyledContent>
         <Spacer height={112} />
-        <Header user={data} />
+        <Header user={user} />
         <Body />
       </StyledContent>
     </StyledGallery>
