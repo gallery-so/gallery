@@ -39,7 +39,7 @@ const MOCK_DB = {
       id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
       creationTime: Date.now(),
       username: 'dcinvestor',
-      diplayName: 'DCInvestor',
+      displayName: 'DCInvestor',
       description:
         'French Graphic Designer + Digital Artist Sparkles Founder of @healthedeal\nSparkles lorem ipsum sit dolor http://superrare.co/maalavidaa Sparkles Shop\n& More → http://linktr.ee/maalavidaa',
       addresses: ['0xDC25EF3F5B8A186998338A2ADA83795FBA2D695E'],
