@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { isAddress } from 'web3-utils';
 import useSwr from 'swr';
-import { RouteComponentProps } from '@reach/router';
+import { Redirect, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import Header from './components/Header/Header';
@@ -12,7 +12,6 @@ import breakpoints, {
   pageGutter,
 } from 'components/core/breakpoints';
 
-import { Nft } from 'types/Nft';
 import { mockSingleCollection } from 'mocks/collections';
 
 let MOCK_COLLECTIONS = [
@@ -32,7 +31,15 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     [usernameOrWalletAddress]
   );
 
-  const baseurl = isWalletAddress ? '/address' : 'username';
+  const queryParams = isWalletAddress
+    ? `address=${usernameOrWalletAddress}`
+    : `username=${usernameOrWalletAddress}`;
+
+  const { data } = useSwr(`/users/get?${queryParams}`);
+
+  if (data.error) {
+    return <Redirect to="/404" />;
+  }
 
   // on dev, this will route to localhost:4000/api/address/...
   // on prod, this will route to api.gallery.so/api/address/...
@@ -47,27 +54,15 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   // 4) Username exists in our DB, display collection
   // 5) Username doesn't exist on our DB, redirect 404
 
-  const [nfts, setNfts] = useState<Nft[]>([]);
-
-  // TODO: this is hard-coded here for now; should be proxied through our server
-  useEffect(() => {
-    async function getOpenseaData(address: string) {
-      const url = `https://api.opensea.io/api/v1/assets?owner=${address}&order_direction=desc&&limit=50`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setNfts(data.assets);
-    }
-
-    if (usernameOrWalletAddress && isWalletAddress) {
-      // getOpenseaData(usernameOrWalletAddress);
-    }
-  }, [isWalletAddress, usernameOrWalletAddress]);
-
   return (
     <StyledGallery>
       <StyledContent>
-        <Spacer height={111} />
-        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
+        <Spacer height={112} />
+        {/*
+          TODO: in the future, we'll allow users to put in any arbitrary
+          wallet address to see that addresses's NFTs even if they don't have
+          an account with us */}
+        <Header user={data} />
         <Body collections={MOCK_COLLECTIONS} />
       </StyledContent>
     </StyledGallery>
