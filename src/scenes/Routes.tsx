@@ -40,11 +40,11 @@ export default function Routes() {
               <Home path="/" />
               <Auth path="/auth" />
               <Password path="/password" />
+              <NotFound path="/404" />
               <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
               <Gallery path="/:usernameOrWalletAddress" />
-              <NotFound default path="404" />
             </Router>
           </FadeTransitioner>
           {shouldHideFooter(location.pathname) ? null : <GlobalFooter />}

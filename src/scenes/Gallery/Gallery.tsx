@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { isAddress } from 'web3-utils';
-import useSwr from 'swr';
-import { RouteComponentProps } from '@reach/router';
+import { Redirect, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import Header from './components/Header/Header';
@@ -11,16 +10,7 @@ import breakpoints, {
   contentSize,
   pageGutter,
 } from 'components/core/breakpoints';
-
-import { Nft } from 'types/Nft';
-import { mockSingleCollection } from 'mocks/collections';
-
-let MOCK_COLLECTIONS = [
-  // show multiple rows
-  mockSingleCollection({ noVideos: false, withDescription: true, aLot: true }),
-  mockSingleCollection({ noVideos: true, withDescription: false }),
-  mockSingleCollection({ noVideos: true, withDescription: true }),
-];
+import useUser from 'hooks/api/useUser';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -32,43 +22,31 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     [usernameOrWalletAddress]
   );
 
-  const baseurl = isWalletAddress ? '/address' : 'username';
+  const user = useUser({
+    username: isWalletAddress ? undefined : usernameOrWalletAddress,
+    address: isWalletAddress ? usernameOrWalletAddress : undefined,
+  });
 
-  // on dev, this will route to localhost:4000/api/address/...
-  // on prod, this will route to api.gallery.so/api/address/...
-  //   const { data, error } = useSwr(`${baseurl}/${usernameOrWalletAddress}`)
-  // TODO: support the following possible states:
+  if (!user) {
+    return <Redirect to="/404" />;
+  }
+
+  // TODO: in the future, we'll allow users to put in any arbitrary
+  //       wallet address to see that addresses's NFTs even if they
+  //       don't have an account with us
   // 1) Wallet address is legit, BUT doesn't exist in our DB. Here the backend
   //    should try to pull basic info from opensea about their address and return
   //    it, alongside some encouragement to create an account
   // 2) Wallet address is legit, AND exists in our DB. Here we should simply
   //    redirect to the /username page
   // 3) Wallet address is not legit, redirect 404
-  // 4) Username exists in our DB, display collection
-  // 5) Username doesn't exist on our DB, redirect 404
-
-  const [nfts, setNfts] = useState<Nft[]>([]);
-
-  // TODO: this is hard-coded here for now; should be proxied through our server
-  useEffect(() => {
-    async function getOpenseaData(address: string) {
-      const url = `https://api.opensea.io/api/v1/assets?owner=${address}&order_direction=desc&&limit=50`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setNfts(data.assets);
-    }
-
-    if (usernameOrWalletAddress && isWalletAddress) {
-      // getOpenseaData(usernameOrWalletAddress);
-    }
-  }, [isWalletAddress, usernameOrWalletAddress]);
 
   return (
     <StyledGallery>
       <StyledContent>
-        <Spacer height={111} />
-        <Header usernameOrWalletAddress={'RogerKilimanjaro'} />
-        <Body collections={MOCK_COLLECTIONS} />
+        <Spacer height={112} />
+        <Header user={user} />
+        <Body />
       </StyledContent>
     </StyledGallery>
   );

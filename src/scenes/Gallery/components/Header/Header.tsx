@@ -9,12 +9,13 @@ import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from './EditUserInfoModal';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
+import { User } from 'types/User';
 
 type Props = {
-  usernameOrWalletAddress: string;
+  user: User;
 };
 
-function Header({ usernameOrWalletAddress }: Props) {
+function Header({ user }: Props) {
   const isAuthenticated = useIsAuthenticated();
   const { showModal } = useModal();
 
@@ -28,7 +29,7 @@ function Header({ usernameOrWalletAddress }: Props) {
 
   return (
     <StyledHeader>
-      <Subdisplay>{usernameOrWalletAddress}</Subdisplay>
+      <Subdisplay>{user.displayName}</Subdisplay>
       <Spacer height={12} />
       <StyledUserDetails>
         {isAuthenticated && (
@@ -53,21 +54,11 @@ function Header({ usernameOrWalletAddress }: Props) {
         <Spacer height={18} />
         <StyledLeftContainer>
           {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain 
-          <Text color={colors.gray50}>Collector Since Mar 2021</Text>
+            <BodyRegular color={colors.gray50}>Collector Since Mar 2021</BodyRegular>
           */}
-
-          {/* TODO__v1: handle multi-line descriptions from the server */}
-          <BodyRegular color={colors.gray50}>
-            French Graphic Designer + Digital Artist Sparkles Founder of
-            @healthedeal
-          </BodyRegular>
-          <BodyRegular color={colors.gray50}>
-            Sparkles lorem ipsum sit dolor http://superrare.co/maalavidaa
-            Sparkles Shop
-          </BodyRegular>
-          <BodyRegular color={colors.gray50}>
-            & More → http://linktr.ee/maalavidaa
-          </BodyRegular>
+          <StyledBodyRegular color={colors.gray50}>
+            {user.description}
+          </StyledBodyRegular>
         </StyledLeftContainer>
       </StyledUserDetails>
     </StyledHeader>
@@ -93,6 +84,11 @@ const StyledUserDetails = styled.div`
 `;
 
 const StyledLeftContainer = styled.div``;
+
+const StyledBodyRegular = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-wrap;
+`;
 
 const StyledRightContainer = styled.div`
   display: flex;
