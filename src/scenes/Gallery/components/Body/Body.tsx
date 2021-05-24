@@ -14,8 +14,12 @@ let MOCK_COLLECTIONS = [
 function Body() {
   // TODO__v1: grab collections from real backend, and add a suspense boundary as needed.
   // for example:
-  // 1) first request to     /glry/v1/collections/get?username=:username
+  // 1) first request to     /glry/v1/collections/get?username=:username => [{ id: 1 }, { ... }]
+  //    -> NFTs will not be populated
   // 2) second request to    /glry/v1/nfts/get_all_for_user?username=:username
+  // OR...... (this is preferred)
+  // 1) request collections WITH populated NFTs,
+  // 2) second request to unassiged NFTs, /glry/v1/nfts/unassigned?username=:username
   return (
     <StyledBody>
       {MOCK_COLLECTIONS.map((collection, index) => (
