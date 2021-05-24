@@ -1,6 +1,7 @@
 import React from 'react';
 import { SWRConfig } from 'swr';
 import { MINUTE } from 'utils/time';
+import { syncWithLocalStorage } from './swr-sync-storage';
 
 const baseurl =
   process.env.ENV === 'production'
@@ -14,6 +15,8 @@ export const SwrProvider = React.memo(({ children }) => {
     refreshInterval: 5 * MINUTE,
     suspense: true,
   };
+
+  syncWithLocalStorage();
 
   return <SWRConfig value={value}>{children}</SWRConfig>;
 });
