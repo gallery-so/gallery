@@ -12,15 +12,6 @@ import breakpoints, {
   pageGutter,
 } from 'components/core/breakpoints';
 
-import { mockSingleCollection } from 'mocks/collections';
-
-let MOCK_COLLECTIONS = [
-  // show multiple rows
-  mockSingleCollection({ noVideos: false, withDescription: true, aLot: true }),
-  mockSingleCollection({ noVideos: true, withDescription: false }),
-  mockSingleCollection({ noVideos: true, withDescription: true }),
-];
-
 type Params = {
   usernameOrWalletAddress: string;
 };
@@ -63,7 +54,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
           wallet address to see that addresses's NFTs even if they don't have
           an account with us */}
         <Header user={data} />
-        <Body collections={MOCK_COLLECTIONS} />
+        <Body />
       </StyledContent>
     </StyledGallery>
   );
