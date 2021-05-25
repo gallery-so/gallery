@@ -19,63 +19,69 @@ import Pic11 from './__TEMP_PICS__/11.png';
 import Pic12 from './__TEMP_PICS__/12.png';
 import Pic13 from './__TEMP_PICS__/13.png';
 
+import Tilt from 'react-parallax-tilt';
+
 export default function CoolIntro(_: RouteComponentProps) {
   return (
-    <Container>
-      <_Position x={-550} y={-200}>
-        <_Animate>
-          <Image width={200} src={Pic1} />
-        </_Animate>
-      </_Position>
+    // comment this out if you don't want tilt
+    // demo: https://www.npmjs.com/package/react-parallax-tilt
+    <Tilt perspective={2000}>
+      <Container>
+        <_Position x={-550} y={-200}>
+          <_Animate>
+            <Image width={200} src={Pic1} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={-500} y={200}>
-        <_Animate>
-          <Image width={200} src={Pic2} />
-        </_Animate>
-      </_Position>
+        <_Position x={-500} y={200}>
+          <_Animate>
+            <Image width={200} src={Pic2} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={-225} y={20}>
-        <_Animate>
-          <Image width={200} src={Pic3} />
-        </_Animate>
-      </_Position>
+        <_Position x={-225} y={20}>
+          <_Animate>
+            <Image width={200} src={Pic3} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={-150} y={-300}>
-        <_Animate>
-          <Image width={150} src={Pic4} />
-        </_Animate>
-      </_Position>
+        <_Position x={-150} y={-300}>
+          <_Animate>
+            <Image width={150} src={Pic4} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={0} y={300}>
-        <_Animate>
-          <Image width={150} src={Pic5} />
-        </_Animate>
-      </_Position>
+        <_Position x={0} y={300}>
+          <_Animate>
+            <Image width={150} src={Pic5} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={150} y={-200}>
-        <_Animate>
-          <Image width={250} src={Pic8} />
-        </_Animate>
-      </_Position>
+        <_Position x={150} y={-200}>
+          <_Animate>
+            <Image width={250} src={Pic8} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={300} y={125}>
-        <_Animate>
-          <Image width={200} src={Pic12} />
-        </_Animate>
-      </_Position>
+        <_Position x={300} y={125}>
+          <_Animate>
+            <Image width={200} src={Pic12} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={550} y={-175}>
-        <_Animate>
-          <Image width={200} src={Pic7} />
-        </_Animate>
-      </_Position>
+        <_Position x={550} y={-175}>
+          <_Animate>
+            <Image width={200} src={Pic7} />
+          </_Animate>
+        </_Position>
 
-      <_Position x={550} y={300}>
-        <_Animate>
-          <Image width={100} src={Pic9} />
-        </_Animate>
-      </_Position>
-    </Container>
+        <_Position x={550} y={300}>
+          <_Animate>
+            <Image width={100} src={Pic9} />
+          </_Animate>
+        </_Position>
+      </Container>
+    </Tilt>
   );
 }
 
