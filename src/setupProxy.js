@@ -1,9 +1,18 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const baseurl =
-  process.env.ENV === 'production'
-    ? process.env.BASEURL_PRODUCTION
-    : process.env.BASEURL_DEVELOPMENT;
+function getBaseUrl() {
+  switch (process.env.ENV) {
+    case 'production':
+      return process.env.BASEURL_PRODUCTION;
+    case 'dev':
+      return process.env.BASEURL_DEVELOPMENT;
+    case 'local':
+    default:
+      return process.env.BASEURL_LOCAL;
+  }
+}
+
+const baseurl = getBaseUrl();
 
 module.exports = function (app) {
   app.use(
@@ -29,7 +38,7 @@ module.exports = function (app) {
  * TODO: allow local development to communicate directly with production AWS servers.
  *       this will probably just be an extra flag when starting the app
  */
-if (process.env.MOCK === 'true') {
+if (process.env.ENV === 'local') {
   initializeMockServer();
 }
 
