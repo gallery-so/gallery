@@ -12,6 +12,8 @@ import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 
+import CoolIntro from 'scenes/CoolIntro/CoolIntro';
+
 // considered putting this in a different file, but we should tightly couple
 // route updates to this array
 const ROUTES_WITHOUT_NAVBAR = ['/', '/auth', '/password', '/welcome', '/edit'];
@@ -40,9 +42,11 @@ export default function Routes() {
               <Home path="/" />
               <Auth path="/auth" />
               <Password path="/password" />
-              <NotFound path="/404" />
               <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
+              {/* TODO: this route should be part of the onboarding flow */}
+              <CoolIntro path="/intro" />
+              <NotFound path="/404" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
               <Gallery path="/:usernameOrWalletAddress" />
             </Router>
