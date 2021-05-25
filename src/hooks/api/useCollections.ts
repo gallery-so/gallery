@@ -11,7 +11,6 @@ type Props = {
 export default function useCollections({
   username,
 }: Props): Collection[] | null {
-  console.log(username);
   const { data } = useSwr<CollectionsResponse>(
     `/collections/get?username=${username}`
   );

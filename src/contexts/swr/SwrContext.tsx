@@ -12,7 +12,7 @@ export const SwrProvider = React.memo(({ children }) => {
   const localJwt = window.localStorage.getItem('jwt');
 
   const requestOptions: RequestInit = localJwt
-    ? { headers: { authentication: `Bearer: ${localJwt}` } }
+    ? { headers: { Authentication: `Bearer: ${localJwt}` } }
     : {};
   const value = {
     fetcher: (path: string) =>

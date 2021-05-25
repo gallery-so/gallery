@@ -169,6 +169,8 @@ function initializeMockServer() {
 
   mockServer.get('/collections/get', (req, res) => {
     const { query } = req;
+    // TODO
+    // return hidden collections if req.get('Authentication') matches the requested user
     const user = MOCK_DB.users.find((user) => user.username === query.username);
     if (!user) {
       res.json({

@@ -2,8 +2,11 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import CollectionView from './CollectionView';
 
+import { BodyRegular } from 'components/core/Text/Text';
+
 import useCollections from 'hooks/api/useCollections';
 import { User } from 'types/User';
+import colors from 'components/core/colors';
 
 type Props = {
   user: User;
@@ -20,8 +23,14 @@ function Body({ user }: Props) {
   // 2) second request to unassiged NFTs, /glry/v1/nfts/unassigned?username=:username
 
   const collections = useCollections({ username: user.username });
-  if (!collections) {
-    return <div>User has no collections</div>;
+  if (!collections || collections.length < 0) {
+    return (
+      <StyledEmptyGallery>
+        <BodyRegular color={colors.gray50}>
+          This user has not added any NFTs to their gallery yet.
+        </BodyRegular>
+      </StyledEmptyGallery>
+    );
   }
   return (
     <StyledBody>
@@ -34,6 +43,14 @@ function Body({ user }: Props) {
     </StyledBody>
   );
 }
+
+const StyledEmptyGallery = styled.div`
+  margin: auto;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  // margin-top: 60px;
+`;
 
 const StyledBody = styled.div`
   width: 100%;
