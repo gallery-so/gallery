@@ -2,16 +2,17 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import CollectionView from './CollectionView';
 
-import { mockSingleCollection } from 'mocks/collections';
+import { BodyRegular } from 'components/core/Text/Text';
 
-let MOCK_COLLECTIONS = [
-  // show multiple rows
-  mockSingleCollection({ noVideos: false, withDescription: true, aLot: true }),
-  mockSingleCollection({ noVideos: true, withDescription: false }),
-  mockSingleCollection({ noVideos: true, withDescription: true }),
-];
+import useCollections from 'hooks/api/useCollections';
+import { User } from 'types/User';
+import colors from 'components/core/colors';
 
-function Body() {
+type Props = {
+  user: User;
+};
+
+function Body({ user }: Props) {
   // TODO__v1: grab collections from real backend, and add a suspense boundary as needed.
   // for example:
   // 1) first request to     /glry/v1/collections/get?username=:username => [{ id: 1 }, { ... }]
@@ -20,9 +21,20 @@ function Body() {
   // OR...... (this is preferred)
   // 1) request collections WITH populated NFTs,
   // 2) second request to unassiged NFTs, /glry/v1/nfts/unassigned?username=:username
+
+  const collections = useCollections({ username: user.username });
+  if (!collections || collections.length < 0) {
+    return (
+      <StyledEmptyGallery>
+        <BodyRegular color={colors.gray50}>
+          This user has not added any NFTs to their gallery yet.
+        </BodyRegular>
+      </StyledEmptyGallery>
+    );
+  }
   return (
     <StyledBody>
-      {MOCK_COLLECTIONS.map((collection, index) => (
+      {collections.map((collection, index) => (
         <>
           <Spacer height={index === 0 ? 48 : 108} />
           <CollectionView collection={collection} />
@@ -31,6 +43,14 @@ function Body() {
     </StyledBody>
   );
 }
+
+const StyledEmptyGallery = styled.div`
+  margin: auto;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  // margin-top: 60px;
+`;
 
 const StyledBody = styled.div`
   width: 100%;

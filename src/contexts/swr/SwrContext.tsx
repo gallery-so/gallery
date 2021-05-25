@@ -9,9 +9,14 @@ const baseurl =
     : 'http://localhost:3000/api';
 
 export const SwrProvider = React.memo(({ children }) => {
+  const localJwt = window.localStorage.getItem('jwt');
+
+  const requestOptions: RequestInit = localJwt
+    ? { headers: { Authentication: `Bearer: ${localJwt}` } }
+    : {};
   const value = {
     fetcher: (path: string) =>
-      fetch(`${baseurl}/glry/v1${path}`).then((r) => r.json()),
+      fetch(`${baseurl}/glry/v1${path}`, requestOptions).then((r) => r.json()),
     refreshInterval: 5 * MINUTE,
     suspense: true,
   };

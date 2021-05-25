@@ -46,7 +46,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
       <StyledContent>
         <Spacer height={112} />
         <Header user={user} />
-        <Body />
+        <Body user={user} />
       </StyledContent>
     </StyledGallery>
   );
