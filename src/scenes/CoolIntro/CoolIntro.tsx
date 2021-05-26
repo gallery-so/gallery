@@ -20,142 +20,122 @@ import Pic11 from './__TEMP_PICS__/11.png';
 import Pic12 from './__TEMP_PICS__/12.png';
 import Pic13 from './__TEMP_PICS__/13.png';
 
-import Tilt from 'react-parallax-tilt';
-import { useEffect } from 'react';
-
-// const parallax = function (e: MouseEvent) {
-//   console.log(e.clientX, e.clientY);
-// };
-
 const calc = (x: number, y: number) => [
   x - window.innerWidth / 2,
   y - window.innerHeight / 2,
 ];
-const trans1 = (x: number, y: number) =>
-  `translate3d(${x / 10}px,${y / 10}px,0)`;
-const trans2 = (x: number, y: number) =>
-  `translate3d(${x / 8 + 35}px,${y / 8 - 230}px,0)`;
-const trans3 = (x: number, y: number) =>
-  `translate3d(${x / 6 - 250}px,${y / 6 - 200}px,0)`;
-const trans4 = (x: number, y: number) =>
-  `translate3d(${x / 3.5}px,${y / 3.5}px,0)`;
-const trans5 = (x: number, y: number) =>
-  `translate3d(${x / 7 - 45}px,${y / 7 - 50}px,0)`;
-const trans6 = (x: number, y: number) =>
-  `translate3d(${-x / 2 + 10}px,${-y / 2 + 3.5}px,0)`;
+type animatedImage = {
+  src: string;
+  width?: number;
+  // zIndex is the "depth" of image from viewer's pov.
+  // It is used to calculate how the image will move based on mousemovement.
+  // z-index of 0 is essentially the axis of movement. positive values move in one direction, negative values move in opposite.
+  // values can be -100 to 100, with -100 being the furthest from viewer and 100 being closest.
+  zIndex: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+const animatedImages: animatedImage[] = [
+  {
+    src: Pic8, //chair
+    width: 180,
+    zIndex: -70,
+    offsetX: 220,
+    offsetY: -240,
+  },
+  {
+    src: Pic3, // pray
+    width: 230,
+    zIndex: -21,
+    offsetX: -210,
+    offsetY: -30,
+  },
+  {
+    src: Pic6, //punk
+    width: 100,
+    zIndex: -13,
+    offsetX: -5,
+    offsetY: 300,
+  },
+  {
+    src: Pic11, //statue
+    width: 280,
+    zIndex: 48,
+    offsetX: 470,
+    offsetY: 280,
+  },
+  {
+    src: Pic4, //squiggly
+    width: 200,
+    zIndex: 50,
+    offsetX: -150,
+    offsetY: -300,
+  },
+  {
+    src: Pic1, //controller
+    width: 200,
+    zIndex: 31,
+    offsetX: -550,
+    offsetY: -200,
+  },
+  {
+    src: Pic13, //car
+    width: 250,
+    zIndex: 77,
+    offsetX: -500,
+    offsetY: 230,
+  },
+  {
+    src: Pic7, // trippy
+    width: 220,
+    zIndex: 25,
+    offsetX: 500,
+    offsetY: -100,
+  },
+  {
+    src: Pic12, //billow
+    width: 200,
+    zIndex: 50,
+    offsetX: 130,
+    offsetY: 80,
+  },
+];
+
+function getTransformCallback(animatedImage: animatedImage) {
+  // The mouse movement (x or y) will be divided by movementRatio to determine how much the image will move.
+  // A larger movementRatio means the image will be moved less by the same mouse movement.
+  // -500 is an arbitrarily large number so that we have a large range (-100~100) of z-index to work with,
+  // without getting a movementRatio of 1. movementRatio of 1 moves the image too much.
+  const movementRatio = -500 / animatedImage.zIndex;
+  return (x: number, y: number) =>
+    `translate3d(${x / movementRatio + animatedImage.offsetX}px,${
+      y / movementRatio + animatedImage.offsetY
+    }px,0)`;
+}
 
 export default function CoolIntro(_: RouteComponentProps) {
-  // useEffect(() => {
-  //   document.addEventListener('mousemove', parallax);
-  //   return () => document.removeEventListener('mousemove', parallax);
-  // }, []);
   const [props, set] = useSpring(() => ({
     xy: [0, 0],
     config: { mass: 10, tension: 550, friction: 140 },
   }));
   return (
     <StyledContainer
-      // className="container"
       onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
     >
-      {/* <_Animate> */}
-      <animated.div
-        className="card1"
-        style={{ transform: props.xy.interpolate(trans1) }}
-      >
-        <Image width={200} src={Pic1} />
-      </animated.div>
-      <animated.div
-        className="card2"
-        style={{ transform: props.xy.interpolate(trans2) }}
-      >
-        <Image width={200} src={Pic2} />
-      </animated.div>
-      <animated.div
-        className="card3"
-        style={{ transform: props.xy.interpolate(trans3) }}
-      >
-        <Image width={200} src={Pic3} />
-      </animated.div>
-      <animated.div
-        className="card4"
-        style={{ transform: props.xy.interpolate(trans4) }}
-      >
-        <Image width={200} src={Pic4} />
-      </animated.div>
-      <animated.div
-        className="card4"
-        style={{ transform: props.xy.interpolate(trans5) }}
-      >
-        <Image width={200} src={Pic4} />
-      </animated.div>
-      <animated.div
-        className="card4"
-        style={{ transform: props.xy.interpolate(trans6) }}
-      >
-        <Image width={200} src={Pic4} />
-      </animated.div>
-      {/* </_Animate> */}
+      {animatedImages.map((animatedImage) => (
+        <animated.div
+          className="animate"
+          style={{
+            transform: props.xy.interpolate(
+              getTransformCallback(animatedImage)
+            ),
+          }}
+        >
+          <Image width={animatedImage.width} src={animatedImage.src} />
+        </animated.div>
+      ))}
     </StyledContainer>
-    // comment this out if you don't want tilt
-    // demo: https://www.npmjs.com/package/react-parallax-tilt
-    // <Tilt perspective={2000}>
-    // <Container>
-    //   <_Position x={-550} y={-200}>
-    //     <_Animate>
-    //       <Image width={200} src={Pic1} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={-500} y={200}>
-    //     <_Animate>
-    //       <Image width={200} src={Pic2} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={-225} y={20}>
-    //     <_Animate>
-    //       <Image width={200} src={Pic3} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={-150} y={-300}>
-    //     <_Animate>
-    //       <Image width={150} src={Pic4} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={0} y={300}>
-    //     <_Animate>
-    //       <Image width={150} src={Pic5} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={150} y={-200}>
-    //     <_Animate>
-    //       <Image width={250} src={Pic8} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={300} y={125}>
-    //     <_Animate>
-    //       <Image width={200} src={Pic12} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={550} y={-175}>
-    //     <_Animate>
-    //       <Image width={200} src={Pic7} />
-    //     </_Animate>
-    //   </_Position>
-
-    //   <_Position x={550} y={300}>
-    //     <_Animate>
-    //       <Image width={100} src={Pic9} />
-    //     </_Animate>
-    //   </_Position>
-    // </Container>
-    // </Tilt>
   );
 }
 
@@ -172,26 +152,7 @@ const StyledContainer = styled.div`
   animation: ${fadeIn} 2s;
 `;
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-
-  position: relative;
-`;
-
-const _Position = styled.div<{ x: number; y: number }>`
-  position: absolute;
-  transform: ${({ x, y }) => `translate(${x}px, ${y}px)`};
-`;
-
-const _Animate = styled.div`
-  animation: ${fadeIn} 2s;
-  // position: absolute;
-`;
-
-const Image = styled.img<{ width: number }>`
-  width: ${({ width }) => width}px;
+const Image = styled.img<{ width?: number }>`
+  ${({ width }) => width && `width: ${width}px;`}
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 `;

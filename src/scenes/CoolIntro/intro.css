@@ -1,40 +1,4 @@
-.card1,
-.card2,
-.card3,
-.card4 {
+.animate {
   position: absolute;
-  border-radius: 5px;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   will-change: transform;
-}
-
-.card1 {
-  min-width: 60ch;
-  min-height: 60ch;
-  width: 45vw;
-  height: 45vw;
-  max-width: 100ch;
-  max-height: 100ch;
-  /* background-image: url(https://image.flaticon.com/icons/svg/119/119596.svg); */
-}
-
-.card2 {
-  width: 25ch;
-  height: 25ch;
-  /* background-image: url(https://image.flaticon.com/icons/svg/789/789395.svg); */
-}
-
-.card3 {
-  /* opacity: 0.9; */
-  width: 25ch;
-  height: 25ch;
-  /* background-image: url(https://image.flaticon.com/icons/svg/414/414927.svg); */
-}
-
-.card4 {
-  width: 25ch;
-  height: 25ch;
-  /* background-image: url(https://image.flaticon.com/icons/svg/789/789392.svg); */
 }
