@@ -81,6 +81,10 @@ const StyledSidebar = styled.div`
   padding: 50px 32px;
 
   overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Header = styled.div`

@@ -94,6 +94,10 @@ const StyledStagingArea = styled.div`
   padding: 100px 80px;
 
   overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const StyledStagedNftContainer = styled.div`
