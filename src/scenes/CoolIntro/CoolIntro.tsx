@@ -8,7 +8,7 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import { RouteComponentProps } from '@reach/router';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css, keyframes, Keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
 // TODO__v1: these pics should be URLs, not local files
@@ -33,7 +33,7 @@ const calc = (x: number, y: number) => [
   x - window.innerWidth / 2,
   y - window.innerHeight / 2,
 ];
-type animatedImage = {
+type AnimatedImage = {
   src?: string;
   width: number;
   // zIndex is the "depth" of image from viewer's pov.
@@ -48,7 +48,7 @@ type animatedImage = {
   fadeInDelay?: number;
 };
 
-const animatedImages: animatedImage[] = [
+const animatedImages: AnimatedImage[] = [
   {
     src: Pic8, //chair
     width: 180,
@@ -111,7 +111,7 @@ const animatedImages: animatedImage[] = [
   // },
 ];
 
-const specialImages: animatedImage[] = [
+const specialImages: AnimatedImage[] = [
   {
     src: Pic12, //billow
     width: 200,
@@ -132,7 +132,7 @@ const specialImages: animatedImage[] = [
   },
 ];
 
-const leftImage = {
+const leftImage: AnimatedImage = {
   src: Pic3, // pray
   width: 230,
   zIndex: -21,
@@ -143,7 +143,7 @@ const leftImage = {
   fadeInDelay: 700,
 };
 
-const rightImage = {
+const rightImage: AnimatedImage = {
   src: Pic12, //billow
   width: 200,
   zIndex: 50,
@@ -153,7 +153,7 @@ const rightImage = {
   originalOffsetY: 0,
 };
 
-function getTransformCallback(animatedImage: animatedImage) {
+function getTransformCallback(animatedImage: AnimatedImage) {
   // The mouse movement (x or y) will be divided by movementRatio to determine how much the image will move.
   // A larger movementRatio means the image will be moved less by the same mouse movement.
   // -500 is an arbitrarily large number so that we have a large range (-100~100) of z-index to work with,
@@ -170,6 +170,9 @@ export default function CoolIntro(_: RouteComponentProps) {
     xy: [0, 0],
     config: { mass: 10, tension: 550, friction: 140 },
   }));
+
+  // if we want to use transitions instead of keyframes, we could add a class to each image after X seconds
+  // to trigger the transition. Using a transition allows us to not have to add keyframes for each image.
 
   // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
 
@@ -225,7 +228,10 @@ export default function CoolIntro(_: RouteComponentProps) {
         </animated.div>
       ))}
       {/* {specialImages.map((specialImage) => ( */}
-      <StyledTransformContainer direction="left">
+      <StyledTransformContainer
+        direction="left"
+        keyframes={createKeyframe(leftImage)}
+      >
         <animated.div
           className="animate"
           style={{
@@ -239,7 +245,10 @@ export default function CoolIntro(_: RouteComponentProps) {
           />
         </animated.div>
       </StyledTransformContainer>
-      <StyledTransformContainer direction="right">
+      <StyledTransformContainer
+        direction="right"
+        keyframes={createKeyframe(rightImage)}
+      >
         <animated.div
           className="animate"
           style={{
@@ -280,16 +289,19 @@ const moveRight = keyframes`
   100% {transform: translate(150px, 0);}
 `;
 
-// function createKeyframe(image:AnimatedImage) {
-//   return keyframes`
-//     0% { transform: translate(${image.offsetX}, image.offsetY)}
-//     50% { transform: translate(0, 0)}
-//     100% {transform: translate(150px, 0);}
-//   `;
-// }
+function createKeyframe(image: AnimatedImage) {
+  return keyframes`
+    0% { transform: translate(${image.originalOffsetX}, ${image.originalOffsetY})}
+    50% { transform: translate(${image.originalOffsetX}, ${image.originalOffsetY})}
+    100% {transform: translate(${image.offsetX}, ${image.offsetY});}
+  `;
+}
 
 // Special container to translate images manually
-const StyledTransformContainer = styled.div<{ direction: string }>`
+const StyledTransformContainer = styled.div<{
+  direction: string;
+  keyframes: Keyframes;
+}>`
   position: relative;
   animation: ${({ direction }) =>
     css`
@@ -298,6 +310,8 @@ const StyledTransformContainer = styled.div<{ direction: string }>`
         : moveRight} 4s ${transitions.cubic} forwards
     `};
 `;
+
+// animation: ${({keyframes}) => keyframes} 4s ${transitions.cubic} forwards;
 
 const StyledContainer = styled.div`
   width: 100%;
