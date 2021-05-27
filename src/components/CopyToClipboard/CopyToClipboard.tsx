@@ -26,7 +26,7 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
     setIsActive(false);
     await pause(SECTION_DURATION_MS);
     setIsToastMounted(false);
-  }, []);
+  }, [textToCopy]);
 
   return (
     <Container onClick={handleCopyToClipboard}>
