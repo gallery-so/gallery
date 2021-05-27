@@ -185,13 +185,17 @@ function initializeMockServer() {
       res.json({
         error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
       });
+      return;
     }
     const collectionsForUser = MOCK_DB.collections.filter(
       (collection) => collection.ownerUserId === user.id
     );
-    res.json({
-      collections: collectionsForUser,
-    });
+    if (collectionsForUser.length) {
+      res.json({
+        collections: collectionsForUser,
+      });
+      return;
+    }
     res.json({
       error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
     });
