@@ -35,7 +35,7 @@ const calc = (x: number, y: number) => [
 ];
 type animatedImage = {
   src?: string;
-  width?: number;
+  width: number;
   // zIndex is the "depth" of image from viewer's pov.
   // It is used to calculate how the image will move based on mousemovement.
   // z-index of 0 is essentially the axis of movement. positive values move in one direction, negative values move in opposite.
@@ -164,17 +164,6 @@ function getTransformCallback(animatedImage: animatedImage) {
       y / movementRatio + animatedImage.offsetY
     }px,0)`;
 }
-function getTransformCallback2(animatedImage: any) {
-  // The mouse movement (x or y) will be divided by movementRatio to determine how much the image will move.
-  // A larger movementRatio means the image will be moved less by the same mouse movement.
-  // -500 is an arbitrarily large number so that we have a large range (-100~100) of z-index to work with,
-  // without getting a movementRatio of 1. movementRatio of 1 moves the image too much.
-  const movementRatio = -500 / animatedImage.zIndex;
-  return (x: number, y: number) =>
-    `translate3d(${x / movementRatio + animatedImage.originalOffsetX}px,${
-      y / movementRatio + animatedImage.originalOffsetY
-    }px,0)`;
-}
 
 export default function CoolIntro(_: RouteComponentProps) {
   const [props, set] = useSpring(() => ({
@@ -182,14 +171,14 @@ export default function CoolIntro(_: RouteComponentProps) {
     config: { mass: 10, tension: 550, friction: 140 },
   }));
 
-  const [isTextDisplayed, setIsTextDisplayed] = useState(false);
+  // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('MOVE NOW');
-      setIsTextDisplayed(true);
-    }, 2000);
-  }, [setIsTextDisplayed]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log('MOVE NOW');
+  //     setIsTextDisplayed(true);
+  //   }, 2000);
+  // }, [setIsTextDisplayed]);
   return (
     <StyledContainer
       onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
@@ -198,7 +187,12 @@ export default function CoolIntro(_: RouteComponentProps) {
         className="animate"
         style={{
           transform: props.xy.to(
-            getTransformCallback({ zIndex: 2, offsetX: 0, offsetY: 0 })
+            getTransformCallback({
+              width: 300,
+              zIndex: 2,
+              offsetX: 0,
+              offsetY: 0,
+            })
           ),
         }}
       >
@@ -286,20 +280,23 @@ const moveRight = keyframes`
   100% {transform: translate(150px, 0);}
 `;
 
+// function createKeyframe(image:AnimatedImage) {
+//   return keyframes`
+//     0% { transform: translate(${image.offsetX}, image.offsetY)}
+//     50% { transform: translate(0, 0)}
+//     100% {transform: translate(150px, 0);}
+//   `;
+// }
+
 // Special container to translate images manually
 const StyledTransformContainer = styled.div<{ direction: string }>`
   position: relative;
-  transform: translate(
-    ${({ direction }) => (direction === 'left' ? '-300px' : '150px')},
-    0
-  );
-  // transition: transform ${transitions.cubic};
-  // transition-delay: 2s;
   animation: ${({ direction }) =>
     css`
-      ${direction === 'left' ? moveLeft : moveRight} 4s ${transitions.cubic}
+      ${direction === 'left'
+        ? moveLeft
+        : moveRight} 4s ${transitions.cubic} forwards
     `};
-  // animation: ${moveLeft} 4s ${transitions.cubic};
 `;
 
 const StyledContainer = styled.div`
@@ -315,8 +312,9 @@ const Image = styled.img<{
   width?: number;
   fadeInDelay?: number;
 }>`
-  ${({ width }) => width && `width: ${width}px;`}
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  width: ${({ width }) => width}px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   opacity: 0;
   animation: ${fadeIn} 2s forwards;
   ${({ fadeInDelay }) => fadeInDelay && `animation-delay: ${fadeInDelay}ms`}
