@@ -10,6 +10,9 @@ type Props = {
   collection: Collection;
 };
 
+// space between NFTs in pixels
+const GAP_PX = 40;
+
 function CollectionView({ collection }: Props) {
   return (
     <StyledCollectionWrapper>
@@ -23,7 +26,12 @@ function CollectionView({ collection }: Props) {
       <Spacer height={24} />
       <StyledCollectionNfts>
         {collection.nfts.map((nft) => (
-          <NftPreview key={nft.id} nft={nft} collectionId={collection.id} />
+          <NftPreview
+            key={nft.id}
+            nft={nft}
+            collectionId={collection.id}
+            gap={GAP_PX}
+          />
         ))}
       </StyledCollectionNfts>
     </StyledCollectionWrapper>
@@ -51,19 +59,18 @@ const StyledCollectionNfts = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  width: 100%;
 
   // Can't use these for now due to lack of Safari support
-  // column-gap: 40px;
-  // row-gap: 40px;
+  // column-gap: ${GAP_PX}px;
+  // row-gap: ${GAP_PX}px;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    justify-content: space-between;
-  }
+  // Temporary hack to support Safari
+  width: calc(100% + ${GAP_PX * 2}px);
+  margin-left: -${GAP_PX}px;
 
   @media only screen and ${breakpoints.desktop} {
-    // row-gap: 80px;
-    // column-gap: 80px;
+    // row-gap: ${GAP_PX * 2}px;
+    // column-gap: ${GAP_PX * 2}px;
   }
 `;
 

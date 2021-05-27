@@ -38,6 +38,7 @@ function Body({ user }: Props) {
         <>
           <Spacer height={index === 0 ? 48 : 108} />
           <CollectionView collection={collection} />
+          <Spacer height={index === collections.length - 1 ? 108 : 0} />
         </>
       ))}
     </StyledBody>
@@ -49,7 +50,6 @@ const StyledEmptyGallery = styled.div`
   height: 400px;
   display: flex;
   align-items: center;
-  // margin-top: 60px;
 `;
 
 const StyledBody = styled.div`

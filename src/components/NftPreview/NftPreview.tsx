@@ -18,9 +18,10 @@ function resize(imgUrl: string, width: number) {
 type Props = {
   nft: Nft;
   collectionId: string;
+  gap: number;
 };
 
-function NftPreview({ nft, collectionId }: Props) {
+function NftPreview({ nft, collectionId, gap }: Props) {
   const imgUrl =
     resize(nft.imagePreviewUrl, 288) || nft.imageUrl || IMG_FALLBACK_URL;
 
@@ -35,7 +36,7 @@ function NftPreview({ nft, collectionId }: Props) {
   }, []);
 
   return (
-    <StyledNftPreview key={nft.id}>
+    <StyledNftPreview key={nft.id} gap={gap}>
       <StyledLinkWrapper onClick={handleNftClick}>
         {/* TODO: we should either show StyledNftPreview in its entirety OR ImageWithShimmer
             could be improved by having ParentWithShimmer that can wrap any child */}
@@ -88,7 +89,7 @@ const NFT_PREVIEW_WIDTH = {
   desktop: '288px',
 };
 
-const StyledNftPreview = styled.div`
+const StyledNftPreview = styled.div<{ gap: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -105,14 +106,15 @@ const StyledNftPreview = styled.div`
   }
 
   width: ${NFT_PREVIEW_WIDTH.mobile};
-  margin-bottom: 40px; // use margin to create row-gap for now
+
+  // use margin to create row-gap for now
+  margin: ${({ gap }) => gap}px;
 
   @media only screen and ${breakpoints.mobileLarge} {
     width: ${NFT_PREVIEW_WIDTH.mobileLarge};
   }
   @media only screen and ${breakpoints.desktop} {
     width: ${NFT_PREVIEW_WIDTH.desktop};
-    margin-bottom: 80px; // use margin to create row-gap for now
   }
 `;
 
