@@ -42,6 +42,7 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover'>>`
   border-style: none;
   cursor: pointer;
   background: none;
+  width: max-content;
 
   &:hover ${StyledButtonText} {
     color: ${colors.black};

@@ -114,7 +114,6 @@ const StyledDropdownBox = styled.div<StyledDropdownProps>`
 
   padding: 12px;
   border: 1px solid ${colors.gray50};
-  width: max-content;
   background-color: ${colors.white};
 `;
 
