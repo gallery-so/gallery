@@ -81,14 +81,6 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const NFT_PREVIEW_WIDTH = {
-  mobile: '100%',
-  // For screen sizes in between mobile and desktop, set dynamic width to
-  // enable 3 nfts per row by accounting for 2 40px column gaps
-  mobileLarge: 'calc((100% - 80px) / 3)',
-  desktop: '288px',
-};
-
 const StyledNftPreview = styled.div<{ gap: number }>`
   display: flex;
   justify-content: center;
@@ -105,16 +97,17 @@ const StyledNftPreview = styled.div<{ gap: number }>`
     opacity: 1;
   }
 
-  width: ${NFT_PREVIEW_WIDTH.mobile};
-
   // use margin to create row-gap for now
-  margin: ${({ gap }) => gap}px;
+  // margin: ${({ gap }) => gap}px;
 
   @media only screen and ${breakpoints.mobileLarge} {
-    width: ${NFT_PREVIEW_WIDTH.mobileLarge};
+    width: calc((100% - ${({ gap }) => gap * 3}px) / 3);
+    margin: ${({ gap }) => gap / 2}px;
   }
+
   @media only screen and ${breakpoints.desktop} {
-    width: ${NFT_PREVIEW_WIDTH.desktop};
+    width: 288px;
+    margin: ${({ gap }) => gap}px;
   }
 `;
 

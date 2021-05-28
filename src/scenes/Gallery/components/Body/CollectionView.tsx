@@ -64,13 +64,14 @@ const StyledCollectionNfts = styled.div`
   // column-gap: ${GAP_PX}px;
   // row-gap: ${GAP_PX}px;
 
-  // Temporary hack to support Safari
-  width: calc(100% + ${GAP_PX * 2}px);
-  margin-left: -${GAP_PX}px;
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: calc(100% + ${GAP_PX}px);
+    margin-left: -${GAP_PX / 2}px;
+  }
 
   @media only screen and ${breakpoints.desktop} {
-    // row-gap: ${GAP_PX * 2}px;
-    // column-gap: ${GAP_PX * 2}px;
+    width: calc(100% + ${GAP_PX * 2}px);
+    margin-left: -${GAP_PX}px;
   }
 `;
 
