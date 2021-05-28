@@ -36,7 +36,7 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   );
 }
 
-const StyledSidebarNftIcon = styled.div`
+export const StyledSidebarNftIcon = styled.div`
   position: relative;
   width: 64px;
   height: 64px;
