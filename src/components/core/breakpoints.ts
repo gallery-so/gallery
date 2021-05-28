@@ -16,6 +16,7 @@ export enum size {
 }
 
 const breakpoints = {
+  mobile: `(min-width: ${size.mobile}px)`,
   mobileLarge: `(min-width: ${size.mobileLarge}px)`,
   tablet: `(min-width: ${size.tablet}px)`,
   desktop: `(min-width: ${size.desktop}px)`,

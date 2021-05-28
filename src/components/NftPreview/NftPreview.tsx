@@ -98,13 +98,18 @@ const StyledNftPreview = styled.div<{ gap: number }>`
   }
 
   // use margin to create row-gap for now
-  // margin: ${({ gap }) => gap}px;
+  @media only screen and ${breakpoints.mobile} {
+    width: 100%;
+    margin-bottom: 40px;
+  }
 
+  // use margin to create row-gap for now
   @media only screen and ${breakpoints.mobileLarge} {
     width: calc((100% - ${({ gap }) => gap * 3}px) / 3);
     margin: ${({ gap }) => gap / 2}px;
   }
 
+  // use margin to create row-gap for now
   @media only screen and ${breakpoints.desktop} {
     width: 288px;
     margin: ${({ gap }) => gap}px;
