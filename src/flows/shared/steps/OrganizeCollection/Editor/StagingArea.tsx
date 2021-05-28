@@ -115,6 +115,8 @@ const StyledStagedNftContainer = styled.div`
   margin-left: -24px;
   ${StyledSortableNft} {
     margin: 24px;
+  }
+  ${StyledSortableNft} * {
     outline: none;
   }
 `;
