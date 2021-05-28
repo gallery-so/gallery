@@ -45,7 +45,7 @@ export default function Routes() {
               <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
               {/* TODO: this route should be part of the onboarding flow */}
-              <CoolIntro path="/intro" />
+              {/* <CoolIntro path="/intro" /> */}
               <NotFound path="/404" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
               <Gallery path="/:usernameOrWalletAddress" />

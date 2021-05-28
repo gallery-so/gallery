@@ -1,7 +1,7 @@
 /**
  * TODO__v1: This file should be moved to the onboarding flow
  */
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
@@ -45,7 +45,7 @@ type AnimatedImage = {
   offsetY: number;
   originalOffsetX?: number;
   originalOffsetY?: number;
-  fadeInDelay?: number;
+  fadeInDelay: number;
 };
 
 const animatedImages: AnimatedImage[] = [
@@ -63,6 +63,7 @@ const animatedImages: AnimatedImage[] = [
     zIndex: -13,
     offsetX: -5,
     offsetY: 300,
+    fadeInDelay: 0,
   },
   {
     src: Pic11, //statue
@@ -78,6 +79,7 @@ const animatedImages: AnimatedImage[] = [
     zIndex: 50,
     offsetX: -150,
     offsetY: -300,
+    fadeInDelay: 0,
   },
   {
     src: Pic1, //controller
@@ -101,6 +103,7 @@ const animatedImages: AnimatedImage[] = [
     zIndex: 25,
     offsetX: 500,
     offsetY: -100,
+    fadeInDelay: 0,
   },
   // {
   //   src: Pic12, //billow
@@ -120,6 +123,7 @@ const specialImages: AnimatedImage[] = [
     offsetY: 80,
     originalOffsetX: 0,
     originalOffsetY: 0,
+    fadeInDelay: 0,
   },
   {
     src: Pic3, // pray
@@ -129,6 +133,7 @@ const specialImages: AnimatedImage[] = [
     offsetY: -30,
     originalOffsetX: 0,
     originalOffsetY: 0,
+    fadeInDelay: 0,
   },
 ];
 
@@ -151,6 +156,7 @@ const rightImage: AnimatedImage = {
   offsetY: 80,
   originalOffsetX: 0,
   originalOffsetY: 0,
+  fadeInDelay: 0,
 };
 
 function getTransformCallback(animatedImage: AnimatedImage) {
@@ -165,7 +171,11 @@ function getTransformCallback(animatedImage: AnimatedImage) {
     }px,0)`;
 }
 
-export default function CoolIntro(_: RouteComponentProps) {
+type Props = {
+  next: () => void;
+};
+
+export default function CoolIntro({ next }: Props) {
   const [props, set] = useSpring(() => ({
     xy: [0, 0],
     config: { mass: 10, tension: 550, friction: 140 },
@@ -175,6 +185,7 @@ export default function CoolIntro(_: RouteComponentProps) {
   // to trigger the transition. Using a transition allows us to not have to add keyframes for each image.
 
   // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
+  const [shouldFadeOut, setShouldFadeOut] = useState(false);
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -182,9 +193,18 @@ export default function CoolIntro(_: RouteComponentProps) {
   //     setIsTextDisplayed(true);
   //   }, 2000);
   // }, [setIsTextDisplayed]);
+  const handleClick = useCallback(() => {
+    // Delay next so we can show a transition animation
+    setShouldFadeOut(true);
+    setTimeout(() => {
+      next();
+    }, 2000);
+  }, [next]);
+
   return (
     <StyledContainer
       onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
+      // shouldFadeOut={shouldFadeOut}
     >
       <animated.div
         className="animate"
@@ -195,11 +215,12 @@ export default function CoolIntro(_: RouteComponentProps) {
               zIndex: 2,
               offsetX: 0,
               offsetY: 0,
+              fadeInDelay: 0,
             })
           ),
         }}
       >
-        <StyledTextContainer>
+        <StyledTextContainer shouldFadeOut={shouldFadeOut}>
           <Display>Welcome to Gallery</Display>
           <Spacer height={8} />
           <StyledBodyText color={colors.gray50}>
@@ -208,7 +229,7 @@ export default function CoolIntro(_: RouteComponentProps) {
             how it was meant to be.
           </StyledBodyText>
           <Spacer height={16} />
-          <StyledButton text="Enter Gallery" />
+          <StyledButton text="Enter Gallery" onClick={handleClick} />
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (
@@ -224,6 +245,7 @@ export default function CoolIntro(_: RouteComponentProps) {
             width={animatedImage.width}
             src={animatedImage.src}
             fadeInDelay={animatedImage.fadeInDelay}
+            shouldFadeOut={shouldFadeOut}
           />
         </animated.div>
       ))}
@@ -242,6 +264,7 @@ export default function CoolIntro(_: RouteComponentProps) {
             width={leftImage.width}
             src={leftImage.src}
             fadeInDelay={leftImage.fadeInDelay}
+            shouldFadeOut={shouldFadeOut}
           />
         </animated.div>
       </StyledTransformContainer>
@@ -255,7 +278,12 @@ export default function CoolIntro(_: RouteComponentProps) {
             transform: props.xy.to(getTransformCallback(rightImage)),
           }}
         >
-          <Image width={rightImage.width} src={rightImage.src} />
+          <Image
+            width={rightImage.width}
+            src={rightImage.src}
+            shouldFadeOut={shouldFadeOut}
+            fadeInDelay={leftImage.fadeInDelay}
+          />
         </animated.div>
       </StyledTransformContainer>
       {/* ))} */}
@@ -263,19 +291,38 @@ export default function CoolIntro(_: RouteComponentProps) {
   );
 }
 
-const fadeIn = keyframes`
+const fadeInGrow = keyframes`
   from { opacity: 0; transform: scale(0.8); };
   to { opacity: 1; transform: scale(1.0); };
 `;
 
-const StyledTextContainer = styled.div`
+const fadeOutGrow = keyframes`
+  from { opacity: 1; transform: scale(1.0); };
+  to { opacity: 0; transform: scale(1.8); };
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; };
+  to { opacity: 0; };
+`;
+
+const StyledTextContainer = styled.div<{
+  shouldFadeOut: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: center;
   opacity: 0;
-  animation: ${fadeIn} 2s forwards;
+  animation: ${fadeInGrow} 2s forwards;
   animation-delay: 2s;
+
+  ${({ shouldFadeOut }) =>
+    shouldFadeOut &&
+    css`
+      animation: ${fadeOut} 2s forwards;
+    `}
 `;
+// animation: ${fadeOutGrow} 2s forwards;
 
 const moveLeft = keyframes`
   0% { transform: translate(0, 0)}
@@ -319,20 +366,28 @@ const StyledContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: ${fadeIn} 2s;
+  animation: ${fadeInGrow} 2s;
 `;
 
 const Image = styled.img<{
   width?: number;
-  fadeInDelay?: number;
+  fadeInDelay: number;
+  shouldFadeOut?: boolean;
 }>`
   width: ${({ width }) => width}px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   opacity: 0;
-  animation: ${fadeIn} 2s forwards;
-  ${({ fadeInDelay }) => fadeInDelay && `animation-delay: ${fadeInDelay}ms`}
+  animation: ${fadeInGrow} 2s forwards ${({ fadeInDelay }) => fadeInDelay}ms;
+
+  ${({ shouldFadeOut, fadeInDelay }) =>
+    shouldFadeOut &&
+    css`
+      animation: ${fadeOutGrow} 2s forwards ${fadeInDelay}ms;
+      opacity: 1;
+    `}
 `;
+// animation-delay: ${({ fadeInDelay }) => fadeInDelay}ms;
 
 const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;
