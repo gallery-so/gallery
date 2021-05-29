@@ -62,17 +62,27 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const Body = styled.div`
-  display: flex;
-  column-gap: 24px;
-`;
-
 const StyledHiddenLabel = styled(BodyRegular)`
   text-align: right;
 `;
+
 const BigNftPreview = styled.img`
   width: 160px;
   height: 160px;
+`;
+
+const Body = styled.div`
+  display: flex;
+
+  // Safari doesn't support this yet
+  // column-gap: 24px;
+
+  // Temporary solution until Safari support
+  width: calc(100% + 24px);
+  margin-left: -12px;
+  ${BigNftPreview} {
+    margin: 12px;
+  }
 `;
 
 /**
@@ -121,16 +131,24 @@ const StyledCompactNfts = styled.div`
   align-items: center;
 `;
 
+const SmolNftPreview = styled.img`
+  width: 25px;
+  height: 25px;
+`;
+
 const Content = styled.div`
   width: 141px;
 
   display: flex;
-  column-gap: 4px;
-`;
 
-const SmolNftPreview = styled.img`
-  width: 25px;
-  height: 25px;
+  // Safari doesn't support this yet
+  // column-gap: 4px;
+
+  // Temporary solution until Safari support
+  margin-left: -2px;
+  ${SmolNftPreview} {
+    margin: 2px;
+  }
 `;
 
 const NftsWithMoreText = styled.div`
