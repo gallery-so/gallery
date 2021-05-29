@@ -36,10 +36,11 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   );
 }
 
-const StyledSidebarNftIcon = styled.div`
+export const StyledSidebarNftIcon = styled.div`
   position: relative;
   width: 64px;
   height: 64px;
+  overflow: hidden;
 `;
 
 type SelectedProps = {
@@ -58,7 +59,6 @@ const StyledOutline = styled.div<SelectedProps>`
 
 const StyledImage = styled.img<SelectedProps>`
   width: 100%;
-  height: 100%;
 
   transition: opacity ${transitions.cubic};
 

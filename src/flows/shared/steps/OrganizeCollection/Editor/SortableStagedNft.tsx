@@ -67,7 +67,7 @@ const StyledUnstageButton = styled(UnstageButton)`
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledSortableNft = styled.div`
+export const StyledSortableNft = styled.div`
   position: relative;
   -webkit-backface-visibility: hidden;
   &:focus {

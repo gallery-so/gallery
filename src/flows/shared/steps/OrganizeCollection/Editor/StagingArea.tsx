@@ -17,7 +17,7 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import { Heading } from 'components/core/Text/Text';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
-import SortableStagedNft from './SortableStagedNft';
+import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 
 import {
   useCollectionEditorActions,
@@ -103,10 +103,22 @@ const StyledStagingArea = styled.div`
 const StyledStagedNftContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  column-gap: 48px;
-  row-gap: 48px;
 
   margin-top: 20px;
+
+  // Safari doesn't support this yet
+  // column-gap: 48px;
+  // row-gap: 48px;
+
+  // Temporary solution until Safari support
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  ${StyledSortableNft} {
+    margin: 24px;
+  }
+  ${StyledSortableNft} * {
+    outline: none;
+  }
 `;
 
 export default memo(StagingArea);

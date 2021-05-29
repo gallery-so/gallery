@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { BodyMedium } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import SidebarNftIcon from './SidebarNftIcon';
+import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
 import TextButton from 'components/core/Button/TextButton';
 
 import { EditModeNft } from 'types/Nft';
@@ -96,8 +96,17 @@ const Header = styled.div`
 const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
-  column-gap: 12px;
-  row-gap: 12px;
+
+  // Safari doesn't support this yet
+  // column-gap: 12px;
+  // row-gap: 12px;
+
+  // Temporary solution until Safari support
+  width: calc(100% + 12px);
+  margin-left: -6px;
+  ${StyledSidebarNftIcon} {
+    margin: 6px;
+  }
 `;
 
 export default memo(Sidebar);

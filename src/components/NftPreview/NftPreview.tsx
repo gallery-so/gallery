@@ -18,9 +18,10 @@ function resize(imgUrl: string, width: number) {
 type Props = {
   nft: Nft;
   collectionId: string;
+  gap: number;
 };
 
-function NftPreview({ nft, collectionId }: Props) {
+function NftPreview({ nft, collectionId, gap }: Props) {
   const imgUrl =
     resize(nft.imagePreviewUrl, 288) || nft.imageUrl || IMG_FALLBACK_URL;
 
@@ -35,7 +36,7 @@ function NftPreview({ nft, collectionId }: Props) {
   }, []);
 
   return (
-    <StyledNftPreview key={nft.id}>
+    <StyledNftPreview key={nft.id} gap={gap}>
       <StyledLinkWrapper onClick={handleNftClick}>
         {/* TODO: we should either show StyledNftPreview in its entirety OR ImageWithShimmer
             could be improved by having ParentWithShimmer that can wrap any child */}
@@ -80,15 +81,7 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const NFT_PREVIEW_WIDTH = {
-  mobile: '100%',
-  // For screen sizes in between mobile and desktop, set dynamic width to
-  // enable 3 nfts per row by accounting for 2 40px column gaps
-  mobileLarge: 'calc((100% - 80px) / 3)',
-  desktop: '288px',
-};
-
-const StyledNftPreview = styled.div`
+const StyledNftPreview = styled.div<{ gap: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,15 +97,22 @@ const StyledNftPreview = styled.div`
     opacity: 1;
   }
 
-  width: ${NFT_PREVIEW_WIDTH.mobile};
-  margin-bottom: 40px; // use margin to create row-gap for now
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: ${NFT_PREVIEW_WIDTH.mobileLarge};
+  // use margin to create row-gap for now
+  @media only screen and ${breakpoints.mobile} {
+    width: 100%;
+    margin-bottom: 40px;
   }
+
+  // use margin to create row-gap for now
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: calc((100% - ${({ gap }) => gap * 3}px) / 3);
+    margin: ${({ gap }) => gap / 2}px;
+  }
+
+  // use margin to create row-gap for now
   @media only screen and ${breakpoints.desktop} {
-    width: ${NFT_PREVIEW_WIDTH.desktop};
-    margin-bottom: 80px; // use margin to create row-gap for now
+    width: 288px;
+    margin: ${({ gap }) => gap}px;
   }
 `;
 
