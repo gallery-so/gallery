@@ -7,8 +7,7 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { RouteComponentProps } from '@reach/router';
-import styled, { css, keyframes, Keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
 // TODO__v1: these pics should be URLs, not local files
@@ -27,8 +26,6 @@ import Pic12 from './__TEMP_PICS__/12.png';
 import Pic13 from './__TEMP_PICS__/13.png';
 import { useEffect } from 'react';
 
-import transitions from 'components/core/transitions';
-
 const calc = (x: number, y: number) => [
   x - window.innerWidth / 2,
   y - window.innerHeight / 2,
@@ -43,8 +40,8 @@ type AnimatedImage = {
   zIndex: number;
   offsetX: number;
   offsetY: number;
-  originalOffsetX?: number;
-  originalOffsetY?: number;
+  offsetXStart: number;
+  offsetYStart: number;
   fadeInDelay: number;
 };
 
@@ -52,110 +49,102 @@ const animatedImages: AnimatedImage[] = [
   {
     src: Pic8, //chair
     width: 180,
-    zIndex: -70,
-    offsetX: 220,
-    offsetY: -240,
+    zIndex: -40,
+    offsetX: 180,
+    offsetY: -370,
+    offsetXStart: 0,
+    offsetYStart: 0,
     fadeInDelay: 800,
   },
   {
     src: Pic6, //punk
     width: 100,
     zIndex: -13,
-    offsetX: -5,
-    offsetY: 300,
+    offsetX: -105,
+    offsetY: 210,
+    offsetXStart: 0,
+    offsetYStart: 0,
     fadeInDelay: 0,
   },
   {
     src: Pic11, //statue
     width: 280,
-    zIndex: 48,
-    offsetX: 470,
-    offsetY: 280,
+    zIndex: -18,
+    offsetX: 370,
+    offsetY: 100,
+    offsetXStart: -20,
+    offsetYStart: -12,
     fadeInDelay: 300,
   },
   {
     src: Pic4, //squiggly
     width: 200,
-    zIndex: 50,
+    zIndex: 20,
     offsetX: -150,
-    offsetY: -300,
+    offsetY: -390,
+    offsetXStart: 0,
+    offsetYStart: 0,
     fadeInDelay: 0,
   },
   {
     src: Pic1, //controller
     width: 200,
-    zIndex: 31,
+    zIndex: 11,
     offsetX: -550,
-    offsetY: -200,
+    offsetY: -340,
+    offsetXStart: 0,
+    offsetYStart: 0,
     fadeInDelay: 1200,
   },
   {
     src: Pic13, //car
     width: 250,
-    zIndex: 77,
-    offsetX: -500,
-    offsetY: 230,
+    zIndex: 37,
+    offsetX: -490,
+    offsetY: 110,
+    offsetXStart: 0,
+    offsetYStart: 30,
     fadeInDelay: 500,
   },
   {
     src: Pic7, // trippy
     width: 220,
     zIndex: 25,
-    offsetX: 500,
-    offsetY: -100,
+    offsetX: 440,
+    offsetY: -240,
+    offsetXStart: -40,
+    offsetYStart: 0,
     fadeInDelay: 0,
   },
-  // {
-  //   src: Pic12, //billow
-  //   width: 200,
-  //   zIndex: 50,
-  //   offsetX: 130,
-  //   offsetY: 80,
-  // },
-];
-
-const specialImages: AnimatedImage[] = [
   {
     src: Pic12, //billow
     width: 200,
-    zIndex: 50,
-    offsetX: 130,
-    offsetY: 80,
-    originalOffsetX: 0,
-    originalOffsetY: 0,
-    fadeInDelay: 0,
+    zIndex: 30,
+    offsetX: 80,
+    offsetY: 150,
+    offsetXStart: 0,
+    offsetYStart: -40,
+    fadeInDelay: 300,
   },
   {
     src: Pic3, // pray
     width: 230,
-    zIndex: -21,
-    offsetX: -210,
-    offsetY: -30,
-    originalOffsetX: 0,
-    originalOffsetY: 0,
+    zIndex: -11,
+    offsetX: -660,
+    offsetY: -120,
+    offsetXStart: 0,
+    offsetYStart: 0,
     fadeInDelay: 0,
   },
 ];
 
-const leftImage: AnimatedImage = {
-  src: Pic3, // pray
-  width: 230,
-  zIndex: -21,
-  offsetX: -210,
-  offsetY: -30,
-  originalOffsetX: 0,
-  originalOffsetY: 0,
-  fadeInDelay: 700,
-};
-
-const rightImage: AnimatedImage = {
-  src: Pic12, //billow
-  width: 200,
-  zIndex: 50,
-  offsetX: 130,
-  offsetY: 80,
-  originalOffsetX: 0,
-  originalOffsetY: 0,
+const textAnimationOptions = {
+  width: 300,
+  zIndex: 2,
+  offsetX: 0,
+  offsetY: 0,
+  offsetXStart: 0,
+  offsetYStart: 0,
   fadeInDelay: 0,
 };
 
@@ -166,9 +155,7 @@ function getTransformCallback(animatedImage: AnimatedImage) {
   // without getting a movementRatio of 1. movementRatio of 1 moves the image too much.
   const movementRatio = -500 / animatedImage.zIndex;
   return (x: number, y: number) =>
-    `translate3d(${x / movementRatio + animatedImage.offsetX}px,${
-      y / movementRatio + animatedImage.offsetY
-    }px,0)`;
+    `translate3d(${x / movementRatio}px,${y / movementRatio}px,0)`;
 }
 
 type Props = {
@@ -186,13 +173,14 @@ export default function CoolIntro({ next }: Props) {
 
   // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
+  const [shouldExplode, setShouldExplode] = useState(false);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     console.log('MOVE NOW');
-  //     setIsTextDisplayed(true);
-  //   }, 2000);
-  // }, [setIsTextDisplayed]);
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('MOVE NOW');
+      setShouldExplode(true);
+    }, 2000);
+  }, [setShouldExplode]);
   const handleClick = useCallback(() => {
     // Delay next so we can show a transition animation
     setShouldFadeOut(true);
@@ -204,20 +192,11 @@ export default function CoolIntro({ next }: Props) {
   return (
     <StyledContainer
       onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
-      // shouldFadeOut={shouldFadeOut}
     >
       <animated.div
         className="animate"
         style={{
-          transform: props.xy.to(
-            getTransformCallback({
-              width: 300,
-              zIndex: 2,
-              offsetX: 0,
-              offsetY: 0,
-              fadeInDelay: 0,
-            })
-          ),
+          transform: props.xy.to(getTransformCallback(textAnimationOptions)),
         }}
       >
         <StyledTextContainer shouldFadeOut={shouldFadeOut}>
@@ -233,60 +212,27 @@ export default function CoolIntro({ next }: Props) {
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (
-        <animated.div
-          className="animate"
-          style={{
-            transform: props.xy.interpolate(
-              getTransformCallback(animatedImage)
-            ),
-          }}
+        <StyledMovementWrapper
+          shouldExplode={shouldExplode}
+          animatedImage={animatedImage}
         >
-          <Image
-            width={animatedImage.width}
-            src={animatedImage.src}
-            fadeInDelay={animatedImage.fadeInDelay}
-            shouldFadeOut={shouldFadeOut}
-          />
-        </animated.div>
+          <animated.div
+            className="animate"
+            style={{
+              transform: props.xy.interpolate(
+                getTransformCallback(animatedImage)
+              ),
+            }}
+          >
+            <Image
+              width={animatedImage.width}
+              src={animatedImage.src}
+              fadeInDelay={animatedImage.fadeInDelay}
+              shouldFadeOut={shouldFadeOut}
+            />
+          </animated.div>
+        </StyledMovementWrapper>
       ))}
-      {/* {specialImages.map((specialImage) => ( */}
-      <StyledTransformContainer
-        direction="left"
-        keyframes={createKeyframe(leftImage)}
-      >
-        <animated.div
-          className="animate"
-          style={{
-            transform: props.xy.to(getTransformCallback(leftImage)),
-          }}
-        >
-          <Image
-            width={leftImage.width}
-            src={leftImage.src}
-            fadeInDelay={leftImage.fadeInDelay}
-            shouldFadeOut={shouldFadeOut}
-          />
-        </animated.div>
-      </StyledTransformContainer>
-      <StyledTransformContainer
-        direction="right"
-        keyframes={createKeyframe(rightImage)}
-      >
-        <animated.div
-          className="animate"
-          style={{
-            transform: props.xy.to(getTransformCallback(rightImage)),
-          }}
-        >
-          <Image
-            width={rightImage.width}
-            src={rightImage.src}
-            shouldFadeOut={shouldFadeOut}
-            fadeInDelay={leftImage.fadeInDelay}
-          />
-        </animated.div>
-      </StyledTransformContainer>
-      {/* ))} */}
     </StyledContainer>
   );
 }
@@ -313,52 +259,29 @@ const StyledTextContainer = styled.div<{
   flex-direction: column;
   align-items: center;
   opacity: 0;
-  animation: ${fadeInGrow} 2s forwards;
+  animation: ${fadeInGrow} 1s forwards;
   animation-delay: 2s;
 
   ${({ shouldFadeOut }) =>
     shouldFadeOut &&
     css`
-      animation: ${fadeOut} 2s forwards;
+      animation: ${fadeOut} 1s forwards;
     `}
 `;
-// animation: ${fadeOutGrow} 2s forwards;
 
-const moveLeft = keyframes`
-  0% { transform: translate(0, 0)}
-  50% { transform: translate(0, 0)}
-  100% {transform: translate(-300px, 0);}
-`;
-
-const moveRight = keyframes`
-  0% { transform: translate(0, 0)}
-  50% { transform: translate(0, 0)}
-  100% {transform: translate(150px, 0);}
-`;
-
-function createKeyframe(image: AnimatedImage) {
-  return keyframes`
-    0% { transform: translate(${image.originalOffsetX}, ${image.originalOffsetY})}
-    50% { transform: translate(${image.originalOffsetX}, ${image.originalOffsetY})}
-    100% {transform: translate(${image.offsetX}, ${image.offsetY});}
-  `;
-}
-
-// Special container to translate images manually
-const StyledTransformContainer = styled.div<{
-  direction: string;
-  keyframes: Keyframes;
+const StyledMovementWrapper = styled.div<{
+  shouldExplode: boolean;
+  animatedImage: AnimatedImage;
 }>`
   position: relative;
-  animation: ${({ direction }) =>
-    css`
-      ${direction === 'left'
-        ? moveLeft
-        : moveRight} 4s ${transitions.cubic} forwards
-    `};
+  transition: transform 1000ms cubic-bezier(0, 0, 0, 1.07);
+  ${({ shouldExplode, animatedImage }) =>
+    shouldExplode
+      ? `transform: translate(${animatedImage.offsetX}px, ${animatedImage.offsetY}px)`
+      : `transform: translate(${animatedImage.offsetXStart - 120}px, ${
+          animatedImage.offsetYStart - 150
+        }px)`};
 `;
-
-// animation: ${({keyframes}) => keyframes} 4s ${transitions.cubic} forwards;
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -383,11 +306,10 @@ const Image = styled.img<{
   ${({ shouldFadeOut, fadeInDelay }) =>
     shouldFadeOut &&
     css`
-      animation: ${fadeOutGrow} 2s forwards ${fadeInDelay}ms;
+      animation: ${fadeOutGrow} 500ms forwards ${fadeInDelay / 3}ms;
       opacity: 1;
     `}
 `;
-// animation-delay: ${({ fadeInDelay }) => fadeInDelay}ms;
 
 const StyledBodyText = styled(BodyRegular)`
   max-width: 400px;
