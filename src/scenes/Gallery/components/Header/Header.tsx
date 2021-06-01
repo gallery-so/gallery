@@ -37,14 +37,14 @@ function Header({ user }: Props) {
             <StyledRightContainer>
               <Dropdown mainText="Edit Profile">
                 <TextButton
-                  text="Edit name & Bio"
-                  onClick={handleEditNameClick}
+                  text="Edit Gallery"
+                  onClick={handleEditGalleryClick}
                   underlineOnHover
                 />
                 <Spacer height={12} />
                 <TextButton
-                  text="Edit Gallery"
-                  onClick={handleEditGalleryClick}
+                  text="Edit name & Bio"
+                  onClick={handleEditNameClick}
                   underlineOnHover
                 />
               </Dropdown>
