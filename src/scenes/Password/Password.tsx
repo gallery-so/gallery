@@ -10,9 +10,13 @@ import Spacer from 'components/core/Spacer/Spacer';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import usePersistedState from 'hooks/usePersistedState';
 import { validatePassword } from 'utils/password';
+import { PASSWORD_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 
 function Password(_: RouteComponentProps) {
-  const [storedPassword, storePassword] = usePersistedState('password', null);
+  const [storedPassword, storePassword] = usePersistedState(
+    PASSWORD_LOCAL_STORAGE_KEY,
+    null
+  );
   const enteredPassword = useRef('');
 
   // put storedPassword in a ref so that if the user guesses it correctly,

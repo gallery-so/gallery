@@ -101,7 +101,7 @@ function WalletSelector() {
     // TODO: when hooking up to the server, make sure this only runs a single time
     if (account && isPending && signer) {
       signMessageAndAuthenticate(account, signer)
-        .then((jwt) => logIn(jwt))
+        .then(({ jwt, userId }) => logIn({ jwt, userId }))
         .catch((err) => {
           setDetectedError(err);
           setIsPending(false);
@@ -205,7 +205,7 @@ const signMessageAndAuthenticate = async (
     // TODO: handle error exchanging signature for jwt
     throw new Error('no jwt received from backend');
   }
-  return jwt;
+  return { jwt, userId: 'test' };
 };
 
 const StyledWalletSelector = styled.div`
