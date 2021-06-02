@@ -53,10 +53,16 @@ const AuthProvider = memo(({ children }: Props) => {
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
 
   const logOut = useCallback(() => {
-    localStorage.clear();
     setAuthState(LOGGED_OUT);
     setToken('');
     setUserId('');
+    /**
+     * NOTE: clearing localStorage completely will also clear the SWR cache, which
+     * will require users to re-fetch data if they visit a profile they've already
+     * visited (including their own). In the future, we should clear data more
+     * selectively (such as only sensitive data)
+     */
+    localStorage.clear();
   }, [setToken, setUserId]);
 
   const logIn = useCallback(
