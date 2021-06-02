@@ -22,10 +22,6 @@ export default function useUser({ id, username, address }: Props): User | null {
     queryParams ? `/users/get?${queryParams}` : null
   );
 
-  if (!username && !address) {
-    return null;
-  }
-
   if (!data || isUserResponseError(data)) {
     return null;
   }
@@ -41,5 +37,6 @@ export function useAuthenticatedUser() {
     }
     return null;
   }, [state]);
-  useUser({ id: userId });
+  const user = useUser({ id: userId });
+  return user;
 }

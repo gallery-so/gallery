@@ -167,6 +167,13 @@ function initializeMockServer() {
 
   mockServer.get('/users/get', (req, res) => {
     const { query } = req;
+    if (query.id) {
+      const user = MOCK_DB.users.find((user) => user.id === query.id);
+      if (user) {
+        res.json(user);
+        return;
+      }
+    }
     if (query.username) {
       const user = MOCK_DB.users.find(
         (user) => user.username === query.username

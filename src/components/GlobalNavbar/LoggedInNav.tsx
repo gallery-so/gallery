@@ -6,6 +6,8 @@ import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
+import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}...${address.slice(-4)}`;
@@ -13,17 +15,16 @@ function truncate(address: string) {
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();
+  const user = useAuthenticatedUser() as User;
 
-  // TODO__v1: when backend is ready, get address from useUser
-  const walletAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7';
+  const walletAddress = user.addresses[0];
   const truncatedAddress = useMemo(() => {
     return truncate(walletAddress);
   }, [walletAddress]);
 
   const handleGalleryRedirect = useCallback(() => {
-    // TODO__v1: when backend is ready, get username from useUser
-    navigate('/link-to-my-gallery');
-  }, []);
+    navigate(`/${user.username}`);
+  }, [user.username]);
 
   return (
     <Container>
