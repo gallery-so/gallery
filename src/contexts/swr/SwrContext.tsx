@@ -1,3 +1,4 @@
+import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import React from 'react';
 import { SWRConfig } from 'swr';
 import { MINUTE } from 'utils/time';
@@ -9,7 +10,7 @@ const baseurl =
     : 'http://localhost:3000/api';
 
 export const SwrProvider = React.memo(({ children }) => {
-  const localJwt = window.localStorage.getItem('jwt');
+  const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
   const requestOptions: RequestInit = localJwt
     ? { headers: { Authentication: `Bearer: ${localJwt}` } }

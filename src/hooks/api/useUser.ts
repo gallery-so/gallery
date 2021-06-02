@@ -1,23 +1,42 @@
+import { useAuthState } from 'contexts/auth/AuthContext';
+import { isLoggedInState } from 'contexts/auth/types';
+import { useMemo } from 'react';
 import useSwr from 'swr';
 import { isUserResponseError, User, UserResponse } from 'types/User';
 
 type Props = {
+  id?: string | null;
   username?: string;
   address?: string;
 };
 
-export default function useUser({ username, address }: Props): User | null {
-  const queryParams = username ? `username=${username}` : `address=${address}`;
-
-  const { data } = useSwr<UserResponse>(`/users/get?${queryParams}`);
-
-  if (!username && !address) {
+export default function useUser({ id, username, address }: Props): User | null {
+  const queryParams = useMemo(() => {
+    if (id) return `id=${id}`;
+    if (username) return `username=${username}`;
+    if (address) return `address=${address}`;
     return null;
-  }
+  }, [id, username, address]);
+
+  const { data } = useSwr<UserResponse>(
+    queryParams ? `/users/get?${queryParams}` : null
+  );
 
   if (!data || isUserResponseError(data)) {
     return null;
   }
 
   return data;
+}
+
+export function useAuthenticatedUser() {
+  const state = useAuthState();
+  const userId = useMemo(() => {
+    if (isLoggedInState(state)) {
+      return state.userId;
+    }
+    return null;
+  }, [state]);
+  const user = useUser({ id: userId });
+  return user;
 }
