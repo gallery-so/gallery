@@ -205,7 +205,7 @@ const signMessageAndAuthenticate = async (
     // TODO: handle error exchanging signature for jwt
     throw new Error('no jwt received from backend');
   }
-  return { jwt, userId: 'test' };
+  return { jwt, userId: 'PAoGbFB6OQtZ6mWI/BYyLA==' };
 };
 
 const StyledWalletSelector = styled.div`
