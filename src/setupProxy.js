@@ -223,11 +223,10 @@ function initializeMockServer() {
 
   mockServer.get('/nfts/get', (req, res) => {
     const { query } = req;
-    console.log('here', query);
     const nft = MOCK_DB.nfts.find((nft) => nft.id === query.id);
     if (!nft) {
       res.json({
-        error: 'ERR_NO_NFT_FOUND',
+        error: 'ERR_NFT_NOT_FOUND',
       });
       return;
     }
