@@ -16,3 +16,14 @@ export type EditModeNft = {
   isSelected?: boolean;
   index: number;
 };
+
+type NftNotFoundError = {
+  error: 'ERR_NFT_NOT_FOUND';
+};
+
+export type NftResponse = Nft | NftNotFoundError;
+
+// typeguard
+export function isNftResponseError(res: NftResponse): res is NftNotFoundError {
+  return 'error' in res;
+}

@@ -112,7 +112,7 @@ const MOCK_DB = {
   ],
   collections: [
     {
-      id: '1312/21902ecenqkdl3122z',
+      id: '131221902ecenqkdl3122z',
       ownerUserId: 'PAoGbFB6OQtZ6mWI/BYyLA==',
       name: 'My fine collection',
       description: 'This is my sick collection',
@@ -131,7 +131,7 @@ const MOCK_DB = {
       ],
     },
     {
-      id: 'cj1DKLFsd25/21902edsDakdl41sDSa',
+      id: 'cj1DKLFsd2521902edsDakdl41sDSa',
       ownerUserId: 'PAoGbFB6OQtZ6mWI/BYyLA==',
       name: 'Favorites',
       description: 'Favorites only',
@@ -145,6 +145,7 @@ const MOCK_DB = {
       nfts: [ANIMATION_NFT],
     },
   ],
+  nfts: [AUDIO_NFT, IMAGE_NFT, ANIMATION_NFT, VIDEO_NFT],
 };
 
 function initializeMockServer() {
@@ -218,5 +219,19 @@ function initializeMockServer() {
     res.json({
       error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
     });
+  });
+
+  mockServer.get('/nfts/get', (req, res) => {
+    const { query } = req;
+    console.log('here', query);
+    const nft = MOCK_DB.nfts.find((nft) => nft.id === query.id);
+    if (!nft) {
+      res.json({
+        error: 'ERR_NO_NFT_FOUND',
+      });
+      return;
+    }
+    res.json(nft);
+    return;
   });
 }
