@@ -8,6 +8,9 @@ import { mockCollectionsLite } from 'mocks/collections';
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
+import { useAuthenticatedUser } from 'hooks/api/useUser';
+import useCollections from 'hooks/api/useCollections';
+import { User } from 'types/User';
 
 type ConfigProps = {
   onPrevious: () => void;
@@ -31,7 +34,8 @@ function OrganizeGallery() {
 
   useWizardConfig({ onPrevious: returnToProfile });
 
-  const [collections] = useState(mockCollectionsLite(4));
+  const user = useAuthenticatedUser() as User;
+  const collections = useCollections({ username: user.username }) || [];
 
   return (
     <StyledOrganizeGallery>
