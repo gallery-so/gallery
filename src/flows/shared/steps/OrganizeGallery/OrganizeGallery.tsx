@@ -8,28 +8,45 @@ import { mockCollectionsLite } from 'mocks/collections';
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
+import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 type ConfigProps = {
+  onNext: () => void;
   onPrevious: () => void;
 };
 
-function useWizardConfig({ onPrevious }: ConfigProps) {
-  const { setOnPrevious } = useWizardCallback();
+function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
+  const { setOnNext, setOnPrevious } = useWizardCallback();
 
   useEffect(() => {
+    setOnNext(onNext);
     setOnPrevious(onPrevious);
 
-    return () => setOnPrevious(undefined);
-  }, [setOnPrevious, onPrevious]);
+    return () => {
+      setOnNext(undefined);
+      setOnPrevious(undefined);
+    };
+  }, [setOnPrevious, onPrevious, setOnNext, onNext]);
 }
 
 function OrganizeGallery() {
+  const user = useAuthenticatedUser() as User;
+
   const returnToProfile = useCallback(() => {
     // TODO__v1 get username and interpolate here
-    navigate('/my-profile');
-  }, []);
+    navigate(`/${user.username}`);
+  }, [user.username]);
 
-  useWizardConfig({ onPrevious: returnToProfile });
+  const saveGalleryAndReturnToProfile = useCallback(() => {
+    // Save gallery changes (re-ordered collections)
+    navigate(`/${user.username}`);
+  }, [user.username]);
+
+  useWizardConfig({
+    onNext: saveGalleryAndReturnToProfile,
+    onPrevious: returnToProfile,
+  });
 
   const [collections] = useState(mockCollectionsLite(4));
 
