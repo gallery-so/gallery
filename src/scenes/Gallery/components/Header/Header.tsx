@@ -8,15 +8,14 @@ import Dropdown from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from './EditUserInfoModal';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { User } from 'types/User';
 
 type Props = {
   user: User;
+  isAuthenticatedUsersPage: boolean;
 };
 
-function Header({ user }: Props) {
-  const isAuthenticated = useIsAuthenticated();
+function Header({ user, isAuthenticatedUsersPage }: Props) {
   const { showModal } = useModal();
 
   const handleEditNameClick = useCallback(() => {
@@ -32,7 +31,7 @@ function Header({ user }: Props) {
       <Subdisplay>{user.displayName}</Subdisplay>
       <Spacer height={12} />
       <StyledUserDetails>
-        {isAuthenticated && (
+        {isAuthenticatedUsersPage && (
           <StyledRow>
             <StyledRightContainer>
               <Dropdown mainText="Edit Profile">

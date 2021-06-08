@@ -10,7 +10,8 @@ import breakpoints, {
   contentSize,
   pageGutter,
 } from 'components/core/breakpoints';
-import useUser from 'hooks/api/useUser';
+import useUser, { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -26,6 +27,11 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     username: isWalletAddress ? undefined : usernameOrWalletAddress,
     address: isWalletAddress ? usernameOrWalletAddress : undefined,
   });
+
+  const authenticatedUser = useAuthenticatedUser() as User;
+  const isAuthenticatedUsersPage = useMemo(() => {
+    return user?.username === authenticatedUser.username;
+  }, [authenticatedUser.username, user?.username]);
 
   if (!user) {
     return <Redirect to="/404" />;
@@ -45,7 +51,10 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     <StyledGallery>
       <StyledContent>
         <Spacer height={112} />
-        <Header user={user} />
+        <Header
+          user={user}
+          isAuthenticatedUsersPage={isAuthenticatedUsersPage}
+        />
         <Body user={user} />
       </StyledContent>
     </StyledGallery>
