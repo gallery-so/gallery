@@ -34,7 +34,6 @@ function OrganizeGallery() {
   const user = useAuthenticatedUser() as User;
 
   const returnToProfile = useCallback(() => {
-    // TODO__v1 get username and interpolate here
     navigate(`/${user.username}`);
   }, [user.username]);
 
