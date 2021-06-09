@@ -3,7 +3,6 @@ import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { mockCollectionsLite } from 'mocks/collections';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
@@ -13,28 +12,41 @@ import useCollections from 'hooks/api/useCollections';
 import { User } from 'types/User';
 
 type ConfigProps = {
+  onNext: () => void;
   onPrevious: () => void;
 };
 
-function useWizardConfig({ onPrevious }: ConfigProps) {
-  const { setOnPrevious } = useWizardCallback();
+function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
+  const { setOnNext, setOnPrevious } = useWizardCallback();
 
   useEffect(() => {
+    setOnNext(onNext);
     setOnPrevious(onPrevious);
 
-    return () => setOnPrevious(undefined);
-  }, [setOnPrevious, onPrevious]);
+    return () => {
+      setOnNext(undefined);
+      setOnPrevious(undefined);
+    };
+  }, [setOnPrevious, onPrevious, setOnNext, onNext]);
 }
 
 function OrganizeGallery() {
-  const returnToProfile = useCallback(() => {
-    // TODO__v1 get username and interpolate here
-    navigate('/my-profile');
-  }, []);
-
-  useWizardConfig({ onPrevious: returnToProfile });
-
   const user = useAuthenticatedUser() as User;
+
+  const returnToProfile = useCallback(() => {
+    navigate(`/${user.username}`);
+  }, [user.username]);
+
+  const saveGalleryAndReturnToProfile = useCallback(() => {
+    // Save gallery changes (re-ordered collections)
+    navigate(`/${user.username}`);
+  }, [user.username]);
+
+  useWizardConfig({
+    onNext: saveGalleryAndReturnToProfile,
+    onPrevious: returnToProfile,
+  });
+
   const collections = useCollections({ username: user.username }) || [];
 
   return (

@@ -10,7 +10,8 @@ import breakpoints, {
   contentSize,
   pageGutter,
 } from 'components/core/breakpoints';
-import useUser from 'hooks/api/useUser';
+import useUser, { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -27,9 +28,13 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     address: isWalletAddress ? usernameOrWalletAddress : undefined,
   });
 
+  const authenticatedUser = useAuthenticatedUser();
+
   if (!user) {
     return <Redirect to="/404" />;
   }
+  const isAuthenticatedUsersPage =
+    user.username === authenticatedUser?.username;
 
   // TODO: in the future, we'll allow users to put in any arbitrary
   //       wallet address to see that addresses's NFTs even if they
@@ -45,7 +50,10 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     <StyledGallery>
       <StyledContent>
         <Spacer height={112} />
-        <Header user={user} />
+        <Header
+          user={user}
+          isAuthenticatedUsersPage={isAuthenticatedUsersPage}
+        />
         <Body user={user} />
       </StyledContent>
     </StyledGallery>
