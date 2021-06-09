@@ -109,6 +109,14 @@ const MOCK_DB = {
         'French Graphic Designer + Digital Artist Sparkles Founder of @healthedeal\nSparkles lorem ipsum sit dolor http://superrare.co/maalavidaa Sparkles Shop\n& More → http://linktr.ee/maalavidaa',
       addresses: ['0xDC25EF3F5B8A186998338A2ADA83795FBA2D6911'],
     },
+    {
+      id: '418q98213g4aagg512q3',
+      creationTime: Date.now(),
+      username: 'kaito',
+      displayName: 'kaito',
+      description: 'i like the nft',
+      addresses: ['0xKA25EF3F5B8A186998338A2ADA83795FBA2D69541'],
+    },
   ],
   collections: [
     {
@@ -132,7 +140,7 @@ const MOCK_DB = {
     },
     {
       id: 'cj1DKLFsd25/21902edsDakdl41sDSa',
-      ownerUserId: 'PAoGbFB6OQtZ6mWI/BYyLA==',
+      ownerUserId: '418q98213g4aagg512q3',
       name: 'Favorites',
       description: 'Favorites only',
       nfts: [VIDEO_NFT],
