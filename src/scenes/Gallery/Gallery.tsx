@@ -28,14 +28,13 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
     address: isWalletAddress ? usernameOrWalletAddress : undefined,
   });
 
-  const authenticatedUser = useAuthenticatedUser() as User;
-  const isAuthenticatedUsersPage = useMemo(() => {
-    return user?.username === authenticatedUser.username;
-  }, [authenticatedUser.username, user?.username]);
+  const authenticatedUser = useAuthenticatedUser();
 
   if (!user) {
     return <Redirect to="/404" />;
   }
+  const isAuthenticatedUsersPage =
+    user.username === authenticatedUser?.username;
 
   // TODO: in the future, we'll allow users to put in any arbitrary
   //       wallet address to see that addresses's NFTs even if they
