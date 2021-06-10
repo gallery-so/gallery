@@ -3,12 +3,12 @@ import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { mockCollectionsLite } from 'mocks/collections';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
+import useCollections from 'hooks/api/useCollections';
 import { User } from 'types/User';
 
 type ConfigProps = {
@@ -47,7 +47,7 @@ function OrganizeGallery() {
     onPrevious: returnToProfile,
   });
 
-  const [collections] = useState(mockCollectionsLite(4));
+  const collections = useCollections({ username: user.username }) || [];
 
   return (
     <StyledOrganizeGallery>
