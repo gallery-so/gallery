@@ -1,4 +1,6 @@
+import { useAuthenticatedUser } from 'hooks/api/useUser';
 import { useCallback, useMemo, useState } from 'react';
+import { User } from 'types/User';
 import { pause } from 'utils/time';
 import {
   validate,
@@ -13,16 +15,19 @@ import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {
   onSuccess: () => void;
+  existingUsername?: string;
+  existingBio?: string;
 };
 
-export default function useUserInfoForm({ onSuccess }: Props) {
-  // TODO__v1: auto-populate username and bio from useSwr()
-  // const { username, bio } = useSwr('/...')
-
-  const [username, setUsername] = useState('');
+export default function useUserInfoForm({
+  onSuccess,
+  existingUsername,
+  existingBio,
+}: Props) {
+  const [username, setUsername] = useState(existingUsername || '');
   const [usernameError, setUsernameError] = useState('');
 
-  const [bio, setBio] = useState('');
+  const [bio, setBio] = useState(existingBio || '');
 
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
