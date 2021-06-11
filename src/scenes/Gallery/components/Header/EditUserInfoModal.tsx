@@ -6,9 +6,12 @@ import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
+import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 function EditUserInfoModal() {
   const { hideModal } = useModal();
+  const existingUser = useAuthenticatedUser() as User;
 
   const {
     username,
@@ -19,7 +22,11 @@ function EditUserInfoModal() {
     onBioChange,
     generalError,
     onEditUser,
-  } = useUserInfoForm({ onSuccess: hideModal });
+  } = useUserInfoForm({
+    onSuccess: hideModal,
+    existingUsername: existingUser.username,
+    existingBio: existingUser.description,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
 
