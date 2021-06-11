@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import ImageWithShimmer from 'components/ImageWithShimmer/ImageWithShimmer';
 import { Nft } from 'types/Nft';
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 function NftDetailAudio({ nft }: Props) {
   return (
     <StyledAudioContainer>
-      <StyledImage src={nft.imageUrl} />
+      <ImageWithShimmer src={nft.imageUrl} alt={nft.name} />
       <StyledAudio
         controls
         loop
