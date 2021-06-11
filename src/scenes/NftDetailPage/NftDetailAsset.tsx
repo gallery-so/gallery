@@ -8,6 +8,7 @@ import { Nft } from 'types/Nft';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
+import ImageWithShimmer from 'components/ImageWithShimmer/ImageWithShimmer';
 
 type Props = {
   nft: Nft;
@@ -39,7 +40,7 @@ function NftDetailAsset({ nft }: Props) {
     const assetType = getMediaType(nft);
     switch (assetType) {
       case NftMediaType.IMAGE:
-        return <StyledImage src={nft.imageUrl} />;
+        return <StyledImageWithShimmer src={nft.imageUrl} alt={nft.name} />;
       case NftMediaType.AUDIO:
         return <NftDetailAudio nft={nft} />;
       case NftMediaType.VIDEO:
@@ -62,7 +63,7 @@ const StyledAssetContainer = styled.div`
   }
 `;
 
-const StyledImage = styled.img`
+const StyledImageWithShimmer = styled(ImageWithShimmer)`
   width: 100%;
 `;
 
