@@ -22,7 +22,6 @@ function NftDetailPage({
   const handleBackClick = useCallback(() => {
     // TODO this works but leaves trailing slash
     // navigate('..');
-
     navigate(`/${window.location.pathname.split('/')[1]}`);
   }, []);
 
@@ -38,6 +37,8 @@ function NftDetailPage({
 
   // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId || '' });
+
+  console.log({ nft });
 
   if (!nft) {
     return <Redirect to="/404" />;
@@ -97,14 +98,15 @@ const StyledContentContainer = styled.div`
     width: initial;
   }
 `;
+
 const StyledNftDetailPage = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 0 ${pageGutter.mobile}px;
+  margin: 0 ${pageGutter.mobile}px 80px ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
+    margin: 0 ${pageGutter.tablet}px 80px ${pageGutter.tablet}px;
   }
 `;
 
