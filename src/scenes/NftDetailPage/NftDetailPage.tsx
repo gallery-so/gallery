@@ -8,6 +8,7 @@ import NftDetailLabel from './NftDetailLabel';
 import NftDetailAsset from './NftDetailAsset';
 
 import useNft from 'hooks/api/useNft';
+import Page from 'components/core/Page/Page';
 
 type Params = {
   collectionId: string;
@@ -99,14 +100,11 @@ const StyledContentContainer = styled.div`
   }
 `;
 
-const StyledNftDetailPage = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  margin: 0 ${pageGutter.mobile}px 80px ${pageGutter.mobile}px;
+const StyledNftDetailPage = styled(Page)`
+  margin: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px 80px ${pageGutter.tablet}px;
+    margin: 0 ${pageGutter.tablet}px;
   }
 `;
 
