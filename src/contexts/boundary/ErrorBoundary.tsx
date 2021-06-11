@@ -1,8 +1,8 @@
+import { Component } from 'react';
 import { Subdisplay } from 'components/core/Text/Text';
-import React from 'react';
-import styled from 'styled-components';
+import Page from 'components/core/Page/Page';
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
   state = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error) {
@@ -15,27 +15,18 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <StyledErrorView>
+        <Page centered withRoomForFooter={false}>
           <Subdisplay>
             {
               // @ts-ignore
               this.state.error?.message ?? 'There was an error'
             }
           </Subdisplay>
-        </StyledErrorView>
+        </Page>
       );
     }
     return this.props.children;
   }
 }
-
-const StyledErrorView = styled.div`
-  width: 100vw;
-  height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 export default ErrorBoundary;

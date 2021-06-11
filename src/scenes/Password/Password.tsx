@@ -6,6 +6,7 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
+import Page from 'components/core/Page/Page';
 
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import usePersistedState from 'hooks/usePersistedState';
@@ -71,7 +72,7 @@ function Password(_: RouteComponentProps) {
   }
 
   return (
-    <StyledPassword>
+    <Page centered withRoomForFooter={false}>
       <Display caps>Gallery</Display>
       <Spacer height={8} />
       <BodyRegular>Show your collection to the world</BodyRegular>
@@ -92,17 +93,9 @@ function Password(_: RouteComponentProps) {
         text="Enter"
         onClick={handleEnterGallery}
       />
-    </StyledPassword>
+    </Page>
   );
 }
-
-const StyledPassword = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
 
 const INPUT_WIDTH = 203;
 

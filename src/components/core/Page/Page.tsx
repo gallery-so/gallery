@@ -26,15 +26,15 @@ function Page({
   );
 }
 
+export const fullPageHeightWithoutFooter = `calc(100vh - ${FOOTER_HEIGHT_PX}px)`;
+
 const StyledPage = styled.div<Props>`
   display: flex;
   flex-direction: column;
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
-  min-height: calc(
-    100vh -
-      ${({ withRoomForFooter }) => (withRoomForFooter ? FOOTER_HEIGHT_PX : 0)}px
-  );
+  min-height: ${({ withRoomForFooter }) =>
+    withRoomForFooter ? fullPageHeightWithoutFooter : '100vh'};
 `;
 
 export default Page;

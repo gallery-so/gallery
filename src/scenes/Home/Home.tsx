@@ -6,6 +6,7 @@ import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
+import Page from 'components/core/Page/Page';
 
 function Home(_: RouteComponentProps) {
   // whether the user has entered the correct password
@@ -22,7 +23,7 @@ function Home(_: RouteComponentProps) {
   }
 
   return (
-    <StyledHome>
+    <Page centered withRoomForFooter={false}>
       <Display caps>GALLERY</Display>
       <Spacer height={8} />
       <BodyRegular color={colors.gray50}>
@@ -30,17 +31,9 @@ function Home(_: RouteComponentProps) {
       </BodyRegular>
       <Spacer height={24} />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
-    </StyledHome>
+    </Page>
   );
 }
-
-const StyledHome = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
 
 const StyledButton = styled(Button)`
   width: 200px;

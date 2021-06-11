@@ -39,8 +39,6 @@ function NftDetailPage({
   // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId || '' });
 
-  console.log({ nft });
-
   if (!nft) {
     return <Redirect to="/404" />;
   }
