@@ -1,7 +1,7 @@
 import { Location, Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
-import GlobalNavbar from 'components/GlobalNavbar/GlobalNavbar';
-import GlobalFooter from 'components/GlobalFooter/GlobalFooter';
+import GlobalNavbar from 'components/core/Page/Navbar';
+import GlobalFooter from 'components/core/Page/Footer';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';

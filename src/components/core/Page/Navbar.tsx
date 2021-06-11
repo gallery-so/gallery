@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import LoggedOutNav from './LoggedOutNav';
-import LoggedInNav from './LoggedInNav';
+import LoggedOutNav from '../../GlobalNavbar/LoggedOutNav';
+import LoggedInNav from '../../GlobalNavbar/LoggedInNav';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 

@@ -34,14 +34,18 @@ function GlobalFooter() {
   );
 }
 
+export const FOOTER_HEIGHT_PX = 112;
+
 const StyledGlobalFooter = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 32px ${pageGutter.mobile}px 16px;
+  height: ${FOOTER_HEIGHT_PX}px;
+
+  padding: 32px ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 32px ${pageGutter.tablet}px 16px;
+    padding: 32px ${pageGutter.tablet}px;
   }
 `;
 
