@@ -1,4 +1,4 @@
-import { FormEvent, useCallback } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
@@ -31,12 +31,19 @@ function UserInfoForm({
   onBioChange,
   mode = 'Add',
 }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = useCallback(
-    (event: FormEvent) => {
+    async (event: FormEvent) => {
       event.preventDefault();
-      onSubmit?.();
+      if (isSubmitting) {
+        return;
+      }
+      setIsSubmitting(true);
+      await onSubmit?.();
+      setIsSubmitting(false);
     },
-    [onSubmit]
+    [isSubmitting, onSubmit]
   );
 
   const handleUsernameChange = useCallback(
