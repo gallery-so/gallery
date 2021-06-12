@@ -1,23 +1,12 @@
-import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import React from 'react';
 import { SWRConfig } from 'swr';
 import { MINUTE } from 'utils/time';
+import fetcher from './fetcher';
 import { syncWithLocalStorage } from './swr-sync-storage';
 
-const baseurl =
-  process.env.ENV === 'production'
-    ? 'https://api.gallery.so'
-    : 'http://localhost:3000/api';
-
 export const SwrProvider = React.memo(({ children }) => {
-  const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
-
-  const requestOptions: RequestInit = localJwt
-    ? { headers: { Authentication: `Bearer: ${localJwt}` } }
-    : {};
   const value = {
-    fetcher: (path: string) =>
-      fetch(`${baseurl}/glry/v1${path}`, requestOptions).then((r) => r.json()),
+    fetcher,
     refreshInterval: 5 * MINUTE,
     suspense: true,
   };
