@@ -13,13 +13,13 @@ function getBaseUrl() {
 }
 
 function getPathRewrite() {
-  return process.env.ENV === process.env.BASEURL_LOCAL
+  return process.env.ENV === 'local'
     ? {
-        // when hitting local express proxy from localhost, drop `/api/glry/v1` from path prefix
-        '^/api/glry/v1': '/',
+        // when localhost => local express proxy, drop `/api/glry/v1` from path prefix
+        '^/api/glry/v1/': '/',
       }
     : {
-        // when hitting dev or production from localhost, drop `/api` from path prefix
+        // when localhost => dev or production, drop `/api` from path prefix
         '^/api': '/',
       };
 }
