@@ -12,6 +12,18 @@ function getBaseUrl() {
   }
 }
 
+function getPathRewrite() {
+  return process.env.ENV === process.env.BASEURL_LOCAL
+    ? {
+        // when hitting local express proxy from localhost, drop `/api/glry/v1` from path prefix
+        '^/api/glry/v1': '/',
+      }
+    : {
+        // when hitting dev or production from localhost, drop `/api` from path prefix
+        '^/api': '/',
+      };
+}
+
 const baseurl = getBaseUrl();
 
 module.exports = function (app) {
@@ -20,10 +32,7 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: baseurl,
       changeOrigin: true,
-      pathRewrite: {
-        // drop `/api/glry/v1` from path prefix
-        '^/api/glry/v1': '/',
-      },
+      pathRewrite: getPathRewrite(),
     })
   );
 };
