@@ -11,7 +11,12 @@ import {
   useMemo,
 } from 'react';
 import { LoggedInState, LOADING, LOGGED_OUT, UNKNOWN } from './types';
-import { JWT_LOCAL_STORAGE_KEY, USER_ID_LOCAL_STORAGE_KEY } from './constants';
+import {
+  JWT_LOCAL_STORAGE_KEY,
+  PASSWORD_LOCAL_STORAGE_KEY,
+  USER_ID_LOCAL_STORAGE_KEY,
+} from './constants';
+import clearLocalStorageWithException from './clearLocalStorageWithException';
 
 export type AuthState =
   | LoggedInState
@@ -62,7 +67,7 @@ const AuthProvider = memo(({ children }: Props) => {
      * visited (including their own). In the future, we should clear data more
      * selectively (such as only sensitive data)
      */
-    localStorage.clear();
+    clearLocalStorageWithException([PASSWORD_LOCAL_STORAGE_KEY]);
   }, [setToken, setUserId]);
 
   const logIn = useCallback(

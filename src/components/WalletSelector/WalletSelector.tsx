@@ -13,7 +13,8 @@ import Button from 'components/core/Button/Button';
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
-  WalletLink: walletlink,
+  // TODO: enable wallet link once signature decoding is supported
+  // WalletLink: walletlink,
 };
 
 type ErrorCode = string;
@@ -29,6 +30,10 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   '4001': {
     heading: 'Authorization denied',
     body: 'Please authorize the app to log in.',
+  },
+  UNSUPPORTED_CHAIN: {
+    heading: 'Authorization error',
+    body: 'The selected chain is unsupported. Plase check your wallet.',
   },
   REJECTED_SIGNATURE: {
     heading: 'Signature required',
@@ -66,14 +71,21 @@ function WalletSelector() {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    // @ts-ignore
-    console.log('the error from provider', error, error?.code);
+    console.log('login error from provider', {
+      error,
+      // @ts-ignore
+      code: error?.code,
+      name: error?.name,
+    });
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
     if (!errorToDisplay) return null;
     if (!errorToDisplay.code) {
       // manually handle error cases as we run into them with wallets
       if (errorToDisplay.name === 'UserRejectedRequestError') {
         errorToDisplay.code = '4001';
+      }
+      if (errorToDisplay.name === 'UnsupportedChainIdError') {
+        errorToDisplay.code = 'UNSUPPORTED_CHAIN';
       }
     }
     const parsedError = getErrorMessage(errorToDisplay.code ?? '');
