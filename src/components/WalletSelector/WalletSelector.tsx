@@ -13,7 +13,8 @@ import Button from 'components/core/Button/Button';
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
-  WalletLink: walletlink,
+  // TODO: enable wallet link once signature decoding is supported
+  // WalletLink: walletlink,
 };
 
 type ErrorCode = string;
@@ -192,6 +193,7 @@ const signMessageAndAuthenticate = async (
   let signature;
   try {
     signature = await signer.signMessage(nonce);
+    console.log({ signature });
   } catch (err: any) {
     console.log('error while signing', err);
     err.code = 'REJECTED_SIGNATURE';
