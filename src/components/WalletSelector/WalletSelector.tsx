@@ -193,7 +193,6 @@ const signMessageAndAuthenticate = async (
   let signature;
   try {
     signature = await signer.signMessage(nonce);
-    console.log({ signature });
   } catch (err: any) {
     console.log('error while signing', err);
     err.code = 'REJECTED_SIGNATURE';
