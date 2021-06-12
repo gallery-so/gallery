@@ -2,6 +2,8 @@ import { CSSProperties, memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './transition.css';
 
+import { fullPageHeightWithoutFooter } from 'components/core/Page/Page';
+
 type Props = {
   nodeKey?: string;
   children: React.ReactNode;
@@ -20,7 +22,7 @@ const childNodeStyles = {
   width: '100%',
 };
 
-const transitionGroupStyles = { minHeight: '100vh' };
+const transitionGroupStyles = { minHeight: fullPageHeightWithoutFooter };
 
 /**
  * Fades child elements in and out as they mount/unmount.

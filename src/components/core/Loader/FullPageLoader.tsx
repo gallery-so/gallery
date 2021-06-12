@@ -1,19 +1,10 @@
-import styled from 'styled-components';
+import Page from '../Page/Page';
 import Loader from './Loader';
 
 export default function FullPageLoader() {
   return (
-    <StyledFullPageLoader>
+    <Page centered withRoomForFooter={false}>
       <Loader size="large" extraThicc />
-    </StyledFullPageLoader>
+    </Page>
   );
 }
-
-const StyledFullPageLoader = styled.div`
-  width: 100vw;
-  height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;

@@ -146,7 +146,7 @@ const MOCK_DB = {
       nfts: [VIDEO_NFT],
     },
     {
-      id: 'cjoidj14lj#pz3zz98!5ynkff!33',
+      id: 'cjoidj14ljpz3zz98!5ynkff!33',
       ownerUserId: 'PAoGbFB6OQtZ6mWI/BYyLA==',
       name: 'Punks',
       description: 'This is all punks',

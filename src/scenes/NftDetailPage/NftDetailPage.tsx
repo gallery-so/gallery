@@ -8,6 +8,7 @@ import NftDetailLabel from './NftDetailLabel';
 import NftDetailAsset from './NftDetailAsset';
 
 import useNft from 'hooks/api/useNft';
+import Page from 'components/core/Page/Page';
 
 type Params = {
   collectionId: string;
@@ -22,7 +23,6 @@ function NftDetailPage({
   const handleBackClick = useCallback(() => {
     // TODO this works but leaves trailing slash
     // navigate('..');
-
     navigate(`/${window.location.pathname.split('/')[1]}`);
   }, []);
 
@@ -97,10 +97,8 @@ const StyledContentContainer = styled.div`
     width: initial;
   }
 `;
-const StyledNftDetailPage = styled.div`
-  display: flex;
-  flex-direction: column;
 
+const StyledNftDetailPage = styled(Page)`
   margin: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {

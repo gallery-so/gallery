@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
+import Page from 'components/core/Page/Page';
 
 function NotFound(_: RouteComponentProps) {
   return (
-    <StyledNotFound>
+    <Page>
       <Display>404</Display>
       <Spacer height={8} />
       <BodyRegular>Unfortunately, there's not much to see here.</BodyRegular>
@@ -15,17 +16,9 @@ function NotFound(_: RouteComponentProps) {
       <Link to="/">
         <StyledButton text="Take me back" />
       </Link>
-    </StyledNotFound>
+    </Page>
   );
 }
-
-const StyledNotFound = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
 
 const StyledButton = styled(Button)`
   padding: 0px 24px;

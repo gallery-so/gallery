@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import styled from 'styled-components';
 
 import { RouteComponentProps, Redirect } from '@reach/router';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
+import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
 
@@ -28,17 +28,10 @@ function Auth(_: RouteComponentProps) {
   }
 
   return (
-    <StyledAuth>
+    <Page centered withRoomForFooter={false}>
       <WalletSelector />
-    </StyledAuth>
+    </Page>
   );
 }
-
-const StyledAuth = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
 
 export default memo(Auth);
