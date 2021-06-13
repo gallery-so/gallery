@@ -1,4 +1,4 @@
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
@@ -9,6 +9,7 @@ import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
 import { TitleMedium, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
+import initializeAuthPipeline from './authRequestUtils';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -79,6 +80,14 @@ function WalletSelector() {
     });
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
     if (!errorToDisplay) return null;
+    // handle error from server
+    if (errorToDisplay.code === 'GALLERY_SERVER_ERROR') {
+      return {
+        heading: 'Authorization error',
+        body: errorToDisplay.message,
+      };
+    }
+    // handle error from web3 lib
     if (!errorToDisplay.code) {
       // manually handle error cases as we run into them with wallets
       if (errorToDisplay.name === 'UserRejectedRequestError') {
@@ -110,16 +119,23 @@ function WalletSelector() {
   const { logIn } = useAuthActions();
 
   useEffect(() => {
-    // TODO: when hooking up to the server, make sure this only runs a single time
-    if (account && isPending && signer) {
-      signMessageAndAuthenticate(account, signer)
-        .then(({ jwt, userId }) => logIn({ jwt, userId }))
-        .catch((err) => {
+    async function authenticate() {
+      // TODO: when hooking up to the server, make sure this only runs a single time
+      if (account && isPending && signer) {
+        try {
+          const { jwt, userId } = await initializeAuthPipeline({
+            address: account,
+            signer,
+          });
+          logIn({ jwt, userId });
+        } catch (err) {
           setDetectedError(err);
           setIsPending(false);
-          return;
-        });
+        }
+      }
     }
+
+    authenticate();
   }, [account, isPending, logIn, signer]);
 
   /**
@@ -171,54 +187,6 @@ function WalletSelector() {
     </StyledWalletSelector>
   );
 }
-
-const signMessageAndAuthenticate = async (
-  address: string,
-  signer: JsonRpcSigner
-) => {
-  console.log('Will log in with address: ', address);
-  // Get nonce for wallet address from backend
-  // simulate retrieving nonce from backend for now
-  const nonce: string = await new Promise<string>((resolve) => {
-    setTimeout(() => {
-      resolve('testNonceValue');
-    }, 500);
-  }).catch((err) => {
-    // TODO: throw server error and add to error map
-    throw new Error('Error getting nonce');
-  });
-  console.log('Retrieved nonce: ', nonce);
-  // Request user to sign message so we can authenticate and get jwt from backend
-
-  let signature;
-  try {
-    signature = await signer.signMessage(nonce);
-  } catch (err: any) {
-    console.log('error while signing', err);
-    err.code = 'REJECTED_SIGNATURE';
-    throw err;
-  }
-
-  let jwt;
-  try {
-    const response = new Promise<string>((resolve, reject) => {
-      // simulate sending signature in exchange for jwt from backend for now
-      setTimeout(() => {
-        resolve('testJwt');
-      }, 500);
-    });
-    jwt = await response;
-  } catch (e) {
-    // TODO: throw server error and add to error map
-    throw new Error('Error getting nonce');
-  }
-
-  if (!jwt) {
-    // TODO: handle error exchanging signature for jwt
-    throw new Error('no jwt received from backend');
-  }
-  return { jwt, userId: 'PAoGbFB6OQtZ6mWI/BYyLA==' };
-};
 
 const StyledWalletSelector = styled.div`
   text-align: center;
