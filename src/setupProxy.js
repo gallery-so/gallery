@@ -6,6 +6,8 @@ function getBaseUrl() {
       return process.env.BASEURL_PRODUCTION;
     case 'dev':
       return process.env.BASEURL_DEVELOPMENT;
+    case 'hack':
+      return process.env.BASEURL_HACK;
     case 'local':
     default:
       return process.env.BASEURL_LOCAL;
