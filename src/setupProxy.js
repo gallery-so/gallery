@@ -6,10 +6,24 @@ function getBaseUrl() {
       return process.env.BASEURL_PRODUCTION;
     case 'dev':
       return process.env.BASEURL_DEVELOPMENT;
+    case 'hack':
+      return process.env.BASEURL_HACK;
     case 'local':
     default:
       return process.env.BASEURL_LOCAL;
   }
+}
+
+function getPathRewrite() {
+  return process.env.ENV === 'local'
+    ? {
+        // when localhost => local express proxy, drop `/api/glry/v1` from path prefix
+        '^/api/glry/v1/': '/',
+      }
+    : {
+        // when localhost => dev or production, drop `/api` from path prefix
+        '^/api': '/',
+      };
 }
 
 const baseurl = getBaseUrl();
@@ -20,10 +34,7 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: baseurl,
       changeOrigin: true,
-      pathRewrite: {
-        // drop `/api/glry/v1` from path prefix
-        '^/api/glry/v1': '/',
-      },
+      pathRewrite: getPathRewrite(),
     })
   );
 };
@@ -179,7 +190,7 @@ function initializeMockServer() {
     if (query.id) {
       const user = MOCK_DB.users.find((user) => user.id === query.id);
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
@@ -188,14 +199,14 @@ function initializeMockServer() {
         (user) => user.username === query.username
       );
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
     if (query.address) {
       const user = MOCK_DB.users.find((user) => user.address === query.address);
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
@@ -220,7 +231,9 @@ function initializeMockServer() {
     );
     if (collectionsForUser.length) {
       res.json({
-        collections: collectionsForUser,
+        data: {
+          collections: collectionsForUser,
+        },
       });
       return;
     }
@@ -239,6 +252,42 @@ function initializeMockServer() {
       return;
     }
     res.json(nft);
+    return;
+  });
+
+  mockServer.get('/auth/get_preflight', (req, res) => {
+    const { query } = req;
+    console.log(query);
+    res.json({
+      data: {
+        nonce: '1234',
+        user_exists: false,
+      },
+    });
+    return;
+  });
+
+  mockServer.post('/users/login', (req, res) => {
+    const { query } = req;
+    res.json({
+      data: {
+        sig_valid: true,
+        jwt_token: 'token',
+        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
+      },
+    });
+    return;
+  });
+
+  mockServer.post('/users/create', (req, res) => {
+    const { query } = req;
+    res.json({
+      data: {
+        sig_valid: true,
+        jwt_token: 'token',
+        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
+      },
+    });
     return;
   });
 }

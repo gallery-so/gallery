@@ -90,6 +90,7 @@
   },
   "scripts": {
     "start": "ENV=local node scripts/start.js",
+    "start:hack": "ENV=hack node scripts/start.js",
     "start:dev": "ENV=dev node scripts/start.js",
     "start:prod": "ENV=production node scripts/start.js",
     "build": "CI=false node scripts/build.js",
