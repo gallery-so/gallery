@@ -190,7 +190,7 @@ function initializeMockServer() {
     if (query.id) {
       const user = MOCK_DB.users.find((user) => user.id === query.id);
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
@@ -199,14 +199,14 @@ function initializeMockServer() {
         (user) => user.username === query.username
       );
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
     if (query.address) {
       const user = MOCK_DB.users.find((user) => user.address === query.address);
       if (user) {
-        res.json(user);
+        res.json({ data: user });
         return;
       }
     }
@@ -231,7 +231,9 @@ function initializeMockServer() {
     );
     if (collectionsForUser.length) {
       res.json({
-        collections: collectionsForUser,
+        data: {
+          collections: collectionsForUser,
+        },
       });
       return;
     }
@@ -250,6 +252,42 @@ function initializeMockServer() {
       return;
     }
     res.json(nft);
+    return;
+  });
+
+  mockServer.get('/auth/get_preflight', (req, res) => {
+    const { query } = req;
+    console.log(query);
+    res.json({
+      data: {
+        nonce: '1234',
+        user_exists: false,
+      },
+    });
+    return;
+  });
+
+  mockServer.post('/users/login', (req, res) => {
+    const { query } = req;
+    res.json({
+      data: {
+        sig_valid: true,
+        jwt_token: 'token',
+        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
+      },
+    });
+    return;
+  });
+
+  mockServer.post('/users/create', (req, res) => {
+    const { query } = req;
+    res.json({
+      data: {
+        sig_valid: true,
+        jwt_token: 'token',
+        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
+      },
+    });
     return;
   });
 }

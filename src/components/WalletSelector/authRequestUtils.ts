@@ -53,7 +53,7 @@ async function fetchNonce(address: string): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(`/auth/get_preflight?addr=${address}`);
   } catch (err) {
-    console.log('error while retrieving nonce', err);
+    console.error('error while retrieving nonce', err);
     err.code = 'GALLERY_SERVER_ERROR';
     throw err;
   }
@@ -73,7 +73,7 @@ async function signMessage(
   try {
     return await signer.signMessage(nonce);
   } catch (err) {
-    console.log('error while signing message', err);
+    console.error('error while signing message', err);
     err.code = 'REJECTED_SIGNATURE';
     throw err;
   }
@@ -97,7 +97,7 @@ async function loginUser(body: LoginUserRequest): Promise<LoginUserResponse> {
   try {
     return await fetcher<LoginUserResponse>('/users/login', body);
   } catch (err) {
-    console.log('error while attempting user login', err);
+    console.error('error while attempting user login', err);
     err.code = 'GALLERY_SERVER_ERROR';
     throw err;
   }
@@ -124,7 +124,7 @@ async function createUser(
   try {
     return await fetcher<CreateUserResponse>('/users/create', body);
   } catch (err) {
-    console.log('error while attempting user creation', err);
+    console.error('error while attempting user creation', err);
     err.code = 'GALLERY_SERVER_ERROR';
     throw err;
   }

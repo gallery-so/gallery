@@ -72,7 +72,7 @@ function WalletSelector() {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    console.log('login error from provider', {
+    console.error('login error from provider', {
       error,
       // @ts-ignore
       code: error?.code,
