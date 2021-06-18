@@ -8,7 +8,7 @@ import { Nft } from 'types/Nft';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
-import ImageWithShimmer from 'components/ImageWithShimmer/ImageWithShimmer';
+import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 
 type Props = {
   nft: Nft;
@@ -38,9 +38,10 @@ const getMediaType = (nft: Nft) => {
 function NftDetailAsset({ nft }: Props) {
   const getAssetComponent = useMemo(() => {
     const assetType = getMediaType(nft);
+    console.log({ assetType });
     switch (assetType) {
       case NftMediaType.IMAGE:
-        return <StyledImageWithShimmer src={nft.imageUrl} alt={nft.name} />;
+        return <ImageWithLoading src={nft.imageUrl} alt={nft.name} />;
       case NftMediaType.AUDIO:
         return <NftDetailAudio nft={nft} />;
       case NftMediaType.VIDEO:
@@ -61,10 +62,6 @@ const StyledAssetContainer = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: 600px;
   }
-`;
-
-const StyledImageWithShimmer = styled(ImageWithShimmer)`
-  width: 100%;
 `;
 
 export default NftDetailAsset;

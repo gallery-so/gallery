@@ -4,11 +4,12 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
-import NftDetailLabel from './NftDetailLabel';
+import NftDetailText from './NftDetailText';
 import NftDetailAsset from './NftDetailAsset';
 
 import useNft from 'hooks/api/useNft';
 import Page from 'components/core/Page/Page';
+import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 
 type Params = {
   collectionId: string;
@@ -56,8 +57,10 @@ function NftDetailPage({
           ></NavigationHandle>
         )} */}
         <StyledContentContainer>
-          <NftDetailAsset nft={nft} />
-          <NftDetailLabel nft={nft} />
+          <ShimmerProvider>
+            <NftDetailAsset nft={nft} />
+          </ShimmerProvider>
+          <NftDetailText nft={nft} />
         </StyledContentContainer>
         {/* {nextNftId && (
           <NavigationHandle
