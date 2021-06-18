@@ -57,8 +57,18 @@ const AuthProvider = memo(({ children }: Props) => {
   const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
 
-  const logOut = useCallback(() => {
+  /**
+   * Only sets the user state to logged out.
+   */
+  const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
+  }, []);
+
+  /**
+   * Fully logs user out and clears storage.
+   */
+  const logOut = useCallback(() => {
+    setLoggedOut();
     setToken('');
     setUserId('');
     /**
@@ -68,7 +78,7 @@ const AuthProvider = memo(({ children }: Props) => {
      * selectively (such as only sensitive data)
      */
     clearLocalStorageWithException([PASSWORD_LOCAL_STORAGE_KEY]);
-  }, [setToken, setUserId]);
+  }, [setToken, setUserId, setLoggedOut]);
 
   const logIn = useCallback(
     async (payload: LoggedInState) => {
@@ -100,13 +110,13 @@ const AuthProvider = memo(({ children }: Props) => {
           logIn({ jwt: token, userId });
           return;
         }
-        logOut();
+        setLoggedOut();
       }
       if (authState === UNKNOWN) {
         loadAuthState();
       }
     },
-    [authState, logIn, logOut, token, userId]
+    [authState, logIn, setLoggedOut, token, userId]
   );
 
   const authActions: AuthActions = useMemo(
