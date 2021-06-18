@@ -3,10 +3,11 @@ import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 import NftPreviewLabel from './NftPreviewLabel';
 import Gradient from 'components/core/Gradient/Gradient';
-import ImageWithShimmer from 'components/ImageWithShimmer/ImageWithShimmer';
+import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import transitions from 'components/core/transitions';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { navigate } from '@reach/router';
+import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 
@@ -29,28 +30,16 @@ function NftPreview({ nft, collectionId, gap }: Props) {
     navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
   }, [collectionId, nft.id]);
 
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const handleLoadComplete = useCallback(() => {
-    setImageLoaded(true);
-  }, []);
-
   return (
     <StyledNftPreview key={nft.id} gap={gap}>
       <StyledLinkWrapper onClick={handleNftClick}>
-        {/* TODO: we should either show StyledNftPreview in its entirety OR ImageWithShimmer
-            could be improved by having ParentWithShimmer that can wrap any child */}
-        <ImageWithShimmer
-          src={imgUrl}
-          alt={nft.name}
-          onLoadComplete={handleLoadComplete}
-        />
-        {imageLoaded ? (
+        <ShimmerProvider>
+          <ImageWithLoading src={imgUrl} alt={nft.name} />
           <StyledNftFooter>
             <StyledNftLabel nft={nft} />
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>
-        ) : null}
+        </ShimmerProvider>
       </StyledLinkWrapper>
     </StyledNftPreview>
   );
