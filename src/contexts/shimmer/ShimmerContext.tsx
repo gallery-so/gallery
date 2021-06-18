@@ -13,9 +13,9 @@ type ShimmerAction = {
   setContentIsLoaded: () => void;
 };
 
-const ShimmerActionContext = createContext<ShimmerAction>({
-  setContentIsLoaded: () => {},
-});
+const ShimmerActionContext = createContext<ShimmerAction | undefined>(
+  undefined
+);
 
 export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => {
   const context = useContext(ShimmerActionContext);
