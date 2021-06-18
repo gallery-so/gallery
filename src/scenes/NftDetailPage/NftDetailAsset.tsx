@@ -38,7 +38,6 @@ const getMediaType = (nft: Nft) => {
 function NftDetailAsset({ nft }: Props) {
   const getAssetComponent = useMemo(() => {
     const assetType = getMediaType(nft);
-    console.log({ assetType });
     switch (assetType) {
       case NftMediaType.IMAGE:
         return <ImageWithLoading src={nft.imageUrl} alt={nft.name} />;
