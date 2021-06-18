@@ -10,7 +10,7 @@ type Props = {
   nft: Nft;
 };
 
-function NftDetailLabel({ nft }: Props) {
+function NftDetailText({ nft }: Props) {
   return (
     <StyledDetailLabel>
       <Heading>{nft.name}</Heading>
@@ -47,4 +47,4 @@ const StyledNftDescription = styled(BodyRegular)`
   white-space: pre-line;
 `;
 
-export default NftDetailLabel;
+export default NftDetailText;

@@ -251,7 +251,7 @@ function initializeMockServer() {
       });
       return;
     }
-    res.json(nft);
+    res.json({ data: nft });
     return;
   });
 
