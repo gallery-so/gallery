@@ -13,18 +13,20 @@ function Auth(_: RouteComponentProps) {
   // whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
   const user = useAuthenticatedUser();
-  const userExists = !!user;
-
-  if (isAuthenticated) {
-    // if user exists in DB, send them to their profile
-    if (userExists) return <Redirect to={`/${user?.username}`} />;
-    // if user is authenticated but doesn't have an account with us yet,
-    // take them through the welcome flow
-    return <Redirect noThrow to="/welcome" />;
-  }
+  const username = user?.username;
 
   if (!isPasswordValidated) {
     return <Redirect noThrow to="/password" />;
+  }
+
+  if (isAuthenticated) {
+    // if user exists in DB, send them to their profile
+    if (username) return <Redirect to={`/${username}`} />;
+    // if user is authenticated but hasn't set their username yet.
+    // we should continue to take them through the welcome flow. 
+    // this can happen if a user signs up and has a valid jwt but 
+    // hasn't set their username yet.
+    return <Redirect noThrow to="/welcome" />;
   }
 
   return (
