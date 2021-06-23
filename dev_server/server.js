@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const checkPort = require('./checkPort');
-const MOCK_DB = require('./mocks');
+const router = require('./routes');
 
 function getBaseUrl() {
   switch (process.env.ENV) {
@@ -48,7 +48,13 @@ if (process.env.ENV === 'local') {
       console.log('Running against local mock server');
       initializeMockServer();
     })
-    .catch(() => console.log('Running against local backend'));
+    .catch((e) => {
+      if (e.code === 'EADDRINUSE') {
+        console.log('Running against local backend');
+        return;
+      }
+      console.log('Error initializing mock server:', e);
+    });
 }
 
 function initializeMockServer() {
@@ -57,6 +63,7 @@ function initializeMockServer() {
   const port = process.env.SERVER_PORT;
 
   mockServer.use(function (req, res, next) {
+    // artificial latency
     setTimeout(next, 1000);
   });
 
@@ -69,109 +76,5 @@ function initializeMockServer() {
     res.send('test server is live');
   });
 
-  mockServer.get('/users/get', (req, res) => {
-    const { query } = req;
-    if (query.id) {
-      const user = MOCK_DB.users.find((user) => user.id === query.id);
-      if (user) {
-        res.json({ data: user });
-        return;
-      }
-    }
-    if (query.username) {
-      const user = MOCK_DB.users.find(
-        (user) => user.username === query.username
-      );
-      if (user) {
-        res.json({ data: user });
-        return;
-      }
-    }
-    if (query.address) {
-      const user = MOCK_DB.users.find((user) => user.address === query.address);
-      if (user) {
-        res.json({ data: user });
-        return;
-      }
-    }
-    res.json({
-      error: 'ERR_USER_NOT_FOUND',
-    });
-  });
-
-  mockServer.get('/collections/get', (req, res) => {
-    const { query } = req;
-    // TODO
-    // return hidden collections if req.get('Authentication') matches the requested user
-    const user = MOCK_DB.users.find((user) => user.username === query.username);
-    if (!user) {
-      res.json({
-        error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
-      });
-      return;
-    }
-    const collectionsForUser = MOCK_DB.collections.filter(
-      (collection) => collection.ownerUserId === user.id
-    );
-    if (collectionsForUser.length) {
-      res.json({
-        data: {
-          collections: collectionsForUser,
-        },
-      });
-      return;
-    }
-    res.json({
-      error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
-    });
-  });
-
-  mockServer.get('/nfts/get', (req, res) => {
-    const { query } = req;
-    const nft = MOCK_DB.nfts.find((nft) => nft.id === query.id);
-    if (!nft) {
-      res.json({
-        error: 'ERR_NFT_NOT_FOUND',
-      });
-      return;
-    }
-    res.json({ data: nft });
-    return;
-  });
-
-  mockServer.get('/auth/get_preflight', (req, res) => {
-    const { query } = req;
-    console.log(query);
-    res.json({
-      data: {
-        nonce: '1234',
-        user_exists: false,
-      },
-    });
-    return;
-  });
-
-  mockServer.post('/users/login', (req, res) => {
-    const { query } = req;
-    res.json({
-      data: {
-        sig_valid: true,
-        jwt_token: 'token',
-        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
-      },
-    });
-    return;
-  });
-
-  mockServer.post('/users/create', (req, res) => {
-    const { query } = req;
-    res.json({
-      data: {
-        sig_valid: true,
-        jwt_token: 'token',
-        user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
-      },
-    });
-    return;
-  });
+  mockServer.use('/glry/v1', router);
 }
