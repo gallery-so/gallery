@@ -1,4 +1,5 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const checkPort = require('./checkPort');
 
 function getBaseUrl() {
   switch (process.env.ENV) {
@@ -50,7 +51,12 @@ module.exports = function (app) {
  *       this will probably just be an extra flag when starting the app
  */
 if (process.env.ENV === 'local') {
-  initializeMockServer();
+  checkPort(process.env.SERVER_PORT)
+    .then(() => {
+      console.log('Running against local mock server');
+      initializeMockServer();
+    })
+    .catch(() => console.log('Running against local backend'));
 }
 
 const IMAGE_NFT = {
@@ -170,7 +176,7 @@ const MOCK_DB = {
 function initializeMockServer() {
   const express = require('express');
   const mockServer = express();
-  const port = 4000;
+  const port = process.env.SERVER_PORT;
 
   mockServer.use(function (req, res, next) {
     setTimeout(next, 1000);
