@@ -4,7 +4,7 @@ The premier gallery experience for your NFTs.
 
 ~ v1 COMING SOON ~
 
-## Pre
+## Pre set up:
 
 1. Install Yarn
     - [https://classic.yarnpkg.com/en/docs/install](https://classic.yarnpkg.com/en/docs/install)
@@ -12,11 +12,15 @@ The premier gallery experience for your NFTs.
 
 ## Set up
 
-1. Navigate to gallery directory in terminal
+1. Navigate to gallery directory
+2. Install dependencies:
+```bash
+$ yarn
+```
+2. Start app:
+```bash
+$ yarn start
+```
+The app will be available on localhost:3000.
 
-## 1) Local Dev
 
-1. Install dependencies
-    - `yarn`
-2. Start app
-    - `yarn start`
