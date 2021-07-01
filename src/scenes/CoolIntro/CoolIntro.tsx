@@ -1,6 +1,3 @@
-/**
- * TODO__v1: This file should be moved to the onboarding flow
- */
 import { useCallback, useState } from 'react';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
@@ -10,20 +7,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
-// TODO__v1: these pics should be URLs, not local files
-import Pic1 from './__TEMP_PICS__/1.png';
-import Pic2 from './__TEMP_PICS__/2.png';
-import Pic3 from './__TEMP_PICS__/3.png';
-import Pic4 from './__TEMP_PICS__/4.png';
-import Pic5 from './__TEMP_PICS__/5.png';
-import Pic6 from './__TEMP_PICS__/6.png';
-import Pic7 from './__TEMP_PICS__/7.png';
-import Pic8 from './__TEMP_PICS__/8.png';
-import Pic9 from './__TEMP_PICS__/9.png';
-import Pic10 from './__TEMP_PICS__/10.png';
-import Pic11 from './__TEMP_PICS__/11.png';
-import Pic12 from './__TEMP_PICS__/12.png';
-import Pic13 from './__TEMP_PICS__/13.png';
 import { useEffect } from 'react';
 
 const calc = (x: number, y: number) => [
@@ -47,7 +30,8 @@ type AnimatedImage = {
 
 const animatedImages: AnimatedImage[] = [
   {
-    src: Pic8, //chair
+    src:
+      'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', //chair
     width: 180,
     zIndex: -40,
     offsetX: 180,
@@ -57,7 +41,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 800,
   },
   {
-    src: Pic6, //punk
+    src:
+      'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', //punk
     width: 100,
     zIndex: -13,
     offsetX: -105,
@@ -67,7 +52,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: Pic11, //statue
+    src:
+      'https://lh3.googleusercontent.com/Y1IJvZJcWZgtA0YtcLz6gBV4EMA4AkK9s4_qWqMYAly-DOg7c_uGvSEO6gUH0T3Y31g-Ohs4_6vnxMjwD-azlve_7e9awUtQZrduFQ', // Neoclassicism
     width: 280,
     zIndex: -18,
     offsetX: 370,
@@ -77,7 +63,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src: Pic4, //squiggly
+    src:
+      'https://lh3.googleusercontent.com/urYlsZ_9-L407WLT2KC4nTuQtf8iurO09_C4fxve2pZxSKW43npPF9yLCSvbMw9nnZjr8Hegz8HVi413lYUPKXq-8WeEApcxzOWU', //squiggle
     width: 200,
     zIndex: 20,
     offsetX: -150,
@@ -87,7 +74,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: Pic1, //controller
+    src:
+      'https://lh3.googleusercontent.com/rYPQCDn8RIgPafTpnXCtRmmDnBt1jv1FloRNFuRd8XgHha0YAYx-UuFvAhlejHOha3USJORnJnejXZgaFtzX-zUnRtGb8fOB8YWq4w', // Sampler
     width: 200,
     zIndex: 11,
     offsetX: -550,
@@ -97,7 +85,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 1200,
   },
   {
-    src: Pic13, //car
+    src:
+      'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', //Venus
     width: 250,
     zIndex: 37,
     offsetX: -490,
@@ -107,7 +96,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 500,
   },
   {
-    src: Pic7, // trippy
+    src:
+      'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // doge
     width: 220,
     zIndex: 25,
     offsetX: 440,
@@ -117,7 +107,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: Pic12, //billow
+    src:
+      'https://lh3.googleusercontent.com/Ttouv6tE3d4HavomW-N1cq2SPObKtiYrKtO8iZBBI-_dlsqFkiA9lmMOpCY4FFTG4hbnIGBsL9WDAaSDPfYLo8Xt4WJu74QTCkyQJIU', // Pink
     width: 200,
     zIndex: 30,
     offsetX: 80,
@@ -127,7 +118,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src: Pic3, // pray
+    src:
+      'https://ipfs.io/ipfs/QmUttDiQH3utkd5Zcq5J9QjCfpoWXTdYprobcJts22cpxc/1_Satoshiscoin_Gif.gif', // Satoshis Coin
     width: 230,
     zIndex: -11,
     offsetX: -660,
