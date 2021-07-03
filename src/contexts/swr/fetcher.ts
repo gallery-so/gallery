@@ -2,9 +2,9 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import { isErrorResponse } from 'types/ApiResponse';
 
 const baseurl =
-  process.env.ENV === 'production'
-    ? 'https://api.gallery.so'
-    : 'http://localhost:3000/api';
+  process.env.NODE_ENV === 'production'
+    ? process.env.BASEURL_PRODUCTION
+    : '/api';
 
 export default async function fetcher<ResponseData, RequestBody = {}>(
   path: string,
