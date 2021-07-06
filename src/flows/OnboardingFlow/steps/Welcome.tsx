@@ -5,11 +5,10 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
-import CoolIntro from 'scenes/CoolIntro/CoolIntro';
+import WelcomeAnimation from 'scenes/WelcomeAnimation/WelcomeAnimation';
 
 function Welcome({ next }: WizardContext) {
-  // return <WelcomeText next={next} />;
-  return <CoolIntro next={next}></CoolIntro>;
+  return <WelcomeAnimation next={next}></WelcomeAnimation>;
 }
 
 type Props = {

@@ -9,6 +9,8 @@ import { useSpring, animated } from 'react-spring';
 import './intro.css';
 import { useEffect } from 'react';
 
+// the calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
+// example usage: https://codesandbox.io/embed/r5x34869vq
 const calc = (x: number, y: number) => [
   x - window.innerWidth / 2,
   y - window.innerHeight / 2,
@@ -18,13 +20,17 @@ type AnimatedImage = {
   width: number;
   // zIndex is the "depth" of image from viewer's pov.
   // It is used to calculate how the image will move based on mousemovement.
-  // z-index of 0 is essentially the axis of movement. positive values move in one direction, negative values move in opposite.
+  // z-index of 0 is essentially the axis of movement.
   // values can be -100 to 100, with -100 being the furthest from viewer and 100 being closest.
+  // positive values move the image in one direction on mouse movement, negative values move in opposite.
   zIndex: number;
+  // offset is the x or y position of the image after the explosion and they fan out
   offsetX: number;
   offsetY: number;
+  // offset start is the x or y position of the image when they first load in
   offsetXStart: number;
   offsetYStart: number;
+  // delay in ms so that images don't all appear at once
   fadeInDelay: number;
 };
 
@@ -154,7 +160,7 @@ type Props = {
   next: () => void;
 };
 
-export default function CoolIntro({ next }: Props) {
+export default function WelcomeAnimation({ next }: Props) {
   const [props, set] = useSpring(() => ({
     xy: [0, 0],
     config: { mass: 10, tension: 550, friction: 140 },
