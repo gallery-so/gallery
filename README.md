@@ -4,12 +4,16 @@ The premier gallery experience for your NFTs.
 
 ~ v1 COMING SOON ~
 
-## Pre set up:
+## Dev instructions:
+
+### Pre set up:
 
 1. Install Yarn
    - [https://classic.yarnpkg.com/en/docs/install](https://classic.yarnpkg.com/en/docs/install)
 
-## Set up
+
+
+### Set up
 
 1. Navigate to gallery directory
 2. Create a local .env file by copying values from .env.sample:
