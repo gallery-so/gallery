@@ -3,7 +3,6 @@ const checkPort = require('./checkPort');
 const router = require('./routes');
 
 function getBaseUrl() {
-  // return process.env.API_BASE_URL;
   switch (process.env.ENV) {
     case 'production':
       return process.env.BASEURL_PRODUCTION;
