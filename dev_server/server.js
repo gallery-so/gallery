@@ -3,17 +3,18 @@ const checkPort = require('./checkPort');
 const router = require('./routes');
 
 function getBaseUrl() {
-  switch (process.env.ENV) {
-    case 'production':
-      return process.env.BASEURL_PRODUCTION;
-    case 'dev':
-      return process.env.BASEURL_DEVELOPMENT;
-    case 'hack':
-      return process.env.BASEURL_HACK;
-    case 'local':
-    default:
-      return process.env.BASEURL_LOCAL;
-  }
+  return process.env.API_URL;
+  // switch (process.env.ENV) {
+  //   case 'production':
+  //     return process.env.BASEURL_PRODUCTION;
+  //   case 'dev':
+  //     return process.env.BASEURL_DEVELOPMENT;
+  //   case 'hack':
+  //     return process.env.BASEURL_HACK;
+  //   case 'local':
+  //   default:
+  //     return process.env.BASEURL_LOCAL;
+  // }
 }
 
 const baseurl = getBaseUrl();
