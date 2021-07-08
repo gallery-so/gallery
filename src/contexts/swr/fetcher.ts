@@ -1,8 +1,8 @@
 import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import { isErrorResponse } from 'types/ApiResponse';
 
-const baseurl = process.env.API_BASE_URL;
-console.log('baseurl', process.env.API_BASE_URL);
+const baseurl = process.env.REACT_APP_API_BASE_URL;
+console.log('baseurl', process.env.REACT_APP_API_BASE_URL);
 console.log('process.env', process.env);
 
 export default async function fetcher<ResponseData, RequestBody = {}>(
