@@ -10,7 +10,7 @@ export default async function fetcher<ResponseData, RequestBody = {}>(
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
   const requestOptions: RequestInit = localJwt
-    ? { headers: { Authentication: `Bearer: ${localJwt}` } }
+    ? { headers: { Authorization: `Bearer: ${localJwt}` } }
     : {};
 
   if (body) {
