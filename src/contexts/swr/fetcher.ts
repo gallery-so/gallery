@@ -7,16 +7,18 @@ export default async function fetcher<ResponseData, RequestBody = {}>(
   path: string,
   body?: RequestBody
 ): Promise<ResponseData> {
-  const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
+  // const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
-  const requestOptions: RequestInit = !!localJwt
-    ? {
-        headers: {
-          Authorization: `Bearer: ${localJwt}`,
-          Authentication: `Bearer: ${localJwt}`,
-        },
-      }
-    : {};
+  // const requestOptions: RequestInit = !!localJwt
+  //   ? {
+  //       headers: {
+  //         Authorization: `Bearer: ${localJwt}`,
+  //         Authentication: `Bearer: ${localJwt}`,
+  //       },
+  //     }
+  //   : {};
+
+  const requestOptions: RequestInit = {};
 
   if (body) {
     requestOptions.method = 'POST';
