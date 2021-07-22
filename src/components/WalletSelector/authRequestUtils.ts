@@ -51,7 +51,9 @@ type NonceResponse = {
 
 async function fetchNonce(address: string): Promise<NonceResponse> {
   try {
-    return await fetcher<NonceResponse>(`/auth/get_preflight?addr=${address}`);
+    return await fetcher<NonceResponse>(
+      `/auth/get_preflight?address=${address}`
+    );
   } catch (err) {
     console.error('error while retrieving nonce', err);
     err.code = 'GALLERY_SERVER_ERROR';
