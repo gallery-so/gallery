@@ -9,8 +9,13 @@ export default async function fetcher<ResponseData, RequestBody = {}>(
 ): Promise<ResponseData> {
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
-  const requestOptions: RequestInit = localJwt
-    ? { headers: { Authorization: `Bearer: ${localJwt}` } }
+  const requestOptions: RequestInit = !!localJwt
+    ? {
+        headers: {
+          Authorization: `Bearer: ${localJwt}`,
+          Authentication: `Bearer: ${localJwt}`,
+        },
+      }
     : {};
 
   if (body) {
