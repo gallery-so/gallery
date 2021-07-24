@@ -32,7 +32,3 @@ type ErrorResponse = {
 };
 
 export type ApiResponse<T = {}> = SuccessResponse<T> | ErrorResponse;
-
-export function isErrorResponse(res: ApiResponse): res is ErrorResponse {
-  return res.status === 'ERROR';
-}
