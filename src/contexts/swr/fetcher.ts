@@ -31,5 +31,5 @@ export default async function fetcher<ResponseData, RequestBody = {}>(
   if (isErrorResponse(payload)) {
     throw new Error(payload.data.handler_error_user_msg);
   }
-  return payload.data;
+  return payload;
 }
