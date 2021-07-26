@@ -12,7 +12,7 @@ type Props = {
 
 export default function useUser({ id, username, address }: Props): User | null {
   const queryParams = useMemo(() => {
-    if (id) return `id=${id}`;
+    if (id) return `user_id=${id}`;
     if (username) return `username=${username}`;
     if (address) return `address=${address}`;
     return null;
