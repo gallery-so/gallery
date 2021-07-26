@@ -1,5 +1,4 @@
 import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
-import { isErrorResponse } from 'types/ApiResponse';
 
 const baseurl = process.env.REACT_APP_API_BASE_URL;
 
@@ -24,12 +23,11 @@ export default async function fetcher<ResponseData, RequestBody = {}>(
     requestOptions.method = 'POST';
     requestOptions.body = JSON.stringify(body);
   }
-
   const res = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
   const payload = await res.json();
 
-  if (isErrorResponse(payload)) {
-    throw new Error(payload.data.handler_error_user_msg);
+  if (!res.ok) {
+    throw new Error(payload.error);
   }
-  return payload.data;
+  return payload;
 }
