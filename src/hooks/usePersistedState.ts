@@ -24,7 +24,9 @@ function usePersistedState(key: string, defaultValue: any) {
 
   // TODO: debounce
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    // TODO handle value == undefined, null etc
+    const item = typeof value === 'object' ? JSON.stringify(value) : value;
+    window.localStorage.setItem(key, item);
   }, [key, value]);
 
   return [value, setValue];
