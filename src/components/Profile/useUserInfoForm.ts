@@ -56,10 +56,6 @@ export default function useUserInfoForm({
     }
     //------------ end client-side checks ------------
 
-    // TODO__v1: send request to server to UPDATE user's username and bio.
-    // it should be an UPDATE because a user entity will have already been
-    // created by this step
-
     if (!authenticatedUser) {
       return;
     }
