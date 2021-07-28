@@ -1,6 +1,7 @@
+import fetcher from 'contexts/swr/fetcher';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
 import { useCallback, useMemo, useState } from 'react';
-import { User } from 'types/User';
+import { User, UserResponse } from 'types/User';
 import { pause } from 'utils/time';
 import {
   validate,
@@ -31,7 +32,7 @@ export default function useUserInfoForm({
 
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
-
+  const authenticatedUser = useAuthenticatedUser();
   const handleCreateUser = useCallback(async () => {
     setGeneralError('');
 
@@ -55,9 +56,9 @@ export default function useUserInfoForm({
     }
     //------------ end client-side checks ------------
 
-    // TODO__v1: send request to server to UPDATE user's username and bio.
-    // it should be an UPDATE because a user entity will have already been
-    // created by this step
+    if (!authenticatedUser) {
+      return;
+    }
     try {
       if (username === 'username_taken') {
         await pause(700);
@@ -68,7 +69,12 @@ export default function useUserInfoForm({
         throw { type: 'ERR_SOMETHING_GENERIC' };
       }
 
-      await pause(1000);
+      await fetcher('/users/update', {
+        user_id: authenticatedUser.id,
+        username,
+        description: bio,
+      });
+
       onSuccess();
     } catch (e) {
       // set error message in different locations based on error type
@@ -81,7 +87,7 @@ export default function useUserInfoForm({
       );
       return;
     }
-  }, [username, bio, onSuccess]);
+  }, [username, bio, authenticatedUser, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
     setUsernameError('');
