@@ -66,9 +66,7 @@ function OrganizeCollection({ next }: Props) {
 
   return (
     <StyledOrganizeCollection>
-      {/* <CollectionEditorProvider> */}
       <CollectionEditor />
-      {/* </CollectionEditorProvider> */}
     </StyledOrganizeCollection>
   );
 }
