@@ -12,6 +12,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import { Collection } from 'types/Collection';
 import { pause } from 'utils/time';
+import fetcher from 'contexts/swr/fetcher';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -64,7 +65,12 @@ function CollectionNamingForm({ onNext, collection }: Props) {
 
     setIsLoading(true);
     try {
-      // TODO__v1: send request to server to UPDATE user's collection name, description
+      // TODO this endpoint only updates name. Change endpoint to also update description
+      await fetcher('/collections/update/name', {
+        id: collection.id,
+        name: collectionName,
+      });
+
       if (collectionDescription === 'invalid_desc') {
         await pause(700);
         throw { type: 'ERROR_SOMETHING_GENERIC' };
@@ -81,7 +87,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
     }
     setIsLoading(false);
     return;
-  }, [collectionDescription, goToNextStep]);
+  }, [collection.id, collectionDescription, collectionName, goToNextStep]);
 
   return (
     <StyledCollectionNamingForm>
