@@ -5,8 +5,17 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
+import WelcomeAnimation from 'scenes/WelcomeAnimation/WelcomeAnimation';
 
 function Welcome({ next }: WizardContext) {
+  return <WelcomeAnimation next={next}></WelcomeAnimation>;
+}
+
+type Props = {
+  next: () => void;
+};
+
+function WelcomeText({ next }: Props) {
   return (
     <FullPageCenteredStep>
       <Display>Welcome to Gallery</Display>

@@ -1,0 +1,4 @@
+.animate {
+  position: absolute;
+  will-change: transform;
+}

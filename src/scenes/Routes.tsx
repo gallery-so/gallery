@@ -40,9 +40,9 @@ export default function Routes() {
               <Home path="/" />
               <Auth path="/auth" />
               <Password path="/password" />
-              <NotFound path="/404" />
               <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
+              <NotFound path="/404" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
               <Gallery path="/:usernameOrWalletAddress" />
             </Router>
