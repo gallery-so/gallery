@@ -12,6 +12,7 @@ import Welcome from './steps/Welcome';
 import CreateFirstCollection from './steps/CreateFirstCollection';
 import AddUserInfo from './steps/AddUserInfo';
 import Congratulations from './steps/Congratulations';
+import OrganizeCollectionWrapper from 'flows/shared/steps/OrganizeCollection/OrganizeCollectionWrapper';
 
 const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   addUserInfo: 'Save',
@@ -33,7 +34,10 @@ function OnboardingFlow(_: RouteComponentProps) {
                     <Step id="welcome" render={Welcome} />
                     <Step id="addUserInfo" render={AddUserInfo} />
                     <Step id="create" render={CreateFirstCollection} />
-                    <Step id="organizeCollection" render={OrganizeCollection} />
+                    <Step
+                      id="organizeCollection"
+                      render={OrganizeCollectionWrapper}
+                    />
                     <Step id="organizeGallery" render={OrganizeGallery} />
                     <Step id="congratulations" render={Congratulations} />
                   </Steps>
