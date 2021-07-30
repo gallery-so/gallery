@@ -16,33 +16,39 @@ import fetcher from 'contexts/swr/fetcher';
 
 type Props = {
   onNext: WizardContext['next'];
-  collection: Collection;
+  // collection: Collection;
+  collectionId: Collection['id'];
+  collectionTitle?: Collection['title'];
+  collectionDescription?: Collection['description'];
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-function CollectionNamingForm({ onNext, collection }: Props) {
+function CollectionNamingForm({
+  onNext,
+  collectionId,
+  collectionTitle,
+  collectionDescription,
+}: Props) {
   const { hideModal } = useModal();
 
-  const [collectionName, setCollectionName] = useState(collection.title || '');
-  const [collectionDescription, setCollectionDescription] = useState(
-    collection.description || ''
-  );
+  const [title, setTitle] = useState(collectionTitle || '');
+  const [description, setDescription] = useState(collectionDescription || '');
 
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
 
   const handleNameChange = useCallback((event) => {
-    setCollectionName(event.target.value);
+    setTitle(event.target.value);
   }, []);
 
   const handleDescriptionChange = useCallback((event) => {
-    setCollectionDescription(event.target.value);
+    setDescription(event.target.value);
   }, []);
 
   const hasEnteredValue = useMemo(() => {
-    return collectionName.length || collectionDescription.length;
-  }, [collectionName, collectionDescription]);
+    return title.length || description.length;
+  }, [title, description]);
 
   const buttonText = useMemo(() => {
     return hasEnteredValue ? 'save' : 'skip';
@@ -58,7 +64,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
-    if (collectionDescription.length > COLLECTION_DESCRIPTION_MAX_CHAR_COUNT) {
+    if (description.length > COLLECTION_DESCRIPTION_MAX_CHAR_COUNT) {
       // no need to handle error here, since the form will mark the text as red
       return;
     }
@@ -67,11 +73,11 @@ function CollectionNamingForm({ onNext, collection }: Props) {
     try {
       // TODO this endpoint only updates name. Change endpoint to also update description
       await fetcher('/collections/update/name', {
-        id: collection.id,
-        name: collectionName,
+        id: collectionId,
+        name: title,
       });
 
-      if (collectionDescription === 'invalid_desc') {
+      if (description === 'invalid_desc') {
         await pause(700);
         throw { type: 'ERROR_SOMETHING_GENERIC' };
       }
@@ -87,7 +93,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
     }
     setIsLoading(false);
     return;
-  }, [collection.id, collectionDescription, collectionName, goToNextStep]);
+  }, [collectionId, description, goToNextStep, title]);
 
   return (
     <StyledCollectionNamingForm>
@@ -99,7 +105,7 @@ function CollectionNamingForm({ onNext, collection }: Props) {
       <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}
-        defaultValue={collectionName}
+        defaultValue={title}
         placeholder="Collection name"
         autoFocus
       />
@@ -107,8 +113,8 @@ function CollectionNamingForm({ onNext, collection }: Props) {
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
-        defaultValue={collectionDescription}
-        currentCharCount={collectionDescription.length}
+        defaultValue={description}
+        currentCharCount={description.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
       />
       {generalError && (
