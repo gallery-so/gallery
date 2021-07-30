@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
@@ -31,34 +31,40 @@ function useWizardConfig({ onNext }: ConfigProps) {
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
 
-  const getStagedNfts = useCallback(() => stagedNfts, [stagedNfts]);
+  const stagedNftIdsRef = useRef<string[]>([]);
+  useEffect(() => {
+    stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
+  }, [stagedNfts]);
 
   useEffect(() => {
     // if the user is part of the onboarding flow, prompt them
     // to name their collection before moving onto the next step
     if (wizardId === 'onboarding') {
       setOnNext(async () => {
-        let nftIdsToSave = mapStagedNftsToNftIds(getStagedNfts());
-
+        // TODO: handle and display error in UI
         const createdCollection = await fetcher<CreateCollectionResponse>(
           '/collections/create',
           {
-            nfts: nftIdsToSave,
+            nfts: stagedNftIdsRef.current,
           }
         );
 
+        // TODO: Only need to show modal if this is creation
         showModal(
           <CollectionNamingForm
             onNext={onNext}
-            // TODO: pass in only id, or actual collection
-            collection={{ id: createdCollection.collection_id, nfts: [] }}
+            collectionId={createdCollection.collection_id}
           />
         );
       });
     }
 
+    // TODO: Create a collection outside of onboarding flow
+    // TODO: Update an existing collection outside of onboarding flow
+    // TODO: Differentiate between Create vs Update by looking at collection ID on CollectionEditorContext
+
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal, onNext, wizardId, getStagedNfts]);
+  }, [setOnNext, showModal, onNext, wizardId]);
 }
 
 function OrganizeCollection({ next }: Props) {
