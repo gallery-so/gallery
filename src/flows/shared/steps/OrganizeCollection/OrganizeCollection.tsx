@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
@@ -6,50 +6,73 @@ import CollectionNamingForm from './CollectionNamingForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import CollectionEditorProvider from 'contexts/collectionEditor/CollectionEditorContext';
+import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import fetcher from 'contexts/swr/fetcher';
+import { EditModeNft } from 'types/Nft';
+import { CreateCollectionResponse } from 'types/Collection';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
 };
 
 type Props = {
-  step?: any;
+  next?: any;
 };
+
+function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
+  return stagedNfts.map((stagedNft: EditModeNft) => stagedNft.nft.id);
+}
 
 function useWizardConfig({ onNext }: ConfigProps) {
   const wizardId = useWizardId();
   const { setOnNext } = useWizardCallback();
   const { showModal } = useModal();
+  const stagedNfts = useStagedNftsState();
+
+  const stagedNftIdsRef = useRef<string[]>([]);
+  useEffect(() => {
+    stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
+  }, [stagedNfts]);
 
   useEffect(() => {
     // if the user is part of the onboarding flow, prompt them
     // to name their collection before moving onto the next step
     if (wizardId === 'onboarding') {
-      setOnNext(() =>
+      setOnNext(async () => {
+        // TODO: handle and display error in UI
+        const createdCollection = await fetcher<CreateCollectionResponse>(
+          '/collections/create',
+          {
+            nfts: stagedNftIdsRef.current,
+          }
+        );
+
+        // TODO: Only need to show modal if this is creation
         showModal(
           <CollectionNamingForm
             onNext={onNext}
-            // TODO: pass in the actual collection being organized
-            collection={{ id: '', nfts: [] }}
+            collectionId={createdCollection.collection_id}
           />
-        )
-      );
+        );
+      });
     }
+
+    // TODO: Create a collection outside of onboarding flow
+    // TODO: Update an existing collection outside of onboarding flow
+    // TODO: Differentiate between Create vs Update by looking at collection ID on CollectionEditorContext
 
     return () => setOnNext(undefined);
   }, [setOnNext, showModal, onNext, wizardId]);
 }
 
-function OrganizeCollection({ next }: WizardContext & Props) {
+function OrganizeCollection({ next }: Props) {
   useWizardConfig({ onNext: next });
 
   return (
     <StyledOrganizeCollection>
-      <CollectionEditorProvider>
-        <CollectionEditor />
-      </CollectionEditorProvider>
+      <CollectionEditor />
     </StyledOrganizeCollection>
   );
 }

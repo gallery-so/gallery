@@ -12,6 +12,10 @@ type CollectionsNotFoundError = {
   error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER';
 };
 
+export type CreateCollectionResponse = {
+  collection_id: string;
+};
+
 export type CollectionsResponse =
   | { collections: Collection[] }
   | CollectionsNotFoundError;

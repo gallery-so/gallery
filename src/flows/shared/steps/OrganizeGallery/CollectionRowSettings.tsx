@@ -31,7 +31,13 @@ function CollectionRowSettings({
 
   const handleEditNameClick = useCallback(() => {
     showModal(
-      <CollectionNamingForm onNext={() => {}} collection={collection} />
+      <CollectionNamingForm
+        // No need for onNext because this isn't part of a wizard
+        onNext={() => {}}
+        collectionId={collection.id}
+        collectionTitle={collection.title}
+        collectionDescription={collection.description}
+      />
     );
   }, [collection, showModal]);
 
