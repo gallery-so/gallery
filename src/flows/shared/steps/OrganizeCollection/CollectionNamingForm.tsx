@@ -13,6 +13,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 import { Collection } from 'types/Collection';
 import { pause } from 'utils/time';
 import fetcher from 'contexts/swr/fetcher';
+import formatError from 'src/errors/formatError';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -85,11 +86,7 @@ function CollectionNamingForm({
       await pause(1000);
       goToNextStep();
     } catch (e) {
-      // TODO__v1: depending on type of server error, set error for collection name,
-      // collection description, or general modal
-      setGeneralError(
-        'Sorry, the server is currently unavailable. Please try again later or ping us on Discord.'
-      );
+      setGeneralError(formatError(e));
     }
     setIsLoading(false);
     return;

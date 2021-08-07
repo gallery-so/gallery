@@ -175,7 +175,6 @@ export default function WelcomeAnimation({ next }: Props) {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log('MOVE NOW');
       setShouldExplode(true);
     }, 2000);
   }, [setShouldExplode]);

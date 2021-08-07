@@ -1,7 +1,7 @@
 import fetcher from 'contexts/swr/fetcher';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
 import { useCallback, useMemo, useState } from 'react';
-import { User, UserResponse } from 'types/User';
+import formatError from 'src/errors/formatError';
 import { pause } from 'utils/time';
 import {
   validate,
@@ -77,14 +77,7 @@ export default function useUserInfoForm({
 
       onSuccess();
     } catch (e) {
-      // set error message in different locations based on error type
-      if (e.type === 'ERR_USERNAME_TAKEN') {
-        setUsernameError('This username is already taken. Please try another.');
-        return;
-      }
-      setGeneralError(
-        'Sorry, the server is currently unavailable. Please try again later or ping us on Discord.'
-      );
+      setGeneralError(formatError(e));
       return;
     }
   }, [username, bio, authenticatedUser, onSuccess]);
