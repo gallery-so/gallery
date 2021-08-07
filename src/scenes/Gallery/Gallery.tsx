@@ -31,7 +31,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
   const authenticatedUser = useAuthenticatedUser();
 
   if (!user) {
-    return <Redirect to="/404" />;
+    return <Redirect to="/404" noThrow />;
   }
   const isAuthenticatedUsersPage =
     user.username === authenticatedUser?.username;
