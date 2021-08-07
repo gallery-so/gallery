@@ -37,7 +37,6 @@ export default function useFetcher(): FetcherType {
 
       if (!res.ok) {
         if (res.status === ERR_UNAUTHORIZED) {
-          console.log('logging user out');
           logOut();
         }
         throw new Error(responseBody ? responseBody.error : 'Error');
