@@ -83,6 +83,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const logIn = useCallback(
     async (payload: LoggedInState) => {
       try {
+        // TODO__V1 validate JWT on app load. will want to use raw fetch here.
         // const refreshedJwt = await validateAndRefreshJwt(jwt);
         setToken(payload.jwt);
         setUserId(payload.userId);
