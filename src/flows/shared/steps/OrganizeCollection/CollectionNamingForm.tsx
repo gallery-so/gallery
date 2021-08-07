@@ -12,7 +12,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import { Collection } from 'types/Collection';
 import { pause } from 'utils/time';
-import fetcher from 'contexts/swr/fetcher';
+import useFetcher from 'contexts/swr/useFetcher';
 import formatError from 'src/errors/formatError';
 
 type Props = {
@@ -62,6 +62,8 @@ function CollectionNamingForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetcher = useFetcher();
+
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
@@ -90,7 +92,7 @@ function CollectionNamingForm({
     }
     setIsLoading(false);
     return;
-  }, [collectionId, description, goToNextStep, title]);
+  }, [collectionId, description, goToNextStep, title, fetcher]);
 
   return (
     <StyledCollectionNamingForm>

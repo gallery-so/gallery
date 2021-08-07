@@ -1,4 +1,4 @@
-import fetcher from 'contexts/swr/fetcher';
+import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
 import { useCallback, useMemo, useState } from 'react';
 import formatError from 'src/errors/formatError';
@@ -33,6 +33,7 @@ export default function useUserInfoForm({
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
   const authenticatedUser = useAuthenticatedUser();
+  const fetcher = useFetcher();
   const handleCreateUser = useCallback(async () => {
     setGeneralError('');
 
@@ -80,7 +81,7 @@ export default function useUserInfoForm({
       setGeneralError(formatError(e));
       return;
     }
-  }, [username, bio, authenticatedUser, onSuccess]);
+  }, [username, bio, authenticatedUser, fetcher, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
     setUsernameError('');

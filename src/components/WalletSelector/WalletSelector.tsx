@@ -10,6 +10,7 @@ import colors from 'components/core/colors';
 import { TitleMedium, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import initializeAuthPipeline from './authRequestUtils';
+import useFetcher from 'contexts/swr/useFetcher';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -118,6 +119,8 @@ function WalletSelector() {
 
   const { logIn } = useAuthActions();
 
+  const fetcher = useFetcher();
+
   useEffect(() => {
     async function authenticate() {
       // TODO: when hooking up to the server, make sure this only runs a single time
@@ -126,6 +129,7 @@ function WalletSelector() {
           const { jwt, userId } = await initializeAuthPipeline({
             address: account,
             signer,
+            fetcher,
           });
           logIn({ jwt, userId });
         } catch (err) {
@@ -136,7 +140,7 @@ function WalletSelector() {
     }
 
     authenticate();
-  }, [account, isPending, logIn, signer]);
+  }, [account, isPending, logIn, signer, fetcher]);
 
   /**
    * Ensures screen does not retain an error message when it remounts. Since Web3
