@@ -108,7 +108,7 @@ const AuthProvider = memo(({ children }: Props) => {
         setAuthState(LOADING);
 
         if (token && userId) {
-          logIn({ jwt: token, userId });
+          await logIn({ jwt: token, userId });
           return;
         }
         setLoggedOut();
@@ -125,12 +125,12 @@ const AuthProvider = memo(({ children }: Props) => {
     [logIn, logOut, setStateToLoading]
   );
 
-  const isUnknown = useMemo(() => {
-    return authState === UNKNOWN;
+  const shouldDisplayUniversalLoader = useMemo(() => {
+    return authState === UNKNOWN || authState === LOADING;
   }, [authState]);
 
-  // TODO: add Loading
-  return isUnknown ? null : (
+  // TODO: display a loader instead of `null`
+  return shouldDisplayUniversalLoader ? null : (
     <AuthStateContext.Provider value={authState}>
       <AuthActionsContext.Provider value={authActions}>
         <Web3WalletProvider>{children}</Web3WalletProvider>
