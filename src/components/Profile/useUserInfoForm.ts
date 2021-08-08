@@ -1,7 +1,7 @@
-import fetcher from 'contexts/swr/fetcher';
+import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
 import { useCallback, useMemo, useState } from 'react';
-import { User, UserResponse } from 'types/User';
+import formatError from 'src/errors/formatError';
 import { pause } from 'utils/time';
 import {
   validate,
@@ -33,6 +33,7 @@ export default function useUserInfoForm({
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
   const authenticatedUser = useAuthenticatedUser();
+  const fetcher = useFetcher();
   const handleCreateUser = useCallback(async () => {
     setGeneralError('');
 
@@ -77,17 +78,10 @@ export default function useUserInfoForm({
 
       onSuccess();
     } catch (e) {
-      // set error message in different locations based on error type
-      if (e.type === 'ERR_USERNAME_TAKEN') {
-        setUsernameError('This username is already taken. Please try another.');
-        return;
-      }
-      setGeneralError(
-        'Sorry, the server is currently unavailable. Please try again later or ping us on Discord.'
-      );
+      setGeneralError(formatError(e));
       return;
     }
-  }, [username, bio, authenticatedUser, onSuccess]);
+  }, [username, bio, authenticatedUser, fetcher, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
     setUsernameError('');

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
@@ -9,7 +9,7 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import fetcher from 'contexts/swr/fetcher';
+import useFetcher from 'contexts/swr/useFetcher';
 import { EditModeNft } from 'types/Nft';
 import { CreateCollectionResponse } from 'types/Collection';
 
@@ -35,6 +35,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
   useEffect(() => {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
+
+  const fetcher = useFetcher();
 
   useEffect(() => {
     // if the user is part of the onboarding flow, prompt them
@@ -64,7 +66,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
     // TODO: Differentiate between Create vs Update by looking at collection ID on CollectionEditorContext
 
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal, onNext, wizardId]);
+  }, [setOnNext, showModal, onNext, wizardId, fetcher]);
 }
 
 function OrganizeCollection({ next }: Props) {

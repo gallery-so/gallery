@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import fetcher from 'contexts/swr/fetcher';
+import { FetcherType } from 'contexts/swr/useFetcher';
 
 /**
  * Auth Pipeline:
@@ -11,6 +11,7 @@ import fetcher from 'contexts/swr/fetcher';
 type AuthPipelineProps = {
   address: string;
   signer: JsonRpcSigner;
+  fetcher: FetcherType;
 };
 
 type AuthResult = {
@@ -21,21 +22,25 @@ type AuthResult = {
 export default async function initializeAuthPipeline({
   address,
   signer,
+  fetcher,
 }: AuthPipelineProps): Promise<AuthResult> {
-  const { nonce, user_exists: userExists } = await fetchNonce(address);
+  const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
   const signature = await signMessage(nonce, signer);
 
   if (userExists) {
-    const res = await loginUser({ signature, address });
+    const res = await loginUser({ signature, address }, fetcher);
     return { jwt: res.jwt_token, userId: res.user_id };
   }
 
-  const res = await createUser({
-    signature,
-    address,
-    nonce,
-  });
+  const res = await createUser(
+    {
+      signature,
+      address,
+      nonce,
+    },
+    fetcher
+  );
   return { jwt: res.jwt_token, userId: res.user_id };
 }
 
@@ -49,7 +54,10 @@ type NonceResponse = {
   user_exists: boolean;
 };
 
-async function fetchNonce(address: string): Promise<NonceResponse> {
+async function fetchNonce(
+  address: string,
+  fetcher: FetcherType
+): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(
       `/auth/get_preflight?address=${address}`
@@ -95,7 +103,10 @@ type LoginUserResponse = {
   user_id: string;
 };
 
-async function loginUser(body: LoginUserRequest): Promise<LoginUserResponse> {
+async function loginUser(
+  body: LoginUserRequest,
+  fetcher: FetcherType
+): Promise<LoginUserResponse> {
   try {
     return await fetcher<LoginUserResponse>('/users/login', body);
   } catch (err) {
@@ -121,7 +132,8 @@ type CreateUserResponse = {
 };
 
 async function createUser(
-  body: CreateUserRequest
+  body: CreateUserRequest,
+  fetcher: FetcherType
 ): Promise<CreateUserResponse> {
   try {
     return await fetcher<CreateUserResponse>('/users/create', body);
