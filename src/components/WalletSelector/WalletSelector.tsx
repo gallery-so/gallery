@@ -1,7 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
-import { injected, walletconnect, walletlink } from 'connectors/index';
+import { injected } from 'connectors/index';
+// import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
@@ -14,7 +15,8 @@ import useFetcher from 'contexts/swr/useFetcher';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
-  WalletConnect: walletconnect,
+  // TODO: enable walletconnect once signature decoding is supported
+  // WalletConnect: walletconnect,
   // TODO: enable wallet link once signature decoding is supported
   // WalletLink: walletlink,
 };
