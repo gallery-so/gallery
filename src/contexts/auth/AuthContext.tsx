@@ -17,6 +17,7 @@ import {
   USER_ID_LOCAL_STORAGE_KEY,
 } from './constants';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
+import { _fetch } from 'contexts/swr/useFetcher';
 
 export type AuthState =
   | LoggedInState
@@ -52,6 +53,11 @@ export const useAuthActions = (): AuthActions => {
 
 type Props = { children: ReactNode };
 
+type ValidateJwtResponse = {
+  valid: boolean;
+  user_id: string;
+};
+
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
   const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
@@ -83,11 +89,8 @@ const AuthProvider = memo(({ children }: Props) => {
   const logIn = useCallback(
     async (payload: LoggedInState) => {
       try {
-        // TODO__V1 validate JWT on app load. will want to use raw fetch here.
-        // const refreshedJwt = await validateAndRefreshJwt(jwt);
         setToken(payload.jwt);
         setUserId(payload.userId);
-
         setAuthState(payload);
       } catch (e) {
         logOut();
@@ -108,6 +111,13 @@ const AuthProvider = memo(({ children }: Props) => {
         setAuthState(LOADING);
 
         if (token && userId) {
+          const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid');
+          if (response.valid) {
+            // TODO: set explicit error on higher-level error context
+            // to display in a toast
+            console.error('invalid or expired JWT');
+            logOut();
+          }
           await logIn({ jwt: token, userId });
           return;
         }
@@ -117,7 +127,7 @@ const AuthProvider = memo(({ children }: Props) => {
         loadAuthState();
       }
     },
-    [authState, logIn, setLoggedOut, token, userId]
+    [authState, logIn, logOut, setLoggedOut, token, userId]
   );
 
   const authActions: AuthActions = useMemo(
