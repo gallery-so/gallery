@@ -2,7 +2,7 @@ import { useAuthState } from 'contexts/auth/AuthContext';
 import { isLoggedInState } from 'contexts/auth/types';
 import { useMemo } from 'react';
 import useSwr from 'swr';
-import { isUserResponseError, User, UserResponse } from 'types/User';
+import { User } from 'types/User';
 
 type Props = {
   id?: string | null;
@@ -18,11 +18,11 @@ export default function useUser({ id, username, address }: Props): User | null {
     return null;
   }, [id, username, address]);
 
-  const { data } = useSwr<UserResponse>(
+  const { data } = useSwr<User>(
     queryParams ? `/users/get?${queryParams}` : null
   );
 
-  if (!data || isUserResponseError(data)) {
+  if (!data) {
     return null;
   }
 
