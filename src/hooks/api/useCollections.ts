@@ -4,15 +4,15 @@ import {
   CollectionsResponse,
   isCollectionsResponseError,
 } from 'types/Collection';
+import { User } from 'types/User';
 
 type Props = {
-  username: string;
+  userId: User['id'];
 };
-export default function useCollections({
-  username,
-}: Props): Collection[] | null {
+
+export default function useCollections({ userId }: Props): Collection[] | null {
   const { data } = useSwr<CollectionsResponse>(
-    `/collections/get?username=${username}`
+    `/collections/get?user_id=${userId}`
   );
 
   if (!data || isCollectionsResponseError(data)) {
