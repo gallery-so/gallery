@@ -1,21 +1,17 @@
 import useSwr from 'swr';
-import {
-  Collection,
-  CollectionsResponse,
-  isCollectionsResponseError,
-} from 'types/Collection';
+import { Collection, GetCollectionsResponse } from 'types/Collection';
+import { User } from 'types/User';
 
 type Props = {
-  username: string;
+  userId: User['id'];
 };
-export default function useCollections({
-  username,
-}: Props): Collection[] | null {
-  const { data } = useSwr<CollectionsResponse>(
-    `/collections/get?username=${username}`
+
+export default function useCollections({ userId }: Props): Collection[] | null {
+  const { data } = useSwr<GetCollectionsResponse>(
+    `/collections/get?user_id=${userId}`
   );
 
-  if (!data || isCollectionsResponseError(data)) {
+  if (!data) {
     return null;
   }
 

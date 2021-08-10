@@ -9,20 +9,11 @@ import { User } from 'types/User';
 import colors from 'components/core/colors';
 
 type Props = {
-  user: User;
+  userId: User['id'];
 };
 
-function Body({ user }: Props) {
-  // TODO__v1: grab collections from real backend, and add a suspense boundary as needed.
-  // for example:
-  // 1) first request to     /glry/v1/collections/get?username=:username => [{ id: 1 }, { ... }]
-  //    -> NFTs will not be populated
-  // 2) second request to    /glry/v1/nfts/get_all_for_user?username=:username
-  // OR...... (this is preferred)
-  // 1) request collections WITH populated NFTs,
-  // 2) second request to unassiged NFTs, /glry/v1/nfts/unassigned?username=:username
-
-  const collections = useCollections({ username: user.username });
+function Body({ userId }: Props) {
+  const collections = useCollections({ userId });
   if (!collections || collections.length < 0) {
     return (
       <StyledEmptyGallery>

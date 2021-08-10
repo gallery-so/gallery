@@ -47,7 +47,7 @@ function OrganizeGallery() {
     onPrevious: returnToProfile,
   });
 
-  const collections = useCollections({ username: user.username }) || [];
+  const collections = useCollections({ userId: user.id }) || [];
 
   return (
     <StyledOrganizeGallery>

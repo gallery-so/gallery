@@ -11,7 +11,6 @@ import breakpoints, {
   pageGutter,
 } from 'components/core/breakpoints';
 import useUser, { useAuthenticatedUser } from 'hooks/api/useUser';
-import { User } from 'types/User';
 
 type Params = {
   usernameOrWalletAddress: string;
@@ -54,7 +53,7 @@ function Gallery({ usernameOrWalletAddress }: RouteComponentProps<Params>) {
           user={user}
           isAuthenticatedUsersPage={isAuthenticatedUsersPage}
         />
-        <Body user={user} />
+        <Body userId={user.id} />
       </StyledContent>
     </StyledGallery>
   );
