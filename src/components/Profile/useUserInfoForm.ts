@@ -61,15 +61,6 @@ export default function useUserInfoForm({
       return;
     }
     try {
-      if (username === 'username_taken') {
-        await pause(700);
-        throw { type: 'ERR_USERNAME_TAKEN' };
-      }
-      if (username === 'server_error') {
-        await pause(700);
-        throw { type: 'ERR_SOMETHING_GENERIC' };
-      }
-
       await fetcher('/users/update', {
         user_id: authenticatedUser.id,
         username,
