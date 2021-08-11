@@ -6,6 +6,10 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { Caption } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
+import styled from 'styled-components';
+import Spacer from 'components/core/Spacer/Spacer';
 
 function Auth(_: RouteComponentProps) {
   // whether the user has entered the correct password
@@ -23,17 +27,30 @@ function Auth(_: RouteComponentProps) {
     // if user exists in DB, send them to their profile
     if (username) return <Redirect to={`/${username}`} />;
     // if user is authenticated but hasn't set their username yet.
-    // we should continue to take them through the welcome flow. 
-    // this can happen if a user signs up and has a valid jwt but 
+    // we should continue to take them through the welcome flow.
+    // this can happen if a user signs up and has a valid jwt but
     // hasn't set their username yet.
     return <Redirect noThrow to="/welcome" />;
   }
 
   return (
     <Page centered withRoomForFooter={false}>
-      <WalletSelector />
+      <StyledWalletSelectorWrapper>
+        <WalletSelector />
+      </StyledWalletSelectorWrapper>
+      <Caption color={colors.gray50}>
+        Gallery is non-custodial and secure. We will never request access to
+        your NFTs.
+      </Caption>
+      <Spacer height={16} />
     </Page>
   );
 }
+
+const StyledWalletSelectorWrapper = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+`;
 
 export default memo(Auth);
