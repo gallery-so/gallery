@@ -52,7 +52,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
         );
 
         // TODO: Only need to show modal if this is creation
-        console.log('onNext', onNext);
         showModal(
           <CollectionEditInfoForm
             onNext={onNext}
