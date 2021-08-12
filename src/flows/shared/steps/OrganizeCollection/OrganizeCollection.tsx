@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 
-import CollectionNamingForm from './CollectionNamingForm';
+import CollectionEditInfoForm from './CollectionEditInfoForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -52,8 +52,9 @@ function useWizardConfig({ onNext }: ConfigProps) {
         );
 
         // TODO: Only need to show modal if this is creation
+        console.log('onNext', onNext);
         showModal(
-          <CollectionNamingForm
+          <CollectionEditInfoForm
             onNext={onNext}
             collectionId={createdCollection.collection_id}
           />
