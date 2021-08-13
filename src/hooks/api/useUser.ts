@@ -1,8 +1,8 @@
 import { useAuthState } from 'contexts/auth/AuthContext';
 import { isLoggedInState } from 'contexts/auth/types';
 import { useMemo } from 'react';
-import useSwr from 'swr';
 import { User } from 'types/User';
+import useGet from './rest/useGet';
 
 type Props = {
   id?: string | null;
@@ -10,7 +10,11 @@ type Props = {
   address?: string;
 };
 
-export default function useUser({ id, username, address }: Props): User | null {
+export default function useUser({
+  id,
+  username,
+  address,
+}: Props): User | undefined {
   const queryParams = useMemo(() => {
     if (id) return `user_id=${id}`;
     if (username) return `username=${username}`;
@@ -18,13 +22,10 @@ export default function useUser({ id, username, address }: Props): User | null {
     return null;
   }, [id, username, address]);
 
-  const { data } = useSwr<User>(
-    queryParams ? `/users/get?${queryParams}` : null
+  const data = useGet<User>(
+    queryParams ? `/users/get?${queryParams}` : null,
+    'fetch user'
   );
-
-  if (!data) {
-    return null;
-  }
 
   return data;
 }

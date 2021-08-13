@@ -21,16 +21,16 @@ import RequestAction from './RequestAction';
  *  return <Button onClick={handleClick} />
  *
  */
-export default function usePost<ResponseType = {}>() {
+export default function usePost() {
   const fetcher = useFetcher();
 
   return useCallback(
-    async function postRequest(
+    async function postRequest<ResponseType = {}, RequestBody = {}>(
       path: string,
       action: RequestAction,
-      body: Record<string, string>
+      body: RequestBody
     ) {
-      await fetcher<ResponseType>(path, action, {
+      return await fetcher<ResponseType>(path, action, {
         body,
       });
     },

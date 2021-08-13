@@ -1,5 +1,5 @@
-import useSwr from 'swr/dist/use-swr';
 import { Nft } from 'types/Nft';
+import useGet from './rest/useGet';
 
 type Props = {
   address: string;
@@ -9,10 +9,11 @@ type OpenseaSyncResponse = {
   nfts: Nft[];
 };
 
-export default function useOpenseaSync({ address }: Props) {
-  const { data } = useSwr<OpenseaSyncResponse>(
-    `/nfts/opensea_get?address=${address}`
+export default function useOpenseaSync({ address }: Props): Nft[] | undefined {
+  const data = useGet<OpenseaSyncResponse>(
+    `/nfts/opensea_get?address=${address}`,
+    'fetch and sync nfts'
   );
 
-  return data;
+  return data?.nfts;
 }
