@@ -23,7 +23,7 @@ function UserGallery({ user, gallery, isAuthenticatedUsersPage }: Props) {
       isAuthenticatedUsersPage={isAuthenticatedUsersPage}
     />
   ) : (
-    <EmptyGallery message={'This user has not set up their gallery yet.'} />
+    <EmptyGallery message="This user has not set up their gallery yet." />
   );
 
   return (

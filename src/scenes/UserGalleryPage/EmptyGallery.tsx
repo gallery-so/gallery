@@ -8,13 +8,13 @@ type Props = {
 
 function EmptyGallery({ message }: Props) {
   return (
-    <StyledEmptyGalleryy>
+    <StyledEmptyGallery>
       <BodyRegular color={colors.gray50}>{message}</BodyRegular>
-    </StyledEmptyGalleryy>
+    </StyledEmptyGallery>
   );
 }
 
-const StyledEmptyGalleryy = styled.div`
+const StyledEmptyGallery = styled.div`
   margin: auto;
   height: 400px;
   display: flex;
