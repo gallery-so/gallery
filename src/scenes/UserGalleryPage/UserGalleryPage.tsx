@@ -19,6 +19,7 @@ function UserGalleryPage({ username }: RouteComponentProps<Params>) {
     return <Redirect to="/404" noThrow />;
   }
 
+  // Consider turning into a hook
   const isAuthenticatedUsersPage =
     user.username === authenticatedUser?.username;
 

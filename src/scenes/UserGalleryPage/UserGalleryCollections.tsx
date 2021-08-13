@@ -14,7 +14,7 @@ function UserGalleryCollections({
   collections,
   isAuthenticatedUsersPage,
 }: Props) {
-  if (collections.length < 0) {
+  if (!collections.length) {
     const noCollectionsMessage = isAuthenticatedUsersPage
       ? 'Your gallery is empty. Display your NFTs by creating a collection.'
       : 'This user has not added any collections to their gallery yet.';
@@ -22,6 +22,7 @@ function UserGalleryCollections({
     return <EmptyGallery message={noCollectionsMessage} />;
   }
 
+  // TODO: Consider extracting 48 and 108 into unit consts
   return (
     <StyledUserGalleryCollections>
       {collections.map((collection, index) => (
