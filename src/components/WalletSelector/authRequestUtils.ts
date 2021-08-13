@@ -60,7 +60,8 @@ async function fetchNonce(
 ): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(
-      `/auth/get_preflight?address=${address}`
+      `/auth/get_preflight?address=${address}`,
+      'fetch nonce'
     );
   } catch (err) {
     console.error('error while retrieving nonce', err);
@@ -108,7 +109,9 @@ async function loginUser(
   fetcher: FetcherType
 ): Promise<LoginUserResponse> {
   try {
-    return await fetcher<LoginUserResponse>('/users/login', body);
+    return await fetcher<LoginUserResponse>('/users/login', 'log in user', {
+      body,
+    });
   } catch (err) {
     console.error('error while attempting user login', err);
     err.code = 'GALLERY_SERVER_ERROR';
@@ -136,7 +139,9 @@ async function createUser(
   fetcher: FetcherType
 ): Promise<CreateUserResponse> {
   try {
-    return await fetcher<CreateUserResponse>('/users/create', body);
+    return await fetcher<CreateUserResponse>('/users/create', 'create user', {
+      body,
+    });
   } catch (err) {
     console.error('error while attempting user creation', err);
     err.code = 'GALLERY_SERVER_ERROR';

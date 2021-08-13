@@ -111,7 +111,10 @@ const AuthProvider = memo(({ children }: Props) => {
         setAuthState(LOADING);
 
         if (token && userId) {
-          const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid');
+          const response = await _fetch<ValidateJwtResponse>(
+            '/auth/jwt_valid',
+            'validate jwt'
+          );
           if (!response.valid) {
             // TODO: set explicit error on higher-level error context to display in a toast
             console.error('invalid or expired JWT');

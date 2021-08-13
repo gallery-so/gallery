@@ -1,6 +1,7 @@
+import { useCallback } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
-import { useCallback } from 'react';
+import RequestAction from 'hooks/api/rest/RequestAction';
 import { ApiError } from 'src/errors/types';
 
 const baseurl = process.env.REACT_APP_API_BASE_URL;
@@ -9,28 +10,27 @@ const ERR_UNAUTHORIZED = 401;
 
 type RequestParams<T> = {
   body?: T;
-  // a custom string that describes the request, e.g. "fetch user"
-  action?: string;
+  headers?: Record<string, string>;
   unauthorizedErrorHandler?: () => void;
 };
 
 export type FetcherType = <ResponseData, RequestBody = {}>(
   path: string,
+  action: RequestAction,
   params?: RequestParams<RequestBody>
 ) => Promise<ResponseData>;
 
 // Raw fetcher. If you're in a hook/component, use `useFetcher` instead.
-export const _fetch: FetcherType = async (path, params = {}) => {
-  const { body, action, unauthorizedErrorHandler } = params;
+export const _fetch: FetcherType = async (path, action, params = {}) => {
+  const { body, headers = {}, unauthorizedErrorHandler } = params;
+
+  const requestOptions: RequestInit = { headers };
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
-  const requestOptions: RequestInit = !!localJwt
-    ? {
-        headers: {
-          Authorization: `Bearer ${localJwt}`,
-        },
-      }
-    : {};
+  if (localJwt && requestOptions.headers) {
+    // @ts-expect-error: Authorization is a legit header
+    requestOptions.headers.Authorization = `Bearer ${localJwt}`;
+  }
 
   if (body) {
     requestOptions.method = 'POST';
@@ -70,18 +70,16 @@ export const _fetch: FetcherType = async (path, params = {}) => {
 };
 
 /**
- * Use this hook when making a mutation / POST request
- * For GETs, useSwr (example in useUser.ts)
- *
- * const fetcher = useFetcher()
- * await fetcher('/path/to/endpoint', { body: payload })
+ * You should rarely use this hook directly! Instead:
+ * - useGet for fetching
+ * - usePost for mutations
  */
 export default function useFetcher(): FetcherType {
   const { logOut } = useAuthActions();
 
   return useCallback(
-    (path, params) =>
-      _fetch(path, { ...params, unauthorizedErrorHandler: logOut }),
+    (path, action, params) =>
+      _fetch(path, action, { ...params, unauthorizedErrorHandler: logOut }),
     [logOut]
   );
 }
