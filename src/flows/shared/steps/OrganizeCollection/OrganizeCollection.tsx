@@ -12,6 +12,9 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useFetcher from 'contexts/swr/useFetcher';
 import { EditModeNft } from 'types/Nft';
 import { CreateCollectionResponse } from 'types/Collection';
+import useGalleries from 'hooks/api/useGalleries';
+import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { User } from 'types/User';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
@@ -37,6 +40,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
   }, [stagedNfts]);
 
   const fetcher = useFetcher();
+  const user = useAuthenticatedUser() as User;
+  const galleries = useGalleries({ userId: user.id });
 
   useEffect(() => {
     // if the user is part of the onboarding flow, prompt them
@@ -50,6 +55,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
             nfts: stagedNftIdsRef.current,
           }
         );
+
+        // TODO: add collection to gallery, or create gallery with collection
 
         // TODO: Only need to show modal if this is creation
         showModal(

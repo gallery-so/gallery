@@ -13,7 +13,7 @@ type Props = {
 // space between NFTs in pixels
 const GAP_PX = 40;
 
-function CollectionView({ collection }: Props) {
+function UserGalleryCollection({ collection }: Props) {
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
@@ -75,4 +75,4 @@ const StyledCollectionNfts = styled.div`
   }
 `;
 
-export default CollectionView;
+export default UserGalleryCollection;
