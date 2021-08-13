@@ -1,6 +1,3 @@
-/**
- * https://github.com/sergiodxa/swr-sync-storage
- */
 import { cache } from 'swr';
 
 function getStorage(mode: 'local' | 'session') {
@@ -30,21 +27,26 @@ export function syncWithStorage(
 ) {
   const storage = getStorage(mode);
 
+  // SWR-related keys in localStorage will be prefixed with __swr__
+  // example storage key: __swr__arg@"/users/get?username=bingbong"
+  const keyPrefix = '__swr__';
+
   // Get all key from the storage
   for (let [key, data] of Object.entries(storage)) {
-    if (!key.startsWith('swr-')) continue;
+    if (!key.startsWith(keyPrefix)) continue;
     // update SWR cache with the value from the storage
-    cache.set(key.slice(4), parser(data).swrValue);
+    cache.set(key.slice(keyPrefix.length), parser(data).swrValue);
   }
 
   // Subscribe to SWR cache changes in the future
   return cache.subscribe(() => {
-    // get all the keys in cache
-    const keys = cache.keys();
-    // save each key in SWR with the prefix swr-
+    // SWR keys can begin with `arg@`, `err@`, and `validating@`
+    // The only ones worth caching is the response data in `arg@`
+    const keys = cache.keys().filter((key) => key.startsWith('arg@'));
+
     for (let key of keys) {
       storage.setItem(
-        `swr-${key}`,
+        `${keyPrefix}${key}`,
         JSON.stringify({ swrValue: cache.get(key) })
       );
     }
