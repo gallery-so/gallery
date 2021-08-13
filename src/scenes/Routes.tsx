@@ -7,10 +7,10 @@ import Home from 'scenes/Home/Home';
 import Auth from 'scenes/Auth/Auth';
 import Password from 'scenes/Password/Password';
 import NotFound from 'scenes/NotFound/NotFound';
-import Gallery from 'scenes/Gallery/Gallery';
 import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
+import UserGalleryPage from './UserGalleryPage/UserGalleryPage';
 
 // considered putting this in a different file, but we should tightly couple
 // route updates to this array
@@ -44,7 +44,7 @@ export default function Routes() {
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
               <NotFound path="/404" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
-              <Gallery path="/:usernameOrWalletAddress" />
+              <UserGalleryPage path="/:username" />
             </Router>
           </FadeTransitioner>
           {shouldHideFooter(location.pathname) ? null : <GlobalFooter />}

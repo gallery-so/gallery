@@ -15,7 +15,7 @@ type Props = {
   isAuthenticatedUsersPage: boolean;
 };
 
-function Header({ user, isAuthenticatedUsersPage }: Props) {
+function UserGalleryHeader({ user, isAuthenticatedUsersPage }: Props) {
   const { showModal } = useModal();
 
   const handleEditNameClick = useCallback(() => {
@@ -27,8 +27,8 @@ function Header({ user, isAuthenticatedUsersPage }: Props) {
   }, []);
 
   return (
-    <StyledHeader>
-      <Subdisplay>{user.displayName}</Subdisplay>
+    <StyledUserGalleryHeader>
+      <Subdisplay>{user.username}</Subdisplay>
       <Spacer height={12} />
       <StyledUserDetails>
         {isAuthenticatedUsersPage && (
@@ -60,7 +60,7 @@ function Header({ user, isAuthenticatedUsersPage }: Props) {
           </StyledBodyRegular>
         </StyledLeftContainer>
       </StyledUserDetails>
-    </StyledHeader>
+    </StyledUserGalleryHeader>
   );
 }
 
@@ -69,7 +69,7 @@ const StyledRow = styled.div`
   justify-content: flex-end;
 `;
 
-const StyledHeader = styled.div`
+const StyledUserGalleryHeader = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -93,4 +93,4 @@ const StyledRightContainer = styled.div`
   display: flex;
 `;
 
-export default Header;
+export default UserGalleryHeader;
