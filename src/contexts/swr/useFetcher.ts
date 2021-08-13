@@ -7,21 +7,22 @@ const baseurl = process.env.REACT_APP_API_BASE_URL;
 
 const ERR_UNAUTHORIZED = 401;
 
+type RequestParams<T> = {
+  body?: T;
+  // a custom string that describes the request, e.g. "fetch user"
+  action?: string;
+  unauthorizedErrorHandler?: () => void;
+};
+
 export type FetcherType = <ResponseData, RequestBody = {}>(
   path: string,
-  body?: RequestBody,
-  // a custom string that describes the request, e.g. "fetch user"
-  action?: string,
-  unauthorizedErrorHandler?: () => void
+  params?: RequestParams<RequestBody>
 ) => Promise<ResponseData>;
 
 // Raw fetcher. If you're in a hook/component, use `useFetcher` instead.
-export const _fetch: FetcherType = async (
-  path,
-  body,
-  action,
-  unauthorizedErrorHandler
-) => {
+export const _fetch: FetcherType = async (path, params = {}) => {
+  const { body, action, unauthorizedErrorHandler } = params;
+
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
   const requestOptions: RequestInit = !!localJwt
     ? {
@@ -79,7 +80,8 @@ export default function useFetcher(): FetcherType {
   const { logOut } = useAuthActions();
 
   return useCallback(
-    (path, body, action) => _fetch(path, body, action, logOut),
+    (path, params) =>
+      _fetch(path, { ...params, unauthorizedErrorHandler: logOut }),
     [logOut]
   );
 }
