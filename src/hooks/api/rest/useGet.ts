@@ -17,6 +17,6 @@ export default function useGet<ResponseType>(
   path: string | null,
   action: RequestAction
 ) {
-  const { data } = useSwr<ResponseType>([path, action]);
+  const { data } = useSwr<ResponseType>(path ? [path, action] : null);
   return data;
 }

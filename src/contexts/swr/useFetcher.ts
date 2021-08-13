@@ -42,7 +42,7 @@ export const _fetch: FetcherType = async (path, action, params = {}) => {
     // certain successful responses won't have a JSON body (e.g. updates)
     // res.json() will throw an error in these cases, which we catch gracefully
     if (res.ok) {
-      return {};
+      return null;
     }
 
     // attach custom error message if provided
