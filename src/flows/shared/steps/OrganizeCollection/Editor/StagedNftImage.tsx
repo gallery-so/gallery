@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { EditModeNft } from 'hooks/api/nfts/types';
-
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
+import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;

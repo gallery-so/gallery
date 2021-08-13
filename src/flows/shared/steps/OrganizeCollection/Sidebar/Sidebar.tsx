@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import { BodyMedium } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
 import TextButton from 'components/core/Button/TextButton';
-
-import { EditModeNft } from 'hooks/api/nfts/types';
+import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
+import { EditModeNft } from '../types';
 
 import {
   useSidebarNftsState,

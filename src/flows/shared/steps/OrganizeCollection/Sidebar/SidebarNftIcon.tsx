@@ -3,7 +3,7 @@ import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { EditModeNft } from 'hooks/api/nfts/types';
+import { EditModeNft } from '../types';
 
 type SidebarNftIconProps = {
   editModeNft: EditModeNft;

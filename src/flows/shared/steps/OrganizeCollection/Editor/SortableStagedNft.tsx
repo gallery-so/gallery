@@ -3,13 +3,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import styled from 'styled-components';
 
-import { EditModeNft } from 'hooks/api/nfts/types';
-
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
+import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;

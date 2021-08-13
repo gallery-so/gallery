@@ -7,9 +7,9 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { EditModeNft } from 'hooks/api/nfts/types';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
+import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
 
 export type SidebarNftsState = EditModeNft[];
 export type StagedNftsState = EditModeNft[];
