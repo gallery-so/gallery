@@ -17,7 +17,6 @@ import formatError from 'src/errors/formatError';
 
 type Props = {
   onNext: WizardContext['next'];
-  // collection: Collection;
   collectionId: Collection['id'];
   collectionTitle?: Collection['title'];
   collectionDescription?: Collection['description'];
@@ -25,7 +24,7 @@ type Props = {
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-function CollectionNamingForm({
+function CollectionEditInfoForm({
   onNext,
   collectionId,
   collectionTitle,
@@ -74,18 +73,12 @@ function CollectionNamingForm({
 
     setIsLoading(true);
     try {
-      // TODO this endpoint only updates name. Change endpoint to also update description
-      await fetcher('/collections/update/name', {
+      await fetcher('/collections/update/info', {
         id: collectionId,
         name: title,
+        collectors_note: description,
       });
 
-      if (description === 'invalid_desc') {
-        await pause(700);
-        throw { type: 'ERROR_SOMETHING_GENERIC' };
-      }
-
-      await pause(1000);
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
@@ -95,7 +88,7 @@ function CollectionNamingForm({
   }, [collectionId, description, goToNextStep, title, fetcher]);
 
   return (
-    <StyledCollectionNamingForm>
+    <StyledCollectionEditInfoForm>
       <BodyMedium>Give your collection a name and description</BodyMedium>
       <Spacer height={4} />
       <BodyRegular color={colors.gray50}>
@@ -132,11 +125,11 @@ function CollectionNamingForm({
           loading={isLoading}
         />
       </ButtonContainer>
-    </StyledCollectionNamingForm>
+    </StyledCollectionEditInfoForm>
   );
 }
 
-const StyledCollectionNamingForm = styled.div`
+const StyledCollectionEditInfoForm = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -156,4 +149,4 @@ const StyledButton = styled(Button)`
   width: 90px;
 `;
 
-export default CollectionNamingForm;
+export default CollectionEditInfoForm;

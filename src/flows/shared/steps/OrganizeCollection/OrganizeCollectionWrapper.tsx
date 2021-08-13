@@ -12,7 +12,7 @@ type Props = {
 function OrganizeCollectionWrapper({ next }: WizardContext & Props) {
   return (
     <CollectionEditorProvider>
-      <OrganizeCollection></OrganizeCollection>
+      <OrganizeCollection next={next} />
     </CollectionEditorProvider>
   );
 }

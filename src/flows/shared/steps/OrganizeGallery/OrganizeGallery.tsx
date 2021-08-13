@@ -8,8 +8,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 import { useAuthenticatedUser } from 'hooks/api/useUser';
-import useCollections from 'hooks/api/useCollections';
 import { User } from 'types/User';
+import useGalleries from 'hooks/api/useGalleries';
 
 type ConfigProps = {
   onNext: () => void;
@@ -47,7 +47,9 @@ function OrganizeGallery() {
     onPrevious: returnToProfile,
   });
 
-  const collections = useCollections({ userId: user.id }) || [];
+  const galleries = useGalleries({ userId: user.id }) || [];
+  // TODO: handle if galleries array is empty
+  const gallery = galleries[0] || { collections: [] };
 
   return (
     <StyledOrganizeGallery>
@@ -55,7 +57,7 @@ function OrganizeGallery() {
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionDnd collections={collections}></CollectionDnd>
+        <CollectionDnd collections={gallery.collections}></CollectionDnd>
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
