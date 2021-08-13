@@ -1,10 +1,7 @@
 import { useCallback } from 'react';
-import {
-  UpdateCollectionRequest,
-  UpdateCollectionResponse,
-} from 'types/Collection';
-import usePost from './rest/usePost';
-import { useAuthenticatedUser } from './useUser';
+import { UpdateCollectionRequest, UpdateCollectionResponse } from './types';
+import usePost from '../_rest/usePost';
+import { useAuthenticatedUser } from '../users/useUser';
 
 export default function useUpdateCollection() {
   const updateCollection = usePost();

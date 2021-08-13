@@ -12,7 +12,8 @@ import {
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 import { ANIMATION_NFT, AUDIO_NFT, IMAGE_NFT, VIDEO_NFT } from 'mocks/nfts';
-import { EditModeNft, Nft } from 'types/Nft';
+import { EditModeNft } from 'hooks/api/nfts/types';
+import { Nft } from 'types/Nft';
 import { Collection } from 'types/Collection';
 
 const MOCKED_AVAILABLE_NFTS = [IMAGE_NFT, VIDEO_NFT];

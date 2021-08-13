@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { UpdateUserRequest, UpdateUserResponse } from 'types/User';
-import usePost from './rest/usePost';
+import { UpdateUserRequest, UpdateUserResponse } from './types';
 import { useAuthenticatedUser } from './useUser';
+import usePost from '../_rest/usePost';
 
 export default function useUpdateUser() {
   const updateUser = usePost();

@@ -9,10 +9,3 @@ export type Nft = {
   platformName?: string;
   animationUrl?: string;
 };
-
-export type EditModeNft = {
-  id: string;
-  nft: Nft;
-  isSelected?: boolean;
-  index: number;
-};

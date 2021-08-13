@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { Nft } from 'types/Nft';
 import { ReactComponent as Settings } from './collection-settings.svg';
 import { Collection } from 'types/Collection';
+import { Nft } from 'types/Nft';
 
 type Props = {
   collection: Collection;

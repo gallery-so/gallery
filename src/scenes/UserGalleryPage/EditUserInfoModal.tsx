@@ -6,7 +6,7 @@ import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { User } from 'types/User';
 
 function EditUserInfoModal() {

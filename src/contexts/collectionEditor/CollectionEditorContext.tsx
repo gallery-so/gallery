@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { EditModeNft } from 'types/Nft';
+import { EditModeNft } from 'hooks/api/nfts/types';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 

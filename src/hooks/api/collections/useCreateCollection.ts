@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
-import {
-  CreateCollectionRequest,
-  CreateCollectionResponse,
-} from 'types/Collection';
-import usePost from './rest/usePost';
+import { CreateCollectionRequest, CreateCollectionResponse } from './types';
+import usePost from '../_rest/usePost';
 
 export default function useCreateCollection() {
   const createCollection = usePost();

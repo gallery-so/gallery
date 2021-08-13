@@ -1,7 +1,7 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
 import { BodyRegular } from 'components/core/Text/Text';
+import { Nft } from 'types/Nft';
 
 type Props = {
   nft: Nft;

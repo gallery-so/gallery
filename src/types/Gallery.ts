@@ -5,5 +5,3 @@ export type Gallery = {
   collections: Collection[];
   ownerUserId: string;
 };
-
-export type GetGalleriesResponse = { galleries: Gallery[] };

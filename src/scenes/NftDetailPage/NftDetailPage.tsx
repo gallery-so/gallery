@@ -7,7 +7,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import NftDetailText from './NftDetailText';
 import NftDetailAsset from './NftDetailAsset';
 
-import useNft from 'hooks/api/useNft';
+import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 

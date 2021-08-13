@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import useUpdateUser from 'hooks/api/useUpdateUser';
+import useUpdateUser from 'hooks/api/users/useUpdateUser';
 import formatError from 'src/errors/formatError';
 import {
   validate,

@@ -7,7 +7,7 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
 import TextButton from 'components/core/Button/TextButton';
 
-import { EditModeNft } from 'types/Nft';
+import { EditModeNft } from 'hooks/api/nfts/types';
 
 import {
   useSidebarNftsState,

@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
 
 import Dropdown, {
   StyledDropdownButton,
@@ -12,6 +11,7 @@ import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 import CollectionEditInfoForm from '../OrganizeCollection/CollectionEditInfoForm';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
+import { Collection } from 'types/Collection';
 
 type Props = {
   collection: Collection;

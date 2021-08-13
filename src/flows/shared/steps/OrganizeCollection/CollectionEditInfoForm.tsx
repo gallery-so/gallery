@@ -10,9 +10,9 @@ import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
-import { Collection } from 'types/Collection';
 import formatError from 'src/errors/formatError';
-import useUpdateCollection from 'hooks/api/useUpdateCollection';
+import useUpdateCollection from 'hooks/api/collections/useUpdateCollection';
+import { Collection } from 'types/Collection';
 
 type Props = {
   onNext: WizardContext['next'];

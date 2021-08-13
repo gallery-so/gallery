@@ -1,6 +1,7 @@
-import { Gallery, GetGalleriesResponse } from 'types/Gallery';
+import { GetGalleriesResponse } from './types';
+import { Gallery } from 'types/Gallery';
+import useGet from '../_rest/useGet';
 import { User } from 'types/User';
-import useGet from './rest/useGet';
 
 type Props = {
   userId?: User['id'];

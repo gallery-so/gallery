@@ -3,9 +3,11 @@ import useMouseUp from 'hooks/useMouseUp';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
 import CollectionRow from './CollectionRow';
+
 type Props = {
   collection: Collection;
 };
+
 function CollectionRowDragging({ collection }: Props) {
   const isMouseUp = useMouseUp();
   return (

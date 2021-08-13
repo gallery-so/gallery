@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { Collection } from 'types/Collection';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
+import { Collection } from 'types/Collection';
 
 type Props = {
   collections: Collection[];

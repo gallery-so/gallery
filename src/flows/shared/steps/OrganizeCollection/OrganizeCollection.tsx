@@ -9,10 +9,10 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import { EditModeNft } from 'types/Nft';
-import useGalleries from 'hooks/api/useGalleries';
-import useCreateCollection from 'hooks/api/useCreateCollection';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { EditModeNft } from 'hooks/api/nfts/types';
+import useGalleries from 'hooks/api/galleries/useGalleries';
+import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { User } from 'types/User';
 
 type ConfigProps = {

@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import styled from 'styled-components';
 
-import { EditModeNft } from 'types/Nft';
+import { EditModeNft } from 'hooks/api/nfts/types';
 
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';

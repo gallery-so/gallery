@@ -1,5 +1,5 @@
 import { Nft } from 'types/Nft';
-import useGet from './rest/useGet';
+import useGet from '../_rest/useGet';
 
 type Props = {
   id: string;
