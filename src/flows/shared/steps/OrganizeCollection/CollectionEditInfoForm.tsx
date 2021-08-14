@@ -10,10 +10,9 @@ import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
-import { Collection } from 'types/Collection';
-import { pause } from 'utils/time';
-import useFetcher from 'contexts/swr/useFetcher';
 import formatError from 'src/errors/formatError';
+import useUpdateCollection from 'hooks/api/collections/useUpdateCollection';
+import { Collection } from 'types/Collection';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -61,7 +60,7 @@ function CollectionEditInfoForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetcher = useFetcher();
+  const updateCollection = useUpdateCollection();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -73,19 +72,14 @@ function CollectionEditInfoForm({
 
     setIsLoading(true);
     try {
-      await fetcher('/collections/update/info', {
-        id: collectionId,
-        name: title,
-        collectors_note: description,
-      });
-
+      await updateCollection(collectionId, title, description);
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
     }
     setIsLoading(false);
     return;
-  }, [collectionId, description, goToNextStep, title, fetcher]);
+  }, [description, updateCollection, collectionId, title, goToNextStep]);
 
   return (
     <StyledCollectionEditInfoForm>

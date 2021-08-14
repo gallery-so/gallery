@@ -18,9 +18,9 @@ import {
   restrictToWindowEdges,
 } from '@dnd-kit/modifiers';
 
-import { Collection } from 'types/Collection';
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
+import { Collection } from 'types/Collection';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,

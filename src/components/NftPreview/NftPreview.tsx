@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 import NftPreviewLabel from './NftPreviewLabel';
 import Gradient from 'components/core/Gradient/Gradient';
@@ -8,6 +7,7 @@ import transitions from 'components/core/transitions';
 import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
+import { Nft } from 'types/Nft';
 
 const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 

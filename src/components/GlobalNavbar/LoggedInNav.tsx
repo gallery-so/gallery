@@ -6,7 +6,7 @@ import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { User } from 'types/User';
 
 function truncate(address: string) {

@@ -1,15 +1,15 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
-import Header from './Header';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
+import useGalleries from 'hooks/api/galleries/useGalleries';
 import CollectionDnd from './CollectionDnd';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import Header from './Header';
 import { User } from 'types/User';
-import useGalleries from 'hooks/api/useGalleries';
 
 type ConfigProps = {
   onNext: () => void;

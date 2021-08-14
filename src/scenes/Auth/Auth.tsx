@@ -5,7 +5,7 @@ import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { Caption } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';

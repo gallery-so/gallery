@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { EditModeNft } from 'types/Nft';
+import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;

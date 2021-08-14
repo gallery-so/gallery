@@ -1,8 +1,8 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { Redirect, RouteComponentProps } from '@reach/router';
 import Page from 'components/core/Page/Page';
-import useGalleries from 'hooks/api/useGalleries';
-import useUser, { useAuthenticatedUser } from 'hooks/api/useUser';
+import useGalleries from 'hooks/api/galleries/useGalleries';
+import useUser, { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import styled from 'styled-components';
 import UserGallery from './UserGallery';
 

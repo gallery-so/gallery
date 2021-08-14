@@ -7,9 +7,3 @@ export type Collection = {
   description?: string;
   isHidden?: boolean;
 };
-
-export type CreateCollectionResponse = {
-  collection_id: string;
-};
-
-export type GetCollectionsResponse = { collections: Collection[] };

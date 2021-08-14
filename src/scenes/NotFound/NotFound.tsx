@@ -8,7 +8,7 @@ import Page from 'components/core/Page/Page';
 
 function NotFound(_: RouteComponentProps) {
   return (
-    <Page>
+    <Page centered>
       <Display>404</Display>
       <Spacer height={8} />
       <BodyRegular>Unfortunately, there's not much to see here.</BodyRegular>

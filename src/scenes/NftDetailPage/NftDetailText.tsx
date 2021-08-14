@@ -1,10 +1,10 @@
 import { Heading, BodyRegular } from 'components/core/Text/Text';
-import { Nft } from 'types/Nft';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import styled from 'styled-components';
+import { Nft } from 'types/Nft';
 
 type Props = {
   nft: Nft;

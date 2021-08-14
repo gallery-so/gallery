@@ -9,12 +9,11 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import useFetcher from 'contexts/swr/useFetcher';
-import { EditModeNft } from 'types/Nft';
-import { CreateCollectionResponse } from 'types/Collection';
-import useGalleries from 'hooks/api/useGalleries';
-import { useAuthenticatedUser } from 'hooks/api/useUser';
+import useGalleries from 'hooks/api/galleries/useGalleries';
+import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { User } from 'types/User';
+import { EditModeNft } from './types';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
@@ -39,9 +38,9 @@ function useWizardConfig({ onNext }: ConfigProps) {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
 
-  const fetcher = useFetcher();
   const user = useAuthenticatedUser() as User;
   const galleries = useGalleries({ userId: user.id });
+  const createCollection = useCreateCollection();
 
   useEffect(() => {
     // if the user is part of the onboarding flow, prompt them
@@ -49,11 +48,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
     if (wizardId === 'onboarding') {
       setOnNext(async () => {
         // TODO: handle and display error in UI
-        const createdCollection = await fetcher<CreateCollectionResponse>(
-          '/collections/create',
-          {
-            nfts: stagedNftIdsRef.current,
-          }
+        const createdCollection = await createCollection(
+          stagedNftIdsRef.current
         );
 
         // TODO: add collection to gallery, or create gallery with collection
@@ -73,7 +69,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
     // TODO: Differentiate between Create vs Update by looking at collection ID on CollectionEditorContext
 
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal, onNext, wizardId, fetcher]);
+  }, [setOnNext, showModal, onNext, wizardId, createCollection]);
 }
 
 function OrganizeCollection({ next }: Props) {

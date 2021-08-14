@@ -1,10 +1,10 @@
 import colors from 'components/core/colors';
 import NftPreview from 'components/NftPreview/NftPreview';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
 import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
+import { Collection } from 'types/Collection';
 
 type Props = {
   collection: Collection;
