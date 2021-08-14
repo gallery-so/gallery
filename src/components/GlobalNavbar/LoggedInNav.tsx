@@ -17,7 +17,13 @@ function LoggedInNav() {
   const { logOut } = useAuthActions();
   const user = useAuthenticatedUser() as User;
 
-  const walletAddress = user.addresses[0];
+  let userAddresses = user.addresses || [];
+
+  if (!userAddresses[0]) {
+    console.error('User is missing addresses');
+  }
+
+  const walletAddress = userAddresses[0] || '';
   const truncatedAddress = useMemo(() => {
     return truncate(walletAddress);
   }, [walletAddress]);
