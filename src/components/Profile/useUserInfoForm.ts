@@ -60,6 +60,10 @@ export default function useUserInfoForm({
 
       onSuccess();
     } catch (e) {
+      if (e.message?.toLowerCase().includes('username')) {
+        setUsernameError('Username is taken');
+        return;
+      }
       setGeneralError(formatError(e));
       return;
     }
