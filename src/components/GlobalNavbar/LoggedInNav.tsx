@@ -6,7 +6,10 @@ import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
+import {
+  useAuthenticatedUser,
+  useAuthenticatedUserAddress,
+} from 'hooks/api/users/useUser';
 import { User } from 'types/User';
 
 function truncate(address: string) {
@@ -16,11 +19,10 @@ function truncate(address: string) {
 function LoggedInNav() {
   const { logOut } = useAuthActions();
   const user = useAuthenticatedUser() as User;
-
-  const walletAddress = user.addresses[0];
-  const truncatedAddress = useMemo(() => {
-    return truncate(walletAddress);
-  }, [walletAddress]);
+  const userAddress = useAuthenticatedUserAddress();
+  const truncatedUserAddress = useMemo(() => {
+    return truncate(userAddress);
+  }, [userAddress]);
 
   const handleGalleryRedirect = useCallback(() => {
     navigate(`/${user.username}`);
@@ -31,9 +33,9 @@ function LoggedInNav() {
       <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
       <Spacer width={24} />
       <Dropdown mainText="Account">
-        <CopyToClipboard textToCopy={walletAddress}>
+        <CopyToClipboard textToCopy={userAddress}>
           <TextButton
-            text={truncatedAddress}
+            text={truncatedUserAddress}
             disableTextTransform
             underlineOnHover
           />
