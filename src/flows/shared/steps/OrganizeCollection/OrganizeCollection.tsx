@@ -12,6 +12,8 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
 import useGalleryId from 'hooks/api/galleries/useGalleryId';
+import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
+import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
@@ -38,6 +40,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
 
   const galleryId = useGalleryId();
   const createCollection = useCreateCollection();
+  const updateCollection = useUpdateCollectionNfts();
+  const { collectionIdBeingEdited } = useCollectionWizardState();
 
   useEffect(() => {
     // if the user is part of the onboarding flow, they should
@@ -59,15 +63,27 @@ function useWizardConfig({ onNext }: ConfigProps) {
       });
     }
 
-    if (wizardId === 'edit-gallery') {
+    if (wizardId === 'edit-gallery' && collectionIdBeingEdited) {
       setOnNext(async () => {
-        // TODO__v1!!! make this use update collection
-        await createCollection(galleryId, stagedNftIdsRef.current);
+        // errors will be handled in the catch block within `WizardFooter.tsx`
+        await updateCollection(
+          collectionIdBeingEdited,
+          stagedNftIdsRef.current
+        );
       });
     }
 
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal, onNext, wizardId, createCollection, galleryId]);
+  }, [
+    setOnNext,
+    showModal,
+    onNext,
+    wizardId,
+    createCollection,
+    galleryId,
+    updateCollection,
+    collectionIdBeingEdited,
+  ]);
 }
 
 function OrganizeCollection({ next }: Props) {
