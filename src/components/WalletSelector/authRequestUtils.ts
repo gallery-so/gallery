@@ -1,5 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
+import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 
 /**
  * Auth Pipeline:
@@ -41,6 +42,12 @@ export default async function initializeAuthPipeline({
     },
     fetcher
   );
+
+  // triggering the opensea sync won't be a blocking action. instead, we'll heat up
+  // the redis cache so the data is available by the time the user arrives at the
+  // collection organization step
+  triggerOpenseaSync(address, fetcher);
+
   return { jwt: res.jwt_token, userId: res.user_id };
 }
 
@@ -146,5 +153,17 @@ async function createUser(
     console.error('error while attempting user creation', err);
     err.code = 'GALLERY_SERVER_ERROR';
     throw err;
+  }
+}
+
+function triggerOpenseaSync(address: string, fetcher: FetcherType) {
+  try {
+    fetcher<OpenseaSyncResponse>(
+      `/nfts/opensea_get?address=${address}`,
+      'fetch and sync nfts'
+    );
+  } catch (e) {
+    // error silently; TODO: send error analytics
+    console.error(e);
   }
 }

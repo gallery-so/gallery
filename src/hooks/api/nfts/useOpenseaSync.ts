@@ -5,7 +5,7 @@ type Props = {
   address: string;
 };
 
-type OpenseaSyncResponse = {
+export type OpenseaSyncResponse = {
   nfts: Nft[];
 };
 
