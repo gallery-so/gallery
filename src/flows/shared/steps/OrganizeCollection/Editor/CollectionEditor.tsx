@@ -15,6 +15,7 @@ import { ANIMATION_NFT, AUDIO_NFT, IMAGE_NFT, VIDEO_NFT } from 'mocks/nfts';
 import { Nft } from 'types/Nft';
 import { Collection } from 'types/Collection';
 import { EditModeNft } from '../types';
+import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 
 const MOCKED_AVAILABLE_NFTS = [IMAGE_NFT, VIDEO_NFT];
 const MOCKED_EXISTING_COLLECTION: Collection = {
@@ -44,6 +45,9 @@ function CollectionEditor() {
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts } = useCollectionEditorActions();
 
+  const unassignedNfts = useUnassignedNfts({ skipCache: false });
+  console.log({ unassignedNfts });
+
   // initialize sidebarNfts
   useEffect(() => {
     // TODO__v1: get all "available nfts" from swr - (nfts not in a collection)
@@ -68,6 +72,7 @@ function CollectionEditor() {
       stageNfts(existingCollectionNfts);
       return;
     }
+
     // NEW COLLECTION
     setSidebarNfts(availableNfts);
   }, [collectionIdBeingEdited, setSidebarNfts, stageNfts]);

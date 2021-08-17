@@ -1,6 +1,11 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
+import {
+  getUnassignedNftsUrl,
+  unassignedNftsAction,
+} from 'hooks/api/nfts/useUnassignedNfts';
+import { cache } from 'swr';
 
 /**
  * Auth Pipeline:
@@ -43,10 +48,9 @@ export default async function initializeAuthPipeline({
     fetcher
   );
 
-  // triggering the opensea sync won't be a blocking action. instead, we'll heat up
-  // the redis cache so the data is available by the time the user arrives at the
-  // collection organization step
-  triggerOpenseaSync(address, fetcher);
+  // triggering the opensea sync won't be a blocking action; nfts should be fetched
+  // and ready to go by the time the user arrives at the edit collection step
+  triggerOpenseaSync(address, res.user_id, fetcher);
 
   return { jwt: res.jwt_token, userId: res.user_id };
 }
@@ -156,12 +160,27 @@ async function createUser(
   }
 }
 
-function triggerOpenseaSync(address: string, fetcher: FetcherType) {
+async function triggerOpenseaSync(
+  address: string,
+  userId: string,
+  fetcher: FetcherType
+) {
   try {
-    fetcher<OpenseaSyncResponse>(
+    // fetch nfts from opensea. since this is a brand new user, we can assume that all
+    // nfts will be associated will be "unassigned"
+    const response = await fetcher<OpenseaSyncResponse>(
       `/nfts/opensea_get?address=${address}`,
       'fetch and sync nfts'
     );
+
+    // store data in cache so that it can be quickly accessed by the time the user
+    // arrives at the collection organization step. doing this in a very hacky, manual
+    // way since there seems to be a bug with swr's built-in `mutate` method
+    const cacheKey = `arg@"${getUnassignedNftsUrl({
+      userId,
+      skipCache: false,
+    })}"@"${unassignedNftsAction}"`;
+    cache.set(cacheKey, response);
   } catch (e) {
     // error silently; TODO: send error analytics
     console.error(e);

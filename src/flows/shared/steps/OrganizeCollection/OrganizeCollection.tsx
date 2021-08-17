@@ -37,7 +37,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
   }, [stagedNfts]);
 
   const galleryId = useGalleryId();
-
   const createCollection = useCreateCollection();
 
   useEffect(() => {
