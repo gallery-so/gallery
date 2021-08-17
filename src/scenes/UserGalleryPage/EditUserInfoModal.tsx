@@ -25,7 +25,7 @@ function EditUserInfoModal() {
   } = useUserInfoForm({
     onSuccess: hideModal,
     existingUsername: existingUser.username,
-    existingBio: existingUser.description,
+    existingBio: existingUser.bio,
   });
 
   const [isLoading, setIsLoading] = useState(false);
