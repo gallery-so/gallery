@@ -1,7 +1,7 @@
 import { Collection } from 'types/Collection';
 
 export type CreateCollectionRequest = {
-  // list of NFT IDs
+  gallery_id: string;
   nfts: string[];
 };
 

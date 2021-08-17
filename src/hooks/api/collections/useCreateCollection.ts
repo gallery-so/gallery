@@ -6,11 +6,12 @@ export default function useCreateCollection() {
   const createCollection = usePost();
 
   return useCallback(
-    async (nftIds: string[]) => {
+    async (galleryId: string, nftIds: string[]) => {
       const result = await createCollection<
         CreateCollectionResponse,
         CreateCollectionRequest
       >('/collections/create', 'create collection', {
+        gallery_id: galleryId,
         nfts: nftIds,
       });
 

@@ -9,11 +9,9 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import useGalleries from 'hooks/api/galleries/useGalleries';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import { User } from 'types/User';
 import { EditModeNft } from './types';
+import useGalleryId from 'hooks/api/galleries/useGalleryId';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
@@ -38,23 +36,21 @@ function useWizardConfig({ onNext }: ConfigProps) {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
 
-  const user = useAuthenticatedUser() as User;
-  const galleries = useGalleries({ userId: user.id });
+  const galleryId = useGalleryId();
+
   const createCollection = useCreateCollection();
 
   useEffect(() => {
-    // if the user is part of the onboarding flow, prompt them
-    // to name their collection before moving onto the next step
+    // if the user is part of the onboarding flow, they should
+    // CREATE their collection
     if (wizardId === 'onboarding') {
       setOnNext(async () => {
-        // TODO: handle and display error in UI
+        // errors will be handled in the catch block within `WizardFooter.tsx`
         const createdCollection = await createCollection(
+          galleryId,
           stagedNftIdsRef.current
         );
 
-        // TODO: add collection to gallery, or create gallery with collection
-
-        // TODO: Only need to show modal if this is creation
         showModal(
           <CollectionEditInfoForm
             onNext={onNext}
@@ -64,12 +60,15 @@ function useWizardConfig({ onNext }: ConfigProps) {
       });
     }
 
-    // TODO: Create a collection outside of onboarding flow
-    // TODO: Update an existing collection outside of onboarding flow
-    // TODO: Differentiate between Create vs Update by looking at collection ID on CollectionEditorContext
+    if (wizardId === 'edit-gallery') {
+      setOnNext(async () => {
+        // TODO__v1!!! make this use update collection
+        await createCollection(galleryId, stagedNftIdsRef.current);
+      });
+    }
 
     return () => setOnNext(undefined);
-  }, [setOnNext, showModal, onNext, wizardId, createCollection]);
+  }, [setOnNext, showModal, onNext, wizardId, createCollection, galleryId]);
 }
 
 function OrganizeCollection({ next }: Props) {
