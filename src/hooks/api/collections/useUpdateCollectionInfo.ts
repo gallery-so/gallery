@@ -3,7 +3,7 @@ import { UpdateCollectionRequest, UpdateCollectionResponse } from './types';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 
-export default function useUpdateCollection() {
+export default function useUpdateCollectionInfo() {
   const updateCollection = usePost();
   const authenticatedUser = useAuthenticatedUser();
 

@@ -11,7 +11,7 @@ import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'src/errors/formatError';
-import useUpdateCollection from 'hooks/api/collections/useUpdateCollection';
+import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import { Collection } from 'types/Collection';
 
 type Props = {
@@ -60,7 +60,7 @@ function CollectionEditInfoForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const updateCollection = useUpdateCollection();
+  const updateCollection = useUpdateCollectionInfo();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
