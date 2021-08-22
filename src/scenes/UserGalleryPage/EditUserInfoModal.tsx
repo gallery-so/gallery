@@ -19,7 +19,7 @@ function EditUserInfoModal() {
     (newUsername: string) => {
       hideModal();
 
-      // if a user chooses a new username, we should navigate them there
+      // if the user chooses a new username, we should navigate them there
       const previousUsername = existingUser.username;
       if (newUsername !== previousUsername) {
         navigate(`/${newUsername}`);
