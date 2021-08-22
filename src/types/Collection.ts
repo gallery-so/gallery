@@ -1,9 +1,12 @@
 import { Nft } from './Nft';
 
 export type Collection = {
-  nfts: Nft[];
   id: string;
-  title?: string;
-  description?: string;
-  isHidden?: boolean;
+  name: string;
+  collectors_note: string;
+  hidden: boolean;
+  creation_time: number;
+  owner_user_id: string;
+  version: number;
+  nfts: Nft[];
 };

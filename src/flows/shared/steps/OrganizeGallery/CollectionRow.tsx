@@ -24,12 +24,12 @@ function CollectionRow({ collection, className }: Props) {
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
-  const isHidden = useMemo(() => !!collection.isHidden, [collection.isHidden]);
+  const isHidden = useMemo(() => !!collection.hidden, [collection.hidden]);
 
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
-        <BodyRegular>{collection.title}</BodyRegular>
+        <BodyRegular>{collection.name}</BodyRegular>
         <Settings />
       </Header>
       <Spacer height={12} />

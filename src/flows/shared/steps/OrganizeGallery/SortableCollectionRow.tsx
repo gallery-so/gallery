@@ -38,7 +38,7 @@ function SortableCollectionRow({ collection, ...props }: Props) {
       {...attributes}
       {...listeners}
     >
-      <CollectionRow collection={collection}></CollectionRow>
+      <CollectionRow collection={collection} />
     </StyledSortableCollectionRow>
   );
 }

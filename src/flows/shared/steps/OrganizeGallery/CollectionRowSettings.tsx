@@ -35,8 +35,8 @@ function CollectionRowSettings({
         // No need for onNext because this isn't part of a wizard
         onNext={() => {}}
         collectionId={collection.id}
-        collectionTitle={collection.title}
-        collectionDescription={collection.description}
+        collectionTitle={collection.name}
+        collectionDescription={collection.collectors_note}
       />
     );
   }, [collection, showModal]);
@@ -67,7 +67,7 @@ function CollectionRowSettings({
         <Spacer height={12} />
         <TextButton
           onClick={handleToggleHiddenClick}
-          text={collection.isHidden ? 'Show' : 'Hide'}
+          text={collection.hidden ? 'Show' : 'Hide'}
           underlineOnHover
         />
         <Spacer height={12} />

@@ -17,8 +17,8 @@ import { Collection } from 'types/Collection';
 type Props = {
   onNext: WizardContext['next'];
   collectionId: Collection['id'];
-  collectionTitle?: Collection['title'];
-  collectionDescription?: Collection['description'];
+  collectionTitle?: Collection['name'];
+  collectionDescription?: Collection['collectors_note'];
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;

@@ -17,6 +17,7 @@ import { Collection } from 'types/Collection';
 import { EditModeNft } from '../types';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 
+// @ts-expect-error
 const MOCKED_EXISTING_COLLECTION: Collection = {
   id: '123',
   nfts: [AUDIO_NFT, ANIMATION_NFT],
