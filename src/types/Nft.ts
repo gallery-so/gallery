@@ -1,11 +1,31 @@
 export type Nft = {
+  acquisition_date: string;
+  animation_original_url: string;
+  animation_url: string;
+  asset_contract: {
+    address: string;
+    description: string;
+    external_link: string;
+    name: string;
+    schema_name: string;
+    symbol: string;
+    total_supply: string;
+  };
+  collectors_note: string;
+  creation_time: number;
+  creator_address: string;
+  creator_name: string;
+  description: string;
+  external_url: string;
   id: string;
+  image_original_url: string;
+  image_preview_url: string;
+  image_thumbnail_url: string;
+  image_url: string;
   name: string;
-  artist?: string;
-  imageUrl: string;
-  imagePreviewUrl: string;
-  description?: string;
-  ownerName?: string;
-  platformName?: string;
-  animationUrl?: string;
+  opensea_id: number;
+  opensea_token_id: string;
+  owner_address: string;
+  token_metadata_url: string;
+  user_id: string;
 };
