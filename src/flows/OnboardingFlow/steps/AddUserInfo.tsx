@@ -8,6 +8,8 @@ import ErrorText from 'components/core/Text/ErrorText';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
+import { useAuthenticatedUser } from 'hooks/api/users/useUser';
+import { User } from 'types/User';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -24,6 +26,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
 }
 
 function AddUserInfo({ next }: WizardContext) {
+  const user = useAuthenticatedUser() as User;
+
   const {
     username,
     onUsernameChange,
@@ -33,7 +37,7 @@ function AddUserInfo({ next }: WizardContext) {
     onBioChange,
     generalError,
     onEditUser,
-  } = useUserInfoForm({ onSuccess: next });
+  } = useUserInfoForm({ onSuccess: next, userId: user.id });
 
   useWizardConfig({ onNext: onEditUser });
 

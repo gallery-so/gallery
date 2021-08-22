@@ -26,6 +26,7 @@ function EditUserInfoModal() {
     onSuccess: hideModal,
     existingUsername: existingUser.username,
     existingBio: existingUser.bio,
+    userId: existingUser.id,
   });
 
   const [isLoading, setIsLoading] = useState(false);

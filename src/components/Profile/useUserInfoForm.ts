@@ -16,12 +16,14 @@ type Props = {
   onSuccess: () => void;
   existingUsername?: string;
   existingBio?: string;
+  userId: string;
 };
 
 export default function useUserInfoForm({
   onSuccess,
   existingUsername,
   existingBio,
+  userId,
 }: Props) {
   const [username, setUsername] = useState(existingUsername || '');
   const [usernameError, setUsernameError] = useState('');
@@ -56,7 +58,7 @@ export default function useUserInfoForm({
     //------------ end client-side checks ------------
 
     try {
-      await updateUser(username, bio);
+      await updateUser(userId, username, bio);
 
       onSuccess();
     } catch (e) {
@@ -67,7 +69,7 @@ export default function useUserInfoForm({
       setGeneralError(formatError(e));
       return;
     }
-  }, [username, bio, updateUser, onSuccess]);
+  }, [username, bio, updateUser, userId, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
     setUsernameError('');
