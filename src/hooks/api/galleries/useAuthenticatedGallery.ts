@@ -1,8 +1,9 @@
+import { Gallery } from 'types/Gallery';
 import { User } from 'types/User';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGalleries from './useGalleries';
 
-export default function useGalleryId() {
+export default function useAuthenticatedGallery(): Gallery {
   const user = useAuthenticatedUser() as User;
   if (!user) {
     throw new Error('Authenticated user not found');
@@ -13,5 +14,5 @@ export default function useGalleryId() {
     throw new Error("Authenticated user doesn't have any galleries!");
   }
 
-  return galleries[0].id;
+  return galleries[0];
 }
