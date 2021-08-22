@@ -5,7 +5,6 @@ import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
-import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import Welcome from './steps/Welcome';

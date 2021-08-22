@@ -10,6 +10,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
   const handleGalleryPreview = useCallback(() => {
     alert('TODO - go to gallery preview');
   }, []);
+
   const handleAddCollection = useCallback(() => {
     push('organizeCollection');
   }, [push]);
