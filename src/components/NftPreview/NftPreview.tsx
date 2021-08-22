@@ -8,13 +8,7 @@ import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
-
-const IMG_FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
-
-function resize(imgUrl: string, width: number) {
-  if (!imgUrl) return null;
-  return imgUrl.replace('=s250', `=s${width}`);
-}
+import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
 
 type Props = {
   nft: Nft;
@@ -23,8 +17,7 @@ type Props = {
 };
 
 function NftPreview({ nft, collectionId, gap }: Props) {
-  const imgUrl =
-    resize(nft.imagePreviewUrl, 288) || nft.imageUrl || IMG_FALLBACK_URL;
+  const imgUrl = getResizedNftImageUrlWithFallback(nft);
 
   const handleNftClick = useCallback(() => {
     navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);

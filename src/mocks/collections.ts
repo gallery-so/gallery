@@ -56,7 +56,7 @@ export function mockSingleCollection({
   aLot,
 }: MockSingleCollectionParams = DEFAULT_PARAMS) {
   const nfts = (aLot ? getManyMockNfts() : getUniqueMockNfts()).filter((nft) =>
-    noVideos ? !nft.animationUrl?.includes('.mp4') : true
+    noVideos ? !nft.animation_url?.includes('.mp4') : true
   );
 
   return {

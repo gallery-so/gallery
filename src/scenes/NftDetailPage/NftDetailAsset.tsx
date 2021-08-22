@@ -14,11 +14,11 @@ type Props = {
 };
 
 const getMediaType = (nft: Nft) => {
-  if (!nft.animationUrl) {
+  if (!nft.animation_url) {
     return NftMediaType.IMAGE;
   }
 
-  const animationUrlFiletype = nft.animationUrl.split('.').pop();
+  const animationUrlFiletype = nft.animation_url.split('.').pop();
 
   switch (animationUrlFiletype) {
     case 'mp4':
@@ -39,7 +39,7 @@ function NftDetailAsset({ nft }: Props) {
     const assetType = getMediaType(nft);
     switch (assetType) {
       case NftMediaType.IMAGE:
-        return <ImageWithLoading src={nft.imageUrl} alt={nft.name} />;
+        return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
       case NftMediaType.AUDIO:
         return <NftDetailAudio nft={nft} />;
       case NftMediaType.VIDEO:

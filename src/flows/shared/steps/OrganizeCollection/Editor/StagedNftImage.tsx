@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
 import { EditModeNft } from '../types';
+import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
 
 type Props = {
   editModeNft: EditModeNft;
@@ -10,7 +11,7 @@ type Props = {
 
 function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
   const nft = editModeNft.nft;
-  const srcUrl = nft.imageUrl;
+  const srcUrl = getResizedNftImageUrlWithFallback(nft);
 
   return (
     <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} {...props}>

@@ -9,13 +9,13 @@ type Props = {
 function NftDetailAudio({ nft }: Props) {
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={nft.imageUrl} alt={nft.name} />
+      <ImageWithLoading src={nft.image_url} alt={nft.name} />
       <StyledAudio
         controls
         loop
         controlsList="nodownload"
         preload="none"
-        src={nft.animationUrl}
+        src={nft.animation_url}
       />
     </StyledAudioContainer>
   );

@@ -44,6 +44,7 @@ function Sidebar() {
     unstageNfts(nftIdsToUnstage);
     setNftsIsSelected(sidebarNfts, false);
   }, [sidebarNfts, setNftsIsSelected, unstageNfts]);
+
   return (
     <StyledSidebar>
       <Header>
@@ -62,7 +63,7 @@ function Sidebar() {
       </Header>
       <Spacer height={12} />
       <Selection>
-        {sidebarNfts.map((editModeNft: EditModeNft, index: number) => (
+        {sidebarNfts.map((editModeNft: EditModeNft) => (
           <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
         ))}
       </Selection>

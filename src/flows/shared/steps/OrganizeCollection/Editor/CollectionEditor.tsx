@@ -11,13 +11,12 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
-import { ANIMATION_NFT, AUDIO_NFT, IMAGE_NFT, VIDEO_NFT } from 'mocks/nfts';
+import { ANIMATION_NFT, AUDIO_NFT } from 'mocks/nfts';
 import { Nft } from 'types/Nft';
 import { Collection } from 'types/Collection';
 import { EditModeNft } from '../types';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 
-const MOCKED_AVAILABLE_NFTS = [IMAGE_NFT, VIDEO_NFT];
 const MOCKED_EXISTING_COLLECTION: Collection = {
   id: '123',
   nfts: [AUDIO_NFT, ANIMATION_NFT],
@@ -50,9 +49,12 @@ function CollectionEditor() {
 
   // initialize sidebarNfts
   useEffect(() => {
-    // TODO__v1: get all "available nfts" from swr - (nfts not in a collection)
+    if (!unassignedNfts) {
+      return;
+    }
+
     const availableNfts: EditModeNft[] = convertNftsToEditModeNfts(
-      MOCKED_AVAILABLE_NFTS
+      unassignedNfts
     );
 
     if (collectionIdBeingEdited) {
@@ -75,7 +77,7 @@ function CollectionEditor() {
 
     // NEW COLLECTION
     setSidebarNfts(availableNfts);
-  }, [collectionIdBeingEdited, setSidebarNfts, stageNfts]);
+  }, [collectionIdBeingEdited, setSidebarNfts, stageNfts, unassignedNfts]);
 
   return (
     <>

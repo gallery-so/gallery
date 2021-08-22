@@ -8,7 +8,7 @@ type Props = {
 function NftDetailVideo({ nft }: Props) {
   return (
     <StyledVideo
-      src={nft.animationUrl}
+      src={nft.animation_url}
       muted
       autoPlay
       loop
