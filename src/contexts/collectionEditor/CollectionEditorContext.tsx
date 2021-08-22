@@ -59,7 +59,9 @@ const CollectionEditorActionsContext = createContext<
 export const useCollectionEditorActions = (): CollectionEditorActions => {
   const context = useContext(CollectionEditorActionsContext);
   if (!context) {
-    throw Error('');
+    throw Error(
+      'Attempted to use CollectionEditorActionsContext without a provider'
+    );
   }
   return context;
 };

@@ -6,7 +6,9 @@ import CollectionEditInfoForm from './CollectionEditInfoForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
+import CollectionEditorProvider, {
+  useStagedNftsState,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
@@ -17,10 +19,6 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 
 type ConfigProps = {
   onNext: WizardContext['next'];
-};
-
-type Props = {
-  next?: any;
 };
 
 function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
@@ -86,13 +84,15 @@ function useWizardConfig({ onNext }: ConfigProps) {
   ]);
 }
 
-function OrganizeCollection({ next }: Props) {
+function OrganizeCollection({ next }: WizardContext) {
   useWizardConfig({ onNext: next });
 
   return (
-    <StyledOrganizeCollection>
-      <CollectionEditor />
-    </StyledOrganizeCollection>
+    <CollectionEditorProvider>
+      <StyledOrganizeCollection>
+        <CollectionEditor />
+      </StyledOrganizeCollection>
+    </CollectionEditorProvider>
   );
 }
 
