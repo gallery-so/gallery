@@ -21,7 +21,11 @@ export function formatDetailedError(e: Error) {
 }
 
 export default function formatError(e: Error) {
-  if (e instanceof ApiError) return e.customMessage;
-  if (e.message) return `Error: ${e.message}`;
+  if (e instanceof ApiError) {
+    return `Error while trying to ${e.customMessage}: ${e.message}`;
+  }
+  if (e.message) {
+    return `Error: ${e.message}`;
+  }
   return genericErrorMessage;
 }

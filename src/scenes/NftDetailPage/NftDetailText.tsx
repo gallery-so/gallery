@@ -15,17 +15,19 @@ function NftDetailText({ nft }: Props) {
     <StyledDetailLabel>
       <Heading>{nft.name}</Heading>
       <Spacer height={16} />
-      <BodyRegular>{nft.platformName}</BodyRegular>
+      <BodyRegular>{nft.asset_contract.name}</BodyRegular>
       <Spacer height={16} />
       <StyledNftDescription color={colors.gray50}>
         {nft.description}
       </StyledNftDescription>
       <Spacer height={32} />
-      <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
-      <BodyRegular>{nft.ownerName}</BodyRegular>
-      <Spacer height={16} />
+      {/* TODO__v1.1: populate Gallery Username once it's sent from backend */}
+      {/* <BodyRegular color={colors.gray50}>Owned By</BodyRegular> */}
+      {/* <BodyRegular>{nft.owner_address}</BodyRegular> */}
+      {/* <Spacer height={16} /> */}
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
-      <BodyRegular>0xad6a7c8bfaf34aeddb036adfe4044d6a5d0a9ce2</BodyRegular>
+      {/* TODO__v1: creator_address is not being returned */}
+      <BodyRegular>{nft.creator_address}</BodyRegular>
     </StyledDetailLabel>
   );
 }

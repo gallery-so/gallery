@@ -1,23 +1,25 @@
 import { useCallback } from 'react';
-import { UpdateCollectionRequest, UpdateCollectionResponse } from './types';
+import {
+  UpdateCollectionNftsRequest,
+  UpdateCollectionNftsResponse,
+} from './types';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 
-export default function useUpdateCollection() {
+export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
   const authenticatedUser = useAuthenticatedUser();
 
   return useCallback(
-    async (collectionId: string, name: string, description: string) => {
+    async (collectionId: string, nfts: string[]) => {
       if (!authenticatedUser) return;
 
       const result = await updateCollection<
-        UpdateCollectionResponse,
-        UpdateCollectionRequest
-      >('/collections/update/info', 'update collection', {
+        UpdateCollectionNftsResponse,
+        UpdateCollectionNftsRequest
+      >('/collections/update/nfts', 'update collection nfts', {
         id: collectionId,
-        name: name,
-        collectors_note: description,
+        nfts,
       });
 
       return result;

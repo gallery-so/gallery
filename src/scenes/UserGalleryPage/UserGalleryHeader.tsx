@@ -56,7 +56,7 @@ function UserGalleryHeader({ user, isAuthenticatedUsersPage }: Props) {
             <BodyRegular color={colors.gray50}>Collector Since Mar 2021</BodyRegular>
           */}
           <StyledBodyRegular color={colors.gray50}>
-            {user.description}
+            {user.bio}
           </StyledBodyRegular>
         </StyledLeftContainer>
       </StyledUserDetails>

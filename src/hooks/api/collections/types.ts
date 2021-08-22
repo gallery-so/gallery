@@ -1,7 +1,7 @@
 import { Collection } from 'types/Collection';
 
 export type CreateCollectionRequest = {
-  // list of NFT IDs
+  gallery_id: string;
   nfts: string[];
 };
 
@@ -11,10 +11,17 @@ export type CreateCollectionResponse = {
 
 export type GetCollectionsResponse = { collections: Collection[] };
 
-export type UpdateCollectionRequest = {
+export type UpdateCollectionInfoRequest = {
   id: string;
   name: string;
   collectors_note: string;
 };
 
-export type UpdateCollectionResponse = null;
+export type UpdateCollectionInfoResponse = null;
+
+export type UpdateCollectionNftsRequest = {
+  id: string;
+  nfts: string[];
+};
+
+export type UpdateCollectionNftsResponse = null;

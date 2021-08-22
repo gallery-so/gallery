@@ -1,13 +1,14 @@
 import useMouseUp from 'hooks/useMouseUp';
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
+import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
 
 type Props = {
-  nft?: Nft;
+  nft: Nft;
 };
 
 function StagedNftImageDragging({ nft }: Props) {
-  const srcUrl = nft?.imageUrl;
+  const srcUrl = getResizedNftImageUrlWithFallback(nft);
   const isMouseUp = useMouseUp();
 
   return <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />;

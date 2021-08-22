@@ -13,6 +13,7 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   const isSelected = useMemo(() => !!editModeNft.isSelected, [
     editModeNft.isSelected,
   ]);
+
   const {
     setNftsIsSelected,
     stageNfts,
@@ -28,7 +29,7 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
     <StyledSidebarNftIcon>
       <StyledImage
         isSelected={isSelected}
-        src={editModeNft.nft.imageUrl}
+        src={editModeNft.nft.image_thumbnail_url}
         alt="nft"
       />
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
