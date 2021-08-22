@@ -8,10 +8,25 @@ import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { User } from 'types/User';
+import { navigate } from '@reach/router';
 
 function EditUserInfoModal() {
-  const { hideModal } = useModal();
   const existingUser = useAuthenticatedUser() as User;
+
+  const { hideModal } = useModal();
+
+  const closeModalAndNavigateToNewUsername = useCallback(
+    (newUsername: string) => {
+      hideModal();
+
+      // if the user chooses a new username, we should navigate them there
+      const previousUsername = existingUser.username;
+      if (newUsername !== previousUsername) {
+        navigate(`/${newUsername}`);
+      }
+    },
+    [hideModal, existingUser.username]
+  );
 
   const {
     username,
@@ -23,9 +38,10 @@ function EditUserInfoModal() {
     generalError,
     onEditUser,
   } = useUserInfoForm({
-    onSuccess: hideModal,
+    onSuccess: closeModalAndNavigateToNewUsername,
     existingUsername: existingUser.username,
     existingBio: existingUser.bio,
+    userId: existingUser.id,
   });
 
   const [isLoading, setIsLoading] = useState(false);

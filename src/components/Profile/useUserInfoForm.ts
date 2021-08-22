@@ -13,15 +13,17 @@ import {
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {
-  onSuccess: () => void;
+  onSuccess: (username: string) => void;
   existingUsername?: string;
   existingBio?: string;
+  userId: string;
 };
 
 export default function useUserInfoForm({
   onSuccess,
   existingUsername,
   existingBio,
+  userId,
 }: Props) {
   const [username, setUsername] = useState(existingUsername || '');
   const [usernameError, setUsernameError] = useState('');
@@ -56,9 +58,9 @@ export default function useUserInfoForm({
     //------------ end client-side checks ------------
 
     try {
-      await updateUser(username, bio);
+      await updateUser(userId, username, bio);
 
-      onSuccess();
+      onSuccess(username);
     } catch (e) {
       if (e.message?.toLowerCase().includes('username')) {
         setUsernameError('Username is taken');
@@ -67,7 +69,7 @@ export default function useUserInfoForm({
       setGeneralError(formatError(e));
       return;
     }
-  }, [username, bio, updateUser, onSuccess]);
+  }, [username, bio, updateUser, userId, onSuccess]);
 
   const handleClearUsernameError = useCallback(() => {
     setUsernameError('');
