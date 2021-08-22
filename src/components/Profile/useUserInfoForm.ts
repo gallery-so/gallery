@@ -13,7 +13,7 @@ import {
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {
-  onSuccess: () => void;
+  onSuccess: (username: string) => void;
   existingUsername?: string;
   existingBio?: string;
   userId: string;
@@ -60,7 +60,7 @@ export default function useUserInfoForm({
     try {
       await updateUser(userId, username, bio);
 
-      onSuccess();
+      onSuccess(username);
     } catch (e) {
       if (e.message?.toLowerCase().includes('username')) {
         setUsernameError('Username is taken');
