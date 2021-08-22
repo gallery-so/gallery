@@ -45,7 +45,6 @@ function CollectionEditor() {
   const { setSidebarNfts, stageNfts } = useCollectionEditorActions();
 
   const unassignedNfts = useUnassignedNfts({ skipCache: false });
-  console.log({ unassignedNfts });
 
   // initialize sidebarNfts
   useEffect(() => {
