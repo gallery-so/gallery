@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
-import { TitleMedium, BodyRegular } from 'components/core/Text/Text';
+import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import initializeAuthPipeline from './authRequestUtils';
 import useFetcher from 'contexts/swr/useFetcher';
@@ -190,6 +190,7 @@ function WalletSelector() {
           );
         })
       )}
+      <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>
   );
 }
