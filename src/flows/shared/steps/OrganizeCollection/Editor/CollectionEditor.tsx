@@ -80,17 +80,21 @@ function CollectionEditor() {
   }, [collectionIdBeingEdited, setSidebarNfts, stageNfts, unassignedNfts]);
 
   return (
-    <>
+    <StyledOrganizeCollection>
       <StyledSidebarContainer>
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
         {stagedNfts.length ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
-    </>
+    </StyledOrganizeCollection>
   );
 }
 const SIDEBAR_WIDTH = 280;
+
+const StyledOrganizeCollection = styled.div`
+  display: flex;
+`;
 
 const StyledSidebarContainer = styled.div`
   width: ${SIDEBAR_WIDTH}px;

@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
-import styled from 'styled-components';
 
 import CollectionEditInfoForm from './CollectionEditInfoForm';
 import CollectionEditor from './Editor/CollectionEditor';
@@ -42,26 +41,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
   const { collectionIdBeingEdited } = useCollectionWizardState();
 
   useEffect(() => {
-    // if the user is part of the onboarding flow, they should
-    // CREATE their collection
-    if (wizardId === 'onboarding') {
-      setOnNext(async () => {
-        // errors will be handled in the catch block within `WizardFooter.tsx`
-        const createdCollection = await createCollection(
-          galleryId,
-          stagedNftIdsRef.current
-        );
-
-        showModal(
-          <CollectionEditInfoForm
-            onNext={onNext}
-            collectionId={createdCollection.collection_id}
-          />
-        );
-      });
-    }
-
-    if (wizardId === 'edit-gallery' && collectionIdBeingEdited) {
+    // if collection is being edited, trigger update
+    if (collectionIdBeingEdited) {
       setOnNext(async () => {
         // errors will be handled in the catch block within `WizardFooter.tsx`
         await updateCollection(
@@ -69,9 +50,25 @@ function useWizardConfig({ onNext }: ConfigProps) {
           stagedNftIdsRef.current
         );
       });
+
+      return;
     }
 
-    return () => setOnNext(undefined);
+    // if collection is being created, trigger creation
+    setOnNext(async () => {
+      // errors will be handled in the catch block within `WizardFooter.tsx`
+      const createdCollection = await createCollection(
+        galleryId,
+        stagedNftIdsRef.current
+      );
+
+      showModal(
+        <CollectionEditInfoForm
+          onNext={onNext}
+          collectionId={createdCollection.collection_id}
+        />
+      );
+    });
   }, [
     setOnNext,
     showModal,
@@ -84,20 +81,27 @@ function useWizardConfig({ onNext }: ConfigProps) {
   ]);
 }
 
-function OrganizeCollection({ next }: WizardContext) {
-  useWizardConfig({ onNext: next });
+// in order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
+type DecoratedCollectionEditorProps = {
+  push: WizardContext['push'];
+};
 
+function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
+  const onNext = useCallback(() => {
+    push('organizeGallery');
+  }, [push]);
+
+  useWizardConfig({ onNext });
+
+  return <CollectionEditor />;
+}
+
+function OrganizeCollectionWithProvider({ push }: WizardContext) {
   return (
     <CollectionEditorProvider>
-      <StyledOrganizeCollection>
-        <CollectionEditor />
-      </StyledOrganizeCollection>
+      <DecoratedCollectionEditor push={push} />
     </CollectionEditorProvider>
   );
 }
 
-const StyledOrganizeCollection = styled.div`
-  display: flex;
-`;
-
-export default OrganizeCollection;
+export default OrganizeCollectionWithProvider;
