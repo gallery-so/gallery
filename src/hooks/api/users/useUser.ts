@@ -10,21 +10,28 @@ type Props = {
   address?: string;
 };
 
-export default function useUser({
-  id,
-  username,
-  address,
-}: Props): User | undefined {
-  const queryParams = useMemo(() => {
-    if (id) return `user_id=${id}`;
-    if (username) return `username=${username}`;
-    if (address) return `address=${address}`;
-    return null;
-  }, [id, username, address]);
+const getUserAction = 'fetch user';
+
+const getUserBaseUrl = '/users/get';
+
+function getUserBaseUrlWithQuery({ id, username, address }: Props) {
+  let query = '';
+  if (id) query = `user_id=${id}`;
+  if (username) query = `username=${username}`;
+  if (address) query = `address=${address}`;
+  return `${getUserBaseUrl}?${query}`;
+}
+
+export function getUserCacheKey(queryParams: Props) {
+  return [getUserBaseUrlWithQuery(queryParams), getUserAction];
+}
+
+export default function useUser(props: Props): User | undefined {
+  const validParams = props.id || props.username || props.address;
 
   const data = useGet<User>(
-    queryParams ? `/users/get?${queryParams}` : null,
-    'fetch user'
+    validParams ? getUserBaseUrlWithQuery(props) : null,
+    getUserAction
   );
 
   return data;

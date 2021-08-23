@@ -3,6 +3,7 @@ import { UpdateUserRequest, UpdateUserResponse } from './types';
 import usePost from '../_rest/usePost';
 import { mutate } from 'swr';
 import { User } from 'types/User';
+import { getUserCacheKey } from './useUser';
 
 export default function useUpdateUser() {
   const updateUser = usePost();
@@ -15,16 +16,15 @@ export default function useUpdateUser() {
         { username, bio }
       );
 
-      // optimistically update both caches
+      // optimistically update both user caches by username, ID
       mutate(
-        // TODO: use const generator to make reliable mutate key
-        [`/users/get?username=${username}`, 'fetch user'],
+        getUserCacheKey({ username }),
         (user: User) => ({ ...user, username, bio }),
         false
       );
 
       mutate(
-        [`/users/get?user_id=${userId}`, 'fetch user'],
+        getUserCacheKey({ id: userId }),
         (user: User) => ({ ...user, username, bio }),
         false
       );
