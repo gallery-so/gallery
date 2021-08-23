@@ -9,6 +9,7 @@ type TextAreaProps = {
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   placeholder: string;
   defaultValue?: string;
+  autoFocus?: boolean;
 };
 
 export function TextArea({
@@ -16,6 +17,7 @@ export function TextArea({
   onChange = noop,
   placeholder,
   defaultValue,
+  autoFocus = false,
 }: TextAreaProps) {
   return (
     <StyledTextArea
@@ -23,6 +25,7 @@ export function TextArea({
       placeholder={placeholder}
       defaultValue={defaultValue}
       onChange={onChange}
+      autoFocus={autoFocus}
       autoComplete="off"
       autoCorrect="off"
       autoCapitalize="off"

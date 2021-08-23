@@ -61,6 +61,11 @@ function UserInfoForm({
     [onBioChange]
   );
 
+  // if username isn't filled in, autofocus on field
+  const shouldAutofocusUsername = !username;
+  // otherwise, focus on bio
+  const shouldAutofocusBio = !shouldAutofocusUsername;
+
   return (
     <StyledForm className={className} onSubmit={handleSubmit}>
       <StyledBodyMedium>{`${mode} username and bio`}</StyledBodyMedium>
@@ -69,8 +74,8 @@ function UserInfoForm({
         onChange={handleUsernameChange}
         placeholder="Username"
         defaultValue={username}
-        autoFocus
         errorMessage={usernameError}
+        autoFocus={shouldAutofocusUsername}
       />
       <Spacer height={24} />
       <StyledTextAreaWithCharCount
@@ -79,6 +84,7 @@ function UserInfoForm({
         defaultValue={bio}
         currentCharCount={bio.length}
         maxCharCount={BIO_MAX_CHAR_COUNT}
+        autoFocus={shouldAutofocusBio}
       />
     </StyledForm>
   );
