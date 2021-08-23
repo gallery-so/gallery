@@ -4,12 +4,12 @@ import { BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { ReactComponent as Settings } from './collection-settings.svg';
-import { Collection } from 'types/Collection';
 import { Nft } from 'types/Nft';
 import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
+import useCollectionById from 'hooks/api/collections/useCollectionById';
 
 type Props = {
-  collection: Collection;
+  collectionId: string;
   className?: string;
 };
 
@@ -19,17 +19,20 @@ const SMOL_NFT_SIZE_PX = 25;
 /**
  * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
-function CollectionRow({ collection, className }: Props) {
-  const { nfts } = collection;
+function CollectionRow({ collectionId, className }: Props) {
+  // get the latest collection from the cache, since the parent is using
+  // a local state of collections for re-ordering
+  const { name, nfts, hidden } = useCollectionById(collectionId);
+
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
-  const isHidden = useMemo(() => !!collection.hidden, [collection.hidden]);
+  const isHidden = useMemo(() => !!hidden, [hidden]);
 
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
-        <BodyRegular>{collection.name}</BodyRegular>
+        <BodyRegular>{name}</BodyRegular>
         <Settings />
       </Header>
       <Spacer height={12} />

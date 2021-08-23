@@ -13,8 +13,8 @@ function CollectionRowWrapper({ collection }: Props) {
   return (
     <StyledCollectionRowWrapper>
       <CollectionRowSettings collection={collection} />
-      <SortableCollectionRow collection={collection} />
-      <Spacer height={32}></Spacer>
+      <SortableCollectionRow collectionId={collection.id} />
+      <Spacer height={32} />
     </StyledCollectionRowWrapper>
   );
 }

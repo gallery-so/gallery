@@ -55,7 +55,7 @@ function OrganizeGallery() {
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionDnd collections={collections}></CollectionDnd>
+        <CollectionDnd collections={collections} />
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>

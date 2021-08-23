@@ -68,6 +68,7 @@ function CollectionDnd({ collections }: Props) {
     },
     [handleSortCollections]
   );
+
   return (
     <DndContext
       onDragEnd={handleDragEnd}

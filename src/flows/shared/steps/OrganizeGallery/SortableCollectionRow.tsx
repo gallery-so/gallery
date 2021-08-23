@@ -2,14 +2,13 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
 import CollectionRow from './CollectionRow';
 
 type Props = {
-  collection: Collection;
+  collectionId: string;
 };
 
-function SortableCollectionRow({ collection, ...props }: Props) {
+function SortableCollectionRow({ collectionId }: Props) {
   const {
     attributes,
     listeners,
@@ -17,7 +16,7 @@ function SortableCollectionRow({ collection, ...props }: Props) {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: collection.id });
+  } = useSortable({ id: collectionId });
 
   const style = useMemo(
     () => ({
@@ -31,14 +30,14 @@ function SortableCollectionRow({ collection, ...props }: Props) {
   return (
     <StyledSortableCollectionRow
       ref={setNodeRef}
-      id={collection.id}
+      id={collectionId}
       active={isDragging}
       // @ts-expect-error
       style={style}
       {...attributes}
       {...listeners}
     >
-      <CollectionRow collection={collection} />
+      <CollectionRow collectionId={collectionId} />
     </StyledSortableCollectionRow>
   );
 }
