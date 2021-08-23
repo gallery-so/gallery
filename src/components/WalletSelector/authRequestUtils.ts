@@ -1,8 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
-import { getUnassignedNftsCacheKey } from 'hooks/api/nfts/useUnassignedNfts';
-import { mutate } from 'swr';
 
 /**
  * Auth Pipeline:
@@ -45,9 +43,9 @@ export default async function initializeAuthPipeline({
     fetcher
   );
 
-  // triggering the opensea sync won't be a blocking action; nfts should be fetched
-  // and ready to go by the time the user arrives at the edit collection step
-  triggerOpenseaSync(address, res.user_id, fetcher);
+  // the user's nfts should be fetched here so that they're ready to go by the time
+  // they arrive at the Create First Collection step
+  await triggerOpenseaSync(address, fetcher);
 
   return { jwt: res.jwt_token, userId: res.user_id };
 }
@@ -157,26 +155,11 @@ async function createUser(
   }
 }
 
-async function triggerOpenseaSync(
-  address: string,
-  userId: string,
-  fetcher: FetcherType
-) {
+async function triggerOpenseaSync(address: string, fetcher: FetcherType) {
   try {
-    /**
-     * upon fetching the user's nfts from opensea, we'll stick them directly in the
-     * "unassigned NFTs" cache. this will allow the Create First Collection step to
-     * immediately display the user's unassigned NFTs by the time they get there
-     */
-    const response = await fetcher<OpenseaSyncResponse>(
+    await fetcher<OpenseaSyncResponse>(
       `/nfts/opensea_get?address=${address}`,
       'fetch and sync nfts'
-    );
-
-    mutate(
-      getUnassignedNftsCacheKey({ userId, skipCache: false }),
-      () => response,
-      false
     );
   } catch (e) {
     // error silently; TODO: send error analytics
