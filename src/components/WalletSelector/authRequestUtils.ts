@@ -1,11 +1,8 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
-import {
-  getUnassignedNftsUrl,
-  unassignedNftsAction,
-} from 'hooks/api/nfts/useUnassignedNfts';
-import { cache } from 'swr';
+import { getUnassignedNftsCacheKey } from 'hooks/api/nfts/useUnassignedNfts';
+import { mutate } from 'swr';
 
 /**
  * Auth Pipeline:
@@ -166,21 +163,21 @@ async function triggerOpenseaSync(
   fetcher: FetcherType
 ) {
   try {
-    // fetch nfts from opensea. since this is a brand new user, we can assume that all
-    // nfts will be associated will be "unassigned"
+    /**
+     * upon fetching the user's nfts from opensea, we'll stick them directly in the
+     * "unassigned NFTs" cache. this will allow the Create First Collection step to
+     * immediately display the user's unassigned NFTs by the time they get there
+     */
     const response = await fetcher<OpenseaSyncResponse>(
       `/nfts/opensea_get?address=${address}`,
       'fetch and sync nfts'
     );
 
-    // store data in cache so that it can be quickly accessed by the time the user
-    // arrives at the collection organization step. doing this in a very hacky, manual
-    // way since there seems to be a bug with swr's built-in `mutate` method
-    const cacheKey = `arg@"${getUnassignedNftsUrl({
-      userId,
-      skipCache: false,
-    })}"@"${unassignedNftsAction}"`;
-    cache.set(cacheKey, response);
+    mutate(
+      getUnassignedNftsCacheKey({ userId, skipCache: false }),
+      () => response,
+      false
+    );
   } catch (e) {
     // error silently; TODO: send error analytics
     console.error(e);
