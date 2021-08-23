@@ -15,6 +15,7 @@ function getGalleriesBaseUrlWithQuery({ userId }: Props) {
   return `${getGalleriesBaseUrl}?user_id=${userId}`;
 }
 
+// allows access to galleries cache within SWR. useful for mutations
 export function getGalleriesCacheKey({ userId }: Props) {
   return [getGalleriesBaseUrlWithQuery({ userId }), getGalleriesAction];
 }

@@ -22,6 +22,7 @@ function getUserBaseUrlWithQuery({ id, username, address }: Props) {
   return `${getUserBaseUrl}?${query}`;
 }
 
+// allows access to user cache within SWR. useful for mutations
 export function getUserCacheKey(queryParams: Props) {
   return [getUserBaseUrlWithQuery(queryParams), getUserAction];
 }
