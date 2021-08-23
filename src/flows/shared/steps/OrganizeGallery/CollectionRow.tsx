@@ -6,10 +6,10 @@ import colors from 'components/core/colors';
 import { ReactComponent as Settings } from './collection-settings.svg';
 import { Nft } from 'types/Nft';
 import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
+import { Collection } from 'types/Collection';
 
 type Props = {
-  collectionId: string;
+  collection: Collection;
   className?: string;
 };
 
@@ -19,10 +19,8 @@ const SMOL_NFT_SIZE_PX = 25;
 /**
  * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
-function CollectionRow({ collectionId, className }: Props) {
-  // get the latest collection from the cache, since the parent is using
-  // a local state of collections for re-ordering
-  const { name, nfts, hidden } = useCollectionById(collectionId);
+function CollectionRow({ collection, className }: Props) {
+  const { name, nfts, hidden } = collection;
 
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);

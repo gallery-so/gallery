@@ -24,22 +24,24 @@ function CollectionRowSettings({
   const { showModal } = useModal();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
+  const { id, name, collectors_note, hidden } = collection;
+
   const handleEditCollectionClick = useCallback(() => {
-    setCollectionIdBeingEdited(collection.id);
+    setCollectionIdBeingEdited(id);
     push('organizeCollection');
-  }, [collection.id, push, setCollectionIdBeingEdited]);
+  }, [id, push, setCollectionIdBeingEdited]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
       <CollectionEditInfoForm
         // No need for onNext because this isn't part of a wizard
         onNext={() => {}}
-        collectionId={collection.id}
-        collectionTitle={collection.name}
-        collectionDescription={collection.collectors_note}
+        collectionId={id}
+        collectionTitle={name}
+        collectionDescription={collectors_note}
       />
     );
-  }, [collection, showModal]);
+  }, [collectors_note, id, name, showModal]);
 
   const handleToggleHiddenClick = useCallback(() => {
     // make request to update collection
@@ -67,7 +69,7 @@ function CollectionRowSettings({
         <Spacer height={12} />
         <TextButton
           onClick={handleToggleHiddenClick}
-          text={collection.hidden ? 'Show' : 'Hide'}
+          text={hidden ? 'Show' : 'Hide'}
           underlineOnHover
         />
         <Spacer height={12} />
