@@ -9,7 +9,6 @@ import CollectionEditorProvider, {
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
-import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
@@ -25,7 +24,6 @@ function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
 }
 
 function useWizardConfig({ onNext }: ConfigProps) {
-  const wizardId = useWizardId();
   const { setOnNext } = useWizardCallback();
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
@@ -73,7 +71,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
     setOnNext,
     showModal,
     onNext,
-    wizardId,
     createCollection,
     galleryId,
     updateCollection,
