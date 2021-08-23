@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
   defaultDropAnimation,
@@ -36,6 +36,11 @@ const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 function CollectionDnd({ collections }: Props) {
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const [sortedCollections, setSortedCollections] = useState(collections);
+
+  useEffect(() => {
+    // when the server sends down its source of truth, sync the local state
+    setSortedCollections(collections);
+  }, [collections]);
 
   const handleSortCollections = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
