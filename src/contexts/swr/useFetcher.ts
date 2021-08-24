@@ -4,7 +4,7 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'src/errors/types';
 
-const baseurl = process.env.REACT_APP_API_BASE_URL;
+const baseurl = process.env.API_BASE_URL_LOCAL;
 
 const ERR_UNAUTHORIZED = 401;
 

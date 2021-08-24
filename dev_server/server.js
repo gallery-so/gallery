@@ -12,7 +12,7 @@ function getBaseUrl() {
       return process.env.BASEURL_HACK;
     case 'local':
     default:
-      return process.env.BASEURL_LOCAL;
+      return process.env.API_BASE_URL_LOCAL;
   }
 }
 
