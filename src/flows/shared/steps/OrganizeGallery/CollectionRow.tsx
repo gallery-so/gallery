@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { ReactComponent as Settings } from './collection-settings.svg';
@@ -20,7 +20,7 @@ const SMOL_NFT_SIZE_PX = 25;
  * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
 function CollectionRow({ collection, className }: Props) {
-  const { name, nfts, hidden } = collection;
+  const { name, collectors_note, nfts, hidden } = collection;
 
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
@@ -30,7 +30,12 @@ function CollectionRow({ collection, className }: Props) {
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
-        <BodyRegular>{name}</BodyRegular>
+        <TextContainer>
+          <BodyRegular>{name}</BodyRegular>
+          <Spacer height={4} />
+          {/* TODO__v1: make sure this truncates with ellipses if too long */}
+          <Caption color={colors.gray50}>{collectors_note}</Caption>
+        </TextContainer>
         <Settings />
       </Header>
       <Spacer height={12} />
@@ -69,6 +74,11 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledHiddenLabel = styled(BodyRegular)`

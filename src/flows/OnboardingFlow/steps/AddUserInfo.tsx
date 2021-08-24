@@ -37,7 +37,12 @@ function AddUserInfo({ next }: WizardContext) {
     onBioChange,
     generalError,
     onEditUser,
-  } = useUserInfoForm({ onSuccess: next, userId: user.id });
+  } = useUserInfoForm({
+    onSuccess: next,
+    userId: user.id,
+    existingUsername: user.username,
+    existingBio: user.bio,
+  });
 
   useWizardConfig({ onNext: onEditUser });
 

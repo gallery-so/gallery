@@ -10,6 +10,8 @@ import CollectionDnd from './CollectionDnd';
 import Header from './Header';
 import { User } from 'types/User';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import { WizardContext } from 'react-albus';
+import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
   onNext: () => void;
@@ -30,7 +32,8 @@ function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
   }, [setOnPrevious, onPrevious, setOnNext, onNext]);
 }
 
-function OrganizeGallery() {
+function OrganizeGallery({ next }: WizardContext) {
+  const wizardId = useWizardId();
   const user = useAuthenticatedUser() as User;
 
   const returnToProfile = useCallback(() => {
@@ -39,8 +42,12 @@ function OrganizeGallery() {
 
   const saveGalleryAndReturnToProfile = useCallback(() => {
     // Save gallery changes (re-ordered collections)
+    if (wizardId === 'onboarding') {
+      next();
+      return;
+    }
     navigate(`/${user.username}`);
-  }, [user.username]);
+  }, [next, user.username, wizardId]);
 
   useWizardConfig({
     onNext: saveGalleryAndReturnToProfile,

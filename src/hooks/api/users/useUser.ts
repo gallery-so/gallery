@@ -63,3 +63,13 @@ export function useAuthenticatedUserAddress() {
   }
   return address;
 }
+
+export function useAuthenticatedUsername() {
+  const user = useAuthenticatedUser();
+
+  if (!user) {
+    throw new Error('Authenticated user not found');
+  }
+
+  return user.username;
+}

@@ -17,8 +17,8 @@ import { Collection } from 'types/Collection';
 type Props = {
   onNext: WizardContext['next'];
   collectionId: Collection['id'];
-  collectionTitle?: Collection['name'];
-  collectionDescription?: Collection['collectors_note'];
+  collectionName?: Collection['name'];
+  collectionCollectorsNote?: Collection['collectors_note'];
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
@@ -26,13 +26,15 @@ export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 function CollectionEditInfoForm({
   onNext,
   collectionId,
-  collectionTitle,
-  collectionDescription,
+  collectionName,
+  collectionCollectorsNote,
 }: Props) {
   const { hideModal } = useModal();
 
-  const [title, setTitle] = useState(collectionTitle || '');
-  const [description, setDescription] = useState(collectionDescription || '');
+  const [title, setTitle] = useState(collectionName || '');
+  const [description, setDescription] = useState(
+    collectionCollectorsNote || ''
+  );
 
   // generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');

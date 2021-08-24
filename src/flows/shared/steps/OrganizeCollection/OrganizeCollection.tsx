@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
-import styled from 'styled-components';
 
 import CollectionEditInfoForm from './CollectionEditInfoForm';
 import CollectionEditor from './Editor/CollectionEditor';
@@ -10,7 +9,6 @@ import CollectionEditorProvider, {
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
-import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
@@ -26,7 +24,6 @@ function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
 }
 
 function useWizardConfig({ onNext }: ConfigProps) {
-  const wizardId = useWizardId();
   const { setOnNext } = useWizardCallback();
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
@@ -42,26 +39,8 @@ function useWizardConfig({ onNext }: ConfigProps) {
   const { collectionIdBeingEdited } = useCollectionWizardState();
 
   useEffect(() => {
-    // if the user is part of the onboarding flow, they should
-    // CREATE their collection
-    if (wizardId === 'onboarding') {
-      setOnNext(async () => {
-        // errors will be handled in the catch block within `WizardFooter.tsx`
-        const createdCollection = await createCollection(
-          galleryId,
-          stagedNftIdsRef.current
-        );
-
-        showModal(
-          <CollectionEditInfoForm
-            onNext={onNext}
-            collectionId={createdCollection.collection_id}
-          />
-        );
-      });
-    }
-
-    if (wizardId === 'edit-gallery' && collectionIdBeingEdited) {
+    // if collection is being edited, trigger update
+    if (collectionIdBeingEdited) {
       setOnNext(async () => {
         // errors will be handled in the catch block within `WizardFooter.tsx`
         await updateCollection(
@@ -69,14 +48,29 @@ function useWizardConfig({ onNext }: ConfigProps) {
           stagedNftIdsRef.current
         );
       });
+
+      return;
     }
 
-    return () => setOnNext(undefined);
+    // if collection is being created, trigger creation
+    setOnNext(async () => {
+      // errors will be handled in the catch block within `WizardFooter.tsx`
+      const createdCollection = await createCollection(
+        galleryId,
+        stagedNftIdsRef.current
+      );
+
+      showModal(
+        <CollectionEditInfoForm
+          onNext={onNext}
+          collectionId={createdCollection.collection_id}
+        />
+      );
+    });
   }, [
     setOnNext,
     showModal,
     onNext,
-    wizardId,
     createCollection,
     galleryId,
     updateCollection,
@@ -84,20 +78,27 @@ function useWizardConfig({ onNext }: ConfigProps) {
   ]);
 }
 
-function OrganizeCollection({ next }: WizardContext) {
-  useWizardConfig({ onNext: next });
+// in order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
+type DecoratedCollectionEditorProps = {
+  push: WizardContext['push'];
+};
 
+function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
+  const onNext = useCallback(() => {
+    push('organizeGallery');
+  }, [push]);
+
+  useWizardConfig({ onNext });
+
+  return <CollectionEditor />;
+}
+
+function OrganizeCollectionWithProvider({ push }: WizardContext) {
   return (
     <CollectionEditorProvider>
-      <StyledOrganizeCollection>
-        <CollectionEditor />
-      </StyledOrganizeCollection>
+      <DecoratedCollectionEditor push={push} />
     </CollectionEditorProvider>
   );
 }
 
-const StyledOrganizeCollection = styled.div`
-  display: flex;
-`;
-
-export default OrganizeCollection;
+export default OrganizeCollectionWithProvider;
