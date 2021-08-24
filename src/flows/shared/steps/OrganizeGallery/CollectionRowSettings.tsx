@@ -37,8 +37,8 @@ function CollectionRowSettings({
         // No need for onNext because this isn't part of a wizard
         onNext={() => {}}
         collectionId={id}
-        collectionTitle={name}
-        collectionDescription={collectors_note}
+        collectionName={name}
+        collectionCollectorsNote={collectors_note}
       />
     );
   }, [collectors_note, id, name, showModal]);
