@@ -4,7 +4,7 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'src/errors/types';
 
-const baseurl = process.env.API_BASE_URL_LOCAL;
+const baseurl = process.env.REACT_APP_API_BASE_URLL;
 
 const ERR_UNAUTHORIZED = 401;
 
@@ -36,6 +36,7 @@ export const _fetch: FetcherType = async (path, action, params = {}) => {
     requestOptions.method = 'POST';
     requestOptions.body = JSON.stringify(body);
   }
+  console.log(baseurl, process.env)
   const res = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
 
   const responseBody = await res.json().catch((e) => {
