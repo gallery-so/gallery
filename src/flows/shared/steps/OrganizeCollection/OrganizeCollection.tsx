@@ -6,21 +6,19 @@ import CollectionEditInfoForm from './CollectionEditInfoForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
-import { useStagedNftsState } from 'contexts/collectionEditor/CollectionEditorContext';
+import CollectionEditorProvider, {
+  useStagedNftsState,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
-import useGalleryId from 'hooks/api/galleries/useGalleryId';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
   onNext: WizardContext['next'];
-};
-
-type Props = {
-  next?: any;
 };
 
 function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
@@ -38,7 +36,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
 
-  const galleryId = useGalleryId();
+  const { id: galleryId } = useAuthenticatedGallery();
   const createCollection = useCreateCollection();
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
@@ -86,13 +84,15 @@ function useWizardConfig({ onNext }: ConfigProps) {
   ]);
 }
 
-function OrganizeCollection({ next }: Props) {
+function OrganizeCollection({ next }: WizardContext) {
   useWizardConfig({ onNext: next });
 
   return (
-    <StyledOrganizeCollection>
-      <CollectionEditor />
-    </StyledOrganizeCollection>
+    <CollectionEditorProvider>
+      <StyledOrganizeCollection>
+        <CollectionEditor />
+      </StyledOrganizeCollection>
+    </CollectionEditorProvider>
   );
 }
 

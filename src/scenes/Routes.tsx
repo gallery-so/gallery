@@ -15,7 +15,14 @@ import UserGalleryPage from './UserGalleryPage/UserGalleryPage';
 
 // considered putting this in a different file, but we should tightly couple
 // route updates to this array
-const ROUTES_WITHOUT_NAVBAR = ['/', '/auth', '/password', '/welcome', '/edit'];
+const ROUTES_WITHOUT_NAVBAR = [
+  '/',
+  '/auth',
+  '/password',
+  '/welcome',
+  '/edit',
+  '/nuke',
+];
 const ROUTES_WITH_FOOTER = ['/welcome', '/edit'];
 
 function shouldHideNavbar(pathname: string) {

@@ -10,7 +10,7 @@ import RequestAction from './RequestAction';
  *
  *   const collection = useGet('/collections/123')
  *
- *   return <Title>{collection.title}</Title>
+ *   return <Title>{collection.name}</Title>
  *
  */
 export default function useGet<ResponseType>(

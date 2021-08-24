@@ -35,13 +35,13 @@ const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 function CollectionDnd({ collections }: Props) {
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
-  const [collectionOrder, setCollectionOrder] = useState(collections);
+  const [sortedCollections, setSortedCollections] = useState(collections);
 
   const handleSortCollections = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      setCollectionOrder((prev) => {
+      setSortedCollections((prev) => {
         const oldIndex = prev.findIndex(({ id }) => id === active.id);
         const newIndex = prev.findIndex(({ id }) => id === over?.id);
         return arrayMove(prev, oldIndex, newIndex);
@@ -59,8 +59,8 @@ function CollectionDnd({ collections }: Props) {
   }, []);
 
   const activeCollection = useMemo(() => {
-    return collectionOrder.find(({ id }) => id === activeId);
-  }, [activeId, collectionOrder]);
+    return collections.find(({ id }) => id === activeId);
+  }, [activeId, collections]);
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -68,6 +68,7 @@ function CollectionDnd({ collections }: Props) {
     },
     [handleSortCollections]
   );
+
   return (
     <DndContext
       onDragEnd={handleDragEnd}
@@ -76,11 +77,14 @@ function CollectionDnd({ collections }: Props) {
       modifiers={modifiers}
     >
       <SortableContext
-        items={collectionOrder}
+        items={sortedCollections}
         strategy={verticalListSortingStrategy}
       >
-        {collectionOrder.map((collection) => (
-          <CollectionRowWrapper key={collection.id} collection={collection} />
+        {sortedCollections.map((collection) => (
+          <CollectionRowWrapper
+            key={collection.id}
+            collectionId={collection.id}
+          />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={defaultDropAnimationConfig}>

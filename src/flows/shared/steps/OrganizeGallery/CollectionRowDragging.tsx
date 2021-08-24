@@ -12,10 +12,7 @@ function CollectionRowDragging({ collection }: Props) {
   const isMouseUp = useMouseUp();
   return (
     <StyledCollectionRowDragging>
-      <StyledCollectionRow
-        collection={collection}
-        isMouseUp={isMouseUp}
-      ></StyledCollectionRow>
+      <StyledCollectionRow collection={collection} isMouseUp={isMouseUp} />
     </StyledCollectionRowDragging>
   );
 }

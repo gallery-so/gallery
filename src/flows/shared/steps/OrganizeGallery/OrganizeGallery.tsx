@@ -6,10 +6,10 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import useGalleries from 'hooks/api/galleries/useGalleries';
 import CollectionDnd from './CollectionDnd';
 import Header from './Header';
 import { User } from 'types/User';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 
 type ConfigProps = {
   onNext: () => void;
@@ -47,9 +47,7 @@ function OrganizeGallery() {
     onPrevious: returnToProfile,
   });
 
-  const galleries = useGalleries({ userId: user.id }) || [];
-  // TODO: handle if galleries array is empty
-  const gallery = galleries[0] || { collections: [] };
+  const { collections } = useAuthenticatedGallery();
 
   return (
     <StyledOrganizeGallery>
@@ -57,7 +55,7 @@ function OrganizeGallery() {
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionDnd collections={gallery.collections}></CollectionDnd>
+        <CollectionDnd collections={collections} />
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>

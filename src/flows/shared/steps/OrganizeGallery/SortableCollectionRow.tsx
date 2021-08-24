@@ -9,7 +9,7 @@ type Props = {
   collection: Collection;
 };
 
-function SortableCollectionRow({ collection, ...props }: Props) {
+function SortableCollectionRow({ collection }: Props) {
   const {
     attributes,
     listeners,
@@ -38,7 +38,7 @@ function SortableCollectionRow({ collection, ...props }: Props) {
       {...attributes}
       {...listeners}
     >
-      <CollectionRow collection={collection}></CollectionRow>
+      <CollectionRow collection={collection} />
     </StyledSortableCollectionRow>
   );
 }

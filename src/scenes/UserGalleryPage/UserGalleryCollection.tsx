@@ -17,10 +17,10 @@ function UserGalleryCollection({ collection }: Props) {
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
-        <TitleSerif>{collection.title}</TitleSerif>
+        <TitleSerif>{collection.name}</TitleSerif>
         <Spacer height={8} />
         <BodyRegular color={colors.gray50}>
-          {collection.description}
+          {collection.collectors_note}
         </BodyRegular>
       </StyledCollectionHeader>
       <Spacer height={24} />
