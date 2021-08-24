@@ -6,12 +6,14 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
+import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 
 function Congratulations() {
+  const username = useAuthenticatedUsername();
+
   const handleClick = useCallback(() => {
-    // TODO__v1: when backend is ready, get username from useUser
-    navigate('/link-to-my-gallery');
-  }, []);
+    navigate(`/${username}`);
+  }, [username]);
 
   return (
     <FullPageCenteredStep>
