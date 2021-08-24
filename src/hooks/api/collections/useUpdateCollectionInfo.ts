@@ -8,6 +8,7 @@ import { useAuthenticatedUser } from '../users/useUser';
 import { mutate } from 'swr';
 import { GetGalleriesResponse } from '../galleries/types';
 import cloneDeep from 'lodash.clonedeep';
+import { getGalleriesCacheKey } from '../galleries/useGalleries';
 
 export default function useUpdateCollectionInfo() {
   const updateCollection = usePost();
@@ -30,10 +31,7 @@ export default function useUpdateCollectionInfo() {
       // it should be less messy in the future when we have a dedicated
       // endpoint for individual collections
       mutate(
-        [
-          `/galleries/user_get?user_id=${authenticatedUser.id}`,
-          'fetch gallery',
-        ],
+        getGalleriesCacheKey({ userId: authenticatedUser.id }),
         (val: GetGalleriesResponse) => {
           const newVal = cloneDeep<GetGalleriesResponse>(val);
           const gallery = newVal.galleries[0];
