@@ -7,11 +7,10 @@ import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import { User } from 'types/User';
 import { navigate } from '@reach/router';
 
 function EditUserInfoModal() {
-  const existingUser = useAuthenticatedUser() as User;
+  const existingUser = useAuthenticatedUser();
 
   const { hideModal } = useModal();
 

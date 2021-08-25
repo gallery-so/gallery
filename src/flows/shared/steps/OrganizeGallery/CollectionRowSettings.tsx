@@ -11,6 +11,7 @@ import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 import CollectionEditInfoForm from '../OrganizeCollection/CollectionEditInfoForm';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
+import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import { Collection } from 'types/Collection';
 
 type Props = {
@@ -43,10 +44,11 @@ function CollectionRowSettings({
     );
   }, [collectors_note, id, name, showModal]);
 
+  const toggleHideCollection = useUpdateCollectionHidden();
+
   const handleToggleHiddenClick = useCallback(() => {
-    // make request to update collection
-    // on success, update collection state
-  }, []);
+    toggleHideCollection(id, !hidden);
+  }, [id, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {
     showModal(<DeleteCollectionConfirmation />);

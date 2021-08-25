@@ -1,28 +1,27 @@
 import { useCallback } from 'react';
 import {
-  UpdateCollectionInfoRequest,
-  UpdateCollectionInfoResponse,
+  UpdateCollectionHiddenRequest,
+  UpdateCollectionHiddenResponse,
 } from './types';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { mutate } from 'swr';
+import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { GetGalleriesResponse } from '../galleries/types';
 import cloneDeep from 'lodash.clonedeep';
-import { getGalleriesCacheKey } from '../galleries/useGalleries';
 
-export default function useUpdateCollectionInfo() {
+export default function useUpdateCollectionHidden() {
   const updateCollection = usePost();
   const authenticatedUser = useAuthenticatedUser();
 
   return useCallback(
-    async (collectionId: string, name: string, collectors_note: string) => {
+    async (collectionId: string, hidden: boolean) => {
       await updateCollection<
-        UpdateCollectionInfoResponse,
-        UpdateCollectionInfoRequest
-      >('/collections/update/info', 'update collection info', {
+        UpdateCollectionHiddenResponse,
+        UpdateCollectionHiddenRequest
+      >('/collections/update/hidden', 'update collection hidden', {
         id: collectionId,
-        name: name,
-        collectors_note,
+        hidden,
       });
 
       // optimistically update the collection within gallery cache.
@@ -35,7 +34,7 @@ export default function useUpdateCollectionInfo() {
           const gallery = newVal.galleries[0];
           const newCollections = gallery.collections.map((collection) => {
             if (collection.id === collectionId) {
-              return { ...collection, name, collectors_note };
+              return { ...collection, hidden };
             }
             return collection;
           });
@@ -45,6 +44,6 @@ export default function useUpdateCollectionInfo() {
         false
       );
     },
-    [authenticatedUser, updateCollection]
+    [updateCollection, authenticatedUser]
   );
 }

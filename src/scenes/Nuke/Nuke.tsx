@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { Link, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
-import { Display } from 'components/core/Text/Text';
+import { Heading } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
@@ -15,7 +15,7 @@ function Nuke(_: RouteComponentProps) {
 
   return (
     <Page centered>
-      <Display>Your local data has been nuked</Display>
+      <Heading>Your local cache has been nuked</Heading>
       <Spacer height={32} />
       <Link to="/">
         <StyledButton text="Take me home" />

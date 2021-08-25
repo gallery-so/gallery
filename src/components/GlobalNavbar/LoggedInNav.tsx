@@ -10,7 +10,6 @@ import {
   useAuthenticatedUser,
   useAuthenticatedUserAddress,
 } from 'hooks/api/users/useUser';
-import { User } from 'types/User';
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}...${address.slice(-4)}`;
@@ -18,8 +17,9 @@ function truncate(address: string) {
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();
-  const user = useAuthenticatedUser() as User;
+  const user = useAuthenticatedUser();
   const userAddress = useAuthenticatedUserAddress();
+
   const truncatedUserAddress = useMemo(() => {
     return truncate(userAddress);
   }, [userAddress]);

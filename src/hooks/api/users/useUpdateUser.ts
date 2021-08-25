@@ -10,7 +10,7 @@ export default function useUpdateUser() {
 
   return useCallback(
     async (userId: string, username: string, bio: string) => {
-      const result = await updateUser<UpdateUserResponse, UpdateUserRequest>(
+      await updateUser<UpdateUserResponse, UpdateUserRequest>(
         '/users/update/info',
         'update user',
         { username, bio }
@@ -28,8 +28,6 @@ export default function useUpdateUser() {
         (user: User) => ({ ...user, username, bio }),
         false
       );
-
-      return result;
     },
     [updateUser]
   );
