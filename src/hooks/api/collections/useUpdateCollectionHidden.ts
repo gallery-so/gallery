@@ -16,7 +16,7 @@ export default function useUpdateCollectionHidden() {
 
   return useCallback(
     async (collectionId: string, hidden: boolean) => {
-      const result = await updateCollection<
+      await updateCollection<
         UpdateCollectionHiddenResponse,
         UpdateCollectionHiddenRequest
       >('/collections/update/hidden', 'update collection hidden', {
@@ -43,8 +43,6 @@ export default function useUpdateCollectionHidden() {
         },
         false
       );
-
-      return result;
     },
     [updateCollection, authenticatedUser]
   );

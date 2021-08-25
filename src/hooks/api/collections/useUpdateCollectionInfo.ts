@@ -16,7 +16,7 @@ export default function useUpdateCollectionInfo() {
 
   return useCallback(
     async (collectionId: string, name: string, collectors_note: string) => {
-      const result = await updateCollection<
+      await updateCollection<
         UpdateCollectionInfoResponse,
         UpdateCollectionInfoRequest
       >('/collections/update/info', 'update collection info', {
@@ -44,8 +44,6 @@ export default function useUpdateCollectionInfo() {
         },
         false
       );
-
-      return result;
     },
     [authenticatedUser, updateCollection]
   );
