@@ -25,3 +25,10 @@ export type UpdateCollectionNftsRequest = {
 };
 
 export type UpdateCollectionNftsResponse = null;
+
+export type UpdateCollectionHiddenRequest = {
+  id: string;
+  hidden: boolean;
+};
+
+export type UpdateCollectionHiddenResponse = null;
