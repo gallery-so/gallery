@@ -19,6 +19,7 @@ function LoggedInNav() {
   const { logOut } = useAuthActions();
   const user = useAuthenticatedUser();
   const userAddress = useAuthenticatedUserAddress();
+
   const truncatedUserAddress = useMemo(() => {
     return truncate(userAddress);
   }, [userAddress]);

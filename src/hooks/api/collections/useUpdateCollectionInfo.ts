@@ -16,8 +16,6 @@ export default function useUpdateCollectionInfo() {
 
   return useCallback(
     async (collectionId: string, name: string, collectors_note: string) => {
-      if (!authenticatedUser) return;
-
       const result = await updateCollection<
         UpdateCollectionInfoResponse,
         UpdateCollectionInfoRequest
