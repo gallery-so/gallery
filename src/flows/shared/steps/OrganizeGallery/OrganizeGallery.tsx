@@ -8,7 +8,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import CollectionDnd from './CollectionDnd';
 import Header from './Header';
-import { User } from 'types/User';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
@@ -34,7 +33,7 @@ function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
 
 function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
-  const user = useAuthenticatedUser() as User;
+  const user = useAuthenticatedUser();
 
   const returnToProfile = useCallback(() => {
     navigate(`/${user.username}`);

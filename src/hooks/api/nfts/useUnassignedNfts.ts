@@ -1,5 +1,4 @@
 import { Nft } from 'types/Nft';
-import { User } from 'types/User';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGet from '../_rest/useGet';
 
@@ -36,10 +35,7 @@ type Props = {
 export default function useUnassignedNfts({
   skipCache,
 }: Props): Nft[] | undefined {
-  const user = useAuthenticatedUser() as User;
-  if (!user) {
-    throw new Error('Authenticated user not found');
-  }
+  const user = useAuthenticatedUser();
 
   const data = useGet<UnassignedNftsResponse>(
     getUnassignedNftsBaseUrlWithQuery({ userId: user.id, skipCache }),

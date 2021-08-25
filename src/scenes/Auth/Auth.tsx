@@ -5,7 +5,7 @@ import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
+import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { Caption } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';
@@ -16,7 +16,7 @@ function Auth(_: RouteComponentProps) {
   const isPasswordValidated = useIsPasswordValidated();
   // whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
-  const user = useAuthenticatedUser();
+  const user = usePossiblyAuthenticatedUser();
   const username = user?.username;
 
   if (!isPasswordValidated) {

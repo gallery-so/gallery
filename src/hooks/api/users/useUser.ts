@@ -38,7 +38,7 @@ export default function useUser(props: Props): User | undefined {
   return data;
 }
 
-export function useAuthenticatedUser() {
+export function usePossiblyAuthenticatedUser() {
   const state = useAuthState();
   const userId = useMemo(() => {
     if (isLoggedInState(state)) {
@@ -50,26 +50,28 @@ export function useAuthenticatedUser() {
   return user;
 }
 
-export function useAuthenticatedUserAddress() {
-  const user = useAuthenticatedUser();
-
+export function useAuthenticatedUser() {
+  const user = usePossiblyAuthenticatedUser();
   if (!user) {
     throw new Error('Authenticated user not found');
   }
+
+  return user;
+}
+
+export function useAuthenticatedUserAddress() {
+  const user = useAuthenticatedUser();
 
   const address = user.addresses?.[0];
   if (!address) {
     throw new Error('No address found on user');
   }
+
   return address;
 }
 
 export function useAuthenticatedUsername() {
   const user = useAuthenticatedUser();
-
-  if (!user) {
-    throw new Error('Authenticated user not found');
-  }
 
   return user.username;
 }
