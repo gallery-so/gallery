@@ -12,7 +12,7 @@ function getBaseUrl() {
       return process.env.BASEURL_HACK;
     case 'local':
     default:
-      return process.env.REACT_APP_API_BASE_URLL;
+      return process.env.REACT_APP_API_BASE_URL;
   }
 }
 
