@@ -9,6 +9,12 @@ export type CreateCollectionResponse = {
   collection_id: string;
 };
 
+export type DeleteCollectionRequest = {
+  id: string;
+};
+
+export type DeleteCollectionResponse = {};
+
 export type GetCollectionsResponse = { collections: Collection[] };
 
 export type UpdateCollectionInfoRequest = {

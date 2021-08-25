@@ -5,12 +5,21 @@ import Button from 'components/core/Button/Button';
 import { useCallback } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
+import useDeleteCollection from 'hooks/api/collections/useDeleteCollection';
+import { Collection } from 'types/Collection';
 
-function DeleteCollectionConfirmation() {
+type Props = {
+  collectionId: Collection['id'];
+};
+
+function DeleteCollectionConfirmation({ collectionId }: Props) {
   const { hideModal } = useModal();
-  const handleConfirmClick = useCallback(() => {
-    console.log('call delete endpoint then close modal');
-  }, []);
+  const deleteCollection = useDeleteCollection();
+
+  const handleConfirmClick = useCallback(async () => {
+    await deleteCollection(collectionId);
+    hideModal();
+  }, [collectionId, deleteCollection, hideModal]);
 
   const handleCancelClick = useCallback(() => {
     hideModal();
