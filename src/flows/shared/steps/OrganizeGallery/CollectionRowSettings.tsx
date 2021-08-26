@@ -51,8 +51,8 @@ function CollectionRowSettings({
   }, [id, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {
-    showModal(<DeleteCollectionConfirmation />);
-  }, [showModal]);
+    showModal(<DeleteCollectionConfirmation collectionId={id} />);
+  }, [id, showModal]);
 
   return (
     <StyledCollectionRowSettings>
