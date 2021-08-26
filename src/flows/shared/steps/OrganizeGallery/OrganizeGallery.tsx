@@ -8,7 +8,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import CollectionDnd from './CollectionDnd';
 import Header from './Header';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
@@ -53,15 +52,13 @@ function OrganizeGallery({ next }: WizardContext) {
     onPrevious: returnToProfile,
   });
 
-  const { collections } = useAuthenticatedGallery();
-
   return (
     <StyledOrganizeGallery>
       <Content>
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionDnd collections={collections} />
+        <CollectionDnd />
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
