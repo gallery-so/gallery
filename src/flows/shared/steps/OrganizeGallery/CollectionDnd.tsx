@@ -21,6 +21,7 @@ import {
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import { Collection } from 'types/Collection';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -29,15 +30,20 @@ const defaultDropAnimationConfig: DropAnimation = {
 
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
-function CollectionDnd() {
+type Props = {
+  sortedCollections: Collection[];
+  setSortedCollections: (prev: React.SetStateAction<Collection[]>) => void;
+};
+
+function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
   const { collections } = useAuthenticatedGallery();
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
-  const [sortedCollections, setSortedCollections] = useState(collections);
+  // const [sortedCollections, setSortedCollections] = useState(collections);
 
-  useEffect(() => {
-    // when the server sends down its source of truth, sync the local state
-    setSortedCollections(collections);
-  }, [collections]);
+  // useEffect(() => {
+  //   // when the server sends down its source of truth, sync the local state
+  //   setSortedCollections(collections);
+  // }, [collections]);
 
   const handleSortCollections = useCallback((event: DragEndEvent) => {
     const { active, over } = event;

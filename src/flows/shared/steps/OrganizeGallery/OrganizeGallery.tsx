@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
@@ -10,6 +10,10 @@ import CollectionDnd from './CollectionDnd';
 import Header from './Header';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
+import { Collection } from 'types/Collection';
 
 type ConfigProps = {
   onNext: () => void;
@@ -33,19 +37,38 @@ function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
 function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
+  const updateGallery = useUpdateGallery();
+
+  const gallery = useAuthenticatedGallery();
+  const collections = gallery.collections;
+  const [sortedCollections, setSortedCollections] = useState(collections);
+
+  useEffect(() => {
+    // when the server sends down its source of truth, sync the local state
+    setSortedCollections(collections);
+  }, [collections]);
 
   const returnToProfile = useCallback(() => {
     navigate(`/${user.username}`);
   }, [user.username]);
 
-  const saveGalleryAndReturnToProfile = useCallback(() => {
+  const saveGalleryAndReturnToProfile = useCallback(async () => {
     // Save gallery changes (re-ordered collections)
     if (wizardId === 'onboarding') {
       next();
       return;
     }
+
+    await updateGallery(gallery.id, sortedCollections);
     navigate(`/${user.username}`);
-  }, [next, user.username, wizardId]);
+  }, [
+    gallery.id,
+    next,
+    sortedCollections,
+    updateGallery,
+    user.username,
+    wizardId,
+  ]);
 
   useWizardConfig({
     onNext: saveGalleryAndReturnToProfile,
@@ -58,7 +81,10 @@ function OrganizeGallery({ next }: WizardContext) {
         <Spacer height={80} />
         <Header />
         <Spacer height={16} />
-        <CollectionDnd />
+        <CollectionDnd
+          sortedCollections={sortedCollections}
+          setSortedCollections={setSortedCollections}
+        />
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
@@ -74,5 +100,27 @@ const StyledOrganizeGallery = styled.div`
 const Content = styled.div`
   width: 777px;
 `;
+
+// type DecoratedGalleryEditorProps = {
+//   push: WizardContext['push'];
+// };
+
+// function DecoratedGalleryEditor({ push }: DecoratedGalleryEditorProps) {
+//   const onNext = useCallback(() => {
+//     push('organizeGallery');
+//   }, [push]);
+
+//   useWizardConfig({ onNext });
+
+//   return <GalleryEditor/>
+// }
+
+// function OrganizeGalleryWithProvider({ push }: WizardContext) {
+//   return (
+//     <GalleryEditorProvider>
+//       <DecoratedGalleryEditor push={push} />
+//     </GalleryEditorProvider>
+//   );
+// }
 
 export default OrganizeGallery;
