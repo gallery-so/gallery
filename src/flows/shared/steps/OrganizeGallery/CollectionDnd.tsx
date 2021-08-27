@@ -20,20 +20,17 @@ import {
 
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
-import { Collection } from 'types/Collection';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
   dragSourceOpacity: 0.2,
 };
 
-type Props = {
-  collections: Collection[];
-};
-
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
-function CollectionDnd({ collections }: Props) {
+function CollectionDnd() {
+  const { collections } = useAuthenticatedGallery();
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const [sortedCollections, setSortedCollections] = useState(collections);
 
@@ -86,10 +83,7 @@ function CollectionDnd({ collections }: Props) {
         strategy={verticalListSortingStrategy}
       >
         {sortedCollections.map((collection) => (
-          <CollectionRowWrapper
-            key={collection.id}
-            collectionId={collection.id}
-          />
+          <CollectionRowWrapper key={collection.id} collection={collection} />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={defaultDropAnimationConfig}>

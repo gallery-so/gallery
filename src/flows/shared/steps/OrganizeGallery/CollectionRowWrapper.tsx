@@ -3,17 +3,13 @@ import styled from 'styled-components';
 import SortableCollectionRow from './SortableCollectionRow';
 import Spacer from 'components/core/Spacer/Spacer';
 import CollectionRowSettings from './CollectionRowSettings';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
+import { Collection } from 'types/Collection';
 
 type Props = {
-  collectionId: string;
+  collection: Collection;
 };
 
-function CollectionRowWrapper({ collectionId }: Props) {
-  // get the latest collection from the cache, since the parent is using a local
-  // (and possibly stale) state of collections to keep track of sort order
-  const collection = useCollectionById(collectionId);
-
+function CollectionRowWrapper({ collection }: Props) {
   return (
     <StyledCollectionRowWrapper>
       <CollectionRowSettings collection={collection} />
