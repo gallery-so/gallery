@@ -14,7 +14,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 
 function truncate(address: string) {
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  return `${address.slice(0, 8)}......${address.slice(-4)}`;
 }
 
 function LoggedInNav() {
@@ -44,6 +44,14 @@ function LoggedInNav() {
       <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
       <Spacer width={24} />
       <Dropdown mainText="Account">
+        <CopyToClipboard textToCopy={userAddress}>
+          <TextButton
+            text={truncatedUserAddress}
+            disableTextTransform
+            underlineOnHover
+          />
+        </CopyToClipboard>
+        <Spacer height={12} />
         <TextButton
           text="Edit Gallery"
           onClick={handleEditGalleryClick}
@@ -55,14 +63,6 @@ function LoggedInNav() {
           onClick={handleEditNameClick}
           underlineOnHover
         />
-        <Spacer height={12} />
-        <CopyToClipboard textToCopy={userAddress}>
-          <TextButton
-            text={truncatedUserAddress}
-            disableTextTransform
-            underlineOnHover
-          />
-        </CopyToClipboard>
         <Spacer height={12} />
         <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
       </Dropdown>
