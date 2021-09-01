@@ -10,10 +10,8 @@ import CollectionDnd from './CollectionDnd';
 import Header from './Header';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
-import { Collection } from 'types/Collection';
 
 type ConfigProps = {
   onNext: () => void;
@@ -100,27 +98,5 @@ const StyledOrganizeGallery = styled.div`
 const Content = styled.div`
   width: 777px;
 `;
-
-// type DecoratedGalleryEditorProps = {
-//   push: WizardContext['push'];
-// };
-
-// function DecoratedGalleryEditor({ push }: DecoratedGalleryEditorProps) {
-//   const onNext = useCallback(() => {
-//     push('organizeGallery');
-//   }, [push]);
-
-//   useWizardConfig({ onNext });
-
-//   return <GalleryEditor/>
-// }
-
-// function OrganizeGalleryWithProvider({ push }: WizardContext) {
-//   return (
-//     <GalleryEditorProvider>
-//       <DecoratedGalleryEditor push={push} />
-//     </GalleryEditorProvider>
-//   );
-// }
 
 export default OrganizeGallery;
