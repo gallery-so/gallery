@@ -12,44 +12,53 @@ import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
-  onNext: () => void;
-  onPrevious: () => void;
+  wizardId: string;
+  username: string;
+  next: WizardContext['next'];
 };
 
-function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
+function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
 
-  useEffect(() => {
-    setOnNext(onNext);
-    setOnPrevious(onPrevious);
+  const clearOnNext = useCallback(() => {
+    setOnNext(undefined);
+    setOnPrevious(undefined);
+  }, [setOnNext, setOnPrevious]);
 
-    return () => {
-      setOnNext(undefined);
-      setOnPrevious(undefined);
-    };
-  }, [setOnPrevious, onPrevious, setOnNext, onNext]);
+  const returnToProfile = useCallback(() => {
+    navigate(`/${username}`);
+    clearOnNext();
+  }, [clearOnNext, username]);
+
+  const saveGalleryAndReturnToProfile = useCallback(() => {
+    clearOnNext();
+    // Save gallery changes (re-ordered collections)
+    if (wizardId === 'onboarding') {
+      next();
+      return;
+    }
+    navigate(`/${username}`);
+  }, [clearOnNext, next, username, wizardId]);
+
+  useEffect(() => {
+    setOnNext(saveGalleryAndReturnToProfile);
+    setOnPrevious(returnToProfile);
+  }, [
+    setOnPrevious,
+    setOnNext,
+    saveGalleryAndReturnToProfile,
+    returnToProfile,
+  ]);
 }
 
 function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
 
-  const returnToProfile = useCallback(() => {
-    navigate(`/${user.username}`);
-  }, [user.username]);
-
-  const saveGalleryAndReturnToProfile = useCallback(() => {
-    // Save gallery changes (re-ordered collections)
-    if (wizardId === 'onboarding') {
-      next();
-      return;
-    }
-    navigate(`/${user.username}`);
-  }, [next, user.username, wizardId]);
-
   useWizardConfig({
-    onNext: saveGalleryAndReturnToProfile,
-    onPrevious: returnToProfile,
+    wizardId,
+    username: user.username,
+    next,
   });
 
   return (

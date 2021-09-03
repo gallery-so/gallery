@@ -11,17 +11,9 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
-import { ANIMATION_NFT, AUDIO_NFT } from 'mocks/nfts';
 import { Nft } from 'types/Nft';
-import { Collection } from 'types/Collection';
 import { EditModeNft } from '../types';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
-
-// @ts-expect-error
-const MOCKED_EXISTING_COLLECTION: Collection = {
-  id: '123',
-  nfts: [AUDIO_NFT, ANIMATION_NFT],
-};
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected: boolean = false) {
   return nfts.map((nft, index) => ({
@@ -61,7 +53,7 @@ function CollectionEditor() {
       // EDITING A COLLECTION
       // TODO__v1: get the collection being edited from swr
       const existingCollectionNfts: EditModeNft[] = convertNftsToEditModeNfts(
-        MOCKED_EXISTING_COLLECTION.nfts,
+        [],
         true
       );
       const sidebarNfts = existingCollectionNfts.concat(availableNfts);

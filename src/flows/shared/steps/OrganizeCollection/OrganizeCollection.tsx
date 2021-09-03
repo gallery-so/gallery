@@ -54,16 +54,10 @@ function useWizardConfig({ onNext }: ConfigProps) {
 
     // if collection is being created, trigger creation
     setOnNext(async () => {
-      // errors will be handled in the catch block within `WizardFooter.tsx`
-      const createdCollection = await createCollection(
-        galleryId,
-        stagedNftIdsRef.current
-      );
-
       showModal(
         <CollectionEditInfoForm
           onNext={onNext}
-          collectionId={createdCollection.collection_id}
+          nftIds={stagedNftIdsRef.current}
         />
       );
     });
