@@ -9,7 +9,6 @@ import CollectionEditorProvider, {
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
-import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
@@ -34,7 +33,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
   }, [stagedNfts]);
 
   const { id: galleryId } = useAuthenticatedGallery();
-  const createCollection = useCreateCollection();
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
 
@@ -61,15 +59,7 @@ function useWizardConfig({ onNext }: ConfigProps) {
         />
       );
     });
-  }, [
-    setOnNext,
-    showModal,
-    onNext,
-    createCollection,
-    galleryId,
-    updateCollection,
-    collectionIdBeingEdited,
-  ]);
+  }, [collectionIdBeingEdited, onNext, setOnNext, showModal, updateCollection]);
 }
 
 // in order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
