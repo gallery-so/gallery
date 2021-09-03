@@ -10,20 +10,19 @@ import CollectionEditorProvider, {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { EditModeNft } from './types';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
-  onNext: WizardContext['next'];
+  push: WizardContext['push'];
 };
 
 function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
   return stagedNfts.map((stagedNft: EditModeNft) => stagedNft.nft.id);
 }
 
-function useWizardConfig({ onNext }: ConfigProps) {
-  const { setOnNext } = useWizardCallback();
+function useWizardConfig({ push }: ConfigProps) {
+  const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
 
@@ -32,9 +31,12 @@ function useWizardConfig({ onNext }: ConfigProps) {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
 
-  const { id: galleryId } = useAuthenticatedGallery();
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
+
+  const goToEditGalleryStep = useCallback(() => {
+    push('organizeGallery');
+  }, [push]);
 
   useEffect(() => {
     // if collection is being edited, trigger update
@@ -45,8 +47,11 @@ function useWizardConfig({ onNext }: ConfigProps) {
           collectionIdBeingEdited,
           stagedNftIdsRef.current
         );
+
+        goToEditGalleryStep();
       });
 
+      setOnPrevious(goToEditGalleryStep);
       return;
     }
 
@@ -54,12 +59,19 @@ function useWizardConfig({ onNext }: ConfigProps) {
     setOnNext(async () => {
       showModal(
         <CollectionEditInfoForm
-          onNext={onNext}
+          onNext={goToEditGalleryStep}
           nftIds={stagedNftIdsRef.current}
         />
       );
     });
-  }, [collectionIdBeingEdited, onNext, setOnNext, showModal, updateCollection]);
+  }, [
+    collectionIdBeingEdited,
+    goToEditGalleryStep,
+    setOnNext,
+    setOnPrevious,
+    showModal,
+    updateCollection,
+  ]);
 }
 
 // in order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
@@ -68,11 +80,7 @@ type DecoratedCollectionEditorProps = {
 };
 
 function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
-  const onNext = useCallback(() => {
-    push('organizeGallery');
-  }, [push]);
-
-  useWizardConfig({ onNext });
+  useWizardConfig({ push });
 
   return <CollectionEditor />;
 }
