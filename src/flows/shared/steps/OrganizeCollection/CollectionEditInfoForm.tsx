@@ -13,12 +13,15 @@ import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'src/errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import { Collection } from 'types/Collection';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 
 type Props = {
   onNext: WizardContext['next'];
-  collectionId: Collection['id'];
+  collectionId?: Collection['id'];
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
+  nftIds?: string[];
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
@@ -28,6 +31,7 @@ function CollectionEditInfoForm({
   collectionId,
   collectionName,
   collectionCollectorsNote,
+  nftIds,
 }: Props) {
   const { hideModal } = useModal();
 
@@ -64,6 +68,10 @@ function CollectionEditInfoForm({
 
   const updateCollection = useUpdateCollectionInfo();
 
+  const { id: galleryId } = useAuthenticatedGallery();
+
+  const createCollection = useCreateCollection();
+
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
@@ -74,14 +82,30 @@ function CollectionEditInfoForm({
 
     setIsLoading(true);
     try {
-      await updateCollection(collectionId, title, description);
+      // collection is being updated
+      if (collectionId) {
+        await updateCollection(collectionId, title, description);
+      }
+      // collection is being created
+      if (!collectionId && nftIds) {
+        await createCollection(galleryId, nftIds);
+      }
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
     }
     setIsLoading(false);
     return;
-  }, [description, updateCollection, collectionId, title, goToNextStep]);
+  }, [
+    description,
+    collectionId,
+    nftIds,
+    goToNextStep,
+    updateCollection,
+    title,
+    createCollection,
+    galleryId,
+  ]);
 
   return (
     <StyledCollectionEditInfoForm>
