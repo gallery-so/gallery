@@ -10,12 +10,19 @@ export default function useCreateCollection() {
   const authenticatedUser = useAuthenticatedUser();
 
   return useCallback(
-    async (galleryId: string, nftIds: string[]) => {
+    async (
+      galleryId: string,
+      title: string,
+      description: string,
+      nftIds: string[]
+    ) => {
       const result = await createCollection<
         CreateCollectionResponse,
         CreateCollectionRequest
       >('/collections/create', 'create collection', {
         gallery_id: galleryId,
+        name: title,
+        collectors_note: description,
         nfts: nftIds,
       });
 

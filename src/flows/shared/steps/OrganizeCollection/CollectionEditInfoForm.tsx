@@ -93,7 +93,7 @@ function CollectionEditInfoForm({
       }
       // collection is being created
       if (!collectionId && nftIds) {
-        await createCollection(galleryId, nftIds);
+        await createCollection(galleryId, title, description, nftIds);
       }
 
       // refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
