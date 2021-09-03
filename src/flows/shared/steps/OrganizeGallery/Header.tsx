@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
-import { Heading } from 'components/core/Text/Text';
-import TextButton from 'components/core/Button/TextButton';
+import { Caption, Heading } from 'components/core/Text/Text';
+// import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
+import colors from 'components/core/colors';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
-  const handleGalleryPreview = useCallback(() => {
-    alert('TODO - go to gallery preview');
-  }, []);
+  // const handleGalleryPreview = useCallback(() => {
+  //   alert('TODO - go to gallery preview');
+  // }, []);
 
   const handleAddCollection = useCallback(() => {
     push('organizeCollection');
@@ -19,6 +20,10 @@ function Header({ wizard: { push } }: WizardComponentProps) {
     <StyledHeader>
       <TitleContainer>
         <Heading>Organize your Gallery</Heading>
+        <Spacer height={4} />
+        <Caption color={colors.gray50}>
+          Reorder your collections via drag and drop
+        </Caption>
       </TitleContainer>
       <OptionsContainer>
         {/* TODO: support gallery preview
@@ -44,7 +49,7 @@ const StyledHeader = styled.div`
 
 const TitleContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
 `;
 
 const OptionsContainer = styled.div`
