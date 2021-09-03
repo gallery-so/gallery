@@ -16,7 +16,7 @@ import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCo
 const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   addUserInfo: 'Save',
   create: 'New Collection',
-  organizeCollection: 'Create Collection',
+  organizeCollection: 'Continue',
   organizeGallery: 'Publish Gallery',
 };
 

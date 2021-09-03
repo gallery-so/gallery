@@ -56,8 +56,12 @@ function CollectionEditInfoForm({
   }, [title, description]);
 
   const buttonText = useMemo(() => {
+    // collection is being created
+    if (nftIds) {
+      return 'create';
+    }
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue]);
+  }, [hasEnteredValue, nftIds]);
 
   const goToNextStep = useCallback(() => {
     onNext();
