@@ -15,6 +15,7 @@ import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionIn
 import { Collection } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -70,11 +71,11 @@ function CollectionEditInfoForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const updateCollection = useUpdateCollectionInfo();
-
   const { id: galleryId } = useAuthenticatedGallery();
-
+  const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
+
+  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -94,6 +95,10 @@ function CollectionEditInfoForm({
       if (!collectionId && nftIds) {
         await createCollection(galleryId, nftIds);
       }
+
+      // refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
+      await refreshUnassignedNfts({ skipCache: false });
+
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
@@ -104,6 +109,7 @@ function CollectionEditInfoForm({
     description,
     collectionId,
     nftIds,
+    refreshUnassignedNfts,
     goToNextStep,
     updateCollection,
     title,
