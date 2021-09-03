@@ -10,6 +10,7 @@ export type Nft = {
     schema_name: string;
     symbol: string;
     total_supply: string;
+    contract_image_url: string;
   };
   collectors_note: string;
   creation_time: number;

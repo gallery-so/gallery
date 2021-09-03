@@ -59,6 +59,7 @@ export const IMAGE_NFT: Nft = {
   creator_name: '',
   owner_address: '0x70D04384b5c3a466EC4D8CFB8213Efc31C6a9D15',
   asset_contract: {
+    contract_image_url: '',
     address: '0x7afeda4c714e1c0a2a1248332c100924506ac8e6',
     name: 'FVCK_CRYSTAL//',
     description:
@@ -97,6 +98,7 @@ export const VIDEO_NFT: Nft = {
   creator_name: '',
   owner_address: '0x70D04384b5c3a466EC4D8CFB8213Efc31C6a9D15',
   asset_contract: {
+    contract_image_url: '',
     address: '0xfee39ac7941c78f0592fa5aba1688211aa4e6d66',
     name: 'Particle Stories',
     description: '',
@@ -137,6 +139,7 @@ export const AUDIO_NFT: Nft = {
   creator_name: '',
   owner_address: '0x70D04384b5c3a466EC4D8CFB8213Efc31C6a9D15',
   asset_contract: {
+    contract_image_url: '',
     address: '0xfee39ac7941c78f0592fa5aba1688211aa4e6d66',
     name: 'Particle Stories',
     description: '',
@@ -177,6 +180,7 @@ export const ANIMATION_NFT: Nft = {
   creator_name: '',
   owner_address: '0x70D04384b5c3a466EC4D8CFB8213Efc31C6a9D15',
   asset_contract: {
+    contract_image_url: '',
     address: '0xfee39ac7941c78f0592fa5aba1688211aa4e6d66',
     name: 'Particle Stories',
     description: '',
