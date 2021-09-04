@@ -59,8 +59,6 @@ function CollectionEditor() {
     );
 
     if (collectionIdBeingEdited) {
-      // EDITING A COLLECTION
-      // TODO__v1: get the collection being edited from swr
       const existingCollectionNfts: EditModeNft[] = convertNftsToEditModeNfts(
         nftsWithinCollectionBeingEdited,
         true
@@ -73,6 +71,7 @@ function CollectionEditor() {
       });
       setSidebarNfts(sidebarNfts);
       stageNfts(existingCollectionNfts);
+
       return;
     }
 

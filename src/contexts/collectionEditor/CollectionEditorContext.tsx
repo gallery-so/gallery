@@ -101,7 +101,18 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   );
 
   const stageNfts = useCallback((nfts: EditModeNft[]) => {
-    setStagedNftsState((prev) => [...prev, ...nfts]);
+    setStagedNftsState((prev) => {
+      const stagedNfts = prev
+        .map(({ id }) => id)
+        .reduce((map: { [key: string]: boolean }, id: string) => {
+          map[id] = true;
+          return map;
+        }, {});
+
+      const nftsNotYetStaged = nfts.filter(({ id }) => !stagedNfts[id]);
+
+      return [...prev, ...nftsNotYetStaged];
+    });
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
