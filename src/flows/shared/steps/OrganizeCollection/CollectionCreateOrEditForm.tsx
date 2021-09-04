@@ -15,6 +15,7 @@ import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionIn
 import { Collection } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -26,7 +27,7 @@ type Props = {
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-function CollectionEditInfoForm({
+function CollectionCreateOrEditForm({
   onNext,
   collectionId,
   collectionName,
@@ -56,8 +57,12 @@ function CollectionEditInfoForm({
   }, [title, description]);
 
   const buttonText = useMemo(() => {
+    // collection is being created
+    if (nftIds) {
+      return 'create';
+    }
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue]);
+  }, [hasEnteredValue, nftIds]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -66,11 +71,11 @@ function CollectionEditInfoForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const updateCollection = useUpdateCollectionInfo();
-
   const { id: galleryId } = useAuthenticatedGallery();
-
+  const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
+
+  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -88,8 +93,12 @@ function CollectionEditInfoForm({
       }
       // collection is being created
       if (!collectionId && nftIds) {
-        await createCollection(galleryId, nftIds);
+        await createCollection(galleryId, title, description, nftIds);
       }
+
+      // refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
+      await refreshUnassignedNfts({ skipCache: false });
+
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
@@ -100,6 +109,7 @@ function CollectionEditInfoForm({
     description,
     collectionId,
     nftIds,
+    refreshUnassignedNfts,
     goToNextStep,
     updateCollection,
     title,
@@ -169,4 +179,4 @@ const StyledButton = styled(Button)`
   width: 90px;
 `;
 
-export default CollectionEditInfoForm;
+export default CollectionCreateOrEditForm;

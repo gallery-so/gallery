@@ -152,6 +152,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
 const StyledCompactNfts = styled.div`
   width: ${BIG_NFT_SIZE_PX}px;
   height: ${BIG_NFT_SIZE_PX}px;
+  margin: 12px;
 
   display: flex;
   justify-content: center;

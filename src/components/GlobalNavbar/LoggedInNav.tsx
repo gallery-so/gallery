@@ -28,6 +28,11 @@ function LoggedInNav() {
   }, [userAddress]);
 
   const handleGalleryRedirect = useCallback(() => {
+    const authenticatedUserIsOnTheirOwnPage =
+      window.location.pathname.slice(1) === user.username;
+    if (authenticatedUserIsOnTheirOwnPage) {
+      return;
+    }
     navigate(`/${user.username}`);
   }, [user.username]);
 

@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { mutate } from 'swr';
 import { Nft } from 'types/Nft';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGet from '../_rest/useGet';
@@ -43,4 +45,15 @@ export default function useUnassignedNfts({
   );
 
   return data?.nfts;
+}
+
+export function useRefreshUnassignedNfts() {
+  const { id: userId } = useAuthenticatedUser();
+
+  return useCallback(
+    async ({ skipCache }: Props) => {
+      await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
+    },
+    [userId]
+  );
 }

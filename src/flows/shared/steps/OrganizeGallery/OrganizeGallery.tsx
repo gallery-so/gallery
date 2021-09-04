@@ -66,7 +66,7 @@ function OrganizeGallery({ next }: WizardContext) {
       <Content>
         <Spacer height={80} />
         <Header />
-        <Spacer height={16} />
+        <Spacer height={24} />
         <CollectionDnd />
         <Spacer height={120} />
       </Content>
