@@ -8,7 +8,7 @@ import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import Spacer from 'components/core/Spacer/Spacer';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import CollectionEditInfoForm from '../OrganizeCollection/CollectionEditInfoForm';
+import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
@@ -34,7 +34,7 @@ function CollectionRowSettings({
 
   const handleEditNameClick = useCallback(() => {
     showModal(
-      <CollectionEditInfoForm
+      <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={() => {}}
         collectionId={id}

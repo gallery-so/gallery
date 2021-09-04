@@ -27,7 +27,7 @@ type Props = {
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-function CollectionEditInfoForm({
+function CollectionCreateOrEditForm({
   onNext,
   collectionId,
   collectionName,
@@ -179,4 +179,4 @@ const StyledButton = styled(Button)`
   width: 90px;
 `;
 
-export default CollectionEditInfoForm;
+export default CollectionCreateOrEditForm;

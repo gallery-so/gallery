@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 
-import CollectionEditInfoForm from './CollectionEditInfoForm';
+import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -58,7 +58,7 @@ function useWizardConfig({ push }: ConfigProps) {
     // if collection is being created, trigger creation
     setOnNext(async () => {
       showModal(
-        <CollectionEditInfoForm
+        <CollectionCreateOrEditForm
           onNext={goToEditGalleryStep}
           nftIds={stagedNftIdsRef.current}
         />
