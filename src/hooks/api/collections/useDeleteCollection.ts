@@ -11,7 +11,7 @@ import { DeleteCollectionRequest, DeleteCollectionResponse } from './types';
 
 export default function useDeleteCollection() {
   const deleteCollection = usePost();
-  const authenticatedUser = useAuthenticatedUser();
+  const { id: userId } = useAuthenticatedUser();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   return useCallback(
@@ -25,7 +25,7 @@ export default function useDeleteCollection() {
       );
 
       await mutate(
-        getGalleriesCacheKey({ userId: authenticatedUser.id }),
+        getGalleriesCacheKey({ userId }),
         (val: GetGalleriesResponse) => {
           const newVal = cloneDeep<GetGalleriesResponse>(val);
           const gallery = newVal.galleries[0];
@@ -40,6 +40,6 @@ export default function useDeleteCollection() {
 
       await refreshUnassignedNfts({ skipCache: true });
     },
-    [authenticatedUser.id, deleteCollection, refreshUnassignedNfts]
+    [userId, deleteCollection, refreshUnassignedNfts]
   );
 }
