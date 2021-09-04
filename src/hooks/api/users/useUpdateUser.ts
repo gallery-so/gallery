@@ -17,13 +17,13 @@ export default function useUpdateUser() {
       );
 
       // optimistically update both user caches by username, ID
-      mutate(
+      await mutate(
         getUserCacheKey({ username }),
         (user: User) => ({ ...user, username, bio }),
         false
       );
 
-      mutate(
+      await mutate(
         getUserCacheKey({ id: userId }),
         (user: User) => ({ ...user, username, bio }),
         false

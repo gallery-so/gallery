@@ -51,8 +51,8 @@ export function useRefreshUnassignedNfts() {
   const { id: userId } = useAuthenticatedUser();
 
   return useCallback(
-    ({ skipCache }: Props) => {
-      mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
+    async ({ skipCache }: Props) => {
+      await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
     },
     [userId]
   );

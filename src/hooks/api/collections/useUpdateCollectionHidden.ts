@@ -27,7 +27,7 @@ export default function useUpdateCollectionHidden() {
       // optimistically update the collection within gallery cache.
       // it should be less messy in the future when we have a dedicated
       // endpoint for individual collections
-      mutate(
+      await mutate(
         getGalleriesCacheKey({ userId: authenticatedUser.id }),
         (val: GetGalleriesResponse) => {
           const newVal = cloneDeep<GetGalleriesResponse>(val);
