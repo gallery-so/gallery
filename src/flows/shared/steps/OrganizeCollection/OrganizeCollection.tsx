@@ -11,7 +11,10 @@ import CollectionEditorProvider, {
 import { useModal } from 'contexts/modal/ModalContext';
 import { EditModeNft } from './types';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
-import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
+import {
+  useCollectionWizardActions,
+  useCollectionWizardState,
+} from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -33,10 +36,13 @@ function useWizardConfig({ push }: ConfigProps) {
 
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
+  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
-  const goToEditGalleryStep = useCallback(() => {
+  const goToOrganizeGalleryStep = useCallback(() => {
+    // clear selected collection when moving to next step
+    setCollectionIdBeingEdited('');
     push('organizeGallery');
-  }, [push]);
+  }, [push, setCollectionIdBeingEdited]);
 
   useEffect(() => {
     // if collection is being edited, trigger update
@@ -48,10 +54,10 @@ function useWizardConfig({ push }: ConfigProps) {
           stagedNftIdsRef.current
         );
 
-        goToEditGalleryStep();
+        goToOrganizeGalleryStep();
       });
 
-      setOnPrevious(goToEditGalleryStep);
+      setOnPrevious(goToOrganizeGalleryStep);
       return;
     }
 
@@ -59,14 +65,14 @@ function useWizardConfig({ push }: ConfigProps) {
     setOnNext(async () => {
       showModal(
         <CollectionCreateOrEditForm
-          onNext={goToEditGalleryStep}
+          onNext={goToOrganizeGalleryStep}
           nftIds={stagedNftIdsRef.current}
         />
       );
     });
   }, [
     collectionIdBeingEdited,
-    goToEditGalleryStep,
+    goToOrganizeGalleryStep,
     setOnNext,
     setOnPrevious,
     showModal,
