@@ -15,6 +15,7 @@ import {
   useCollectionWizardActions,
   useCollectionWizardState,
 } from 'contexts/wizard/CollectionWizardContext';
+import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -28,6 +29,7 @@ function useWizardConfig({ push }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
+  const wizardId = useWizardId();
 
   const stagedNftIdsRef = useRef<string[]>([]);
   useEffect(() => {
@@ -70,6 +72,12 @@ function useWizardConfig({ push }: ConfigProps) {
         />
       );
     });
+
+    // if user is editing their gallery, clicking "back" should bring them
+    // back to the organize gallery view
+    if (wizardId === 'edit-gallery') {
+      setOnPrevious(goToOrganizeGalleryStep);
+    }
   }, [
     collectionIdBeingEdited,
     goToOrganizeGalleryStep,
@@ -77,6 +85,7 @@ function useWizardConfig({ push }: ConfigProps) {
     setOnPrevious,
     showModal,
     updateCollection,
+    wizardId,
   ]);
 }
 
