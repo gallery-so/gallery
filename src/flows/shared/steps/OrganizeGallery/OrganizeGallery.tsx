@@ -31,7 +31,6 @@ function useWizardConfig({
 }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const updateGallery = useUpdateGallery();
-  // const gallery = useAuthenticatedGallery();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
@@ -78,8 +77,7 @@ function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
 
-  const gallery = useAuthenticatedGallery();
-  const collections = gallery.collections;
+  const { id, collections } = useAuthenticatedGallery();
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   useEffect(() => {
@@ -90,7 +88,7 @@ function OrganizeGallery({ next }: WizardContext) {
   useWizardConfig({
     wizardId,
     username: user.username,
-    galleryId: gallery.id,
+    galleryId: id,
     sortedCollections,
     next,
   });
