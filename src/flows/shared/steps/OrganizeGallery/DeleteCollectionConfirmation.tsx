@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
 import useDeleteCollection from 'hooks/api/collections/useDeleteCollection';
@@ -16,30 +16,39 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
   const { hideModal } = useModal();
   const deleteCollection = useDeleteCollection();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleConfirmClick = useCallback(async () => {
+    setIsLoading(true);
     await deleteCollection(collectionId);
+    setIsLoading(false);
     hideModal();
   }, [collectionId, deleteCollection, hideModal]);
 
-  const handleCancelClick = useCallback(() => {
-    hideModal();
-  }, [hideModal]);
   return (
     <StyledConfirmation>
       <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
       <Spacer height={8} />
       <BodyRegular color={colors.gray50}>
-        This action is irreversible and will remove the collection from your
-        gallery permanently.
+        This action is irreversible and will remove this collection from your
+        gallery. All NFTs in this collection will be unassigned and available to
+        place in other collections.
       </BodyRegular>
-      <Spacer height={20} />
+      <Spacer height={40} />
       <ButtonContainer>
         <StyledCancelButton
+          mini
           text="Nevermind"
           type="secondary"
-          onClick={handleCancelClick}
+          onClick={hideModal}
         />
-        <StyledButton text="Delete" onClick={handleConfirmClick} />
+        <StyledButton
+          mini
+          text="Delete"
+          onClick={handleConfirmClick}
+          disabled={isLoading}
+          loading={isLoading}
+        />
       </ButtonContainer>
     </StyledConfirmation>
   );

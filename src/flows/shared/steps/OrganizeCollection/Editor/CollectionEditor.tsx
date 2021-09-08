@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import Sidebar from '../Sidebar/Sidebar';
@@ -11,17 +11,10 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
-import { ANIMATION_NFT, AUDIO_NFT } from 'mocks/nfts';
 import { Nft } from 'types/Nft';
-import { Collection } from 'types/Collection';
 import { EditModeNft } from '../types';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
-
-// @ts-expect-error
-const MOCKED_EXISTING_COLLECTION: Collection = {
-  id: '123',
-  nfts: [AUDIO_NFT, ANIMATION_NFT],
-};
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected: boolean = false) {
   return nfts.map((nft, index) => ({
@@ -47,6 +40,14 @@ function CollectionEditor() {
 
   const unassignedNfts = useUnassignedNfts({ skipCache: false });
 
+  const { collections } = useAuthenticatedGallery();
+  const nftsWithinCollectionBeingEdited = useMemo(() => {
+    const collectionBeingEdited = collections.find(
+      (coll) => coll.id === collectionIdBeingEdited
+    );
+    return collectionBeingEdited?.nfts ?? [];
+  }, [collectionIdBeingEdited, collections]);
+
   // initialize sidebarNfts
   useEffect(() => {
     if (!unassignedNfts) {
@@ -58,10 +59,8 @@ function CollectionEditor() {
     );
 
     if (collectionIdBeingEdited) {
-      // EDITING A COLLECTION
-      // TODO__v1: get the collection being edited from swr
       const existingCollectionNfts: EditModeNft[] = convertNftsToEditModeNfts(
-        MOCKED_EXISTING_COLLECTION.nfts,
+        nftsWithinCollectionBeingEdited,
         true
       );
       const sidebarNfts = existingCollectionNfts.concat(availableNfts);
@@ -72,12 +71,19 @@ function CollectionEditor() {
       });
       setSidebarNfts(sidebarNfts);
       stageNfts(existingCollectionNfts);
+
       return;
     }
 
     // NEW COLLECTION
     setSidebarNfts(availableNfts);
-  }, [collectionIdBeingEdited, setSidebarNfts, stageNfts, unassignedNfts]);
+  }, [
+    collectionIdBeingEdited,
+    setSidebarNfts,
+    stageNfts,
+    unassignedNfts,
+    nftsWithinCollectionBeingEdited,
+  ]);
 
   return (
     <StyledOrganizeCollection>

@@ -12,30 +12,71 @@ import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
+import { Collection } from 'types/Collection';
 
 type ConfigProps = {
-  onNext: () => void;
-  onPrevious: () => void;
+  wizardId: string;
+  username: string;
+  galleryId: string;
+  sortedCollections: Collection[];
+  next: WizardContext['next'];
 };
 
-function useWizardConfig({ onNext, onPrevious }: ConfigProps) {
+function useWizardConfig({
+  wizardId,
+  username,
+  galleryId,
+  sortedCollections,
+  next,
+}: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
+  const updateGallery = useUpdateGallery();
+  // const gallery = useAuthenticatedGallery();
+
+  const clearOnNext = useCallback(() => {
+    setOnNext(undefined);
+    setOnPrevious(undefined);
+  }, [setOnNext, setOnPrevious]);
+
+  const returnToProfile = useCallback(() => {
+    navigate(`/${username}`);
+    clearOnNext();
+  }, [clearOnNext, username]);
+
+  const saveGalleryAndReturnToProfile = useCallback(async () => {
+    clearOnNext();
+    // Save gallery changes (re-ordered collections)
+    if (wizardId === 'onboarding') {
+      next();
+      return;
+    }
+
+    await updateGallery(galleryId, sortedCollections);
+    navigate(`/${username}`);
+  }, [
+    clearOnNext,
+    galleryId,
+    next,
+    sortedCollections,
+    updateGallery,
+    username,
+    wizardId,
+  ]);
 
   useEffect(() => {
-    setOnNext(onNext);
-    setOnPrevious(onPrevious);
-
-    return () => {
-      setOnNext(undefined);
-      setOnPrevious(undefined);
-    };
-  }, [setOnPrevious, onPrevious, setOnNext, onNext]);
+    setOnNext(saveGalleryAndReturnToProfile);
+    setOnPrevious(returnToProfile);
+  }, [
+    setOnPrevious,
+    setOnNext,
+    saveGalleryAndReturnToProfile,
+    returnToProfile,
+  ]);
 }
 
 function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
-  const updateGallery = useUpdateGallery();
 
   const gallery = useAuthenticatedGallery();
   const collections = gallery.collections;
@@ -46,31 +87,12 @@ function OrganizeGallery({ next }: WizardContext) {
     setSortedCollections(collections);
   }, [collections]);
 
-  const returnToProfile = useCallback(() => {
-    navigate(`/${user.username}`);
-  }, [user.username]);
-
-  const saveGalleryAndReturnToProfile = useCallback(async () => {
-    // Save gallery changes (re-ordered collections)
-    if (wizardId === 'onboarding') {
-      next();
-      return;
-    }
-
-    await updateGallery(gallery.id, sortedCollections);
-    navigate(`/${user.username}`);
-  }, [
-    gallery.id,
-    next,
-    sortedCollections,
-    updateGallery,
-    user.username,
-    wizardId,
-  ]);
-
   useWizardConfig({
-    onNext: saveGalleryAndReturnToProfile,
-    onPrevious: returnToProfile,
+    wizardId,
+    username: user.username,
+    galleryId: gallery.id,
+    sortedCollections,
+    next,
   });
 
   return (
@@ -78,7 +100,7 @@ function OrganizeGallery({ next }: WizardContext) {
       <Content>
         <Spacer height={80} />
         <Header />
-        <Spacer height={16} />
+        <Spacer height={24} />
         <CollectionDnd
           sortedCollections={sortedCollections}
           setSortedCollections={setSortedCollections}

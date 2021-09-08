@@ -13,21 +13,26 @@ import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'src/errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import { Collection } from 'types/Collection';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 
 type Props = {
   onNext: WizardContext['next'];
-  collectionId: Collection['id'];
+  collectionId?: Collection['id'];
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
+  nftIds?: string[];
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-function CollectionEditInfoForm({
+function CollectionCreateOrEditForm({
   onNext,
   collectionId,
   collectionName,
   collectionCollectorsNote,
+  nftIds,
 }: Props) {
   const { hideModal } = useModal();
 
@@ -52,8 +57,12 @@ function CollectionEditInfoForm({
   }, [title, description]);
 
   const buttonText = useMemo(() => {
+    // collection is being created
+    if (nftIds) {
+      return 'create';
+    }
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue]);
+  }, [hasEnteredValue, nftIds]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -62,7 +71,11 @@ function CollectionEditInfoForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const { id: galleryId } = useAuthenticatedGallery();
   const updateCollection = useUpdateCollectionInfo();
+  const createCollection = useCreateCollection();
+
+  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -74,14 +87,35 @@ function CollectionEditInfoForm({
 
     setIsLoading(true);
     try {
-      await updateCollection(collectionId, title, description);
+      // collection is being updated
+      if (collectionId) {
+        await updateCollection(collectionId, title, description);
+      }
+      // collection is being created
+      if (!collectionId && nftIds) {
+        await createCollection(galleryId, title, description, nftIds);
+      }
+
+      // refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
+      await refreshUnassignedNfts({ skipCache: false });
+
       goToNextStep();
     } catch (e) {
       setGeneralError(formatError(e));
     }
     setIsLoading(false);
     return;
-  }, [description, updateCollection, collectionId, title, goToNextStep]);
+  }, [
+    description,
+    collectionId,
+    nftIds,
+    refreshUnassignedNfts,
+    goToNextStep,
+    updateCollection,
+    title,
+    createCollection,
+    galleryId,
+  ]);
 
   return (
     <StyledCollectionEditInfoForm>
@@ -145,4 +179,4 @@ const StyledButton = styled(Button)`
   width: 90px;
 `;
 
-export default CollectionEditInfoForm;
+export default CollectionCreateOrEditForm;

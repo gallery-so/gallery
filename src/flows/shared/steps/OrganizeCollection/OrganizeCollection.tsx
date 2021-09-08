@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 
-import CollectionEditInfoForm from './CollectionEditInfoForm';
+import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import CollectionEditor from './Editor/CollectionEditor';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -9,34 +9,42 @@ import CollectionEditorProvider, {
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
-import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { EditModeNft } from './types';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
-import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
+import {
+  useCollectionWizardActions,
+  useCollectionWizardState,
+} from 'contexts/wizard/CollectionWizardContext';
+import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
-  onNext: WizardContext['next'];
+  push: WizardContext['push'];
 };
 
 function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
   return stagedNfts.map((stagedNft: EditModeNft) => stagedNft.nft.id);
 }
 
-function useWizardConfig({ onNext }: ConfigProps) {
-  const { setOnNext } = useWizardCallback();
+function useWizardConfig({ push }: ConfigProps) {
+  const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
   const stagedNfts = useStagedNftsState();
+  const wizardId = useWizardId();
 
   const stagedNftIdsRef = useRef<string[]>([]);
   useEffect(() => {
     stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
   }, [stagedNfts]);
 
-  const { id: galleryId } = useAuthenticatedGallery();
-  const createCollection = useCreateCollection();
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
+  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
+
+  const goToOrganizeGalleryStep = useCallback(() => {
+    // clear selected collection when moving to next step
+    setCollectionIdBeingEdited('');
+    push('organizeGallery');
+  }, [push, setCollectionIdBeingEdited]);
 
   useEffect(() => {
     // if collection is being edited, trigger update
@@ -47,34 +55,37 @@ function useWizardConfig({ onNext }: ConfigProps) {
           collectionIdBeingEdited,
           stagedNftIdsRef.current
         );
+
+        goToOrganizeGalleryStep();
       });
 
+      setOnPrevious(goToOrganizeGalleryStep);
       return;
     }
 
     // if collection is being created, trigger creation
     setOnNext(async () => {
-      // errors will be handled in the catch block within `WizardFooter.tsx`
-      const createdCollection = await createCollection(
-        galleryId,
-        stagedNftIdsRef.current
-      );
-
       showModal(
-        <CollectionEditInfoForm
-          onNext={onNext}
-          collectionId={createdCollection.collection_id}
+        <CollectionCreateOrEditForm
+          onNext={goToOrganizeGalleryStep}
+          nftIds={stagedNftIdsRef.current}
         />
       );
     });
+
+    // if user is editing their gallery, clicking "back" should bring them
+    // back to the organize gallery view
+    if (wizardId === 'edit-gallery') {
+      setOnPrevious(goToOrganizeGalleryStep);
+    }
   }, [
-    setOnNext,
-    showModal,
-    onNext,
-    createCollection,
-    galleryId,
-    updateCollection,
     collectionIdBeingEdited,
+    goToOrganizeGalleryStep,
+    setOnNext,
+    setOnPrevious,
+    showModal,
+    updateCollection,
+    wizardId,
   ]);
 }
 
@@ -84,11 +95,7 @@ type DecoratedCollectionEditorProps = {
 };
 
 function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
-  const onNext = useCallback(() => {
-    push('organizeGallery');
-  }, [push]);
-
-  useWizardConfig({ onNext });
+  useWizardConfig({ push });
 
   return <CollectionEditor />;
 }
