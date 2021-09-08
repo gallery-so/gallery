@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   closestCenter,
   defaultDropAnimation,
@@ -32,30 +32,27 @@ const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
   sortedCollections: Collection[];
-  setSortedCollections: (prev: React.SetStateAction<Collection[]>) => void;
+  setSortedCollections: (sorter: (prev: Collection[]) => Collection[]) => void;
 };
 
 function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
   const { collections } = useAuthenticatedGallery();
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
-  // const [sortedCollections, setSortedCollections] = useState(collections);
 
-  // useEffect(() => {
-  //   // when the server sends down its source of truth, sync the local state
-  //   setSortedCollections(collections);
-  // }, [collections]);
+  const handleSortCollections = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-  const handleSortCollections = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (active.id !== over?.id) {
-      setSortedCollections((prev) => {
-        const oldIndex = prev.findIndex(({ id }) => id === active.id);
-        const newIndex = prev.findIndex(({ id }) => id === over?.id);
-        return arrayMove(prev, oldIndex, newIndex);
-      });
-    }
-  }, []);
+      if (active.id !== over?.id) {
+        setSortedCollections((prev) => {
+          const oldIndex = prev.findIndex(({ id }) => id === active.id);
+          const newIndex = prev.findIndex(({ id }) => id === over?.id);
+          return arrayMove(prev, oldIndex, newIndex);
+        });
+      }
+    },
+    [setSortedCollections]
+  );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
