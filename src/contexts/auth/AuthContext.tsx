@@ -1,4 +1,3 @@
-import Web3WalletProvider from './Web3WalletContext';
 import usePersistedState from 'hooks/usePersistedState';
 import {
   ReactNode,
@@ -10,6 +9,8 @@ import {
   useEffect,
   useMemo,
 } from 'react';
+import { _fetch } from 'contexts/swr/useFetcher';
+import Web3WalletProvider from './Web3WalletContext';
 import { LoggedInState, LOADING, LOGGED_OUT, UNKNOWN } from './types';
 import {
   JWT_LOCAL_STORAGE_KEY,
@@ -17,7 +18,6 @@ import {
   USER_ID_LOCAL_STORAGE_KEY,
 } from './constants';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import { _fetch } from 'contexts/swr/useFetcher';
 
 export type AuthState =
   | LoggedInState
@@ -30,8 +30,9 @@ const AuthStateContext = createContext<AuthState>(UNKNOWN);
 export const useAuthState = (): AuthState => {
   const context = useContext(AuthStateContext);
   if (!context) {
-    throw Error('Attempted to use AuthStateContext without a provider!');
+    throw new Error('Attempted to use AuthStateContext without a provider!');
   }
+
   return context;
 };
 
@@ -46,8 +47,9 @@ const AuthActionsContext = createContext<AuthActions | undefined>(undefined);
 export const useAuthActions = (): AuthActions => {
   const context = useContext(AuthActionsContext);
   if (!context) {
-    throw Error('Attempted to use AuthActionsContext without a provider!');
+    throw new Error('Attempted to use AuthActionsContext without a provider!');
   }
+
   return context;
 };
 
@@ -92,12 +94,13 @@ const AuthProvider = memo(({ children }: Props) => {
         setToken(payload.jwt);
         setUserId(payload.userId);
         setAuthState(payload);
-      } catch (e) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         logOut();
-        throw new Error('Authorization failed! ' + e.message);
+        throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [logOut, setToken, setUserId]
+    [logOut, setToken, setUserId],
   );
 
   const setStateToLoading = useCallback(() => {
@@ -107,13 +110,13 @@ const AuthProvider = memo(({ children }: Props) => {
   useEffect(
     function authProviderMounted() {
       async function loadAuthState() {
-        // show user loading screen while we figure out whether they are logged in or not
+        // Show user loading screen while we figure out whether they are logged in or not
         setAuthState(LOADING);
 
         if (token && userId) {
           const response = await _fetch<ValidateJwtResponse>(
             '/auth/jwt_valid',
-            'validate jwt'
+            'validate jwt',
           );
           if (!response.valid) {
             // TODO: set explicit error on higher-level error context to display in a toast
@@ -121,26 +124,27 @@ const AuthProvider = memo(({ children }: Props) => {
             logOut();
             return;
           }
+
           await logIn({ jwt: token, userId });
           return;
         }
+
         setLoggedOut();
       }
+
       if (authState === UNKNOWN) {
         loadAuthState();
       }
     },
-    [authState, logIn, logOut, setLoggedOut, token, userId]
+    [authState, logIn, logOut, setLoggedOut, token, userId],
   );
 
   const authActions: AuthActions = useMemo(
     () => ({ logIn, logOut, setStateToLoading }),
-    [logIn, logOut, setStateToLoading]
+    [logIn, logOut, setStateToLoading],
   );
 
-  const shouldDisplayUniversalLoader = useMemo(() => {
-    return authState === UNKNOWN || authState === LOADING;
-  }, [authState]);
+  const shouldDisplayUniversalLoader = useMemo(() => authState === UNKNOWN || authState === LOADING, [authState]);
 
   // TODO: display a loader instead of `null`
   return shouldDisplayUniversalLoader ? null : (

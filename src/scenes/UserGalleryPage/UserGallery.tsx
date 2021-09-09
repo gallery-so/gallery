@@ -2,10 +2,10 @@ import { contentSize } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import { Gallery } from 'types/Gallery';
+import { User } from 'types/User';
 import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
-import { User } from 'types/User';
 
 type Props = {
   user: User;

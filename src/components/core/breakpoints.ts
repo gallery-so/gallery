@@ -22,10 +22,10 @@ const breakpoints = {
   desktop: `(min-width: ${size.desktop}px)`,
 };
 
-// how wide the inner content should be
+// How wide the inner content should be
 export enum contentSize {
-  mobile = 0, // todo
-  tablet = 1, // todo
+  mobile = 0, // Todo
+  tablet = 1, // Todo
   desktop = 1024,
 }
 

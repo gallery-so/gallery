@@ -9,9 +9,9 @@ function WrappedComponent<T extends (props: any) => JSX.Element>({
 }: {
   Component: React.ComponentType | T;
 }) {
-  // whether node is actually on the DOM
+  // Whether node is actually on the DOM
   const [isMounted, setIsMounted] = useState(false);
-  // pseudo-state for signaling animations. this will allow us
+  // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
 
@@ -40,7 +40,7 @@ function WrappedComponent<T extends (props: any) => JSX.Element>({
 }
 
 function Fader<T extends (props: any) => JSX.Element, P>(
-  Component: React.ComponentType | T
+  Component: React.ComponentType | T,
 ) {
   return (props: React.Attributes | P) => (
     <WrappedComponent<T> Component={Component} {...props} />

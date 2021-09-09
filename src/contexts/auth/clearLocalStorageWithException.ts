@@ -1,8 +1,8 @@
-// clears localStorage except for designated keys
+// Clears localStorage except for designated keys
 export default function clearLocalStorageWithException(
-  exceptionKeys: string[]
+  exceptionKeys: string[],
 ) {
-  const valuesToKeep = exceptionKeys.map((key) => [
+  const valuesToKeep = exceptionKeys.map(key => [
     key,
     localStorage.getItem(key),
   ]);
@@ -10,6 +10,8 @@ export default function clearLocalStorageWithException(
   localStorage.clear();
 
   valuesToKeep.map(
-    ([key, value]) => key && value && localStorage.setItem(key, value)
+    ([key, value]) => {
+      key && value && localStorage.setItem(key, value);
+    },
   );
 }

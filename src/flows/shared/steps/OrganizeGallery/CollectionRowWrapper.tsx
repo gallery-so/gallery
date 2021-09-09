@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-import SortableCollectionRow from './SortableCollectionRow';
 import Spacer from 'components/core/Spacer/Spacer';
-import CollectionRowSettings from './CollectionRowSettings';
 import { Collection } from 'types/Collection';
+import SortableCollectionRow from './SortableCollectionRow';
+import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
   collection: Collection;

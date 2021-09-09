@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-// only run effect on component update, not initial render
+// Only run effect on component update, not initial render
 // https://reactjs.org/docs/hooks-faq.html#can-i-run-an-effect-only-on-updates
 export default function useEffectAfterMount(effect: () => void) {
   const mountRef = useRef(false);
@@ -9,6 +9,7 @@ export default function useEffectAfterMount(effect: () => void) {
       effect();
       return;
     }
+
     mountRef.current = true;
   }, [effect]);
 }

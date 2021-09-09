@@ -4,25 +4,25 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'src/errors/types';
 
-const baseurl = process.env.REACT_APP_API_BASE_URL;
+const baseurl = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:4000';
 
 const ERR_UNAUTHORIZED = 401;
 
-type RequestParams<T> = {
+type RequestParameters<T> = {
   body?: T;
   headers?: Record<string, string>;
   unauthorizedErrorHandler?: () => void;
 };
 
-export type FetcherType = <ResponseData, RequestBody = {}>(
+export type FetcherType = <ResponseData, RequestBody = Record<string, unknown>>(
   path: string,
   action: RequestAction,
-  params?: RequestParams<RequestBody>
+  parameters?: RequestParameters<RequestBody>
 ) => Promise<ResponseData>;
 
 // Raw fetcher. If you're in a hook/component, use `useFetcher` instead.
-export const _fetch: FetcherType = async (path, action, params = {}) => {
-  const { body, headers = {}, unauthorizedErrorHandler } = params;
+export const _fetch: FetcherType = async (path, action, parameters = {}) => {
+  const { body, headers = {}, unauthorizedErrorHandler } = parameters;
 
   const requestOptions: RequestInit = { headers };
 
@@ -36,25 +36,26 @@ export const _fetch: FetcherType = async (path, action, params = {}) => {
     requestOptions.method = 'POST';
     requestOptions.body = JSON.stringify(body);
   }
-  const res = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
 
-  const responseBody = await res.json().catch((e) => {
-    // certain successful responses won't have a JSON body (e.g. updates)
+  const response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
+
+  const responseBody = await response.json().catch((error: unknown) => {
+    // Certain successful responses won't have a JSON body (e.g. updates)
     // res.json() will throw an error in these cases, which we catch gracefully
-    if (res.ok) {
+    if (response.ok) {
       return null;
     }
 
-    // attach custom error message if provided
-    if (action) {
-      const apiError = new ApiError(e.message, action);
-      throw apiError;
+    // Attach custom error message if provided
+    if (action && error instanceof Error) {
+      throw new ApiError(error.message, action);
     }
-    throw e;
+
+    throw error;
   });
 
-  if (!res.ok) {
-    if (res.status === ERR_UNAUTHORIZED) {
+  if (!response.ok) {
+    if (response.status === ERR_UNAUTHORIZED) {
       unauthorizedErrorHandler?.();
     }
 
@@ -64,8 +65,10 @@ export const _fetch: FetcherType = async (path, action, params = {}) => {
       const apiError = new ApiError(serverErrorMessage, action);
       throw apiError;
     }
+
     throw new Error(serverErrorMessage);
   }
+
   return responseBody;
 };
 
@@ -78,8 +81,8 @@ export default function useFetcher(): FetcherType {
   const { logOut } = useAuthActions();
 
   return useCallback(
-    (path, action, params) =>
-      _fetch(path, action, { ...params, unauthorizedErrorHandler: logOut }),
-    [logOut]
+    async (path, action, parameters) =>
+      _fetch(path, action, { ...parameters, unauthorizedErrorHandler: logOut }),
+    [logOut],
   );
 }

@@ -6,13 +6,13 @@ import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import styled from 'styled-components';
 import UserGallery from './UserGallery';
 
-type Params = {
+type Parameters_ = {
   username: string;
 };
 
-function UserGalleryPage({ username }: RouteComponentProps<Params>) {
+function UserGalleryPage({ username }: RouteComponentProps<Parameters_>) {
   const user = useUser({ username });
-  const galleries = useGalleries({ userId: user?.id }) || [];
+  const galleries = useGalleries({ userId: user?.id ?? '' }) ?? [];
   const authenticatedUser = usePossiblyAuthenticatedUser();
 
   if (!user) {
@@ -20,8 +20,8 @@ function UserGalleryPage({ username }: RouteComponentProps<Params>) {
   }
 
   // Consider turning into a hook
-  const isAuthenticatedUsersPage =
-    user.username === authenticatedUser?.username;
+  const isAuthenticatedUsersPage
+    = user.username === authenticatedUser?.username;
 
   return (
     <Page>

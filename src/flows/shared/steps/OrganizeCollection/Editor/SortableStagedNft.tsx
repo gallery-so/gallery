@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
+import { EditModeNft } from '../types';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
-import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;
@@ -30,7 +30,7 @@ function SortableStagedNft({ editModeNft, ...props }: Props) {
       transition,
       opacity: isDragging ? '0.2' : '1',
     }),
-    [isDragging, transform, transition]
+    [isDragging, transform, transition],
   );
 
   return (
@@ -52,6 +52,7 @@ function SortableStagedNft({ editModeNft, ...props }: Props) {
     </StyledSortableNft>
   );
 }
+
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
   ${({ type }) => type}: 0;

@@ -21,25 +21,25 @@ export default function useDeleteCollection() {
         'delete collection',
         {
           id: collectionId,
-        }
+        },
       );
 
       await mutate(
         getGalleriesCacheKey({ userId }),
-        (val: GetGalleriesResponse) => {
-          const newVal = cloneDeep<GetGalleriesResponse>(val);
-          const gallery = newVal.galleries[0];
+        (value: GetGalleriesResponse) => {
+          const newValue = cloneDeep<GetGalleriesResponse>(value);
+          const gallery = newValue.galleries[0];
           const newCollections = gallery.collections.filter(
-            (collection: Collection) => collection.id !== collectionId
+            (collection: Collection) => collection.id !== collectionId,
           );
-          newVal.galleries[0].collections = newCollections;
-          return newVal;
+          newValue.galleries[0].collections = newCollections;
+          return newValue;
         },
-        false
+        false,
       );
 
       await refreshUnassignedNfts({ skipCache: true });
     },
-    [userId, deleteCollection, refreshUnassignedNfts]
+    [userId, deleteCollection, refreshUnassignedNfts],
   );
 }

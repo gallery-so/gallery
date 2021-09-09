@@ -10,7 +10,7 @@ type SidebarNftIconProps = {
 };
 
 function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
-  const isSelected = useMemo(() => !!editModeNft.isSelected, [
+  const isSelected = useMemo(() => Boolean(editModeNft.isSelected), [
     editModeNft.isSelected,
   ]);
 

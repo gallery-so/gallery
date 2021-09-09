@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
-import NftPreviewLabel from './NftPreviewLabel';
 import Gradient from 'components/core/Gradient/Gradient';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import transitions from 'components/core/transitions';
@@ -9,6 +8,7 @@ import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
+import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
   nft: Nft;
@@ -37,6 +37,7 @@ function NftPreview({ nft, collectionId, gap }: Props) {
     </StyledNftPreview>
   );
 }
+
 const StyledLinkWrapper = styled.a`
   cursor: pointer;
   display: flex;

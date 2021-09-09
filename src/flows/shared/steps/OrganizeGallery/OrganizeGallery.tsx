@@ -6,10 +6,10 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import CollectionDnd from './CollectionDnd';
-import Header from './Header';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import CollectionDnd from './CollectionDnd';
+import Header from './Header';
 
 type ConfigProps = {
   wizardId: string;
@@ -37,6 +37,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
       next();
       return;
     }
+
     navigate(`/${username}`);
   }, [clearOnNext, next, username, wizardId]);
 

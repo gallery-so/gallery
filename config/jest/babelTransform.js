@@ -1,5 +1,3 @@
-'use strict';
-
 const babelJest = require('babel-jest');
 
 const hasJsxRuntime = (() => {
@@ -10,7 +8,7 @@ const hasJsxRuntime = (() => {
   try {
     require.resolve('react/jsx-runtime');
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 })();

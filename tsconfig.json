@@ -27,7 +27,8 @@
       "utils/*": ["src/utils/*"],
       "mocks/*": ["src/mocks/*"],
       "types/*": ["src/types/*"]
-    }
+    },
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

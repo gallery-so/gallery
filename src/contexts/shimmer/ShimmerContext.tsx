@@ -14,14 +14,15 @@ type ShimmerAction = {
 };
 
 const ShimmerActionContext = createContext<ShimmerAction | undefined>(
-  undefined
+  undefined,
 );
 
 export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => {
   const context = useContext(ShimmerActionContext);
   if (!context) {
-    throw Error('Attempted to use ShimmerActionContext without a provider!');
+    throw new Error('Attempted to use ShimmerActionContext without a provider!');
   }
+
   return context.setContentIsLoaded;
 };
 
@@ -32,9 +33,11 @@ const ShimmerProvider = memo(({ children }: Props) => {
 
   const value = useMemo(
     () => ({
-      setContentIsLoaded: () => setIsLoaded(true),
+      setContentIsLoaded: () => {
+        setIsLoaded(true);
+      },
     }),
-    []
+    [],
   );
 
   return (

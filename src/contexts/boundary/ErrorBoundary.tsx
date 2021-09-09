@@ -20,6 +20,7 @@ class ErrorBoundary extends Component {
         </Page>
       );
     }
+
     return this.props.children;
   }
 }

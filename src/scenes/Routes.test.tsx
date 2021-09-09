@@ -9,11 +9,11 @@ import Routes from './Routes';
 
 function renderWithRouter(
   ui: React.ReactNode,
-  { route = '/', history = createHistory(createMemorySource(route)) } = {}
+  { route = '/', history = createHistory(createMemorySource(route)) } = {},
 ) {
   return {
     ...render(<LocationProvider history={history}>{ui}</LocationProvider>),
-    // adding `history` to the returned utilities to allow us
+    // Adding `history` to the returned utilities to allow us
     // to reference it in our tests (just try to avoid using
     // this to test implementation details).
     history,
@@ -25,7 +25,7 @@ test('Does not render navbar on homepage', async () => {
     <AppProvider>
       <Routes />
     </AppProvider>,
-    { route: '/' }
+    { route: '/' },
   );
 
   expect(screen.queryByTestId('navbar')).toBeNull();
@@ -36,7 +36,7 @@ test('Renders navbar on profile page', () => {
     <AppProvider>
       <Routes />
     </AppProvider>,
-    { route: '/fabricsoftener' }
+    { route: '/fabricsoftener' },
   );
 
   expect(screen.queryByTestId('navbar')).not.toBeNull();

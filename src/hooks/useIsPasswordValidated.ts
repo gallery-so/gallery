@@ -4,8 +4,8 @@ import usePersistedState from './usePersistedState';
 
 export default function useIsPasswordValidated() {
   const [storedPassword] = usePersistedState(PASSWORD_LOCAL_STORAGE_KEY, null);
-  const isStoredPasswordValid =
-    storedPassword && validatePassword(storedPassword);
+  const isStoredPasswordValid
+    = storedPassword && validatePassword(storedPassword);
 
   return isStoredPasswordValid;
 }

@@ -4,14 +4,14 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
-import NftDetailText from './NftDetailText';
-import NftDetailAsset from './NftDetailAsset';
 
 import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
+import NftDetailAsset from './NftDetailAsset';
+import NftDetailText from './NftDetailText';
 
-type Params = {
+type Parameters_ = {
   collectionId: string;
   nftId: string;
 };
@@ -20,22 +20,22 @@ function NftDetailPage({
   collectionId,
   nftId,
   location,
-}: RouteComponentProps<Params>) {
+}: RouteComponentProps<Parameters_>) {
   const handleBackClick = useCallback(() => {
     // TODO this works but leaves trailing slash
     // navigate('..');
     navigate(`/${window.location.pathname.split('/')[1]}`);
   }, []);
 
-  const nextNftId = useMemo(() => {
+  const nextNftId = useMemo(() =>
     // TODO: return id of next nft in collection array
-    return '123';
-  }, []);
+    '123'
+  , []);
 
-  const prevNftId = useMemo(() => {
+  const previousNftId = useMemo(() =>
     // TODO: return id of next nft in collection array
-    return '456';
-  }, []);
+    '456'
+  , []);
 
   // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId || '' });

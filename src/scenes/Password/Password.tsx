@@ -16,23 +16,23 @@ import { PASSWORD_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 function Password(_: RouteComponentProps) {
   const [storedPassword, storePassword] = usePersistedState(
     PASSWORD_LOCAL_STORAGE_KEY,
-    null
+    null,
   );
   const enteredPassword = useRef('');
 
-  // put storedPassword in a ref so that if the user guesses it correctly,
+  // Put storedPassword in a ref so that if the user guesses it correctly,
   // it prevents an insta-redirect (they should see the cool button reveal instead)
   const storedPasswordSnapshot = useRef(storedPassword ?? '');
-  const isPasswordValid =
-    storedPassword && validatePassword(storedPasswordSnapshot.current);
+  const isPasswordValid
+    = storedPassword && validatePassword(storedPasswordSnapshot.current);
 
   const isAuthenticated = useIsAuthenticated();
 
   const [isFormVisibleAndUnlocked, setIsFormVisibleAndUnlocked] = useState(
-    false
+    false,
   );
 
-  const handlePasswordChange = useCallback((event) => {
+  const handlePasswordChange = useCallback(event => {
     event.preventDefault();
     const value = event.target.value;
     enteredPassword.current = value;
@@ -40,27 +40,31 @@ function Password(_: RouteComponentProps) {
   }, []);
 
   const handleEnterGallery = useCallback(() => {
-    // if the user is already authenticated, /auth will handle forwarding
+    // If the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
     storePassword(enteredPassword.current);
     navigate('/auth');
   }, [storePassword]);
 
   const onEnterPress = useCallback(
-    (e) => {
+    e => {
       if (e.key === 'Enter') {
         handleEnterGallery();
       }
     },
-    [handleEnterGallery]
+    [handleEnterGallery],
   );
 
   useEffect(() => {
-    if (!isFormVisibleAndUnlocked) return;
+    if (!isFormVisibleAndUnlocked) {
+      return;
+    }
 
     document.addEventListener('keypress', onEnterPress);
 
-    return () => document.removeEventListener('keypress', onEnterPress);
+    return () => {
+      document.removeEventListener('keypress', onEnterPress);
+    };
   }, [onEnterPress, isFormVisibleAndUnlocked]);
 
   if (isPasswordValid && !isAuthenticated) {

@@ -31,7 +31,7 @@ function TextButton({
 }
 
 const StyledButtonText = styled(ActionText)<
-  Pick<Props, 'disableTextTransform'>
+Pick<Props, 'disableTextTransform'>
 >`
   text-transform: ${({ disableTextTransform }) =>
     disableTextTransform ? 'none' : undefined};
@@ -47,7 +47,7 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover'>>`
   &:hover ${StyledButtonText} {
     color: ${colors.black};
     text-decoration: ${({ underlineOnHover }) =>
-      underlineOnHover ? 'underline' : undefined};
+    underlineOnHover ? 'underline' : undefined};
   }
 `;
 

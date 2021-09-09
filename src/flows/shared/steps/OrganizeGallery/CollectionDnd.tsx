@@ -18,9 +18,9 @@ import {
   restrictToWindowEdges,
 } from '@dnd-kit/modifiers';
 
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -35,7 +35,7 @@ function CollectionDnd() {
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   useEffect(() => {
-    // when the server sends down its source of truth, sync the local state
+    // When the server sends down its source of truth, sync the local state
     setSortedCollections(collections);
   }, [collections]);
 
@@ -43,10 +43,10 @@ function CollectionDnd() {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      setSortedCollections((prev) => {
-        const oldIndex = prev.findIndex(({ id }) => id === active.id);
-        const newIndex = prev.findIndex(({ id }) => id === over?.id);
-        return arrayMove(prev, oldIndex, newIndex);
+      setSortedCollections(previous => {
+        const oldIndex = previous.findIndex(({ id }) => id === active.id);
+        const newIndex = previous.findIndex(({ id }) => id === over?.id);
+        return arrayMove(previous, oldIndex, newIndex);
       });
     }
   }, []);
@@ -60,15 +60,13 @@ function CollectionDnd() {
     setActiveId(active.id);
   }, []);
 
-  const activeCollection = useMemo(() => {
-    return collections.find(({ id }) => id === activeId);
-  }, [activeId, collections]);
+  const activeCollection = useMemo(() => collections.find(({ id }) => id === activeId), [activeId, collections]);
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       handleSortCollections(event);
     },
-    [handleSortCollections]
+    [handleSortCollections],
   );
 
   return (
@@ -82,7 +80,7 @@ function CollectionDnd() {
         items={sortedCollections}
         strategy={verticalListSortingStrategy}
       >
-        {sortedCollections.map((collection) => (
+        {sortedCollections.map(collection => (
           <CollectionRowWrapper key={collection.id} collection={collection} />
         ))}
       </SortableContext>
@@ -94,4 +92,5 @@ function CollectionDnd() {
     </DndContext>
   );
 }
+
 export default CollectionDnd;

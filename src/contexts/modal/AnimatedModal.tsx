@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { MODAL_TRANSITION_MS } from './constants';
 import colors from 'components/core/colors';
+import { MODAL_TRANSITION_MS } from './constants';
 
 type Props = {
   isActive: boolean;
@@ -35,7 +35,7 @@ const fadeOut = keyframes`
     to { opacity: 0 };
 `;
 
-// ease-out like style
+// Ease-out like style
 const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.07)`;
 
 const _ToggleFade = styled.div<{ isActive: boolean }>`

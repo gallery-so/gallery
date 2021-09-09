@@ -25,32 +25,31 @@ function WizardFooter({
   const { onNext, onPrevious } = useWizardCallback();
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFirstStep = useMemo(() => {
-    return history.index === 0;
-  }, [history.index]);
+  const isFirstStep = useMemo(() => history.index === 0, [history.index]);
 
-  const buttonText = useMemo(() => {
-    return footerButtonTextMap?.[step.id] ?? 'Next';
-  }, [footerButtonTextMap, step.id]);
+  const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [footerButtonTextMap, step.id]);
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
       const res = onNext.current();
-      // if onNext is an async function, activate the loader
+      // If onNext is an async function, activate the loader
       if (isPromise(res)) {
         try {
           setIsLoading(true);
           await res;
-        } catch (e) {
-          // if we want, we can display an error on the wizard
+        } catch {
+          // If we want, we can display an error on the wizard
           // itself if the async request goes awry. that said,
           // we'll generally want to handle this on the Step
           // component itself
         }
+
         setIsLoading(false);
       }
+
       return;
     }
+
     next();
   }, [next, onNext]);
 

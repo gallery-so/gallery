@@ -39,31 +39,32 @@ function UserInfoForm({
       if (isSubmitting) {
         return;
       }
+
       setIsSubmitting(true);
       await onSubmit?.();
       setIsSubmitting(false);
     },
-    [isSubmitting, onSubmit]
+    [isSubmitting, onSubmit],
   );
 
   const handleUsernameChange = useCallback(
-    (event) => {
+    event => {
       onUsernameChange(event.target.value);
       clearUsernameError();
     },
-    [onUsernameChange, clearUsernameError]
+    [onUsernameChange, clearUsernameError],
   );
 
   const handleBioChange = useCallback(
-    (event) => {
+    event => {
       onBioChange(event.target.value);
     },
-    [onBioChange]
+    [onBioChange],
   );
 
-  // if username isn't filled in, autofocus on field
+  // If username isn't filled in, autofocus on field
   const shouldAutofocusUsername = !username;
-  // otherwise, focus on bio
+  // Otherwise, focus on bio
   const shouldAutofocusBio = !shouldAutofocusUsername;
 
   return (

@@ -25,7 +25,7 @@ function SortableCollectionRow({ collection }: Props) {
       transition,
       opacity: isDragging ? '0.2' : '1',
     }),
-    [isDragging, transform, transition]
+    [isDragging, transform, transition],
   );
 
   return (

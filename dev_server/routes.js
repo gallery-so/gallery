@@ -3,49 +3,53 @@ const MOCK_DB = require('./mocks');
 
 const router = express.Router();
 
-router.get('/users/get', (req, res) => {
-  const { query } = req;
+router.get('/users/get', (request, res) => {
+  const {query} = request;
   if (query.id) {
-    const user = MOCK_DB.users.find((user) => user.id === query.id);
+    const user = MOCK_DB.users.find(user => user.id === query.id);
     if (user) {
-      res.json({ data: user });
+      res.json({data: user});
       return;
     }
   }
+
   if (query.username) {
-    const user = MOCK_DB.users.find((user) => user.username === query.username);
+    const user = MOCK_DB.users.find(user => user.username === query.username);
     if (user) {
-      res.json({ data: user });
+      res.json({data: user});
       return;
     }
   }
+
   if (query.address) {
-    const user = MOCK_DB.users.find((user) => user.address === query.address);
+    const user = MOCK_DB.users.find(user => user.address === query.address);
     if (user) {
-      res.json({ data: user });
+      res.json({data: user});
       return;
     }
   }
+
   res.json({
     error: 'ERR_USER_NOT_FOUND',
   });
 });
 
-router.get('/collections/get', (req, res) => {
-  const { query } = req;
+router.get('/collections/get', (request, res) => {
+  const {query} = request;
   // TODO
   // return hidden collections if req.get('Authentication') matches the requested user
-  const user = MOCK_DB.users.find((user) => user.username === query.username);
+  const user = MOCK_DB.users.find(user => user.username === query.username);
   if (!user) {
     res.json({
       error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
     });
     return;
   }
+
   const collectionsForUser = MOCK_DB.collections.filter(
-    (collection) => collection.ownerUserId === user.id
+    collection => collection.ownerUserId === user.id,
   );
-  if (collectionsForUser.length) {
+  if (collectionsForUser.length > 0) {
     res.json({
       data: {
         collections: collectionsForUser,
@@ -53,26 +57,27 @@ router.get('/collections/get', (req, res) => {
     });
     return;
   }
+
   res.json({
     error: 'ERR_NO_COLLECTIONS_FOUND_FOR_USER',
   });
 });
 
-router.get('/nfts/get', (req, res) => {
-  const { query } = req;
-  const nft = MOCK_DB.nfts.find((nft) => nft.id === query.id);
+router.get('/nfts/get', (request, res) => {
+  const {query} = request;
+  const nft = MOCK_DB.nfts.find(nft => nft.id === query.id);
   if (!nft) {
     res.json({
       error: 'ERR_NFT_NOT_FOUND',
     });
     return;
   }
-  res.json({ data: nft });
-  return;
+
+  res.json({data: nft});
 });
 
-router.get('/auth/get_preflight', (req, res) => {
-  const { query } = req;
+router.get('/auth/get_preflight', (request, res) => {
+  const {query} = request;
   console.log(query);
   res.json({
     data: {
@@ -80,11 +85,10 @@ router.get('/auth/get_preflight', (req, res) => {
       user_exists: false,
     },
   });
-  return;
 });
 
-router.post('/users/login', (req, res) => {
-  const { query } = req;
+router.post('/users/login', (request, res) => {
+  const {query} = request;
   res.json({
     data: {
       sig_valid: true,
@@ -92,11 +96,10 @@ router.post('/users/login', (req, res) => {
       user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
     },
   });
-  return;
 });
 
-router.post('/users/create', (req, res) => {
-  const { query } = req;
+router.post('/users/create', (request, res) => {
+  const {query} = request;
   res.json({
     data: {
       sig_valid: true,
@@ -104,7 +107,6 @@ router.post('/users/create', (req, res) => {
       user_id: 'PAoGbFB6OQtZ6mWI/BYyLA==',
     },
   });
-  return;
 });
 
 module.exports = router;

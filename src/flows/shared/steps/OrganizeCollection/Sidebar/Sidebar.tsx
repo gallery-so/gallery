@@ -5,13 +5,12 @@ import { BodyMedium } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
-import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
-import { EditModeNft } from '../types';
-
 import {
   useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
+import { EditModeNft } from '../types';
+import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
@@ -21,26 +20,26 @@ function Sidebar() {
     unstageNfts,
   } = useCollectionEditorActions();
 
-  const isAllNftsSelected = useMemo(() => {
-    return !sidebarNfts.find((nft) => !nft.isSelected);
-  }, [sidebarNfts]);
+  const isAllNftsSelected = useMemo(() => !sidebarNfts.find(nft => !nft.isSelected), [sidebarNfts]);
 
   const handleSelectAllClick = useCallback(() => {
     // Stage all nfts that are !isSelected
-    const nftsToStage = sidebarNfts.filter((nft) => !nft.isSelected);
-    if (!nftsToStage.length) {
+    const nftsToStage = sidebarNfts.filter(nft => !nft.isSelected);
+    if (nftsToStage.length === 0) {
       return;
     }
+
     stageNfts(nftsToStage);
     setNftsIsSelected(nftsToStage, true);
   }, [sidebarNfts, setNftsIsSelected, stageNfts]);
 
   const handleDeselectAllClick = useCallback(() => {
     // Unstage all nfts
-    const nftIdsToUnstage = sidebarNfts.map((nft) => nft.id);
-    if (!nftIdsToUnstage.length) {
+    const nftIdsToUnstage = sidebarNfts.map(nft => nft.id);
+    if (nftIdsToUnstage.length === 0) {
       return;
     }
+
     unstageNfts(nftIdsToUnstage);
     setNftsIsSelected(sidebarNfts, false);
   }, [sidebarNfts, setNftsIsSelected, unstageNfts]);

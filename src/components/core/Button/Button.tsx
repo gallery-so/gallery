@@ -30,7 +30,7 @@ function Button({
 }: Props) {
   return (
     <StyledButton
-      // renaming this prop `buttonStyle` since the `type` prop
+      // Renaming this prop `buttonStyle` since the `type` prop
       // already exists for styled components
       buttonStyle={type}
       className={className}

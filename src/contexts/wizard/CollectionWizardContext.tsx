@@ -18,10 +18,11 @@ const CollectionWizardStateContext = createContext<CollectionWizardState>({
 export const useCollectionWizardState = (): CollectionWizardState => {
   const context = useContext(CollectionWizardStateContext);
   if (!context) {
-    throw Error(
-      'Attempted to use CollectionWizardStateContext without a provider'
+    throw new Error(
+      'Attempted to use CollectionWizardStateContext without a provider',
     );
   }
+
   return context;
 };
 
@@ -30,16 +31,17 @@ type CollectionWizardActions = {
 };
 
 const CollectionWizardActionsContext = createContext<
-  CollectionWizardActions | undefined
+CollectionWizardActions | undefined
 >(undefined);
 
 export const useCollectionWizardActions = (): CollectionWizardActions => {
   const context = useContext(CollectionWizardActionsContext);
   if (!context) {
-    throw Error(
-      'Attempted to use CollectionWizardActionsContext without a provider'
+    throw new Error(
+      'Attempted to use CollectionWizardActionsContext without a provider',
     );
   }
+
   return context;
 };
 
@@ -55,17 +57,17 @@ const CollectionWizardProvider = memo(({ children }: Props) => {
 
   const setCollectionIdBeingEdited = useCallback(
     (collectionIdBeingEdited: string) => {
-      setCollectionWizardState((prevState) => ({
-        ...prevState,
+      setCollectionWizardState(previousState => ({
+        ...previousState,
         collectionIdBeingEdited,
       }));
     },
-    []
+    [],
   );
 
   const CollectionWizardActions: CollectionWizardActions = useMemo(
     () => ({ setCollectionIdBeingEdited }),
-    [setCollectionIdBeingEdited]
+    [setCollectionIdBeingEdited],
   );
 
   return (

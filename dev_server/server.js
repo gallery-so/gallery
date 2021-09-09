@@ -1,4 +1,4 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const {createProxyMiddleware} = require('http-proxy-middleware');
 const router = require('./routes');
 
 module.exports = function (app) {
@@ -8,15 +8,15 @@ module.exports = function (app) {
       target: process.env.MOCK_SERVER_BASE_URL,
       changeOrigin: true,
       pathRewrite: {
-        // drop `/api` from path prefix, since its only purpose is to route local requests here
+        // Drop `/api` from path prefix, since its only purpose is to route local requests here
         '^/api': '/',
       },
-    })
+    }),
   );
 };
 
 /**
- * local mockserver for mocking data / endpoints not yet available on the backend.
+ * Local mockserver for mocking data / endpoints not yet available on the backend.
  * example lifecycle:
  *   1) useSwr('/users')                         // react component
  *   2) http://localhost:3000/api/glry/v1/users  // fetch configured in SwrContext.tsx
@@ -34,8 +34,8 @@ function initializeMockServer() {
   const mockServer = express();
   const port = process.env.MOCK_SERVER_PORT;
 
-  mockServer.use(function (req, res, next) {
-    // artificial latency
+  mockServer.use((request, res, next) => {
+    // Artificial latency
     setTimeout(next, 1000);
   });
 
@@ -44,7 +44,7 @@ function initializeMockServer() {
   });
 
   // $ curl http://localhost:3500/health
-  mockServer.get('/health', (req, res) => {
+  mockServer.get('/health', (request, res) => {
     res.send('test server is live');
   });
 

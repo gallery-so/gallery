@@ -16,13 +16,12 @@ import { SortableContext } from '@dnd-kit/sortable';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import { Heading } from 'components/core/Text/Text';
 
-import StagedNftImageDragging from './StagedNftImageDragging';
-import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
-
 import {
   useCollectionEditorActions,
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
+import StagedNftImageDragging from './StagedNftImageDragging';
+import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -47,12 +46,10 @@ function StagingArea() {
     (event: DragEndEvent) => {
       handleSortNfts(event);
     },
-    [handleSortNfts]
+    [handleSortNfts],
   );
 
-  const activeNft = useMemo(() => {
-    return stagedNfts.find(({ nft }) => nft.id === activeId);
-  }, [stagedNfts, activeId]);
+  const activeNft = useMemo(() => stagedNfts.find(({ nft }) => nft.id === activeId), [stagedNfts, activeId]);
 
   return (
     <StyledStagingArea>
@@ -65,7 +62,7 @@ function StagingArea() {
       >
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
-            {stagedNfts.map((editModeNft) => (
+            {stagedNfts.map(editModeNft => (
               <SortableStagedNft
                 key={editModeNft.id}
                 editModeNft={editModeNft}

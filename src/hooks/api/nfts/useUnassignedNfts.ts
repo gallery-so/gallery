@@ -41,7 +41,7 @@ export default function useUnassignedNfts({
 
   const data = useGet<UnassignedNftsResponse>(
     getUnassignedNftsBaseUrlWithQuery({ userId: user.id, skipCache }),
-    unassignedNftsAction
+    unassignedNftsAction,
   );
 
   return data?.nfts;
@@ -54,6 +54,6 @@ export function useRefreshUnassignedNfts() {
     async ({ skipCache }: Props) => {
       await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
     },
-    [userId]
+    [userId],
   );
 }

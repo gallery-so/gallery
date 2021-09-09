@@ -28,23 +28,24 @@ function WalletButton({
         // TODO: figure out what goes here
       });
     }
+
     if (connector) {
       setToPendingState(connector);
       activate(connector);
     }
   }, [activate, connector, setToPendingState, walletName]);
 
-  const loadingView = useMemo(() => {
-    return (
-      <>
-        {'Connecting...'}
-        <Loader thicc size="medium" />
-      </>
-    );
-  }, []);
+  const loadingView = useMemo(() => (
+    <>
+      {'Connecting...'}
+      <Loader thicc size="medium" />
+    </>
+  ), []);
 
   const iconView = useMemo(() => {
-    if (!walletName) return null;
+    if (!walletName) {
+      return null;
+    }
 
     return (
       <>
@@ -56,21 +57,17 @@ function WalletButton({
     );
   }, [walletName]);
 
-  // injected is the connector type used for browser wallet extensions/dApp browsers
-  if (connector === injected) {
-    // metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    if (!(window.web3 || window.ethereum)) {
-      if (walletName && walletName.toLowerCase() === 'metamask') {
-        return (
-          <StyledExternalLink href="https://metamask.io/" target="_blank">
-            <StyledButton data-testid="wallet-button">
-              {'Install Metamask'}
-              <Icon src={require('assets/icons/metamask.svg').default} />
-            </StyledButton>
-          </StyledExternalLink>
-        );
-      }
-    }
+  // Injected is the connector type used for browser wallet extensions/dApp browsers
+  if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
+    && !(window.web3 || window.ethereum) && walletName && walletName.toLowerCase() === 'metamask') {
+    return (
+      <StyledExternalLink href="https://metamask.io/" target="_blank">
+        <StyledButton data-testid="wallet-button">
+          {'Install Metamask'}
+          <Icon src={require('assets/icons/metamask.svg').default} />
+        </StyledButton>
+      </StyledExternalLink>
+    );
   }
 
   return (

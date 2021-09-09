@@ -25,19 +25,19 @@ export default function useUserInfoForm({
   existingBio,
   userId,
 }: Props) {
-  const [username, setUsername] = useState(existingUsername || '');
+  const [username, setUsername] = useState(existingUsername ?? '');
   const [usernameError, setUsernameError] = useState('');
 
-  const [bio, setBio] = useState(existingBio || '');
+  const [bio, setBio] = useState(existingBio ?? '');
 
-  // generic error that doesn't belong to username / bio
+  // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
   const updateUser = useUpdateUser();
 
   const handleCreateUser = useCallback(async () => {
     setGeneralError('');
 
-    //-------------- client-side checks --------------
+    // -------------- client-side checks --------------
     const usernameError = validate(username, [
       required,
       minLength(2),
@@ -52,22 +52,24 @@ export default function useUserInfoForm({
     }
 
     if (bio.length > BIO_MAX_CHAR_COUNT) {
-      // no need to handle error here, since the form will mark the text as red
+      // No need to handle error here, since the form will mark the text as red
       return;
     }
-    //------------ end client-side checks ------------
+    // ------------ end client-side checks ------------
 
     try {
       await updateUser(userId, username, bio);
 
       onSuccess(username);
-    } catch (e) {
-      if (e.message?.toLowerCase().includes('username')) {
-        setUsernameError('Username is taken');
-        return;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message?.toLowerCase().includes('username')) {
+          setUsernameError('Username is taken');
+          return;
+        }
+
+        setGeneralError(formatError(error));
       }
-      setGeneralError(formatError(e));
-      return;
     }
   }, [username, bio, updateUser, userId, onSuccess]);
 
@@ -93,7 +95,7 @@ export default function useUserInfoForm({
       handleCreateUser,
       username,
       usernameError,
-    ]
+    ],
   );
 
   return values;
