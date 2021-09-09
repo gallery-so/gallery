@@ -161,7 +161,7 @@ async function createUser(
     return await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user creation', error);
       const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };

@@ -9,7 +9,7 @@ type Props = {
   isAuthenticatedUsersPage: boolean;
 };
 
-function UserGalleryHeader({ user, isAuthenticatedUsersPage }: Props) {
+function UserGalleryHeader({ user }: Props) {
   return (
     <StyledUserGalleryHeader>
       <Subdisplay>{user.username}</Subdisplay>

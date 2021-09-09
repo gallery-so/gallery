@@ -27,9 +27,6 @@ type Props = {
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
 
-type HTMLElementEvent<T extends HTMLElement> = Event & {
-  target: T;
-};
 function CollectionCreateOrEditForm({
   onNext,
   collectionId,

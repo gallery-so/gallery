@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
@@ -17,25 +17,13 @@ type Parameters_ = {
 };
 
 function NftDetailPage({
-  collectionId,
   nftId,
-  location,
 }: RouteComponentProps<Parameters_>) {
   const handleBackClick = useCallback(() => {
     // TODO this works but leaves trailing slash
     // navigate('..');
     navigate(`/${window.location.pathname.split('/')[1]}`);
   }, []);
-
-  const nextNftId = useMemo(() =>
-    // TODO: return id of next nft in collection array
-    '123'
-  , []);
-
-  const previousNftId = useMemo(() =>
-    // TODO: return id of next nft in collection array
-    '456'
-  , []);
 
   // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId || '' });

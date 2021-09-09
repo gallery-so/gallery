@@ -34,7 +34,7 @@ function initializeMockServer() {
   const mockServer = express();
   const port = process.env.MOCK_SERVER_PORT;
 
-  mockServer.use((request, res, next) => {
+  mockServer.use((request, response, next) => {
     // Artificial latency
     setTimeout(next, 1000);
   });
@@ -44,8 +44,8 @@ function initializeMockServer() {
   });
 
   // $ curl http://localhost:3500/health
-  mockServer.get('/health', (request, res) => {
-    res.send('test server is live');
+  mockServer.get('/health', (request, response) => {
+    response.send('test server is live');
   });
 
   mockServer.use('/glry/v1', router);

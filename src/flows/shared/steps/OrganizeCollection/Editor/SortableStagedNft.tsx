@@ -14,7 +14,7 @@ type Props = {
   editModeNft: EditModeNft;
 };
 
-function SortableStagedNft({ editModeNft, ...props }: Props) {
+function SortableStagedNft({ editModeNft }: Props) {
   const {
     attributes,
     listeners,
@@ -37,7 +37,7 @@ function SortableStagedNft({ editModeNft, ...props }: Props) {
     <StyledSortableNft
       id={editModeNft.id}
       active={isDragging}
-      // @ts-expect-error
+      // @ts-expect-error force overload
       style={style}
     >
       <StyledGradient type="top" />
