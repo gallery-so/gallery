@@ -193,8 +193,6 @@
     "space": true,
     "rules": {
       "unicorn/filename-case": "off",
-      "@typescript-eslint/prefer-return-this-type": "off",
-      "@typescript-eslint/object-curly-spacing": ["error", "always"],
       "object-curly-spacing": ["error", "always"],
       "func-names": "off",
       "camelcase": "off",
@@ -211,6 +209,13 @@
         "files": "scripts/*.js",
         "rules": {
           "unicorn/no-process-exit": "off"
+        }
+      },
+      {
+        "files": "src/**",
+        "rules": {
+          "@typescript-eslint/object-curly-spacing": ["error", "always"],
+          "@typescript-eslint/prefer-return-this-type": "off"
         }
       }
     ]

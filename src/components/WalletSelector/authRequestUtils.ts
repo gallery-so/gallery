@@ -1,7 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
-import {Web3Error} from 'types/Error';
+import { Web3Error } from 'types/Error';
 
 /**
  * Auth Pipeline:
@@ -73,7 +73,7 @@ async function fetchNonce(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while retrieving nonce', error);
-      const errorWithCode: Web3Error = {code: 'GALLERY_SERVER_ERROR', ...error};
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
       throw errorWithCode;
     }
 
@@ -97,7 +97,7 @@ async function signMessage(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while signing message', error);
-      const errorWithCode: Web3Error = {code: 'REJECTED_SIGNATURE', ...error};
+      const errorWithCode: Web3Error = { code: 'REJECTED_SIGNATURE', ...error };
       throw errorWithCode;
     }
 
@@ -130,7 +130,7 @@ async function loginUser(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user login', error);
-      const errorWithCode: Web3Error = {code: 'GALLERY_SERVER_ERROR', ...error};
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
       throw errorWithCode;
     }
 
@@ -164,7 +164,7 @@ async function createUser(
   } catch (error) {
     if (error instanceof Error) {
       console.error('error while attempting user creation', error);
-      const errorWithCode: Web3Error = {code: 'GALLERY_SERVER_ERROR', ...error};
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
       throw errorWithCode;
     }
 

@@ -140,7 +140,7 @@ function WalletSelector() {
           logIn({ jwt, userId });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error};
+            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
             setDetectedError(web3Error);
             setIsPending(false);
           }

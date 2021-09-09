@@ -1,4 +1,21 @@
-// Do this as the first thing so that any code reading it knows the right env.
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages.js';
+import printHostingInstructions from 'react-dev-utils/printHostingInstructions.js';
+import FileSizeReporter from 'react-dev-utils/FileSizeReporter.js';
+import printBuildError from 'react-dev-utils/printBuildError.js';
+
+import chalk from 'react-dev-utils/chalk.js';
+import checkRequiredFiles from 'react-dev-utils/checkRequiredFiles.js';
+import fs from 'node:fs';
+import bfj from 'bfj';
+import webpack from 'webpack';
+import { checkBrowsers } from 'react-dev-utils/browsersHelper.js';
+import paths from '../config/paths.cjs';
+
+import configFactory from '../config/webpack.config.cjs';
+
+// Do this so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
 
@@ -8,20 +25,12 @@ process.env.NODE_ENV = 'production';
 process.on('unhandledRejection', error => {
   throw error;
 });
+console.log(fs);
+
+const require = createRequire(import.meta.url);
 
 // Ensure environment variables are read.
-require('../config/env');
-
-const path = require('path');
-const chalk = require('react-dev-utils/chalk');
-const fs = require('fs-extra');
-const bfj = require('bfj');
-const webpack = require('webpack');
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
-const printBuildError = require('react-dev-utils/printBuildError');
+import('../config/env.cjs');
 
 const measureFileSizesBeforeBuild
   = FileSizeReporter.measureFileSizesBeforeBuild;
@@ -47,10 +56,6 @@ const config = configFactory('production');
 
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
-const {checkBrowsers} = require('react-dev-utils/browsersHelper');
-const paths = require('../config/paths');
-const configFactory = require('../config/webpack.config');
-
 checkBrowsers(paths.appPath, isInteractive)
   .then(() =>
     // First, read the current file sizes in build directory.
@@ -67,7 +72,7 @@ checkBrowsers(paths.appPath, isInteractive)
     return build(previousFileSizes);
   })
   .then(
-    ({stats, previousFileSizes, warnings}) => {
+    ({ stats, previousFileSizes, warnings }) => {
       if (warnings.length > 0) {
         console.log(chalk.yellow('Compiled with warnings.\n'));
         console.log(warnings.join('\n\n'));
@@ -159,7 +164,7 @@ function build(previousFileSizes) {
         });
       } else {
         messages = formatWebpackMessages(
-          stats.toJson({all: false, warnings: true, errors: true}),
+          stats.toJson({ all: false, warnings: true, errors: true }),
         );
       }
 

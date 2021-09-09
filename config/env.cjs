@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 const paths = import('./paths.cjs');
 
 // Make sure that including paths.js after env.js will read .env variables.
@@ -100,7 +101,7 @@ function getClientEnvironment(publicUrl) {
     }, {}),
   };
 
-  return {raw, stringified};
+  return { raw, stringified };
 }
 
 module.exports = getClientEnvironment;

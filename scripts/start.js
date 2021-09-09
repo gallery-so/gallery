@@ -1,4 +1,3 @@
-// Do this as the first thing so that any code reading it knows the right env.
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import chalk from 'react-dev-utils/chalk.js';
@@ -22,11 +21,7 @@ import createDevServerConfig from '../config/webpackDevServer.config.cjs';
 import getClientEnvironment from '../config/env.cjs';
 import paths from '../config/paths.cjs';
 
-// We require that you explicitly set browsers and do not fall back to
-// browserslist defaults.
-// const {checkBrowsers} = import('react-dev-utils/browsersHelper');
-// Const WebpackDevServer = require('webpack-dev-server');
-
+// Do this so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
 
@@ -37,20 +32,13 @@ process.on('unhandledRejection', error => {
   console.trace(error);
   throw error;
 });
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 // Ensure environment variables are read.
 import('../config/env.cjs');
 
 const require = createRequire(import.meta.url);
 
-// Let reactUrl;
-// (async () => {
-//   reactUrl = await require.resolve('react', { paths: [paths.appPath] });
-// })();
-// console.log('reactUrl', reactUrl);
 const reactUrl = require.resolve('react', { paths: [paths.appPath] });
-// Import react from reactUrl;
 const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
@@ -81,6 +69,8 @@ if (process.env.HOST) {
   console.log();
 }
 
+// We require that you explicitly set browsers and do not fall back to
+// browserslist defaults.
 checkBrowsers(paths.appPath, isInteractive)
   .then(() =>
     // We attempt to use the default port but if it is busy, we offer the user to
@@ -96,7 +86,6 @@ checkBrowsers(paths.appPath, isInteractive)
     const config = configFactory('development');
     const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
     const appName = require(paths.appPackageJson).name;
-    console.log('appName', appName);
 
     const useTypeScript = fs.existsSync(paths.appTsConfig);
     const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
@@ -143,7 +132,7 @@ checkBrowsers(paths.appPath, isInteractive)
       }
 
       if (isInteractive) {
-        // ClearConsole();
+        clearConsole();
       }
 
       const react = await import(reactUrl);
@@ -156,7 +145,6 @@ checkBrowsers(paths.appPath, isInteractive)
       }
 
       console.log(chalk.cyan('Starting the development server...\n'));
-      console.log(urls.localUrlForBrowser);
       openBrowser(urls.localUrlForBrowser);
     });
 
@@ -166,8 +154,6 @@ checkBrowsers(paths.appPath, isInteractive)
         process.exit();
       });
     }
-
-    console.log('------ *********_-------');
 
     if (process.env.CI !== 'true') {
       // Gracefully exit when stdin ends
@@ -180,7 +166,6 @@ checkBrowsers(paths.appPath, isInteractive)
   .catch(error => {
     if (error && error.message) {
       console.log(error.message);
-      console.trace(error);
     }
 
     process.exit(1);

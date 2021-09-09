@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const chalk = require('react-dev-utils/chalk');
+
 const paths = import('./paths.cjs');
 
 // Ensure the certificate and key provided are valid and if not
 // throw an easy to debug error
-function validateKeyAndCerts({cert, key, keyFile, crtFile}) {
+function validateKeyAndCerts({ cert, key, keyFile, crtFile }) {
   let encrypted;
   try {
     // PublicEncrypt will throw an error with an invalid cert
@@ -45,7 +46,7 @@ function readEnvFile(file, type) {
 // Get the https config
 // Return cert files if provided in env, otherwise just true or false
 function getHttpsConfig() {
-  const {SSL_CRT_FILE, SSL_KEY_FILE, HTTPS} = process.env;
+  const { SSL_CRT_FILE, SSL_KEY_FILE, HTTPS } = process.env;
   const isHttps = HTTPS === 'true';
 
   if (isHttps && SSL_CRT_FILE && SSL_KEY_FILE) {
@@ -56,7 +57,7 @@ function getHttpsConfig() {
       key: readEnvFile(keyFile, 'SSL_KEY_FILE'),
     };
 
-    validateKeyAndCerts({...config, keyFile, crtFile});
+    validateKeyAndCerts({ ...config, keyFile, crtFile });
     return config;
   }
 
