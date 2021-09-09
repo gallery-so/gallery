@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -17,17 +19,17 @@ const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeM
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const modules = require('./modules.cjs');
+const getClientEnvironment = require('./env.cjs');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const postcssNormalize = require('postcss-normalize');
-const getClientEnvironment = require('./env');
-const modules = require('./modules');
-const paths = import('./paths.mjs');
+const paths = require('./paths.cjs');
 
-// const paths.appPackageJson = import(paths.paths.appPackageJson);
+const appPackageJson = require(paths.appPackageJson);
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -103,7 +105,7 @@ module.exports = function (webpackEnv) {
         // Css is located in `static/css`, use '../../' to locate index.html folder
         // in production `paths.publicUrlOrPath` can be a relative path
         options: paths.publicUrlOrPath.startsWith('.')
-          ? {publicPath: '../../'}
+          ? { publicPath: '../../' }
           : {},
       },
       {
@@ -224,7 +226,7 @@ module.exports = function (webpackEnv) {
             path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       // Prevents conflicts when multiple webpack runtimes (from different apps)
       // are used on the same page.
-      jsonpFunction: `webpackJsonp${paths.appPackageJson.name}`,
+      jsonpFunction: `webpackJsonp${appPackageJson.name}`,
       // This defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
       globalObject: 'this',
@@ -289,7 +291,7 @@ module.exports = function (webpackEnv) {
               : false,
           },
           cssProcessorPluginOptions: {
-            preset: ['default', {minifyFontValues: {removeQuotes: false}}],
+            preset: ['default', { minifyFontValues: { removeQuotes: false } }],
           },
         }),
       ],
@@ -338,6 +340,7 @@ module.exports = function (webpackEnv) {
         contexts: path.resolve(paths.appSrc, 'contexts'),
         components: path.resolve(paths.appSrc, 'components'),
         connectors: path.resolve(paths.appSrc, 'connectors'),
+        errors: path.resolve(paths.appSrc, 'errors'),
         flows: path.resolve(paths.appSrc, 'flows'),
         hooks: path.resolve(paths.appSrc, 'hooks'),
         utils: path.resolve(paths.appSrc, 'utils'),
@@ -371,7 +374,7 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        {parser: {requireEnsure: false}},
+        { parser: { requireEnsure: false } },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -456,7 +459,7 @@ module.exports = function (webpackEnv) {
                 presets: [
                   [
                     require.resolve('babel-preset-react-app/dependencies'),
-                    {helpers: true},
+                    { helpers: true },
                   ],
                 ],
                 cacheDirectory: true,

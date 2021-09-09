@@ -11,7 +11,7 @@ process.on('unhandledRejection', error => {
 });
 
 // Ensure environment variables are read.
-import('../config/env.js');
+import('../config/env.cjs');
 
 const jest = import('jest');
 const execSync = import('node:child_process').execSync;

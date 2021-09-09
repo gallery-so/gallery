@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@babel/core": "7.12.3",
     "@dnd-kit/core": "^3.0.1",
@@ -193,7 +194,8 @@
     "rules": {
       "unicorn/filename-case": "off",
       "@typescript-eslint/prefer-return-this-type": "off",
-      "@typescript-eslint/object-curly-spacing": "off",
+      "@typescript-eslint/object-curly-spacing": ["error", "always"],
+      "object-curly-spacing": ["error", "always"],
       "func-names": "off",
       "camelcase": "off",
       "node/prefer-global/process": ["error", "always"]
@@ -203,6 +205,12 @@
         "files": "dev_server/*.js",
         "rules": {
           "unicorn/prefer-module": "off"
+        }
+      },
+      {
+        "files": "scripts/*.js",
+        "rules": {
+          "unicorn/no-process-exit": "off"
         }
       }
     ]

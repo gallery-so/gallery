@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import useUpdateUser from 'hooks/api/users/useUpdateUser';
-import formatError from 'src/errors/formatError';
+
 import {
   validate,
   required,
@@ -10,6 +10,8 @@ import {
   noConsecutivePeriodsOrUnderscores,
 } from 'utils/validators';
 
+// Import formatError from 'src/errors/formatError';
+import formatError from 'errors/formatError';
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {

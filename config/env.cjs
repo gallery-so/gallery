@@ -1,16 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const paths = import('./paths.mjs');
+const paths = import('./paths.cjs');
 
 // Make sure that including paths.js after env.js will read .env variables.
-delete require.cache[require.resolve('./paths.mjs')];
+delete require.cache[require.resolve('./paths.cjs')];
 
 const NODE_ENV = process.env.NODE_ENV;
-if (!NODE_ENV) {
-  throw new Error(
-    'The NODE_ENV environment variable is required but was not specified.',
-  );
-}
+// TODO revisit
+// console.log(process.env)
+// if (!NODE_ENV) {
+//   throw new Error(
+//     'The NODE_ENV environment variable is required but was not specified.',
+//   );
+// }
 
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFiles = [

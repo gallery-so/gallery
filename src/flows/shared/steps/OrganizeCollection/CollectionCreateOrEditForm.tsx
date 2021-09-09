@@ -10,7 +10,7 @@ import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
-import formatError from 'src/errors/formatError';
+import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import { Collection } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';

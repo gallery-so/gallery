@@ -1,9 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
-// Const path = require('path');
-// const fs = require('fs');
-import {getPublicUrlOrPath} from 'react-dev-utils';
-// Const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
+const path = require('path');
+const fs = require('fs');
+const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebook/create-react-app/issues/637
@@ -18,7 +15,7 @@ const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 // like /todos/42/static/js/bundle.7289d.js. We have to know the root.
 const publicUrlOrPath = getPublicUrlOrPath(
   process.env.NODE_ENV === 'development',
-  import(resolveApp('package.json')).homepage,
+  require(resolveApp('package.json')).homepage,
   process.env.PUBLIC_URL,
 );
 
@@ -52,7 +49,7 @@ const resolveModule = (resolveFn, filePath) => {
 };
 
 // Config after eject: we're in ./config/
-const exports = {
+module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
   appBuild: resolveApp(buildPath),
@@ -69,9 +66,6 @@ const exports = {
   appNodeModules: resolveApp('node_modules'),
   swSrc: resolveModule(resolveApp, 'src/service-worker'),
   publicUrlOrPath,
-  moduleFileExtensions,
 };
 
-export default exports;
-
-// module.exports.moduleFileExtensions = moduleFileExtensions;
+module.exports.moduleFileExtensions = moduleFileExtensions;

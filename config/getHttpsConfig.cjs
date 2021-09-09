@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const chalk = require('react-dev-utils/chalk');
-const paths = import('./paths.mjs');
+const paths = import('./paths.cjs');
 
 // Ensure the certificate and key provided are valid and if not
 // throw an easy to debug error

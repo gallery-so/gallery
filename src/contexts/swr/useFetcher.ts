@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
-import { ApiError } from 'src/errors/types';
+import { ApiError } from 'errors/types';
 
 const baseurl = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:4000';
 
