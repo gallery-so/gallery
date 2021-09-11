@@ -1,7 +1,7 @@
 const express = require('express');
 const MOCK_DB = require('./mocks');
 
-const router = express.Router();
+const router = new express.Router();
 
 router.get('/users/get', (request, response) => {
   const { query } = request;
@@ -96,7 +96,6 @@ router.post('/users/login', (request, response) => {
 });
 
 router.post('/users/create', (request, response) => {
-  const { query } = request;
   response.json({
     data: {
       sig_valid: true,

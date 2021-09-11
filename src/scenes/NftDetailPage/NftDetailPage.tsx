@@ -22,11 +22,11 @@ function NftDetailPage({
   const handleBackClick = useCallback(() => {
     // TODO this works but leaves trailing slash
     // navigate('..');
-    navigate(`/${window.location.pathname.split('/')[1]}`);
+    void navigate(`/${window.location.pathname.split('/')[1]}`);
   }, []);
 
   // TODO__v1 figure out if possible to ensure id is defined here
-  const nft = useNft({ id: nftId || '' });
+  const nft = useNft({ id: nftId ?? '' });
 
   if (!nft) {
     return <Redirect to="/404" noThrow />;

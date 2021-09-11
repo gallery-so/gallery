@@ -20,6 +20,6 @@ function generateHash(string: string) {
   return hash;
 }
 
-export function validatePassword(password: string) {
+export function validatePassword(password: string): boolean {
   return generateHash(password) === HASH;
 }

@@ -48,7 +48,7 @@ function UserInfoForm({
   );
 
   const handleUsernameChange = useCallback(
-    event => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       onUsernameChange(event.target.value);
       clearUsernameError();
     },
@@ -56,7 +56,7 @@ function UserInfoForm({
   );
 
   const handleBioChange = useCallback(
-    event => {
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       onBioChange(event.target.value);
     },
     [onBioChange],

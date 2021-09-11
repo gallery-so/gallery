@@ -33,7 +33,7 @@ function SortableCollectionRow({ collection }: Props) {
       ref={setNodeRef}
       id={collection.id}
       active={isDragging}
-      // @ts-expect-error
+      // @ts-expect-error force overload
       style={style}
       {...attributes}
       {...listeners}

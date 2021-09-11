@@ -31,12 +31,12 @@ function WizardFooter({
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
-      const res = onNext.current();
+      const response = onNext.current();
       // If onNext is an async function, activate the loader
-      if (isPromise(res)) {
+      if (isPromise(response)) {
         try {
           setIsLoading(true);
-          await res;
+          await response;
         } catch {
           // If we want, we can display an error on the wizard
           // itself if the async request goes awry. that said,

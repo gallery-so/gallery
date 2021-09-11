@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
-import { LoggedInState, LOADING, LOGGED_OUT, UNKNOWN } from './types';
+import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
 import {
   JWT_LOCAL_STORAGE_KEY,
   PASSWORD_LOCAL_STORAGE_KEY,

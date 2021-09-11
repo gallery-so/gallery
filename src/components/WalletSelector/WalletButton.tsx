@@ -23,17 +23,11 @@ function WalletButton({
   isPending,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    if (walletName && walletName.toLowerCase() === 'metamask') {
-      injected.isAuthorized().then((isAuthorized: boolean) => {
-        // TODO: figure out what goes here
-      });
-    }
-
     if (connector) {
       setToPendingState(connector);
-      activate(connector);
+      void activate(connector);
     }
-  }, [activate, connector, setToPendingState, walletName]);
+  }, [activate, connector, setToPendingState]);
 
   const loadingView = useMemo(() => (
     <>
@@ -51,6 +45,7 @@ function WalletButton({
       <>
         {walletName}
         <Icon
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
         />
       </>

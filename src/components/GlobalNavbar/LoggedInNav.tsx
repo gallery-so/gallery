@@ -32,7 +32,7 @@ function LoggedInNav() {
       return;
     }
 
-    navigate(`/${user.username}`);
+    void navigate(`/${user.username}`);
   }, [user.username]);
 
   const handleEditNameClick = useCallback(() => {
@@ -40,7 +40,7 @@ function LoggedInNav() {
   }, [showModal]);
 
   const handleEditGalleryClick = useCallback(() => {
-    navigate('/edit');
+    void navigate('/edit');
   }, []);
 
   return (

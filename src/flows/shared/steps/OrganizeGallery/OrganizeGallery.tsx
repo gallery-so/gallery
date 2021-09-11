@@ -26,7 +26,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   }, [setOnNext, setOnPrevious]);
 
   const returnToProfile = useCallback(() => {
-    navigate(`/${username}`);
+    void navigate(`/${username}`);
     clearOnNext();
   }, [clearOnNext, username]);
 
@@ -38,7 +38,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
       return;
     }
 
-    navigate(`/${username}`);
+    void navigate(`/${username}`);
   }, [clearOnNext, next, username, wizardId]);
 
   useEffect(() => {

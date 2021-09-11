@@ -75,12 +75,7 @@ function WalletSelector() {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    console.error('login error from provider', {
-      error,
-      // @ts-expect-error
-      code: error?.code,
-      name: error?.name,
-    });
+    console.error('login error from provider', error);
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
     if (!errorToDisplay) {
       return null;

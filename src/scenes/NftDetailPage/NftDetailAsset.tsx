@@ -46,6 +46,8 @@ function NftDetailAsset({ nft }: Props) {
         return <NftDetailVideo nft={nft} />;
       case NftMediaType.ANIMATION:
         return <NftDetailAnimation nft={nft} />;
+      default:
+        return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
     }
   }, [nft]);
 

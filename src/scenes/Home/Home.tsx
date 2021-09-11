@@ -15,7 +15,7 @@ function Home(_: RouteComponentProps) {
   const handleEnterGallery = useCallback(() => {
     // If the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
-    navigate('/auth');
+    void navigate('/auth');
   }, []);
 
   if (!isPasswordValidated) {

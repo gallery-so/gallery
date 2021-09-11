@@ -20,7 +20,7 @@ function NftPreview({ nft, collectionId, gap }: Props) {
   const imgUrl = getResizedNftImageUrlWithFallback(nft);
 
   const handleNftClick = useCallback(() => {
-    navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
+    void navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
   }, [collectionId, nft.id]);
 
   return (

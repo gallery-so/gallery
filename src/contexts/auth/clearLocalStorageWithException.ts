@@ -9,9 +9,9 @@ export default function clearLocalStorageWithException(
 
   localStorage.clear();
 
-  valuesToKeep.map(
-    ([key, value]) => {
-      key && value && localStorage.setItem(key, value);
-    },
-  );
+  for (const [key, value] of valuesToKeep) {
+    if (key && value) {
+      localStorage.setItem(key, value);
+    }
+  }
 }

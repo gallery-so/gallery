@@ -25,12 +25,12 @@ type Props = {
 
 function NavigationHandle({ direction, nftId }: Props) {
   console.log(direction);
-  const arrow = useMemo(() => ARROWS.get(direction) || '', [direction]);
+  const arrow = useMemo(() => ARROWS.get(direction) ?? '', [direction]);
 
-  const hoverText = useMemo(() => HOVER_TEXT.get(direction) || '', [direction]);
+  const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
   const handleOnClick = useCallback(() => {
-    navigate(nftId, { state: { collection: [] } });
+    void navigate(nftId, { state: { collection: [] } });
   }, [nftId]);
 
   return (

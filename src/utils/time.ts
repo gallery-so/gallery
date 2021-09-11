@@ -13,8 +13,10 @@ export const msToTimestamp = (ms: number): string => {
     t.unshift(h);
   }
 
-  return t.map(_appendLeadingZero).join(':');
+  return t.map(element => _appendLeadingZero(element)).join(':');
 };
 
 export const pause = async (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });

@@ -8,7 +8,7 @@ function getStorage(mode: 'local' | 'session') {
       return sessionStorage;
     default: {
       throw new Error(
-        `Invalid mode ${mode}, it must be either local or session.`,
+        'Invalid mode, it must be either local or session.',
       );
     }
   }

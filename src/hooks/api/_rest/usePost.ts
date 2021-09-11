@@ -28,9 +28,10 @@ export default function usePost() {
     async function postRequest<ResponseType = Record<string, unknown>, RequestBody = Record<string, unknown>>(
       path: string,
       action: RequestAction,
-      body: RequestBody,
+      requestBody: RequestBody,
     ) {
-      return fetcher<ResponseType>(path, action, body);
+      const body = requestBody as Record<string, unknown>;
+      return fetcher<ResponseType>(path, action, { body });
     },
     [fetcher],
   );

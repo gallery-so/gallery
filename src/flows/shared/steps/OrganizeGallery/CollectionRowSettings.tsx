@@ -11,6 +11,7 @@ import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import { Collection } from 'types/Collection';
+import noop from 'utils/noop';
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 
@@ -36,7 +37,7 @@ function CollectionRowSettings({
     showModal(
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
-        onNext={() => {}}
+        onNext={noop}
         collectionId={id}
         collectionName={name}
         collectionCollectorsNote={collectors_note}
@@ -47,7 +48,10 @@ function CollectionRowSettings({
   const toggleHideCollection = useUpdateCollectionHidden();
 
   const handleToggleHiddenClick = useCallback(() => {
-    toggleHideCollection(id, !hidden);
+    toggleHideCollection(id, !hidden).catch((error: unknown) => {
+      // TODO handle toggle hide error
+      throw error;
+    });
   }, [id, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {
