@@ -14,6 +14,10 @@ type RequestParameters<T> = {
   unauthorizedErrorHandler?: () => void;
 };
 
+type GalleryErrorResponseBody = {
+  error?: string;
+};
+
 export type FetcherType = <ResponseData, RequestBody = Record<string, unknown>>(
   path: string,
   action: RequestAction,
@@ -59,8 +63,10 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
       unauthorizedErrorHandler?.();
     }
 
+    const errorResponseBody = responseBody as GalleryErrorResponseBody;
+
     // All gallery-provided error responses will have an `error` field
-    const serverErrorMessage = responseBody?.error ?? 'Server Error';
+    const serverErrorMessage = errorResponseBody?.error ?? 'Server Error';
     if (action) {
       const apiError = new ApiError(serverErrorMessage, action);
       throw apiError;

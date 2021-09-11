@@ -20,7 +20,7 @@ function Sidebar() {
     unstageNfts,
   } = useCollectionEditorActions();
 
-  const isAllNftsSelected = useMemo(() => !sidebarNfts.find(nft => !nft.isSelected), [sidebarNfts]);
+  const isAllNftsSelected = useMemo(() => !sidebarNfts.some((nft: EditModeNft) => !nft.isSelected), [sidebarNfts]);
 
   const handleSelectAllClick = useCallback(() => {
     // Stage all nfts that are !isSelected

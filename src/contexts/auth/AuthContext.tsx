@@ -133,7 +133,7 @@ const AuthProvider = memo(({ children }: Props) => {
       }
 
       if (authState === UNKNOWN) {
-        loadAuthState();
+        void loadAuthState();
       }
     },
     [authState, logIn, logOut, setLoggedOut, token, userId],

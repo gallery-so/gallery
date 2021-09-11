@@ -19,7 +19,7 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
   const [isActive, setIsActive] = useState(false);
 
   const handleCopyToClipboard = useCallback(async () => {
-    navigator.clipboard.writeText(textToCopy);
+    void navigator.clipboard.writeText(textToCopy);
     setIsToastMounted(true);
     setIsActive(true);
     await pause(SECTION_DURATION_MS * 2);

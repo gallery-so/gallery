@@ -45,7 +45,7 @@ function WalletButton({
       <>
         {walletName}
         <Icon
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
           src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
         />
       </>
@@ -59,7 +59,10 @@ function WalletButton({
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
           {'Install Metamask'}
-          <Icon src={require('assets/icons/metamask.svg').default} />
+          <Icon
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+            src={require('assets/icons/metamask.svg').default}
+          />
         </StyledButton>
       </StyledExternalLink>
     );
