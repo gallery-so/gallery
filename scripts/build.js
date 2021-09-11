@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import fse from 'fs-extra';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages.js';
@@ -7,7 +9,6 @@ import printBuildError from 'react-dev-utils/printBuildError.js';
 
 import chalk from 'react-dev-utils/chalk.js';
 import checkRequiredFiles from 'react-dev-utils/checkRequiredFiles.js';
-import fs from 'node:fs';
 import bfj from 'bfj';
 import webpack from 'webpack';
 import { checkBrowsers } from 'react-dev-utils/browsersHelper.js';
@@ -25,7 +26,6 @@ process.env.NODE_ENV = 'production';
 process.on('unhandledRejection', error => {
   throw error;
 });
-console.log(fs);
 
 const require = createRequire(import.meta.url);
 
@@ -65,7 +65,8 @@ checkBrowsers(paths.appPath, isInteractive)
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    console.log('fs', fs);
+    fse.emptyDirSync(paths.appBuild);
     // Merge with the public folder
     copyPublicFolder();
     // Start the webpack build
@@ -212,7 +213,7 @@ function build(previousFileSizes) {
 }
 
 function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
+  fse.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
     filter: file => file !== paths.appHtml,
   });
