@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
@@ -10,15 +10,27 @@ import CollectionDnd from './CollectionDnd';
 import Header from './Header';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
+import { Collection } from 'types/Collection';
 
 type ConfigProps = {
   wizardId: string;
   username: string;
+  galleryId: string;
+  sortedCollections: Collection[];
   next: WizardContext['next'];
 };
 
-function useWizardConfig({ wizardId, username, next }: ConfigProps) {
+function useWizardConfig({
+  wizardId,
+  username,
+  galleryId,
+  sortedCollections,
+  next,
+}: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
+  const updateGallery = useUpdateGallery();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
@@ -30,15 +42,25 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
     clearOnNext();
   }, [clearOnNext, username]);
 
-  const saveGalleryAndReturnToProfile = useCallback(() => {
+  const saveGalleryAndReturnToProfile = useCallback(async () => {
     clearOnNext();
     // Save gallery changes (re-ordered collections)
     if (wizardId === 'onboarding') {
       next();
       return;
     }
+
+    await updateGallery(galleryId, sortedCollections);
     navigate(`/${username}`);
-  }, [clearOnNext, next, username, wizardId]);
+  }, [
+    clearOnNext,
+    galleryId,
+    next,
+    sortedCollections,
+    updateGallery,
+    username,
+    wizardId,
+  ]);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
@@ -55,9 +77,19 @@ function OrganizeGallery({ next }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
 
+  const { id, collections } = useAuthenticatedGallery();
+  const [sortedCollections, setSortedCollections] = useState(collections);
+
+  useEffect(() => {
+    // when the server sends down its source of truth, sync the local state
+    setSortedCollections(collections);
+  }, [collections]);
+
   useWizardConfig({
     wizardId,
     username: user.username,
+    galleryId: id,
+    sortedCollections,
     next,
   });
 
@@ -67,7 +99,10 @@ function OrganizeGallery({ next }: WizardContext) {
         <Spacer height={80} />
         <Header />
         <Spacer height={24} />
-        <CollectionDnd />
+        <CollectionDnd
+          sortedCollections={sortedCollections}
+          setSortedCollections={setSortedCollections}
+        />
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
