@@ -32,8 +32,10 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
   if (localJwt && requestOptions.headers) {
+    const parsedLocalJwt = JSON.parse(localJwt) as string;
+    console.log(localJwt, JSON.parse(localJwt));
     // @ts-expect-error: Authorization is a legit header
-    requestOptions.headers.Authorization = `Bearer ${localJwt}`;
+    requestOptions.headers.Authorization = `Bearer ${parsedLocalJwt}`;
   }
 
   if (body) {
@@ -63,9 +65,8 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
       unauthorizedErrorHandler?.();
     }
 
-    const errorResponseBody = responseBody as GalleryErrorResponseBody;
-
     // All gallery-provided error responses will have an `error` field
+    const errorResponseBody = responseBody as GalleryErrorResponseBody;
     const serverErrorMessage = errorResponseBody?.error ?? 'Server Error';
     if (action) {
       const apiError = new ApiError(serverErrorMessage, action);

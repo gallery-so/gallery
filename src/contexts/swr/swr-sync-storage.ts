@@ -14,6 +14,10 @@ function getStorage(mode: 'local' | 'session') {
   }
 }
 
+type StoredData = {
+  swrValue: string;
+};
+
 // The value of SWR could be either undefined or an object
 // if you had other values you will need to check them here
 // and parse it correctly (e.g. use Number for number)
@@ -37,8 +41,10 @@ export function syncWithStorage(
       continue;
     }
 
+    const parsedData = parser(data) as StoredData;
+
     // Update SWR cache with the value from the storage
-    cache.set(key.slice(keyPrefix.length), parser(data).swrValue);
+    cache.set(key.slice(keyPrefix.length), parsedData.swrValue);
   }
 
   // Subscribe to SWR cache changes in the future
@@ -50,7 +56,7 @@ export function syncWithStorage(
     for (const key of keys) {
       storage.setItem(
         `${keyPrefix}${key}`,
-        JSON.stringify({ swrValue: cache.get(key) }),
+        JSON.stringify({ swrValue: cache.get(key) as string }),
       );
     }
   });

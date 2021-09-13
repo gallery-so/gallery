@@ -3,9 +3,8 @@ import { validatePassword } from 'utils/password';
 import usePersistedState from './usePersistedState';
 
 export default function useIsPasswordValidated() {
-  const [storedPassword] = usePersistedState(PASSWORD_LOCAL_STORAGE_KEY, null);
-  const isStoredPasswordValid
-    = storedPassword && validatePassword(storedPassword);
+  const [storedPassword] = usePersistedState<string | null>(PASSWORD_LOCAL_STORAGE_KEY, null);
+  const isStoredPasswordValid = storedPassword ? validatePassword(storedPassword) : false;
 
   return isStoredPasswordValid;
 }

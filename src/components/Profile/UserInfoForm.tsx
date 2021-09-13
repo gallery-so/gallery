@@ -41,7 +41,10 @@ function UserInfoForm({
       }
 
       setIsSubmitting(true);
-      await onSubmit?.();
+      if (onSubmit instanceof Function) {
+        onSubmit();
+      }
+
       setIsSubmitting(false);
     },
     [isSubmitting, onSubmit],

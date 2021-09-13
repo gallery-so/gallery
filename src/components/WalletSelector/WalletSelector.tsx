@@ -143,7 +143,7 @@ function WalletSelector() {
       }
     }
 
-    authenticate();
+    void authenticate();
   }, [account, isPending, logIn, signer, fetcher]);
 
   /**

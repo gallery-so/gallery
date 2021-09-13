@@ -7,6 +7,8 @@ import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
+import metamaskIcon from 'assets/icons/metamask.svg';
+
 type WalletButtonProps = {
   walletName?: string;
   activate: Web3ReactManagerFunctions['activate'];
@@ -60,8 +62,7 @@ function WalletButton({
         <StyledButton data-testid="wallet-button">
           {'Install Metamask'}
           <Icon
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-            src={require('assets/icons/metamask.svg').default}
+            src={metamaskIcon}
           />
         </StyledButton>
       </StyledExternalLink>

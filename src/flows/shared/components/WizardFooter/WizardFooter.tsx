@@ -54,7 +54,11 @@ function WizardFooter({
   }, [next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
-    onPrevious?.current ? onPrevious.current() : previous();
+    if (onPrevious?.current) {
+      void onPrevious.current();
+    } else {
+      previous();
+    }
   }, [previous, onPrevious]);
 
   if (shouldHideFooter) {

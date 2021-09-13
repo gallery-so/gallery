@@ -11,6 +11,7 @@ function validateKeyAndCerts({ cert, key, keyFile, crtFile }) {
   let encrypted;
   try {
     // PublicEncrypt will throw an error with an invalid cert
+    // eslint-disable-next-line node/prefer-global/buffer
     encrypted = crypto.publicEncrypt(cert, Buffer.from('test'));
   } catch (error) {
     throw new Error(
