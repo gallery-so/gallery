@@ -16,6 +16,7 @@ import {
   useCollectionWizardState,
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import Mixpanel from 'utils/mixpanel';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -65,6 +66,7 @@ function useWizardConfig({ push }: ConfigProps) {
 
     // if collection is being created, trigger creation
     setOnNext(async () => {
+      Mixpanel.track('Save new collection');
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}

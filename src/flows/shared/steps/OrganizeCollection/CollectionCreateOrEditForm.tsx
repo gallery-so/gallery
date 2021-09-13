@@ -16,6 +16,7 @@ import { Collection } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -93,6 +94,10 @@ function CollectionCreateOrEditForm({
       }
       // collection is being created
       if (!collectionId && nftIds) {
+        Mixpanel.track('Add Name & Description to collection', {
+          'Added Name': title.length > 0,
+          'Added description': description.length > 0,
+        });
         await createCollection(galleryId, title, description, nftIds);
       }
 

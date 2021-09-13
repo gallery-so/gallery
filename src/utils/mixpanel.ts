@@ -9,9 +9,9 @@ type EventProps = {};
 const mixpanelEnabled = process.env.NODE_ENV === 'production';
 
 const Mixpanel = {
-  track: (name: string, props: EventProps) => {
+  track: (eventname: string, props: EventProps = {}) => {
     if (mixpanelEnabled) {
-      mixpanel.track(name, props);
+      mixpanel.track(eventname, props);
     }
   },
 

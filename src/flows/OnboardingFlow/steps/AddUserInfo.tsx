@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -9,6 +9,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
+import Mixpanel from 'utils/mixpanel';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -19,8 +20,6 @@ function useWizardConfig({ onNext }: ConfigProps) {
 
   useEffect(() => {
     setOnNext(onNext);
-
-    return () => setOnNext(undefined);
   }, [setOnNext, onNext]);
 }
 
@@ -43,12 +42,17 @@ function AddUserInfo({ next }: WizardContext) {
     existingBio: user.bio,
   });
 
-  useWizardConfig({ onNext: onEditUser });
+  const handleSubmit = useCallback(() => {
+    Mixpanel.track('Save Name & Bio', { 'Added Bio': bio.length > 0 });
+    return onEditUser();
+  }, [bio.length, onEditUser]);
+
+  useWizardConfig({ onNext: handleSubmit });
 
   return (
     <FullPageCenteredStep withFooter>
       <StyledUserInfoForm
-        onSubmit={onEditUser}
+        onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}
         clearUsernameError={onClearUsernameError}
