@@ -1,10 +1,10 @@
-import mixpanel, { track } from 'mixpanel-browser';
+import mixpanel from 'mixpanel-browser';
 
 if (process.env.REACT_APP_MIXPANEL_TOKEN) {
   mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN);
 }
 
-type EventProps = {};
+type EventProps = Record<string, unknown>;
 
 const mixpanelEnabled = process.env.NODE_ENV === 'production';
 
