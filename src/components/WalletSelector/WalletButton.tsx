@@ -9,6 +9,10 @@ import transitions from 'components/core/transitions';
 
 import metamaskIcon from 'assets/icons/metamask.svg';
 
+const walletIconMap: Record<string, string> = {
+  metamask: metamaskIcon,
+};
+
 type WalletButtonProps = {
   walletName?: string;
   activate: Web3ReactManagerFunctions['activate'];
@@ -47,8 +51,7 @@ function WalletButton({
       <>
         {walletName}
         <Icon
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-          src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
+          src={walletIconMap[walletName.toLowerCase()]}
         />
       </>
     );
