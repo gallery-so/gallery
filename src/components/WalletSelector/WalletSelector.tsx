@@ -10,6 +10,7 @@ import colors from 'components/core/colors';
 import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import useFetcher from 'contexts/swr/useFetcher';
+import Mixpanel from 'utils/mixpanel';
 import initializeAuthPipeline from './authRequestUtils';
 import WalletButton from './WalletButton';
 
@@ -66,6 +67,7 @@ function WalletSelector() {
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
+  const [pendingWalletName, setPendingWalletName] = useState('');
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -105,10 +107,14 @@ function WalletSelector() {
     return parsedError;
   }, [error, detectedError]);
 
-  const setToPendingState = useCallback((connector: AbstractConnector) => {
-    setIsPending(true);
-    setPendingWallet(connector);
-  }, []);
+  const setToPendingState = useCallback(
+    (connector: AbstractConnector, walletName: string) => {
+      setIsPending(true);
+      setPendingWallet(connector);
+      setPendingWalletName(walletName);
+    },
+    [],
+  );
 
   const retryConnectWallet = useCallback(() => {
     setIsPending(false);
@@ -132,6 +138,7 @@ function WalletSelector() {
             signer,
             fetcher,
           });
+          Mixpanel.trackConnectWallet(pendingWalletName);
           logIn({ jwt, userId });
         } catch (error: unknown) {
           if (error instanceof Error) {
@@ -144,7 +151,7 @@ function WalletSelector() {
     }
 
     void authenticate();
-  }, [account, isPending, logIn, signer, fetcher]);
+  }, [account, isPending, logIn, signer, fetcher, pendingWalletName]);
 
   /**
    * Ensures screen does not retain an error message when it remounts. Since Web3

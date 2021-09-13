@@ -17,7 +17,7 @@ type WalletButtonProps = {
   walletName?: string;
   activate: Web3ReactManagerFunctions['activate'];
   connector?: AbstractConnector;
-  setToPendingState: (connector: AbstractConnector) => void;
+  setToPendingState: (connector: AbstractConnector, walletName: string) => void;
   isPending: boolean;
 };
 
@@ -29,11 +29,11 @@ function WalletButton({
   isPending,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    if (connector) {
-      setToPendingState(connector);
+    if (connector && walletName) {
+      setToPendingState(connector, walletName);
       void activate(connector);
     }
-  }, [activate, connector, setToPendingState]);
+  }, [activate, connector, setToPendingState, walletName]);
 
   const loadingView = useMemo(() => (
     <>
