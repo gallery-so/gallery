@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { ReactComponent as Settings } from './collection-settings.svg';
 import { Nft } from 'types/Nft';
 import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
 import { Collection } from 'types/Collection';
+import { ReactComponent as Settings } from './collection-settings.svg';
 
 type Props = {
   collection: Collection;
@@ -17,7 +17,7 @@ const BIG_NFT_SIZE_PX = 160;
 const SMOL_NFT_SIZE_PX = 25;
 
 /**
- * displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
+ * Displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
 function CollectionRow({ collection, className }: Props) {
   const { name, collectors_note, nfts, hidden } = collection;
@@ -25,7 +25,7 @@ function CollectionRow({ collection, className }: Props) {
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
-  const isHidden = useMemo(() => !!hidden, [hidden]);
+  const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
@@ -40,14 +40,14 @@ function CollectionRow({ collection, className }: Props) {
       </Header>
       <Spacer height={12} />
       <Body>
-        {firstThreeNfts.map((nft) => {
+        {firstThreeNfts.map(nft => {
           const imageUrl = getResizedNftImageUrlWithFallback(
             nft,
-            BIG_NFT_SIZE_PX
+            BIG_NFT_SIZE_PX,
           );
           return <BigNftPreview src={imageUrl} />;
         })}
-        {remainingNfts.length ? <CompactNfts nfts={remainingNfts} /> : null}
+        {remainingNfts.length > 0 ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
       {isHidden && <StyledHiddenLabel caps>Hidden</StyledHiddenLabel>}
     </StyledCollectionRow>
@@ -114,21 +114,21 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
   const firstFiveNfts = useMemo(() => nfts.slice(0, 5), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(5), [nfts]);
 
-  // account for the fact that having more than 5 NFTs will result in
+  // Account for the fact that having more than 5 NFTs will result in
   // only 3 tiles being displayed before the text
   const overflowCountText = remainingNfts.length + 2;
 
-  const hasMoreThanFiveNfts = Boolean(remainingNfts.length);
+  const hasMoreThanFiveNfts = remainingNfts.length > 0;
 
   return (
     <StyledCompactNfts>
       <Content>
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
-            {firstThreeNfts.map((nft) => {
+            {firstThreeNfts.map(nft => {
               const imageUrl = getResizedNftImageUrlWithFallback(
                 nft,
-                SMOL_NFT_SIZE_PX
+                SMOL_NFT_SIZE_PX,
               );
               return <SmolNftPreview src={imageUrl} />;
             })}
@@ -136,10 +136,10 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
             <BodyRegular>+{overflowCountText} more</BodyRegular>
           </NftsWithMoreText>
         ) : (
-          firstFiveNfts.map((nft) => {
+          firstFiveNfts.map(nft => {
             const imageUrl = getResizedNftImageUrlWithFallback(
               nft,
-              SMOL_NFT_SIZE_PX
+              SMOL_NFT_SIZE_PX,
             );
             return nft ? <SmolNftPreview src={imageUrl} /> : null;
           })

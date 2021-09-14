@@ -4,12 +4,12 @@ import { FOOTER_HEIGHT } from '../WizardFooter/WizardFooter';
 
 type Props = {
   children: ReactNode | ReactNode[];
-  // if this is true, the page height will be reduced to account for the footer height
+  // If this is true, the page height will be reduced to account for the footer height
   withFooter?: boolean;
 };
 
 /**
- * a helper component to easily generate full-page steps where the content is centered
+ * A helper component to easily generate full-page steps where the content is centered
  */
 export default function FullPageCenteredStep({ children, withFooter }: Props) {
   return <StyledPage withFooter={withFooter}>{children}</StyledPage>;

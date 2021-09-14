@@ -12,7 +12,7 @@ import {
 import { getGalleriesCacheKey } from './useGalleries';
 
 function mapCollectionsToCollectionIds(collections: Collection[]) {
-  return collections.map((collection) => collection.id);
+  return collections.map(collection => collection.id);
 }
 
 export default function useUpdateGallery() {
@@ -27,19 +27,19 @@ export default function useUpdateGallery() {
         {
           id: galleryId,
           collections: mapCollectionsToCollectionIds(collections),
-        }
+        },
       );
 
-      mutate(
+      void mutate(
         getGalleriesCacheKey({ userId: authenticatedUser.id }),
-        (val: GetGalleriesResponse) => {
-          const newVal = cloneDeep<GetGalleriesResponse>(val);
-          newVal.galleries[0].collections = collections;
-          return newVal;
+        (value: GetGalleriesResponse) => {
+          const newValue = cloneDeep<GetGalleriesResponse>(value);
+          newValue.galleries[0].collections = collections;
+          return newValue;
         },
-        false
+        false,
       );
     },
-    [authenticatedUser.id, updateGallery]
+    [authenticatedUser.id, updateGallery],
   );
 }

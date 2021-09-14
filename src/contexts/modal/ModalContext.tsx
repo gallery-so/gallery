@@ -21,35 +21,36 @@ const ModalContext = createContext<ModalActions | undefined>(undefined);
 export const useModal = (): ModalActions => {
   const context = useContext(ModalContext);
   if (!context) {
-    throw Error('Attempted to use ModalContext without a provider!');
+    throw new Error('Attempted to use ModalContext without a provider!');
   }
+
   return context;
 };
 
 type Props = { children: ReactNode };
 
 function ModalProvider({ children }: Props) {
-  // whether node is actually on the DOM
+  // Whether node is actually on the DOM
   const [isMounted, setIsMounted] = useState(false);
-  // pseudo-state for signaling animations. this will allow us
+  // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
   const [content, setContent] = useState<ReactElement | null>(null);
 
-  const showModal = useCallback((providedContent) => {
+  const showModal = useCallback(providedContent => {
     setIsActive(true);
     setIsMounted(true);
     setContent(providedContent);
   }, []);
 
-  // trigger fade-out that takes X seconds
+  // Trigger fade-out that takes X seconds
   // schedule unmount in X seconds
   const hideModal = useCallback(() => {
     setIsActive(false);
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
-      // unmount a bit sooner to avoid race condition of
+      // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
     }, MODAL_TRANSITION_MS - 30);
   }, []);
@@ -59,7 +60,7 @@ function ModalProvider({ children }: Props) {
       showModal,
       hideModal,
     }),
-    [showModal, hideModal]
+    [showModal, hideModal],
   );
 
   return (

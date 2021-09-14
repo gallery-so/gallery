@@ -7,7 +7,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 
-// suggest a user visit this page if they're in a seriously broken state
+// Suggest a user visit this page if they're in a seriously broken state
 function Nuke(_: RouteComponentProps) {
   const { logOut } = useAuthActions();
 

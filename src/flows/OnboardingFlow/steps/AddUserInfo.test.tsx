@@ -1,35 +1,33 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import AddUserInfo from './AddUserInfo';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import { Wizard, Steps, Step } from 'react-albus';
-import WizardFooter from '../WizardFooter';
 import { WizardProps } from 'flows/shared/types';
+import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
+import AddUserInfo from './AddUserInfo';
 
 const VALID_USERNAME = 'validUsername';
 const INVALID_USERNAME = 'invalid username 1';
 
 beforeEach(() => {
   render(
-    <GalleryWizardProvider>
+    <GalleryWizardProvider id="add-user-info">
       <Wizard
-        render={(wizardProps) => {
-          return (
-            <>
-              <Steps>
-                <Step id="addUserInfo" render={AddUserInfo} />
-              </Steps>
-              <WizardFooter {...(wizardProps as WizardProps)} />
-            </>
-          );
-        }}
+        render={wizardProps => (
+          <>
+            <Steps>
+              <Step id="addUserInfo" render={AddUserInfo} />
+            </Steps>
+            <WizardFooter {...(wizardProps as WizardProps)} />
+          </>
+        )}
       />
-    </GalleryWizardProvider>
+    </GalleryWizardProvider>,
   );
 });
 
 test('Validates username input and enables Next button accordingly', () => {
   const wizardFooterNextButton = screen.getByTestId(
-    'wizard-footer-next-button'
+    'wizard-footer-next-button',
   );
   const input = screen.getByPlaceholderText('Username') as HTMLInputElement;
 

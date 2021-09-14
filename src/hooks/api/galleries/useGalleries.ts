@@ -1,10 +1,10 @@
-import { GetGalleriesResponse } from './types';
 import { Gallery } from 'types/Gallery';
-import useGet from '../_rest/useGet';
 import { User } from 'types/User';
+import useGet from '../_rest/useGet';
+import { GetGalleriesResponse } from './types';
 
 type Props = {
-  userId?: User['id'];
+  userId: User['id'];
 };
 
 const getGalleriesAction = 'fetch gallery';
@@ -15,15 +15,19 @@ function getGalleriesBaseUrlWithQuery({ userId }: Props) {
   return `${getGalleriesBaseUrl}?user_id=${userId}`;
 }
 
-// allows access to galleries cache within SWR. useful for mutations
+// Allows access to galleries cache within SWR. useful for mutations
 export function getGalleriesCacheKey({ userId }: Props) {
+  if (!userId) {
+    return '';
+  }
+
   return [getGalleriesBaseUrlWithQuery({ userId }), getGalleriesAction];
 }
 
 export default function useGalleries({ userId }: Props): Gallery[] | undefined {
   const data = useGet<GetGalleriesResponse>(
     userId ? `${getGalleriesBaseUrlWithQuery({ userId })}` : null,
-    getGalleriesAction
+    getGalleriesAction,
   );
 
   return data?.galleries;

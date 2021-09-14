@@ -6,14 +6,14 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import CollectionDnd from './CollectionDnd';
-import Header from './Header';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import { Collection } from 'types/Collection';
 import Mixpanel from 'utils/mixpanel';
+import Header from './Header';
+import CollectionDnd from './CollectionDnd';
 
 type ConfigProps = {
   wizardId: string;
@@ -39,7 +39,7 @@ function useWizardConfig({
   }, [setOnNext, setOnPrevious]);
 
   const returnToProfile = useCallback(() => {
-    navigate(`/${username}`);
+    void navigate(`/${username}`);
     clearOnNext();
   }, [clearOnNext, username]);
 
@@ -53,7 +53,7 @@ function useWizardConfig({
     }
 
     await updateGallery(galleryId, sortedCollections);
-    navigate(`/${username}`);
+    void navigate(`/${username}`);
   }, [
     clearOnNext,
     galleryId,
@@ -83,7 +83,7 @@ function OrganizeGallery({ next }: WizardContext) {
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   useEffect(() => {
-    // when the server sends down its source of truth, sync the local state
+    // When the server sends down its source of truth, sync the local state
     setSortedCollections(collections);
   }, [collections]);
 

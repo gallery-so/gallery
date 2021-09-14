@@ -12,7 +12,7 @@ export type OpenseaSyncResponse = {
 export default function useOpenseaSync({ address }: Props): Nft[] | undefined {
   const data = useGet<OpenseaSyncResponse>(
     `/nfts/opensea_get?address=${address}`,
-    'fetch and sync nfts'
+    'fetch and sync nfts',
   );
 
   return data?.nfts;

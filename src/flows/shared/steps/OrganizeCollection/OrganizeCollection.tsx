@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 
-import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
-import CollectionEditor from './Editor/CollectionEditor';
-
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
-import { EditModeNft } from './types';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
 import {
   useCollectionWizardActions,
@@ -17,6 +13,9 @@ import {
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import Mixpanel from 'utils/mixpanel';
+import { EditModeNft } from './types';
+import CollectionEditor from './Editor/CollectionEditor';
+import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -42,19 +41,19 @@ function useWizardConfig({ push }: ConfigProps) {
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
   const goToOrganizeGalleryStep = useCallback(() => {
-    // clear selected collection when moving to next step
+    // Clear selected collection when moving to next step
     setCollectionIdBeingEdited('');
     push('organizeGallery');
   }, [push, setCollectionIdBeingEdited]);
 
   useEffect(() => {
-    // if collection is being edited, trigger update
+    // If collection is being edited, trigger update
     if (collectionIdBeingEdited) {
       setOnNext(async () => {
-        // errors will be handled in the catch block within `WizardFooter.tsx`
+        // Errors will be handled in the catch block within `WizardFooter.tsx`
         await updateCollection(
           collectionIdBeingEdited,
-          stagedNftIdsRef.current
+          stagedNftIdsRef.current,
         );
 
         goToOrganizeGalleryStep();
@@ -64,18 +63,18 @@ function useWizardConfig({ push }: ConfigProps) {
       return;
     }
 
-    // if collection is being created, trigger creation
+    // If collection is being created, trigger creation
     setOnNext(async () => {
       Mixpanel.track('Save new collection');
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
           nftIds={stagedNftIdsRef.current}
-        />
+        />,
       );
     });
 
-    // if user is editing their gallery, clicking "back" should bring them
+    // If user is editing their gallery, clicking "back" should bring them
     // back to the organize gallery view
     if (wizardId === 'edit-gallery') {
       setOnPrevious(goToOrganizeGalleryStep);
@@ -91,7 +90,7 @@ function useWizardConfig({ push }: ConfigProps) {
   ]);
 }
 
-// in order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
+// In order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
 type DecoratedCollectionEditorProps = {
   push: WizardContext['push'];
 };

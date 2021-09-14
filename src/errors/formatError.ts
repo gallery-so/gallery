@@ -1,31 +1,35 @@
 import { genericErrorMessage } from './constants';
 import { ApiError } from './types';
 
-export function formatDetailedError(e: Error) {
-  if (e instanceof ApiError) {
+export function formatDetailedError(error: Error) {
+  if (error instanceof ApiError) {
     return {
-      header: `Error while trying to ${e.customMessage}`,
-      description: e.message,
+      header: `Error while trying to ${error.customMessage}`,
+      description: error.message,
     };
   }
-  if (e.message) {
+
+  if (error.message) {
     return {
-      header: `Error: ${e.message}`,
+      header: `Error: ${error.message}`,
       description: '',
     };
   }
+
   return {
     header: '',
     description: genericErrorMessage,
   };
 }
 
-export default function formatError(e: Error) {
-  if (e instanceof ApiError) {
-    return `Error while trying to ${e.customMessage}: ${e.message}`;
+export default function formatError(error: Error) {
+  if (error instanceof ApiError) {
+    return `Error while trying to ${error.customMessage}: ${error.message}`;
   }
-  if (e.message) {
-    return `Error: ${e.message}`;
+
+  if (error.message) {
+    return `Error: ${error.message}`;
   }
+
   return genericErrorMessage;
 }

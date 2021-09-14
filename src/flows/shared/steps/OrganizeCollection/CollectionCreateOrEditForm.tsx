@@ -10,7 +10,7 @@ import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
-import formatError from 'src/errors/formatError';
+import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import { Collection } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
@@ -37,31 +37,30 @@ function CollectionCreateOrEditForm({
 }: Props) {
   const { hideModal } = useModal();
 
-  const [title, setTitle] = useState(collectionName || '');
+  const [title, setTitle] = useState(collectionName ?? '');
   const [description, setDescription] = useState(
-    collectionCollectorsNote || ''
+    collectionCollectorsNote ?? '',
   );
 
-  // generic error that doesn't belong to username / bio
+  // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
 
-  const handleNameChange = useCallback((event) => {
-    setTitle(event.target.value);
+  const handleNameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target?.value);
   }, []);
 
-  const handleDescriptionChange = useCallback((event) => {
-    setDescription(event.target.value);
+  const handleDescriptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target?.value);
   }, []);
 
-  const hasEnteredValue = useMemo(() => {
-    return title.length || description.length;
-  }, [title, description]);
+  const hasEnteredValue = useMemo(() => (title.length > 0) || (description.length > 0), [title, description]);
 
   const buttonText = useMemo(() => {
-    // collection is being created
+    // Collection is being created
     if (nftIds) {
       return 'create';
     }
+
     return hasEnteredValue ? 'save' : 'skip';
   }, [hasEnteredValue, nftIds]);
 
@@ -82,17 +81,18 @@ function CollectionCreateOrEditForm({
     setGeneralError('');
 
     if (description.length > COLLECTION_DESCRIPTION_MAX_CHAR_COUNT) {
-      // no need to handle error here, since the form will mark the text as red
+      // No need to handle error here, since the form will mark the text as red
       return;
     }
 
     setIsLoading(true);
     try {
-      // collection is being updated
+      // Collection is being updated
       if (collectionId) {
         await updateCollection(collectionId, title, description);
       }
-      // collection is being created
+
+      // Collection is being created
       if (!collectionId && nftIds) {
         Mixpanel.track('Add Name & Description to collection', {
           'Added Name': title.length > 0,
@@ -101,15 +101,17 @@ function CollectionCreateOrEditForm({
         await createCollection(galleryId, title, description, nftIds);
       }
 
-      // refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
+      // Refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
       await refreshUnassignedNfts({ skipCache: false });
 
       goToNextStep();
-    } catch (e) {
-      setGeneralError(formatError(e));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setGeneralError(formatError(error));
+      }
     }
+
     setIsLoading(false);
-    return;
   }, [
     description,
     collectionId,

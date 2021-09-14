@@ -9,13 +9,13 @@ import colors from 'components/core/colors';
 import Page from 'components/core/Page/Page';
 
 function Home(_: RouteComponentProps) {
-  // whether the user has entered the correct password
+  // Whether the user has entered the correct password
   const isPasswordValidated = useIsPasswordValidated();
 
   const handleEnterGallery = useCallback(() => {
-    // if the user is already authenticated, /auth will handle forwarding
+    // If the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
-    navigate('/auth');
+    void navigate('/auth');
   }, []);
 
   if (!isPasswordValidated) {

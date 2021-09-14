@@ -3,11 +3,11 @@ import { NftMediaType } from 'components/core/enums';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
+import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
+import { Nft } from 'types/Nft';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
-import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { Nft } from 'types/Nft';
 
 type Props = {
   nft: Nft;
@@ -46,6 +46,8 @@ function NftDetailAsset({ nft }: Props) {
         return <NftDetailVideo nft={nft} />;
       case NftMediaType.ANIMATION:
         return <NftDetailAnimation nft={nft} />;
+      default:
+        return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
     }
   }, [nft]);
 

@@ -18,10 +18,11 @@ const WizardValidationStateContext = createContext<WizardValidationState>({
 export const useWizardValidationState = (): WizardValidationState => {
   const context = useContext(WizardValidationStateContext);
   if (!context) {
-    throw Error(
-      'Attempted to use WizardValidationStateContext without a provider'
+    throw new Error(
+      'Attempted to use WizardValidationStateContext without a provider',
     );
   }
+
   return context;
 };
 
@@ -30,16 +31,17 @@ type WizardValidationActions = {
 };
 
 const WizardValidationActionsContext = createContext<
-  WizardValidationActions | undefined
+WizardValidationActions | undefined
 >(undefined);
 
 export const useWizardValidationActions = (): WizardValidationActions => {
   const context = useContext(WizardValidationActionsContext);
   if (!context) {
-    throw Error(
-      'Attempted to use WizardValidationActionsContext without a provider'
+    throw new Error(
+      'Attempted to use WizardValidationActionsContext without a provider',
     );
   }
+
   return context;
 };
 
@@ -53,13 +55,13 @@ const WizardValidationProvider = memo(({ children }: Props) => {
     isNextEnabled: true,
   });
 
-  const setNextEnabled = useCallback((isNextEnabled) => {
-    setWizardValidationState((prevState) => ({ ...prevState, isNextEnabled }));
+  const setNextEnabled = useCallback((isNextEnabled: boolean) => {
+    setWizardValidationState(previousState => ({ ...previousState, isNextEnabled }));
   }, []);
 
   const wizardValidationActions: WizardValidationActions = useMemo(
     () => ({ setNextEnabled }),
-    [setNextEnabled]
+    [setNextEnabled],
   );
 
   return (

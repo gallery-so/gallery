@@ -4,14 +4,12 @@ import { Web3Provider } from '@ethersproject/providers';
 
 function getLibrary(provider: any) {
   const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
+  library.pollingInterval = 12_000;
   return library;
 }
 
-const Web3WalletProvider = memo(({ children }) => {
-  return (
-    <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
-  );
-});
+const Web3WalletProvider = memo(({ children }) => (
+  <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
+));
 
 export default Web3WalletProvider;

@@ -16,7 +16,7 @@ test('WalletButton attempts to connect on click', () => {
       connector={injected}
       activate={activate}
       setToPendingState={setToPendingState}
-    ></WalletButton>
+    ></WalletButton>,
   );
 
   fireEvent.click(screen.getByTestId('wallet-button'));
@@ -33,10 +33,10 @@ test('WalletButton for Metamask option prompts Metamask install if Metamask is n
       connector={injected}
       activate={activate}
       setToPendingState={setToPendingState}
-    ></WalletButton>
+    ></WalletButton>,
   );
 
   expect(screen.getByTestId('wallet-button')).toHaveTextContent(
-    'Install Metamask'
+    'Install Metamask',
   );
 });

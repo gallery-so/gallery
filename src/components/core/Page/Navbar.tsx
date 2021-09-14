@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import LoggedOutNav from '../../GlobalNavbar/LoggedOutNav';
-import LoggedInNav from '../../GlobalNavbar/LoggedInNav';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import LoggedOutNav from '../../GlobalNavbar/LoggedOutNav';
+import LoggedInNav from '../../GlobalNavbar/LoggedInNav';
 
 function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();

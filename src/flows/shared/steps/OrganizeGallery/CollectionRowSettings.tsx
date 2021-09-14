@@ -7,13 +7,14 @@ import Dropdown, {
 import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import Spacer from 'components/core/Spacer/Spacer';
-import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import { Collection } from 'types/Collection';
 import Mixpanel from 'utils/mixpanel';
+import noop from 'utils/noop';
+import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
+import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 
 type Props = {
   collection: Collection;
@@ -38,18 +39,21 @@ function CollectionRowSettings({
     showModal(
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
-        onNext={() => {}}
+        onNext={noop}
         collectionId={id}
         collectionName={name}
         collectionCollectorsNote={collectors_note}
-      />
+      />,
     );
   }, [collectors_note, id, name, showModal]);
 
   const toggleHideCollection = useUpdateCollectionHidden();
 
   const handleToggleHiddenClick = useCallback(() => {
-    toggleHideCollection(id, !hidden);
+    toggleHideCollection(id, !hidden).catch((error: unknown) => {
+      // TODO handle toggle hide error
+      throw error;
+    });
   }, [id, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {

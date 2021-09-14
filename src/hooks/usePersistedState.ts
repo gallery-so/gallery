@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-// syncs local stroage to react state
-function usePersistedState(key: string, defaultValue: any) {
+type SetValue<T> = Dispatch<SetStateAction<T>>;
+
+// Syncs local stroage to react state
+function usePersistedState<T>(key: string, defaultValue: T): [T, SetValue<T>] {
   const [value, setValue] = useState(() => {
     const persistedValue = window.localStorage.getItem(key);
 
-    // use user provided default if not in local storage
+    // Use user provided default if not in local storage
     if (persistedValue === null) {
       return defaultValue;
     }
 
-    // support json string or string
+    // Support json string or string
     try {
-      return JSON.parse(persistedValue);
-    } catch (e) {
-      if (typeof persistedValue === 'string') {
-        return persistedValue;
-      }
-      // technically shouldn't be reachable.. but for safety
+      return JSON.parse(persistedValue) as T;
+    } catch {
+      // Technically shouldn't be reachable.. but for safety
       return defaultValue;
     }
   });
@@ -25,7 +24,7 @@ function usePersistedState(key: string, defaultValue: any) {
   // TODO: debounce
   useEffect(() => {
     // TODO handle value == undefined, null etc
-    const item = typeof value === 'object' ? JSON.stringify(value) : value;
+    const item = JSON.stringify(value);
     window.localStorage.setItem(key, item);
   }, [key, value]);
 

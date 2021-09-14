@@ -13,7 +13,7 @@ import NftDetailPage from './NftDetailPage/NftDetailPage';
 import Nuke from './Nuke/Nuke';
 import UserGalleryPage from './UserGalleryPage/UserGalleryPage';
 
-// considered putting this in a different file, but we should tightly couple
+// Considered putting this in a different file, but we should tightly couple
 // route updates to this array
 const ROUTES_WITHOUT_NAVBAR = [
   '/',
@@ -27,13 +27,13 @@ const ROUTES_WITH_FOOTER = ['/welcome', '/edit'];
 
 function shouldHideNavbar(pathname: string) {
   return ROUTES_WITHOUT_NAVBAR.reduce(
-    (prev, curr) => prev || curr.includes(pathname),
-    false
+    (previous, curr) => previous || curr.includes(pathname),
+    false,
   );
 }
 
 function shouldHideFooter(pathname: string) {
-  return ROUTES_WITH_FOOTER.find((route) => route === pathname);
+  return ROUTES_WITH_FOOTER.find(route => route === pathname);
 }
 
 export default function Routes() {

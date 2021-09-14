@@ -8,15 +8,15 @@ module.exports = function (app) {
       target: process.env.MOCK_SERVER_BASE_URL,
       changeOrigin: true,
       pathRewrite: {
-        // drop `/api` from path prefix, since its only purpose is to route local requests here
+        // Drop `/api` from path prefix, since its only purpose is to route local requests here
         '^/api': '/',
       },
-    })
+    }),
   );
 };
 
 /**
- * local mockserver for mocking data / endpoints not yet available on the backend.
+ * Local mockserver for mocking data / endpoints not yet available on the backend.
  * example lifecycle:
  *   1) useSwr('/users')                         // react component
  *   2) http://localhost:3000/api/glry/v1/users  // fetch configured in SwrContext.tsx
@@ -34,18 +34,19 @@ function initializeMockServer() {
   const mockServer = express();
   const port = process.env.MOCK_SERVER_PORT;
 
-  mockServer.use(function (req, res, next) {
-    // artificial latency
+  mockServer.use((request, response, next) => {
+    // Artificial latency
     setTimeout(next, 1000);
   });
 
   mockServer.listen(port, () => {
+    // eslint-disable-next-line no-console
     console.log(`test server initialized at http://localhost:${port}`);
   });
 
   // $ curl http://localhost:3500/health
-  mockServer.get('/health', (req, res) => {
-    res.send('test server is live');
+  mockServer.get('/health', (request, response) => {
+    response.send('test server is live');
   });
 
   mockServer.use('/glry/v1', router);

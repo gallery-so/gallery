@@ -7,6 +7,12 @@ import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
+import metamaskIcon from 'assets/icons/metamask.svg';
+
+const walletIconMap: Record<string, string> = {
+  metamask: metamaskIcon,
+};
+
 type WalletButtonProps = {
   walletName?: string;
   activate: Web3ReactManagerFunctions['activate'];
@@ -23,54 +29,47 @@ function WalletButton({
   isPending,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    if (walletName && walletName.toLowerCase() === 'metamask') {
-      injected.isAuthorized().then((isAuthorized: boolean) => {
-        // TODO: figure out what goes here
-      });
-    }
     if (connector && walletName) {
       setToPendingState(connector, walletName);
-      activate(connector);
+      void activate(connector);
     }
   }, [activate, connector, setToPendingState, walletName]);
 
-  const loadingView = useMemo(() => {
-    return (
-      <>
-        {'Connecting...'}
-        <Loader thicc size="medium" />
-      </>
-    );
-  }, []);
+  const loadingView = useMemo(() => (
+    <>
+      {'Connecting...'}
+      <Loader thicc size="medium" />
+    </>
+  ), []);
 
   const iconView = useMemo(() => {
-    if (!walletName) return null;
+    if (!walletName) {
+      return null;
+    }
 
     return (
       <>
         {walletName}
         <Icon
-          src={require(`assets/icons/${walletName.toLowerCase()}.svg`).default}
+          src={walletIconMap[walletName.toLowerCase()]}
         />
       </>
     );
   }, [walletName]);
 
-  // injected is the connector type used for browser wallet extensions/dApp browsers
-  if (connector === injected) {
-    // metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    if (!(window.web3 || window.ethereum)) {
-      if (walletName && walletName.toLowerCase() === 'metamask') {
-        return (
-          <StyledExternalLink href="https://metamask.io/" target="_blank">
-            <StyledButton data-testid="wallet-button">
-              {'Install Metamask'}
-              <Icon src={require('assets/icons/metamask.svg').default} />
-            </StyledButton>
-          </StyledExternalLink>
-        );
-      }
-    }
+  // Injected is the connector type used for browser wallet extensions/dApp browsers
+  if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
+    && !(window.web3 || window.ethereum) && walletName && walletName.toLowerCase() === 'metamask') {
+    return (
+      <StyledExternalLink href="https://metamask.io/" target="_blank">
+        <StyledButton data-testid="wallet-button">
+          {'Install Metamask'}
+          <Icon
+            src={metamaskIcon}
+          />
+        </StyledButton>
+      </StyledExternalLink>
+    );
   }
 
   return (

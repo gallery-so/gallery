@@ -42,7 +42,7 @@ function AddUserInfo({ next }: WizardContext) {
     existingBio: user.bio,
   });
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     Mixpanel.track('Save Name & Bio', { 'Added Bio': bio.length > 0 });
     return onEditUser();
   }, [bio.length, onEditUser]);

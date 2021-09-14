@@ -3,9 +3,9 @@ import { Gallery } from 'types/Gallery';
 
 export type GetGalleriesResponse = { galleries: Gallery[] };
 
-export type UpdateGalleryResponse = {};
+export type UpdateGalleryResponse = Record<string, unknown>;
 
 export type UpdateGalleryRequest = {
   id: Gallery['id'];
-  collections: Collection['id'][];
+  collections: Array<Collection['id']>;
 };

@@ -8,6 +8,7 @@ import {
   ReactNode,
   MutableRefObject,
 } from 'react';
+import noop from 'utils/noop';
 
 type OnStepChange = () => void | Promise<void>;
 
@@ -20,16 +21,17 @@ type WizardCallbackState = {
 
 const WizardCallbackContext = createContext<WizardCallbackState>({
   onNext: undefined,
-  setOnNext: () => {},
+  setOnNext: noop,
   onPrevious: undefined,
-  setOnPrevious: () => {},
+  setOnPrevious: noop,
 });
 
 export const useWizardCallback = () => {
   const context = useContext(WizardCallbackContext);
   if (!context) {
-    throw Error('Attempted to use WizardCallbackContext without a provider');
+    throw new Error('Attempted to use WizardCallbackContext without a provider');
   }
+
   return context;
 };
 
@@ -39,16 +41,16 @@ const WizardCallbackProvider = memo(({ children }: Props) => {
   const onNext = useRef<OnStepChange>();
   const onPrevious = useRef<OnStepChange>();
 
-  const setOnNext = useCallback((newOnNext) => {
+  const setOnNext = useCallback((newOnNext: OnStepChange | undefined) => {
     onNext.current = newOnNext;
   }, []);
-  const setOnPrevious = useCallback((newOnPrevious) => {
+  const setOnPrevious = useCallback((newOnPrevious: OnStepChange | undefined) => {
     onPrevious.current = newOnPrevious;
   }, []);
 
   const state = useMemo(
     () => ({ onNext, setOnNext, onPrevious, setOnPrevious }),
-    [onNext, setOnNext, onPrevious, setOnPrevious]
+    [onNext, setOnNext, onPrevious, setOnPrevious],
   );
 
   return (

@@ -11,8 +11,9 @@ const WizardDataContext = createContext<WizardDataState>({
 export const useWizardId = (): WizardDataState['id'] => {
   const context = useContext(WizardDataContext);
   if (!context) {
-    throw Error('Attempted to use WizardDataContext without a provider');
+    throw new Error('Attempted to use WizardDataContext without a provider');
   }
+
   return context.id;
 };
 

@@ -6,15 +6,15 @@ import styled from 'styled-components';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
+import { EditModeNft } from '../types';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
-import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;
 };
 
-function SortableStagedNft({ editModeNft, ...props }: Props) {
+function SortableStagedNft({ editModeNft }: Props) {
   const {
     attributes,
     listeners,
@@ -30,14 +30,14 @@ function SortableStagedNft({ editModeNft, ...props }: Props) {
       transition,
       opacity: isDragging ? '0.2' : '1',
     }),
-    [isDragging, transform, transition]
+    [isDragging, transform, transition],
   );
 
   return (
     <StyledSortableNft
       id={editModeNft.id}
       active={isDragging}
-      // @ts-expect-error
+      // @ts-expect-error force overload
       style={style}
     >
       <StyledGradient type="top" />
@@ -52,6 +52,7 @@ function SortableStagedNft({ editModeNft, ...props }: Props) {
     </StyledSortableNft>
   );
 }
+
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
   ${({ type }) => type}: 0;

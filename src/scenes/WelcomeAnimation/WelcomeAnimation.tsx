@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Display, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
@@ -7,37 +7,37 @@ import Spacer from 'components/core/Spacer/Spacer';
 import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
-import { useEffect } from 'react';
 import Mixpanel from 'utils/mixpanel';
 
-// the calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
+// The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
 const calc = (x: number, y: number) => [
-  x - window.innerWidth / 2,
-  y - window.innerHeight / 2,
+  (x - window.innerWidth) / 2,
+  (y - window.innerHeight) / 2,
 ];
 type AnimatedImage = {
   src?: string;
   width: number;
-  // zIndex is the "depth" of image from viewer's pov.
+  // ZIndex is the "depth" of image from viewer's pov.
   // It is used to calculate how the image will move based on mousemovement.
   // z-index of 0 is essentially the axis of movement.
   // values can be -100 to 100, with -100 being the furthest from viewer and 100 being closest.
   // positive values move the image in one direction on mouse movement, negative values move in opposite.
   zIndex: number;
-  // offset is the x or y position of the image after the explosion and they fan out
+  // Offset is the x or y position of the image after the explosion and they fan out
   offsetX: number;
   offsetY: number;
-  // offset start is the x or y position of the image when they first load in
+  // Offset start is the x or y position of the image when they first load in
   offsetXStart: number;
   offsetYStart: number;
-  // delay in ms so that images don't all appear at once
+  // Delay in ms so that images don't all appear at once
   fadeInDelay: number;
 };
 
 const animatedImages: AnimatedImage[] = [
   {
-    src: 'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', //chair
+    src:
+      'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', // Chair
     width: 180,
     zIndex: -40,
     offsetX: 180,
@@ -47,7 +47,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 800,
   },
   {
-    src: 'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', //punk
+    src:
+      'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', // Punk
     width: 100,
     zIndex: -13,
     offsetX: -105,
@@ -67,7 +68,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src: 'https://lh3.googleusercontent.com/urYlsZ_9-L407WLT2KC4nTuQtf8iurO09_C4fxve2pZxSKW43npPF9yLCSvbMw9nnZjr8Hegz8HVi413lYUPKXq-8WeEApcxzOWU', //squiggle
+    src:
+      'https://lh3.googleusercontent.com/urYlsZ_9-L407WLT2KC4nTuQtf8iurO09_C4fxve2pZxSKW43npPF9yLCSvbMw9nnZjr8Hegz8HVi413lYUPKXq-8WeEApcxzOWU', // Squiggle
     width: 200,
     zIndex: 20,
     offsetX: -150,
@@ -87,7 +89,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 1200,
   },
   {
-    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', //Venus
+    src:
+      'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Venus
     width: 250,
     zIndex: 37,
     offsetX: -490,
@@ -97,7 +100,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 500,
   },
   {
-    src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // doge
+    src:
+      'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
     width: 220,
     zIndex: 25,
     offsetX: 440,
@@ -158,7 +162,7 @@ export default function WelcomeAnimation({ next }: Props) {
     config: { mass: 10, tension: 550, friction: 140 },
   }));
 
-  // if we want to use transitions instead of keyframes, we could add a class to each image after X seconds
+  // If we want to use transitions instead of keyframes, we could add a class to each image after X seconds
   // to trigger the transition. Using a transition allows us to not have to add keyframes for each image.
 
   // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
@@ -201,7 +205,7 @@ export default function WelcomeAnimation({ next }: Props) {
           <StyledButton text="Enter Gallery" onClick={handleClick} />
         </StyledTextContainer>
       </animated.div>
-      {animatedImages.map((animatedImage) => (
+      {animatedImages.map(animatedImage => (
         <StyledMovementWrapper
           shouldExplode={shouldExplode}
           animatedImage={animatedImage}
@@ -210,7 +214,7 @@ export default function WelcomeAnimation({ next }: Props) {
             className="animate"
             style={{
               transform: props.xy.interpolate(
-                getTransformCallback(animatedImage)
+                getTransformCallback(animatedImage),
               ),
             }}
           >
@@ -253,8 +257,8 @@ const StyledTextContainer = styled.div<{
   animation-delay: 2s;
 
   ${({ shouldFadeOut }) =>
-    shouldFadeOut &&
-    css`
+    shouldFadeOut
+    && css`
       animation: ${fadeOut} 1s forwards;
     `}
 `;
@@ -269,8 +273,8 @@ const StyledMovementWrapper = styled.div<{
     shouldExplode
       ? `transform: translate(${animatedImage.offsetX}px, ${animatedImage.offsetY}px)`
       : `transform: translate(${animatedImage.offsetXStart - 120}px, ${
-          animatedImage.offsetYStart - 150
-        }px)`};
+        animatedImage.offsetYStart - 150
+      }px)`};
 `;
 
 const StyledContainer = styled.div`
@@ -294,8 +298,8 @@ const Image = styled.img<{
   animation: ${fadeInGrow} 2s forwards ${({ fadeInDelay }) => fadeInDelay}ms;
 
   ${({ shouldFadeOut, fadeInDelay }) =>
-    shouldFadeOut &&
-    css`
+    shouldFadeOut
+    && css`
       animation: ${fadeOutGrow} 500ms forwards ${fadeInDelay / 3}ms;
       opacity: 1;
     `}

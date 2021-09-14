@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
+import { Collection } from 'types/Collection';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
-import { Collection } from 'types/Collection';
 
 type Props = {
   collections: Collection[];
@@ -14,7 +14,7 @@ function UserGalleryCollections({
   collections,
   isAuthenticatedUsersPage,
 }: Props) {
-  if (!collections.length) {
+  if (collections.length === 0) {
     const noCollectionsMessage = isAuthenticatedUsersPage
       ? 'Your gallery is empty. Display your NFTs by creating a collection.'
       : 'This user has not added any collections to their gallery yet.';

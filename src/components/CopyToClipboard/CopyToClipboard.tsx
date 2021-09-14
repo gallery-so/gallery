@@ -12,14 +12,14 @@ type Props = {
 const SECTION_DURATION_MS = 400;
 
 export default function CopyToClipboard({ textToCopy, children }: Props) {
-  // whether node is actually on the DOM
+  // Whether node is actually on the DOM
   const [isToastMounted, setIsToastMounted] = useState(false);
-  // pseudo-state for signaling animations. this will allow us
+  // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
 
   const handleCopyToClipboard = useCallback(async () => {
-    navigator.clipboard.writeText(textToCopy);
+    void navigator.clipboard.writeText(textToCopy);
     setIsToastMounted(true);
     setIsActive(true);
     await pause(SECTION_DURATION_MS * 2);
@@ -64,8 +64,8 @@ const Toast = styled.div<{ isActive: boolean }>`
 
   animation: ${({ isActive }) => css`
     ${isActive
-      ? translateUpAndFadeIn
-      : translateDownAndFadeOut} ${SECTION_DURATION_MS}ms
+    ? translateUpAndFadeIn
+    : translateDownAndFadeOut} ${SECTION_DURATION_MS}ms
   `};
   animation-fill-mode: forwards;
 `;

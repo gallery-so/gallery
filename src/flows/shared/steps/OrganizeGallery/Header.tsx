@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
 import { Caption, Heading } from 'components/core/Text/Text';
-// import TextButton from 'components/core/Button/TextButton';
+// Import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import colors from 'components/core/colors';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
-  // const handleGalleryPreview = useCallback(() => {
+  // Const handleGalleryPreview = useCallback(() => {
   //   alert('TODO - go to gallery preview');
   // }, []);
 

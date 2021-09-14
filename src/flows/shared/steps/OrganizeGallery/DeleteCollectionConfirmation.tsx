@@ -53,6 +53,7 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
     </StyledConfirmation>
   );
 }
+
 const StyledConfirmation = styled.div`
   width: 400px;
 `;
