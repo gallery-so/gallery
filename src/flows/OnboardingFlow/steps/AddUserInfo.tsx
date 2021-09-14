@@ -20,7 +20,9 @@ function useWizardConfig({ onNext }: ConfigProps) {
   useEffect(() => {
     setOnNext(onNext);
 
-    return () => setOnNext(undefined);
+    return () => {
+      setOnNext(undefined);
+    };
   }, [setOnNext, onNext]);
 }
 

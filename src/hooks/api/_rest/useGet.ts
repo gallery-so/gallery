@@ -15,7 +15,7 @@ import RequestAction from './RequestAction';
  */
 export default function useGet<ResponseType>(
   path: string | null,
-  action: RequestAction
+  action: RequestAction,
 ) {
   const { data } = useSwr<ResponseType>(path ? [path, action] : null);
   return data;

@@ -20,7 +20,7 @@ const grow = keyframes`
 `;
 
 const StyledDraggingImage = styled.div<{
-  srcUrl?: string;
+  srcUrl: string;
   isMouseUp: boolean;
 }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};

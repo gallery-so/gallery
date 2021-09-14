@@ -15,35 +15,41 @@ export function validate(field: string, validators: Validator[]): string | OK {
   for (const validator of validators) {
     try {
       validator(field);
-    } catch (e) {
-      // return first error that's caught from list of validators
-      return e.message;
+    } catch (error: unknown) {
+      // Return first error that's caught from list of validators
+      if (error instanceof Error) {
+        return error.message;
+      }
     }
   }
+
   return false;
 }
 
 export function required(s: string): ValidatorReturnType {
-  if (!s.length) {
+  if (s.length === 0) {
     throw new Error('Required.');
   }
+
   return false;
 }
 
-export function minLength(len: number) {
+export function minLength(length: number) {
   return function (s: string): ValidatorReturnType {
-    if (s.length < len) {
-      throw new Error(`Must be contain at least ${len} characters.`);
+    if (s.length < length) {
+      throw new Error(`Must be contain at least ${length} characters.`);
     }
+
     return false;
   };
 }
 
-export function maxLength(len: number) {
+export function maxLength(length: number) {
   return function (s: string): ValidatorReturnType {
-    if (s.length > len) {
-      throw new Error(`Must not exceed ${len} characters.`);
+    if (s.length > length) {
+      throw new Error(`Must not exceed ${length} characters.`);
     }
+
     return false;
   };
 }
@@ -51,17 +57,19 @@ export function maxLength(len: number) {
 export function alphanumericUnderscoresPeriods(s: string): ValidatorReturnType {
   if (!ALPHANUMERIC_UNDERSCORES_PERIODS.test(s)) {
     throw new Error(
-      'Must only contain alphanumeric characters, underscores, or periods.'
+      'Must only contain alphanumeric characters, underscores, or periods.',
     );
   }
+
   return false;
 }
 
 export function noConsecutivePeriodsOrUnderscores(
-  s: string
+  s: string,
 ): ValidatorReturnType {
   if (!NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES.test(s)) {
     throw new Error('Must not contain consecutive underscores or periods.');
   }
+
   return false;
 }

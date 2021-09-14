@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
+import usePost from '../_rest/usePost';
+import { useAuthenticatedUser } from '../users/useUser';
 import {
   UpdateCollectionNftsRequest,
   UpdateCollectionNftsResponse,
 } from './types';
-import usePost from '../_rest/usePost';
-import { useAuthenticatedUser } from '../users/useUser';
 
 export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
@@ -12,11 +12,13 @@ export default function useUpdateCollectionNfts() {
 
   return useCallback(
     async (collectionId: string, nfts: string[]) => {
-      if (!authenticatedUser) return;
+      if (!authenticatedUser) {
+        return;
+      }
 
       const result = await updateCollection<
-        UpdateCollectionNftsResponse,
-        UpdateCollectionNftsRequest
+      UpdateCollectionNftsResponse,
+      UpdateCollectionNftsRequest
       >('/collections/update/nfts', 'update collection nfts', {
         id: collectionId,
         nfts,
@@ -24,6 +26,6 @@ export default function useUpdateCollectionNfts() {
 
       return result;
     },
-    [authenticatedUser, updateCollection]
+    [authenticatedUser, updateCollection],
   );
 }

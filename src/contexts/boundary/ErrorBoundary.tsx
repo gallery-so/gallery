@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Subdisplay } from 'components/core/Text/Text';
 import Page from 'components/core/Page/Page';
-import { formatDetailedError } from 'src/errors/formatError';
+import { formatDetailedError } from 'errors/formatError';
 
 class ErrorBoundary extends Component {
   state: { error: null | Error } = { error: null };
@@ -20,6 +20,7 @@ class ErrorBoundary extends Component {
         </Page>
       );
     }
+
     return this.props.children;
   }
 }

@@ -16,5 +16,6 @@ export default function AuthenticatedRoute({
   if (!isAuthenticated) {
     return <Redirect to="/" noThrow />;
   }
+
   return <Component {...routeProps} />;
 }

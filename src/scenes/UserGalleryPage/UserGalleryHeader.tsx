@@ -9,7 +9,7 @@ type Props = {
   isAuthenticatedUsersPage: boolean;
 };
 
-function UserGalleryHeader({ user, isAuthenticatedUsersPage }: Props) {
+function UserGalleryHeader({ user }: Props) {
   return (
     <StyledUserGalleryHeader>
       <Subdisplay>{user.username}</Subdisplay>
@@ -17,7 +17,7 @@ function UserGalleryHeader({ user, isAuthenticatedUsersPage }: Props) {
       <StyledUserDetails>
         <Spacer height={18} />
         <StyledLeftContainer>
-          {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain 
+          {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain
             <BodyRegular color={colors.gray50}>Collector Since Mar 2021</BodyRegular>
           */}
           <StyledBodyRegular color={colors.gray50}>

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { mutate } from 'swr';
-import { CreateCollectionRequest, CreateCollectionResponse } from './types';
 import usePost from '../_rest/usePost';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { useAuthenticatedUser } from '../users/useUser';
+import { CreateCollectionRequest, CreateCollectionResponse } from './types';
 
 export default function useCreateCollection() {
   const createCollection = usePost();
@@ -14,11 +14,11 @@ export default function useCreateCollection() {
       galleryId: string,
       title: string,
       description: string,
-      nftIds: string[]
+      nftIds: string[],
     ) => {
       const result = await createCollection<
-        CreateCollectionResponse,
-        CreateCollectionRequest
+      CreateCollectionResponse,
+      CreateCollectionRequest
       >('/collections/create', 'create collection', {
         gallery_id: galleryId,
         name: title,
@@ -26,10 +26,10 @@ export default function useCreateCollection() {
         nfts: nftIds,
       });
 
-      mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
+      void mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
 
       return result;
     },
-    [createCollection, authenticatedUser]
+    [createCollection, authenticatedUser],
   );
 }

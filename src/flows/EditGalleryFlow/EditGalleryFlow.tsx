@@ -18,20 +18,18 @@ function EditGalleryFlow(_: RouteComponentProps) {
     <GalleryWizardProvider id="edit-gallery">
       <CollectionWizardProvider>
         <Wizard
-          render={(wizardProps) => {
-            return (
-              <>
-                <Steps>
-                  <Step id="organizeGallery" render={OrganizeGallery} />
-                  <Step id="organizeCollection" render={OrganizeCollection} />
-                </Steps>
-                <WizardFooter
-                  footerButtonTextMap={footerButtonTextMap}
-                  {...(wizardProps as WizardProps)}
-                />
-              </>
-            );
-          }}
+          render={wizardProps => (
+            <>
+              <Steps>
+                <Step id="organizeGallery" render={OrganizeGallery} />
+                <Step id="organizeCollection" render={OrganizeCollection} />
+              </Steps>
+              <WizardFooter
+                footerButtonTextMap={footerButtonTextMap}
+                {...(wizardProps as WizardProps)}
+              />
+            </>
+          )}
         />
       </CollectionWizardProvider>
     </GalleryWizardProvider>

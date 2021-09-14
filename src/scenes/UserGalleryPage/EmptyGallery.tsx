@@ -3,7 +3,7 @@ import { BodyRegular } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
 type Props = {
-  message: String;
+  message: string;
 };
 
 function EmptyGallery({ message }: Props) {

@@ -1,5 +1,5 @@
 import { useAuthState } from './AuthContext';
-import { isLoggedInState } from './types';
+import { isLoggedInState } from './typeguards';
 
 export default function useIsAuthenticated() {
   const authState = useAuthState();

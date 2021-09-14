@@ -10,7 +10,7 @@ type SidebarNftIconProps = {
 };
 
 function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
-  const isSelected = useMemo(() => !!editModeNft.isSelected, [
+  const isSelected = useMemo(() => Boolean(editModeNft.isSelected), [
     editModeNft.isSelected,
   ]);
 
@@ -22,7 +22,11 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
 
   const handleClick = useCallback(() => {
     setNftsIsSelected([editModeNft], !isSelected);
-    isSelected ? unstageNfts([editModeNft.id]) : stageNfts([editModeNft]);
+    if (isSelected) {
+      unstageNfts([editModeNft.id]);
+    } else {
+      stageNfts([editModeNft]);
+    }
   }, [editModeNft, isSelected, setNftsIsSelected, stageNfts, unstageNfts]);
 
   return (

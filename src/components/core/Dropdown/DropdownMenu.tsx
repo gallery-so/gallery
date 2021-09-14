@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import ActionText from '../ActionText/ActionText';
 import Dropdown from './Dropdown';
+
 type Props = {
   mainText: string;
-  options: Array<DropdownOption>;
+  options: DropdownOption[];
 };
 
 type DropdownOption = {
@@ -14,13 +15,11 @@ type DropdownOption = {
 function DropdownMenu({ mainText, options }: Props) {
   return (
     <Dropdown mainText={mainText}>
-      {options.map((option: DropdownOption) => {
-        return (
-          <StyledLink href={option.value}>
-            <StyledLinkText>{option.label}</StyledLinkText>
-          </StyledLink>
-        );
-      })}
+      {options.map((option: DropdownOption) => (
+        <StyledLink href={option.value}>
+          <StyledLinkText>{option.label}</StyledLinkText>
+        </StyledLink>
+      ))}
     </Dropdown>
   );
 }

@@ -12,9 +12,9 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
 function Auth(_: RouteComponentProps) {
-  // whether the user has entered the correct password
+  // Whether the user has entered the correct password
   const isPasswordValidated = useIsPasswordValidated();
-  // whether the user is web3-authenticated
+  // Whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
   const user = usePossiblyAuthenticatedUser();
   const username = user?.username;
@@ -24,9 +24,12 @@ function Auth(_: RouteComponentProps) {
   }
 
   if (isAuthenticated) {
-    // if user exists in DB, send them to their profile
-    if (username) return <Redirect to={`/${username}`} />;
-    // if user is authenticated but hasn't set their username yet.
+    // If user exists in DB, send them to their profile
+    if (username) {
+      return <Redirect to={`/${username}`} />;
+    }
+
+    // If user is authenticated but hasn't set their username yet.
     // we should continue to take them through the welcome flow.
     // this can happen if a user signs up and has a valid jwt but
     // hasn't set their username yet.

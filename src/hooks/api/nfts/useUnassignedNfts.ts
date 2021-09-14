@@ -18,7 +18,7 @@ type QueryProps = {
 };
 
 function getUnassignedNftsBaseUrlWithQuery({ userId, skipCache }: QueryProps) {
-  return `${getUnassignedNftsBaseUrl}?user_id=${userId}&skip_cache=${skipCache}`;
+  return `${getUnassignedNftsBaseUrl}?user_id=${userId}&skip_cache=${skipCache.toString()}`;
 }
 
 export function getUnassignedNftsCacheKey({ userId, skipCache }: QueryProps) {
@@ -41,7 +41,7 @@ export default function useUnassignedNfts({
 
   const data = useGet<UnassignedNftsResponse>(
     getUnassignedNftsBaseUrlWithQuery({ userId: user.id, skipCache }),
-    unassignedNftsAction
+    unassignedNftsAction,
   );
 
   return data?.nfts;
@@ -54,6 +54,6 @@ export function useRefreshUnassignedNfts() {
     async ({ skipCache }: Props) => {
       await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
     },
-    [userId]
+    [userId],
   );
 }

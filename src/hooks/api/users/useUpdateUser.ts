@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { UpdateUserRequest, UpdateUserResponse } from './types';
-import usePost from '../_rest/usePost';
 import { mutate } from 'swr';
 import { User } from 'types/User';
+import usePost from '../_rest/usePost';
+import { UpdateUserRequest, UpdateUserResponse } from './types';
 import { getUserCacheKey } from './useUser';
 
 export default function useUpdateUser() {
@@ -13,22 +13,22 @@ export default function useUpdateUser() {
       await updateUser<UpdateUserResponse, UpdateUserRequest>(
         '/users/update/info',
         'update user',
-        { username, bio }
+        { username, bio },
       );
 
-      // optimistically update both user caches by username, ID
+      // Optimistically update both user caches by username, ID
       await mutate(
         getUserCacheKey({ username }),
         (user: User) => ({ ...user, username, bio }),
-        false
+        false,
       );
 
       await mutate(
         getUserCacheKey({ id: userId }),
         (user: User) => ({ ...user, username, bio }),
-        false
+        false,
       );
     },
-    [updateUser]
+    [updateUser],
   );
 }

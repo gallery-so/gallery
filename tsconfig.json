@@ -26,8 +26,10 @@
       "hooks/*": ["src/hooks/*"],
       "utils/*": ["src/utils/*"],
       "mocks/*": ["src/mocks/*"],
-      "types/*": ["src/types/*"]
-    }
+      "types/*": ["src/types/*"],
+      "errors/*": ["src/errors/*"]
+    },
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

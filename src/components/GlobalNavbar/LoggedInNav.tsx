@@ -23,17 +23,16 @@ function LoggedInNav() {
   const userAddress = useAuthenticatedUserAddress();
   const { showModal } = useModal();
 
-  const truncatedUserAddress = useMemo(() => {
-    return truncate(userAddress);
-  }, [userAddress]);
+  const truncatedUserAddress = useMemo(() => truncate(userAddress), [userAddress]);
 
   const handleGalleryRedirect = useCallback(() => {
-    const authenticatedUserIsOnTheirOwnPage =
-      window.location.pathname.slice(1) === user.username;
+    const authenticatedUserIsOnTheirOwnPage
+      = window.location.pathname.slice(1) === user.username;
     if (authenticatedUserIsOnTheirOwnPage) {
       return;
     }
-    navigate(`/${user.username}`);
+
+    void navigate(`/${user.username}`);
   }, [user.username]);
 
   const handleEditNameClick = useCallback(() => {
@@ -41,7 +40,7 @@ function LoggedInNav() {
   }, [showModal]);
 
   const handleEditGalleryClick = useCallback(() => {
-    navigate('/edit');
+    void navigate('/edit');
   }, []);
 
   return (

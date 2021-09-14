@@ -10,7 +10,7 @@ type Props = {
   collection: Collection;
 };
 
-// space between NFTs in pixels
+// Space between NFTs in pixels
 const GAP_PX = 40;
 
 function UserGalleryCollection({ collection }: Props) {
@@ -25,7 +25,7 @@ function UserGalleryCollection({ collection }: Props) {
       </StyledCollectionHeader>
       <Spacer height={24} />
       <StyledCollectionNfts>
-        {collection.nfts.map((nft) => (
+        {collection.nfts.map(nft => (
           <NftPreview
             key={nft.id}
             nft={nft}

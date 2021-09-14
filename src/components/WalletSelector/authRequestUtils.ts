@@ -1,6 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
+import { Web3Error } from 'types/Error';
 
 /**
  * Auth Pipeline:
@@ -30,24 +31,24 @@ export default async function initializeAuthPipeline({
   const signature = await signMessage(nonce, signer);
 
   if (userExists) {
-    const res = await loginUser({ signature, address }, fetcher);
-    return { jwt: res.jwt_token, userId: res.user_id };
+    const response = await loginUser({ signature, address }, fetcher);
+    return { jwt: response.jwt_token, userId: response.user_id };
   }
 
-  const res = await createUser(
+  const response = await createUser(
     {
       signature,
       address,
       nonce,
     },
-    fetcher
+    fetcher,
   );
 
-  // the user's nfts should be fetched here so that they're ready to go by the time
+  // The user's nfts should be fetched here so that they're ready to go by the time
   // they arrive at the Create First Collection step
   await triggerOpenseaSync(address, fetcher);
 
-  return { jwt: res.jwt_token, userId: res.user_id };
+  return { jwt: response.jwt_token, userId: response.user_id };
 }
 
 /**
@@ -62,17 +63,21 @@ type NonceResponse = {
 
 async function fetchNonce(
   address: string,
-  fetcher: FetcherType
+  fetcher: FetcherType,
 ): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(
       `/auth/get_preflight?address=${address}`,
-      'fetch nonce'
+      'fetch nonce',
     );
-  } catch (err) {
-    console.error('error while retrieving nonce', err);
-    err.code = 'GALLERY_SERVER_ERROR';
-    throw err;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while retrieving nonce', error);
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      throw errorWithCode;
+    }
+
+    throw new Error('Unknown error');
   }
 }
 
@@ -85,14 +90,18 @@ type Signature = string;
 
 async function signMessage(
   nonce: string,
-  signer: JsonRpcSigner
+  signer: JsonRpcSigner,
 ): Promise<Signature> {
   try {
     return await signer.signMessage(nonce);
-  } catch (err) {
-    console.error('error while signing message', err);
-    err.code = 'REJECTED_SIGNATURE';
-    throw err;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while signing message', error);
+      const errorWithCode: Web3Error = { code: 'REJECTED_SIGNATURE', ...error };
+      throw errorWithCode;
+    }
+
+    throw new Error('Unknown error');
   }
 }
 
@@ -112,16 +121,20 @@ type LoginUserResponse = {
 
 async function loginUser(
   body: LoginUserRequest,
-  fetcher: FetcherType
+  fetcher: FetcherType,
 ): Promise<LoginUserResponse> {
   try {
     return await fetcher<LoginUserResponse>('/users/login', 'log in user', {
       body,
     });
-  } catch (err) {
-    console.error('error while attempting user login', err);
-    err.code = 'GALLERY_SERVER_ERROR';
-    throw err;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting user login', error);
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      throw errorWithCode;
+    }
+
+    throw new Error('Unknown error');
   }
 }
 
@@ -142,16 +155,20 @@ type CreateUserResponse = {
 
 async function createUser(
   body: CreateUserRequest,
-  fetcher: FetcherType
+  fetcher: FetcherType,
 ): Promise<CreateUserResponse> {
   try {
     return await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
-  } catch (err) {
-    console.error('error while attempting user creation', err);
-    err.code = 'GALLERY_SERVER_ERROR';
-    throw err;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting user creation', error);
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      throw errorWithCode;
+    }
+
+    throw new Error('Unknown error');
   }
 }
 
@@ -159,10 +176,10 @@ async function triggerOpenseaSync(address: string, fetcher: FetcherType) {
   try {
     await fetcher<OpenseaSyncResponse>(
       `/nfts/opensea_get?address=${address}&skip_cache=true`,
-      'fetch and sync nfts'
+      'fetch and sync nfts',
     );
-  } catch (e) {
-    // error silently; TODO: send error analytics
-    console.error(e);
+  } catch (error: unknown) {
+    // Error silently; TODO: send error analytics
+    console.error(error);
   }
 }

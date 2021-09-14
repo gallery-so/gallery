@@ -14,15 +14,16 @@ export default function ImageWithLoading({ src, alt }: Props) {
   useEffect(() => {
     const image = new Image();
     image.src = src;
-    image.onload = () => {
+    image.addEventListener('load', () => {
       setTimeout(() => {
         setContentIsLoaded();
       }, 1000);
-    };
-    image.onerror = () => {
+    });
+
+    image.addEventListener('error', () => {
       // TODO: add handling loading error on shimmer context
       // setErrored(true);
-    };
+    });
   }, [setContentIsLoaded, src]);
 
   return <StyledImg src={src} alt={alt} />;

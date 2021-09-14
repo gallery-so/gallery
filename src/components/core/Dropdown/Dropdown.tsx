@@ -18,10 +18,8 @@ type Props = {
 
 const refContainsEventTarget = (
   ref: RefObject<HTMLDivElement>,
-  event: MouseEvent
-) => {
-  return ref.current?.contains(event.target as Node);
-};
+  event: MouseEvent,
+) => ref.current?.contains(event.target as Node);
 
 const dropdownMenuWrapperStyle: CSSProperties = { position: 'relative' };
 const dropdownButtonWrapperStyle: CSSProperties = { display: 'flex' };
@@ -30,7 +28,7 @@ function Dropdown({ mainText, children }: Props) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const handleDropdownButtonClick = useCallback(() => {
-    setIsDropdownVisible((prevIsDropdownVisible) => !prevIsDropdownVisible);
+    setIsDropdownVisible(previousIsDropdownVisible => !previousIsDropdownVisible);
   }, []);
 
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
@@ -46,10 +44,11 @@ function Dropdown({ mainText, children }: Props) {
   }, []);
 
   useEffect(() => {
-    // we only need to add document listener if dropdown is open
+    // We only need to add document listener if dropdown is open
     if (isDropdownVisible) {
       document.addEventListener('mousedown', handleDocumentClick);
     }
+
     return () => {
       document.removeEventListener('mousedown', handleDocumentClick);
     };
@@ -60,7 +59,7 @@ function Dropdown({ mainText, children }: Props) {
       {/* styled component type doesnt support refs so use wrapper */}
       <div ref={dropdownButtonRef} style={dropdownButtonWrapperStyle}>
         <StyledDropdownButton
-          text={mainText || ''}
+          text={mainText ?? ''}
           onClick={handleDropdownButtonClick}
           isDropdownVisible={isDropdownVisible}
         />
@@ -95,7 +94,7 @@ export const StyledDropdownButton = styled(TextButton)<StyledDropdownProps>`
 
   > p {
     color: ${({ isDropdownVisible }) =>
-      isDropdownVisible ? 'black' : undefined};
+    isDropdownVisible ? 'black' : undefined};
   }
 `;
 

@@ -2,17 +2,17 @@ import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from 'connectors/index';
-// import { injected, walletconnect, walletlink } from 'connectors/index';
+// Import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import WalletButton from './WalletButton';
 import colors from 'components/core/colors';
 import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import initializeAuthPipeline from './authRequestUtils';
 import useFetcher from 'contexts/swr/useFetcher';
 import Mixpanel from 'utils/mixpanel';
+import initializeAuthPipeline from './authRequestUtils';
+import WalletButton from './WalletButton';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -31,8 +31,8 @@ type ErrorMessage = {
 
 // TODO: consider making these enums
 const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
-  // client-side provider errors: https://eips.ethereum.org/EIPS/eip-1193#provider-errors
-  '4001': {
+  // Client-side provider errors: https://eips.ethereum.org/EIPS/eip-1193#provider-errors
+  4001: {
     heading: 'Authorization denied',
     body: 'Please authorize the app to log in.',
   },
@@ -60,7 +60,7 @@ function WalletSelector() {
     account,
     activate,
     deactivate,
-    // error returned from web3 provider
+    // Error returned from web3 provider
     error,
     setError,
   } = useWeb3React<Web3Provider>();
@@ -69,39 +69,40 @@ function WalletSelector() {
   const [isPending, setIsPending] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState('');
 
-  // manually detected error not provided by web3 provider;
+  // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
   const [detectedError, setDetectedError] = useState<Web3Error>();
 
-  // default to error displayed by web3 provider and fall back
+  // Default to error displayed by web3 provider and fall back
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    console.error('login error from provider', {
-      error,
-      // @ts-ignore
-      code: error?.code,
-      name: error?.name,
-    });
+    console.error('login error from provider', error);
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
-    if (!errorToDisplay) return null;
-    // handle error from server
+    if (!errorToDisplay) {
+      return null;
+    }
+
+    // Handle error from server
     if (errorToDisplay.code === 'GALLERY_SERVER_ERROR') {
       return {
         heading: 'Authorization error',
         body: errorToDisplay.message,
       };
     }
-    // handle error from web3 lib
+
+    // Handle error from web3 lib
     if (!errorToDisplay.code) {
-      // manually handle error cases as we run into them with wallets
+      // Manually handle error cases as we run into them with wallets
       if (errorToDisplay.name === 'UserRejectedRequestError') {
         errorToDisplay.code = '4001';
       }
+
       if (errorToDisplay.name === 'UnsupportedChainIdError') {
         errorToDisplay.code = 'UNSUPPORTED_CHAIN';
       }
     }
+
     const parsedError = getErrorMessage(errorToDisplay.code ?? '');
     return parsedError;
   }, [error, detectedError]);
@@ -112,7 +113,7 @@ function WalletSelector() {
       setPendingWallet(connector);
       setPendingWalletName(walletName);
     },
-    []
+    [],
   );
 
   const retryConnectWallet = useCallback(() => {
@@ -121,9 +122,7 @@ function WalletSelector() {
     deactivate();
   }, [deactivate]);
 
-  const signer = useMemo(() => {
-    return library && account ? library.getSigner(account) : undefined;
-  }, [library, account]);
+  const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
 
   const { logIn } = useAuthActions();
 
@@ -141,14 +140,17 @@ function WalletSelector() {
           });
           Mixpanel.trackConnectWallet(pendingWalletName);
           logIn({ jwt, userId });
-        } catch (err) {
-          setDetectedError(err);
-          setIsPending(false);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
+            setDetectedError(web3Error);
+            setIsPending(false);
+          }
         }
       }
     }
 
-    authenticate();
+    void authenticate();
   }, [account, isPending, logIn, signer, fetcher, pendingWalletName]);
 
   /**
@@ -157,11 +159,14 @@ function WalletSelector() {
    * to stick around if the user navigates away and comes back (or closes a modal
    * and re-opens it).
    */
-  useEffect(() => {
-    // @ts-expect-error: this is the only way to clear the error from the provider
-    // manually, but the library doesn't give us the option to pass in a non-error
-    return () => setError(undefined);
-  }, [setError]);
+  useEffect(() =>
+    () => {
+      // This is the only way to clear the error from the provider
+      // manually, but the library doesn't give us the option to pass in a non-error
+      // @ts-expect-error: see comment
+      setError(undefined);
+    }
+  , [setError]);
 
   if (displayedError) {
     return (
@@ -184,18 +189,16 @@ function WalletSelector() {
           isPending={isPending}
         />
       ) : (
-        Object.keys(walletConnectorMap).map((walletName) => {
-          return (
-            <WalletButton
-              key={walletName}
-              walletName={walletName}
-              activate={activate}
-              connector={walletConnectorMap[walletName]}
-              setToPendingState={setToPendingState}
-              isPending={isPending}
-            />
-          );
-        })
+        Object.keys(walletConnectorMap).map(walletName => (
+          <WalletButton
+            key={walletName}
+            walletName={walletName}
+            activate={activate}
+            connector={walletConnectorMap[walletName]}
+            setToPendingState={setToPendingState}
+            isPending={isPending}
+          />
+        ))
       )}
       <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>

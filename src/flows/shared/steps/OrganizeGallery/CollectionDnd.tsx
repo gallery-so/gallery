@@ -18,10 +18,10 @@ import {
   restrictToWindowEdges,
 } from '@dnd-kit/modifiers';
 
-import CollectionRowWrapper from './CollectionRowWrapper';
-import CollectionRowDragging from './CollectionRowDragging';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { Collection } from 'types/Collection';
+import CollectionRowWrapper from './CollectionRowWrapper';
+import CollectionRowDragging from './CollectionRowDragging';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -32,7 +32,7 @@ const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
   sortedCollections: Collection[];
-  setSortedCollections: (sorter: (prev: Collection[]) => Collection[]) => void;
+  setSortedCollections: (sorter: (previous: Collection[]) => Collection[]) => void;
 };
 
 function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
@@ -44,14 +44,14 @@ function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-        setSortedCollections((prev) => {
-          const oldIndex = prev.findIndex(({ id }) => id === active.id);
-          const newIndex = prev.findIndex(({ id }) => id === over?.id);
-          return arrayMove(prev, oldIndex, newIndex);
+        setSortedCollections(previous => {
+          const oldIndex = previous.findIndex(({ id }) => id === active.id);
+          const newIndex = previous.findIndex(({ id }) => id === over?.id);
+          return arrayMove(previous, oldIndex, newIndex);
         });
       }
     },
-    [setSortedCollections]
+    [setSortedCollections],
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -63,15 +63,13 @@ function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
     setActiveId(active.id);
   }, []);
 
-  const activeCollection = useMemo(() => {
-    return collections.find(({ id }) => id === activeId);
-  }, [activeId, collections]);
+  const activeCollection = useMemo(() => collections.find(({ id }) => id === activeId), [activeId, collections]);
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       handleSortCollections(event);
     },
-    [handleSortCollections]
+    [handleSortCollections],
   );
 
   return (
@@ -85,7 +83,7 @@ function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
         items={sortedCollections}
         strategy={verticalListSortingStrategy}
       >
-        {sortedCollections.map((collection) => (
+        {sortedCollections.map(collection => (
           <CollectionRowWrapper key={collection.id} collection={collection} />
         ))}
       </SortableContext>
@@ -97,4 +95,5 @@ function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
     </DndContext>
   );
 }
+
 export default CollectionDnd;

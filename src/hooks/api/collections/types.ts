@@ -15,7 +15,7 @@ export type DeleteCollectionRequest = {
   id: string;
 };
 
-export type DeleteCollectionResponse = {};
+export type DeleteCollectionResponse = Record<string, unknown>;
 
 export type GetCollectionsResponse = { collections: Collection[] };
 

@@ -12,7 +12,7 @@ function Congratulations() {
   const username = useAuthenticatedUsername();
 
   const handleClick = useCallback(() => {
-    navigate(`/${username}`);
+    void navigate(`/${username}`);
   }, [username]);
 
   return (

@@ -2,12 +2,12 @@ import { USERNAME_REGEX } from './regex';
 
 function testRegex(
   pattern: RegExp,
-  values: Array<string>,
-  expectedValue: boolean
+  values: string[],
+  expectedValue: boolean,
 ) {
-  values.forEach((value) => {
+  for (const value of values) {
     expect(pattern.test(value)).toBe(expectedValue);
-  });
+  }
 }
 
 test('USERNAME_REGEX', () => {

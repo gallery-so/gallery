@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import WalletSelector from './WalletSelector';
 import AuthProvider from 'contexts/auth/AuthContext';
+import WalletSelector from './WalletSelector';
 
 test('Clicking on an option puts the selector in a pending state', async () => {
-  // silence console.warn that is logged when wallet connection is unsuccesful
+  // Silence console.warn that is logged when wallet connection is unsuccesful
   console.warn = jest.fn();
   // Mock Metamask installed (metamask injects a global API at window.ethereum)
   global.ethereum = {};
@@ -11,7 +11,7 @@ test('Clicking on an option puts the selector in a pending state', async () => {
   render(
     <AuthProvider>
       <WalletSelector />
-    </AuthProvider>
+    </AuthProvider>,
   );
   fireEvent.click(screen.getAllByTestId('wallet-button')[0]);
   await waitFor(() => {
