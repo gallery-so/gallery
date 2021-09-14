@@ -108,12 +108,6 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setStagedNftsState(previous => {
       const ids = previous.map(({ id }) => id);
       const stagedNfts = Object.fromEntries(ids.map(key => [key, true]));
-      // Const stagedNfts = previous
-      //   .map(({ id }) => id)
-      //   .reduce((map: Record<string, boolean>, id: string) => {
-      //     map[id] = true;
-      //     return map;
-      //   }, {});
 
       const nftsNotYetStaged = nfts.filter(({ id }) => !stagedNfts[id]);
 
@@ -122,12 +116,8 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
-    // TODO verify
     const idsMap = Object.fromEntries(ids.map(key => [key, true]));
-    // Const idsMap = ids.reduce((map: Record<string, boolean>, id: string) => {
-    //   map[id] = true;
-    //   return map;
-    // }, {});
+
     setStagedNftsState(previous =>
       previous.filter(editModeNft => !idsMap[editModeNft.id]),
     );

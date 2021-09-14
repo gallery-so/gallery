@@ -24,7 +24,6 @@ type Props = {
 };
 
 function NavigationHandle({ direction, nftId }: Props) {
-  console.log(direction);
   const arrow = useMemo(() => ARROWS.get(direction) ?? '', [direction]);
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);

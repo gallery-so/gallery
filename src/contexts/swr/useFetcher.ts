@@ -33,7 +33,6 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
   if (localJwt && requestOptions.headers) {
     const parsedLocalJwt = JSON.parse(localJwt) as string;
-    console.log(localJwt, JSON.parse(localJwt));
     // @ts-expect-error: Authorization is a legit header
     requestOptions.headers.Authorization = `Bearer ${parsedLocalJwt}`;
   }
@@ -45,6 +44,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
 
   const response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const responseBody = await response.json().catch((error: unknown) => {
     // Certain successful responses won't have a JSON body (e.g. updates)
     // res.json() will throw an error in these cases, which we catch gracefully
@@ -76,6 +76,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
     throw new Error(serverErrorMessage);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return responseBody;
 };
 

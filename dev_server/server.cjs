@@ -40,6 +40,7 @@ function initializeMockServer() {
   });
 
   mockServer.listen(port, () => {
+    // eslint-disable-next-line no-console
     console.log(`test server initialized at http://localhost:${port}`);
   });
 

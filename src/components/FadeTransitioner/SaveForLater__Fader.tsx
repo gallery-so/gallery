@@ -20,10 +20,8 @@ function WrappedComponent<T extends (props: any) => JSX.Element>({
     setIsActive(true);
     return () => {
       setIsActive(false);
-      console.log('fading out');
       setTimeout(() => {
         setIsMounted(false);
-        console.log('unmounting!');
       }, FADE_TRANSITION_MS);
     };
   }, []);

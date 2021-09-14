@@ -1,4 +1,3 @@
-// Const babelJest = require('babel-jest');
 import babelJest from 'babel-jest';
 import { createRequire } from 'node:module';
 

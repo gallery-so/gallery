@@ -96,12 +96,6 @@
     "build": "CI=false node scripts/build.js",
     "test": "xo & node scripts/test.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -208,9 +202,16 @@
         "always"
       ],
       "radix": "off",
-      "unicorn/no-array-reduce": "off"
+      "unicorn/no-array-reduce": "off",
+      "no-console": ["error", { "allow": ["warn", "error"] }]
     },
     "overrides": [
+      {
+        "files": ["scripts/build.js", "scripts/start.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      },
       {
         "files": "dev_server/*.js",
         "rules": {

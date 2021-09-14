@@ -71,7 +71,6 @@ export function useAuthenticatedUser() {
 
 export function useAuthenticatedUserAddress() {
   const user = useAuthenticatedUser();
-  console.log('user', user);
 
   const address = user.addresses?.[0];
   if (!address) {
