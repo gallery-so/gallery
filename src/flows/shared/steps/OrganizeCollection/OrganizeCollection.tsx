@@ -12,6 +12,7 @@ import {
   useCollectionWizardState,
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import Mixpanel from 'utils/mixpanel';
 import { EditModeNft } from './types';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
@@ -64,6 +65,7 @@ function useWizardConfig({ push }: ConfigProps) {
 
     // If collection is being created, trigger creation
     setOnNext(async () => {
+      Mixpanel.track('Save new collection');
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}

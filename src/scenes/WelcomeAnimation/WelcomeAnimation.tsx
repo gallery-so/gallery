@@ -7,6 +7,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
+import Mixpanel from 'utils/mixpanel';
 
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
@@ -57,8 +58,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/Y1IJvZJcWZgtA0YtcLz6gBV4EMA4AkK9s4_qWqMYAly-DOg7c_uGvSEO6gUH0T3Y31g-Ohs4_6vnxMjwD-azlve_7e9awUtQZrduFQ', // Neoclassicism
+    src: 'https://lh3.googleusercontent.com/Y1IJvZJcWZgtA0YtcLz6gBV4EMA4AkK9s4_qWqMYAly-DOg7c_uGvSEO6gUH0T3Y31g-Ohs4_6vnxMjwD-azlve_7e9awUtQZrduFQ', // Neoclassicism
     width: 280,
     zIndex: -18,
     offsetX: 370,
@@ -79,8 +79,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/rYPQCDn8RIgPafTpnXCtRmmDnBt1jv1FloRNFuRd8XgHha0YAYx-UuFvAhlejHOha3USJORnJnejXZgaFtzX-zUnRtGb8fOB8YWq4w', // Sampler
+    src: 'https://lh3.googleusercontent.com/rYPQCDn8RIgPafTpnXCtRmmDnBt1jv1FloRNFuRd8XgHha0YAYx-UuFvAhlejHOha3USJORnJnejXZgaFtzX-zUnRtGb8fOB8YWq4w', // Sampler
     width: 200,
     zIndex: 11,
     offsetX: -550,
@@ -112,8 +111,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/Ttouv6tE3d4HavomW-N1cq2SPObKtiYrKtO8iZBBI-_dlsqFkiA9lmMOpCY4FFTG4hbnIGBsL9WDAaSDPfYLo8Xt4WJu74QTCkyQJIU', // Pink
+    src: 'https://lh3.googleusercontent.com/Ttouv6tE3d4HavomW-N1cq2SPObKtiYrKtO8iZBBI-_dlsqFkiA9lmMOpCY4FFTG4hbnIGBsL9WDAaSDPfYLo8Xt4WJu74QTCkyQJIU', // Pink
     width: 200,
     zIndex: 30,
     offsetX: 80,
@@ -123,8 +121,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src:
-      'https://ipfs.io/ipfs/QmUttDiQH3utkd5Zcq5J9QjCfpoWXTdYprobcJts22cpxc/1_Satoshiscoin_Gif.gif', // Satoshis Coin
+    src: 'https://ipfs.io/ipfs/QmUttDiQH3utkd5Zcq5J9QjCfpoWXTdYprobcJts22cpxc/1_Satoshiscoin_Gif.gif', // Satoshis Coin
     width: 230,
     zIndex: -11,
     offsetX: -660,
@@ -179,6 +176,7 @@ export default function WelcomeAnimation({ next }: Props) {
   }, [setShouldExplode]);
   const handleClick = useCallback(() => {
     // Delay next so we can show a transition animation
+    Mixpanel.track('Click through welcome page');
     setShouldFadeOut(true);
     setTimeout(() => {
       next();

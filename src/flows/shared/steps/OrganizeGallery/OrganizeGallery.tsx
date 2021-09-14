@@ -11,6 +11,7 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import { Collection } from 'types/Collection';
+import Mixpanel from 'utils/mixpanel';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
@@ -46,6 +47,7 @@ function useWizardConfig({
     clearOnNext();
     // Save gallery changes (re-ordered collections)
     if (wizardId === 'onboarding') {
+      Mixpanel.track('Publish gallery');
       next();
       return;
     }

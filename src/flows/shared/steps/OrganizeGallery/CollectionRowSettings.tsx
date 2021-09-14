@@ -11,6 +11,7 @@ import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import { Collection } from 'types/Collection';
+import Mixpanel from 'utils/mixpanel';
 import noop from 'utils/noop';
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
@@ -29,6 +30,7 @@ function CollectionRowSettings({
   const { id, name, collectors_note, hidden } = collection;
 
   const handleEditCollectionClick = useCallback(() => {
+    Mixpanel.track('Update existing collection');
     setCollectionIdBeingEdited(id);
     push('organizeCollection');
   }, [id, push, setCollectionIdBeingEdited]);
