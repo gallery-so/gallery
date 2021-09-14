@@ -23,6 +23,8 @@ import {
 import StagedNftImageDragging from './StagedNftImageDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 
+const DND_WIDTH = 984;
+
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
   dragSourceOpacity: 0.2,
@@ -53,7 +55,9 @@ function StagingArea() {
 
   return (
     <StyledStagingArea>
-      <Heading>Your collection</Heading>
+      <StyledHeadingWrapper>
+        <Heading>Your collection</Heading>
+      </StyledHeadingWrapper>
       <DndContext
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}
@@ -81,9 +85,17 @@ function StagingArea() {
   );
 }
 
+const StyledHeadingWrapper = styled.div`
+  width: ${DND_WIDTH}px;
+  padding: 0 24px;
+`;
+
 const StyledStagingArea = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+
+  margin: 0 auto;
 
   width: 100%;
   height: calc(100vh - ${FOOTER_HEIGHT}px);
@@ -103,13 +115,16 @@ const StyledStagedNftContainer = styled.div`
 
   margin-top: 20px;
 
+  // Limit DnD to 3 columns
+  max-width: ${DND_WIDTH}px;
+
   // Safari doesn't support this yet
   // column-gap: 48px;
   // row-gap: 48px;
 
   // Temporary solution until Safari support
   width: calc(100% + 48px);
-  margin-left: -24px;
+
   ${StyledSortableNft} {
     margin: 24px;
   }
