@@ -34,7 +34,8 @@
       "rules": {
         "@typescript-eslint/object-curly-spacing": ["error", "always"],
         "@typescript-eslint/prefer-return-this-type": "off",
-        "@typescript-eslint/no-unused-expressions": ["error", { "allowTernary": true }]
+        "@typescript-eslint/no-unused-expressions": ["error", { "allowTernary": true }],
+        "@typescript-eslint/restrict-template-expressions": "off"
       }
     },
     {
