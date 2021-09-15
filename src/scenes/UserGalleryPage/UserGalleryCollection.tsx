@@ -50,7 +50,7 @@ const StyledCollectionHeader = styled.div`
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 50%;
+    width: 70%;
   }
 `;
 

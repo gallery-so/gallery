@@ -27,14 +27,15 @@ function CollectionRow({ collection, className }: Props) {
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
+  const truncatedCollectorsNote = useMemo(() => collectors_note.length > 100 ? collectors_note.slice(0, 100) + ('...') : collectors_note, [collectors_note]);
+
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
           <BodyRegular>{name}</BodyRegular>
           <Spacer height={4} />
-          {/* TODO__v1: make sure this truncates with ellipses if too long */}
-          <Caption color={colors.gray50}>{collectors_note}</Caption>
+          <Caption color={colors.gray50}>{truncatedCollectorsNote}</Caption>
         </TextContainer>
         <Settings />
       </Header>
