@@ -55,9 +55,6 @@ function StagingArea() {
 
   return (
     <StyledStagingArea>
-      <StyledHeadingWrapper>
-        <Heading>Your collection</Heading>
-      </StyledHeadingWrapper>
       <DndContext
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}
@@ -66,6 +63,9 @@ function StagingArea() {
       >
         <SortableContext items={stagedNfts}>
           <StyledStagedNftContainer>
+            <StyledHeadingWrapper>
+              <Heading>Your collection</Heading>
+            </StyledHeadingWrapper>
             {stagedNfts.map(editModeNft => (
               <SortableStagedNft
                 key={editModeNft.id}
@@ -86,7 +86,7 @@ function StagingArea() {
 }
 
 const StyledHeadingWrapper = styled.div`
-  width: ${DND_WIDTH}px;
+  width: 100%;
   padding: 0 24px;
 `;
 

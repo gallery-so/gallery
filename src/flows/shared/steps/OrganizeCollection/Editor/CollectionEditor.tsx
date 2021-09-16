@@ -10,6 +10,8 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import { useAuthenticatedUserAddress } from 'hooks/api/users/useUser';
+import useOpenseaSync from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
@@ -39,6 +41,8 @@ function CollectionEditor() {
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts } = useCollectionEditorActions();
 
+  const address = useAuthenticatedUserAddress();
+  useOpenseaSync({ address, skipCache: false });
   const unassignedNfts = useUnassignedNfts({ skipCache: false });
 
   const { collections } = useAuthenticatedGallery();
