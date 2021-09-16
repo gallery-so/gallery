@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const paths = import('./paths.cjs');
+const paths = require('./paths.cjs');
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths.cjs')];
@@ -52,13 +52,13 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in webpack configuration.
-const REACT_APP = /^react_app_/i;
+const REACT_APP = /^REACT_APP_/i;
 
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
-    .filter(key => REACT_APP.test(key))
-    .reduce(
-      (env, key) => {
+  .filter(key => REACT_APP.test(key))
+  .reduce(
+    (env, key) => {
         env[key] = process.env[key];
         return env;
       },

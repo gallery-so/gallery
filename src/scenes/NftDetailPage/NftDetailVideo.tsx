@@ -1,3 +1,4 @@
+import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
@@ -6,6 +7,8 @@ type Props = {
 };
 
 function NftDetailVideo({ nft }: Props) {
+  const setContentIsLoaded = useSetContentIsLoaded();
+
   return (
     <StyledVideo
       src={nft.animation_url}
@@ -14,6 +17,7 @@ function NftDetailVideo({ nft }: Props) {
       loop
       playsInline
       controls
+      onLoadStart={setContentIsLoaded}
     />
   );
 }

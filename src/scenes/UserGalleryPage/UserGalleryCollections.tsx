@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import { Collection } from 'types/Collection';
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 
@@ -29,11 +29,11 @@ function UserGalleryCollections({
   return (
     <StyledUserGalleryCollections>
       {filteredCollections.map((collection, index) => (
-        <>
+        <Fragment key={collection.id}>
           <Spacer height={index === 0 ? 48 : 108} />
           <UserGalleryCollection collection={collection} />
           <Spacer height={index === collections.length - 1 ? 108 : 0} />
-        </>
+        </Fragment>
       ))}
     </StyledUserGalleryCollections>
   );
