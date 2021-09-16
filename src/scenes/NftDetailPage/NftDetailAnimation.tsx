@@ -1,3 +1,4 @@
+import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 
@@ -6,9 +7,11 @@ type Props = {
 };
 
 function NftDetailAnimation({ nft }: Props) {
+  const setContentIsLoaded = useSetContentIsLoaded();
+
   return (
     <StyledNftDetailAnimation>
-      <StyledIframe src={nft.animation_url}></StyledIframe>
+      <StyledIframe src={nft.animation_url} onLoad={setContentIsLoaded}></StyledIframe>
     </StyledNftDetailAnimation>
   );
 }
