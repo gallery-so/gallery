@@ -38,7 +38,7 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   },
   UNSUPPORTED_CHAIN: {
     heading: 'Authorization error',
-    body: 'The selected chain is unsupported. Plase check your wallet.',
+    body: 'The selected chain is unsupported. Please check your wallet.',
   },
   REJECTED_SIGNATURE: {
     heading: 'Signature required',
@@ -134,7 +134,7 @@ function WalletSelector() {
       if (account && isPending && signer) {
         try {
           const { jwt, userId } = await initializeAuthPipeline({
-            address: account,
+            address: account.toLowerCase(),
             signer,
             fetcher,
           });
