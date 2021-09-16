@@ -86,7 +86,7 @@ function StagingArea() {
 }
 
 const StyledHeadingWrapper = styled.div`
-  width: ${DND_WIDTH}px;
+  width: 100%;
   padding: 0 24px;
 `;
 
