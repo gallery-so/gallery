@@ -3,15 +3,16 @@ import useGet from '../_rest/useGet';
 
 type Props = {
   address: string;
+  skipCache?: boolean;
 };
 
 export type OpenseaSyncResponse = {
   nfts: Nft[];
 };
 
-export default function useOpenseaSync({ address }: Props): Nft[] | undefined {
+export default function useOpenseaSync({ address, skipCache = false }: Props): Nft[] | undefined {
   const data = useGet<OpenseaSyncResponse>(
-    `/nfts/opensea_get?address=${address}`,
+    `/nfts/opensea_get?address=${address}&skip_cache=${skipCache}`,
     'fetch and sync nfts',
   );
 
