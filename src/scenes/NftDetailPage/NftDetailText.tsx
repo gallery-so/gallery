@@ -1,10 +1,15 @@
-import { Heading, BodyRegular } from 'components/core/Text/Text';
+import { useState } from 'react';
+import { Heading, BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
+import transitions from 'components/core/transitions';
+import ActionText from 'components/core/ActionText/ActionText';
+import TextButton from 'components/core/Button/TextButton';
+import NftAdditionalDetails from './NftAdditionalDetails';
 
 type Props = {
   nft: Nft;
@@ -22,29 +27,32 @@ function NftDetailText({ nft }: Props) {
       </StyledNftDescription>
       <Spacer height={32} />
       {/* TODO__v1.1: populate Gallery Username once it's sent from backend */}
-      {/* <BodyRegular color={colors.gray50}>Owned By</BodyRegular> */}
-      {/* <BodyRegular>{nft.owner_address}</BodyRegular> */}
-      {/* <Spacer height={16} /> */}
+      <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
+      <BodyRegular>{nft.owner_address}</BodyRegular>
+      <Spacer height={16} />
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
-      {/* TODO__v1: creator_address is not being returned */}
-      <BodyRegular>{nft.creator_address}</BodyRegular>
+      <BodyRegular>{nft.creator_name || nft.creator_address}</BodyRegular>
+      <Spacer height={32} />
+      <NftAdditionalDetails nft={nft}/>
     </StyledDetailLabel>
   );
 }
 
 const StyledDetailLabel = styled.div`
+  display: flex;
   flex-direction: column;
+  max-width: 296px;
   margin-top: 32px;
   word-wrap: break-word;
 
   @media only screen and ${breakpoints.tablet} {
-    padding-left: 72px;
+    margin-left: 72px;
     margin-top: 0;
   }
 `;
 
 const StyledNftDescription = styled(BodyRegular)`
-  width: 296px;
+  // width: 296px;
 
   white-space: pre-line;
 `;
