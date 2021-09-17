@@ -80,7 +80,7 @@ const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 112px auto 0;
+  margin: 144px auto 0;
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
