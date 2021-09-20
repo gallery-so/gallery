@@ -1,14 +1,10 @@
-import { useState } from 'react';
-import { Heading, BodyRegular, Caption } from 'components/core/Text/Text';
+import { Heading, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import transitions from 'components/core/transitions';
-import ActionText from 'components/core/ActionText/ActionText';
-import TextButton from 'components/core/Button/TextButton';
 import NftAdditionalDetails from './NftAdditionalDetails';
 
 type Props = {

@@ -1,8 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
-import { injected } from 'connectors/index';
-// Import { injected, walletconnect, walletlink } from 'connectors/index';
+import { injected, walletconnect } from 'connectors/index';
+// Import {  walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
@@ -11,13 +11,13 @@ import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import useFetcher from 'contexts/swr/useFetcher';
 import Mixpanel from 'utils/mixpanel';
+import { isWeb3Error } from 'types/Error';
 import initializeAuthPipeline from './authRequestUtils';
 import WalletButton from './WalletButton';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
-  // TODO: enable walletconnect once signature decoding is supported
-  // WalletConnect: walletconnect,
+  WalletConnect: walletconnect,
   // TODO: enable wallet link once signature decoding is supported
   // WalletLink: walletlink,
 };
@@ -34,7 +34,7 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   // Client-side provider errors: https://eips.ethereum.org/EIPS/eip-1193#provider-errors
   4001: {
     heading: 'Authorization denied',
-    body: 'Please authorize the app to log in.',
+    body: 'Please approve your wallet to connect to Gallery.',
   },
   UNSUPPORTED_CHAIN: {
     heading: 'Authorization error',
@@ -77,7 +77,6 @@ function WalletSelector() {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    console.error('login error from provider', error);
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
     if (!errorToDisplay) {
       return null;
@@ -103,8 +102,7 @@ function WalletSelector() {
       }
     }
 
-    const parsedError = getErrorMessage(errorToDisplay.code ?? '');
-    return parsedError;
+    return getErrorMessage(errorToDisplay.code ?? '');
   }, [error, detectedError]);
 
   const setToPendingState = useCallback(
@@ -131,27 +129,34 @@ function WalletSelector() {
   useEffect(() => {
     async function authenticate() {
       // TODO: when hooking up to the server, make sure this only runs a single time
-      if (account && isPending && signer) {
+      if (account && isPending && signer && pendingWallet) {
         try {
           const { jwt, userId } = await initializeAuthPipeline({
             address: account.toLowerCase(),
             signer,
             fetcher,
+            connector: pendingWallet,
           });
           Mixpanel.trackConnectWallet(pendingWalletName);
           logIn({ jwt, userId });
         } catch (error: unknown) {
+          if (isWeb3Error(error)) {
+            setDetectedError(error);
+          }
+
+          // Fall back to generic error message
           if (error instanceof Error) {
             const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
             setDetectedError(web3Error);
-            setIsPending(false);
           }
+
+          setIsPending(false);
         }
       }
     }
 
     void authenticate();
-  }, [account, isPending, logIn, signer, fetcher, pendingWalletName]);
+  }, [account, isPending, logIn, signer, fetcher, pendingWalletName, pendingWallet]);
 
   /**
    * Ensures screen does not retain an error message when it remounts. Since Web3
