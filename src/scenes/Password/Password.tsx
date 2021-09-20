@@ -76,10 +76,10 @@ function Password(_: RouteComponentProps) {
 
   return (
     <Page centered withRoomForFooter={false}>
-      <Display caps>Gallery</Display>
-      <Spacer height={8} />
+      <StyledLogo caps>Gallery</StyledLogo>
+      <Spacer height={16} />
       <BodyRegular>Show your collection to the world</BodyRegular>
-      <Spacer height={24} />
+      <Spacer height={16} />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}
         name="password"
@@ -101,6 +101,11 @@ function Password(_: RouteComponentProps) {
 }
 
 const INPUT_WIDTH = 203;
+
+const StyledLogo = styled(Display)`
+  font-size: 64px;
+  l;etter;-spacing: 0.05em;
+`
 
 const StyledPasswordInput = styled.input`
   padding: 0.5rem 2.5rem 0.5rem 1rem;
