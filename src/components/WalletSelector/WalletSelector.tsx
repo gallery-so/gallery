@@ -44,6 +44,11 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     heading: 'Signature required',
     body: 'Please sign the message with your wallet to log in.',
   },
+  USER_SIGNUP_DISABLED: {
+    heading: 'Could not sign in',
+    body: 'The wallet you tried to connect with is not associated with an existing Gallery user.\n\n New sign ups are limited while we invite more users.\n\n'
+    + 'If you have used Gallery before, please check that you are connecting with the same wallet.',
+  },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
     body: 'Please try again.',
@@ -220,6 +225,7 @@ const StyledTitleMedium = styled(TitleMedium)`
 
 const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
+  white-space: pre-wrap;
 `;
 
 const StyledRetryButton = styled(Button)`

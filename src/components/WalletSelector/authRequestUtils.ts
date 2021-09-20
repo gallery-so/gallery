@@ -3,6 +3,8 @@ import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 
+const USER_SIGNUP_ENABLED = false;
+
 /**
  * Auth Pipeline:
  * 1. Fetch nonce from server with provided wallet address
@@ -33,6 +35,10 @@ export default async function initializeAuthPipeline({
   if (userExists) {
     const response = await loginUser({ signature, address }, fetcher);
     return { jwt: response.jwt_token, userId: response.user_id };
+  }
+
+  if (!USER_SIGNUP_ENABLED) {
+    throw { code: 'USER_SIGNUP_DISABLED' } as Web3Error;
   }
 
   const response = await createUser(
