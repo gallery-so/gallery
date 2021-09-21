@@ -22,7 +22,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
         <Heading>Organize your Gallery</Heading>
         <Spacer height={4} />
         <Caption color={colors.gray50}>
-          Reorder your collections via drag and drop
+          Drag and drop to reorder your collection
         </Caption>
       </TitleContainer>
       <OptionsContainer>
