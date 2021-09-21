@@ -1,14 +1,10 @@
-import { useState } from 'react';
-import { Heading, BodyRegular, Caption } from 'components/core/Text/Text';
+import { Heading, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import transitions from 'components/core/transitions';
-import ActionText from 'components/core/ActionText/ActionText';
-import TextButton from 'components/core/Button/TextButton';
 import NftAdditionalDetails from './NftAdditionalDetails';
 
 type Props = {
@@ -28,7 +24,14 @@ function NftDetailText({ nft }: Props) {
       <Spacer height={32} />
       {/* TODO__v1.1: populate Gallery Username once it's sent from backend */}
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
-      <BodyRegular>{nft.owner_address}</BodyRegular>
+      <StyledLink
+        href={`https://etherscan.io/address/${nft.owner_address}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <BodyRegular>{nft.owner_address}</BodyRegular>
+
+      </StyledLink>
       <Spacer height={16} />
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
       <BodyRegular>{nft.creator_name || nft.creator_address}</BodyRegular>
@@ -51,9 +54,15 @@ const StyledDetailLabel = styled.div`
   }
 `;
 
-const StyledNftDescription = styled(BodyRegular)`
-  // width: 296px;
+const StyledLink = styled.a`
+  text-decoration: none;
 
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const StyledNftDescription = styled(BodyRegular)`
   white-space: pre-line;
 `;
 
