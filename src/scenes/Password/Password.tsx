@@ -104,8 +104,8 @@ const INPUT_WIDTH = 203;
 
 const StyledLogo = styled(Display)`
   font-size: 64px;
-  l;etter;-spacing: 0.05em;
-`
+  letter-spacing: 0.05em;
+`;
 
 const StyledPasswordInput = styled.input`
   padding: 0.5rem 2.5rem 0.5rem 1rem;
