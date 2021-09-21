@@ -5,8 +5,16 @@ type Props = {
   id: string;
 };
 
-export default function useNft({ id }: Props): Nft | undefined {
-  const data = useGet<Nft>(`/nfts/get?id=${id}`, 'fetch nft');
+type GetNftResponse = {
+  nft: Nft;
+};
 
-  return data;
+export default function useNft({ id }: Props): Nft | undefined {
+  const data = useGet<GetNftResponse>(`/nfts/get?id=${id}`, 'fetch nft');
+
+  if (!data) {
+    throw new Error(`No NFT was found with id: ${id}`);
+  }
+
+  return data.nft;
 }
