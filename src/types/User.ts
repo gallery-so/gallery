@@ -1,6 +1,6 @@
 export type User = {
   id: string;
-  creationTime: string;
+  created_at: string;
   username: string;
   bio: string;
   addresses: string[];
