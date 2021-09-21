@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BodyRegular } from '../Text/Text';
+import { ButtonText } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
 
@@ -8,7 +8,7 @@ type Props = {
   focused?: boolean;
 };
 
-const ActionText = styled(BodyRegular)<Props>`
+const ActionText = styled(ButtonText)<Props>`
   text-transform: uppercase;
   transition: color ${transitions.cubic};
 
