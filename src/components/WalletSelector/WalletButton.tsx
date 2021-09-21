@@ -8,9 +8,12 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
 import metamaskIcon from 'assets/icons/metamask.svg';
+import walletConnectIcon from 'assets/icons/walletconnect.svg';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 
 const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
+  walletconnect: walletConnectIcon,
 };
 
 type WalletButtonProps = {
@@ -31,6 +34,12 @@ function WalletButton({
   const handleClick = useCallback(() => {
     if (connector && walletName) {
       setToPendingState(connector, walletName);
+      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+        connector.walletConnectProvider = undefined;
+      }
+
       void activate(connector);
     }
   }, [activate, connector, setToPendingState, walletName]);

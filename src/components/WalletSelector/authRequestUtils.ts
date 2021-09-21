@@ -1,4 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
+
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
@@ -14,6 +17,7 @@ type AuthPipelineProps = {
   address: string;
   signer: JsonRpcSigner;
   fetcher: FetcherType;
+  connector: AbstractConnector;
 };
 
 type AuthResult = {
@@ -25,10 +29,10 @@ export default async function initializeAuthPipeline({
   address,
   signer,
   fetcher,
+  connector,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-
-  const signature = await signMessage(nonce, signer);
+  const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
     const response = await loginUser({ signature, address }, fetcher);
@@ -88,17 +92,29 @@ async function fetchNonce(
  */
 type Signature = string;
 
+function isRpcSignatureError(error: Record<string, any>) {
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
+}
+
 async function signMessage(
+  address: string,
   nonce: string,
   signer: JsonRpcSigner,
+  connector: AbstractConnector,
 ): Promise<Signature> {
   try {
+    if (connector instanceof WalletConnectConnector) {
+      // This keeps the nonce message intact instead of encrypting it for WalletConnect users
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+    }
+
     return await signer.signMessage(nonce);
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('error while signing message', error);
-      const errorWithCode: Web3Error = { code: 'REJECTED_SIGNATURE', ...error };
-      throw errorWithCode;
+      throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
+    } else if (error instanceof Object && isRpcSignatureError(error)) {
+      throw { code: 'REJECTED_SIGNATURE' } as Web3Error;
     }
 
     throw new Error('Unknown error');
