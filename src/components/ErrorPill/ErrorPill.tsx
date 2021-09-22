@@ -1,36 +1,38 @@
 import { BodyRegular } from 'components/core/Text/Text';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 type Props = {
   message: string;
+  onClose?: () => void;
 };
 
-export function FullPageErrorPill({ message }: Props) {
+const noop = () => {};
+
+// Error pill that appears on top right corner of page
+export function CornerErrorPill({ message, onClose = noop }: Props) {
   return (
-    <StyledFullPageErrorPill>
-      <CornerPosition>
-        <ErrorPill message={message} />
-      </CornerPosition>
-    </StyledFullPageErrorPill>
+    <CornerPosition>
+      <ErrorPill message={message} onClose={onClose} />
+    </CornerPosition>
   );
 }
 
-const StyledFullPageErrorPill = styled.div`
-      position: fixed;
-      height: 100vh;
-      width: 100vw;
-  `;
-
 const CornerPosition = styled.div`
-      position: absolute;
-      top: 24px;
-      right: 24px;
-  `;
+    z-index: 2; // appears above navbar
+    position: fixed;
+    top: 24px;
+    right: 24px;
+`;
 
-function ErrorPill({ message }: Props) {
+function ErrorPill({ message, onClose }: Props) {
+  const handleClose = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
+
   return (
     <StyledErrorPill>
-      <StyledClose>&#x2715;</StyledClose>
+      <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
       <BodyRegular>{message}</BodyRegular>
     </StyledErrorPill>
   );
@@ -41,6 +43,7 @@ const StyledErrorPill = styled.div`
     border: 1px solid black;
     padding: 16px 32px 16px 24px;
     width: 288px;
+    background: white;
 `;
 
 const StyledClose = styled.span`
