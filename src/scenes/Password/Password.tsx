@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { Display, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
 
@@ -12,6 +11,7 @@ import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import usePersistedState from 'hooks/usePersistedState';
 import { validatePassword } from 'utils/password';
 import { PASSWORD_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
+import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 
 function Password(_: RouteComponentProps) {
   const [storedPassword, storePassword] = usePersistedState<string | null>(
@@ -76,10 +76,7 @@ function Password(_: RouteComponentProps) {
 
   return (
     <Page centered withRoomForFooter={false}>
-      <StyledLogo caps>Gallery</StyledLogo>
-      <Spacer height={16} />
-      <BodyRegular>Show your collection to the world</BodyRegular>
-      <Spacer height={16} />
+      <GalleryIntro />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}
         name="password"
@@ -101,11 +98,6 @@ function Password(_: RouteComponentProps) {
 }
 
 const INPUT_WIDTH = 203;
-
-const StyledLogo = styled(Display)`
-  font-size: 64px;
-  letter-spacing: 0.05em;
-`;
 
 const StyledPasswordInput = styled.input`
   padding: 0.5rem 2.5rem 0.5rem 1rem;
