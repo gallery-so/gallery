@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 type SetValue<T> = Dispatch<SetStateAction<T>>;
 
 // Syncs local stroage to react state
+// IMPORTANT: all values are JSON.stringified before being stored - make sure
+// you do this manually if you're testing!
 function usePersistedState<T>(key: string, defaultValue: T): [T, SetValue<T>] {
   const [value, setValue] = useState(() => {
     const persistedValue = window.localStorage.getItem(key);
