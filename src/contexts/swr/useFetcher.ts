@@ -54,7 +54,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
 
     // Attach custom error message if provided
     if (action && error instanceof Error) {
-      throw new ApiError(error.message, action);
+      throw new ApiError(error.message, action, response.status);
     }
 
     throw error;
@@ -69,8 +69,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
     const errorResponseBody = responseBody as GalleryErrorResponseBody;
     const serverErrorMessage = errorResponseBody?.error ?? 'Server Error';
     if (action) {
-      const apiError = new ApiError(serverErrorMessage, action);
-      throw apiError;
+      throw new ApiError(serverErrorMessage, action, response.status);
     }
 
     throw new Error(serverErrorMessage);

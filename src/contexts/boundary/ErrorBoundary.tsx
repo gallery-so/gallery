@@ -13,6 +13,7 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.error !== null) {
       const { header, description } = formatDetailedError(this.state.error);
+
       return (
         <Page centered withRoomForFooter={false}>
           <Subdisplay>{header}</Subdisplay>
