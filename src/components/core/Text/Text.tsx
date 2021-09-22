@@ -50,7 +50,7 @@ export const Subdisplay = styled(H2)`
   letter-spacing: 0px;
 
   @media only screen and ${breakpoints.tablet} {
-    font-size: 40px;
+    font-size: 48px;
     line-height: 48px;
   }
 `;
