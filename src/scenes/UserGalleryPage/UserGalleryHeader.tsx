@@ -3,6 +3,8 @@ import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { User } from 'types/User';
+import { useMemo } from 'react';
+import moment from 'moment';
 
 type Props = {
   user: User;
@@ -10,20 +12,17 @@ type Props = {
 };
 
 function UserGalleryHeader({ user }: Props) {
+  const formattedCreatedAt = useMemo(() => moment(user.created_at).format('MMMM YYYY'), [user.created_at]);
   return (
     <StyledUserGalleryHeader>
       <Subdisplay>{user.username}</Subdisplay>
-      <Spacer height={12} />
+      <Spacer height={8} />
+      <StyledBodyRegular color={colors.gray50}>Curator since {formattedCreatedAt}</StyledBodyRegular>
+      <Spacer height={8} />
       <StyledUserDetails>
-        <Spacer height={18} />
-        <StyledLeftContainer>
-          {/* TODO: won't be able to determine `MemberSince` unless we crawl blockchain
-            <BodyRegular color={colors.gray50}>Collector Since Mar 2021</BodyRegular>
-          */}
-          <StyledBodyRegular color={colors.gray50}>
-            {user.bio}
-          </StyledBodyRegular>
-        </StyledLeftContainer>
+        <StyledBodyRegular color={colors.gray50}>
+          {user.bio}
+        </StyledBodyRegular>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
@@ -40,9 +39,9 @@ const StyledUserDetails = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 70%;
+  word-break: break-word;
 `;
-
-const StyledLeftContainer = styled.div``;
 
 const StyledBodyRegular = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
