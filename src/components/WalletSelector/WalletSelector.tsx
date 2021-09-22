@@ -37,7 +37,7 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   },
   UNSUPPORTED_CHAIN: {
     heading: 'Authorization error',
-    body: 'The selected chain is unsupported. Please check your wallet.',
+    body: 'The selected chain is unsupported. We currently only support the Ethereum network.',
   },
   REJECTED_SIGNATURE: {
     heading: 'Signature required',
@@ -45,8 +45,8 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   },
   USER_SIGNUP_DISABLED: {
     heading: 'Could not sign in',
-    body: 'The wallet you tried to connect with is not associated with an existing Gallery user.\n\n New sign ups are limited while we invite more users.\n\n'
-    + 'If you have used Gallery before, please check that you are connecting with the same wallet.',
+    body: 'Your wallet address is not associated with an existing Gallery user. New sign ups are currently limited.\n\n'
+    + 'If you already have an account with us, please check that you are connecting with the same wallet.',
   },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
@@ -230,6 +230,7 @@ const StyledTitleMedium = styled(TitleMedium)`
 const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
   white-space: pre-wrap;
+  max-width: 400px;
 `;
 
 const StyledRetryButton = styled(Button)`
