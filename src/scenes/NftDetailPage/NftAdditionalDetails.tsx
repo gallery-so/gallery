@@ -22,9 +22,13 @@ function NftAdditionalDetails({ nft }: Props) {
       <Spacer height={12}/>
       {showAdditionalDetails && <div>
         <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
-        <BodyRegular>
-          {nft.asset_contract.address}
-        </BodyRegular>
+        <StyledLink
+          href={`https://etherscan.io/address/${nft.asset_contract.address}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <BodyRegular>{nft.asset_contract.address}</BodyRegular>
+        </StyledLink>
         <Spacer height={16} />
         <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
         <BodyRegular>{nft.opensea_token_id}</BodyRegular>
@@ -51,6 +55,10 @@ const StyledNftAdditionalDetails = styled.div`
 
 const StyledLink = styled.a`
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const StyledLinkContainer = styled.div`
