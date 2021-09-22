@@ -2,11 +2,9 @@ import { navigate, Redirect, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
-import { Display, BodyRegular } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Page from 'components/core/Page/Page';
+import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 
 function Home(_: RouteComponentProps) {
   // Whether the user has entered the correct password
@@ -24,12 +22,7 @@ function Home(_: RouteComponentProps) {
 
   return (
     <Page centered withRoomForFooter={false}>
-      <Display caps>GALLERY</Display>
-      <Spacer height={8} />
-      <BodyRegular color={colors.gray50}>
-        Show your collection to the world
-      </BodyRegular>
-      <Spacer height={24} />
+      <GalleryIntro />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
     </Page>
   );
