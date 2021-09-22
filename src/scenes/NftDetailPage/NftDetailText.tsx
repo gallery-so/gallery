@@ -24,14 +24,7 @@ function NftDetailText({ nft }: Props) {
       <Spacer height={32} />
       {/* TODO__v1.1: populate Gallery Username once it's sent from backend */}
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
-      <StyledLink
-        href={`https://etherscan.io/address/${nft.owner_address}`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <BodyRegular>{nft.owner_address}</BodyRegular>
-
-      </StyledLink>
+      <NftOwnerLink owner_address={nft.owner_address} owner_username={nft.owner_username}/>
       <Spacer height={16} />
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
       <BodyRegular>{nft.creator_name || nft.creator_address}</BodyRegular>
@@ -39,6 +32,27 @@ function NftDetailText({ nft }: Props) {
       <NftAdditionalDetails nft={nft}/>
     </StyledDetailLabel>
   );
+}
+
+type NftOwnerProps = {
+  owner_address: string;
+  owner_username?: string;
+};
+
+function NftOwnerLink({ owner_address, owner_username }: NftOwnerProps) {
+  if (owner_username) {
+    return (<StyledLink href={`/${owner_username}`}>
+      <BodyRegular>{owner_username}</BodyRegular>
+    </StyledLink>);
+  }
+
+  return (<StyledLink
+    href={`https://etherscan.io/address/${owner_address}`}
+    target="_blank"
+    rel="noreferrer"
+  >
+    <BodyRegular>{owner_address}</BodyRegular>
+  </StyledLink>);
 }
 
 const StyledDetailLabel = styled.div`
