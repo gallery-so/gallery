@@ -1,3 +1,4 @@
+import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
 import {
   ReactElement,
   ReactNode,
@@ -9,7 +10,6 @@ import {
   useMemo,
 } from 'react';
 import AnimatedModal from './AnimatedModal';
-import { MODAL_TRANSITION_MS } from './constants';
 
 type ModalActions = {
   showModal: (content: ReactElement) => void;
@@ -52,7 +52,7 @@ function ModalProvider({ children }: Props) {
       setContent(null);
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
-    }, MODAL_TRANSITION_MS - 30);
+    }, ANIMATED_COMPONENT_TRANSITION_MS - 30);
   }, []);
 
   const actions = useMemo(
