@@ -1,5 +1,5 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { CornerErrorPill } from './ErrorPill';
+import { AnimatedErrorPill } from './ErrorPill';
 
 type ErrorPillActions = {
   pushError: (error: string) => void;
@@ -41,7 +41,7 @@ const ErrorPillProvider = memo(({ children }: Props) => {
 
   return (
     <ErrorPillActionsContext.Provider value={value}>
-      {errors.map(error => <CornerErrorPill key={error} message={error} onClose={dismissError} />)}
+      {errors.map(error => <AnimatedErrorPill key={error} message={error} onClose={dismissError} />)}
       {children}
     </ErrorPillActionsContext.Provider>
   );

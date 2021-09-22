@@ -1,21 +1,78 @@
 import { BodyRegular } from 'components/core/Text/Text';
-import { useCallback } from 'react';
-import styled from 'styled-components';
+import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 
 type Props = {
   message: string;
+  cornerPositioned?: boolean;
   onClose?: () => void;
 };
 
 const noop = () => {};
 
 // Error pill that appears on top right corner of page
-export function CornerErrorPill({ message, onClose = noop }: Props) {
+export function AnimatedErrorPill({ message, cornerPositioned = true, onClose = noop }: Props) {
+  // Pseudo-state for signaling animations. this will allow us
+  // to display an animation prior to unmounting
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    setIsActive(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsActive(false);
+    setTimeout(onClose, ANIMATED_COMPONENT_TRANSITION_MS);
+  }, [onClose]);
+
   return (
-    <CornerPosition>
-      <ErrorPill message={message} onClose={onClose} />
-    </CornerPosition>
+    <_Animate isActive={isActive}>
+      <ErrorPill message={message} onClose={handleClose} cornerPositioned={cornerPositioned} />
+    </_Animate>
   );
+}
+
+const translateUpAndFadeIn = keyframes`
+    from { opacity: 0; transform: translateY(8px); };
+    to { opacity: 1; transform: translateY(0px); };
+`;
+
+const translateDownAndFadeOut = keyframes`
+    from { opacity: 1; transform: translateY(0px); };
+    to { opacity: 0; transform: translateY(8px); };
+`;
+
+const _Animate = styled.div<{ isActive: boolean }>`
+    animation: ${({ isActive }) => css`
+      ${isActive
+    ? translateUpAndFadeIn
+    : translateDownAndFadeOut} ${transitions.cubic}
+    `};
+    animation-fill-mode: forwards;
+`;
+
+function ErrorPill({ message, onClose, cornerPositioned }: Props) {
+  const handleClose = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
+
+  const pill = useMemo(() => (
+    <StyledErrorPill>
+      <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
+      <BodyRegular>{message}</BodyRegular>
+    </StyledErrorPill>
+  ), [handleClose, message]);
+
+  if (cornerPositioned) {
+    return (
+      <CornerPosition>
+        {pill}
+      </CornerPosition>
+    );
+  }
+
+  return pill;
 }
 
 const CornerPosition = styled.div`
@@ -24,19 +81,6 @@ const CornerPosition = styled.div`
     top: 24px;
     right: 24px;
 `;
-
-function ErrorPill({ message, onClose }: Props) {
-  const handleClose = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
-
-  return (
-    <StyledErrorPill>
-      <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
-      <BodyRegular>{message}</BodyRegular>
-    </StyledErrorPill>
-  );
-}
 
 const StyledErrorPill = styled.div`
     position: relative;
@@ -47,11 +91,11 @@ const StyledErrorPill = styled.div`
 `;
 
 const StyledClose = styled.span`
-  position: absolute;
-  right: 6px;
-  top: 7px;
-  padding: 10px;
-  cursor: pointer;
+    position: absolute;
+    right: 6px;
+    top: 7px;
+    padding: 10px;
+    cursor: pointer;
 `;
 
 export default ErrorPill;
