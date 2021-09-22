@@ -1,38 +1,25 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { Redirect, RouteComponentProps } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 import Page from 'components/core/Page/Page';
-import useGalleries from 'hooks/api/galleries/useGalleries';
-import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import styled from 'styled-components';
 import UserGallery from './UserGallery';
+import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 
 type Parameters_ = {
   username: string;
 };
 
 function UserGalleryPage({ username }: RouteComponentProps<Parameters_>) {
-  const user = useUser({ username });
-  const galleries = useGalleries({ userId: user?.id ?? '' }) ?? [];
-  const authenticatedUser = usePossiblyAuthenticatedUser();
-
-  if (!user) {
-    return <Redirect to="/404" noThrow />;
-  }
-
-  // Consider turning into a hook
-  const isAuthenticatedUsersPage
-    = user.username === authenticatedUser?.username;
-
   return (
-    <Page>
-      <StyledUserGalleryWrapper>
-        <UserGallery
-          user={user}
-          gallery={galleries[0]}
-          isAuthenticatedUsersPage={isAuthenticatedUsersPage}
-        />
-      </StyledUserGalleryWrapper>
-    </Page>
+    <UserGalleryPageErrorBoundary>
+      <Page>
+        <StyledUserGalleryWrapper>
+          <UserGallery
+            username={username}
+          />
+        </StyledUserGalleryWrapper>
+      </Page>
+    </UserGalleryPageErrorBoundary>
   );
 }
 

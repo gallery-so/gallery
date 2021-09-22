@@ -1,19 +1,29 @@
 import { contentSize } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
-import { Gallery } from 'types/Gallery';
-import { User } from 'types/User';
+import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import useGalleries from 'hooks/api/galleries/useGalleries';
+import NotFound from 'scenes/NotFound/NotFound';
 import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
 
 type Props = {
-  user: User;
-  gallery: Gallery;
-  isAuthenticatedUsersPage: boolean;
+  username?: string;
 };
 
-function UserGallery({ user, gallery, isAuthenticatedUsersPage }: Props) {
+function UserGallery({ username }: Props) {
+  const user = useUser({ username });
+  const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
+  const authenticatedUser = usePossiblyAuthenticatedUser();
+
+  if (!user) {
+    return <NotFound/>;
+  }
+
+  const isAuthenticatedUsersPage
+    = user.username === authenticatedUser?.username;
+
   const collectionsView = gallery ? (
     <UserGalleryCollections
       collections={gallery.collections}
