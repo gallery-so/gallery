@@ -11,7 +11,6 @@ type Props = {
 
 const noop = () => {};
 
-// Error pill that appears on top right corner of page
 export function AnimatedErrorPill({ message, cornerPositioned = true, onClose = noop }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
