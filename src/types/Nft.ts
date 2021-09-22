@@ -27,6 +27,7 @@ export type Nft = {
   opensea_id: number;
   opensea_token_id: string;
   owner_address: string;
+  owner_username: string;
   token_metadata_url: string;
   user_id: string;
 };
