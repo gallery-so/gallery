@@ -8,7 +8,6 @@ import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import Home from './Home/Home';
 import Auth from './Auth/Auth';
 import Password from './Password/Password';
-import NotFound from './NotFound/NotFound';
 import NftDetailPage from './NftDetailPage/NftDetailPage';
 import Nuke from './Nuke/Nuke';
 import UserGalleryPage from './UserGalleryPage/UserGalleryPage';
@@ -50,7 +49,6 @@ export default function Routes() {
               <Password path="/password" />
               <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
               <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
-              <NotFound path="/404" />
               <Nuke path="/nuke" />
               <NftDetailPage path="/:userName/:collectionId/:nftId" />
               <UserGalleryPage path="/:username" />
