@@ -9,7 +9,7 @@ type Props = {
 
 export default memo(function Gradient({
   className,
-  height = 40,
+  height = 64,
   direction = 'up',
 }: Props) {
   return (
@@ -25,7 +25,7 @@ const StyledGradient = styled.div<Props>`
   background-image: linear-gradient(
     ${({ direction }) => (direction === 'up' ? 'to top' : 'to bottom')},
     rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.25) 50%,
+    rgba(0, 0, 0, 0.25) 40%,
     rgba(0, 0, 0, 0.6) 100%
   );
   height: ${({ height }) => height}px;
