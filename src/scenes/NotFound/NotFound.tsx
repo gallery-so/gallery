@@ -10,7 +10,9 @@ function NotFound() {
     <Page centered>
       <Display>404</Display>
       <Spacer height={8} />
-      <StyledBody>This user doesn't exist yet. If you think they should,<br/>share their collection in a tweet and tag us @usegallery.</StyledBody>
+      <StyledBody>This user doesn't exist yet. If you think they should,<br/>{'share their collection in a tweet and tag us '}
+        <StyledInlineLink href="https://twitter.com/usegallery" target="_blank" rel="noreferrer">@usegallery</StyledInlineLink>.
+      </StyledBody>
       <Spacer height={24} />
       <Link to="/">
         <StyledButton text="Take me back" />
@@ -19,8 +21,17 @@ function NotFound() {
   );
 }
 
+const StyledInlineLink = styled.a`
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const StyledBody = styled(BodyRegular)`
-  white-space: pre-wrap;;
+  white-space: pre-wrap;
   text-align: center;
 `;
 

@@ -14,8 +14,7 @@ type Props = {
 
 function UserGallery({ username }: Props) {
   const user = useUser({ username });
-  const galleries = useGalleries({ userId: user?.id ?? '' }) ?? [];
-  const gallery = galleries[0];
+  const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
   const authenticatedUser = usePossiblyAuthenticatedUser();
 
   if (!user) {
