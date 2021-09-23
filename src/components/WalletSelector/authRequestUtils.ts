@@ -6,7 +6,7 @@ import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 
-const USER_SIGNUP_ENABLED = false;
+const USER_SIGNUP_ENABLED = true;
 
 /**
  * Auth Pipeline:
