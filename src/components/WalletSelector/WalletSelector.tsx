@@ -11,6 +11,7 @@ import Button from 'components/core/Button/Button';
 import useFetcher from 'contexts/swr/useFetcher';
 import Mixpanel from 'utils/mixpanel';
 import { isWeb3Error } from 'types/Error';
+import Spacer from 'components/core/Spacer/Spacer';
 import initializeAuthPipeline from './authRequestUtils';
 import WalletButton from './WalletButton';
 
@@ -209,6 +210,7 @@ function WalletSelector() {
           />
         ))
       )}
+      <Spacer height={8} />
       <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>
   );

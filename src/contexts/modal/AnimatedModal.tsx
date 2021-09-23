@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
-import { MODAL_TRANSITION_MS } from './constants';
+import transitions from 'components/core/transitions';
 
 type Props = {
   isActive: boolean;
@@ -35,16 +35,13 @@ const fadeOut = keyframes`
     to { opacity: 0 };
 `;
 
-// Ease-out like style
-const transitionStyle = `${MODAL_TRANSITION_MS}ms cubic-bezier(0, 0, 0, 1.07)`;
-
 const _ToggleFade = styled.div<{ isActive: boolean }>`
   // keeps modal on top over other elements with z-index https://stackoverflow.com/questions/50883309/how-come-css-animations-change-z-index
   position: relative;
   z-index: 10;
   animation: ${({ isActive }) =>
     css`
-      ${isActive ? fadeIn : fadeOut} ${transitionStyle}
+      ${isActive ? fadeIn : fadeOut} ${transitions.cubic}
     `};
 `;
 
@@ -63,7 +60,7 @@ const translateDown = keyframes`
 const _ToggleTranslate = styled.div<{ isActive: boolean }>`
   animation: ${({ isActive }) =>
     css`
-      ${isActive ? translateUp : translateDown} ${transitionStyle}
+      ${isActive ? translateUp : translateDown} ${transitions.cubic}
     `};
 `;
 
