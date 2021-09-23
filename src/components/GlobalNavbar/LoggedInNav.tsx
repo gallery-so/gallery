@@ -12,10 +12,8 @@ import {
 } from 'hooks/api/users/useUser';
 import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
-
-function truncate(address: string) {
-  return `${address.slice(0, 8)}......${address.slice(-4)}`;
-}
+import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
+import { truncateAddress } from 'utils/address';
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();
@@ -23,7 +21,7 @@ function LoggedInNav() {
   const userAddress = useAuthenticatedUserAddress();
   const { showModal } = useModal();
 
-  const truncatedUserAddress = useMemo(() => truncate(userAddress), [userAddress]);
+  const truncatedUserAddress = useMemo(() => truncateAddress(userAddress), [userAddress]);
 
   const handleGalleryRedirect = useCallback(() => {
     const authenticatedUserIsOnTheirOwnPage
@@ -34,6 +32,10 @@ function LoggedInNav() {
 
     void navigate(`/${user.username}`);
   }, [user.username]);
+
+  const handleManageWalletsClick = useCallback(() => {
+    showModal(<ManageWalletsModal />);
+  }, [showModal]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(<EditUserInfoModal />);
@@ -55,6 +57,12 @@ function LoggedInNav() {
             underlineOnHover
           />
         </CopyToClipboard>
+        <Spacer height={12} />
+        <TextButton
+          text="Manage Wallets"
+          onClick={handleManageWalletsClick}
+          underlineOnHover
+        />
         <Spacer height={12} />
         <TextButton
           text="Edit Gallery"

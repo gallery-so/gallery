@@ -11,7 +11,7 @@ import Button from 'components/core/Button/Button';
 import useFetcher from 'contexts/swr/useFetcher';
 import Mixpanel from 'utils/mixpanel';
 import { isWeb3Error } from 'types/Error';
-import initializeAuthPipeline from './authRequestUtils';
+import initializeAuthPipeline, { initializeAddWalletPipeline } from './authRequestUtils';
 import WalletButton from './WalletButton';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -48,6 +48,10 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'Your wallet address is not associated with an existing Gallery user. New sign ups are currently limited.\n\n'
     + 'If you already have an account with us, please check that you are connecting with the same wallet.',
   },
+  EXISTING_USER: {
+    heading: 'This address is already associated with an existing user.',
+    body: 'Sign in with that address',
+  },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
     body: 'Please try again.',
@@ -58,7 +62,12 @@ function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
-function WalletSelector() {
+type Props = {
+  mode?: string;
+  onConnectSuccess?: () => void;
+};
+
+function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   const {
     library,
     account,
@@ -72,6 +81,8 @@ function WalletSelector() {
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState('');
+
+  const [prompt, setPrompt] = useState('');
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -135,16 +146,41 @@ function WalletSelector() {
       // TODO: when hooking up to the server, make sure this only runs a single time
       if (account && isPending && signer && pendingWallet) {
         try {
-          const { jwt, userId } = await initializeAuthPipeline({
-            address: account.toLowerCase(),
-            signer,
-            fetcher,
-            connector: pendingWallet,
-          });
-          Mixpanel.trackConnectWallet(pendingWalletName);
-          logIn({ jwt, userId });
+          if (mode === 'AUTH') {
+            const { jwt, userId } = await initializeAuthPipeline({
+              address: account.toLowerCase(),
+              signer,
+              fetcher,
+              connector: pendingWallet,
+              setPrompt,
+            });
+            Mixpanel.trackConnectWallet(pendingWalletName);
+            logIn({ jwt, userId });
+          } else if (mode === 'ADD_WALLET') {
+            console.log('address', account);
+
+            // if metamask and address is already associated with user
+            // show prompt to allow user to change address before connecting
+
+            // instead of this func doing all the stuff, then showing relevent prompts
+            // render the step with prompt and step will do stuff
+
+            const { signatureValid } = await initializeAddWalletPipeline({
+              address: account.toLowerCase(),
+              signer,
+              fetcher,
+              connector: pendingWallet,
+              setPrompt,
+            });
+          }
+
+          if (onConnectSuccess) {
+            onConnectSuccess();
+          }
         } catch (error: unknown) {
+          setPrompt('');
           if (isWeb3Error(error)) {
+            console.log('here', error);
             setDetectedError(error);
           }
 
@@ -190,12 +226,14 @@ function WalletSelector() {
   return (
     <StyledWalletSelector>
       <StyledTitleMedium>Connect your wallet</StyledTitleMedium>
+      {prompt && (<div>{prompt}</div>)}
       {isPending ? (
         <WalletButton
           activate={activate}
           connector={pendingWallet}
           setToPendingState={setToPendingState}
           isPending={isPending}
+          deactivate={deactivate}
         />
       ) : (
         Object.keys(walletConnectorMap).map(walletName => (
@@ -206,6 +244,7 @@ function WalletSelector() {
             connector={walletConnectorMap[walletName]}
             setToPendingState={setToPendingState}
             isPending={isPending}
+            deactivate={deactivate}
           />
         ))
       )}

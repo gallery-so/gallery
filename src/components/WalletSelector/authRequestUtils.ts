@@ -4,6 +4,8 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
+import useAddWalletModal from 'hooks/useAddWalletModal';
+import { Dispatch, SetStateAction } from 'react';
 import { Web3Error } from 'types/Error';
 
 const USER_SIGNUP_ENABLED = false;
@@ -20,7 +22,40 @@ type AuthPipelineProps = {
   signer: JsonRpcSigner;
   fetcher: FetcherType;
   connector: AbstractConnector;
+  setPrompt: Dispatch<SetStateAction<string>>;
 };
+
+type AddWalletResult = {
+  signatureValid: boolean;
+};
+
+export async function initializeAddWalletPipeline({
+  address,
+  signer,
+  fetcher,
+  connector,
+  setPrompt,
+}: AuthPipelineProps): Promise<AddWalletResult> {
+  // fetch nonce
+  const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+
+  if (userExists) {
+    // the address connecting is associated with an existing user
+    // long term, this will merge existing user into current user
+    // for now, don't proceed ?
+    // throw new Error(`${address} is associated with an existing user.`);
+    throw { code: 'EXISTING_USER' } as Web3Error;
+  }
+
+  setPrompt('please sign message');
+  // sign
+  const signature = await signMessage(address, nonce, signer, connector);
+  // // call add address endpoint
+  // // this endpoint will verify the signature, if it's valid it will add the address to the user's list of addresses
+  const response = await addUserAddress({ signature, address }, fetcher);
+  return { signatureValid: response.signature_valid };
+  // return { signatureValid: true };
+}
 
 type AuthResult = {
   jwt: string;
@@ -32,8 +67,10 @@ export default async function initializeAuthPipeline({
   signer,
   fetcher,
   connector,
+  setPrompt,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+  setPrompt('please sign message');
   const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
@@ -157,6 +194,66 @@ async function loginUser(
     }
 
     throw new Error('Unknown error');
+  }
+}
+
+/**
+ * Add address to user
+ */
+type AddUserAddressRequest = {
+  signature: string;
+  address: string;
+};
+
+type AddUserAddressResponse = {
+  signature_valid: boolean;
+};
+
+async function addUserAddress(
+  body: AddUserAddressRequest,
+  fetcher: FetcherType,
+): Promise<AddUserAddressResponse> {
+  try {
+    return await fetcher<AddUserAddressResponse>('/users/update/addresses/add', 'add user address', {
+      body,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting adding user address', error);
+      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      throw errorWithCode;
+    }
+
+    throw new Error('unknown error');
+  }
+}
+
+/**
+ * Remove address from user
+ */
+type RemoveUserAddressRequest = {
+  addresses: string[];
+};
+
+type RemoveUserAddressResponse = {
+
+};
+
+export async function removeUserAddress(
+  body: RemoveUserAddressRequest,
+  fetcher: FetcherType,
+): Promise<RemoveUserAddressResponse> {
+  try {
+    return await fetcher<RemoveUserAddressRequest>('/users/update/addresses/remove', 'remove user address', {
+      body,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting remove user address', error);
+      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
+    }
+
+    throw new Error('unknown error');
   }
 }
 

@@ -19,6 +19,7 @@ const walletIconMap: Record<string, string> = {
 type WalletButtonProps = {
   walletName?: string;
   activate: Web3ReactManagerFunctions['activate'];
+  deactivate: Web3ReactManagerFunctions['deactivate'];
   connector?: AbstractConnector;
   setToPendingState: (connector: AbstractConnector, walletName: string) => void;
   isPending: boolean;
@@ -30,9 +31,11 @@ function WalletButton({
   connector,
   setToPendingState,
   isPending,
+  deactivate,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
     if (connector && walletName) {
+      window.localStorage.removeItem('walletconnect');
       setToPendingState(connector, walletName);
       // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
