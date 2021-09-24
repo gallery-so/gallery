@@ -42,7 +42,11 @@ export default async function walletlinkSigner({ connector, nonce, address }: Pa
         reject(error);
       }
 
-      resolve(response.result);
+      if (!response) {
+        reject(new Error('no signature received'));
+      }
+
+      resolve(response?.result);
     });
   });
 }
