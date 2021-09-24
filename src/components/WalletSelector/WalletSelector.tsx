@@ -1,12 +1,12 @@
 import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
-import { injected, walletconnect } from 'connectors/index';
+import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import colors from 'components/core/colors';
-import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
+import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import useFetcher from 'contexts/swr/useFetcher';
 import Mixpanel from 'utils/mixpanel';
@@ -18,8 +18,7 @@ import WalletButton from './WalletButton';
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
-  // TODO: enable wallet link once signature decoding is supported
-  // WalletLink: walletlink,
+  WalletLink: walletlink,
 };
 
 type ErrorCode = string;
@@ -181,7 +180,8 @@ function WalletSelector() {
   if (displayedError) {
     return (
       <StyledWalletSelector>
-        <StyledTitleMedium>{displayedError.heading}</StyledTitleMedium>
+        <BodyMedium>{displayedError.heading}</BodyMedium>
+        <Spacer height={16} />
         <StyledBody color={colors.gray50}>{displayedError.body}</StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
@@ -190,7 +190,8 @@ function WalletSelector() {
 
   return (
     <StyledWalletSelector>
-      <StyledTitleMedium>Connect your wallet</StyledTitleMedium>
+      <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
+      <Spacer height={16} />
       {isPending ? (
         <WalletButton
           activate={activate}
@@ -222,11 +223,8 @@ const StyledWalletSelector = styled.div`
   flex-direction: column;
 `;
 
-const StyledTitleMedium = styled(TitleMedium)`
-  line-height: initial;
-  font-size: 18px;
-
-  margin-bottom: 16px;
+const StyledBodyMedium = styled(BodyMedium)`
+  text-align: left;
 `;
 
 const StyledBody = styled(BodyRegular)`

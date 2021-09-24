@@ -2,9 +2,11 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
+import walletlinkSigner from './walletlinkSigner';
 
 const USER_SIGNUP_ENABLED = false;
 
@@ -34,6 +36,7 @@ export default async function initializeAuthPipeline({
   connector,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+
   const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
@@ -113,6 +116,10 @@ async function signMessage(
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+    }
+
+    if (connector instanceof WalletLinkConnector) {
+      return await walletlinkSigner({ connector, nonce, address });
     }
 
     return await signer.signMessage(nonce);
