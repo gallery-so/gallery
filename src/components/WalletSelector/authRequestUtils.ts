@@ -8,7 +8,7 @@ import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 import walletlinkSigner from './walletlinkSigner';
 
-const USER_SIGNUP_ENABLED = false;
+const USER_SIGNUP_ENABLED = true;
 
 /**
  * Auth Pipeline:
