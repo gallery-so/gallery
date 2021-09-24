@@ -4,15 +4,13 @@ import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
 import colors from 'components/core/colors';
 import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import useFetcher from 'contexts/swr/useFetcher';
-import Mixpanel from 'utils/mixpanel';
-import { isWeb3Error } from 'types/Error';
-import initializeAuthPipeline, { initializeAddWalletPipeline } from './authRequestUtils';
 import WalletButton from './WalletButton';
+import AuthenticateWalletPending from './AuthenticateWalletPending';
+import AddWalletPending from './AddWalletPending';
+import Spacer from 'components/core/Spacer/Spacer';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -69,8 +67,6 @@ type Props = {
 
 function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   const {
-    library,
-    account,
     activate,
     deactivate,
     // Error returned from web3 provider
@@ -82,7 +78,7 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   const [isPending, setIsPending] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState('');
 
-  const [prompt, setPrompt] = useState('');
+  // const [prompt, setPrompt] = useState('');
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -135,69 +131,6 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
     deactivate();
   }, [deactivate]);
 
-  const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
-
-  const { logIn } = useAuthActions();
-
-  const fetcher = useFetcher();
-
-  useEffect(() => {
-    async function authenticate() {
-      // TODO: when hooking up to the server, make sure this only runs a single time
-      if (account && isPending && signer && pendingWallet) {
-        try {
-          if (mode === 'AUTH') {
-            const { jwt, userId } = await initializeAuthPipeline({
-              address: account.toLowerCase(),
-              signer,
-              fetcher,
-              connector: pendingWallet,
-              setPrompt,
-            });
-            Mixpanel.trackConnectWallet(pendingWalletName);
-            logIn({ jwt, userId });
-          } else if (mode === 'ADD_WALLET') {
-            console.log('address', account);
-
-            // if metamask and address is already associated with user
-            // show prompt to allow user to change address before connecting
-
-            // instead of this func doing all the stuff, then showing relevent prompts
-            // render the step with prompt and step will do stuff
-
-            const { signatureValid } = await initializeAddWalletPipeline({
-              address: account.toLowerCase(),
-              signer,
-              fetcher,
-              connector: pendingWallet,
-              setPrompt,
-            });
-          }
-
-          if (onConnectSuccess) {
-            onConnectSuccess();
-          }
-        } catch (error: unknown) {
-          setPrompt('');
-          if (isWeb3Error(error)) {
-            console.log('here', error);
-            setDetectedError(error);
-          }
-
-          // Fall back to generic error message
-          if (error instanceof Error) {
-            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-            setDetectedError(web3Error);
-          }
-
-          setIsPending(false);
-        }
-      }
-    }
-
-    void authenticate();
-  }, [account, isPending, logIn, signer, fetcher, pendingWalletName, pendingWallet]);
-
   /**
    * Ensures screen does not retain an error message when it remounts. Since Web3
    * library errors are stored in the Web3Provider, they remain cached and continue
@@ -223,31 +156,49 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
     );
   }
 
+  if (isPending && pendingWallet) {
+    if (mode === 'ADD_WALLET') {
+      return (
+        <StyledWalletSelector>
+          <AddWalletPending
+            setDetectedError={setDetectedError}
+            pendingWallet={pendingWallet}
+            pendingWalletName={pendingWalletName}
+            onConnectSuccess={onConnectSuccess
+            }/>
+        </StyledWalletSelector>
+      );
+    }
+
+    return (
+      <StyledWalletSelector>
+        <AuthenticateWalletPending
+          setDetectedError={setDetectedError}
+          pendingWallet={pendingWallet}
+          pendingWalletName={pendingWalletName}
+        />
+      </StyledWalletSelector>
+    );
+
+    // return normal auth version
+  }
+
   return (
     <StyledWalletSelector>
       <StyledTitleMedium>Connect your wallet</StyledTitleMedium>
-      {prompt && (<div>{prompt}</div>)}
-      {isPending ? (
+      {Object.keys(walletConnectorMap).map(walletName => (
         <WalletButton
+          key={walletName}
+          walletName={walletName}
           activate={activate}
-          connector={pendingWallet}
+          connector={walletConnectorMap[walletName]}
           setToPendingState={setToPendingState}
           isPending={isPending}
           deactivate={deactivate}
         />
-      ) : (
-        Object.keys(walletConnectorMap).map(walletName => (
-          <WalletButton
-            key={walletName}
-            walletName={walletName}
-            activate={activate}
-            connector={walletConnectorMap[walletName]}
-            setToPendingState={setToPendingState}
-            isPending={isPending}
-            deactivate={deactivate}
-          />
-        ))
-      )}
+      ))
+      }
+      <Spacer height={8}/>
       <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>
   );
@@ -257,6 +208,8 @@ const StyledWalletSelector = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
+  max-width: 480px;
+  width: 480px;
 `;
 
 const StyledTitleMedium = styled(TitleMedium)`
@@ -269,7 +222,7 @@ const StyledTitleMedium = styled(TitleMedium)`
 const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
   white-space: pre-wrap;
-  max-width: 400px;
+  // max-width: 400px;
 `;
 
 const StyledRetryButton = styled(Button)`

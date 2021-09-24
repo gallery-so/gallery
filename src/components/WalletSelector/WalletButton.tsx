@@ -31,7 +31,6 @@ function WalletButton({
   connector,
   setToPendingState,
   isPending,
-  deactivate,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
     if (connector && walletName) {
@@ -115,10 +114,8 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   background: white;
   border: 1px solid ${colors.gray50};
-  padding: 12px 16px;
-  margin: 10px 0;
-  width: 356px;
-  height: 68px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
   font-size: 16px;
 
   cursor: pointer;

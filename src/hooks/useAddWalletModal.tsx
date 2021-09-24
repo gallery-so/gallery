@@ -31,6 +31,5 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 356px;
   height: 303px;
 `;

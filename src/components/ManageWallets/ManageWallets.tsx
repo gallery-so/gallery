@@ -26,15 +26,18 @@ function ManageWallets() {
   }, [showAddWalletModal]);
 
   const removeUserAddressInternally = useCallback((index: number) => {
+    console.log('localAddresses', localAddresses, index);
     localAddresses.splice(index, 1);
     setLocalAddresses([...localAddresses]);
   }, [localAddresses]);
 
   useEffect(() => {
-    if (addresses.length !== localAddresses.length) {
-      setLocalAddresses([...addresses]);
-    }
-  }, [addresses, localAddresses.length]);
+    setLocalAddresses([...addresses]);
+  }, [addresses]);
+
+  useEffect(() => {
+    console.log('localddreses', localAddresses);
+  }, [localAddresses]);
 
   return (
     <StyledManageWallets>
@@ -46,7 +49,7 @@ function ManageWallets() {
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={32} />}
       {localAddresses.map((address, i) => <ManageWalletsRow key={address} index={i} address={address} fetcher={fetcher} onDisconnect={removeUserAddressInternally} setErrorMessage={setErrorMessage}/>)}
       <StyledButton
-        text="+ Add wallet"
+        text="+ Add new wallet"
         onClick={handleSubmit}
         disabled={isLoading}
         loading={isLoading}

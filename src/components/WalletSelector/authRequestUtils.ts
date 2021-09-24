@@ -22,7 +22,6 @@ type AuthPipelineProps = {
   signer: JsonRpcSigner;
   fetcher: FetcherType;
   connector: AbstractConnector;
-  setPrompt: Dispatch<SetStateAction<string>>;
 };
 
 type AddWalletResult = {
@@ -34,7 +33,6 @@ export async function initializeAddWalletPipeline({
   signer,
   fetcher,
   connector,
-  setPrompt,
 }: AuthPipelineProps): Promise<AddWalletResult> {
   // fetch nonce
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
@@ -47,7 +45,7 @@ export async function initializeAddWalletPipeline({
     throw { code: 'EXISTING_USER' } as Web3Error;
   }
 
-  setPrompt('please sign message');
+  // setPrompt('please sign message');
   // sign
   const signature = await signMessage(address, nonce, signer, connector);
   // // call add address endpoint
@@ -67,10 +65,9 @@ export default async function initializeAuthPipeline({
   signer,
   fetcher,
   connector,
-  setPrompt,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-  setPrompt('please sign message');
+  // setPrompt('please sign message');
   const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
