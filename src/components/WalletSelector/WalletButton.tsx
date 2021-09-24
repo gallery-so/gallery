@@ -10,6 +10,7 @@ import transitions from 'components/core/transitions';
 import metamaskIcon from 'assets/icons/metamask.svg';
 import walletConnectIcon from 'assets/icons/walletconnect.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { BodyRegular } from 'components/core/Text/Text';
 
 const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
@@ -46,7 +47,7 @@ function WalletButton({
 
   const loadingView = useMemo(() => (
     <>
-      {'Connecting...'}
+      <BodyRegular>Connecting...</BodyRegular>
       <Loader thicc size="medium" />
     </>
   ), []);
@@ -56,12 +57,22 @@ function WalletButton({
       return null;
     }
 
+    function convertWalletName(name: string) {
+      const overrides: Record<string, string> = {
+        WalletLink: 'Coinbase Wallet',
+      };
+
+      if (name in overrides) {
+        return overrides[name];
+      }
+
+      return name;
+    }
+
     return (
       <>
-        {walletName}
-        <Icon
-          src={walletIconMap[walletName.toLowerCase()]}
-        />
+        <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
+        <Icon src={walletIconMap[walletName.toLowerCase()]} />
       </>
     );
   }, [walletName]);

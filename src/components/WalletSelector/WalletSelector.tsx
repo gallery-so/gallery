@@ -18,7 +18,6 @@ import WalletButton from './WalletButton';
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
-  // TODO: enable wallet link once signature decoding is supported
   WalletLink: walletlink,
 };
 
