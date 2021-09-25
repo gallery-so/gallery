@@ -9,8 +9,8 @@ import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
-import Spacer from 'components/core/Spacer/Spacer';
 import { INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
+import Mixpanel from 'utils/mixpanel';
 import initializeAuthPipeline from './authRequestUtils';
 
 type Props = {
@@ -42,9 +42,9 @@ function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetect
       fetcher,
       connector: pendingWallet,
     });
-      // Mixpanel.trackConnectWallet(pendingWalletName);
-    logIn({ jwt, userId });
-  }, [fetcher, logIn, pendingWallet]);
+    Mixpanel.trackConnectWallet(pendingWalletName);
+    logIn({ jwt, userId }, address);
+  }, [fetcher, logIn, pendingWallet, pendingWalletName]);
 
   useEffect(() => {
     async function authenticate() {

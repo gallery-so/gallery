@@ -11,12 +11,13 @@ import { isWeb3Error } from 'types/Error';
 type Props = {
   index: number;
   address: string;
+  userSigninAddress: string;
   fetcher: FetcherType;
   onDisconnect: (index: number) => void;
   setErrorMessage: (message: string) => void;
 };
 
-function ManageWalletsRow({ index, address, fetcher, onDisconnect, setErrorMessage }: Props) {
+function ManageWalletsRow({ index, address, userSigninAddress, fetcher, onDisconnect, setErrorMessage }: Props) {
   const handleDisconnectClick = useCallback(async () => {
     try {
       setErrorMessage('');
@@ -32,8 +33,7 @@ function ManageWalletsRow({ index, address, fetcher, onDisconnect, setErrorMessa
     }
   }, [address, fetcher, index, onDisconnect, setErrorMessage]);
 
-  //   TODO once the front end can determine which wallet is signed in, dont show disconnect for that wallet
-  const showDisconnectButton = useMemo(() => index > 0, [index]);
+  const showDisconnectButton = useMemo(() => address !== userSigninAddress, [address, userSigninAddress]);
 
   return (
     <StyledWalletRow >
