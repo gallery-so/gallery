@@ -58,6 +58,7 @@ const StyledDetailLabel = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 296px;
+  min-width: 296px;
   margin-top: 32px;
   word-wrap: break-word;
 
