@@ -13,7 +13,7 @@ import {
 import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { truncateAddress } from 'utils/address';
+import { truncateAddress } from 'utils/wallet';
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();

@@ -1,22 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
-import { injected, walletconnect } from 'connectors/index';
+import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
-import { TitleMedium, BodyRegular, Caption } from 'components/core/Text/Text';
+import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
+import Spacer from 'components/core/Spacer/Spacer';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
-import Spacer from 'components/core/Spacer/Spacer';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
-  // TODO: enable wallet link once signature decoding is supported
-  // WalletLink: walletlink,
+  WalletLink: walletlink,
 };
 
 type ErrorCode = string;
@@ -149,7 +148,8 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   if (displayedError) {
     return (
       <StyledWalletSelector>
-        <StyledTitleMedium>{displayedError.heading}</StyledTitleMedium>
+        <BodyMedium>{displayedError.heading}</BodyMedium>
+        <Spacer height={16} />
         <StyledBody color={colors.gray50}>{displayedError.body}</StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
@@ -179,13 +179,12 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
         />
       </StyledWalletSelector>
     );
-
-    // return normal auth version
   }
 
   return (
     <StyledWalletSelector>
-      <StyledTitleMedium>Connect your wallet</StyledTitleMedium>
+      <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
+      <Spacer height={16} />
       {Object.keys(walletConnectorMap).map(walletName => (
         <WalletButton
           key={walletName}
@@ -212,11 +211,8 @@ const StyledWalletSelector = styled.div`
   width: 480px;
 `;
 
-const StyledTitleMedium = styled(TitleMedium)`
-  line-height: initial;
-  font-size: 18px;
-
-  margin-bottom: 16px;
+const StyledBodyMedium = styled(BodyMedium)`
+  text-align: left;
 `;
 
 const StyledBody = styled(BodyRegular)`

@@ -12,6 +12,7 @@ import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADDRESS_ALREADY_CONNECTED, INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
 import { initializeAddWalletPipeline } from './authRequestUtils';
+import { convertWalletName } from 'utils/wallet';
 
 type Props = {
   pendingWalletName: string;
@@ -59,6 +60,8 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
 
   const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
 
+  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName])
+
   useEffect(() => {
     async function authenticate() {
       if (account && signer) {
@@ -84,7 +87,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
   if (pendingState === ADDRESS_ALREADY_CONNECTED) {
     return (
       <div>
-        <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
         <BodyRegular color={colors.gray50}>The provided address is already connected to this account.</BodyRegular>
         {isMetamask
@@ -96,7 +99,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
   if (pendingState === CONFIRM_ADDRESS && account && signer) {
     return (
       <div>
-        <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.gray50}>Confirm the following wallet address:</BodyRegular>
         <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
         <Spacer height={16}/>
@@ -112,7 +115,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <StyledAddWalletPending>
-        <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </StyledAddWalletPending>
     );
@@ -120,7 +123,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
 
   return (
     <StyledAddWalletPending>
-      <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+      <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </StyledAddWalletPending>
   );

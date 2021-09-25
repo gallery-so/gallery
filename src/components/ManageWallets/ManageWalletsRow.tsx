@@ -5,7 +5,7 @@ import { removeUserAddress } from 'components/WalletSelector/authRequestUtils';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { truncateAddress } from 'utils/address';
+import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
 
 type Props = {

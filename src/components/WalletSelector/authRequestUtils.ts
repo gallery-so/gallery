@@ -2,13 +2,13 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
-import useAddWalletModal from 'hooks/useAddWalletModal';
-import { Dispatch, SetStateAction } from 'react';
 import { Web3Error } from 'types/Error';
+import walletlinkSigner from './walletlinkSigner';
 
-const USER_SIGNUP_ENABLED = false;
+const USER_SIGNUP_ENABLED = true;
 
 /**
  * Auth Pipeline:
@@ -34,25 +34,17 @@ export async function initializeAddWalletPipeline({
   fetcher,
   connector,
 }: AuthPipelineProps): Promise<AddWalletResult> {
-  // fetch nonce
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
   if (userExists) {
-    // the address connecting is associated with an existing user
-    // long term, this will merge existing user into current user
-    // for now, don't proceed ?
-    // throw new Error(`${address} is associated with an existing user.`);
     throw { code: 'EXISTING_USER' } as Web3Error;
   }
 
-  // setPrompt('please sign message');
-  // sign
   const signature = await signMessage(address, nonce, signer, connector);
-  // // call add address endpoint
-  // // this endpoint will verify the signature, if it's valid it will add the address to the user's list of addresses
   const response = await addUserAddress({ signature, address }, fetcher);
+  await triggerOpenseaSync(address, fetcher);
+
   return { signatureValid: response.signature_valid };
-  // return { signatureValid: true };
 }
 
 type AuthResult = {
@@ -67,7 +59,6 @@ export default async function initializeAuthPipeline({
   connector,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-  // setPrompt('please sign message');
   const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
@@ -147,6 +138,10 @@ async function signMessage(
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+    }
+
+    if (connector instanceof WalletLinkConnector) {
+      return await walletlinkSigner({ connector, nonce, address });
     }
 
     return await signer.signMessage(nonce);

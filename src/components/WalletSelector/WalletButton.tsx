@@ -9,15 +9,19 @@ import transitions from 'components/core/transitions';
 
 import metamaskIcon from 'assets/icons/metamask.svg';
 import walletConnectIcon from 'assets/icons/walletconnect.svg';
+import walletLinkIcon from 'assets/icons/walletlink.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { BodyRegular } from 'components/core/Text/Text';
+import { convertWalletName } from 'utils/wallet';
 
 const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
   walletconnect: walletConnectIcon,
+  walletlink: walletLinkIcon,
 };
 
 type WalletButtonProps = {
-  walletName?: string;
+  walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
   deactivate: Web3ReactManagerFunctions['deactivate'];
   connector?: AbstractConnector;
@@ -33,7 +37,7 @@ function WalletButton({
   isPending,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    if (connector && walletName) {
+    if (connector) {
       window.localStorage.removeItem('walletconnect');
       setToPendingState(connector, walletName);
       // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
@@ -48,36 +52,26 @@ function WalletButton({
 
   const loadingView = useMemo(() => (
     <>
-      {'Connecting...'}
+      <BodyRegular>Connecting...</BodyRegular>
       <Loader thicc size="medium" />
     </>
   ), []);
 
-  const iconView = useMemo(() => {
-    if (!walletName) {
-      return null;
-    }
-
-    return (
-      <>
-        {walletName}
-        <Icon
-          src={walletIconMap[walletName.toLowerCase()]}
-        />
-      </>
-    );
-  }, [walletName]);
+  const iconView = useMemo(() => (
+    <>
+      <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
+      <Icon src={walletIconMap[walletName.toLowerCase()]} />
+    </>
+  ), [walletName]);
 
   // Injected is the connector type used for browser wallet extensions/dApp browsers
   if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    && !(window.web3 || window.ethereum) && walletName && walletName.toLowerCase() === 'metamask') {
+    && !(window.web3 || window.ethereum) && walletName.toLowerCase() === 'metamask') {
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
-          {'Install Metamask'}
-          <Icon
-            src={metamaskIcon}
-          />
+          <BodyRegular>Install Metamask</BodyRegular>
+          <Icon src={metamaskIcon} />
         </StyledButton>
       </StyledExternalLink>
     );

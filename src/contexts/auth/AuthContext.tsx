@@ -10,6 +10,7 @@ import {
   useMemo,
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
+import { useErrorPillActions } from 'contexts/error/ErrorPillContext';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
 import {
@@ -107,6 +108,8 @@ const AuthProvider = memo(({ children }: Props) => {
     setAuthState(LOADING);
   }, []);
 
+  const { pushError } = useErrorPillActions();
+
   useEffect(
     function authProviderMounted() {
       async function loadAuthState() {
@@ -119,8 +122,7 @@ const AuthProvider = memo(({ children }: Props) => {
             'validate jwt',
           );
           if (!response.valid) {
-            // TODO: set explicit error on higher-level error context to display in a toast
-            console.error('invalid or expired JWT');
+            pushError('Your session is invalid or expired. Please try again.');
             logOut();
             return;
           }
@@ -136,7 +138,7 @@ const AuthProvider = memo(({ children }: Props) => {
         void loadAuthState();
       }
     },
-    [authState, logIn, logOut, setLoggedOut, token, userId],
+    [authState, logIn, logOut, pushError, setLoggedOut, token, userId],
   );
 
   const authActions: AuthActions = useMemo(
