@@ -42,7 +42,7 @@ export async function initializeAddWalletPipeline({
 
   const signature = await signMessage(address, nonce, signer, connector);
   const response = await addUserAddress({ signature, address }, fetcher);
-  await triggerOpenseaSync(address, fetcher);
+  // await triggerOpenseaSync(address, fetcher);
 
   return { signatureValid: response.signature_valid };
 }

@@ -3,7 +3,6 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
-import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
@@ -93,13 +92,6 @@ const StyledTitleMedium = styled(TitleMedium)`
 `;
 
 const StyledAuthenticateWalletPending = styled.div`
-`;
-
-const StyledButton = styled(Button)`
-  align-self: flex-end;
-  padding: 16px;
-  width: 100%;
-  height: 100%;
 `;
 
 export default AuthenticateWalletPending;

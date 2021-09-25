@@ -11,8 +11,8 @@ import styled from 'styled-components';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADDRESS_ALREADY_CONNECTED, INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
-import { initializeAddWalletPipeline } from './authRequestUtils';
 import { convertWalletName } from 'utils/wallet';
+import { initializeAddWalletPipeline } from './authRequestUtils';
 
 type Props = {
   pendingWalletName: string;
@@ -24,7 +24,7 @@ type Props = {
 type PendingState = typeof INITIAL | typeof ADDRESS_ALREADY_CONNECTED | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, setDetectedError }: Props) {
+function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, setDetectedError }: Props) {
   const {
     library,
     account,
@@ -60,7 +60,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
 
   const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
 
-  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName])
+  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName]);
 
   useEffect(() => {
     async function authenticate() {
@@ -145,4 +145,5 @@ const StyledButton = styled(Button)`
   width: 100%;
   height: 100%;
 `;
-export default WalletPending;
+
+export default AddWalletPending;
