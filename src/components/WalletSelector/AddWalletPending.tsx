@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
-import { useAuthActions } from 'contexts/auth/AuthContext';
 import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,7 +11,7 @@ import styled from 'styled-components';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADDRESS_ALREADY_CONNECTED, INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
-import initializeAuthPipeline, { initializeAddWalletPipeline } from './authRequestUtils';
+import { initializeAddWalletPipeline } from './authRequestUtils';
 
 type Props = {
   pendingWalletName: string;
@@ -34,19 +33,7 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
-  const { logIn } = useAuthActions();
   const authenticatedUserAddresses = useAuthenticatedUserAddresses();
-
-  const attemptAuthentication = useCallback(async (address: string, signer: JsonRpcSigner) => {
-    const { jwt, userId } = await initializeAuthPipeline({
-      address,
-      signer,
-      fetcher,
-      connector: pendingWallet,
-    });
-      // Mixpanel.trackConnectWallet(pendingWalletName);
-    logIn({ jwt, userId });
-  }, [fetcher, logIn, pendingWallet]);
 
   const attemptAddWallet = useCallback(async (address: string, signer: JsonRpcSigner) => {
     try {
@@ -59,7 +46,6 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
       return signatureValid;
     } catch (error: unknown) {
       if (isWeb3Error(error)) {
-        console.log('here', error);
         setDetectedError(error);
       }
 
@@ -71,34 +57,29 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
     }
   }, [fetcher, pendingWallet, setDetectedError]);
 
+  const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
+
   useEffect(() => {
     async function authenticate() {
-      // TODO: when hooking up to the server, make sure this only runs a single time
-      if (account && signer && pendingWallet) {
-        // try {
-        const address = account.toLowerCase();
-        console.log('address', address);
-
-        if (authenticatedUserAddresses.includes(address)) {
+      if (account && signer) {
+        if (authenticatedUserAddresses.includes(account.toLowerCase())) {
           setPendingState(ADDRESS_ALREADY_CONNECTED);
-        } else if (pendingWalletName.toLowerCase() === 'metamask') {
+          return;
+        }
+
+        if (isMetamask) {
           setPendingState(CONFIRM_ADDRESS);
         } else {
-          setPendingState(PROMPT_SIGNATURE)
           await attemptAddWallet(account.toLowerCase(), signer);
           if (onConnectSuccess) {
             onConnectSuccess();
           }
         }
-
-        // if (onConnectSuccess) {
-        //   onConnectSuccess();
-        // }
       }
     }
 
     void authenticate();
-  }, [account, logIn, signer, fetcher, pendingWalletName, pendingWallet, onConnectSuccess, setDetectedError, attemptAuthentication, authenticatedUserAddresses, attemptAddWallet]);
+  }, [account, signer, onConnectSuccess, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED) {
     return (
@@ -106,7 +87,9 @@ function WalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, set
         <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
         <BodyRegular color={colors.gray50}>The provided address is already connected to this account.</BodyRegular>
-        <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
+        {isMetamask
+        && <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
+        }
       </div>);
   }
 

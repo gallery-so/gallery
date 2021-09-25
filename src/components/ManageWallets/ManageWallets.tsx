@@ -26,7 +26,6 @@ function ManageWallets() {
   }, [showAddWalletModal]);
 
   const removeUserAddressInternally = useCallback((index: number) => {
-    console.log('localAddresses', localAddresses, index);
     localAddresses.splice(index, 1);
     setLocalAddresses([...localAddresses]);
   }, [localAddresses]);
@@ -34,10 +33,6 @@ function ManageWallets() {
   useEffect(() => {
     setLocalAddresses([...addresses]);
   }, [addresses]);
-
-  useEffect(() => {
-    console.log('localddreses', localAddresses);
-  }, [localAddresses]);
 
   return (
     <StyledManageWallets>
