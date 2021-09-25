@@ -19,7 +19,7 @@ function UnstageButton({ editModeNft, className }: Props) {
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
-      <BodyRegular color={colors.white}>DELETE</BodyRegular>
+      <BodyRegular color={colors.white}>REMOVE</BodyRegular>
     </StyledUnstageButton>
   );
 }
