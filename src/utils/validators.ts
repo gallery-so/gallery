@@ -37,7 +37,7 @@ export function required(s: string): ValidatorReturnType {
 export function minLength(length: number) {
   return function (s: string): ValidatorReturnType {
     if (s.length < length) {
-      throw new Error(`Must be contain at least ${length} characters.`);
+      throw new Error(`Must contain at least ${length} characters.`);
     }
 
     return false;
