@@ -12,19 +12,20 @@ import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADDRESS_ALREADY_CONNECTED, INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
 import { convertWalletName } from 'utils/wallet';
+import { useModal } from 'contexts/modal/ModalContext';
+import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { initializeAddWalletPipeline } from './authRequestUtils';
 
 type Props = {
   pendingWalletName: string;
   pendingWallet: AbstractConnector;
-  onConnectSuccess?: () => void;
   setDetectedError: (error: Web3Error) => void;
 };
 
 type PendingState = typeof INITIAL | typeof ADDRESS_ALREADY_CONNECTED | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, setDetectedError }: Props) {
+function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }: Props) {
   const {
     library,
     account,
@@ -36,6 +37,12 @@ function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, 
   const fetcher = useFetcher();
   const authenticatedUserAddresses = useAuthenticatedUserAddresses();
 
+  const { showModal } = useModal();
+
+  const openManageWalletsModal = useCallback((address: string) => {
+    showModal(<ManageWalletsModal newAddress={address}/>);
+  }, [showModal]);
+
   const attemptAddWallet = useCallback(async (address: string, signer: JsonRpcSigner) => {
     try {
       const { signatureValid } = await initializeAddWalletPipeline({
@@ -44,6 +51,8 @@ function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, 
         fetcher,
         connector: pendingWallet,
       });
+      openManageWalletsModal(address);
+
       return signatureValid;
     } catch (error: unknown) {
       if (isWeb3Error(error)) {
@@ -56,7 +65,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, 
         setDetectedError(web3Error);
       }
     }
-  }, [fetcher, pendingWallet, setDetectedError]);
+  }, [fetcher, openManageWalletsModal, pendingWallet, setDetectedError]);
 
   const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
 
@@ -74,15 +83,12 @@ function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, 
           setPendingState(CONFIRM_ADDRESS);
         } else {
           await attemptAddWallet(account.toLowerCase(), signer);
-          if (onConnectSuccess) {
-            onConnectSuccess();
-          }
         }
       }
     }
 
     void authenticate();
-  }, [account, signer, onConnectSuccess, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
+  }, [account, signer, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED) {
     return (
@@ -114,18 +120,18 @@ function AddWalletPending({ pendingWallet, pendingWalletName, onConnectSuccess, 
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <StyledAddWalletPending>
+      <div>
         <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
-      </StyledAddWalletPending>
+      </div>
     );
   }
 
   return (
-    <StyledAddWalletPending>
+    <div>
       <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
-    </StyledAddWalletPending>
+    </div>
   );
 }
 
@@ -134,9 +140,6 @@ const StyledTitleMedium = styled(TitleMedium)`
   font-size: 18px;
 
   margin-bottom: 16px;
-`;
-
-const StyledAddWalletPending = styled.div`
 `;
 
 const StyledButton = styled(Button)`

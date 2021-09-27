@@ -1,10 +1,14 @@
 import ManageWallets from 'components/ManageWallets/ManageWallets';
 import styled from 'styled-components';
 
-function ManageWalletsModal() {
+type Props = {
+  newAddress?: string;
+};
+
+function ManageWalletsModal({ newAddress }: Props) {
   return (
     <StyledManageWalletsModal>
-      <ManageWallets/>
+      <ManageWallets newAddress={newAddress}/>
     </StyledManageWalletsModal>
   );
 }

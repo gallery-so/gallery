@@ -38,13 +38,18 @@ function WalletButton({
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
     if (connector) {
-      window.localStorage.removeItem('walletconnect');
-      setToPendingState(connector, walletName);
-      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-        connector.walletConnectProvider = undefined;
+      if (connector instanceof WalletConnectConnector) {
+        // Walletconnect "remembers" what address you recently connected with. We don't want this for multi-wallet
+        window.localStorage.removeItem('walletconnect');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (connector.walletConnectProvider?.wc?.uri) {
+          // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+          connector.walletConnectProvider = undefined;
+        }
       }
+
+      setToPendingState(connector, walletName);
 
       void activate(connector);
     }

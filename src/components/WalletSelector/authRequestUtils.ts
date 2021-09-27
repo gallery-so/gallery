@@ -6,9 +6,8 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
+import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import walletlinkSigner from './walletlinkSigner';
-
-const USER_SIGNUP_ENABLED = true;
 
 /**
  * Auth Pipeline:
@@ -42,6 +41,7 @@ export async function initializeAddWalletPipeline({
 
   const signature = await signMessage(address, nonce, signer, connector);
   const response = await addUserAddress({ signature, address }, fetcher);
+  // TODO enable open sea sync once backend can handle multiple addresses
   // await triggerOpenseaSync(address, fetcher);
 
   return { signatureValid: response.signature_valid };

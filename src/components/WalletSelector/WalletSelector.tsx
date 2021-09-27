@@ -8,6 +8,7 @@ import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
+import { ADD_WALLET, AUTH } from 'types/Wallet';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
@@ -59,12 +60,13 @@ function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
+type ConnectionMode = typeof AUTH | typeof ADD_WALLET;
+
 type Props = {
-  mode?: string;
-  onConnectSuccess?: () => void;
+  connectionMode?: ConnectionMode;
 };
 
-function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
+function WalletSelector({ connectionMode = AUTH }: Props) {
   const {
     activate,
     deactivate,
@@ -76,8 +78,6 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState('');
-
-  // const [prompt, setPrompt] = useState('');
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -157,15 +157,14 @@ function WalletSelector({ mode = 'AUTH', onConnectSuccess }: Props) {
   }
 
   if (isPending && pendingWallet) {
-    if (mode === 'ADD_WALLET') {
+    if (connectionMode === ADD_WALLET) {
       return (
         <StyledWalletSelector>
           <AddWalletPending
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
             pendingWalletName={pendingWalletName}
-            onConnectSuccess={onConnectSuccess
-            }/>
+          />
         </StyledWalletSelector>
       );
     }
@@ -218,7 +217,6 @@ const StyledBodyMedium = styled(BodyMedium)`
 const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
   white-space: pre-wrap;
-  // max-width: 400px;
 `;
 
 const StyledRetryButton = styled(Button)`

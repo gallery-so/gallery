@@ -12,18 +12,20 @@ import styled from 'styled-components';
 import { getLocalStorageItem } from 'utils/localStorage';
 import ManageWalletsRow from './ManageWalletsRow';
 
-function ManageWallets() {
+type Props = {
+  newAddress?: string;
+};
+
+function ManageWallets({ newAddress }: Props) {
   const addresses = useAuthenticatedUserAddresses();
   const fetcher = useFetcher();
 
   const [localAddresses, setLocalAddresses] = useState(addresses);
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const showAddWalletModal = useAddWalletModal();
 
   const handleSubmit = useCallback(async () => {
-    setIsLoading(true);
     showAddWalletModal();
   }, [showAddWalletModal]);
 
@@ -40,12 +42,18 @@ function ManageWallets() {
 
   return (
     <StyledManageWallets>
-      <StyledBodyMedium>Manage Wallets</StyledBodyMedium>
+      <BodyMedium>Manage Wallets</BodyMedium>
       <Spacer height={4} />
       <BodyRegular color={colors.gray50}>
         Add more wallets to access your other NFTs. You'll also be able to sign in using any connected wallet.
       </BodyRegular>
-      {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={32} />}
+      {newAddress && <>
+        <Spacer height={16} />
+        <BodyRegular>
+          Wallet {newAddress} was added.
+        </BodyRegular>
+      </>}
+      {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
       {localAddresses.map((address, i) => <ManageWalletsRow
         key={address}
         index={i}
@@ -58,8 +66,6 @@ function ManageWallets() {
       <StyledButton
         text="+ Add new wallet"
         onClick={handleSubmit}
-        disabled={isLoading}
-        loading={isLoading}
       />
     </StyledManageWallets>
   );
@@ -68,10 +74,6 @@ function ManageWallets() {
 const StyledManageWallets = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const StyledBodyMedium = styled(BodyMedium)`
-  // padding-left: 4px;
 `;
 
 const StyledButton = styled(Button)`
