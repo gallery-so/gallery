@@ -19,9 +19,9 @@ function UserGalleryCollection({ collection }: Props) {
       <StyledCollectionHeader>
         <TitleSerif>{collection.name}</TitleSerif>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
+        <StyledCollectorsNote color={colors.gray50}>
           {collection.collectors_note}
-        </BodyRegular>
+        </StyledCollectorsNote>
       </StyledCollectionHeader>
       <Spacer height={24} />
       <StyledCollectionNfts>
@@ -53,6 +53,11 @@ const StyledCollectionHeader = styled.div`
     width: 70%;
   }
 `;
+
+const StyledCollectorsNote = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-wrap;
+`
 
 const StyledCollectionNfts = styled.div`
   margin: 10px 0;

@@ -80,6 +80,8 @@ const Header = styled.div`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-wrap;
 `;
 
 const StyledHiddenLabel = styled(BodyRegular)`
