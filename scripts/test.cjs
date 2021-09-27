@@ -11,10 +11,10 @@ process.on('unhandledRejection', error => {
 });
 
 // Ensure environment variables are read.
-import('../config/env.cjs');
+require('../config/env.cjs');
 
-const jest = import('jest');
-const execSync = import('node:child_process').execSync;
+const jest = require('jest');
+const execSync = require('node:child_process').execSync;
 
 const argv = process.argv.slice(2);
 

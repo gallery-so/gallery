@@ -4,7 +4,7 @@ import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
-import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
+import { getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { Collection } from 'types/Collection';
 import { ReactComponent as Settings } from './collection-settings.svg';
 

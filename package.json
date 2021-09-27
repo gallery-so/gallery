@@ -95,7 +95,7 @@
     "start": "node scripts/start.js",
     "start:mock": "ENV=local node scripts/start.js",
     "build": "CI=false node scripts/build.js",
-    "test": "xo & node scripts/test.js"
+    "test": "xo & node scripts/test.cjs"
   },
   "browserslist": {
     "production": [
@@ -150,7 +150,7 @@
     "testEnvironment": "jsdom",
     "testRunner": "<rootDir>/node_modules/jest-circus/runner.js",
     "transform": {
-      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.cjs",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
