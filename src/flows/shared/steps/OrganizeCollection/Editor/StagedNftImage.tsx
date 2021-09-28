@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
-import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
+import { getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { EditModeNft } from '../types';
 
 type Props = {

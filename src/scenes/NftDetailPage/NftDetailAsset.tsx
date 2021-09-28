@@ -5,33 +5,13 @@ import styled from 'styled-components';
 
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
+import { getMediaType } from 'utils/nft';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 
 type Props = {
   nft: Nft;
-};
-
-const getMediaType = (nft: Nft) => {
-  if (!nft.animation_url) {
-    return NftMediaType.IMAGE;
-  }
-
-  const animationUrlFiletype = nft.animation_url.split('.').pop();
-
-  switch (animationUrlFiletype) {
-    case 'mp4':
-      return NftMediaType.VIDEO;
-    case 'mp3':
-      return NftMediaType.AUDIO;
-    case 'html':
-      return NftMediaType.ANIMATION;
-    default:
-      return NftMediaType.IMAGE;
-
-    // TODO: add more nuanced ways of checking beyond file extension
-  }
 };
 
 function NftDetailAsset({ nft }: Props) {
