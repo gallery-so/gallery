@@ -26,7 +26,7 @@ export function getFileExtension(url: string) {
   return splitUrl.length < 2 ? '' : splitUrl.pop();
 }
 
-function getMediaTypeForAssetUrl(assetUrl: string) {
+export function getMediaTypeForAssetUrl(assetUrl: string) {
   const fileExtension = getFileExtension(assetUrl);
 
   if (!fileExtension) {
@@ -46,7 +46,10 @@ function getMediaTypeForAssetUrl(assetUrl: string) {
 }
 
 export function getMediaType(nft: Nft) {
-  const assetUrl = nft.animation_url || nft.image_url;
+  const imageUrlType = getMediaTypeForAssetUrl(nft.image_url);
+  if (imageUrlType === NftMediaType.VIDEO) {
+    return imageUrlType;
+  }
 
-  return getMediaTypeForAssetUrl(assetUrl);
+  return getMediaTypeForAssetUrl(nft.animation_url);
 }

@@ -53,7 +53,6 @@ describe('getMediaType', () => {
       animation_url: 'thisisavideo.mp4',
       expectedMediaType: NftMediaType.VIDEO,
     };
-
     expect(getMediaType(VIDEO_NFT)).toEqual(NftMediaType.VIDEO);
 
     // Video without animation url
@@ -63,8 +62,16 @@ describe('getMediaType', () => {
       animation_url: '',
       expectedMediaType: NftMediaType.VIDEO,
     };
-
     expect(getMediaType(VIDEO_NFT_2)).toEqual(NftMediaType.VIDEO);
+
+    //
+    const VIDEO_NFT_3 = {
+      ...MOCK_NFT,
+      image_url: 'thisisavideo.mp4',
+      animation_url: 'randomanimationurl',
+      expectedMediaType: NftMediaType.VIDEO,
+    };
+    expect(getMediaType(VIDEO_NFT_3)).toEqual(NftMediaType.VIDEO);
   });
 
   test('Animation', () => {

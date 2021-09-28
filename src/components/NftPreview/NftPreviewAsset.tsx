@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
-import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 function NftPreviewAsset({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
-    if (!nft.animation_url && getMediaType(nft) === NftMediaType.VIDEO) {
+    if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
       return <StyledVideo src={'https://storage.opensea.io/files/7acbd389bd9bfdd376e428b685e6c15a.mp4'} onLoadStart={setContentIsLoaded}></StyledVideo>;
     }
 
