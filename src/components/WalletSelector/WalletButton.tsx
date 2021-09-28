@@ -12,6 +12,7 @@ import walletConnectIcon from 'assets/icons/walletconnect.svg';
 import walletLinkIcon from 'assets/icons/walletlink.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
+import { convertWalletName } from 'utils/wallet';
 
 const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
@@ -20,8 +21,9 @@ const walletIconMap: Record<string, string> = {
 };
 
 type WalletButtonProps = {
-  walletName?: string;
+  walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
+  deactivate: Web3ReactManagerFunctions['deactivate'];
   connector?: AbstractConnector;
   setToPendingState: (connector: AbstractConnector, walletName: string) => void;
   isPending: boolean;
@@ -35,13 +37,19 @@ function WalletButton({
   isPending,
 }: WalletButtonProps) {
   const handleClick = useCallback(() => {
-    if (connector && walletName) {
-      setToPendingState(connector, walletName);
-      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-        connector.walletConnectProvider = undefined;
+    if (connector) {
+      if (connector instanceof WalletConnectConnector) {
+        // Walletconnect "remembers" what address you recently connected with. We don't want this for multi-wallet
+        window.localStorage.removeItem('walletconnect');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (connector.walletConnectProvider?.wc?.uri) {
+          // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+          connector.walletConnectProvider = undefined;
+        }
       }
+
+      setToPendingState(connector, walletName);
 
       void activate(connector);
     }
@@ -54,34 +62,16 @@ function WalletButton({
     </>
   ), []);
 
-  const iconView = useMemo(() => {
-    if (!walletName) {
-      return null;
-    }
-
-    function convertWalletName(name: string) {
-      const overrides: Record<string, string> = {
-        WalletLink: 'Coinbase Wallet',
-      };
-
-      if (name in overrides) {
-        return overrides[name];
-      }
-
-      return name;
-    }
-
-    return (
-      <>
-        <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
-        <Icon src={walletIconMap[walletName.toLowerCase()]} />
-      </>
-    );
-  }, [walletName]);
+  const iconView = useMemo(() => (
+    <>
+      <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
+      <Icon src={walletIconMap[walletName.toLowerCase()]} />
+    </>
+  ), [walletName]);
 
   // Injected is the connector type used for browser wallet extensions/dApp browsers
   if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    && !(window.web3 || window.ethereum) && walletName && walletName.toLowerCase() === 'metamask') {
+    && !(window.web3 || window.ethereum) && walletName.toLowerCase() === 'metamask') {
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
@@ -123,10 +113,8 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   background: white;
   border: 1px solid ${colors.gray50};
-  padding: 12px 16px;
-  margin: 10px 0;
-  width: 356px;
-  height: 68px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
   font-size: 16px;
 
   cursor: pointer;

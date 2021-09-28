@@ -6,9 +6,8 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
+import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import walletlinkSigner from './walletlinkSigner';
-
-const USER_SIGNUP_ENABLED = true;
 
 /**
  * Auth Pipeline:
@@ -24,6 +23,32 @@ type AuthPipelineProps = {
   connector: AbstractConnector;
 };
 
+type AddWalletResult = {
+  signatureValid: boolean;
+};
+
+export async function initializeAddWalletPipeline({
+  address,
+  signer,
+  fetcher,
+  connector,
+}: AuthPipelineProps): Promise<AddWalletResult> {
+  // Check if address already belongs to a user in the database
+  // If so, the user shouldn't be able to add the address. In the future we might allow user merge
+  const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+
+  if (userExists) {
+    throw { code: 'EXISTING_USER' } as Web3Error;
+  }
+
+  const signature = await signMessage(address, nonce, signer, connector);
+  const response = await addUserAddress({ signature, address }, fetcher);
+  // TODO enable open sea sync once backend can handle multiple addresses
+  // await triggerOpenseaSync(address, fetcher);
+
+  return { signatureValid: response.signature_valid };
+}
+
 type AuthResult = {
   jwt: string;
   userId: string;
@@ -36,7 +61,6 @@ export default async function initializeAuthPipeline({
   connector,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-
   const signature = await signMessage(address, nonce, signer, connector);
 
   if (userExists) {
@@ -164,6 +188,65 @@ async function loginUser(
     }
 
     throw new Error('Unknown error');
+  }
+}
+
+/**
+ * Add address to user
+ */
+type AddUserAddressRequest = {
+  signature: string;
+  address: string;
+};
+
+type AddUserAddressResponse = {
+  signature_valid: boolean;
+};
+
+async function addUserAddress(
+  body: AddUserAddressRequest,
+  fetcher: FetcherType,
+): Promise<AddUserAddressResponse> {
+  try {
+    return await fetcher<AddUserAddressResponse>('/users/update/addresses/add', 'add user address', {
+      body,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting adding user address', error);
+      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
+    }
+
+    throw new Error('unknown error');
+  }
+}
+
+/**
+ * Remove address from user
+ */
+type RemoveUserAddressRequest = {
+  addresses: string[];
+};
+
+type RemoveUserAddressResponse = {
+
+};
+
+export async function removeUserAddress(
+  body: RemoveUserAddressRequest,
+  fetcher: FetcherType,
+): Promise<RemoveUserAddressResponse> {
+  try {
+    return await fetcher<RemoveUserAddressRequest>('/users/update/addresses/remove', 'remove user address', {
+      body,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('error while attempting remove user address', error);
+      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
+    }
+
+    throw new Error('unknown error');
   }
 }
 

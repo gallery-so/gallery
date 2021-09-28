@@ -15,9 +15,10 @@ const Mixpanel = {
     }
   },
 
-  trackConnectWallet: (walletName: string) => {
+  trackConnectWallet: (walletName: string, connectionMode: string) => {
     Mixpanel.track('Connect wallet', {
       'Wallet Provider': walletName,
+      'Connection Mode': connectionMode,
     });
   },
 };

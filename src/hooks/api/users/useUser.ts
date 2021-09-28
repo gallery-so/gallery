@@ -80,6 +80,12 @@ export function useAuthenticatedUserAddress() {
   return address;
 }
 
+export function useAuthenticatedUserAddresses() {
+  const user = useAuthenticatedUser();
+
+  return user.addresses;
+}
+
 export function useAuthenticatedUsername() {
   const user = useAuthenticatedUser();
 
