@@ -1,29 +1,25 @@
 import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
 import { BodyRegular } from 'components/core/Text/Text';
-import { removeUserAddress } from 'components/WalletSelector/authRequestUtils';
-import { FetcherType } from 'contexts/swr/useFetcher';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
+import useRemoveUserAddress from 'hooks/api/users/useRemoveUserAddress';
 
 type Props = {
   index: number;
   address: string;
   userSigninAddress: string;
-  fetcher: FetcherType;
-  onDisconnect: (index: number) => void;
   setErrorMessage: (message: string) => void;
 };
 
-function ManageWalletsRow({ index, address, userSigninAddress, fetcher, onDisconnect, setErrorMessage }: Props) {
+function ManageWalletsRow({ index, address, userSigninAddress, setErrorMessage }: Props) {
+  const removeUserAddress = useRemoveUserAddress();
   const handleDisconnectClick = useCallback(async () => {
     try {
       setErrorMessage('');
-      await removeUserAddress({ addresses: [address] }, fetcher).then(() => {
-        onDisconnect(index);
-      });
+      await removeUserAddress(address);
     } catch (error: unknown) {
       if (isWeb3Error(error)) {
         setErrorMessage('Error disconnecting wallet');
@@ -31,7 +27,7 @@ function ManageWalletsRow({ index, address, userSigninAddress, fetcher, onDiscon
 
       throw error;
     }
-  }, [address, fetcher, index, onDisconnect, setErrorMessage]);
+  }, [address, setErrorMessage, removeUserAddress]);
 
   const showDisconnectButton = useMemo(() => address !== userSigninAddress, [address, userSigninAddress]);
 

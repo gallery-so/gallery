@@ -15,6 +15,7 @@ import { convertWalletName } from 'utils/wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { initializeAddWalletPipeline } from './authRequestUtils';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   pendingWalletName: string;
@@ -51,6 +52,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
         fetcher,
         connector: pendingWallet,
       });
+      Mixpanel.trackConnectWallet(pendingWalletName, 'Add Wallet');
       openManageWalletsModal(address);
 
       return signatureValid;
@@ -65,7 +67,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
         setDetectedError(web3Error);
       }
     }
-  }, [fetcher, openManageWalletsModal, pendingWallet, setDetectedError]);
+  }, [fetcher, openManageWalletsModal, pendingWallet, pendingWalletName, setDetectedError]);
 
   const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
 
@@ -90,14 +92,18 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
     void authenticate();
   }, [account, signer, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
 
-  if (pendingState === ADDRESS_ALREADY_CONNECTED) {
+  if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
       <div>
         <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
-        <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
-        <BodyRegular color={colors.gray50}>The provided address is already connected to this account.</BodyRegular>
+        <BodyRegular color={colors.gray50}>The following address is already connected to this account:</BodyRegular>
+        <Spacer height={8}/>
+        <BodyRegular color={colors.black}>{account.toLowerCase()}</BodyRegular>
         {isMetamask
-        && <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
+        && <>
+          <Spacer height={8}/>
+          <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
+        </>
         }
       </div>);
   }
@@ -107,6 +113,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
       <div>
         <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.gray50}>Confirm the following wallet address:</BodyRegular>
+        <Spacer height={8}/>
         <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
         <Spacer height={16}/>
         <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
@@ -127,6 +134,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
     );
   }
 
+  // Default view for when pendingState === INITIAL
   return (
     <div>
       <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>

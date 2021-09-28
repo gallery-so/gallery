@@ -41,7 +41,7 @@ function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetect
       fetcher,
       connector: pendingWallet,
     });
-    Mixpanel.trackConnectWallet(pendingWalletName);
+    Mixpanel.trackConnectWallet(pendingWalletName, 'Sign In');
     logIn({ jwt, userId }, address);
   }, [fetcher, logIn, pendingWallet, pendingWalletName]);
 

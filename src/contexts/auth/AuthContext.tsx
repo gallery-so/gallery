@@ -142,7 +142,7 @@ const AuthProvider = memo(({ children }: Props) => {
         void loadAuthState();
       }
     },
-    [authState, logIn, logOut, pushError, setLoggedOut, token, userId],
+    [authState, logIn, logOut, pushError, setLoggedOut, token, userId, userSigninAddress],
   );
 
   const authActions: AuthActions = useMemo(

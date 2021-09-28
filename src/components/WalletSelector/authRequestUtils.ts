@@ -33,6 +33,8 @@ export async function initializeAddWalletPipeline({
   fetcher,
   connector,
 }: AuthPipelineProps): Promise<AddWalletResult> {
+  // Check if address already belongs to a user in the database
+  // If so, the user shouldn't be able to add the address. In the future we might allow user merge
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
   if (userExists) {
@@ -212,8 +214,7 @@ async function addUserAddress(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting adding user address', error);
-      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
-      throw errorWithCode;
+      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
     }
 
     throw new Error('unknown error');

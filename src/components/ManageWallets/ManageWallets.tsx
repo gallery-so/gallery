@@ -4,10 +4,9 @@ import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
-import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import useAddWalletModal from 'hooks/useAddWalletModal';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { getLocalStorageItem } from 'utils/localStorage';
 import ManageWalletsRow from './ManageWalletsRow';
@@ -18,9 +17,6 @@ type Props = {
 
 function ManageWallets({ newAddress }: Props) {
   const addresses = useAuthenticatedUserAddresses();
-  const fetcher = useFetcher();
-
-  const [localAddresses, setLocalAddresses] = useState(addresses);
   const [errorMessage, setErrorMessage] = useState('');
 
   const showAddWalletModal = useAddWalletModal();
@@ -29,14 +25,7 @@ function ManageWallets({ newAddress }: Props) {
     showAddWalletModal();
   }, [showAddWalletModal]);
 
-  const removeUserAddressInternally = useCallback((index: number) => {
-    localAddresses.splice(index, 1);
-    setLocalAddresses([...localAddresses]);
-  }, [localAddresses]);
-
-  useEffect(() => {
-    setLocalAddresses([...addresses]);
-  }, [addresses]);
+  const addWalletDisabled = useMemo(() => addresses.length >= 5, [addresses]);
 
   const userSigninAddress = useMemo(() => getLocalStorageItem<string>(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY), []) ?? '';
 
@@ -54,18 +43,17 @@ function ManageWallets({ newAddress }: Props) {
         </BodyRegular>
       </>}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
-      {localAddresses.map((address, i) => <ManageWalletsRow
+      {addresses.map((address, i) => <ManageWalletsRow
         key={address}
         index={i}
         address={address}
-        fetcher={fetcher}
-        onDisconnect={removeUserAddressInternally}
         setErrorMessage={setErrorMessage}
         userSigninAddress={userSigninAddress}
       />)}
       <StyledButton
         text="+ Add new wallet"
         onClick={handleSubmit}
+        disabled={addWalletDisabled}
       />
     </StyledManageWallets>
   );
