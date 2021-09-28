@@ -1,7 +1,7 @@
 import useMouseUp from 'hooks/useMouseUp';
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
-import getResizedNftImageUrlWithFallback from 'utils/resizeNftImageUrl';
+import { getResizedNftImageUrlWithFallback } from 'utils/nft';
 
 type Props = {
   nft: Nft;
