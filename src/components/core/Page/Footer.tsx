@@ -34,7 +34,7 @@ function GlobalFooter() {
   );
 }
 
-export const FOOTER_HEIGHT_PX = 112;
+export const FOOTER_HEIGHT_PX = 88;
 
 const StyledGlobalFooter = styled.div`
   display: flex;
@@ -42,10 +42,10 @@ const StyledGlobalFooter = styled.div`
 
   height: ${FOOTER_HEIGHT_PX}px;
 
-  padding: 32px ${pageGutter.mobile}px;
+  padding: 32px ${pageGutter.mobile}px 12px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 32px ${pageGutter.tablet}px;
+    padding: 32px ${pageGutter.tablet}px 12px;
   }
 `;
 
