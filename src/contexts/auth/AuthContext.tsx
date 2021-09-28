@@ -17,6 +17,7 @@ import {
   JWT_LOCAL_STORAGE_KEY,
   PASSWORD_LOCAL_STORAGE_KEY,
   USER_ID_LOCAL_STORAGE_KEY,
+  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
 } from './constants';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 
@@ -38,7 +39,7 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  logIn: (payload: LoggedInState) => void;
+  logIn: (payload: LoggedInState, address: string) => void;
   logOut: () => void;
   setStateToLoading: () => void;
 };
@@ -65,6 +66,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
   const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
+  const [userSigninAddress, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   /**
    * Only sets the user state to logged out.
@@ -80,6 +82,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setLoggedOut();
     setToken('');
     setUserId('');
+    setUserSigninAddress('');
     /**
      * NOTE: clearing localStorage completely will also clear the SWR cache, which
      * will require users to re-fetch data if they visit a profile they've already
@@ -87,21 +90,22 @@ const AuthProvider = memo(({ children }: Props) => {
      * selectively (such as only sensitive data)
      */
     clearLocalStorageWithException([PASSWORD_LOCAL_STORAGE_KEY]);
-  }, [setToken, setUserId, setLoggedOut]);
+  }, [setLoggedOut, setToken, setUserId, setUserSigninAddress]);
 
   const logIn = useCallback(
-    async (payload: LoggedInState) => {
+    async (payload: LoggedInState, address: string) => {
       try {
         setToken(payload.jwt);
         setUserId(payload.userId);
         setAuthState(payload);
+        setUserSigninAddress(address);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         logOut();
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [logOut, setToken, setUserId],
+    [logOut, setToken, setUserId, setUserSigninAddress],
   );
 
   const setStateToLoading = useCallback(() => {
@@ -116,7 +120,7 @@ const AuthProvider = memo(({ children }: Props) => {
         // Show user loading screen while we figure out whether they are logged in or not
         setAuthState(LOADING);
 
-        if (token && userId) {
+        if (token && userId && userSigninAddress) {
           const response = await _fetch<ValidateJwtResponse>(
             '/auth/jwt_valid',
             'validate jwt',
@@ -127,7 +131,7 @@ const AuthProvider = memo(({ children }: Props) => {
             return;
           }
 
-          await logIn({ jwt: token, userId });
+          await logIn({ jwt: token, userId }, userSigninAddress);
           return;
         }
 
@@ -138,7 +142,7 @@ const AuthProvider = memo(({ children }: Props) => {
         void loadAuthState();
       }
     },
-    [authState, logIn, logOut, pushError, setLoggedOut, token, userId],
+    [authState, logIn, logOut, pushError, setLoggedOut, token, userId, userSigninAddress],
   );
 
   const authActions: AuthActions = useMemo(

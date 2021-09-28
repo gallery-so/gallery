@@ -34,8 +34,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 356px;
-
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
   min-height: 324px;

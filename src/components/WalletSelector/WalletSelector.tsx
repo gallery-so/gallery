@@ -4,16 +4,14 @@ import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
 import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import useFetcher from 'contexts/swr/useFetcher';
-import Mixpanel from 'utils/mixpanel';
-import { isWeb3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
-import initializeAuthPipeline from './authRequestUtils';
+import { ADD_WALLET, AUTH } from 'types/Wallet';
 import WalletButton from './WalletButton';
+import AuthenticateWalletPending from './AuthenticateWalletPending';
+import AddWalletPending from './AddWalletPending';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -48,6 +46,10 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'Your wallet address is not associated with an existing Gallery user. New sign ups are currently limited.\n\n'
     + 'If you already have an account with us, please check that you are connecting with the same wallet.',
   },
+  EXISTING_USER: {
+    heading: 'This address is already associated with an existing user.',
+    body: 'Sign in with that address',
+  },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
     body: 'Please try again.',
@@ -58,10 +60,14 @@ function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
-function WalletSelector() {
+type ConnectionMode = typeof AUTH | typeof ADD_WALLET;
+
+type Props = {
+  connectionMode?: ConnectionMode;
+};
+
+function WalletSelector({ connectionMode = AUTH }: Props) {
   const {
-    library,
-    account,
     activate,
     deactivate,
     // Error returned from web3 provider
@@ -124,44 +130,6 @@ function WalletSelector() {
     deactivate();
   }, [deactivate]);
 
-  const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
-
-  const { logIn } = useAuthActions();
-
-  const fetcher = useFetcher();
-
-  useEffect(() => {
-    async function authenticate() {
-      // TODO: when hooking up to the server, make sure this only runs a single time
-      if (account && isPending && signer && pendingWallet) {
-        try {
-          const { jwt, userId } = await initializeAuthPipeline({
-            address: account.toLowerCase(),
-            signer,
-            fetcher,
-            connector: pendingWallet,
-          });
-          Mixpanel.trackConnectWallet(pendingWalletName);
-          logIn({ jwt, userId });
-        } catch (error: unknown) {
-          if (isWeb3Error(error)) {
-            setDetectedError(error);
-          }
-
-          // Fall back to generic error message
-          if (error instanceof Error) {
-            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-            setDetectedError(web3Error);
-          }
-
-          setIsPending(false);
-        }
-      }
-    }
-
-    void authenticate();
-  }, [account, isPending, logIn, signer, fetcher, pendingWalletName, pendingWallet]);
-
   /**
    * Ensures screen does not retain an error message when it remounts. Since Web3
    * library errors are stored in the Web3Provider, they remain cached and continue
@@ -188,30 +156,47 @@ function WalletSelector() {
     );
   }
 
+  if (isPending && pendingWallet) {
+    if (connectionMode === ADD_WALLET) {
+      return (
+        <StyledWalletSelector>
+          <AddWalletPending
+            setDetectedError={setDetectedError}
+            pendingWallet={pendingWallet}
+            pendingWalletName={pendingWalletName}
+          />
+        </StyledWalletSelector>
+      );
+    }
+
+    return (
+      <StyledWalletSelector>
+        <AuthenticateWalletPending
+          setDetectedError={setDetectedError}
+          pendingWallet={pendingWallet}
+          pendingWalletName={pendingWalletName}
+        />
+      </StyledWalletSelector>
+    );
+  }
+
   return (
     <StyledWalletSelector>
       <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
       <Spacer height={16} />
-      {isPending ? (
+      {Object.keys(walletConnectorMap).map(walletName => (
         <WalletButton
+          key={walletName}
+          walletName={walletName}
           activate={activate}
-          connector={pendingWallet}
+          connector={walletConnectorMap[walletName]}
           setToPendingState={setToPendingState}
           isPending={isPending}
+          deactivate={deactivate}
         />
-      ) : (
-        Object.keys(walletConnectorMap).map(walletName => (
-          <WalletButton
-            key={walletName}
-            walletName={walletName}
-            activate={activate}
-            connector={walletConnectorMap[walletName]}
-            setToPendingState={setToPendingState}
-            isPending={isPending}
-          />
-        ))
-      )}
-      <Spacer height={8} />
+      ))
+      }
+      <Spacer height={8}/>
       <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>
   );
@@ -221,6 +206,8 @@ const StyledWalletSelector = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
+  max-width: 480px;
+  width: 480px;
 `;
 
 const StyledBodyMedium = styled(BodyMedium)`
@@ -230,7 +217,6 @@ const StyledBodyMedium = styled(BodyMedium)`
 const StyledBody = styled(BodyRegular)`
   margin-bottom: 30px;
   white-space: pre-wrap;
-  max-width: 400px;
 `;
 
 const StyledRetryButton = styled(Button)`
