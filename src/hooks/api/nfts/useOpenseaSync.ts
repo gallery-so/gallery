@@ -12,7 +12,7 @@ export type OpenseaSyncResponse = {
 
 export default function useOpenseaSync({ address, skipCache = false }: Props): Nft[] | undefined {
   const data = useGet<OpenseaSyncResponse>(
-    `/nfts/opensea_get?address=${address}&skip_cache=${skipCache}`,
+    `/nfts/opensea_get?addresses=${address}&skip_cache=${skipCache}`,
     'fetch and sync nfts',
   );
 
