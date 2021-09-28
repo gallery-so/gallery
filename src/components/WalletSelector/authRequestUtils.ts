@@ -287,7 +287,7 @@ async function createUser(
 async function triggerOpenseaSync(address: string, fetcher: FetcherType) {
   try {
     await fetcher<OpenseaSyncResponse>(
-      `/nfts/opensea_get?address=${address}&skip_cache=true`,
+      `/nfts/opensea_get?addresses=${address}&skip_cache=true`,
       'fetch and sync nfts',
     );
   } catch (error: unknown) {
