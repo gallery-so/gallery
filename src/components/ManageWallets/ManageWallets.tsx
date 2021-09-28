@@ -6,9 +6,9 @@ import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import useAddWalletModal from 'hooks/useAddWalletModal';
+import usePersistedState from 'hooks/usePersistedState';
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { getLocalStorageItem } from 'utils/localStorage';
 import ManageWalletsRow from './ManageWalletsRow';
 
 type Props = {
@@ -26,8 +26,7 @@ function ManageWallets({ newAddress }: Props) {
   }, [showAddWalletModal]);
 
   const addWalletDisabled = useMemo(() => addresses.length >= 5, [addresses]);
-
-  const userSigninAddress = useMemo(() => getLocalStorageItem<string>(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY), []) ?? '';
+  const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   return (
     <StyledManageWallets>
