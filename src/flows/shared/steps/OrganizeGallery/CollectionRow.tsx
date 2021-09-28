@@ -27,7 +27,12 @@ function CollectionRow({ collection, className }: Props) {
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
-  const truncatedCollectorsNote = useMemo(() => collectors_note.length > 100 ? collectors_note.slice(0, 100) + ('...') : collectors_note, [collectors_note]);
+  const truncatedCollectorsNote = useMemo(() => {
+    const firstLine = collectors_note.split('\n')[0];
+    return firstLine.slice(0, 97).trim() + '...';
+  },
+  [collectors_note],
+  );
 
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
