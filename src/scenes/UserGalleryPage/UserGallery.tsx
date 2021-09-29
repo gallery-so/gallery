@@ -36,10 +36,7 @@ function UserGallery({ username }: Props) {
   return (
     <StyledUserGallery>
       <Spacer height={112} />
-      <UserGalleryHeader
-        user={user}
-        isAuthenticatedUsersPage={isAuthenticatedUsersPage}
-      />
+      <UserGalleryHeader username={user.username} bio={user.bio} />
       {collectionsView}
     </StyledUserGallery>
   );
