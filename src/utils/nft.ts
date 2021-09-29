@@ -32,7 +32,12 @@ export function getFileExtension(url: string) {
   return splitUrl.length < 2 ? '' : splitUrl.pop() ?? '';
 }
 
-export function isAnimation(assetUrl: string, fileExtension: string) {
+export function getVideoUrl(nft: Nft) {
+  const imageUrlFileExtension = getFileExtension(nft.image_url);
+  return imageUrlFileExtension === 'mp4' ? nft.image_url : nft.animation_url;
+}
+
+export function isAnimationUrl(assetUrl: string, fileExtension: string) {
   if (fileExtension === 'html') {
     return true;
   }
@@ -45,7 +50,7 @@ export function isAnimation(assetUrl: string, fileExtension: string) {
 export function getMediaTypeForAssetUrl(assetUrl: string) {
   const fileExtension = getFileExtension(assetUrl);
 
-  if (isAnimation(assetUrl, fileExtension)) {
+  if (isAnimationUrl(assetUrl, fileExtension)) {
     return NftMediaType.ANIMATION;
   }
 

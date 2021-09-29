@@ -1,5 +1,5 @@
 import { NftMediaType } from 'components/core/enums';
-import { getMediaType } from './nft';
+import { getMediaType, getVideoUrl } from './nft';
 
 const MOCK_NFT = {
   acquisition_date: 'TEST',
@@ -100,6 +100,31 @@ describe('getMediaType', () => {
     };
 
     expect(getMediaType(AUDIO_NFT)).toEqual(NftMediaType.AUDIO);
+  });
+});
+
+describe('getVideoUrl', () => {
+  const VIDEO_URL = 'https://storage.opensea.io/files/328e0881f68bf579d293d84cbfe33349.mp4';
+  const NON_VIDEO_URL = 'https://api.heaven.computer/ghost/7485';
+
+  test('Image url is video', () => {
+    const VIDEO_NFT = {
+      ...MOCK_NFT,
+      image_url: VIDEO_URL,
+      animation_url: NON_VIDEO_URL,
+    };
+
+    expect(getVideoUrl(VIDEO_NFT)).toEqual(VIDEO_URL);
+  });
+
+  test('Image url is not video', () => {
+    const VIDEO_NFT = {
+      ...MOCK_NFT,
+      image_url: NON_VIDEO_URL,
+      animation_url: VIDEO_URL,
+    };
+
+    expect(getVideoUrl(VIDEO_NFT)).toEqual(VIDEO_URL);
   });
 });
 
