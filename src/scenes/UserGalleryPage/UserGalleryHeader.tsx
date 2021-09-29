@@ -2,26 +2,20 @@ import styled from 'styled-components';
 import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { User } from 'types/User';
-import { useMemo } from 'react';
-import moment from 'moment';
 
 type Props = {
-  user: User;
-  isAuthenticatedUsersPage: boolean;
+  username: string;
+  bio: string;
 };
 
-function UserGalleryHeader({ user }: Props) {
-  const formattedCreatedAt = useMemo(() => moment(user.created_at).format('MMMM YYYY'), [user.created_at]);
+function UserGalleryHeader({ username, bio }: Props) {
   return (
     <StyledUserGalleryHeader>
-      <Subdisplay>{user.username}</Subdisplay>
-      <Spacer height={8} />
-      <StyledBodyRegular color={colors.gray50}>Curator since {formattedCreatedAt}</StyledBodyRegular>
+      <Subdisplay>{username}</Subdisplay>
       <Spacer height={8} />
       <StyledUserDetails>
         <StyledBodyRegular color={colors.gray50}>
-          {user.bio}
+          {bio}
         </StyledBodyRegular>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
