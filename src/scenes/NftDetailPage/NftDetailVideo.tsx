@@ -1,6 +1,8 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
+import { getVideoUrl } from 'utils/nft';
 
 type Props = {
   nft: Nft;
@@ -8,10 +10,11 @@ type Props = {
 
 function NftDetailVideo({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
+  const assetUrl = useMemo(() => getVideoUrl(nft), [nft]);
 
   return (
     <StyledVideo
-      src={nft.animation_url}
+      src={assetUrl}
       muted
       autoPlay
       loop
