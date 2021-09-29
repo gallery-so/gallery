@@ -3,7 +3,7 @@ import breakpoints from '../breakpoints';
 import colors from '../colors';
 
 const TITLE_FONT_FAMILY = 'Gallery Display';
-const BODY_FONT_FAMILY = 'Helvetica Neue';
+const BODY_FONT_FAMILY = 'Inter Regular';
 
 type TextProps = {
   color?: colors;
@@ -84,7 +84,6 @@ export const BodyRegular = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 20px;
-  letter-spacing: 0.4px;
 `;
 
 export const BodyMedium = styled(BodyRegular)`
@@ -102,5 +101,4 @@ export const Caption = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
   line-height: 16px;
-  letter-spacing: 0.4px;
 `;
