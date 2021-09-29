@@ -75,23 +75,31 @@ describe('getMediaType', () => {
   });
 
   test('Animation', () => {
-    const VIDEO_NFT = {
+    const ANIMATION_NFT = {
       ...MOCK_NFT,
       image_url: 'randomimage?h=140',
       animation_url: 'gallery.so/generative_art.html',
     };
 
-    expect(getMediaType(VIDEO_NFT)).toEqual(NftMediaType.ANIMATION);
+    expect(getMediaType(ANIMATION_NFT)).toEqual(NftMediaType.ANIMATION);
+
+    const ANIMATION_NFT_2 = {
+      ...MOCK_NFT,
+      image_url: 'randomimage?h=140',
+      animation_url: 'https://generator.artblocks.io/163000516',
+    };
+
+    expect(getMediaType(ANIMATION_NFT_2)).toEqual(NftMediaType.ANIMATION);
   });
 
   test('Audio', () => {
-    const VIDEO_NFT = {
+    const AUDIO_NFT = {
       ...MOCK_NFT,
       image_url: 'randomimage?h=140',
       animation_url: 'gallery.so/audio_file.mp3',
     };
 
-    expect(getMediaType(VIDEO_NFT)).toEqual(NftMediaType.AUDIO);
+    expect(getMediaType(AUDIO_NFT)).toEqual(NftMediaType.AUDIO);
   });
 });
 

@@ -20,17 +20,33 @@ export function getResizedNftImageUrlWithFallback(
   return image_original_url || image_url || contract_image_url || FALLBACK_URL;
 }
 
+const animationDomains = [
+  'https://api.artblocks',
+  'https://generator.artblocks',
+  'https://api.heaven.computer',
+];
+
 export function getFileExtension(url: string) {
   const splitUrl = url.split('.');
 
-  return splitUrl.length < 2 ? '' : splitUrl.pop();
+  return splitUrl.length < 2 ? '' : splitUrl.pop() ?? '';
+}
+
+export function isAnimation(assetUrl: string, fileExtension: string) {
+  if (fileExtension === 'html') {
+    return true;
+  }
+
+  return animationDomains.some(animationDomain =>
+    assetUrl.includes(animationDomain),
+  );
 }
 
 export function getMediaTypeForAssetUrl(assetUrl: string) {
   const fileExtension = getFileExtension(assetUrl);
 
-  if (!fileExtension) {
-    return NftMediaType.IMAGE;
+  if (isAnimation(assetUrl, fileExtension)) {
+    return NftMediaType.ANIMATION;
   }
 
   switch (fileExtension) {
@@ -49,6 +65,10 @@ export function getMediaType(nft: Nft) {
   const imageUrlType = getMediaTypeForAssetUrl(nft.image_url);
   if (imageUrlType === NftMediaType.VIDEO) {
     return imageUrlType;
+  }
+
+  if (!nft.animation_url) {
+    return NftMediaType.IMAGE;
   }
 
   return getMediaTypeForAssetUrl(nft.animation_url);
