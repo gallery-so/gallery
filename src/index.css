@@ -3,6 +3,11 @@
   src: url('./assets/fonts/gallery-display.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('./assets/fonts/HelveticaNeue.otf') format('opentype'), url('./assets/fonts/HelveticaNeue.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   font-family: 'Times New Roman', -apple-system, BlinkMacSystemFont, 'Segoe UI',
