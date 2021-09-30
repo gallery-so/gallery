@@ -51,7 +51,7 @@ const StyledCollectionHeader = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: -24px;
+  margin-bottom: -26px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
