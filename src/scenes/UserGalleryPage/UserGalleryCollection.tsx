@@ -18,12 +18,15 @@ function UserGalleryCollection({ collection }: Props) {
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <TitleSerif>{collection.name}</TitleSerif>
-        <Spacer height={8} />
-        <StyledCollectorsNote color={colors.gray50}>
-          {collection.collectors_note}
-        </StyledCollectorsNote>
+        {collection.collectors_note 
+          && <>
+            <Spacer height={8} />
+            <StyledCollectorsNote color={colors.gray50}>
+              {collection.collectors_note}
+            </StyledCollectorsNote>
+          </>
+        }
       </StyledCollectionHeader>
-      <Spacer height={24} />
       <StyledCollectionNfts>
         {collection.nfts.map(nft => (
           <NftPreview
@@ -57,7 +60,7 @@ const StyledCollectionHeader = styled.div`
 const StyledCollectorsNote = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-wrap;
-`
+`;
 
 const StyledCollectionNfts = styled.div`
   margin: 10px 0;

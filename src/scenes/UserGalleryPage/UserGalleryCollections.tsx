@@ -11,6 +11,8 @@ type Props = {
   isAuthenticatedUsersPage: boolean;
 };
 
+const COLLECTION_SPACING = 48;
+
 function UserGalleryCollections({
   collections,
   isAuthenticatedUsersPage,
@@ -25,14 +27,13 @@ function UserGalleryCollections({
     return <EmptyGallery message={noCollectionsMessage} />;
   }
 
-  // TODO: Consider extracting 48 and 108 into unit consts
   return (
     <StyledUserGalleryCollections>
       {filteredCollections.map((collection, index) => (
         <Fragment key={collection.id}>
-          <Spacer height={index === 0 ? 48 : 108} />
+          <Spacer height={COLLECTION_SPACING} />
           <UserGalleryCollection collection={collection} />
-          <Spacer height={index === collections.length - 1 ? 108 : 0} />
+          <Spacer height={index === collections.length - 1 ? COLLECTION_SPACING : 0} />
         </Fragment>
       ))}
     </StyledUserGalleryCollections>
