@@ -1,10 +1,12 @@
+import styled from 'styled-components';
+import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
 import NftPreview from 'components/NftPreview/NftPreview';
-import styled from 'styled-components';
 import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
+import { useMemo } from 'react';
 
 type Props = {
   collection: Collection;
@@ -14,13 +16,15 @@ type Props = {
 const GAP_PX = 40;
 
 function UserGalleryCollection({ collection }: Props) {
+  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
+
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <TitleSerif>{collection.name}</TitleSerif>
         <Spacer height={8} />
         <StyledCollectorsNote color={colors.gray50}>
-          {collection.collectors_note}
+          {unescapedCollectorsNote}
         </StyledCollectorsNote>
       </StyledCollectionHeader>
       <Spacer height={24} />
@@ -57,7 +61,7 @@ const StyledCollectionHeader = styled.div`
 const StyledCollectorsNote = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-wrap;
-`
+`;
 
 const StyledCollectionNfts = styled.div`
   margin: 10px 0;
