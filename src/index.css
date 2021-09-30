@@ -6,6 +6,13 @@
 @font-face {
   font-family: 'Helvetica Neue';
   src: url('./assets/fonts/HelveticaNeue.otf') format('opentype'), url('./assets/fonts/HelveticaNeue.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('./assets/fonts/HelveticaNeue-Medium.otf') format('opentype'), url('./assets/fonts/HelveticaNeue-Medium.ttf') format('truetype');
+  font-weight: 500;
 }
 
 body {
