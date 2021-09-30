@@ -4,8 +4,8 @@
 }
 
 @font-face {
-  font-family: 'Inter Regular';
-  src: url('./assets/fonts/Inter-Regular.woff2') format('woff2');
+  font-family: 'Helvetica Neue';
+  src: url('./assets/fonts/HelveticaNeue.otf') format('opentype'), url('./assets/fonts/HelveticaNeue.ttf') format('truetype');
 }
 
 body {
