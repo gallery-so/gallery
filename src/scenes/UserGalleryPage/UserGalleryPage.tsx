@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 
-type Parameters_ = {
+type Props = {
   username: string;
 };
 
-function UserGalleryPage({ username }: RouteComponentProps<Parameters_>) {
+function UserGalleryPage({ username }: RouteComponentProps<Props>) {
   return (
     <UserGalleryPageErrorBoundary>
       <Page>

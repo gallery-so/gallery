@@ -4,7 +4,7 @@ import { createContext, memo, ReactNode, useCallback, useContext, useEffect, use
 
 type NavigationContextType = {
   getVisitedPagesLength: () => number;
-  handleNavigation: () => void;
+  handleNavigationScrollPosition: () => void;
 };
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -45,8 +45,7 @@ const NavigationContextProvider = memo(({ children, locationKey }: Props) => {
 
   const getVisitedPagesLength = useCallback(() => visitedPagesLength.current, []);
 
-  const handleNavigation = useCallback(() => {
-    console.log('navigatinggg');
+  const handleNavigationScrollPosition = useCallback(() => {
     /**
      * Maintain scroll position of previous page if user clicks "back".
      * While this is technically default browser behavior, our CSSTransition
@@ -56,20 +55,18 @@ const NavigationContextProvider = memo(({ children, locationKey }: Props) => {
     const previousPosition = previousScrollPosition.current;
     setTimeout(() => {
       if (maintainScrollPosition) {
-        console.log('maintaining scroll position', previousPosition);
         window.scrollTo({ top: previousPosition });
         return;
       }
 
-      console.log('scrolling to top');
       window.scrollTo({ top: 0 });
     }, NAVIGATION_TRANSITION_TIME_MS);
   }, []);
 
   const value = useMemo(() => ({
     getVisitedPagesLength,
-    handleNavigation,
-  }), [getVisitedPagesLength, handleNavigation]);
+    handleNavigationScrollPosition,
+  }), [getVisitedPagesLength, handleNavigationScrollPosition]);
 
   return (
     <NavigationContext.Provider value={value}>

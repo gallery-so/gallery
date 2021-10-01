@@ -32,7 +32,7 @@ const transitionGroupStyles = { minHeight: fullPageHeightWithoutFooter };
  * around timing + classNames. More info: https://reactjs.org/docs/animation.html
  */
 function FadeTransitioner({ locationKey = '', children }: Props) {
-  const { handleNavigation } = useNavigationContext();
+  const { handleNavigationScrollPosition } = useNavigationContext();
 
   return (
     <TransitionGroup style={transitionGroupStyles}>
@@ -40,7 +40,7 @@ function FadeTransitioner({ locationKey = '', children }: Props) {
         key={locationKey}
         timeout={timeoutConfig}
         classNames="fade"
-        onExit={handleNavigation}>
+        onExit={handleNavigationScrollPosition}>
         <div style={childNodeStyles as CSSProperties}>{children}</div>
       </CSSTransition>
     </TransitionGroup>
