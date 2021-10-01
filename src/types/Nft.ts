@@ -1,3 +1,5 @@
+import { User } from './User';
+
 export type Nft = {
   acquisition_date: string;
   animation_original_url: string;
@@ -26,8 +28,9 @@ export type Nft = {
   name: string;
   opensea_id: number;
   opensea_token_id: string;
-  owner_address: string;
-  owner_username: string;
+  owner_addresses: string[];
+  owner_users: User[];
+  multiple_owners: boolean;
   token_metadata_url: string;
   user_id: string;
 };
