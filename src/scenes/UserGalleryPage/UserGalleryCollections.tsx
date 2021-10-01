@@ -15,20 +15,20 @@ function UserGalleryCollections({
   collections,
   isAuthenticatedUsersPage,
 }: Props) {
-  const filteredCollections = useMemo(() => collections.filter(collection => !collection.hidden), [collections]);
+  const visibleCollections = useMemo(() => collections.filter(collection => !collection.hidden), [collections]);
 
-  if (collections.length === 0) {
-    const noCollectionsMessage = isAuthenticatedUsersPage
+  if (visibleCollections.length === 0) {
+    const emptyGalleryMessage = isAuthenticatedUsersPage
       ? 'Your gallery is empty. Display your NFTs by creating a collection.'
-      : 'This user has not added any collections to their gallery yet.';
+      : 'Curation in progress.';
 
-    return <EmptyGallery message={noCollectionsMessage} />;
+    return <EmptyGallery message={emptyGalleryMessage} />;
   }
 
   // TODO: Consider extracting 48 and 108 into unit consts
   return (
     <StyledUserGalleryCollections>
-      {filteredCollections.map((collection, index) => (
+      {visibleCollections.map((collection, index) => (
         <Fragment key={collection.id}>
           <Spacer height={index === 0 ? 48 : 108} />
           <UserGalleryCollection collection={collection} />
