@@ -3,7 +3,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './transition.css';
 
 import { fullPageHeightWithoutFooter } from 'components/core/Page/Page';
-import { useNavigationContext } from 'contexts/navigation/NavigationContext';
+import { useGalleryNavigationActions, useGalleryNavigationState } from 'contexts/navigation/GalleryNavigationContext';
 
 type Props = {
   locationKey?: string;
@@ -31,13 +31,14 @@ const transitionGroupStyles = { minHeight: fullPageHeightWithoutFooter };
  * This file is tightly coupled with `transition.css`, specifically
  * around timing + classNames. More info: https://reactjs.org/docs/animation.html
  */
-function FadeTransitioner({ locationKey = '', children }: Props) {
-  const { handleNavigationScrollPosition } = useNavigationContext();
+function FadeTransitioner({ locationKey, children }: Props) {
+  const { sanitizedPathname } = useGalleryNavigationState();
+  const { handleNavigationScrollPosition } = useGalleryNavigationActions();
 
   return (
     <TransitionGroup style={transitionGroupStyles}>
       <CSSTransition
-        key={locationKey}
+        key={locationKey ?? sanitizedPathname}
         timeout={timeoutConfig}
         classNames="fade"
         onExit={handleNavigationScrollPosition}>

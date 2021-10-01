@@ -1,26 +1,63 @@
-import { globalHistory } from '@reach/router';
+import { globalHistory, navigate } from '@reach/router';
 import { NAVIGATION_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import { createContext, memo, ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
-type NavigationContextType = {
-  getVisitedPagesLength: () => number;
-  handleNavigationScrollPosition: () => void;
+type NavigationState = {
+  sanitizedPathname: string;
 };
 
-const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
+const NavigationStateContext = createContext<NavigationState | undefined>(undefined);
 
-export const useNavigationContext = (): NavigationContextType => {
-  const context = useContext(NavigationContext);
+export const useGalleryNavigationState = (): NavigationState => {
+  const context = useContext(NavigationStateContext);
   if (!context) {
-    throw new Error('Attempted to use NavigationContext without a provider!');
+    throw new Error('Attempted to use NavigationStateContext without a provider!');
   }
 
   return context;
 };
 
-type Props = { children: ReactNode; locationKey?: string };
+type NavigationActions = {
+  getVisitedPagesLength: () => number;
+  handleNavigationScrollPosition: () => void;
+};
 
-const NavigationContextProvider = memo(({ children, locationKey }: Props) => {
+const NavigationActionsContext = createContext<NavigationActions | undefined>(undefined);
+
+export const useGalleryNavigationActions = (): NavigationActions => {
+  const context = useContext(NavigationActionsContext);
+  if (!context) {
+    throw new Error('Attempted to use NavigationActionsContext without a provider!');
+  }
+
+  return context;
+};
+
+type Props = {
+  children: ReactNode;
+  pathname: string;
+  locationKey?: string;
+};
+
+function removeTrailingSlash(string_: string) {
+  return string_.replace(/\/+$/, '');
+}
+
+const GalleryNavigationContextProvider = memo(({ children, pathname, locationKey }: Props) => {
+  const sanitizedPathname = useMemo(() => removeTrailingSlash(pathname), [pathname]);
+
+  // drop trailing slash: /bingbong/ => /bingbong
+  useEffect(() => {
+    if (pathname !== sanitizedPathname) {
+      void navigate(
+        sanitizedPathname,
+        { replace: true }, // option to keep history unchanged
+      );
+    }
+  }, [pathname, sanitizedPathname]);
+
+  const state = useMemo(() => ({ sanitizedPathname }), [sanitizedPathname]);
+
   // keeps track of previous page's scroll position as user navigates
   const previousScrollPosition = useRef(window.scrollY);
   useEffect(() => {
@@ -63,17 +100,19 @@ const NavigationContextProvider = memo(({ children, locationKey }: Props) => {
     }, NAVIGATION_TRANSITION_TIME_MS);
   }, []);
 
-  const value = useMemo(() => ({
+  const actions = useMemo(() => ({
     getVisitedPagesLength,
     handleNavigationScrollPosition,
   }), [getVisitedPagesLength, handleNavigationScrollPosition]);
 
   return (
-    <NavigationContext.Provider value={value}>
-      {children}
-    </NavigationContext.Provider>
+    <NavigationStateContext.Provider value={state}>
+      <NavigationActionsContext.Provider value={actions}>
+        {children}
+      </NavigationActionsContext.Provider>
+    </NavigationStateContext.Provider>
   );
 });
 
-export default NavigationContextProvider;
+export default GalleryNavigationContextProvider;
 

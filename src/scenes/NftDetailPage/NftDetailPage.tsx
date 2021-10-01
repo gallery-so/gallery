@@ -8,7 +8,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useNavigationContext } from 'contexts/navigation/NavigationContext';
+import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 
@@ -20,7 +20,7 @@ type Props = {
 function NftDetailPage({
   nftId,
 }: RouteComponentProps<Props>) {
-  const { getVisitedPagesLength } = useNavigationContext();
+  const { getVisitedPagesLength } = useGalleryNavigationActions();
 
   const handleBackClick = useCallback(() => {
     const visitedPagesLength = getVisitedPagesLength();
@@ -36,7 +36,7 @@ function NftDetailPage({
     }
 
     // otherwise, simply send them back to where they came from. this ensures scroll
-    // position is maintained when going back (see: NavigationContext.tsx)
+    // position is maintained when going back (see: GalleryNavigationContext.tsx)
     void navigate(-1);
   }, [getVisitedPagesLength]);
 
