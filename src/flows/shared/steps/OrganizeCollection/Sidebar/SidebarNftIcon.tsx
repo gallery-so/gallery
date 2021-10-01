@@ -1,7 +1,7 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { EditModeNft } from '../types';
 
@@ -28,6 +28,18 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
       stageNfts([editModeNft]);
     }
   }, [editModeNft, isSelected, setNftsIsSelected, stageNfts, unstageNfts]);
+
+  const mountRef = useRef(false);
+
+  useEffect(() => {
+    // When NFT is selected, scroll Staging Area to the added NFT.
+    // But don't do this when this component is first mounted (we dont want to scroll to the bottom when we load the DnD)
+    if (mountRef.current && isSelected) {
+      document.getElementById(editModeNft.id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    mountRef.current = true;
+  }, [editModeNft.id, isSelected]);
 
   return (
     <StyledSidebarNftIcon>
