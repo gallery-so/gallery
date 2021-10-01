@@ -31,8 +31,16 @@ function CollectionRow({ collection, className }: Props) {
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
   const truncatedCollectorsNote = useMemo(() => {
-    const firstLine = unescapedCollectorsNote.split('\n')[0];
-    return firstLine.slice(0, 97).trim() + '...';
+    const lines = unescapedCollectorsNote.split('\n');
+    const firstLine = lines[0];
+
+    // If it's multiline, always truncate to suggest there are more lines
+    if (lines.length > 1) {
+      return `${firstLine.slice(0, 97).trim()}...`;
+    }
+
+    // If it's single line, only truncate if it's longer than 100ch
+    return firstLine.length > 100 ? `${firstLine.slice(0, 97).trim()}...` : firstLine;
   }, [unescapedCollectorsNote]);
 
   return (
