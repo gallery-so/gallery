@@ -1,6 +1,7 @@
 import { globalHistory, navigate } from '@reach/router';
 import { NAVIGATION_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import { createContext, memo, ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import sanitizePathname from './sanitizePathname';
 
 type NavigationState = {
   sanitizedPathname: string;
@@ -39,12 +40,8 @@ type Props = {
   locationKey?: string;
 };
 
-function removeTrailingSlash(string_: string) {
-  return string_.replace(/\/+$/, '');
-}
-
 const GalleryNavigationContextProvider = memo(({ children, pathname, locationKey }: Props) => {
-  const sanitizedPathname = useMemo(() => removeTrailingSlash(pathname), [pathname]);
+  const sanitizedPathname = useMemo(() => sanitizePathname(pathname), [pathname]);
 
   // drop trailing slash: /bingbong/ => /bingbong
   useEffect(() => {
