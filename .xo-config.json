@@ -2,6 +2,7 @@
   "space": true,
   "rules": {
     "unicorn/filename-case": "off",
+    "unicorn/prefer-query-selector": "off",
     "object-curly-spacing": ["error", "always"],
     "func-names": "off",
     "camelcase": "off",
