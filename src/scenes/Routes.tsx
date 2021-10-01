@@ -5,6 +5,7 @@ import GlobalFooter from 'components/core/Page/Footer';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
+import NavigationContextProvider from 'contexts/navigation/NavigationContext';
 import Home from './Home/Home';
 import Auth from './Auth/Auth';
 import Password from './Password/Password';
@@ -41,19 +42,23 @@ export default function Routes() {
       {({ location }) => (
         <>
           {shouldHideNavbar(location.pathname) ? null : <GlobalNavbar />}
-          <FadeTransitioner nodeKey={location.key}>
-            {/* primary={false} prevents jumpiness on nav: https://github.com/reach/router/issues/242 */}
-            <Router primary={false} location={location}>
-              <Home path="/" />
-              <Auth path="/auth" />
-              <Password path="/password" />
-              <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
-              <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
-              <Nuke path="/nuke" />
-              <NftDetailPage path="/:userName/:collectionId/:nftId" />
-              <UserGalleryPage path="/:username" />
-            </Router>
-          </FadeTransitioner>
+
+          <NavigationContextProvider locationKey={location.key}>
+            <FadeTransitioner locationKey={location.key}>
+              {/* primary={false} prevents jumpiness on nav: https://github.com/reach/router/issues/242 */}
+              <Router primary={false} location={location}>
+                <Home path="/" />
+                <Auth path="/auth" />
+                <Password path="/password" />
+                <AuthenticatedRoute Component={OnboardingFlow} path="/welcome" />
+                <AuthenticatedRoute Component={EditGalleryFlow} path="/edit" />
+                <Nuke path="/nuke" />
+                <NftDetailPage path="/:userName/:collectionId/:nftId" />
+                <UserGalleryPage path="/:username" />
+              </Router>
+            </FadeTransitioner>
+          </NavigationContextProvider>
+
           {shouldHideFooter(location.pathname) ? null : <GlobalFooter />}
         </>
       )}
