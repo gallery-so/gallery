@@ -23,7 +23,7 @@ function NftDetailText({ nft }: Props) {
       </StyledNftDescription>
       <Spacer height={32} />
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
-      <NftOwnerLink ownerAddress={nft.owner_address} ownerUsername={nft.owner_username}/>
+      {nft.multiple_owners ? <BodyRegular>Multiple Collectors</BodyRegular> : <NftOwnerLink ownerAddress={nft.owner_addresses[0]} />}
       <Spacer height={16} />
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
       <BodyRegular>{nft.creator_name || nft.creator_address}</BodyRegular>
