@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
+import unescape from 'lodash.unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import { BodyRegular, BodyMedium } from 'components/core/Text/Text';
@@ -37,10 +38,11 @@ function CollectionCreateOrEditForm({
 }: Props) {
   const { hideModal } = useModal();
 
-  const [title, setTitle] = useState(collectionName ?? '');
-  const [description, setDescription] = useState(
-    collectionCollectorsNote ?? '',
-  );
+  const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);
+  const unescapedCollectorsNote = useMemo(() => unescape(collectionCollectorsNote), [collectionCollectorsNote]);
+
+  const [title, setTitle] = useState(unescapedCollectionName ?? '');
+  const [description, setDescription] = useState(unescapedCollectorsNote ?? '');
 
   // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');

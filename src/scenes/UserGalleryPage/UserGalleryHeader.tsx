@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
+import unescape from 'lodash.unescape';
 import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -9,13 +11,15 @@ type Props = {
 };
 
 function UserGalleryHeader({ username, bio }: Props) {
+  const unescapedBio = useMemo(() => unescape(bio), [bio]);
+
   return (
     <StyledUserGalleryHeader>
       <Subdisplay>{username}</Subdisplay>
       <Spacer height={8} />
       <StyledUserDetails>
         <StyledBodyRegular color={colors.gray50}>
-          {bio}
+          {unescapedBio}
         </StyledBodyRegular>
       </StyledUserDetails>
     </StyledUserGalleryHeader>

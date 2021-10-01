@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import unescape from 'lodash.unescape';
 import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -22,17 +23,17 @@ const SMOL_NFT_SIZE_PX = 25;
 function CollectionRow({ collection, className }: Props) {
   const { name, collectors_note, nfts, hidden } = collection;
 
+  const unescapedCollectorsNote = useMemo(() => unescape(collectors_note), [collectors_note]);
+
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
   const truncatedCollectorsNote = useMemo(() => {
-    const firstLine = collectors_note.split('\n')[0];
+    const firstLine = unescapedCollectorsNote.split('\n')[0];
     return firstLine.slice(0, 97).trim() + '...';
-  },
-  [collectors_note],
-  );
+  }, [unescapedCollectorsNote]);
 
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>

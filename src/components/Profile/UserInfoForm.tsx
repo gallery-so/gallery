@@ -1,5 +1,6 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import unescape from 'lodash.unescape';
 
 import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
@@ -32,6 +33,8 @@ function UserInfoForm({
   mode = 'Add',
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -85,8 +88,8 @@ function UserInfoForm({
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."
-        defaultValue={bio}
-        currentCharCount={bio.length}
+        defaultValue={unescapedBio}
+        currentCharCount={unescapedBio.length}
         maxCharCount={BIO_MAX_CHAR_COUNT}
         autoFocus={shouldAutofocusBio}
       />
