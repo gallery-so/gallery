@@ -8,22 +8,37 @@ import ActionText from 'components/core/ActionText/ActionText';
 import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
+import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 
-type Parameters_ = {
+type Props = {
   collectionId: string;
   nftId: string;
 };
 
 function NftDetailPage({
   nftId,
-}: RouteComponentProps<Parameters_>) {
+}: RouteComponentProps<Props>) {
+  const { getVisitedPagesLength } = useGalleryNavigationActions();
+
   const handleBackClick = useCallback(() => {
-    // TODO this works but leaves trailing slash
-    // navigate('..');
-    void navigate(`/${window.location.pathname.split('/')[1]}`);
-  }, []);
+    const visitedPagesLength = getVisitedPagesLength();
+
+    // if the user arrived on the page via direct link, send them to the
+    // owner's profile page (since there is no "previous page")
+    if (visitedPagesLength === 1) {
+      // NOTE: this scheme will have to change if we no longer have the
+      // username included in the URL
+      const username = window.location.pathname.split('/')[1];
+      void navigate(`/${username}`);
+      return;
+    }
+
+    // otherwise, simply send them back to where they came from. this ensures scroll
+    // position is maintained when going back (see: GalleryNavigationContext.tsx)
+    void navigate(-1);
+  }, [getVisitedPagesLength]);
 
   // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId ?? '' });

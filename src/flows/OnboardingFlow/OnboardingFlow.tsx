@@ -27,7 +27,7 @@ function OnboardingFlow(_: RouteComponentProps) {
         <Wizard
           render={wizardProps => (
             <>
-              <FadeTransitioner nodeKey={wizardProps.step.id}>
+              <FadeTransitioner locationKey={wizardProps.step.id}>
                 <Steps key={wizardProps.step.id} step={wizardProps.step}>
                   <Step id="welcome" render={Welcome} />
                   <Step id="addUserInfo" render={AddUserInfo} />
