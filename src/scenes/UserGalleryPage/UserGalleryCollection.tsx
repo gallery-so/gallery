@@ -22,12 +22,15 @@ function UserGalleryCollection({ collection }: Props) {
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <TitleSerif>{collection.name}</TitleSerif>
-        <Spacer height={8} />
-        <StyledCollectorsNote color={colors.gray50}>
-          {unescapedCollectorsNote}
-        </StyledCollectorsNote>
+        {unescapedCollectorsNote 
+          && <>
+            <Spacer height={8} />
+            <StyledCollectorsNote color={colors.gray50}>
+              {unescapedCollectorsNote}
+            </StyledCollectorsNote>
+          </>
+        }
       </StyledCollectionHeader>
-      <Spacer height={24} />
       <StyledCollectionNfts>
         {collection.nfts.map(nft => (
           <NftPreview
@@ -52,6 +55,7 @@ const StyledCollectionHeader = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: -26px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
