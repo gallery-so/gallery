@@ -23,6 +23,7 @@ const SMOL_NFT_SIZE_PX = 25;
 function CollectionRow({ collection, className }: Props) {
   const { name, collectors_note, nfts, hidden } = collection;
 
+  const unescapedCollectionName = useMemo(() => unescape(name), [name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collectors_note), [collectors_note]);
 
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
@@ -47,7 +48,7 @@ function CollectionRow({ collection, className }: Props) {
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <BodyRegular>{name}</BodyRegular>
+          <BodyRegular>{unescapedCollectionName}</BodyRegular>
           <Spacer height={4} />
           <Caption color={colors.gray50}>{truncatedCollectorsNote}</Caption>
         </TextContainer>

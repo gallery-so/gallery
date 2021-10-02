@@ -16,13 +16,14 @@ type Props = {
 const GAP_PX = 40;
 
 function UserGalleryCollection({ collection }: Props) {
+  const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
 
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
-        <TitleSerif>{collection.name}</TitleSerif>
-        {unescapedCollectorsNote 
+        <TitleSerif>{unescapedCollectionName}</TitleSerif>
+        {unescapedCollectorsNote
           && <>
             <Spacer height={8} />
             <StyledCollectorsNote color={colors.gray50}>
