@@ -1,7 +1,7 @@
 import { Location, Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
-import GlobalNavbar from 'components/core/Page/Navbar/Navbar';
-import GlobalFooter from 'components/core/Page/Footer';
+import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
+import GlobalFooter from 'components/core/Page/GlobalFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
