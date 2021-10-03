@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT_PX } from './Footer';
+import { fullPageHeightWithoutNavbarAndFooter } from './constants';
 
 type Props = {
   className?: string;
@@ -26,15 +26,13 @@ function Page({
   );
 }
 
-export const fullPageHeightWithoutFooter = `calc(100vh - ${FOOTER_HEIGHT_PX}px)`;
-
 const StyledPage = styled.div<Props>`
   display: flex;
   flex-direction: column;
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
   min-height: ${({ withRoomForFooter }) =>
-    withRoomForFooter ? fullPageHeightWithoutFooter : '100vh'};
+    withRoomForFooter ? fullPageHeightWithoutNavbarAndFooter : '100vh'};
 `;
 
 export default Page;

@@ -4,6 +4,7 @@ import { Caption, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
+import { GLOBAL_FOOTER_HEIGHT } from './constants';
 
 function GlobalFooter() {
   return (
@@ -34,13 +35,11 @@ function GlobalFooter() {
   );
 }
 
-export const FOOTER_HEIGHT_PX = 88;
-
 const StyledGlobalFooter = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: ${FOOTER_HEIGHT_PX}px;
+  height: ${GLOBAL_FOOTER_HEIGHT}px;
 
   padding: 32px ${pageGutter.mobile}px 12px;
 

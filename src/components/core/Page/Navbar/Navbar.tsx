@@ -2,6 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import { GLOBAL_NAVBAR_HEIGHT } from '../constants';
 import LoggedOutNav from './LoggedOutNav';
 import LoggedInNav from './LoggedInNav';
 
@@ -17,7 +18,7 @@ function GlobalNavbar() {
 
 const StyledNavContainer = styled.div`
   width: 100%;
-  height: 80px;
+  height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
   justify-content: flex-end;
 
