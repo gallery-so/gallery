@@ -22,7 +22,8 @@
 .fade-exit {
   opacity: 1;
   position: absolute;
-  top: 0;
+  /* NOTE: this is taken from the GLOBAL_NAVBAR_HEIGHT in Page/constants.tsx */
+  top: 80px;
 }
 
 .fade-exit.fade-exit-active {
