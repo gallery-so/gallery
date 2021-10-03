@@ -75,7 +75,7 @@ function Password(_: RouteComponentProps) {
   }
 
   return (
-    <Page centered withRoomForFooter={false}>
+    <Page centered withFooterInView={false}>
       <GalleryIntro />
       <StyledPasswordInput
         disabled={isFormVisibleAndUnlocked}

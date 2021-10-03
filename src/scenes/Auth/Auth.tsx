@@ -37,7 +37,7 @@ function Auth(_: RouteComponentProps) {
   }
 
   return (
-    <Page centered withRoomForFooter={false}>
+    <Page centered withFooterInView={false}>
       <StyledWalletSelectorWrapper>
         <WalletSelector />
       </StyledWalletSelectorWrapper>

@@ -15,7 +15,7 @@ function Nuke(_: RouteComponentProps) {
   useEffect(logOut, [logOut]);
 
   return (
-    <Page centered>
+    <Page centered withNavbarInView={false}>
       <Heading>Your local cache has been nuked</Heading>
       <Spacer height={32} />
       <GalleryLink to="/">
