@@ -10,7 +10,7 @@ function GlobalFooter() {
   return (
     <StyledGlobalFooter>
       <StyledLogo>GALLERY</StyledLogo>
-      <Spacer height={4}></Spacer>
+      <Spacer height={4} />
       <StyledBottomText>
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
@@ -38,13 +38,18 @@ function GlobalFooter() {
 const StyledGlobalFooter = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 
   height: ${GLOBAL_FOOTER_HEIGHT}px;
 
-  padding: 32px ${pageGutter.mobile}px 12px;
+  padding: 0 ${pageGutter.mobile}px 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 32px ${pageGutter.tablet}px 12px;
+    padding: 0 ${pageGutter.tablet}px 16px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0 32px 16px;
   }
 `;
 

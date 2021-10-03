@@ -10,13 +10,13 @@ function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();
 
   return (
-    <StyledNavContainer data-testid="navbar">
+    <StyledGlobalNavbar data-testid="navbar">
       {isAuthenticated ? <LoggedInNav /> : <LoggedOutNav />}
-    </StyledNavContainer>
+    </StyledGlobalNavbar>
   );
 }
 
-const StyledNavContainer = styled.div`
+const StyledGlobalNavbar = styled.div`
   width: 100%;
   height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
