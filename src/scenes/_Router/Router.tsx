@@ -1,17 +1,17 @@
 import { Location, Router } from '@reach/router';
-import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
+import AuthenticatedRoute from 'scenes/_Router/AuthenticatedRoute';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
-import Home from './Home/Home';
-import Auth from './Auth/Auth';
-import Password from './Password/Password';
-import NftDetailPage from './NftDetailPage/NftDetailPage';
-import Nuke from './Nuke/Nuke';
-import UserGalleryPage from './UserGalleryPage/UserGalleryPage';
+import Home from '../Home/Home';
+import Auth from '../Auth/Auth';
+import Password from '../Password/Password';
+import NftDetailPage from '../NftDetailPage/NftDetailPage';
+import Nuke from '../Nuke/Nuke';
+import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
 
 // Considered putting this in a different file, but we should tightly couple
 // route updates to this array

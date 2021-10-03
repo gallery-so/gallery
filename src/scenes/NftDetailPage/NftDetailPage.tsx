@@ -48,7 +48,7 @@ function NftDetailPage({
   }
 
   return (
-    <StyledNftDetailPage>
+    <StyledNftDetailPage centered className="test">
       <StyledBackLink onClick={handleBackClick}>
         <ActionText>← Back to gallery</ActionText>
       </StyledBackLink>
@@ -91,11 +91,11 @@ const StyledBackLink = styled.a`
   }
 `;
 
+// margin: 144px auto 0;
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin: 144px auto 0;
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
@@ -105,10 +105,20 @@ const StyledContentContainer = styled.div`
 `;
 
 const StyledNftDetailPage = styled(Page)`
-  margin: 0 ${pageGutter.mobile}px;
+  @media only screen and ${breakpoints.mobile} {
+    margin-top: 144px;
+    margin-left: ${pageGutter.mobile}px;
+    margin-right: ${pageGutter.mobile}px;
+  }
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
+    margin-top: 144px;
+    margin-left: ${pageGutter.tablet}px;
+    margin-right: ${pageGutter.tablet}px;
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    margin: 0px;
   }
 `;
 

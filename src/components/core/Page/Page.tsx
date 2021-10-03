@@ -36,6 +36,7 @@ const StyledPage = styled.div<Props>`
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
 
   padding-top: ${({ withNavbarInView }) => `${withNavbarInView ? 0 : 80}px`};
+  padding-bottom: ${({ withFooterInView }) => `${withFooterInView ? 0 : 80}px`};
   min-height: ${({ withFooterInView, withNavbarInView }) => `
     calc(100vh - ${withFooterInView ? GLOBAL_FOOTER_HEIGHT : 0}px - ${withNavbarInView ? GLOBAL_NAVBAR_HEIGHT : 0}px)
   `};
