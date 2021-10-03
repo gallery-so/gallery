@@ -13,15 +13,15 @@ import Mixpanel from 'utils/mixpanel';
 import initializeAuthPipeline from './authRequestUtils';
 
 type Props = {
-  pendingWalletName: string;
   pendingWallet: AbstractConnector;
+  userFriendlyWalletName: string;
   setDetectedError: (error: Web3Error) => void;
 };
 
 type PendingState = typeof INITIAL | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetectedError }: Props) {
+function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedError }: Props) {
   const {
     library,
     account,
@@ -41,9 +41,9 @@ function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetect
       fetcher,
       connector: pendingWallet,
     });
-    Mixpanel.trackConnectWallet(pendingWalletName, 'Sign In');
+    Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
     logIn({ jwt, userId }, address);
-  }, [fetcher, logIn, pendingWallet, pendingWalletName]);
+  }, [fetcher, logIn, pendingWallet, userFriendlyWalletName]);
 
   useEffect(() => {
     async function authenticate() {
@@ -70,7 +70,7 @@ function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetect
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <StyledAuthenticateWalletPending>
-        <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </StyledAuthenticateWalletPending>
     );
@@ -78,7 +78,7 @@ function AuthenticateWalletPending({ pendingWallet, pendingWalletName, setDetect
 
   return (
     <StyledAuthenticateWalletPending>
-      <StyledTitleMedium>Connect with {pendingWalletName}</StyledTitleMedium>
+      <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </StyledAuthenticateWalletPending>
   );

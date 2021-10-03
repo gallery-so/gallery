@@ -11,22 +11,21 @@ import styled from 'styled-components';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADDRESS_ALREADY_CONNECTED, INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
-import { convertWalletName } from 'utils/wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { initializeAddWalletPipeline } from './authRequestUtils';
 import Mixpanel from 'utils/mixpanel';
+import { initializeAddWalletPipeline } from './authRequestUtils';
 
 type Props = {
-  pendingWalletName: string;
   pendingWallet: AbstractConnector;
+  userFriendlyWalletName: string;
   setDetectedError: (error: Web3Error) => void;
 };
 
 type PendingState = typeof INITIAL | typeof ADDRESS_ALREADY_CONNECTED | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }: Props) {
+function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedError }: Props) {
   const {
     library,
     account,
@@ -52,7 +51,7 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
         fetcher,
         connector: pendingWallet,
       });
-      Mixpanel.trackConnectWallet(pendingWalletName, 'Add Wallet');
+      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
       openManageWalletsModal(address);
 
       return signatureValid;
@@ -67,11 +66,9 @@ function AddWalletPending({ pendingWallet, pendingWalletName, setDetectedError }
         setDetectedError(web3Error);
       }
     }
-  }, [fetcher, openManageWalletsModal, pendingWallet, pendingWalletName, setDetectedError]);
+  }, [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError]);
 
-  const isMetamask = useMemo(() => pendingWalletName.toLowerCase() === 'metamask', [pendingWalletName]);
-
-  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName]);
+  const isMetamask = useMemo(() => userFriendlyWalletName.toLowerCase() === 'metamask', [userFriendlyWalletName]);
 
   useEffect(() => {
     async function authenticate() {
