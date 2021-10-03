@@ -56,11 +56,24 @@ const StyledCollectionHeader = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: -26px;
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.mobile} {
+    margin-bottom: 20px;
+  }
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    margin-bottom: 0px;
     width: 70%;
   }
+ 
+  @media only screen and ${breakpoints.tablet} {
+    margin-bottom: 0px;
+    width: 70%;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    margin-bottom: -20px;
+  }  
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
