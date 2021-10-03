@@ -1,6 +1,6 @@
-import { Location, Redirect, Router } from '@reach/router';
+import { Location, Router } from '@reach/router';
 import AuthenticatedRoute from 'components/AuthenticatedRoute/AuthenticatedRoute';
-import GlobalNavbar from 'components/core/Page/Navbar';
+import GlobalNavbar from 'components/core/Page/Navbar/Navbar';
 import GlobalFooter from 'components/core/Page/Footer';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';

@@ -2,41 +2,35 @@ import { memo } from 'react';
 import styled from 'styled-components';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import LoggedOutNav from '../../GlobalNavbar/LoggedOutNav';
-import LoggedInNav from '../../GlobalNavbar/LoggedInNav';
+import LoggedOutNav from './LoggedOutNav';
+import LoggedInNav from './LoggedInNav';
 
 function GlobalNavbar() {
   const isAuthenticated = useIsAuthenticated();
 
   return (
     <StyledNavContainer data-testid="navbar">
-      <StyledNav>
-        {isAuthenticated ? <LoggedInNav /> : <LoggedOutNav />}
-      </StyledNav>
+      {isAuthenticated ? <LoggedInNav /> : <LoggedOutNav />}
     </StyledNavContainer>
   );
 }
 
 const StyledNavContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
   width: 100%;
-
-  z-index: 1;
-`;
-
-const StyledNav = styled.div`
+  height: 80px;
   display: flex;
   justify-content: flex-end;
-  margin: 32px ${pageGutter.mobile}px 0;
+
+  z-index: 1;
+
+  padding: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 32px ${pageGutter.tablet}px 0;
+    padding: 0 ${pageGutter.tablet}px;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    margin: 32px;
+    padding: 0 32px;
   }
 `;
 
