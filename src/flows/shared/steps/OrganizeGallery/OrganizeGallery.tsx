@@ -98,7 +98,6 @@ function OrganizeGallery({ next }: WizardContext) {
   return (
     <StyledOrganizeGallery>
       <Content>
-        <Spacer height={80} />
         <Header />
         <Spacer height={24} />
         <CollectionDnd
