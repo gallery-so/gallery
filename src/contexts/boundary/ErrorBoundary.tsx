@@ -19,7 +19,7 @@ class ErrorBoundary extends Component {
       const { header, description } = formatDetailedError(this.state.error);
 
       return (
-        <Page centered withFooterInView={false}>
+        <Page centered>
           <Heading>{header}</Heading>
           <Spacer height={8} />
           <BodyRegular>{description}</BodyRegular>

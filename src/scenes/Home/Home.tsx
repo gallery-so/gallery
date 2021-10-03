@@ -21,7 +21,7 @@ function Home(_: RouteComponentProps) {
   }
 
   return (
-    <Page centered withNavbarInView={false} withFooterInView={false}>
+    <Page centered>
       <GalleryIntro />
       <StyledButton text="Enter" onClick={handleEnterGallery} />
     </Page>

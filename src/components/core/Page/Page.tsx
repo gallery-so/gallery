@@ -4,24 +4,18 @@ import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from './constants';
 
 type Props = {
   className?: string;
-  withNavbarInView?: boolean;
-  withFooterInView?: boolean;
   centered?: boolean;
   children: ReactNode | ReactNode[];
 };
 
 function Page({
   className,
-  withNavbarInView = true,
-  withFooterInView = true,
   centered = false,
   children,
 }: Props) {
   return (
     <StyledPage
       className={className}
-      withNavbarInView={withNavbarInView}
-      withFooterInView={withFooterInView}
       centered={centered}
     >
       {children}
@@ -35,11 +29,7 @@ const StyledPage = styled.div<Props>`
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
 
-  padding-top: ${({ withNavbarInView }) => `${withNavbarInView ? 0 : 80}px`};
-  padding-bottom: ${({ withFooterInView }) => `${withFooterInView ? 0 : 80}px`};
-  min-height: ${({ withFooterInView, withNavbarInView }) => `
-    calc(100vh - ${withFooterInView ? GLOBAL_FOOTER_HEIGHT : 0}px - ${withNavbarInView ? GLOBAL_NAVBAR_HEIGHT : 0}px)
-  `};
+  min-height: calc(100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px);
 `;
 
 export default Page;
