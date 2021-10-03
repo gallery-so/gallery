@@ -8,6 +8,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
 import Mixpanel from 'utils/mixpanel';
+import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
@@ -184,9 +185,7 @@ export default function WelcomeAnimation({ next }: Props) {
   }, [next]);
 
   return (
-    <StyledContainer
-      onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
-    >
+    <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
       <animated.div
         className="animate"
         style={{
@@ -279,7 +278,7 @@ const StyledMovementWrapper = styled.div<{
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: ${fullPageHeightWithoutNavbarAndFooter};
   display: flex;
   align-items: center;
   justify-content: center;
