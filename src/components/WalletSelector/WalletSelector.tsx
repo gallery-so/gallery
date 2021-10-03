@@ -9,6 +9,7 @@ import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET, AUTH } from 'types/Wallet';
+import { convertWalletName } from 'utils/wallet';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
@@ -78,6 +79,8 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState('');
+
+  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName]);
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -163,7 +166,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           <AddWalletPending
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
-            pendingWalletName={pendingWalletName}
+            userFriendlyWalletName={userFriendlyWalletName}
           />
         </StyledWalletSelector>
       );
@@ -174,7 +177,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         <AuthenticateWalletPending
           setDetectedError={setDetectedError}
           pendingWallet={pendingWallet}
-          pendingWalletName={pendingWalletName}
+          userFriendlyWalletName={userFriendlyWalletName}
         />
       </StyledWalletSelector>
     );
@@ -207,7 +210,7 @@ const StyledWalletSelector = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 480px;
-  width: 480px;
+  width: 400px;
 `;
 
 const StyledBodyMedium = styled(BodyMedium)`
