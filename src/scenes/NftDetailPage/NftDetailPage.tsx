@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -9,6 +9,7 @@ import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 
@@ -43,7 +44,7 @@ function NftDetailPage({
   const nft = useNft({ id: nftId ?? '' });
 
   if (!nft) {
-    return <Page><Redirect to="/404" noThrow /></Page>;
+    return <GalleryRedirect to="/404" />;
   }
 
   return (

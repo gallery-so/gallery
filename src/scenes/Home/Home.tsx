@@ -1,10 +1,11 @@
-import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import Button from 'components/core/Button/Button';
 import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 function Home(_: RouteComponentProps) {
   // Whether the user has entered the correct password
@@ -17,7 +18,7 @@ function Home(_: RouteComponentProps) {
   }, []);
 
   if (!isPasswordValidated) {
-    return <Page><Redirect to="/password" noThrow /></Page>;
+    return <GalleryRedirect to="/password" />;
   }
 
   return (

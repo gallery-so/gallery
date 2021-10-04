@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from 'react';
-import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import Button from 'components/core/Button/Button';
@@ -12,6 +12,7 @@ import usePersistedState from 'hooks/usePersistedState';
 import { validatePassword } from 'utils/password';
 import { PASSWORD_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 function Password(_: RouteComponentProps) {
   const [storedPassword, storePassword] = usePersistedState<string | null>(
@@ -67,11 +68,11 @@ function Password(_: RouteComponentProps) {
   }, [onEnterPress, isFormVisibleAndUnlocked]);
 
   if (isPasswordValid && !isAuthenticated) {
-    return <Page><Redirect to="/auth" noThrow /></Page>;
+    return <GalleryRedirect to="/auth" />;
   }
 
   if (isPasswordValid && isAuthenticated) {
-    return <Page><Redirect to="/" noThrow /></Page>;
+    return <GalleryRedirect to="/" />;
   }
 
   return (

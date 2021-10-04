@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { RouteComponentProps, Redirect } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
@@ -9,7 +9,7 @@ import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { Caption } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 function Auth(_: RouteComponentProps) {
   // Whether the user has entered the correct password
@@ -20,20 +20,20 @@ function Auth(_: RouteComponentProps) {
   const username = user?.username;
 
   if (!isPasswordValidated) {
-    return <Page><Redirect noThrow to="/password" /></Page>;
+    return <GalleryRedirect to="/password" />;
   }
 
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
     if (username) {
-      return <Page><Redirect noThrow to={`/${username}`} /></Page>;
+      return <GalleryRedirect to={`/${username}`} />;
     }
 
     // If user is authenticated but hasn't set their username yet.
     // we should continue to take them through the welcome flow.
     // this can happen if a user signs up and has a valid jwt but
     // hasn't set their username yet.
-    return <Page><Redirect noThrow to="/welcome" /></Page>;
+    return <GalleryRedirect to="/welcome" />;
   }
 
   return (
