@@ -41,11 +41,10 @@ function Auth(_: RouteComponentProps) {
       <StyledWalletSelectorWrapper>
         <WalletSelector />
       </StyledWalletSelectorWrapper>
-      <Caption color={colors.gray50}>
+      <StyledCaption color={colors.gray50}>
         Gallery is non-custodial and secure. We will never request access to
         your NFTs.
-      </Caption>
-      <Spacer height={16} />
+      </StyledCaption>
     </Page>
   );
 }
@@ -54,6 +53,11 @@ const StyledWalletSelectorWrapper = styled.div`
   flex-grow: 1;
   display: flex;
   align-items: center;
+`;
+
+const StyledCaption = styled(Caption)`
+  position: absolute;
+  bottom: 16px;
 `;
 
 export default memo(Auth);
