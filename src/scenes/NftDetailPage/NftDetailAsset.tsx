@@ -56,10 +56,14 @@ function NftDetailAsset({ nft }: Props) {
 }
 
 const StyledAssetContainer = styled.div<{ maxHeight: number }>`
-  align-items: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   height: 100%;
+
+  aspect-ratio: 1;
 
   @media only screen and ${breakpoints.desktop} {
     width: ${({ maxHeight }) => maxHeight}px;

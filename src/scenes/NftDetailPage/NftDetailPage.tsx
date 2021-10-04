@@ -78,6 +78,14 @@ function NftDetailPage({
 
 const StyledBody = styled.div`
   display: flex;
+
+  @media only screen and ${breakpoints.mobile} {
+    width: 100%;
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    width: auto;
+  }
 `;
 
 // mimics a navbar element on the top left corner
@@ -93,7 +101,7 @@ const StyledBackLink = styled.div`
   padding: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px;;
+    padding: 0 ${pageGutter.tablet}px;
   }
 `;
 
