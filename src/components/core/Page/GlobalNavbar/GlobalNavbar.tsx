@@ -29,10 +29,6 @@ const StyledGlobalNavbar = styled.div`
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px;
   }
-
-  @media only screen and ${breakpoints.desktop} {
-    padding: 0 32px;
-  }
 `;
 
 export default memo(GlobalNavbar);

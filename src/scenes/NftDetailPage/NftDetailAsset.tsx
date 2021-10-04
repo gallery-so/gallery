@@ -41,7 +41,7 @@ const StyledAssetContainer = styled.div`
   height: 100%;
 
   @media only screen and ${breakpoints.desktop} {
-    width: 600px;
+    width: 430px;
   }
 `;
 
