@@ -53,7 +53,7 @@ const GalleryNavigationContextProvider = memo(({ children, pathname, locationKey
     }
   }, [pathname, sanitizedPathname]);
 
-  const state = useMemo(() => ({ sanitizedPathname: sanitizedPathname || 'home' }), [sanitizedPathname]);
+  const state = useMemo(() => ({ sanitizedPathname }), [sanitizedPathname]);
 
   // keeps track of previous page's scroll position as user navigates
   const previousScrollPosition = useRef(window.scrollY);
