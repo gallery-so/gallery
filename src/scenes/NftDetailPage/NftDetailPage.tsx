@@ -43,7 +43,7 @@ function NftDetailPage({
   const nft = useNft({ id: nftId ?? '' });
 
   if (!nft) {
-    return <Redirect to="/404" noThrow />;
+    return <Page><Redirect to="/404" noThrow /></Page>;
   }
 
   return (

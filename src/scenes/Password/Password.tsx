@@ -67,11 +67,11 @@ function Password(_: RouteComponentProps) {
   }, [onEnterPress, isFormVisibleAndUnlocked]);
 
   if (isPasswordValid && !isAuthenticated) {
-    return <Redirect to="/auth" noThrow />;
+    return <Page><Redirect to="/auth" noThrow /></Page>;
   }
 
   if (isPasswordValid && isAuthenticated) {
-    return <Redirect to="/" noThrow />;
+    return <Page><Redirect to="/" noThrow /></Page>;
   }
 
   return (

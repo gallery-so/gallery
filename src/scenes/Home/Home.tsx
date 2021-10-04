@@ -17,7 +17,7 @@ function Home(_: RouteComponentProps) {
   }, []);
 
   if (!isPasswordValidated) {
-    return <Redirect to="/password" noThrow />;
+    return <Page><Redirect to="/password" noThrow /></Page>;
   }
 
   return (

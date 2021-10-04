@@ -20,20 +20,20 @@ function Auth(_: RouteComponentProps) {
   const username = user?.username;
 
   if (!isPasswordValidated) {
-    return <Redirect noThrow to="/password" />;
+    return <Page><Redirect noThrow to="/password" /></Page>;
   }
 
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
     if (username) {
-      return <Redirect noThrow to={`/${username}`} />;
+      return <Page><Redirect noThrow to={`/${username}`} /></Page>;
     }
 
     // If user is authenticated but hasn't set their username yet.
     // we should continue to take them through the welcome flow.
     // this can happen if a user signs up and has a valid jwt but
     // hasn't set their username yet.
-    return <Redirect noThrow to="/welcome" />;
+    return <Page><Redirect noThrow to="/welcome" /></Page>;
   }
 
   return (
