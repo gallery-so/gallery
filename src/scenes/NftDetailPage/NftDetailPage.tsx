@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { navigate, Redirect, RouteComponentProps } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -9,6 +9,7 @@ import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 
@@ -40,17 +41,16 @@ function NftDetailPage({
     void navigate(-1);
   }, [getVisitedPagesLength]);
 
-  // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId ?? '' });
 
   if (!nft) {
-    return <Redirect to="/404" noThrow />;
+    return <GalleryRedirect to="/404" />;
   }
 
   return (
-    <StyledNftDetailPage>
-      <StyledBackLink onClick={handleBackClick}>
-        <ActionText>← Back to gallery</ActionText>
+    <StyledNftDetailPage centered>
+      <StyledBackLink>
+        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
       <StyledBody>
         {/* {prevNftId && (
@@ -78,24 +78,38 @@ function NftDetailPage({
 
 const StyledBody = styled.div`
   display: flex;
-`;
 
-const StyledBackLink = styled.a`
-  margin-top: 32px;
-  position: absolute;
-  z-index: 5;
-  display: none;
+  @media only screen and ${breakpoints.mobile} {
+    width: 100%;
+  }
 
   @media only screen and ${breakpoints.tablet} {
-    display: block;
+    width: auto;
+  }
+`;
+
+// mimics a navbar element on the top left corner
+const StyledBackLink = styled.div`
+  height: 80px;
+  display: flex;
+  align-items: center;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  padding: 0 ${pageGutter.mobile}px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0 ${pageGutter.tablet}px;
   }
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 
-  margin: 144px auto 0;
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
@@ -105,10 +119,20 @@ const StyledContentContainer = styled.div`
 `;
 
 const StyledNftDetailPage = styled(Page)`
-  margin: 0 ${pageGutter.mobile}px;
+  @media only screen and ${breakpoints.mobile} {
+    margin-top: 64px;
+    margin-left: ${pageGutter.mobile}px;
+    margin-right: ${pageGutter.mobile}px;
+  }
 
   @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
+    margin-top: 0px;
+    margin-left: ${pageGutter.tablet}px;
+    margin-right: ${pageGutter.tablet}px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    margin: 0px;
   }
 `;
 

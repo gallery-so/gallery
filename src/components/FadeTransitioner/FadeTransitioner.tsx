@@ -2,8 +2,8 @@ import { CSSProperties, memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './transition.css';
 
-import { fullPageHeightWithoutFooter } from 'components/core/Page/Page';
 import { useGalleryNavigationActions, useGalleryNavigationState } from 'contexts/navigation/GalleryNavigationContext';
+import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 
 type Props = {
   locationKey?: string;
@@ -23,7 +23,7 @@ const childNodeStyles = {
   width: '100%',
 };
 
-const transitionGroupStyles = { minHeight: fullPageHeightWithoutFooter };
+const transitionGroupStyles = { minHeight: fullPageHeightWithoutNavbarAndFooter };
 
 /**
  * Fades child elements in and out as they mount/unmount.

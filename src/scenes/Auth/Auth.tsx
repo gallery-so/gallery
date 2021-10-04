@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { RouteComponentProps, Redirect } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
@@ -9,7 +9,7 @@ import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { Caption } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 function Auth(_: RouteComponentProps) {
   // Whether the user has entered the correct password
@@ -20,32 +20,31 @@ function Auth(_: RouteComponentProps) {
   const username = user?.username;
 
   if (!isPasswordValidated) {
-    return <Redirect noThrow to="/password" />;
+    return <GalleryRedirect to="/password" />;
   }
 
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
     if (username) {
-      return <Redirect to={`/${username}`} />;
+      return <GalleryRedirect to={`/${username}`} />;
     }
 
     // If user is authenticated but hasn't set their username yet.
     // we should continue to take them through the welcome flow.
     // this can happen if a user signs up and has a valid jwt but
     // hasn't set their username yet.
-    return <Redirect noThrow to="/welcome" />;
+    return <GalleryRedirect to="/welcome" />;
   }
 
   return (
-    <Page centered withRoomForFooter={false}>
+    <Page centered>
       <StyledWalletSelectorWrapper>
         <WalletSelector />
       </StyledWalletSelectorWrapper>
-      <Caption color={colors.gray50}>
+      <StyledCaption color={colors.gray50}>
         Gallery is non-custodial and secure. We will never request access to
         your NFTs.
-      </Caption>
-      <Spacer height={16} />
+      </StyledCaption>
     </Page>
   );
 }
@@ -54,6 +53,11 @@ const StyledWalletSelectorWrapper = styled.div`
   flex-grow: 1;
   display: flex;
   align-items: center;
+`;
+
+const StyledCaption = styled(Caption)`
+  position: absolute;
+  bottom: 16px;
 `;
 
 export default memo(Auth);

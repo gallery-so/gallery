@@ -55,18 +55,23 @@ const ShimmerProvider = memo(({ children }: Props) => {
 const Container = styled.div`
   position: relative;
   width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 type VisibleProps = { visible: boolean };
 
 const StyledShimmerComponent = styled.div<VisibleProps>`
   position: absolute;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
   width: 100%;
 `;
 
 const StyledChildren = styled.div<VisibleProps>`
   height: 100%;
+  width: 100%;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
 `;
 

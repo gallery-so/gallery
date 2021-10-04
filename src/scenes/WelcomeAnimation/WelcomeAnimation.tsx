@@ -184,9 +184,7 @@ export default function WelcomeAnimation({ next }: Props) {
   }, [next]);
 
   return (
-    <StyledContainer
-      onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
-    >
+    <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
       <animated.div
         className="animate"
         style={{

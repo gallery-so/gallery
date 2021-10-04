@@ -1,40 +1,39 @@
 import { ReactNode } from 'react';
+import { Filler } from 'scenes/_Router/GalleryRoute';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT_PX } from './Footer';
+import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from './constants';
 
 type Props = {
   className?: string;
-  withRoomForFooter?: boolean;
   centered?: boolean;
+  // simulates navbar filler if being used for rendering a page outside of GalleryRoute
+  topPadding?: boolean;
   children: ReactNode | ReactNode[];
 };
 
 function Page({
   className,
-  withRoomForFooter = true,
   centered = false,
+  topPadding = false,
   children,
 }: Props) {
   return (
-    <StyledPage
-      className={className}
-      withRoomForFooter={withRoomForFooter}
-      centered={centered}
-    >
-      {children}
-    </StyledPage>
+    <>
+      {topPadding ? <Filler /> : null}
+      <StyledPage className={className} centered={centered}>
+        {children}
+      </StyledPage>
+    </>
   );
 }
-
-export const fullPageHeightWithoutFooter = `calc(100vh - ${FOOTER_HEIGHT_PX}px)`;
 
 const StyledPage = styled.div<Props>`
   display: flex;
   flex-direction: column;
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
-  min-height: ${({ withRoomForFooter }) =>
-    withRoomForFooter ? fullPageHeightWithoutFooter : '100vh'};
+
+  min-height: calc(100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px);
 `;
 
 export default Page;

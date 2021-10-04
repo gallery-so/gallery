@@ -5,7 +5,7 @@ import {
   LocationProvider,
 } from '@reach/router';
 import AppProvider from 'contexts/AppProvider';
-import Routes from './Routes';
+import Routes from './Router';
 
 function renderWithRouter(
   ui: React.ReactNode,

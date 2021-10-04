@@ -6,9 +6,10 @@ import { getVideoUrl } from 'utils/nft';
 
 type Props = {
   nft: Nft;
+  maxHeight: number;
 };
 
-function NftDetailVideo({ nft }: Props) {
+function NftDetailVideo({ nft, maxHeight }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const assetUrl = useMemo(() => getVideoUrl(nft), [nft]);
 
@@ -21,13 +22,17 @@ function NftDetailVideo({ nft }: Props) {
       playsInline
       controls
       onLoadStart={setContentIsLoaded}
+
+      maxHeight={maxHeight}
     />
   );
 }
 
-const StyledVideo = styled.video`
+const StyledVideo = styled.video<{ maxHeight: number }>`
   width: 100%;
   border: none;
+
+  max-height: ${({ maxHeight }) => maxHeight}px;
 `;
 
 export default NftDetailVideo;
