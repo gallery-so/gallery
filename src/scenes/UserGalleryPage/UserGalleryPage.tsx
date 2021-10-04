@@ -14,9 +14,7 @@ function UserGalleryPage({ username }: RouteComponentProps<Props>) {
     <UserGalleryPageErrorBoundary>
       <Page>
         <StyledUserGalleryWrapper>
-          <UserGallery
-            username={username}
-          />
+          <UserGallery username={username} />
         </StyledUserGalleryWrapper>
       </Page>
     </UserGalleryPageErrorBoundary>

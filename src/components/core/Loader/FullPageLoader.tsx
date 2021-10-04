@@ -3,7 +3,7 @@ import CapitalGLoader from './CapitalGLoader';
 
 export default function FullPageLoader() {
   return (
-    <Page centered withRoomForFooter={false}>
+    <Page centered topPadding>
       <CapitalGLoader />
     </Page>
   );

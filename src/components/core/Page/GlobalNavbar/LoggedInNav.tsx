@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { navigate } from '@reach/router';
-import styled from 'styled-components';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
@@ -15,6 +14,7 @@ import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { truncateAddress } from 'utils/wallet';
 import { MULTI_WALLET_ENABLED } from 'utils/featureFlag';
+import NavElement from './NavElement';
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();
@@ -47,46 +47,46 @@ function LoggedInNav() {
   }, []);
 
   return (
-    <Container>
-      <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
+    <>
+      <NavElement>
+        <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
+      </NavElement>
       <Spacer width={24} />
-      <Dropdown mainText="Account">
-        <CopyToClipboard textToCopy={userAddress}>
+      <NavElement>
+        <Dropdown mainText="Account">
+          <CopyToClipboard textToCopy={userAddress}>
+            <TextButton
+              text={truncatedUserAddress}
+              disableTextTransform
+              underlineOnHover
+            />
+          </CopyToClipboard>
+          <Spacer height={12} />
+          {MULTI_WALLET_ENABLED && <>
+            <TextButton
+              text="Manage Wallets"
+              onClick={handleManageWalletsClick}
+              underlineOnHover
+            />
+            <Spacer height={12} />
+          </>}
           <TextButton
-            text={truncatedUserAddress}
-            disableTextTransform
-            underlineOnHover
-          />
-        </CopyToClipboard>
-        <Spacer height={12} />
-        {MULTI_WALLET_ENABLED && <>
-          <TextButton
-            text="Manage Wallets"
-            onClick={handleManageWalletsClick}
+            text="Edit Gallery"
+            onClick={handleEditGalleryClick}
             underlineOnHover
           />
           <Spacer height={12} />
-        </>}
-        <TextButton
-          text="Edit Gallery"
-          onClick={handleEditGalleryClick}
-          underlineOnHover
-        />
-        <Spacer height={12} />
-        <TextButton
-          text="Edit name & Bio"
-          onClick={handleEditNameClick}
-          underlineOnHover
-        />
-        <Spacer height={12} />
-        <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
-      </Dropdown>
-    </Container>
+          <TextButton
+            text="Edit name & Bio"
+            onClick={handleEditNameClick}
+            underlineOnHover
+          />
+          <Spacer height={12} />
+          <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
+        </Dropdown>
+      </NavElement>
+    </>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-`;
 
 export default LoggedInNav;

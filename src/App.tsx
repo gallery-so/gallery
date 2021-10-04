@@ -1,4 +1,4 @@
-import Routes from 'scenes/Routes';
+import Routes from 'scenes/_Router/Router';
 import AppProvider from './contexts/AppProvider';
 
 function App() {

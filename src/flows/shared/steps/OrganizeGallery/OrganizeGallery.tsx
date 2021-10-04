@@ -12,6 +12,7 @@ import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import { Collection } from 'types/Collection';
 import Mixpanel from 'utils/mixpanel';
+import { Filler } from 'scenes/_Router/GalleryRoute';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
@@ -97,8 +98,8 @@ function OrganizeGallery({ next }: WizardContext) {
 
   return (
     <StyledOrganizeGallery>
+      <Filler />
       <Content>
-        <Spacer height={80} />
         <Header />
         <Spacer height={24} />
         <CollectionDnd
