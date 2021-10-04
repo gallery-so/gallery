@@ -71,6 +71,7 @@ const StyledShimmerComponent = styled.div<VisibleProps>`
 
 const StyledChildren = styled.div<VisibleProps>`
   height: 100%;
+  width: 100%;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
 `;
 
