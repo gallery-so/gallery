@@ -40,7 +40,6 @@ function NftDetailPage({
     void navigate(-1);
   }, [getVisitedPagesLength]);
 
-  // TODO__v1 figure out if possible to ensure id is defined here
   const nft = useNft({ id: nftId ?? '' });
 
   if (!nft) {
@@ -48,9 +47,9 @@ function NftDetailPage({
   }
 
   return (
-    <StyledNftDetailPage centered className="test">
-      <StyledBackLink onClick={handleBackClick}>
-        <ActionText>← Back to gallery</ActionText>
+    <StyledNftDetailPage centered>
+      <StyledBackLink>
+        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
       <StyledBody>
         {/* {prevNftId && (
@@ -80,18 +79,23 @@ const StyledBody = styled.div`
   display: flex;
 `;
 
-const StyledBackLink = styled.a`
-  margin-top: 32px;
+// mimics a navbar element on the top left corner
+const StyledBackLink = styled.div`
+  height: 80px;
+  display: flex;
+  align-items: center;
+
   position: absolute;
-  z-index: 5;
-  display: none;
+  left: 0;
+  top: 0;
+
+  padding: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    display: block;
+    padding: 0 ${pageGutter.tablet}px;;
   }
 `;
 
-// margin: 144px auto 0;
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
