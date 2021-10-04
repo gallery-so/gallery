@@ -14,6 +14,9 @@ export type LayoutProps = {
   footerVisibleWithinView?: boolean;
   // whether the footer should be rendered out of view
   footerVisibleOutOfView?: boolean;
+  // whether to show nothing but the component (not even fillers)
+  // useful for truly custom pages
+  freshLayout?: boolean;
 };
 
 export type GalleryRouteProps = {
@@ -25,6 +28,7 @@ export const Filler = () => <Spacer height={80} />;
 
 export default function GalleryRoute({
   component: RouteComponent,
+  freshLayout = false,
   navbar = true,
   footer = true,
   footerVisibleWithinView = true,
@@ -57,6 +61,10 @@ export default function GalleryRoute({
       return <GlobalFooter />;
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView]);
+
+  if (freshLayout) {
+    return <RouteComponent {...routeProps} />;
+  }
 
   return (
     <>

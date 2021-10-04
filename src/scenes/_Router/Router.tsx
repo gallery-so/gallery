@@ -42,14 +42,12 @@ export default function Routes() {
               <GalleryAuthenticatedRoute
                 path="/welcome"
                 component={OnboardingFlow}
-                navbar={false}
-                footer={false}
+                freshLayout
               />
               <GalleryAuthenticatedRoute
                 path="/edit"
                 component={EditGalleryFlow}
-                navbar={false}
-                footer={false}
+                freshLayout
               />
               <GalleryRoute
                 path="/nuke"
