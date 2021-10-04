@@ -111,18 +111,18 @@ const StyledContentContainer = styled.div`
 
 const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
-    margin-top: 144px;
+    margin-top: 64px;
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
   }
 
   @media only screen and ${breakpoints.tablet} {
-    margin-top: 144px;
+    margin-top: 0px;
     margin-left: ${pageGutter.tablet}px;
     margin-right: ${pageGutter.tablet}px;
   }
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     margin: 0px;
   }
 `;
