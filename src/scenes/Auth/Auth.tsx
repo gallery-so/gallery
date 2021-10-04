@@ -26,7 +26,7 @@ function Auth(_: RouteComponentProps) {
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
     if (username) {
-      return <Redirect to={`/${username}`} />;
+      return <Redirect noThrow to={`/${username}`} />;
     }
 
     // If user is authenticated but hasn't set their username yet.
