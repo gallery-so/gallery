@@ -16,7 +16,7 @@ function NftDetailText({ nft }: Props) {
     <StyledDetailLabel>
       <Heading>{nft.name}</Heading>
       <Spacer height={16} />
-      <BodyRegular>{nft.asset_contract.name}</BodyRegular>
+      <BodyRegular>{nft.token_collection_name}</BodyRegular>
       <Spacer height={16} />
       <StyledNftDescription color={colors.gray50}>
         {nft.description}
