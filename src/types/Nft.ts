@@ -31,6 +31,7 @@ export type Nft = {
   owner_address: string;
   owner_users: User[];
   multiple_owners: boolean;
+  token_collection_name: string;
   token_metadata_url: string;
   user_id: string;
 };
