@@ -17,7 +17,9 @@ function UserGalleryCollections({
   collections,
   isAuthenticatedUsersPage,
 }: Props) {
-  const visibleCollections = useMemo(() => collections.filter(collection => !collection.hidden), [collections]);
+  const visibleCollections = useMemo(() => collections.filter(collection =>
+    !collection.hidden && collection.nfts.length > 0,
+  ), [collections]);
 
   if (visibleCollections.length === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
