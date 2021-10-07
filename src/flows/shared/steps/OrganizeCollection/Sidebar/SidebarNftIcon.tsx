@@ -1,8 +1,10 @@
 import colors from 'components/core/colors';
+import { NftMediaType } from 'components/core/enums';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
+import { getMediaTypeForAssetUrl } from 'utils/nft';
 import { EditModeNft } from '../types';
 
 type SidebarNftIconProps = {
@@ -41,13 +43,22 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
     mountRef.current = true;
   }, [editModeNft.id, isSelected]);
 
+  // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
+  const useVideoAsImage = useMemo(() =>
+    getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO
+  , [editModeNft.nft.image_url]);
+
   return (
     <StyledSidebarNftIcon>
-      <StyledImage
-        isSelected={isSelected}
-        src={editModeNft.nft.image_thumbnail_url}
-        alt="nft"
-      />
+      {useVideoAsImage
+        ? <StyledVideo isSelected={isSelected}
+            src={editModeNft.nft.image_url}/>
+        : <StyledImage
+            isSelected={isSelected}
+            src={editModeNft.nft.image_thumbnail_url}
+            alt="nft"
+        />
+      }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );
@@ -58,6 +69,7 @@ export const StyledSidebarNftIcon = styled.div`
   width: 64px;
   height: 64px;
   overflow: hidden;
+  margin: 6px;
 `;
 
 type SelectedProps = {
@@ -78,6 +90,13 @@ const StyledImage = styled.img<SelectedProps>`
   width: 100%;
 
   transition: opacity ${transitions.cubic};
+
+  opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
+`;
+
+const StyledVideo = styled.video<SelectedProps>`
+width: 100%;
+transition: opacity ${transitions.cubic};
 
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 `;
