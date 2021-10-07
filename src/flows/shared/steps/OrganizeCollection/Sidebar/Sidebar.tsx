@@ -10,7 +10,7 @@ import {
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { EditModeNft } from '../types';
-import SidebarNftIcon, { StyledSidebarNftIcon } from './SidebarNftIcon';
+import SidebarNftIcon from './SidebarNftIcon';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
@@ -103,9 +103,6 @@ const Selection = styled.div`
   // Temporary solution until Safari support
   width: calc(100% + 12px);
   margin-left: -6px;
-  ${StyledSidebarNftIcon} {
-    margin: 6px;
-  }
 `;
 
 export default memo(Sidebar);
