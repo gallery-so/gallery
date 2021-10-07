@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
@@ -13,6 +13,8 @@ import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import { Collection } from 'types/Collection';
 import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
+import { BodyRegular, Heading } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
@@ -96,21 +98,38 @@ function OrganizeGallery({ next }: WizardContext) {
     next,
   });
 
+  const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
+
   return (
     <StyledOrganizeGallery>
       <Filler />
       <Content>
         <Header />
         <Spacer height={24} />
-        <CollectionDnd
-          sortedCollections={sortedCollections}
-          setSortedCollections={setSortedCollections}
-        />
+        {isEmptyGallery ? <StyledEmptyGalleryMessage>
+          <Heading>Create your first collection</Heading>
+          <Spacer height={8} />
+          <BodyRegular color={colors.gray50}>
+            Organize your gallery with collections. Use them to group NFTs by
+            creator, theme, or anything that feels right.
+          </BodyRegular>
+        </StyledEmptyGalleryMessage>
+          : <CollectionDnd
+            sortedCollections={sortedCollections}
+            setSortedCollections={setSortedCollections}
+          />
+        }
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
   );
 }
+
+const StyledEmptyGalleryMessage = styled.div`
+text-align: center;
+max-width: 390px;
+margin: 240px auto 0;
+`;
 
 const StyledOrganizeGallery = styled.div`
   display: flex;
