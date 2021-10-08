@@ -68,8 +68,6 @@ const AuthProvider = memo(({ children }: Props) => {
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
   const [userSigninAddress, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
-  console.log({ token, userId, userSigninAddress });
-
   /**
    * Only sets the user state to logged out.
    */
@@ -114,7 +112,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setAuthState(LOADING);
   }, []);
 
-  const { pushError } = useToastActions();
+  const { pushToast } = useToastActions();
 
   useEffect(
     function authProviderMounted() {
@@ -122,15 +120,13 @@ const AuthProvider = memo(({ children }: Props) => {
         // Show user loading screen while we figure out whether they are logged in or not
         setAuthState(LOADING);
 
-        console.log('loadAuthState', { token, userId, userSigninAddress });
-
         if (token && userId && userSigninAddress) {
           const response = await _fetch<ValidateJwtResponse>(
             '/auth/jwt_valid',
             'validate jwt',
           );
           if (!response.valid) {
-            pushError('Your session is invalid or expired. Please try again.');
+            pushToast('Your session is invalid or expired. Please try again.');
             logOut();
             return;
           }
@@ -146,7 +142,7 @@ const AuthProvider = memo(({ children }: Props) => {
         void loadAuthState();
       }
     },
-    [authState, logIn, logOut, pushError, setLoggedOut, token, userId, userSigninAddress],
+    [authState, logIn, logOut, pushToast, setLoggedOut, token, userId, userSigninAddress],
   );
 
   const authActions: AuthActions = useMemo(

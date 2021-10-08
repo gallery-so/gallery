@@ -2,9 +2,9 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { AnimatedToast } from './Toast';
 
 type ToastActions = {
-  pushError: (error: string) => void;
-  dismissError: () => void;
-  dismissAllErrors: () => void;
+  pushToast: (message: string) => void;
+  dismissToast: () => void;
+  dismissAllToasts: () => void;
 };
 
 const ToastActionsContext = createContext<ToastActions | undefined>(undefined);
@@ -21,27 +21,27 @@ export const useToastActions = (): ToastActions => {
 type Props = { children: ReactNode };
 
 const ToastProvider = memo(({ children }: Props) => {
-  const [errors, setErrors] = useState<string[]>([]);
+  const [messages, setMessages] = useState<string[]>([]);
 
-  const pushError = useCallback((error: string) => {
-    setErrors(previousErrors => [...previousErrors, error]);
+  const pushToast = useCallback((message: string) => {
+    setMessages(previousMessages => [...previousMessages, message]);
   }, []);
 
-  const dismissError = useCallback(() => {
-    setErrors(previousErrors => previousErrors.slice(0, -1));
+  const dismissToast = useCallback(() => {
+    setMessages(previousMessages => previousMessages.slice(0, -1));
   }, []);
 
-  const dismissAllErrors = useCallback(() => {
-    setErrors([]);
+  const dismissAllToasts = useCallback(() => {
+    setMessages([]);
   }, []);
 
   const value = useMemo(() => ({
-    pushError, dismissError, dismissAllErrors,
-  }), [pushError, dismissError, dismissAllErrors]);
+    pushToast, dismissToast, dismissAllToasts,
+  }), [pushToast, dismissToast, dismissAllToasts]);
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {errors.map(error => <AnimatedToast key={error} message={error} onClose={dismissError} />)}
+      {messages.map(message => <AnimatedToast key={message} message={message} onClose={dismissToast} />)}
       {children}
     </ToastActionsContext.Provider>
   );
