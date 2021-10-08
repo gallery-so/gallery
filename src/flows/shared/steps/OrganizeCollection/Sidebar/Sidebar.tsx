@@ -9,6 +9,8 @@ import {
   useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
+import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
+import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import SidebarNftIcon from './SidebarNftIcon';
 
@@ -19,6 +21,8 @@ function Sidebar() {
     stageNfts,
     unstageNfts,
   } = useCollectionEditorActions();
+  const refreshOpenseaSync = useRefreshOpenseaSync();
+  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const isAllNftsSelected = useMemo(() => !sidebarNfts.some((nft: EditModeNft) => !nft.isSelected), [sidebarNfts]);
 
@@ -44,10 +48,22 @@ function Sidebar() {
     setNftsIsSelected(sidebarNfts, false);
   }, [sidebarNfts, setNftsIsSelected, unstageNfts]);
 
+  const handleRefreshWalletClick = useCallback(async () => {
+    await refreshOpenseaSync({ skipCache: true });
+    void refreshUnassignedNfts({ skipCache: false });
+  }, [refreshOpenseaSync, refreshUnassignedNfts]);
+
   return (
     <StyledSidebar>
       <Header>
         <BodyMedium>Your NFTs</BodyMedium>
+        <TextButton
+          text="Refresh Wallet"
+          onClick={handleRefreshWalletClick}
+        />
+      </Header>
+      <Spacer height={12} />
+      <StyledSelectButtonWrapper>
         {isAllNftsSelected ? (
           <TextButton
             text={`Deselect All (${sidebarNfts.length})`}
@@ -59,8 +75,7 @@ function Sidebar() {
             onClick={handleSelectAllClick}
           />
         )}
-      </Header>
-      <Spacer height={12} />
+      </StyledSelectButtonWrapper>
       <Selection>
         {sidebarNfts.map((editModeNft: EditModeNft) => (
           <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
@@ -89,7 +104,12 @@ const StyledSidebar = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+`;
+
+const StyledSelectButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const Selection = styled.div`
