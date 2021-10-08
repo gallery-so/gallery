@@ -1,8 +1,10 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { AnimatedToast } from './Toast';
 
+type DismissToastHandler = () => void;
+
 type ToastActions = {
-  pushToast: (message: string) => void;
+  pushToast: (message: string, onDismiss?: DismissToastHandler) => void;
   dismissToast: () => void;
   dismissAllToasts: () => void;
 };
@@ -18,21 +20,37 @@ export const useToastActions = (): ToastActions => {
   return context;
 };
 
+const noop = () => {};
+
+type ToastType = {
+  message: string;
+  onDismiss: DismissToastHandler;
+};
+
 type Props = { children: ReactNode };
 
 const ToastProvider = memo(({ children }: Props) => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [toasts, setToasts] = useState<ToastType[]>([]);
 
-  const pushToast = useCallback((message: string) => {
-    setMessages(previousMessages => [...previousMessages, message]);
+  const pushToast = useCallback((message: string, onDismiss: DismissToastHandler = noop) => {
+    setToasts(previousMessages => [...previousMessages, { message, onDismiss }]);
   }, []);
 
+  // TODO: allow consumer to specify which toast to dismissbyID
   const dismissToast = useCallback(() => {
-    setMessages(previousMessages => previousMessages.slice(0, -1));
+    setToasts(previousMessages => {
+      if (previousMessages.length === 0) {
+        return previousMessages;
+      }
+
+      const toastToDismiss = previousMessages[previousMessages.length - 1];
+      toastToDismiss.onDismiss();
+      return previousMessages.slice(0, -1);
+    });
   }, []);
 
   const dismissAllToasts = useCallback(() => {
-    setMessages([]);
+    setToasts([]);
   }, []);
 
   const value = useMemo(() => ({
@@ -41,7 +59,7 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {messages.map(message => <AnimatedToast key={message} message={message} onClose={dismissToast} />)}
+      {toasts.map(({ message, onDismiss }) => <AnimatedToast key={message} message={message} onClose={onDismiss} />)}
       {children}
     </ToastActionsContext.Provider>
   );
