@@ -11,7 +11,7 @@ type Props = {
 
 const noop = () => {};
 
-export function AnimatedErrorPill({ message, cornerPositioned = true, onClose = noop }: Props) {
+export function AnimatedToast({ message, cornerPositioned = true, onClose = noop }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
@@ -27,7 +27,7 @@ export function AnimatedErrorPill({ message, cornerPositioned = true, onClose = 
 
   return (
     <_Animate isActive={isActive}>
-      <ErrorPill message={message} onClose={handleClose} cornerPositioned={cornerPositioned} />
+      <Toast message={message} onClose={handleClose} cornerPositioned={cornerPositioned} />
     </_Animate>
   );
 }
@@ -51,16 +51,16 @@ const _Animate = styled.div<{ isActive: boolean }>`
     animation-fill-mode: forwards;
 `;
 
-function ErrorPill({ message, onClose, cornerPositioned }: Props) {
+function Toast({ message, onClose, cornerPositioned }: Props) {
   const handleClose = useCallback(() => {
     onClose?.();
   }, [onClose]);
 
   const pill = useMemo(() => (
-    <StyledErrorPill>
+    <StyledToast>
       <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
       <BodyRegular>{message}</BodyRegular>
-    </StyledErrorPill>
+    </StyledToast>
   ), [handleClose, message]);
 
   if (cornerPositioned) {
@@ -81,7 +81,7 @@ const CornerPosition = styled.div`
     right: 24px;
 `;
 
-const StyledErrorPill = styled.div`
+const StyledToast = styled.div`
     position: relative;
     border: 1px solid black;
     padding: 16px 32px 16px 24px;
@@ -97,5 +97,5 @@ const StyledClose = styled.span`
     cursor: pointer;
 `;
 
-export default ErrorPill;
+export default Toast;
 
