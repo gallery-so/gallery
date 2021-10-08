@@ -10,7 +10,7 @@ import {
   useMemo,
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
-import { useErrorPillActions } from 'contexts/error/ErrorPillContext';
+import { useToastActions } from 'contexts/toast/ToastContext';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
 import {
@@ -68,6 +68,8 @@ const AuthProvider = memo(({ children }: Props) => {
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
   const [userSigninAddress, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
+  console.log({ token, userId, userSigninAddress });
+
   /**
    * Only sets the user state to logged out.
    */
@@ -112,13 +114,15 @@ const AuthProvider = memo(({ children }: Props) => {
     setAuthState(LOADING);
   }, []);
 
-  const { pushError } = useErrorPillActions();
+  const { pushError } = useToastActions();
 
   useEffect(
     function authProviderMounted() {
       async function loadAuthState() {
         // Show user loading screen while we figure out whether they are logged in or not
         setAuthState(LOADING);
+
+        console.log('loadAuthState', { token, userId, userSigninAddress });
 
         if (token && userId && userSigninAddress) {
           const response = await _fetch<ValidateJwtResponse>(

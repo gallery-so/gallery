@@ -2,7 +2,7 @@ import { SwrProvider } from './swr/SwrContext';
 import Boundary from './boundary/Boundary';
 import AuthProvider from './auth/AuthContext';
 import ModalProvider from './modal/ModalContext';
-import ErrorPillProvider from './error/ErrorPillContext';
+import ToastProvider from './toast/ToastContext';
 
 type Props = {
   children: React.ReactNode;
@@ -11,13 +11,13 @@ type Props = {
 export default function AppProvider({ children }: Props) {
   return (
     <Boundary>
-      <ErrorPillProvider>
+      <ToastProvider>
         <AuthProvider>
           <SwrProvider>
             <ModalProvider>{children}</ModalProvider>
           </SwrProvider>
         </AuthProvider>
-      </ErrorPillProvider>
+      </ToastProvider>
     </Boundary>
   );
 }

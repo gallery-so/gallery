@@ -1,18 +1,18 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { AnimatedErrorPill } from './ErrorPill';
+import { AnimatedToast } from './Toast';
 
-type ErrorPillActions = {
+type ToastActions = {
   pushError: (error: string) => void;
   dismissError: () => void;
   dismissAllErrors: () => void;
 };
 
-const ErrorPillActionsContext = createContext<ErrorPillActions | undefined>(undefined);
+const ToastActionsContext = createContext<ToastActions | undefined>(undefined);
 
-export const useErrorPillActions = (): ErrorPillActions => {
-  const context = useContext(ErrorPillActionsContext);
+export const useToastActions = (): ToastActions => {
+  const context = useContext(ToastActionsContext);
   if (!context) {
-    throw new Error('Attempted to use ErrorPillActionsContext without a provider!');
+    throw new Error('Attempted to use ToastActionsContext without a provider!');
   }
 
   return context;
@@ -20,7 +20,7 @@ export const useErrorPillActions = (): ErrorPillActions => {
 
 type Props = { children: ReactNode };
 
-const ErrorPillProvider = memo(({ children }: Props) => {
+const ToastProvider = memo(({ children }: Props) => {
   const [errors, setErrors] = useState<string[]>([]);
 
   const pushError = useCallback((error: string) => {
@@ -40,12 +40,12 @@ const ErrorPillProvider = memo(({ children }: Props) => {
   }), [pushError, dismissError, dismissAllErrors]);
 
   return (
-    <ErrorPillActionsContext.Provider value={value}>
-      {errors.map(error => <AnimatedErrorPill key={error} message={error} onClose={dismissError} />)}
+    <ToastActionsContext.Provider value={value}>
+      {errors.map(error => <AnimatedToast key={error} message={error} onClose={dismissError} />)}
       {children}
-    </ErrorPillActionsContext.Provider>
+    </ToastActionsContext.Provider>
   );
 });
 
-export default ErrorPillProvider;
+export default ToastProvider;
 
