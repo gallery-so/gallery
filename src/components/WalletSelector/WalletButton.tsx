@@ -132,6 +132,8 @@ const StyledButton = styled.button<StyledButtonProps>`
 `;
 
 const StyledExternalLink = styled.a`
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
