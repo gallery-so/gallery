@@ -4,6 +4,7 @@ import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
+import EarlyBird from 'scenes/EarlyBird/EarlyBird';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
 import Password from '../Password/Password';
@@ -48,6 +49,10 @@ export default function Routes() {
                 path="/edit"
                 component={EditGalleryFlow}
                 freshLayout
+              />
+              <GalleryRoute
+                path="/earlybird"
+                component={EarlyBird}
               />
               <GalleryRoute
                 path="/nuke"
