@@ -74,7 +74,8 @@ function CollectionEditor() {
   }
   , [unassignedNfts]);
 
-  const nftsInCollectionAsEditMode: EditModeNft[] = useMemo(() => {
+  // decorates NFTs in collection with additional fields for the purpose of editing / dnd
+  const editModeNftsInCollection: EditModeNft[] = useMemo(() => {
     if (!collectionIdBeingEditedRef.current) {
       return [];
     }
@@ -90,7 +91,7 @@ function CollectionEditor() {
     // Initialize new sidebar nfts
     let newSidebarNfts: Record<string, EditModeNft> = {};
     // Add nfts in current collection to sidebar
-    for (const nft of nftsInCollectionAsEditMode) {
+    for (const nft of editModeNftsInCollection) {
       newSidebarNfts[nft.id] = nft;
     }
 
@@ -116,7 +117,7 @@ function CollectionEditor() {
     }
 
     return Object.keys(newSidebarNfts).map(nftId => newSidebarNfts[nftId]);
-  }, [nftsInCollectionAsEditMode, unassignedEditModeNftObject, unstageNfts]);
+  }, [editModeNftsInCollection, unassignedEditModeNftObject, unstageNfts]);
 
   // Initialize sidebarNfts
   useEffect(() => {
