@@ -9,7 +9,6 @@ import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import { Collection } from 'types/Collection';
 import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
@@ -29,12 +28,9 @@ type ConfigProps = {
 function useWizardConfig({
   wizardId,
   username,
-  galleryId,
-  sortedCollections,
   next,
 }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
-  const updateGallery = useUpdateGallery();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
@@ -55,17 +51,9 @@ function useWizardConfig({
       return;
     }
 
-    await updateGallery(galleryId, sortedCollections);
+    // await updateGallery(galleryId, sortedCollections);
     void navigate(`/${username}`);
-  }, [
-    clearOnNext,
-    galleryId,
-    next,
-    sortedCollections,
-    updateGallery,
-    username,
-    wizardId,
-  ]);
+  }, [clearOnNext, next, username, wizardId]);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
@@ -115,8 +103,9 @@ function OrganizeGallery({ next }: WizardContext) {
           </BodyRegular>
         </StyledEmptyGalleryMessage>
           : <CollectionDnd
-            sortedCollections={sortedCollections}
-            setSortedCollections={setSortedCollections}
+              galleryId={id}
+              sortedCollections={sortedCollections}
+              setSortedCollections={setSortedCollections}
           />
         }
         <Spacer height={120} />
