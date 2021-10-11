@@ -27,6 +27,11 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
   }));
 }
 
+// converts an object into an array containing all of the object's values
+function convertObjectToArray(object: Record<string, EditModeNft>) {
+  return Object.keys(object).map(key => object[key]);
+}
+
 function CollectionEditor() {
   const stagedNfts = useStagedNftsState();
   const sidebarNfts = useSidebarNftsState();
@@ -99,7 +104,7 @@ function CollectionEditor() {
     newSidebarNfts = { ...newSidebarNfts, ...unassignedEditModeNftObject };
 
     if (sidebarNftsRef.current.length === 0) {
-      return Object.keys(newSidebarNfts).map(nftId => newSidebarNfts[nftId]);
+      return convertObjectToArray(newSidebarNfts);
     }
 
     // Iterate through nfts that used to be in the sidebar before refresh, so that we can retain whether each was selected or not
@@ -116,7 +121,7 @@ function CollectionEditor() {
       }
     }
 
-    return Object.keys(newSidebarNfts).map(nftId => newSidebarNfts[nftId]);
+    return convertObjectToArray(newSidebarNfts);
   }, [editModeNftsInCollection, unassignedEditModeNftObject, unstageNfts]);
 
   // Initialize sidebarNfts
