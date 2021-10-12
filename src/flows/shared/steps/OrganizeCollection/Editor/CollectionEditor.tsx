@@ -49,7 +49,7 @@ function CollectionEditor() {
   const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
 
   const address = useAuthenticatedUserAddress();
-  useOpenseaSync({ address, skipCache: false });
+  // useOpenseaSync({ address, skipCache: false });
   const unassignedNfts = useUnassignedNfts({ skipCache: false });
 
   const { collections } = useAuthenticatedGallery();

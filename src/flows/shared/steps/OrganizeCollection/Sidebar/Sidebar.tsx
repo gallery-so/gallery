@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
@@ -13,6 +13,7 @@ import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import SidebarNftIcon from './SidebarNftIcon';
+import SearchBar from './SearchBar';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
@@ -23,6 +24,10 @@ function Sidebar() {
   } = useCollectionEditorActions();
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
+
+  // search
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<EditModeNft[]>([]);
 
   const isAllNftsSelected = useMemo(() => !sidebarNfts.some((nft: EditModeNft) => !nft.isSelected), [sidebarNfts]);
 
@@ -50,8 +55,10 @@ function Sidebar() {
 
   const handleRefreshWalletClick = useCallback(async () => {
     await refreshOpenseaSync({ skipCache: true });
-    void refreshUnassignedNfts({ skipCache: false });
+    void refreshUnassignedNfts({ skipCache: true });
   }, [refreshOpenseaSync, refreshUnassignedNfts]);
+
+  const nftsToDisplayInSidebar = useMemo(() => searchQuery ? searchResults : sidebarNfts, [searchQuery, searchResults, sidebarNfts]);
 
   return (
     <StyledSidebar>
@@ -62,7 +69,13 @@ function Sidebar() {
           onClick={handleRefreshWalletClick}
         />
       </Header>
-      <Spacer height={12} />
+      <Spacer height={16} />
+      <SearchBar
+        setSearchResults={setSearchResults}
+        setSearchQuery={setSearchQuery}
+        sidebarNfts={sidebarNfts}
+      />
+      <Spacer height={24} />
       <StyledSelectButtonWrapper>
         {isAllNftsSelected ? (
           <TextButton
@@ -76,8 +89,9 @@ function Sidebar() {
           />
         )}
       </StyledSelectButtonWrapper>
+      <Spacer height={8} />
       <Selection>
-        {sidebarNfts.map((editModeNft: EditModeNft) => (
+        {nftsToDisplayInSidebar.map((editModeNft: EditModeNft) => (
           <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
         ))}
       </Selection>

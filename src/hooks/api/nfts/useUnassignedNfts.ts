@@ -52,7 +52,7 @@ export function useRefreshUnassignedNfts() {
 
   return useCallback(
     async ({ skipCache }: Props) => {
-      await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
+      await mutate(getUnassignedNftsCacheKey({ userId, skipCache }), undefined, true);
     },
     [userId],
   );
