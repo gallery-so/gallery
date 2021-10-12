@@ -51,7 +51,6 @@ function useWizardConfig({
       return;
     }
 
-    // await updateGallery(galleryId, sortedCollections);
     void navigate(`/${username}`);
   }, [clearOnNext, next, username, wizardId]);
 
@@ -103,9 +102,9 @@ function OrganizeGallery({ next }: WizardContext) {
           </BodyRegular>
         </StyledEmptyGalleryMessage>
           : <CollectionDnd
-              galleryId={id}
-              sortedCollections={sortedCollections}
-              setSortedCollections={setSortedCollections}
+            galleryId={id}
+            sortedCollections={sortedCollections}
+            setSortedCollections={setSortedCollections}
           />
         }
         <Spacer height={120} />
