@@ -13,6 +13,7 @@ import {
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import Mixpanel from 'utils/mixpanel';
+import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { EditModeNft } from './types';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
@@ -39,6 +40,7 @@ function useWizardConfig({ push }: ConfigProps) {
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
+  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const goToOrganizeGalleryStep = useCallback(() => {
     // Clear selected collection when moving to next step
@@ -55,6 +57,7 @@ function useWizardConfig({ push }: ConfigProps) {
           collectionIdBeingEdited,
           stagedNftIdsRef.current,
         );
+        await refreshUnassignedNfts({ skipCache: false });
 
         goToOrganizeGalleryStep();
       });
