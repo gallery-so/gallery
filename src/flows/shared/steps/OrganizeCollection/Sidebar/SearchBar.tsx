@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 import styled from 'styled-components';
 import SearchIcon from 'assets/icons/search.svg';
 import { EditModeNft } from '../types';
@@ -10,16 +10,13 @@ type Props = {
   setSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
+// Returns an array of NFT ids that match the given query string
 function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
   const lowerCaseQuery = query.toLowerCase();
-  // given an array of nfts and a query string, return any that match for
-  // - name
-  // - creator_name
-  // - token_collection_name
-  return editModeNfts.filter(editModeNft => {
-    // conditiosn that return true for any of the match
 
+  return editModeNfts.filter(editModeNft => {
     const nft = editModeNft.nft;
+
     if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
       return true;
     }
@@ -37,19 +34,14 @@ function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
 }
 
 function SearchBar({ setSearchResults, setSearchQuery, sidebarNfts }: Props) {
-  // const [searchQuery, setSearchQuery] = useState('');
-
   const onQueryChange = useCallback((event: any) => {
-    console.log(event.target.value);
     const searchQuery = event.target.value;
     setSearchQuery(searchQuery);
-    // filter sidebarnfts based on search query
-    const searchResults = searchNftsWithQuery(sidebarNfts, searchQuery);
-    console.log(searchResults);
 
-    // set results with setSearchResults
+    const searchResults = searchNftsWithQuery(sidebarNfts, searchQuery);
     setSearchResults(searchResults);
   }, [setSearchQuery, setSearchResults, sidebarNfts]);
+
   return (<StyledSearchBar>
     <StyledSearchInput
       onChange={onQueryChange}
@@ -62,7 +54,6 @@ const StyledSearchBar = styled.div`
 `;
 
 const StyledSearchInput = styled.input`
-  // background: none;
   border: 1px solid ${colors.gray30};
   width: 100%;
   padding: 8px;

@@ -2,7 +2,7 @@ import colors from 'components/core/colors';
 import { NftMediaType } from 'components/core/enums';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { getMediaTypeForAssetUrl } from 'utils/nft';
 import { EditModeNft } from '../types';
@@ -23,9 +23,7 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    console.log('editModeNft', editModeNft);
     setNftsIsSelected([editModeNft], !isSelected);
-    // setIsSelected(!isSelected);
     if (isSelected) {
       unstageNfts([editModeNft.id]);
     } else {
