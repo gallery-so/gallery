@@ -25,13 +25,13 @@ function Sidebar() {
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
   const sidebarNftsAsArray = useMemo(() => Object.keys(sidebarNfts).map(key => sidebarNfts[key]), [sidebarNfts]);
 
   const nftsToDisplayInSidebar = useMemo(() => {
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
       const searchResultNfts = [];
       for (const resultId of searchResults) {
         if (sidebarNfts[resultId]) {
@@ -43,7 +43,7 @@ function Sidebar() {
     }
 
     return sidebarNftsAsArray;
-  }, [searchQuery, searchResults, sidebarNfts, sidebarNftsAsArray]);
+  }, [debouncedSearchQuery, searchResults, sidebarNfts, sidebarNftsAsArray]);
 
   const isAllNftsSelected = useMemo(() => !nftsToDisplayInSidebar.some((nft: EditModeNft) => !nft.isSelected), [nftsToDisplayInSidebar]);
 
@@ -71,7 +71,7 @@ function Sidebar() {
 
   const handleRefreshWalletClick = useCallback(async () => {
     await refreshOpenseaSync({ skipCache: true });
-    void refreshUnassignedNfts({ skipCache: true });
+    void refreshUnassignedNfts({ skipCache: false });
   }, [refreshOpenseaSync, refreshUnassignedNfts]);
 
   return (
@@ -86,7 +86,7 @@ function Sidebar() {
       <Spacer height={16} />
       <SearchBar
         setSearchResults={setSearchResults}
-        setSearchQuery={setSearchQuery}
+        setDebouncedSearchQuery={setDebouncedSearchQuery}
         sidebarNfts={sidebarNftsAsArray}
       />
       <Spacer height={24} />

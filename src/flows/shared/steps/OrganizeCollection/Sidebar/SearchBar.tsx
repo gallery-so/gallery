@@ -1,13 +1,14 @@
 import colors from 'components/core/colors';
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from 'assets/icons/search.svg';
+import useDebounce from 'hooks/useDebounce';
 import { EditModeNft } from '../types';
 
 type Props = {
   setSearchResults: Dispatch<SetStateAction<string[]>>;
   sidebarNfts: EditModeNft[];
-  setSearchQuery: Dispatch<SetStateAction<string>>;
+  setDebouncedSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
 // Returns an array of NFT ids that match the given query string
@@ -33,14 +34,20 @@ function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
   }).map(editModeNft => editModeNft.id);
 }
 
-function SearchBar({ setSearchResults, setSearchQuery, sidebarNfts }: Props) {
+function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: Props) {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 200);
+
   const onQueryChange = useCallback((event: any) => {
     const searchQuery = event.target.value;
     setSearchQuery(searchQuery);
+  }, [setSearchQuery]);
 
-    const searchResults = searchNftsWithQuery(sidebarNfts, searchQuery);
+  useEffect(() => {
+    const searchResults = searchNftsWithQuery(sidebarNfts, debouncedSearchQuery);
+    setDebouncedSearchQuery(debouncedSearchQuery);
     setSearchResults(searchResults);
-  }, [setSearchQuery, setSearchResults, sidebarNfts]);
+  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, sidebarNfts]);
 
   return (<StyledSearchBar>
     <StyledSearchInput

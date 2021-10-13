@@ -99,14 +99,14 @@ function CollectionEditor() {
     // Add unassigned nfts to sidebar
     newSidebarNfts = { ...newSidebarNfts, ...unassignedEditModeNftObject };
 
-    const sidebarNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
+    const oldSidebarNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
 
-    if (Object.keys(sidebarNftsAsArray).length === 0) {
+    if (oldSidebarNftsAsArray.length === 0) {
       return newSidebarNfts;
     }
 
     // Iterate through nfts that used to be in the sidebar before refresh, so that we can retain whether each was selected or not
-    for (const oldSidebarNft of sidebarNftsAsArray) {
+    for (const oldSidebarNft of oldSidebarNftsAsArray) {
       const newSidebarNft = newSidebarNfts[oldSidebarNft.id];
 
       if (newSidebarNft) {
