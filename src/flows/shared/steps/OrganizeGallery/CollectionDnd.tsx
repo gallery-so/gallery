@@ -20,6 +20,7 @@ import {
 
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { Collection } from 'types/Collection';
+import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
 
@@ -31,27 +32,32 @@ const defaultDropAnimationConfig: DropAnimation = {
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
+  galleryId: string;
   sortedCollections: Collection[];
   setSortedCollections: (sorter: (previous: Collection[]) => Collection[]) => void;
 };
 
-function CollectionDnd({ sortedCollections, setSortedCollections }: Props) {
+function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: Props) {
   const { collections } = useAuthenticatedGallery();
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
+  const updateGallery = useUpdateGallery();
 
   const handleSortCollections = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
 
       if (active.id !== over?.id) {
+        let updatedCollections = sortedCollections;
         setSortedCollections(previous => {
           const oldIndex = previous.findIndex(({ id }) => id === active.id);
           const newIndex = previous.findIndex(({ id }) => id === over?.id);
-          return arrayMove(previous, oldIndex, newIndex);
+          updatedCollections = arrayMove(previous, oldIndex, newIndex);
+          return updatedCollections;
         });
+        void updateGallery(galleryId, updatedCollections);
       }
     },
-    [setSortedCollections],
+    [galleryId, setSortedCollections, sortedCollections, updateGallery],
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
