@@ -5,7 +5,7 @@ import SearchIcon from 'assets/icons/search.svg';
 import { EditModeNft } from '../types';
 
 type Props = {
-  setSearchResults: Dispatch<SetStateAction<EditModeNft[]>>;
+  setSearchResults: Dispatch<SetStateAction<string[]>>;
   sidebarNfts: EditModeNft[];
   setSearchQuery: Dispatch<SetStateAction<string>>;
 };
@@ -33,7 +33,7 @@ function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
     }
 
     return false;
-  });
+  }).map(editModeNft => editModeNft.id);
 }
 
 function SearchBar({ setSearchResults, setSearchQuery, sidebarNfts }: Props) {
