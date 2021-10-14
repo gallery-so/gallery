@@ -104,7 +104,7 @@ function CollectionCreateOrEditForm({
       }
 
       // Refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
-      await refreshUnassignedNfts({ skipCache: false });
+      await refreshUnassignedNfts();
 
       goToNextStep();
     } catch (error: unknown) {

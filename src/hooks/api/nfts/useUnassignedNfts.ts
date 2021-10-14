@@ -3,6 +3,7 @@ import { mutate } from 'swr';
 import { Nft } from 'types/Nft';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGet from '../_rest/useGet';
+import usePost from '../_rest/usePost';
 
 type UnassignedNftsResponse = {
   nfts: Nft[];
@@ -10,50 +11,54 @@ type UnassignedNftsResponse = {
 
 const getUnassignedNftsAction = 'fetch unassigned nfts';
 
-const getUnassignedNftsBaseUrl = '/nfts/get_unassigned';
+const getUnassignedNftsBaseUrl = '/nfts/unassigned/get';
 
 type QueryProps = {
   userId: string;
-  skipCache: boolean;
 };
 
-function getUnassignedNftsBaseUrlWithQuery({ userId, skipCache }: QueryProps) {
-  return `${getUnassignedNftsBaseUrl}?user_id=${userId}&skip_cache=${skipCache.toString()}`;
+function getUnassignedNftsBaseUrlWithQuery({ userId }: QueryProps) {
+  return `${getUnassignedNftsBaseUrl}?user_id=${userId}`;
 }
 
-export function getUnassignedNftsCacheKey({ userId, skipCache }: QueryProps) {
+export function getUnassignedNftsCacheKey({ userId }: QueryProps) {
   return [
-    getUnassignedNftsBaseUrlWithQuery({ userId, skipCache }),
+    getUnassignedNftsBaseUrlWithQuery({ userId }),
     getUnassignedNftsAction,
   ];
 }
 
 export const unassignedNftsAction = 'fetch unassigned nfts';
 
-type Props = {
-  skipCache: boolean;
-};
-
-export default function useUnassignedNfts({
-  skipCache,
-}: Props): Nft[] | undefined {
+export default function useUnassignedNfts(): Nft[] | undefined {
   const user = useAuthenticatedUser();
 
   const data = useGet<UnassignedNftsResponse>(
-    getUnassignedNftsBaseUrlWithQuery({ userId: user.id, skipCache }),
+    getUnassignedNftsBaseUrlWithQuery({ userId: user.id }),
     unassignedNftsAction,
   );
 
   return data?.nfts;
 }
 
-export function useRefreshUnassignedNfts() {
+export function useMutateUnassignedNftsCache() {
   const { id: userId } = useAuthenticatedUser();
 
   return useCallback(
-    async ({ skipCache }: Props) => {
-      await mutate(getUnassignedNftsCacheKey({ userId, skipCache }));
+    async () => {
+      await mutate(getUnassignedNftsCacheKey({ userId }));
     },
     [userId],
+  );
+}
+
+export function useRefreshUnassignedNfts() {
+  const refreshUnassignedNfts = usePost();
+
+  return useCallback(
+    async () => {
+      const result = await refreshUnassignedNfts('/nfts/unassigned/refresh', 'refresh unassigned nfts', {});
+      return result;
+    }, [refreshUnassignedNfts],
   );
 }
