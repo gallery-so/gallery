@@ -41,6 +41,7 @@ export default function useUnassignedNfts(): Nft[] | undefined {
   return data?.nfts;
 }
 
+// use this hook to force SWR to refetch unassigned nfts from the redis cache
 export function useMutateUnassignedNftsCache() {
   const { id: userId } = useAuthenticatedUser();
 
@@ -52,6 +53,7 @@ export function useMutateUnassignedNftsCache() {
   );
 }
 
+// use this hook to refresh the redis cache of unassigned nfts
 export function useRefreshUnassignedNfts() {
   const refreshUnassignedNfts = usePost();
 
