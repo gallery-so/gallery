@@ -9,7 +9,7 @@ import {
   useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
+import { useMutateUnassignedNftsCache, useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../Editor/CollectionEditor';
@@ -25,6 +25,7 @@ function Sidebar() {
   } = useCollectionEditorActions();
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
+  const mutateUnassignedNftsCache = useMutateUnassignedNftsCache();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -72,8 +73,9 @@ function Sidebar() {
 
   const handleRefreshWalletClick = useCallback(async () => {
     await refreshOpenseaSync({ skipCache: true });
-    void refreshUnassignedNfts({ skipCache: false });
-  }, [refreshOpenseaSync, refreshUnassignedNfts]);
+    await refreshUnassignedNfts();
+    void mutateUnassignedNftsCache();
+  }, [mutateUnassignedNftsCache, refreshOpenseaSync, refreshUnassignedNfts]);
 
   return (
     <StyledSidebar>
