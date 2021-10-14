@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
+  SidebarNftsState,
   useCollectionEditorActions,
   useSidebarNftsState,
   useStagedNftsState,
@@ -26,7 +27,7 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
 }
 
 // converts an object into an array containing all of the object's values
-function convertObjectToArray(object: Record<string, EditModeNft>) {
+export function convertObjectToArray(object: Record<string, EditModeNft>) {
   return Object.keys(object).map(key => object[key]);
 }
 
@@ -57,7 +58,7 @@ function CollectionEditor() {
     return collectionBeingEdited?.nfts ?? [];
   }, [collections]);
 
-  const sidebarNftsRef = useRef<Record<string, EditModeNft>>({});
+  const sidebarNftsRef = useRef<SidebarNftsState>({});
   useEffect(() => {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
@@ -90,7 +91,7 @@ function CollectionEditor() {
   // refreshes the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
   const refreshSidebarNfts = useCallback(() => {
     // Initialize new sidebar nfts
-    let newSidebarNfts: Record<string, EditModeNft> = {};
+    let newSidebarNfts: SidebarNftsState = {};
     // Add nfts in current collection to sidebar
     for (const nft of editModeNftsInCollection) {
       newSidebarNfts[nft.id] = nft;

@@ -85,7 +85,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     [sidebarNftsState, stagedNftsState],
   );
 
-  const setSidebarNfts = useCallback((nfts: Record<string, EditModeNft>) => {
+  const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
     setSidebarNftsState(nfts);
   }, []);
 

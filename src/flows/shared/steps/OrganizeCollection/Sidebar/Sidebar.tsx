@@ -12,6 +12,7 @@ import {
 import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
+import { convertObjectToArray } from '../Editor/CollectionEditor';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 
@@ -25,10 +26,10 @@ function Sidebar() {
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
-  const sidebarNftsAsArray = useMemo(() => Object.keys(sidebarNfts).map(key => sidebarNfts[key]), [sidebarNfts]);
+  const sidebarNftsAsArray = useMemo(() => convertObjectToArray(sidebarNfts), [sidebarNfts]);
 
   const nftsToDisplayInSidebar = useMemo(() => {
     if (debouncedSearchQuery) {
