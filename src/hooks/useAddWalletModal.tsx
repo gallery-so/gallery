@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
-import { ADD_WALLET } from 'types/Wallet';
+import { ADD_WALLET_TO_USER } from 'types/Wallet';
 
 const AddWalletModal = () => (
   <Container>
-    <WalletSelector connectionMode={ADD_WALLET}/>
+    <WalletSelector connectionMode={ADD_WALLET_TO_USER}/>
   </Container>
 );
 

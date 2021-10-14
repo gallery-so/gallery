@@ -23,7 +23,6 @@ const walletIconMap: Record<string, string> = {
 type WalletButtonProps = {
   walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
-  deactivate: Web3ReactManagerFunctions['deactivate'];
   connector?: AbstractConnector;
   setToPendingState: (connector: AbstractConnector, walletName: string) => void;
   isPending: boolean;

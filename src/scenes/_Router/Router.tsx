@@ -4,7 +4,7 @@ import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
-import EarlyBird from 'scenes/EarlyBird/EarlyBird';
+import WhiteMembershipMintPage from 'scenes/MembershipMintPage/WhiteMembershipMintPage';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
 import Password from '../Password/Password';
@@ -12,6 +12,7 @@ import NftDetailPage from '../NftDetailPage/NftDetailPage';
 import Nuke from '../Nuke/Nuke';
 import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
 import GalleryRoute from './GalleryRoute';
+import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 
 export default function Routes() {
   return (
@@ -51,8 +52,14 @@ export default function Routes() {
                 freshLayout
               />
               <GalleryRoute
-                path="/earlybird"
-                component={EarlyBird}
+                path="/membership/silver"
+                component={SilverMembershipMintPage}
+                navbar={false}
+              />
+              <GalleryRoute
+                path="/membership/white"
+                component={WhiteMembershipMintPage}
+                navbar={false}
               />
               <GalleryRoute
                 path="/nuke"

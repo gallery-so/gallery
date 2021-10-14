@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "abis/*": ["src/abis/*"],
       "assets/*": ["src/assets/*"],
       "scenes/*": ["src/scenes/*"],
       "contexts/*": ["src/contexts/*"],
