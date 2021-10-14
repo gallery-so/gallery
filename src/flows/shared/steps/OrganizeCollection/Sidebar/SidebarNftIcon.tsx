@@ -52,11 +52,11 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
     <StyledSidebarNftIcon>
       {useVideoAsImage
         ? <StyledVideo isSelected={isSelected}
-            src={editModeNft.nft.image_url}/>
+          src={editModeNft.nft.image_url}/>
         : <StyledImage
-            isSelected={isSelected}
-            src={editModeNft.nft.image_thumbnail_url}
-            alt="nft"
+          isSelected={isSelected}
+          src={editModeNft.nft.image_thumbnail_url}
+          alt="nft"
         />
       }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />

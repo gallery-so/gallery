@@ -82,15 +82,7 @@ function useWizardConfig({ push }: ConfigProps) {
     if (wizardId === 'edit-gallery') {
       setOnPrevious(goToOrganizeGalleryStep);
     }
-  }, [
-    collectionIdBeingEdited,
-    goToOrganizeGalleryStep,
-    setOnNext,
-    setOnPrevious,
-    showModal,
-    updateCollection,
-    wizardId,
-  ]);
+  }, [collectionIdBeingEdited, goToOrganizeGalleryStep, refreshUnassignedNfts, setOnNext, setOnPrevious, showModal, updateCollection, wizardId]);
 }
 
 // In order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
