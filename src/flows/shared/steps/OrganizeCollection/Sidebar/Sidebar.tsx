@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { BodyMedium } from 'components/core/Text/Text';
@@ -12,7 +12,9 @@ import {
 import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
+import { convertObjectToArray } from '../Editor/CollectionEditor';
 import SidebarNftIcon from './SidebarNftIcon';
+import SearchBar from './SearchBar';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
@@ -24,29 +26,49 @@ function Sidebar() {
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
-  const isAllNftsSelected = useMemo(() => !sidebarNfts.some((nft: EditModeNft) => !nft.isSelected), [sidebarNfts]);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<string[]>([]);
+
+  const sidebarNftsAsArray = useMemo(() => convertObjectToArray(sidebarNfts), [sidebarNfts]);
+
+  const nftsToDisplayInSidebar = useMemo(() => {
+    if (debouncedSearchQuery) {
+      const searchResultNfts = [];
+      for (const resultId of searchResults) {
+        if (sidebarNfts[resultId]) {
+          searchResultNfts.push(sidebarNfts[resultId]);
+        }
+      }
+
+      return searchResultNfts;
+    }
+
+    return sidebarNftsAsArray;
+  }, [debouncedSearchQuery, searchResults, sidebarNfts, sidebarNftsAsArray]);
+
+  const isAllNftsSelected = useMemo(() => !nftsToDisplayInSidebar.some((nft: EditModeNft) => !nft.isSelected), [nftsToDisplayInSidebar]);
 
   const handleSelectAllClick = useCallback(() => {
     // Stage all nfts that are !isSelected
-    const nftsToStage = sidebarNfts.filter(nft => !nft.isSelected);
+    const nftsToStage = nftsToDisplayInSidebar.filter(nft => !nft.isSelected);
     if (nftsToStage.length === 0) {
       return;
     }
 
     stageNfts(nftsToStage);
     setNftsIsSelected(nftsToStage, true);
-  }, [sidebarNfts, setNftsIsSelected, stageNfts]);
+  }, [nftsToDisplayInSidebar, stageNfts, setNftsIsSelected]);
 
   const handleDeselectAllClick = useCallback(() => {
     // Unstage all nfts
-    const nftIdsToUnstage = sidebarNfts.map(nft => nft.id);
+    const nftIdsToUnstage = nftsToDisplayInSidebar.map(nft => nft.id);
     if (nftIdsToUnstage.length === 0) {
       return;
     }
 
     unstageNfts(nftIdsToUnstage);
-    setNftsIsSelected(sidebarNfts, false);
-  }, [sidebarNfts, setNftsIsSelected, unstageNfts]);
+    setNftsIsSelected(nftsToDisplayInSidebar, false);
+  }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageNfts]);
 
   const handleRefreshWalletClick = useCallback(async () => {
     await refreshOpenseaSync({ skipCache: true });
@@ -62,22 +84,29 @@ function Sidebar() {
           onClick={handleRefreshWalletClick}
         />
       </Header>
-      <Spacer height={12} />
+      <Spacer height={16} />
+      <SearchBar
+        setSearchResults={setSearchResults}
+        setDebouncedSearchQuery={setDebouncedSearchQuery}
+        sidebarNfts={sidebarNftsAsArray}
+      />
+      <Spacer height={24} />
       <StyledSelectButtonWrapper>
         {isAllNftsSelected ? (
           <TextButton
-            text={`Deselect All (${sidebarNfts.length})`}
+            text={`Deselect All (${nftsToDisplayInSidebar.length})`}
             onClick={handleDeselectAllClick}
           />
         ) : (
           <TextButton
-            text={`Select All (${sidebarNfts.length})`}
+            text={`Select All (${nftsToDisplayInSidebar.length})`}
             onClick={handleSelectAllClick}
           />
         )}
       </StyledSelectButtonWrapper>
+      <Spacer height={8} />
       <Selection>
-        {sidebarNfts.map((editModeNft: EditModeNft) => (
+        {nftsToDisplayInSidebar.map((editModeNft: EditModeNft) => (
           <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
         ))}
       </Selection>

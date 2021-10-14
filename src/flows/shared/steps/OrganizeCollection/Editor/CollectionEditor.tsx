@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
+  SidebarNftsState,
   useCollectionEditorActions,
   useSidebarNftsState,
   useStagedNftsState,
@@ -11,8 +12,6 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import { useAuthenticatedUserAddress } from 'hooks/api/users/useUser';
-import useOpenseaSync from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
@@ -28,7 +27,7 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
 }
 
 // converts an object into an array containing all of the object's values
-function convertObjectToArray(object: Record<string, EditModeNft>) {
+export function convertObjectToArray(object: Record<string, EditModeNft>) {
   return Object.keys(object).map(key => object[key]);
 }
 
@@ -48,8 +47,6 @@ function CollectionEditor() {
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
 
-  const address = useAuthenticatedUserAddress();
-  useOpenseaSync({ address, skipCache: false });
   const unassignedNfts = useUnassignedNfts({ skipCache: false });
 
   const { collections } = useAuthenticatedGallery();
@@ -61,7 +58,7 @@ function CollectionEditor() {
     return collectionBeingEdited?.nfts ?? [];
   }, [collections]);
 
-  const sidebarNftsRef = useRef<EditModeNft[]>([]);
+  const sidebarNftsRef = useRef<SidebarNftsState>({});
   useEffect(() => {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
@@ -94,7 +91,7 @@ function CollectionEditor() {
   // refreshes the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
   const refreshSidebarNfts = useCallback(() => {
     // Initialize new sidebar nfts
-    let newSidebarNfts: Record<string, EditModeNft> = {};
+    let newSidebarNfts: SidebarNftsState = {};
     // Add nfts in current collection to sidebar
     for (const nft of editModeNftsInCollection) {
       newSidebarNfts[nft.id] = nft;
@@ -103,12 +100,14 @@ function CollectionEditor() {
     // Add unassigned nfts to sidebar
     newSidebarNfts = { ...newSidebarNfts, ...unassignedEditModeNftObject };
 
-    if (sidebarNftsRef.current.length === 0) {
-      return convertObjectToArray(newSidebarNfts);
+    const oldSidebarNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
+
+    if (oldSidebarNftsAsArray.length === 0) {
+      return newSidebarNfts;
     }
 
     // Iterate through nfts that used to be in the sidebar before refresh, so that we can retain whether each was selected or not
-    for (const oldSidebarNft of sidebarNftsRef.current) {
+    for (const oldSidebarNft of oldSidebarNftsAsArray) {
       const newSidebarNft = newSidebarNfts[oldSidebarNft.id];
 
       if (newSidebarNft) {
@@ -121,7 +120,7 @@ function CollectionEditor() {
       }
     }
 
-    return convertObjectToArray(newSidebarNfts);
+    return newSidebarNfts;
   }, [editModeNftsInCollection, unassignedEditModeNftObject, unstageNfts]);
 
   // Initialize sidebarNfts
@@ -129,13 +128,9 @@ function CollectionEditor() {
     // refresh the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
     const sidebarNftsWithSelection = refreshSidebarNfts();
 
-    // reset the index for sidebar nfts
-    for (const [index, editModeNft] of sidebarNftsWithSelection.entries()) {
-      editModeNft.index = index;
-    }
-
     setSidebarNfts(sidebarNftsWithSelection);
-    const selectedNfts = sidebarNftsWithSelection.filter(sidebarNft => sidebarNft.isSelected);
+    const sidebarNftsWithSelectionAsArray = convertObjectToArray(sidebarNftsWithSelection);
+    const selectedNfts = sidebarNftsWithSelectionAsArray.filter(sidebarNft => sidebarNft.isSelected);
     stageNfts(selectedNfts);
   }, [refreshSidebarNfts, setSidebarNfts, stageNfts]);
 

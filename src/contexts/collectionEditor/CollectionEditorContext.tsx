@@ -11,7 +11,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
 
-export type SidebarNftsState = EditModeNft[];
+export type SidebarNftsState = Record<string, EditModeNft>;
 export type StagedNftsState = EditModeNft[];
 
 export type CollectionEditorState = {
@@ -20,7 +20,7 @@ export type CollectionEditorState = {
 };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  sidebarNfts: [],
+  sidebarNfts: {},
   stagedNfts: [],
 });
 
@@ -35,7 +35,7 @@ export const useSidebarNftsState = (): SidebarNftsState => {
   return context.sidebarNfts;
 };
 
-export const useStagedNftsState = (): SidebarNftsState => {
+export const useStagedNftsState = (): StagedNftsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
     throw new Error(
@@ -47,7 +47,7 @@ export const useStagedNftsState = (): SidebarNftsState => {
 };
 
 type CollectionEditorActions = {
-  setSidebarNfts: (nfts: EditModeNft[]) => void;
+  setSidebarNfts: (nfts: Record<string, EditModeNft>) => void;
   setNftsIsSelected: (nfts: EditModeNft[], isSelected: boolean) => void;
   stageNfts: (nfts: EditModeNft[]) => void;
   unstageNfts: (ids: string[]) => void;
@@ -73,7 +73,7 @@ type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
   const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>(
-    [],
+    {},
   );
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
 
@@ -85,17 +85,17 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     [sidebarNftsState, stagedNftsState],
   );
 
-  const setSidebarNfts = useCallback((nfts: EditModeNft[]) => {
+  const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
     setSidebarNftsState(nfts);
   }, []);
 
   const setNftsIsSelected = useCallback(
     (nfts: EditModeNft[], isSelected: boolean) => {
       setSidebarNftsState(previous => {
-        const next = [...previous];
+        const next = { ...previous };
         for (const nft of nfts) {
-          const selectedNft = next[nft.index];
-          next[nft.index] = { ...selectedNft, isSelected };
+          const selectedNft = next[nft.id];
+          next[nft.id] = { ...selectedNft, isSelected };
         }
 
         return next;
