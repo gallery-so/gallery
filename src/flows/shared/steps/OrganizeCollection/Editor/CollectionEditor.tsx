@@ -47,7 +47,7 @@ function CollectionEditor() {
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
 
-  const unassignedNfts = useUnassignedNfts({ skipCache: false });
+  const unassignedNfts = useUnassignedNfts();
 
   const { collections } = useAuthenticatedGallery();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');

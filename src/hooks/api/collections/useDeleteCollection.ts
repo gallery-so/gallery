@@ -38,7 +38,7 @@ export default function useDeleteCollection() {
         false,
       );
 
-      await refreshUnassignedNfts({ skipCache: true });
+      await refreshUnassignedNfts();
     },
     [userId, deleteCollection, refreshUnassignedNfts],
   );

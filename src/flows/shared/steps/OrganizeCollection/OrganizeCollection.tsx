@@ -57,7 +57,7 @@ function useWizardConfig({ push }: ConfigProps) {
           collectionIdBeingEdited,
           stagedNftIdsRef.current,
         );
-        await refreshUnassignedNfts({ skipCache: false });
+        await refreshUnassignedNfts();
 
         goToOrganizeGalleryStep();
       });
