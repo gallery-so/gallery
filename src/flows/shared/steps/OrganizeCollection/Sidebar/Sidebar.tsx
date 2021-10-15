@@ -72,7 +72,7 @@ function Sidebar() {
   }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageNfts]);
 
   const handleRefreshWalletClick = useCallback(async () => {
-    await refreshOpenseaSync({ skipCache: true });
+    await refreshOpenseaSync();
     await refreshUnassignedNfts();
     void mutateUnassignedNftsCache();
   }, [mutateUnassignedNftsCache, refreshOpenseaSync, refreshUnassignedNfts]);
