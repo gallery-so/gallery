@@ -295,7 +295,6 @@ async function triggerOpenseaSync(fetcher: FetcherType) {
     await fetcher<OpenseaSyncResponse>(
       '/nfts/opensea/get',
       'fetch and sync nfts',
-      { body: {} },
     );
   } catch (error: unknown) {
     // Error silently; TODO: send error analytics
