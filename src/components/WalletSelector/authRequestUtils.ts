@@ -44,8 +44,8 @@ export async function initializeAddWalletPipeline({
 
   const signature = await signMessage(address, nonce, signer, connector);
   const response = await addUserAddress({ signature, address }, fetcher);
-  // TODO enable open sea sync once backend can handle multiple addresses
-  // await triggerOpenseaSync(address, fetcher);
+
+  await triggerOpenseaSync(fetcher);
 
   return { signatureValid: response.signature_valid };
 }
@@ -84,7 +84,7 @@ export default async function initializeAuthPipeline({
 
   // The user's nfts should be fetched here so that they're ready to go by the time
   // they arrive at the Create First Collection step
-  await triggerOpenseaSync(address, fetcher);
+  await triggerOpenseaSync(fetcher);
 
   return { jwt: response.jwt_token, userId: response.user_id };
 }
@@ -285,11 +285,17 @@ async function createUser(
   }
 }
 
-async function triggerOpenseaSync(address: string, fetcher: FetcherType) {
+async function triggerOpenseaSync(fetcher: FetcherType) {
   try {
     await fetcher<OpenseaSyncResponse>(
-      `/nfts/opensea_get?addresses=${address}&skip_cache=true`,
+      '/nfts/opensea/refresh',
+      'refresh and sync nfts',
+      { body: {} },
+    );
+    await fetcher<OpenseaSyncResponse>(
+      '/nfts/opensea/get',
       'fetch and sync nfts',
+      { body: {} },
     );
   } catch (error: unknown) {
     // Error silently; TODO: send error analytics
