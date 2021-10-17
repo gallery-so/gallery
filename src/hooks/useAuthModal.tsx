@@ -4,15 +4,28 @@ import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
+//
 const AuthModal = () => {
   const { hideModal } = useModal();
   const isAuthenticated = useIsAuthenticated();
 
+  
   useEffect(() => {
     if (isAuthenticated) {
       hideModal();
     }
   }, [isAuthenticated, hideModal]);
+
+  // *to do write test
+  useEffect(() => {
+    const close = (e: any) => {
+      if(e.keyCode === 27){
+        hideModal();
+      }
+    }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  },[hideModal])
 
   return (
     <Container>
