@@ -4,7 +4,6 @@ import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 
-//
 const AuthModal = () => {
   const { hideModal } = useModal();
   const isAuthenticated = useIsAuthenticated();
@@ -19,6 +18,7 @@ const AuthModal = () => {
   // *to do write test
   useEffect(() => {
     const close = (e: any) => {
+      // key press can work too but keydown is more consistent through browsers
       if(e.keyCode === 27){
         hideModal();
       }

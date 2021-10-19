@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
@@ -11,7 +11,6 @@ import { navigate } from '@reach/router';
 
 function EditUserInfoModal() {
   const existingUser = useAuthenticatedUser();
-
   const { hideModal } = useModal();
 
   const closeModalAndNavigateToNewUsername = useCallback(
@@ -50,6 +49,17 @@ function EditUserInfoModal() {
     await onEditUser();
     setIsLoading(false);
   }, [onEditUser]);
+
+  useEffect(() => {
+    const close = (e: any) => {
+      // key press can work too but keydown is more consistent through browsers
+      if(e.keyCode === 27){
+        hideModal();
+      }
+    }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  },[hideModal])
 
   return (
     <StyledEditUserInfoModal>
