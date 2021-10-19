@@ -1,4 +1,5 @@
 
+import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -12,18 +13,19 @@ import { useModal } from 'contexts/modal/ModalContext';
 import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMembershipCardContract } from 'hooks/useContract';
 import useWalletModal from 'hooks/useWalletModal';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { MembershipColor, MEMBERSHIP_PROPERTIES_MAP } from './cardProperties';
 
 type Props = {
-  title: string;
-  description: string;
-  quantityLimit?: number;
-  price?: number;
+  membershipColor: MembershipColor;
 };
-// contract address, video url,
 
-function MembershipMintPage({ title, description, quantityLimit, price }: Props) {
+function computeRemainingSupply(usedSupply: number, totalSupply: number) {
+  return Math.max(totalSupply - usedSupply, 0);
+}
+
+function MembershipMintPage({ membershipColor }: Props) {
   const {
     library,
     connector,
@@ -34,32 +36,67 @@ function MembershipMintPage({ title, description, quantityLimit, price }: Props)
 
   const showWalletModal = useWalletModal();
   const { hideModal } = useModal();
+
   const contract = useMembershipCardContract();
 
   const [error, setError] = useState('');
+  const [isMintApproved, setIsMintApproved] = useState(false);
+  const [remainingSupply, setRemainingSupply] = useState(0);
+  const [price, setPrice] = useState(null);
 
-  console.log(contract);
+  const membershipProperties = useMemo(() => MEMBERSHIP_PROPERTIES_MAP[membershipColor], [membershipColor]);
 
   const handleMintButtonClick = useCallback(async () => {
-    // if not connected to wallet connect wallet
-    // interact with contract
-    if (!active) {
-      // activate(injected);
-      showWalletModal();
-    } else if (contract) {
-      const res = await contract.balanceOf(account, '3');
-      console.log(BigInt(res).toString(10));
-      contract.mint(account, '0').catch((error: any) => {
-        setError(`Error while calling contract - "${error.error.message}"`);
+    if (active && contract) {
+      // todo: handle success, show success state to user
+      const mintResult = await contract.mint(account, membershipProperties.tokenId, { value: price }).catch((error: any) => {
+        setError(`Error while calling contract - "${error?.error?.message}"`);
       });
+      // todo: figure out what succesfull mint returns so that we can set some success state
+      console.log(mintResult);
     }
-  }, [account, active, contract, showWalletModal, setError]);
+  }, [account, active, contract, membershipProperties.tokenId, price]);
 
+  const handleConnectWalletButtonClick = useCallback(() => {
+    if (!active) {
+      showWalletModal();
+    }
+  }, [active, showWalletModal]);
+
+  // check with the contract whether the user's address is allowed to call mint, and set the result in local state
+  const getIsMintApproved = useCallback(async (contract: Contract) => {
+    const isMintApprovedResult = await contract.isMintApproved(account, membershipProperties.tokenId);
+    setIsMintApproved(isMintApprovedResult);
+  }, [account, membershipProperties.tokenId]);
+
+  const getRemainingSupply = useCallback(async (contract: Contract) => {
+    const usedSupply = await contract.getPrice(membershipProperties.tokenId);
+    setRemainingSupply(computeRemainingSupply(usedSupply, membershipProperties.totalSupply ?? 0));
+  }, [membershipProperties.totalSupply, membershipProperties.tokenId]);
+
+  const getPrice = useCallback(async (contract: Contract) => {
+    const priceRes = await contract.getPrice(membershipProperties.tokenId);
+    setPrice(priceRes);
+  }, [membershipProperties.tokenId]);
+
+  useEffect(() => {
+    if (contract) {
+      // void getIsMintApproved(contract);
+      void getRemainingSupply(contract);
+      // void getPrice(contract);
+    }
+  }, [getIsMintApproved, getRemainingSupply, contract, getPrice]);
+
+  // auto close the wallet modal once user connects
   useEffect(() => {
     if (active) {
       hideModal();
     }
   }, [active, hideModal]);
+
+  // mint button is enabled if price is 0, or price > 0 and user is approved
+
+  const isMintButtonEnabled = useMemo(() => price === 0 || isMintApproved, [isMintApproved, price]);
 
   return (
     <StyledMintPage centered>
@@ -67,33 +104,34 @@ function MembershipMintPage({ title, description, quantityLimit, price }: Props)
       <StyledContent>
         <StyledMedia>
           <ShimmerProvider>
-            <MembershipVideo/>
+            <MembershipVideo src={membershipProperties.videoUrl}/>
           </ShimmerProvider>
         </StyledMedia>
         <StyledDetailText>
-          <Heading>{title}</Heading>
-          <Spacer height={16} />
-          <BodyRegular>Gallery</BodyRegular>
+          <Heading>{membershipProperties.title}</Heading>
           <Spacer height={16} />
           <StyledNftDescription color={colors.gray50}>
-            {description}
+            {membershipProperties.description}
           </StyledNftDescription>
           <Spacer height={32} />
           {
-            price && <>
+            membershipProperties.price && <>
               <BodyRegular color={colors.gray50}>Price</BodyRegular>
-              <BodyRegular>{price} ETH</BodyRegular>
+              <BodyRegular>{membershipProperties.price} ETH</BodyRegular>
             </>
           }
           <Spacer height={16} />
           {
-            quantityLimit && <>
+            membershipProperties.totalSupply && <>
               <BodyRegular color={colors.gray50}>Available</BodyRegular>
-              <BodyRegular>500/{quantityLimit}</BodyRegular>
+              <BodyRegular>{remainingSupply}/{membershipProperties.totalSupply}</BodyRegular>
             </>
           }
           <Spacer height={32} />
-          <Button text={active ? 'Mint Card' : 'Connect Wallet to Mint Card'} onClick={handleMintButtonClick}/>
+          {active
+            ? <Button text={isMintApproved ? 'Mint Card' : 'Mint Unavailable'} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
+            : <Button text="Connect Wallet" onClick={handleConnectWalletButtonClick}/>
+          }
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
         </StyledDetailText>
@@ -101,10 +139,13 @@ function MembershipMintPage({ title, description, quantityLimit, price }: Props)
     </StyledMintPage>);
 }
 
-function MembershipVideo() {
+type VideoProps = {
+  src: string;
+};
+
+function MembershipVideo({ src }: VideoProps) {
   const setContentIsLoaded = useSetContentIsLoaded();
-  return (<StyledVideo
-    src="https://storage.opensea.io/files/2d7d9d1e1816157c0de82bd21fc6d185.mp4" autoPlay loop playsInline muted onLoadStart={setContentIsLoaded}/>);
+  return (<StyledVideo src={src} autoPlay loop playsInline muted onLoadStart={setContentIsLoaded}/>);
 }
 
 const StyledMintPage = styled(Page)`

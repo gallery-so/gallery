@@ -1,35 +1,42 @@
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import ABI from 'abis/invite-1155.json';
+import { network } from 'connectors/index';
+import { useActiveWeb3React } from './useWeb3';
 
-// RINKEBY address
-const CONTRACT_ADDRESS = '0x7562bbbCD288d23E9aCEA1a2af36Ecf926bdD9e5';
-
-type Props = {
-  address: string;
-};
+export const MEMBERSHIP_CONTRACT_ADDRESS = '0xbfcc93F54aDc944bA4d69C767a7b4edA8B21D884';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
   return library.getSigner(account).connectUnchecked();
 }
 
-function getContract(address: string, ABI: any, library: Web3Provider, account: string) {
-  return new Contract(address, ABI, getSigner(library, account) as any);
+// account is optional
+function getProviderOrSigner(library: Web3Provider, account?: string): JsonRpcSigner | Web3Provider {
+  return account ? getSigner(library, account) : library;
+}
+
+// account is optional
+function getContract(address: string, ABI: any, library: Web3Provider, account?: string) {
+  return new Contract(address, ABI, getProviderOrSigner(library, account) as any);
 }
 
 function useContract(address: string) {
-  const { library, account } = useWeb3React<Web3Provider>();
+  const { library, account, activate } = useActiveWeb3React();
+
+  if (!library) {
+    // activate provider without an address to be able to read from contracts
+    void activate(network);
+  }
 
   return useMemo(() => {
-    if (!address || !library || !account) {
+    if (!address || !library) {
       return null;
     }
 
     try {
-      return getContract(address, ABI, library, account);
+      return getContract(address, ABI, library, account ? account : undefined);
     } catch {
       console.error('Error getting contract');
       return null;
@@ -38,7 +45,6 @@ function useContract(address: string) {
 }
 
 export function useMembershipCardContract() {
-  return useContract(CONTRACT_ADDRESS);
+  return useContract(MEMBERSHIP_CONTRACT_ADDRESS);
 }
 
-// export default useContract;
