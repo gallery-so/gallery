@@ -70,7 +70,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   }, [account, membershipProperties.tokenId]);
 
   const getRemainingSupply = useCallback(async (contract: Contract) => {
-    const usedSupply = await contract.getPrice(membershipProperties.tokenId);
+    const usedSupply = await contract.getUsedSupply(membershipProperties.tokenId);
     setRemainingSupply(computeRemainingSupply(usedSupply, membershipProperties.totalSupply ?? 0));
   }, [membershipProperties.totalSupply, membershipProperties.tokenId]);
 
