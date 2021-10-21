@@ -28,7 +28,7 @@ const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
 
 export const network = new NetworkConnector({
   urls: NETWORK_URLS,
-  defaultChainId: 4,
+  defaultChainId: Number(process.env.REACT_APP_NETWORK_CONNECTOR_CHAIN_ID ?? 1),
 });
 
 export const injected = new InjectedConnector({

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
@@ -134,21 +134,6 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     setDetectedError(undefined);
     deactivate();
   }, [deactivate]);
-
-  /**
-   * Ensures screen does not retain an error message when it remounts. Since Web3
-   * library errors are stored in the Web3Provider, they remain cached and continue
-   * to stick around if the user navigates away and comes back (or closes a modal
-   * and re-opens it).
-   */
-  // useEffect(() =>
-  //   () => {
-  //     // This is the only way to clear the error from the provider
-  //     // manually, but the library doesn't give us the option to pass in a non-error
-  //     // @ts-expect-error: see comment
-  //     setError(undefined);
-  //   }
-  // , [setError]);
 
   if (displayedError) {
     return (

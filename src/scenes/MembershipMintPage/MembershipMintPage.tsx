@@ -102,7 +102,6 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   return (
     <StyledMintPage centered>
-      <div>{account}</div>
       <StyledContent>
         <StyledMedia>
           <ShimmerProvider>
