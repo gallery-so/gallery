@@ -30,15 +30,15 @@ export const MEMBERSHIP_PROPERTIES_MAP: Record<MembershipColor, MembershipProper
   [MembershipColor.SILVER]: {
     title: 'Silver Member Card',
     description: DESCRIPTION_SILVER,
-    tokenId: 7,
+    tokenId: 6,
     totalSupply: 500,
-    price: 0.2,
+    price: 0.1,
     videoUrl: 'https://storage.opensea.io/files/e4a966f87311b7f4aa782cec912502d6.mp4',
   },
   [MembershipColor.WHITE]: {
-    title: 'White Member Card',
+    title: 'Member Card',
     description: DESCRIPTION_WHITE,
-    tokenId: 6,
+    tokenId: 7,
     videoUrl: 'https://storage.opensea.io/files/2a834b456a6d3e2a80374d143c764086.mp4',
   },
 };

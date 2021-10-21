@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
@@ -75,10 +75,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   const {
     activate,
     deactivate,
-    // Error returned from web3 provider
-    active,
     error,
-    setError,
   } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();

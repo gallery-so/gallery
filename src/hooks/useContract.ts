@@ -5,7 +5,7 @@ import ABI from 'abis/invite-1155.json';
 import { network } from 'connectors/index';
 import { useActiveWeb3React } from './useWeb3';
 
-export const MEMBERSHIP_CONTRACT_ADDRESS = '0xbfcc93F54aDc944bA4d69C767a7b4edA8B21D884';
+export const MEMBERSHIP_CONTRACT_ADDRESS = '0xCF9c474c132d7dc72830e3c79868cb6714AB626a';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {

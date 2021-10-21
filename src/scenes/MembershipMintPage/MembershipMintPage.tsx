@@ -27,11 +27,8 @@ function computeRemainingSupply(usedSupply: number, totalSupply: number) {
 
 function MembershipMintPage({ membershipColor }: Props) {
   const {
-    library,
-    connector,
     active,
     account,
-    activate,
   } = useWeb3React<Web3Provider>();
 
   const showWalletModal = useWalletModal();
@@ -40,7 +37,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   const contract = useMembershipCardContract();
 
   const [error, setError] = useState('');
-  const [isMintApproved, setIsMintApproved] = useState(false);
+  const [canMintToken, setCanMintToken] = useState(false);
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(null);
 
@@ -48,10 +45,15 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   const handleMintButtonClick = useCallback(async () => {
     if (active && contract) {
-      // todo: handle success, show success state to user
+      // Submit mint transaction
       const mintResult = await contract.mint(account, membershipProperties.tokenId, { value: price }).catch((error: any) => {
         setError(`Error while calling contract - "${error?.error?.message}"`);
       });
+
+      // TODO: call wait() and show success state after tx is confirmed
+      // if mintResult && mintResult.wait) {
+      //   await mintResult.wait();
+      // }
       // todo: figure out what succesfull mint returns so that we can set some success state
       console.log(mintResult);
     }
@@ -63,15 +65,17 @@ function MembershipMintPage({ membershipColor }: Props) {
     }
   }, [active, showWalletModal]);
 
-  // check with the contract whether the user's address is allowed to call mint, and set the result in local state
-  const getIsMintApproved = useCallback(async (contract: Contract) => {
-    const isMintApprovedResult = await contract.isMintApproved(account, membershipProperties.tokenId);
-    setIsMintApproved(isMintApprovedResult);
+  // check the contract whether the user's address is allowed to call mint, and set the result in local state
+  const getCanMintToken = useCallback(async (contract: Contract) => {
+    if (account) {
+      const canMintTokenResult = await contract.canMintToken(account, membershipProperties.tokenId);
+      setCanMintToken(canMintTokenResult);
+    }
   }, [account, membershipProperties.tokenId]);
 
   const getRemainingSupply = useCallback(async (contract: Contract) => {
     const usedSupply = await contract.getUsedSupply(membershipProperties.tokenId);
-    setRemainingSupply(computeRemainingSupply(usedSupply, membershipProperties.totalSupply ?? 0));
+    setRemainingSupply(computeRemainingSupply(Number(usedSupply), membershipProperties.totalSupply ?? 0));
   }, [membershipProperties.totalSupply, membershipProperties.tokenId]);
 
   const getPrice = useCallback(async (contract: Contract) => {
@@ -81,11 +85,11 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   useEffect(() => {
     if (contract) {
-      // void getIsMintApproved(contract);
+      void getCanMintToken(contract);
       void getRemainingSupply(contract);
-      // void getPrice(contract);
+      void getPrice(contract);
     }
-  }, [getIsMintApproved, getRemainingSupply, contract, getPrice]);
+  }, [getCanMintToken, getRemainingSupply, contract, getPrice]);
 
   // auto close the wallet modal once user connects
   useEffect(() => {
@@ -94,9 +98,7 @@ function MembershipMintPage({ membershipColor }: Props) {
     }
   }, [active, hideModal]);
 
-  // mint button is enabled if price is 0, or price > 0 and user is approved
-
-  const isMintButtonEnabled = useMemo(() => price === 0 || isMintApproved, [isMintApproved, price]);
+  const isMintButtonEnabled = useMemo(() => Number(price) > 0 || canMintToken, [canMintToken, price]);
 
   return (
     <StyledMintPage centered>
@@ -115,9 +117,9 @@ function MembershipMintPage({ membershipColor }: Props) {
           </StyledNftDescription>
           <Spacer height={32} />
           {
-            membershipProperties.price && <>
+            Number(price) > 0 && <>
               <BodyRegular color={colors.gray50}>Price</BodyRegular>
-              <BodyRegular>{membershipProperties.price} ETH</BodyRegular>
+              <BodyRegular>{Number(price)} ETH</BodyRegular>
             </>
           }
           <Spacer height={16} />
@@ -129,7 +131,7 @@ function MembershipMintPage({ membershipColor }: Props) {
           }
           <Spacer height={32} />
           {active
-            ? <Button text={isMintApproved ? 'Mint Card' : 'Mint Unavailable'} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
+            ? <Button text={isMintButtonEnabled ? 'Mint Card' : 'Mint Unavailable'} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
             : <Button text="Connect Wallet" onClick={handleConnectWalletButtonClick}/>
           }
           {error && <>
