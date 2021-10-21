@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
-import { useCallback } from 'react';
-import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import NftPreviewLabel from './NftPreviewLabel';
@@ -16,13 +14,12 @@ type Props = {
 };
 
 function NftPreview({ nft, collectionId, gap }: Props) {
-  const handleNftClick = useCallback(() => {
-    void navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
-  }, [collectionId, nft.id]);
+  // utilizing the a tag will create a more authentic, consistent experience when it comes to links
+  // can also use Link from reach router for continuity
 
   return (
     <StyledNftPreview key={nft.id} gap={gap}>
-      <StyledLinkWrapper onClick={handleNftClick}>
+      <StyledLinkWrapper href={`${window.location.pathname}/${collectionId}/${nft.id}`}>
         <ShimmerProvider>
           <NftPreviewAsset nft={nft}/>
           <StyledNftFooter>

@@ -1,14 +1,13 @@
-import { useCallback } from 'react';
-import { navigate, RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Link } from '@reach/router';
 import styled from 'styled-components';
+import transitions from 'components/core/transitions';
+import colors from 'components/core/colors';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import ActionText from 'components/core/ActionText/ActionText';
 
 import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
@@ -21,25 +20,26 @@ type Props = {
 function NftDetailPage({
   nftId,
 }: RouteComponentProps<Props>) {
-  const { getVisitedPagesLength } = useGalleryNavigationActions();
 
-  const handleBackClick = useCallback(() => {
-    const visitedPagesLength = getVisitedPagesLength();
 
-    // if the user arrived on the page via direct link, send them to the
-    // owner's profile page (since there is no "previous page")
-    if (visitedPagesLength === 1) {
-      // NOTE: this scheme will have to change if we no longer have the
-      // username included in the URL
-      const username = window.location.pathname.split('/')[1];
-      void navigate(`/${username}`);
-      return;
-    }
+  // const handleBackClick = useCallback(() => {
+  //   const visitedPagesLength = getVisitedPagesLength();
 
-    // otherwise, simply send them back to where they came from. this ensures scroll
-    // position is maintained when going back (see: GalleryNavigationContext.tsx)
-    void navigate(-1);
-  }, [getVisitedPagesLength]);
+  //   // if the user arrived on the page via direct link, send them to the
+  //   // owner's profile page (since there is no "previous page")
+  //   if (visitedPagesLength === 1) {
+  //     // NOTE: this scheme will have to change if we no longer have the
+  //     // username included in the URL
+  //     const username = window.location.pathname.split('/')[1];
+  //     void navigate(`/${username}`);
+  //     return false;
+  //   }
+
+  //   // otherwise, simply send them back to where they came from. this ensures scroll
+  //   // position is maintained when going back (see: GalleryNavigationContext.tsx)
+  //   void navigate(-1);
+  //   return false;
+  // }, [getVisitedPagesLength]);
 
   const nft = useNft({ id: nftId ?? '' });
 
@@ -50,7 +50,10 @@ function NftDetailPage({
   return (
     <StyledNftDetailPage centered>
       <StyledBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
+        {/* Can either use an a tag or Link for reach router's continuity sake 
+        I didn't ignore the second part of handleBackClick logic - is there an actual use case for clicking back and routing to a non-owner's gallery?
+        */}
+        <StyledBackButton to={`/${window.location.pathname.split('/')[1]}`}>← Back to gallery</StyledBackButton>
       </StyledBackLink>
       <StyledBody>
         {/* {prevNftId && (
@@ -75,6 +78,28 @@ function NftDetailPage({
     </StyledNftDetailPage>
   );
 }
+
+type BackButtonProps = {
+  underlined?: boolean;
+  focused?: boolean;
+};
+
+const StyledBackButton = styled(Link)<BackButtonProps>`
+text-transform: uppercase;
+transition: color ${transitions.cubic};
+
+cursor: pointer;
+text-decoration: none;
+
+color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
+&:hover {
+  color: ${colors.black};
+}
+font-family: 'Helvetica Neue';
+font-size: 12px;
+line-height: 16px;
+letter-spacing: 0px;
+`;
 
 const StyledBody = styled.div`
   display: flex;
