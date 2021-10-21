@@ -15,7 +15,7 @@ function GlobalFooter() {
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink
-            href="https://discord.gg/r4AWmRcMsn"
+            href="https://discord.gg/BM4qhEy3Qj"
             target="_blank"
             rel="noreferrer"
           >
