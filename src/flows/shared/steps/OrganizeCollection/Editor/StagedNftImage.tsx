@@ -16,6 +16,9 @@ function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
 
   const isVideo = getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO;
 
+  // TODO:
+  // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
+  // 2) OR simply use custom indexer when that's ready
   return isVideo ? <VideoContainer ref={setNodeRef} {...props}>
     <StyledGridVideo src={srcUrl} />
     <StyledNftPreviewLabel nft={nft} />
