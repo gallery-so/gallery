@@ -36,7 +36,7 @@ export default function useUserInfoForm({
   const [generalError, setGeneralError] = useState('');
   const updateUser = useUpdateUser();
 
-  const handleCreateUser = useCallback(async () => {
+  const handleCreateOrEditUser = useCallback(async () => {
     setGeneralError('');
 
     // -------------- client-side checks --------------
@@ -88,13 +88,13 @@ export default function useUserInfoForm({
       bio,
       onBioChange: setBio,
       generalError,
-      onEditUser: handleCreateUser,
+      onEditUser: handleCreateOrEditUser,
     }),
     [
       bio,
       generalError,
       handleClearUsernameError,
-      handleCreateUser,
+      handleCreateOrEditUser,
       username,
       usernameError,
     ],
