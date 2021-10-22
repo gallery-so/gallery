@@ -26,7 +26,7 @@ export default function useCreateCollection() {
         nfts: nftIds,
       });
 
-      void mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
+      await mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
 
       return result;
     },

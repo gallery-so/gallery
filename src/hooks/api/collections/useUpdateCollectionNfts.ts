@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
+import { mutate } from 'swr';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
+import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import {
   UpdateCollectionNftsRequest,
   UpdateCollectionNftsResponse,
@@ -23,6 +25,8 @@ export default function useUpdateCollectionNfts() {
         id: collectionId,
         nfts,
       });
+
+      await mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
 
       return result;
     },
