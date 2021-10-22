@@ -21,7 +21,9 @@ function StagedNftImageDragging({ nft }: Props) {
     ? <VideoContainer isMouseUp={isMouseUp}>
       <StyledDraggingVideo src={srcUrl} />
     </VideoContainer>
-    : <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />;
+    : <ImageContainer>
+      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />
+    </ImageContainer>;
 }
 
 const grow = keyframes`
@@ -44,12 +46,20 @@ const StyledDraggingVideo = styled.video`
   width: 100%;
 `;
 
+const ImageContainer = styled.div`
+  background: white;
+  height: 284px;
+  width: 284px;
+`;
+
 const StyledDraggingImage = styled.div<{
   srcUrl: string;
   isMouseUp: boolean;
 }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 
   box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
   height: 284px;

@@ -40,7 +40,9 @@ const StyledGridVideo = styled.video`
 
 const StyledGridImage = styled.div<{ srcUrl: string }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   // TODO handle non square images
   height: 280px;
   width: 280px;
