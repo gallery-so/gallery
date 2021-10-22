@@ -4,6 +4,9 @@ import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
+import WhiteMembershipMintPage from 'scenes/MembershipMintPage/WhiteMembershipMintPage';
+import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
+import { MEMBERSHIP_PAGE_ENABLED } from 'utils/featureFlag';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
 import Password from '../Password/Password';
@@ -49,6 +52,19 @@ export default function Routes() {
                 component={EditGalleryFlow}
                 freshLayout
               />
+              {MEMBERSHIP_PAGE_ENABLED
+                && <><GalleryRoute
+                  path="/membership/silver"
+                  component={SilverMembershipMintPage}
+                  navbar={false}
+                />
+                <GalleryRoute
+                  path="/membership/white"
+                  component={WhiteMembershipMintPage}
+                  navbar={false}
+                />
+                </>
+              }
               <GalleryRoute
                 path="/nuke"
                 component={Nuke}

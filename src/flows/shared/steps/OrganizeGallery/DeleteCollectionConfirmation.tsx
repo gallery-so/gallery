@@ -67,6 +67,7 @@ const StyledCancelButton = styled(Button)`
   border: none;
   width: 125px;
   margin-right: 8px;
+  color: ${colors.gray50}
 `;
 
 const StyledButton = styled(Button)`

@@ -2,19 +2,19 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
-import { ADD_WALLET_TO_USER } from 'types/Wallet';
+import { CONNECT_WALLET_ONLY } from 'types/Wallet';
 
-const AddWalletModal = () => (
+const WalletModal = () => (
   <Container>
-    <WalletSelector connectionMode={ADD_WALLET_TO_USER}/>
+    <WalletSelector connectionMode={CONNECT_WALLET_ONLY}/>
   </Container>
 );
 
-export default function useAddWalletModal() {
+export default function useWalletModal() {
   const { showModal } = useModal();
 
   return useCallback(() => {
-    showModal(<AddWalletModal />);
+    showModal(<WalletModal />);
   }, [showModal]);
 }
 
@@ -23,5 +23,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 303px;
+  // the height of the inner content with all wallet options listed.
+  // ensures the height of the modal doesn't shift
+  min-height: 300px;
 `;

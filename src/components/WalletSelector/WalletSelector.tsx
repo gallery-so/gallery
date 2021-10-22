@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers';
 import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
@@ -8,8 +7,9 @@ import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET, AUTH } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { convertWalletName } from 'utils/wallet';
+import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
@@ -61,7 +61,11 @@ function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
-type ConnectionMode = typeof AUTH | typeof ADD_WALLET;
+// AUTH: authenticate with wallet (sign in)
+// ADD_WALLET_TO_USER: add wallet to user
+// CONNECT_WALLET: simple connect (no sign in) used to allow non-users to mint
+
+type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CONNECT_WALLET_ONLY;
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -71,9 +75,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   const {
     activate,
     deactivate,
-    // Error returned from web3 provider
     error,
-    setError,
   } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
@@ -133,21 +135,6 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     deactivate();
   }, [deactivate]);
 
-  /**
-   * Ensures screen does not retain an error message when it remounts. Since Web3
-   * library errors are stored in the Web3Provider, they remain cached and continue
-   * to stick around if the user navigates away and comes back (or closes a modal
-   * and re-opens it).
-   */
-  useEffect(() =>
-    () => {
-      // This is the only way to clear the error from the provider
-      // manually, but the library doesn't give us the option to pass in a non-error
-      // @ts-expect-error: see comment
-      setError(undefined);
-    }
-  , [setError]);
-
   if (displayedError) {
     return (
       <StyledWalletSelector>
@@ -160,7 +147,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   }
 
   if (isPending && pendingWallet) {
-    if (connectionMode === ADD_WALLET) {
+    if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
           <AddWalletPending
@@ -172,15 +159,17 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       );
     }
 
-    return (
-      <StyledWalletSelector>
-        <AuthenticateWalletPending
-          setDetectedError={setDetectedError}
-          pendingWallet={pendingWallet}
-          userFriendlyWalletName={userFriendlyWalletName}
-        />
-      </StyledWalletSelector>
-    );
+    if (connectionMode === AUTH) {
+      return (
+        <StyledWalletSelector>
+          <AuthenticateWalletPending
+            setDetectedError={setDetectedError}
+            pendingWallet={pendingWallet}
+            userFriendlyWalletName={userFriendlyWalletName}
+          />
+        </StyledWalletSelector>
+      );
+    }
   }
 
   return (
@@ -195,7 +184,6 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           connector={walletConnectorMap[walletName]}
           setToPendingState={setToPendingState}
           isPending={isPending}
-          deactivate={deactivate}
         />
       ))
       }
