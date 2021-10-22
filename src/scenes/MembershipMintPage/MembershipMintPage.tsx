@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
+import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -40,6 +41,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   const [canMintToken, setCanMintToken] = useState(false);
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(null);
+  const [transactionHash, setTransactionHash] = useState('');
 
   const membershipProperties = useMemo(() => MEMBERSHIP_PROPERTIES_MAP[membershipColor], [membershipColor]);
 
@@ -49,6 +51,10 @@ function MembershipMintPage({ membershipColor }: Props) {
       const mintResult = await contract.mint(account, membershipProperties.tokenId, { value: price }).catch((error: any) => {
         setError(`Error while calling contract - "${error?.error?.message}"`);
       });
+
+      if (mintResult.hash) {
+        setTransactionHash(mintResult.hash);
+      }
 
       // TODO: call wait() and show success state after tx is confirmed
       // if mintResult && mintResult.wait) {
@@ -79,8 +85,8 @@ function MembershipMintPage({ membershipColor }: Props) {
   }, [membershipProperties.totalSupply, membershipProperties.tokenId]);
 
   const getPrice = useCallback(async (contract: Contract) => {
-    const priceRes = await contract.getPrice(membershipProperties.tokenId);
-    setPrice(priceRes);
+    const priceResponse = await contract.getPrice(membershipProperties.tokenId);
+    setPrice(priceResponse);
   }, [membershipProperties.tokenId]);
 
   useEffect(() => {
@@ -132,6 +138,16 @@ function MembershipMintPage({ membershipColor }: Props) {
           {active
             ? <Button text={isMintButtonEnabled ? 'Mint Card' : 'Mint Unavailable'} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
             : <Button text="Connect Wallet" onClick={handleConnectWalletButtonClick}/>
+          }
+          {transactionHash
+          && <>
+            <Spacer height={16}/>
+            <StyledTransactionMessage>
+              <BodyRegular>Transaction submitted. </BodyRegular>
+              <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`} >
+                <BodyRegular>View on Etherscan</BodyRegular>
+              </GalleryLink>
+            </StyledTransactionMessage></>
           }
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
@@ -199,6 +215,11 @@ const StyledVideo = styled.video`
     height: 600px;
     width: 600px;
   }
+`;
+
+const StyledTransactionMessage = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default MembershipMintPage;
