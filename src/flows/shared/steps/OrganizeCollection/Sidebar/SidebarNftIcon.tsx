@@ -52,11 +52,11 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
     <StyledSidebarNftIcon>
       {useVideoAsImage
         ? <StyledVideo isSelected={isSelected}
-          src={editModeNft.nft.image_url}/>
+            src={editModeNft.nft.image_url}/>
         : <StyledImage
-          isSelected={isSelected}
-          src={editModeNft.nft.image_thumbnail_url}
-          alt="nft"
+            isSelected={isSelected}
+            src={editModeNft.nft.image_thumbnail_url}
+            alt="nft"
         />
       }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
@@ -70,6 +70,10 @@ export const StyledSidebarNftIcon = styled.div`
   height: 64px;
   overflow: hidden;
   margin: 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 type SelectedProps = {
@@ -87,17 +91,16 @@ const StyledOutline = styled.div<SelectedProps>`
 `;
 
 const StyledImage = styled.img<SelectedProps>`
-  width: 100%;
-
+  max-height: 100%;
+  max-width: 100%;
   transition: opacity ${transitions.cubic};
-
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 `;
 
 const StyledVideo = styled.video<SelectedProps>`
-width: 100%;
-transition: opacity ${transitions.cubic};
-
+  max-height: 100%;
+  max-width: 100%;
+  transition: opacity ${transitions.cubic};
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 `;
 

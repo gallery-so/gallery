@@ -8,6 +8,7 @@ type Props = {
   onClick?: () => void;
   underlineOnHover?: boolean;
   disableTextTransform?: boolean;
+  disabled?: boolean;
 };
 
 function TextButton({
@@ -16,14 +17,19 @@ function TextButton({
   onClick,
   underlineOnHover = false,
   disableTextTransform = false,
+  disabled,
 }: Props) {
   return (
     <StyledButton
       className={className}
       onClick={onClick}
       underlineOnHover={underlineOnHover}
+      disabled={disabled}
     >
-      <StyledButtonText disableTextTransform={disableTextTransform}>
+      <StyledButtonText
+        disableTextTransform={disableTextTransform}
+        disabled={disabled}
+      >
         {text}
       </StyledButtonText>
     </StyledButton>
@@ -37,12 +43,14 @@ Pick<Props, 'disableTextTransform'>
     disableTextTransform ? 'none' : undefined};
 `;
 
-const StyledButton = styled.button<Pick<Props, 'underlineOnHover'>>`
+const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>`
   padding: 0;
   border-style: none;
   cursor: pointer;
   background: none;
   width: max-content;
+
+  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
 
   &:hover ${StyledButtonText} {
     color: ${colors.black};

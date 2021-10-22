@@ -6,6 +6,7 @@ import transitions from '../transitions';
 type Props = {
   underlined?: boolean;
   focused?: boolean;
+  disabled?: boolean;
 };
 
 const ActionText = styled(ButtonText)<Props>`
@@ -13,6 +14,8 @@ const ActionText = styled(ButtonText)<Props>`
   transition: color ${transitions.cubic};
 
   cursor: pointer;
+
+  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
 
   color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
   text-decoration: ${({ underlined }) =>
