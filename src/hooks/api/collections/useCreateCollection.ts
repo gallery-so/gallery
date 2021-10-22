@@ -3,6 +3,7 @@ import { mutate } from 'swr';
 import usePost from '../_rest/usePost';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { useAuthenticatedUser } from '../users/useUser';
+import { getUnassignedNftsCacheKey } from '../nfts/useUnassignedNfts';
 import { CreateCollectionRequest, CreateCollectionResponse } from './types';
 
 export default function useCreateCollection() {
@@ -27,6 +28,12 @@ export default function useCreateCollection() {
       });
 
       await mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
+
+      // waiting to invalidate the cache so that the user doesn't see the sidebar get cleared out
+      // on invalidation
+      setTimeout(() => {
+        void mutate(getUnassignedNftsCacheKey({ userId: authenticatedUser.id }), null, false);
+      }, 1000);
 
       return result;
     },
