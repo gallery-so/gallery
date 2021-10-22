@@ -19,7 +19,8 @@ function GlobalFooter() {
             target="_blank"
             rel="noreferrer"
           >
-            <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>         </StyledLink>
+            <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>
+          </StyledLink>
           <Spacer width={8}></Spacer>
           <StyledLink
             href="https://discord.gg/BM4qhEy3Qj"
