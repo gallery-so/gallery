@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
-import { getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { NftMediaType } from 'components/core/enums';
 import { EditModeNft } from '../types';
 
 type Props = {
@@ -13,16 +14,25 @@ function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
   const nft = editModeNft.nft;
   const srcUrl = getResizedNftImageUrlWithFallback(nft);
 
-  return (
-    <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} {...props}>
-      <StyledNftPreviewLabel nft={nft} />
-    </StyledGridImage>
-  );
+  const isVideo = getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO;
+
+  return isVideo ? <VideoContainer ref={setNodeRef} {...props}>
+    <StyledGridVideo src={srcUrl} />
+    <StyledNftPreviewLabel nft={nft} />
+  </VideoContainer> : <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} {...props}>
+    <StyledNftPreviewLabel nft={nft} />
+  </StyledGridImage>;
 }
 
-const StyledNftPreviewLabel = styled(NftPreviewLabel)`
-  opacity: 0;
-  transition: opacity ${transitions.cubic};
+const VideoContainer = styled.div`
+  // TODO handle non square videos
+  height: 280px;
+  width: 280px;
+  position: relative;
+`;
+
+const StyledGridVideo = styled.video`
+  width: 100%;
 `;
 
 const StyledGridImage = styled.div<{ srcUrl: string }>`
@@ -32,6 +42,11 @@ const StyledGridImage = styled.div<{ srcUrl: string }>`
   height: 280px;
   width: 280px;
   position: relative;
+`;
+
+const StyledNftPreviewLabel = styled(NftPreviewLabel)`
+  opacity: 0;
+  transition: opacity ${transitions.cubic};
 `;
 
 // Potentially useful links:
