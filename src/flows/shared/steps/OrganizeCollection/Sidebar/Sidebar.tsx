@@ -12,7 +12,7 @@ import {
 import { useMutateUnassignedNftsCache, useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
-import { convertObjectToArray } from '../Editor/CollectionEditor';
+import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 

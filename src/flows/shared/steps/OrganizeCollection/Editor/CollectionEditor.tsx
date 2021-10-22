@@ -15,6 +15,7 @@ import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
+import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
@@ -24,11 +25,6 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
     id: nft.id,
     isSelected,
   }));
-}
-
-// converts an object into an array containing all of the object's values
-export function convertObjectToArray(object: Record<string, EditModeNft>) {
-  return Object.keys(object).map(key => object[key]);
 }
 
 function CollectionEditor() {
