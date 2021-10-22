@@ -5,8 +5,9 @@ import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
-import { getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { Collection } from 'types/Collection';
+import { NftMediaType } from 'components/core/enums';
 import { ReactComponent as Settings } from './collection-settings.svg';
 
 type Props = {
@@ -61,7 +62,16 @@ function CollectionRow({ collection, className }: Props) {
             nft,
             BIG_NFT_SIZE_PX,
           );
-          return <BigNftContainer><BigNftPreview src={imageUrl} /></BigNftContainer>;
+          const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+          return (
+            <BigNftContainer>
+              {
+                isVideo
+                  ? <BigNftVideoPreview src={imageUrl} />
+                  : <BigNftImagePreview src={imageUrl} />
+              }
+            </BigNftContainer>
+          );
         })}
         {remainingNfts.length > 0 ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
@@ -110,7 +120,12 @@ const BigNftContainer = styled.div`
   height: ${BIG_NFT_SIZE_PX}px;
 `;
 
-const BigNftPreview = styled.img`
+const BigNftVideoPreview = styled.video`
+  max-width: 100%;
+  max-height: 100%;
+`;
+
+const BigNftImagePreview = styled.img`
   max-width: 100%;
   max-height: 100%;
 `;
@@ -155,18 +170,40 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
                 nft,
                 SMOL_NFT_SIZE_PX,
               );
-              return <SmolNftContainer><SmolNftPreview src={imageUrl} /></SmolNftContainer>;
+              const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+              return (
+                <SmolNftContainer>
+                  {
+                    isVideo
+                      ? <SmolNftVideoPreview src={imageUrl} />
+                      : <SmolNftImagePreview src={imageUrl} />
+                  }
+                </SmolNftContainer>
+              );
             })}
             <Spacer width={2} />
             <BodyRegular>+{overflowCountText} more</BodyRegular>
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map(nft => {
+            if (!nft) {
+              return null;
+            }
+
             const imageUrl = getResizedNftImageUrlWithFallback(
               nft,
               SMOL_NFT_SIZE_PX,
             );
-            return nft ? <SmolNftContainer><SmolNftPreview src={imageUrl} /></SmolNftContainer> : null;
+            const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+            return (
+              <SmolNftContainer>
+                {
+                  isVideo
+                    ? <SmolNftVideoPreview src={imageUrl} />
+                    : <SmolNftImagePreview src={imageUrl} />
+                }
+              </SmolNftContainer>
+            );
           })
         )}
       </Content>
@@ -193,7 +230,12 @@ const SmolNftContainer = styled.div`
   height: ${SMOL_NFT_SIZE_PX}px;
 `;
 
-const SmolNftPreview = styled.img`
+const SmolNftVideoPreview = styled.video`
+  max-width: 100%;
+  max-height: 100%;
+`;
+
+const SmolNftImagePreview = styled.img`
   max-width: 100%;
   max-height: 100%;
 `;
