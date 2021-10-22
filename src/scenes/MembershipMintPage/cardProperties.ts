@@ -21,7 +21,6 @@ type MembershipProperties = {
   title: string;
   description: string;
   totalSupply?: number;
-  price?: number;
   videoUrl: string;
   tokenId: number;
 };
@@ -32,7 +31,6 @@ export const MEMBERSHIP_PROPERTIES_MAP: Record<MembershipColor, MembershipProper
     description: DESCRIPTION_SILVER,
     tokenId: 6,
     totalSupply: 500,
-    price: 0.1,
     videoUrl: 'https://storage.opensea.io/files/e4a966f87311b7f4aa782cec912502d6.mp4',
   },
   [MembershipColor.WHITE]: {

@@ -103,11 +103,11 @@ function MembershipMintPage({ membershipColor }: Props) {
   return (
     <StyledMintPage centered>
       <StyledContent>
-        <StyledMedia>
+        <div>
           <ShimmerProvider>
             <MembershipVideo src={membershipProperties.videoUrl}/>
           </ShimmerProvider>
-        </StyledMedia>
+        </div>
         <StyledDetailText>
           <Heading>{membershipProperties.title}</Heading>
           <Spacer height={16} />
@@ -165,8 +165,6 @@ const StyledMintPage = styled(Page)`
   @media only screen and ${breakpoints.desktop} {
     margin: 0px;
   }
-`;
-const StyledMedia = styled.div`
 `;
 
 const StyledContent = styled.div`
