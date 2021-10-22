@@ -61,7 +61,7 @@ function CollectionRow({ collection, className }: Props) {
             nft,
             BIG_NFT_SIZE_PX,
           );
-          return <BigNftPreview src={imageUrl} />;
+          return <BigNftContainer><BigNftPreview src={imageUrl} /></BigNftContainer>;
         })}
         {remainingNfts.length > 0 ? <CompactNfts nfts={remainingNfts} /> : null}
       </Body>
@@ -101,9 +101,18 @@ const StyledHiddenLabel = styled(BodyRegular)`
   text-align: right;
 `;
 
-const BigNftPreview = styled.img`
+const BigNftContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: ${BIG_NFT_SIZE_PX}px;
   height: ${BIG_NFT_SIZE_PX}px;
+`;
+
+const BigNftPreview = styled.img`
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const Body = styled.div`
@@ -115,7 +124,7 @@ const Body = styled.div`
   // Temporary solution until Safari support
   width: calc(100% + 24px);
   margin-left: -12px;
-  ${BigNftPreview} {
+  ${BigNftContainer} {
     margin: 12px;
   }
 `;
@@ -146,7 +155,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
                 nft,
                 SMOL_NFT_SIZE_PX,
               );
-              return <SmolNftPreview src={imageUrl} />;
+              return <SmolNftContainer><SmolNftPreview src={imageUrl} /></SmolNftContainer>;
             })}
             <Spacer width={2} />
             <BodyRegular>+{overflowCountText} more</BodyRegular>
@@ -157,7 +166,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
               nft,
               SMOL_NFT_SIZE_PX,
             );
-            return nft ? <SmolNftPreview src={imageUrl} /> : null;
+            return nft ? <SmolNftContainer><SmolNftPreview src={imageUrl} /></SmolNftContainer> : null;
           })
         )}
       </Content>
@@ -175,9 +184,18 @@ const StyledCompactNfts = styled.div`
   align-items: center;
 `;
 
-const SmolNftPreview = styled.img`
+const SmolNftContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: ${SMOL_NFT_SIZE_PX}px;
   height: ${SMOL_NFT_SIZE_PX}px;
+`;
+
+const SmolNftPreview = styled.img`
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const Content = styled.div`
@@ -190,7 +208,7 @@ const Content = styled.div`
 
   // Temporary solution until Safari support
   margin-left: -2px;
-  ${SmolNftPreview} {
+  ${SmolNftContainer} {
     margin: 2px;
   }
 `;
