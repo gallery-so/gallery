@@ -15,6 +15,13 @@ function GlobalFooter() {
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink
+            href="https://opensea.io/collection/gallery-membership-cards"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>         </StyledLink>
+          <Spacer width={8}></Spacer>
+          <StyledLink
             href="https://discord.gg/BM4qhEy3Qj"
             target="_blank"
             rel="noreferrer"
