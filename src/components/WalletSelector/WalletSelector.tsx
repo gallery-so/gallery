@@ -43,9 +43,8 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'Please sign the message with your wallet to log in.',
   },
   USER_SIGNUP_DISABLED: {
-    heading: 'Could not sign in',
-    body: 'Your wallet address is not associated with an existing Gallery user. New sign ups are currently limited.\n\n'
-    + 'If you already have an account with us, please check that you are connecting with the same wallet.',
+    heading: 'Coming Soon',
+    body: 'We\'ve detected a Gallery Member Card in your wallet! You\'ll be able to use it to create an account with us soon.\n\n For further updates, find us on Twitter or join our Discord.',
   },
   EXISTING_USER: {
     heading: 'This address is already associated with an existing user.',
