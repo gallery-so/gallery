@@ -71,10 +71,19 @@ function Sidebar() {
     setNftsIsSelected(nftsToDisplayInSidebar, false);
   }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageNfts]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const handleRefreshWalletClick = useCallback(async () => {
-    await refreshOpenseaSync();
-    await refreshUnassignedNfts();
-    void mutateUnassignedNftsCache();
+    setIsRefreshing(true);
+    try {
+      await refreshOpenseaSync();
+      await refreshUnassignedNfts();
+      void mutateUnassignedNftsCache();
+    } catch {
+      // TODO: error while attempting torefresh!
+    }
+
+    setIsRefreshing(false);
   }, [mutateUnassignedNftsCache, refreshOpenseaSync, refreshUnassignedNfts]);
 
   return (
@@ -82,8 +91,9 @@ function Sidebar() {
       <Header>
         <BodyMedium>Your NFTs</BodyMedium>
         <TextButton
-          text="Refresh Wallet"
+          text={isRefreshing ? 'Refreshing...' : 'Refresh Wallet'}
           onClick={handleRefreshWalletClick}
+          disabled={isRefreshing}
         />
       </Header>
       <Spacer height={16} />
