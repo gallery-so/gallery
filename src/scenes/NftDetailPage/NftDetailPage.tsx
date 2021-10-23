@@ -32,13 +32,14 @@ function NftDetailPage({
   //     // username included in the URL
   //     const username = window.location.pathname.split('/')[1];
   //     void navigate(`/${username}`);
-  //     return false;
+  //     return;\
+
   //   }
 
   //   // otherwise, simply send them back to where they came from. this ensures scroll
   //   // position is maintained when going back (see: GalleryNavigationContext.tsx)
+  // scroll position preservation currently doesn't work
   //   void navigate(-1);
-  //   return false;
   // }, [getVisitedPagesLength]);
 
   const nft = useNft({ id: nftId ?? '' });
@@ -51,7 +52,18 @@ function NftDetailPage({
     <StyledNftDetailPage centered>
       <StyledBackLink>
         {/* Can either use an a tag or Link for reach router's continuity sake 
-        I didn't ignore the second part of handleBackClick logic - is there an actual use case for clicking back and routing to a non-owner's gallery?
+        I didn't ignore the second part of handleBackClick logic - reach router's navigate currently does not preserve scroll on prod site.
+        If reach router is continuously integrated throughout the applicaton, there needs to be a decision on best practices/development 
+        process when it comes to links. 
+        Is it important to implement scroll preservation AND cmd + click? Reach router might not be the best option since the navigate method
+        must be in an onClick function. 
+        Is it important to implement scroll preservation? Reach router may work - their navigate(-1) or window.history.back() on an onClick should
+        (theoretically, because it isn't working as intended on prod) be sufficient.
+        Is it important to implement cmd + click? Reach router's link OR basic a tags would work. 
+        To my understanding, a tags are usually the standard as it emmulates the full functionality of what a user expects when clicking a link.
+        Furthermore, if requirements need to be handled with navigate from reach router, there is an option of adding an event listener that 
+        checks for a keyboard input of cmd that triggers but that seems a bit extra...
+        https://stackoverflow.com/questions/58425683/how-to-check-if-command-key-is-pressed-while-clicking-on-a-tag
         */}
         <StyledBackButton to={`/${window.location.pathname.split('/')[1]}`}>← Back to gallery</StyledBackButton>
       </StyledBackLink>

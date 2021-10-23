@@ -15,15 +15,17 @@ const AuthModal = () => {
     }
   }, [isAuthenticated, hideModal]);
 
-  // *to do write test
   useEffect(() => {
-    const close = (e: any) => {
-      // key press can work too but keydown is more consistent through browsers
-      if(e.keyCode === 27){
+    const close = (e: KeyboardEvent) => {
+    // key code is becoming deprecated~
+    // listening for the escape key and hiding the modal
+      if(e.key === 'Escape'){
         hideModal();
       }
     }
+    // key press can work too but its deprecated
     window.addEventListener('keydown', close)
+    // clear the event listener after event fires
     return () => window.removeEventListener('keydown', close)
   },[hideModal])
 
