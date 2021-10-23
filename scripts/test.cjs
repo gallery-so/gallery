@@ -11,10 +11,11 @@ process.on('unhandledRejection', error => {
 });
 
 // Ensure environment variables are read.
+// eslint-disable-next-line import/no-unassigned-import
 require('../config/env.cjs');
 
+const execSync = require('child_process').execSync;
 const jest = require('jest');
-const execSync = require('node:child_process').execSync;
 
 const argv = process.argv.slice(2);
 
