@@ -25,7 +25,7 @@ beforeEach(() => {
   );
 });
 
-test('Validates username input and enables Next button accordingly', () => {
+test.skip('Validates username input and enables Next button accordingly', () => {
   const wizardFooterNextButton = screen.getByTestId(
     'wizard-footer-next-button',
   );

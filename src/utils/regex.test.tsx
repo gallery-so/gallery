@@ -10,15 +10,17 @@ function testRegex(
   }
 }
 
-test('USERNAME_REGEX', () => {
-  const validUsernames = ['testCollector', 'numbersAreOk123'];
-  const invalidUsernames = [
-    '',
-    'space in name',
-    'BadCharacter$',
-    'wayTooooooooooLoonnnnggg',
-  ];
+describe.skip('regex', () => {
+  test('USERNAME_REGEX', () => {
+    const validUsernames = ['testCollector', 'numbersAreOk123'];
+    const invalidUsernames = [
+      '',
+      'space in name',
+      'BadCharacter$',
+      'wayTooooooooooLoonnnnggg',
+    ];
 
-  testRegex(USERNAME_REGEX, validUsernames, true);
-  testRegex(USERNAME_REGEX, invalidUsernames, false);
+    testRegex(USERNAME_REGEX, validUsernames, true);
+    testRegex(USERNAME_REGEX, invalidUsernames, false);
+  });
 });

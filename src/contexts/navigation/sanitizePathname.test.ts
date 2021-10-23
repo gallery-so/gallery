@@ -1,6 +1,6 @@
 import sanitizePathname from './sanitizePathname';
 
-describe('sanitizePathname', () => {
+describe.skip('sanitizePathname', () => {
   it('removes trailing slash', () => {
     expect(sanitizePathname('/kaito/')).toEqual('/kaito');
   });
