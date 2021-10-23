@@ -98,7 +98,8 @@
     "start": "node scripts/start.js",
     "start:mock": "ENV=local node scripts/start.js",
     "build": "CI=false node scripts/build.js",
-    "test": "xo & node scripts/test.cjs"
+    "lint": "xo",
+    "test": "node scripts/test.cjs"
   },
   "browserslist": {
     "production": [
