@@ -52,21 +52,21 @@ export default function Routes() {
                 component={EditGalleryFlow}
                 freshLayout
               />
-              <GalleryRoute
+              {/* <GalleryRoute
                 path="/membership/silver"
                 component={SilverMembershipMintPage}
                 navbar={false}
-              />
-              <GalleryRoute
+              /> */}
+              {/* <GalleryRoute
                 path="/membership/white"
                 component={WhiteMembershipMintPage}
                 navbar={false}
-              />
-              <GalleryRoute
+              /> */}
+              {/* <GalleryRoute
                 path="/membership/gold"
                 component={GoldMembershipMintPage}
                 navbar={false}
-              />
+              /> */}
               <GalleryRoute
                 path="/nuke"
                 component={Nuke}
