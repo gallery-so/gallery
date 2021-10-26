@@ -92,7 +92,8 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
       <div>
-        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <Spacer height={8}/>
         <BodyRegular color={colors.gray50}>The following address is already connected to this account:</BodyRegular>
         <Spacer height={8}/>
         <BodyRegular color={colors.black}>{account.toLowerCase()}</BodyRegular>
@@ -108,7 +109,8 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   if (pendingState === CONFIRM_ADDRESS && account && signer) {
     return (
       <div>
-        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <Spacer height={8}/>
         <BodyRegular color={colors.gray50}>Confirm the following wallet address:</BodyRegular>
         <Spacer height={8}/>
         <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
@@ -125,7 +127,8 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <Spacer height={8}/>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </div>
     );
@@ -134,18 +137,12 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   // Default view for when pendingState === INITIAL
   return (
     <div>
-      <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <Spacer height={8}/>
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </div>
   );
 }
-
-const StyledTitleMedium = styled(TitleMedium)`
-  line-height: initial;
-  font-size: 18px;
-
-  margin-bottom: 16px;
-`;
 
 const StyledButton = styled(Button)`
   align-self: flex-end;

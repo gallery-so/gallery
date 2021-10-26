@@ -78,6 +78,7 @@ export const TitleRegular = styled(_TitleBase)`
 
 export const TitleMedium = styled(TitleRegular)`
   font-weight: 500;
+  font-size: 18px;
 `;
 
 export const BodyRegular = styled(Paragraph)`

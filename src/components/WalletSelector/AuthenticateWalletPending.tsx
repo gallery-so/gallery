@@ -10,6 +10,7 @@ import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
 import Mixpanel from 'utils/mixpanel';
+import Spacer from 'components/core/Spacer/Spacer';
 import initializeAuthPipeline from './authRequestUtils';
 
 type Props = {
@@ -70,7 +71,8 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <StyledAuthenticateWalletPending>
-        <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <Spacer height={8}/>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </StyledAuthenticateWalletPending>
     );
@@ -78,18 +80,12 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
 
   return (
     <StyledAuthenticateWalletPending>
-      <StyledTitleMedium>Connect with {userFriendlyWalletName}</StyledTitleMedium>
+      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <Spacer height={8}/>
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </StyledAuthenticateWalletPending>
   );
 }
-
-const StyledTitleMedium = styled(TitleMedium)`
-  line-height: initial;
-  font-size: 18px;
-
-  margin-bottom: 16px;
-`;
 
 const StyledAuthenticateWalletPending = styled.div`
 `;

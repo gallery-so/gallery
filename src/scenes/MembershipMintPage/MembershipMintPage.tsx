@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
+import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -20,6 +21,12 @@ import { MembershipColor, MEMBERSHIP_PROPERTIES_MAP } from './cardProperties';
 type Props = {
   membershipColor: MembershipColor;
 };
+
+enum TransactionStatus {
+  PENDING,
+  SUCCESS,
+  FAILED,
+}
 
 function computeRemainingSupply(usedSupply: number, totalSupply: number) {
   return Math.max(totalSupply - usedSupply, 0);
@@ -38,33 +45,13 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   const [error, setError] = useState('');
   const [canMintToken, setCanMintToken] = useState(false);
+  const [totalSupply, setTotalSupply] = useState(0);
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(null);
+  const [transactionHash, setTransactionHash] = useState('');
+  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(null);
 
   const membershipProperties = useMemo(() => MEMBERSHIP_PROPERTIES_MAP[membershipColor], [membershipColor]);
-
-  const handleMintButtonClick = useCallback(async () => {
-    if (active && contract) {
-      // Submit mint transaction
-      const mintResult = await contract.mint(account, membershipProperties.tokenId, { value: price }).catch((error: any) => {
-        setError(`Error while calling contract - "${error?.error?.message}"`);
-      });
-
-      // TODO: call wait() and show success state after tx is confirmed
-      // if mintResult && mintResult.wait) {
-      //   await mintResult.wait();
-      // }
-      // todo: figure out what succesfull mint returns so that we can set some success state
-      console.log(mintResult);
-    }
-  }, [account, active, contract, membershipProperties.tokenId, price]);
-
-  const handleConnectWalletButtonClick = useCallback(() => {
-    if (!active) {
-      showWalletModal();
-    }
-  }, [active, showWalletModal]);
-
   // check the contract whether the user's address is allowed to call mint, and set the result in local state
   const getCanMintToken = useCallback(async (contract: Contract) => {
     if (account) {
@@ -73,23 +60,90 @@ function MembershipMintPage({ membershipColor }: Props) {
     }
   }, [account, membershipProperties.tokenId]);
 
-  const getRemainingSupply = useCallback(async (contract: Contract) => {
+  const getSupply = useCallback(async (contract: Contract) => {
     const usedSupply = await contract.getUsedSupply(membershipProperties.tokenId);
-    setRemainingSupply(computeRemainingSupply(Number(usedSupply), membershipProperties.totalSupply ?? 0));
-  }, [membershipProperties.totalSupply, membershipProperties.tokenId]);
+    const totalSupply = await contract.getTotalSupply(membershipProperties.tokenId);
+
+    setTotalSupply(Number(totalSupply));
+    setRemainingSupply(computeRemainingSupply(Number(usedSupply), totalSupply));
+  }, [membershipProperties.tokenId]);
 
   const getPrice = useCallback(async (contract: Contract) => {
-    const priceRes = await contract.getPrice(membershipProperties.tokenId);
-    setPrice(priceRes);
+    const priceResponse = await contract.getPrice(membershipProperties.tokenId);
+    setPrice(priceResponse);
   }, [membershipProperties.tokenId]);
+
+  const handleMintButtonClick = useCallback(async () => {
+    // clear any previous errors
+    if (error) {
+      setError('');
+    }
+
+    if (active && contract) {
+      // Submit mint transaction
+      setTransactionStatus(TransactionStatus.PENDING);
+      const mintResult = await contract.mint(account, membershipProperties.tokenId, { value: price }).catch((error: any) => {
+        setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
+        setTransactionStatus(TransactionStatus.FAILED);
+      });
+
+      if (!mintResult) {
+        return;
+      }
+
+      if (mintResult.hash) {
+        setTransactionHash(mintResult.hash);
+      }
+
+      if (typeof mintResult.wait === 'function') {
+        // Wait for the transaction to be mined
+        await mintResult.wait().catch(() => {
+          setTransactionStatus(TransactionStatus.FAILED);
+          setError('Transaction failed');
+        });
+        setTransactionStatus(TransactionStatus.SUCCESS);
+        await getSupply(contract);
+        await getCanMintToken(contract);
+      }
+    }
+  }, [account, active, contract, error, getCanMintToken, getSupply, membershipProperties.tokenId, price]);
+
+  const handleConnectWalletButtonClick = useCallback(() => {
+    if (!active) {
+      showWalletModal();
+    }
+  }, [active, showWalletModal]);
+
+  const isMintButtonEnabled = useMemo(() => (Number(price) > 0 || canMintToken) && transactionStatus !== TransactionStatus.PENDING, [canMintToken, price, transactionStatus]);
+
+  const buttonText = useMemo(() => {
+    switch (transactionStatus) {
+      case TransactionStatus.PENDING:
+        return 'Minting...';
+      case TransactionStatus.SUCCESS:
+        return 'Mint Successful';
+      case TransactionStatus.FAILED:
+        return 'Mint Failed - Try Again';
+    }
+
+    if (!active) {
+      return 'Connect Wallet';
+    }
+
+    if (!canMintToken || (totalSupply > 0 && remainingSupply === 0)) {
+      return 'Mint Unavailable';
+    }
+
+    return 'Mint Card';
+  }, [active, canMintToken, remainingSupply, totalSupply, transactionStatus]);
 
   useEffect(() => {
     if (contract) {
       void getCanMintToken(contract);
-      void getRemainingSupply(contract);
+      void getSupply(contract);
       void getPrice(contract);
     }
-  }, [getCanMintToken, getRemainingSupply, contract, getPrice]);
+  }, [getCanMintToken, getSupply, contract, getPrice]);
 
   // auto close the wallet modal once user connects
   useEffect(() => {
@@ -97,8 +151,6 @@ function MembershipMintPage({ membershipColor }: Props) {
       hideModal();
     }
   }, [active, hideModal]);
-
-  const isMintButtonEnabled = useMemo(() => Number(price) > 0 || canMintToken, [canMintToken, price]);
 
   return (
     <StyledMintPage centered>
@@ -123,15 +175,31 @@ function MembershipMintPage({ membershipColor }: Props) {
           }
           <Spacer height={16} />
           {
-            membershipProperties.totalSupply && <>
+            Boolean(totalSupply) && <>
               <BodyRegular color={colors.gray50}>Available</BodyRegular>
-              <BodyRegular>{remainingSupply}/{membershipProperties.totalSupply}</BodyRegular>
+              <BodyRegular>{remainingSupply}/{totalSupply}</BodyRegular>
             </>
+          }
+          {account && <>
+            <Spacer height={16} />
+            <BodyRegular color={colors.gray50}>Connected wallet</BodyRegular>
+            <BodyRegular>{account}</BodyRegular>
+          </>
           }
           <Spacer height={32} />
           {active
-            ? <Button text={isMintButtonEnabled ? 'Mint Card' : 'Mint Unavailable'} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
-            : <Button text="Connect Wallet" onClick={handleConnectWalletButtonClick}/>
+            ? <Button text={buttonText} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}/>
+            : <Button text={buttonText} onClick={handleConnectWalletButtonClick}/>
+          }
+          {transactionHash
+          && <>
+            <Spacer height={16}/>
+            <StyledTransactionMessage>
+              <BodyRegular>{transactionStatus === TransactionStatus.SUCCESS ? 'Transaction successful!' : 'Transaction submitted.'}</BodyRegular>
+              <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`} >
+                <BodyRegular>View on Etherscan</BodyRegular>
+              </GalleryLink>
+            </StyledTransactionMessage></>
           }
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
@@ -199,6 +267,11 @@ const StyledVideo = styled.video`
     height: 600px;
     width: 600px;
   }
+`;
+
+const StyledTransactionMessage = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default MembershipMintPage;
