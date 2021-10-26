@@ -62,11 +62,11 @@ export default function Routes() {
                 component={WhiteMembershipMintPage}
                 navbar={false}
               /> */}
-              {/* <GalleryRoute
+              <GalleryRoute
                 path="/membership/gold"
                 component={GoldMembershipMintPage}
                 navbar={false}
-              /> */}
+              />
               <GalleryRoute
                 path="/nuke"
                 component={Nuke}
