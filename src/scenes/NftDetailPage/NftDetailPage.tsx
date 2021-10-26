@@ -1,14 +1,13 @@
-import { useCallback } from 'react';
-import { navigate, RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Link } from '@reach/router';
 import styled from 'styled-components';
+import transitions from 'components/core/transitions';
+import colors from 'components/core/colors';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import ActionText from 'components/core/ActionText/ActionText';
 
 import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
@@ -21,25 +20,25 @@ type Props = {
 function NftDetailPage({
   nftId,
 }: RouteComponentProps<Props>) {
-  const { getVisitedPagesLength } = useGalleryNavigationActions();
+    // Decision: keep reach router or go with a tags or different library?
+  // const handleBackClick = useCallback(() => {
+  //   const visitedPagesLength = getVisitedPagesLength();
 
-  const handleBackClick = useCallback(() => {
-    const visitedPagesLength = getVisitedPagesLength();
+  //   // if the user arrived on the page via direct link, send them to the
+  //   // owner's profile page (since there is no "previous page")
+  //   if (visitedPagesLength === 1) {
+  //     // NOTE: this scheme will have to change if we no longer have the
+  //     // username included in the URL
+  //     const username = window.location.pathname.split('/')[1];
+  //     void navigate(`/${username}`);
+  //     return;
+  //   }
 
-    // if the user arrived on the page via direct link, send them to the
-    // owner's profile page (since there is no "previous page")
-    if (visitedPagesLength === 1) {
-      // NOTE: this scheme will have to change if we no longer have the
-      // username included in the URL
-      const username = window.location.pathname.split('/')[1];
-      void navigate(`/${username}`);
-      return;
-    }
-
-    // otherwise, simply send them back to where they came from. this ensures scroll
-    // position is maintained when going back (see: GalleryNavigationContext.tsx)
-    void navigate(-1);
-  }, [getVisitedPagesLength]);
+  //   // otherwise, simply send them back to where they came from. this ensures scroll
+  //   // position is maintained when going back (see: GalleryNavigationContext.tsx)
+  //     // scroll position preservation currently doesn't work
+  //   void navigate(-1);
+  // }, [getVisitedPagesLength]);
 
   const nft = useNft({ id: nftId ?? '' });
 
@@ -50,7 +49,21 @@ function NftDetailPage({
   return (
     <StyledNftDetailPage centered>
       <StyledBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
+      {/*         
+        I didn't ignore the second part of handleBackClick logic - reach router's navigate currently does not preserve scroll on prod site.
+        If reach router is continuously integrated throughout the applicaton, there needs to be a decision on best practices/development 
+        process when it comes to links. 
+        Is it important to implement scroll preservation AND cmd + click? Reach router might not be the best option since the navigate method
+        must be in an onClick function. 
+        Is it important to implement scroll preservation? Reach router may work - their navigate(-1) or window.history.back() on an onClick should
+        (theoretically, because it isn't working as intended on prod) be sufficient.
+        Is it important to implement cmd + click? Reach router's link OR basic a tags would work. 
+        To my understanding, a tags are usually the standard as it emmulates the full functionality of what a user expects when clicking a link.
+        Furthermore, if requirements need to be handled with navigate from reach router, there is an option of adding an event listener that 
+        checks for a keyboard input of cmd that triggers but that seems a bit extra...
+        https://stackoverflow.com/questions/58425683/how-to-check-if-command-key-is-pressed-while-clicking-on-a-tag 
+        */}
+      <StyledBackButton to={`/${window.location.pathname.split('/')[1]}`}>← Back to gallery</StyledBackButton>
       </StyledBackLink>
       <StyledBody>
         {/* {prevNftId && (
@@ -86,6 +99,26 @@ const StyledBody = styled.div`
   @media only screen and ${breakpoints.tablet} {
     width: auto;
   }
+`;
+
+type BackButtonProps = {
+  underlined?: boolean;
+  focused?: boolean;
+};
+
+const StyledBackButton = styled(Link)<BackButtonProps>`
+text-transform: uppercase;
+transition: color ${transitions.cubic};
+cursor: pointer;
+text-decoration: none;
+color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
+&:hover {
+  color: ${colors.black};
+}
+font-family: 'Helvetica Neue';
+font-size: 12px;
+line-height: 16px;
+letter-spacing: 0px;
 `;
 
 // mimics a navbar element on the top left corner

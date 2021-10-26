@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
@@ -51,10 +51,20 @@ function EditUserInfoModal() {
     setIsLoading(false);
   }, [onEditUser]);
 
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if(e.key === 'Escape'){
+        hideModal();
+      }
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  },[hideModal]);
+
   return (
     <StyledEditUserInfoModal>
       <UserInfoForm
-        mode="Edit"
+      mode="Edit"
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}

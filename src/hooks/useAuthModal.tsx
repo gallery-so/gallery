@@ -14,6 +14,21 @@ const AuthModal = () => {
     }
   }, [isAuthenticated, hideModal]);
 
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+    // key code is becoming deprecated~
+    // listening for the escape key and hiding the modal
+    // keycode is deprecated
+      if(e.key === 'Escape'){
+        hideModal();
+      }
+    }
+    // key press can work too but its deprecated
+    window.addEventListener('keydown', close)
+    // clear the event listener after event fires
+    return () => window.removeEventListener('keydown', close)
+  },[hideModal])
+
   return (
     <Container>
       <WalletSelector />
