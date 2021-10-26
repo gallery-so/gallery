@@ -194,12 +194,12 @@ function MembershipMintPage({ membershipColor }: Props) {
           {transactionHash
           && <>
             <Spacer height={16}/>
-            <StyledTransactionMessage>
-              <BodyRegular>{transactionStatus === TransactionStatus.SUCCESS ? 'Transaction successful!' : 'Transaction submitted.'}</BodyRegular>
+            <div>
+              <BodyRegular>{transactionStatus === TransactionStatus.SUCCESS ? 'Transaction successful!' : 'Transaction submitted. This may take several minutes.'}</BodyRegular>
               <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`} >
                 <BodyRegular>View on Etherscan</BodyRegular>
               </GalleryLink>
-            </StyledTransactionMessage></>
+            </div></>
           }
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
@@ -268,10 +268,4 @@ const StyledVideo = styled.video`
     width: 600px;
   }
 `;
-
-const StyledTransactionMessage = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 export default MembershipMintPage;
