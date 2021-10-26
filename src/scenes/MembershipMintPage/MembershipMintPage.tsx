@@ -97,13 +97,15 @@ function MembershipMintPage({ membershipColor }: Props) {
 
       if (typeof mintResult.wait === 'function') {
         // Wait for the transaction to be mined
-        await mintResult.wait().catch(() => {
+        const waitResult = await mintResult.wait().catch(() => {
           setTransactionStatus(TransactionStatus.FAILED);
           setError('Transaction failed');
         });
-        setTransactionStatus(TransactionStatus.SUCCESS);
-        await getSupply(contract);
-        await getCanMintToken(contract);
+        if (waitResult) {
+          setTransactionStatus(TransactionStatus.SUCCESS);
+          await getSupply(contract);
+          await getCanMintToken(contract);
+        }
       }
     }
   }, [account, active, contract, error, getCanMintToken, getSupply, membershipProperties.tokenId, price]);
