@@ -33,6 +33,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   const fetcher = useFetcher();
   const authenticatedUserAddresses = useAuthenticatedUserAddresses();
@@ -45,6 +46,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
 
   const attemptAddWallet = useCallback(async (address: string, signer: JsonRpcSigner) => {
     try {
+      setIsConnecting(true);
       const { signatureValid } = await initializeAddWalletPipeline({
         address,
         signer,
@@ -53,9 +55,11 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
       });
       Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
       openManageWalletsModal(address);
+      setIsConnecting(false);
 
       return signatureValid;
     } catch (error: unknown) {
+      setIsConnecting(false);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -118,8 +122,9 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
         <BodyRegular color={colors.gray50}>If you want to connect a different address via Metamask, please switch accounts in the extension and try again.</BodyRegular>
         <Spacer height={24}/>
         <StyledButton
-          text="Confirm"
+          text={isConnecting ? 'Connecting...' : 'Confirm'}
           onClick={async () => attemptAddWallet(account.toLowerCase(), signer)}
+          disabled={isConnecting}
         />
       </div>);
   }

@@ -1,26 +1,32 @@
 import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
-import { BodyRegular } from 'components/core/Text/Text';
-import { useCallback, useMemo } from 'react';
+import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
 import useRemoveUserAddress from 'hooks/api/users/useRemoveUserAddress';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {
-  index: number;
   address: string;
   userSigninAddress: string;
   setErrorMessage: (message: string) => void;
 };
 
-function ManageWalletsRow({ index, address, userSigninAddress, setErrorMessage }: Props) {
+function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props) {
   const removeUserAddress = useRemoveUserAddress();
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
   const handleDisconnectClick = useCallback(async () => {
+    ReactTooltip.hide();
     try {
       setErrorMessage('');
+      setIsDisconnecting(true);
       await removeUserAddress(address);
+      setIsDisconnecting(false);
     } catch (error: unknown) {
+      setIsDisconnecting(false);
       if (isWeb3Error(error)) {
         setErrorMessage('Error disconnecting wallet');
       }
@@ -35,17 +41,33 @@ function ManageWalletsRow({ index, address, userSigninAddress, setErrorMessage }
     <StyledWalletRow >
       <BodyRegular>{truncateAddress(address)}</BodyRegular>
       {showDisconnectButton
-        && <TextButton
-          text="Disconnect"
-          onClick={handleDisconnectClick}
-          underlineOnHover
-        />
+        && <>
+          <div
+            data-tip="Disconnecting a wallet will remove its NFTs from your collections."
+            data-class="tooltip"
+          >
+            <TextButton
+              text={isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
+              onClick={handleDisconnectClick}
+              underlineOnHover
+            />
+          </div>
+          <ReactTooltip place="left" effect="solid"/>
+        </>
+
       }
     </StyledWalletRow>
   );
 }
 
 export default ManageWalletsRow;
+
+const StyledHoverTip = styled.div`
+  position: absolute;
+  background: black;
+  padding: 4px 8px;
+  pointer-events: none;
+`;
 
 const StyledWalletRow = styled.div`
   display: flex;

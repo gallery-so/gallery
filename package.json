@@ -75,6 +75,7 @@
     "react-dom": "^17.0.1",
     "react-refresh": "^0.8.3",
     "react-spring": "^9.1.2",
+    "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.1",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
