@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
@@ -61,13 +61,6 @@ function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props
 }
 
 export default ManageWalletsRow;
-
-const StyledHoverTip = styled.div`
-  position: absolute;
-  background: black;
-  padding: 4px 8px;
-  pointer-events: none;
-`;
 
 const StyledWalletRow = styled.div`
   display: flex;
