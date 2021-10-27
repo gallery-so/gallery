@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
@@ -10,6 +10,19 @@ type Props = {
 };
 
 function AnimatedModal({ isActive, hideModal, content }: Props) {
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        hideModal();
+      }
+    };
+
+    window.addEventListener('keydown', close);
+    return () => {
+      window.removeEventListener('keydown', close);
+    };
+  }, [hideModal]);
+
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={hideModal} />
