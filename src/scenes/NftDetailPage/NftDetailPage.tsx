@@ -29,6 +29,7 @@ function NftDetailPage({
 
     if (event.metaKey) {
       window.open(`/${username}`);
+      return;
     }
 
     const visitedPagesLength = getVisitedPagesLength();
