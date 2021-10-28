@@ -9,7 +9,6 @@ import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembership
 import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
-import Password from '../Password/Password';
 import NftDetailPage from '../NftDetailPage/NftDetailPage';
 import Nuke from '../Nuke/Nuke';
 import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
@@ -27,12 +26,6 @@ export default function Routes() {
               <GalleryRoute
                 path="/"
                 component={Home}
-                navbar={false}
-                footerVisibleOutOfView
-              />
-              <GalleryRoute
-                path="/password"
-                component={Password}
                 navbar={false}
                 footerVisibleOutOfView
               />

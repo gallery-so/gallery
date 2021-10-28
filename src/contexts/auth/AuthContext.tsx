@@ -15,7 +15,6 @@ import Web3WalletProvider from './Web3WalletContext';
 import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
 import {
   JWT_LOCAL_STORAGE_KEY,
-  PASSWORD_LOCAL_STORAGE_KEY,
   USER_ID_LOCAL_STORAGE_KEY,
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
 } from './constants';
@@ -89,7 +88,7 @@ const AuthProvider = memo(({ children }: Props) => {
      * visited (including their own). In the future, we should clear data more
      * selectively (such as only sensitive data)
      */
-    clearLocalStorageWithException([PASSWORD_LOCAL_STORAGE_KEY]);
+    clearLocalStorageWithException([]);
   }, [setLoggedOut, setToken, setUserId, setUserSigninAddress]);
 
   const logIn = useCallback(

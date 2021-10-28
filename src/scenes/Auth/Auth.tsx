@@ -1,7 +1,6 @@
 import { memo } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
-import useIsPasswordValidated from 'hooks/useIsPasswordValidated';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
@@ -12,16 +11,10 @@ import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 function Auth(_: RouteComponentProps) {
-  // Whether the user has entered the correct password
-  const isPasswordValidated = useIsPasswordValidated();
   // Whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
   const user = usePossiblyAuthenticatedUser();
   const username = user?.username;
-
-  if (!isPasswordValidated) {
-    return <GalleryRedirect to="/password" />;
-  }
 
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
