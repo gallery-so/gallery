@@ -6,7 +6,7 @@ import {
   required,
   minLength,
   maxLength,
-  alphanumericUnderscoresPeriods,
+  alphanumericUnderscores,
   noConsecutivePeriodsOrUnderscores,
 } from 'utils/validators';
 
@@ -44,7 +44,7 @@ export default function useUserInfoForm({
       required,
       minLength(2),
       maxLength(20),
-      alphanumericUnderscoresPeriods,
+      alphanumericUnderscores,
       noConsecutivePeriodsOrUnderscores,
     ]);
 

@@ -3,7 +3,7 @@
  */
 
 import {
-  ALPHANUMERIC_UNDERSCORES_PERIODS,
+  ALPHANUMERIC_UNDERSCORES,
   NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES,
 } from './regex';
 
@@ -54,10 +54,10 @@ export function maxLength(length: number) {
   };
 }
 
-export function alphanumericUnderscoresPeriods(s: string): ValidatorReturnType {
-  if (!ALPHANUMERIC_UNDERSCORES_PERIODS.test(s)) {
+export function alphanumericUnderscores(s: string): ValidatorReturnType {
+  if (!ALPHANUMERIC_UNDERSCORES.test(s)) {
     throw new Error(
-      'Must only contain alphanumeric characters, underscores, or periods.',
+      'Must only contain alphanumeric characters, or underscores.',
     );
   }
 
