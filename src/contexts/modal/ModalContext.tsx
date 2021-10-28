@@ -9,6 +9,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import ReactTooltip from 'react-tooltip';
 import AnimatedModal from './AnimatedModal';
 
 type ModalActions = {

@@ -42,9 +42,8 @@ function ManageWallets({ newAddress }: Props) {
         </BodyRegular>
       </>}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
-      {addresses.map((address, i) => <ManageWalletsRow
+      {addresses.map(address => <ManageWalletsRow
         key={address}
-        index={i}
         address={address}
         setErrorMessage={setErrorMessage}
         userSigninAddress={userSigninAddress}
