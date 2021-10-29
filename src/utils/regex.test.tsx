@@ -1,4 +1,4 @@
-import { USERNAME_REGEX } from './regex';
+import { ALPHANUMERIC_UNDERSCORES } from './regex';
 
 function testRegex(
   pattern: RegExp,
@@ -10,17 +10,17 @@ function testRegex(
   }
 }
 
-describe.skip('regex', () => {
-  test('USERNAME_REGEX', () => {
-    const validUsernames = ['testCollector', 'numbersAreOk123'];
+describe('regex', () => {
+  test('ALPHANUMERIC_UNDERSCORES', () => {
+    const validUsernames = ['testCollector', 'numbersAreOk123', 'under_score_ok'];
     const invalidUsernames = [
       '',
       'space in name',
       'BadCharacter$',
-      'wayTooooooooooLoonnnnggg',
+      'has.period.eth',
     ];
 
-    testRegex(USERNAME_REGEX, validUsernames, true);
-    testRegex(USERNAME_REGEX, invalidUsernames, false);
+    testRegex(ALPHANUMERIC_UNDERSCORES, validUsernames, true);
+    testRegex(ALPHANUMERIC_UNDERSCORES, invalidUsernames, false);
   });
 });
