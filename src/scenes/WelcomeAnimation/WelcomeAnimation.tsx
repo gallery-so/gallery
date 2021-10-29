@@ -60,18 +60,17 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: 'https://lh3.googleusercontent.com/Y1IJvZJcWZgtA0YtcLz6gBV4EMA4AkK9s4_qWqMYAly-DOg7c_uGvSEO6gUH0T3Y31g-Ohs4_6vnxMjwD-azlve_7e9awUtQZrduFQ', // Neoclassicism
+    src: 'https://lh3.googleusercontent.com/CpwTm306giMTU90lJrdEqs_SuUWa9DPT7r6CzDJZErJAdbLC8RoB-3GEh_QBtcmPrr6SmsywUPjbO9IN0i6VmwpteirK5ptSePYPzQ=w335', // Fidenza
     width: 280,
     zIndex: -18,
     offsetX: 370,
-    offsetY: 100,
+    offsetY: 80,
     offsetXStart: -20,
     offsetYStart: -12,
     fadeInDelay: 300,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/urYlsZ_9-L407WLT2KC4nTuQtf8iurO09_C4fxve2pZxSKW43npPF9yLCSvbMw9nnZjr8Hegz8HVi413lYUPKXq-8WeEApcxzOWU', // Squiggle
+    src: 'https://lh3.googleusercontent.com/kghKAvKiZ6dCQaPtfcyuNKnNDNtijiwoalY3ZGeo4WwOyLIZvDeX7auYyiVX2vNKI_GU8Wrt88pLTNNAi5n3ENwsaJ5y2ZWvH0rzMw=w335', // Squiggle
     width: 200,
     zIndex: 20,
     offsetX: -150,
@@ -81,7 +80,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: 'https://lh3.googleusercontent.com/rYPQCDn8RIgPafTpnXCtRmmDnBt1jv1FloRNFuRd8XgHha0YAYx-UuFvAhlejHOha3USJORnJnejXZgaFtzX-zUnRtGb8fOB8YWq4w', // Sampler
+    src: 'https://lh3.googleusercontent.com/dvrP8rJNswBrdAo4eYia2y808Od_vjtmxn3-41-WDxs2K5jElLUQEsIUGw7X0uGVLe8ywqrUg-70OlrpjIGKiiK4FBy1SyMCmpmIaA=w336', // Elementals
     width: 200,
     zIndex: 11,
     offsetX: -550,
@@ -92,10 +91,10 @@ const animatedImages: AnimatedImage[] = [
   },
   {
     src:
-      'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Venus
+      'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Venus
     width: 250,
     zIndex: 37,
-    offsetX: -490,
+    offsetX: -510,
     offsetY: 110,
     offsetXStart: 0,
     offsetYStart: 30,
@@ -113,7 +112,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: 'https://lh3.googleusercontent.com/Ttouv6tE3d4HavomW-N1cq2SPObKtiYrKtO8iZBBI-_dlsqFkiA9lmMOpCY4FFTG4hbnIGBsL9WDAaSDPfYLo8Xt4WJu74QTCkyQJIU', // Pink
+    src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Brushpop
     width: 200,
     zIndex: 30,
     offsetX: 80,
@@ -123,7 +122,8 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src: 'https://ipfs.io/ipfs/QmUttDiQH3utkd5Zcq5J9QjCfpoWXTdYprobcJts22cpxc/1_Satoshiscoin_Gif.gif', // Satoshis Coin
+    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw',
+    // src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
     width: 230,
     zIndex: -11,
     offsetX: -660,
