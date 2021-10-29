@@ -91,7 +91,7 @@ const animatedImages: AnimatedImage[] = [
   },
   {
     src:
-      'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Venus
+      'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
     width: 250,
     zIndex: 37,
     offsetX: -510,
@@ -112,7 +112,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
   },
   {
-    src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Brushpop
+    src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
     width: 200,
     zIndex: 30,
     offsetX: 80,
@@ -122,8 +122,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 300,
   },
   {
-    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw',
-    // src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
+    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Rebirth of Venus
     width: 230,
     zIndex: -11,
     offsetX: -660,
