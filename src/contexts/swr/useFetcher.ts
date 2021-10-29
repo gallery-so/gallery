@@ -31,8 +31,9 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
   const requestOptions: RequestInit = { headers };
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
-  if (localJwt && requestOptions.headers) {
-    const parsedLocalJwt = JSON.parse(localJwt) as string;
+
+  const parsedLocalJwt = localJwt && JSON.parse(localJwt) as string;
+  if (parsedLocalJwt && requestOptions.headers) {
     // @ts-expect-error: Authorization is a legit header
     requestOptions.headers.Authorization = `Bearer ${parsedLocalJwt}`;
   }

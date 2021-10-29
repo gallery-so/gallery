@@ -84,7 +84,7 @@ export default async function initializeAuthPipeline({
 
   // The user's nfts should be fetched here so that they're ready to go by the time
   // they arrive at the Create First Collection step
-  await triggerOpenseaSync(fetcher);
+  await triggerOpenseaSync(fetcher, response.jwt_token);
 
   return { jwt: response.jwt_token, userId: response.user_id };
 }
@@ -285,16 +285,23 @@ async function createUser(
   }
 }
 
-async function triggerOpenseaSync(fetcher: FetcherType) {
+async function triggerOpenseaSync(fetcher: FetcherType, jwt?: string) {
   try {
+    const headers = jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : undefined;
+    let payload = { body: {} };
+    if (headers) {
+      payload = { ...payload, ...headers };
+    }
+
     await fetcher<OpenseaSyncResponse>(
       '/nfts/opensea/refresh',
       'refresh and sync nfts',
-      { body: {} },
+      payload,
     );
     await fetcher<OpenseaSyncResponse>(
       '/nfts/opensea/get',
       'fetch and sync nfts',
+      headers,
     );
   } catch (error: unknown) {
     // Error silently; TODO: send error analytics
