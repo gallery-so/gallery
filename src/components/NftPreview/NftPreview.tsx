@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
+import { navigateToUrl } from 'utils/navigate';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
 
@@ -16,8 +17,8 @@ type Props = {
 };
 
 function NftPreview({ nft, collectionId, gap }: Props) {
-  const handleNftClick = useCallback(() => {
-    void navigate(`${window.location.pathname}/${collectionId}/${nft.id}`);
+  const handleNftClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
   }, [collectionId, nft.id]);
 
   return (
