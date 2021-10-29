@@ -7,7 +7,7 @@ function GalleryTitleIntro() {
     <>
       <StyledLogo caps>Gallery</StyledLogo>
       <Spacer height={8} />
-      <BodyRegular>Show your collection to the world</BodyRegular>
+      <BodyRegular>Show your collection to the world.</BodyRegular>
       <Spacer height={32} />
     </>
   );
