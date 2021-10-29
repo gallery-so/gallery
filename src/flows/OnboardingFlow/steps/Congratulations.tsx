@@ -17,13 +17,13 @@ function Congratulations() {
 
   return (
     <FullPageCenteredStep>
-      <Display>Congratulations</Display>
+      <Display>Welcome to your Gallery</Display>
       <Spacer height={8} />
       <StyledBodyText color={colors.gray50}>
         Let's show your collection to the world.
       </StyledBodyText>
       <Spacer height={24} />
-      <StyledButton text="Take me to my gallery" onClick={handleClick} />
+      <StyledButton text="Enter" onClick={handleClick} />
     </FullPageCenteredStep>
   );
 }
@@ -35,6 +35,7 @@ const StyledBodyText = styled(BodyRegular)`
 
 const StyledButton = styled(Button)`
   padding: 0px 24px;
+  width: 200px;
 `;
 
 export default Congratulations;
