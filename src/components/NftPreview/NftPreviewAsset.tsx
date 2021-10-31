@@ -18,7 +18,9 @@ function NftPreviewAsset({ nft }: Props) {
       return <StyledVideo src={nft.image_url} onLoadStart={setContentIsLoaded}></StyledVideo>;
     }
 
-    return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft)} alt={nft.name} />;
+    const isObit = nft.asset_contract?.name?.toLowerCase() === '0bits';
+
+    return <StyledImageWithLoading isObit={isObit} src={getResizedNftImageUrlWithFallback(nft)} alt={nft.name} />;
   }
   , [nft, setContentIsLoaded]);
 
@@ -28,6 +30,10 @@ function NftPreviewAsset({ nft }: Props) {
 const StyledVideo = styled.video`
   display: flex;
   width: 100%;
+`;
+
+const StyledImageWithLoading = styled(ImageWithLoading)<{ isObit: boolean }>`
+  background: ${({ isObit }) => isObit ? '#ff5b02' : 'inherit'};
 `;
 
 export default NftPreviewAsset;
