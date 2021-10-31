@@ -18,9 +18,11 @@ type AssetComponentProps = {
 function AssetComponent({ nft, maxHeight }: AssetComponentProps) {
   const assetType = getMediaType(nft);
 
+  const isObit = nft.asset_contract?.name?.toLowerCase() === '0bits';
+
   switch (assetType) {
     case NftMediaType.IMAGE:
-      return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
+      return <StyledImageWithLoading isObit={isObit} src={nft.image_url} alt={nft.name} />;
     case NftMediaType.AUDIO:
       return <NftDetailAudio nft={nft} />;
     case NftMediaType.VIDEO:
@@ -28,9 +30,13 @@ function AssetComponent({ nft, maxHeight }: AssetComponentProps) {
     case NftMediaType.ANIMATION:
       return <NftDetailAnimation nft={nft} />;
     default:
-      return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
+      return <StyledImageWithLoading isObit={isObit} src={nft.image_url} alt={nft.name} />;
   }
 }
+
+const StyledImageWithLoading = styled(ImageWithLoading)<{ isObit: boolean }>`
+  background: ${({ isObit }) => isObit ? '#ff5b02' : 'inherit'};
+`;
 
 type Props = {
   nft: Nft;
