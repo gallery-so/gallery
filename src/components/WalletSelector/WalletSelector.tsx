@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
@@ -92,6 +92,10 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
+    if (error instanceof UnsupportedChainIdError) {
+      console.log('UnsupportedChainIdError');
+    }
+
     console.log(error, detectedError, error?.name, error?.message);
     if (!errorToDisplay) {
       return null;
