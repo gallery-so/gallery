@@ -92,7 +92,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
     const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
-    console.log(error, detectedError);
+    console.log(error, detectedError, errorToDisplay?.code, errorToDisplay?.name, errorToDisplay?.message);
     if (!errorToDisplay) {
       return null;
     }
