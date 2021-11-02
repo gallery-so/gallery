@@ -84,7 +84,7 @@ const Overlay = styled.div`
   height: 100vh;
   width: 100vw;
   background: white;
-  opacity: 0.8;
+  opacity: 0.95;
 
   // should appear above rest of site
   z-index: 1;
@@ -102,7 +102,7 @@ const StyledContentContainer = styled.div`
   // should appear above the overlay
   z-index: 2;
 
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.gray30};
 `;
 
 const StyledContent = styled.div`
@@ -115,7 +115,7 @@ const StyledClose = styled.span`
   position: absolute;
   right: 30px;
   top: 28px;
-  padding: 10px;
+  padding: 12px 10px;
   cursor: pointer;
 `;
 
