@@ -30,11 +30,10 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
       <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
       <Spacer height={8} />
       <BodyRegular color={colors.gray50}>
-        This action is irreversible and will remove this collection from your
-        gallery. All NFTs in this collection will be unassigned and available to
+        All NFTs in this collection will be unassigned and available to
         place in other collections.
       </BodyRegular>
-      <Spacer height={40} />
+      <Spacer height={20} />
       <ButtonContainer>
         <StyledCancelButton
           mini
