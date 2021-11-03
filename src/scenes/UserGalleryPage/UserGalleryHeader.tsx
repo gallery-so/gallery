@@ -19,9 +19,9 @@ function UserGalleryHeader({ username, bio }: Props) {
       <Subdisplay>{username}</Subdisplay>
       <Spacer height={8} />
       <StyledUserDetails>
-        <BodyRegular color={colors.gray50}>
+        <StyledBio color={colors.gray50}>
           <Markdown text={unescapedBio} />
-        </BodyRegular>
+        </StyledBio>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
@@ -40,6 +40,11 @@ const StyledUserDetails = styled.div`
   justify-content: space-between;
   width: 70%;
   word-break: break-word;
+`;
+
+const StyledBio = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-line;
 `;
 
 export default UserGalleryHeader;

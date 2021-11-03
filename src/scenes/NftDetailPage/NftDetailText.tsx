@@ -19,9 +19,9 @@ function NftDetailText({ nft }: Props) {
       <Spacer height={16} />
       <BodyRegular>{nft.token_collection_name}</BodyRegular>
       <Spacer height={16} />
-      <BodyRegular color={colors.gray50}>
+      <StyledNftDescription color={colors.gray50}>
         <Markdown text={nft.description} />
-      </BodyRegular>
+      </StyledNftDescription>
       <Spacer height={32} />
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
       <NftOwnerLink ownerAddress={nft.owner_address} />
@@ -75,6 +75,11 @@ const StyledLink = styled.a`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const StyledNftDescription = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-line;
 `;
 
 export default NftDetailText;

@@ -27,9 +27,9 @@ function UserGalleryCollection({ collection }: Props) {
         {unescapedCollectorsNote
           && <>
             <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
+            <StyledCollectorsNote color={colors.gray50}>
               <Markdown text={unescapedCollectorsNote} />
-            </BodyRegular>
+            </StyledCollectorsNote>
           </>
         }
       </StyledCollectionHeader>
@@ -78,6 +78,11 @@ const StyledCollectionHeader = styled.div`
   @media only screen and ${breakpoints.desktop} {
     margin-bottom: -20px;
   }  
+`;
+
+const StyledCollectorsNote = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-line;
 `;
 
 const StyledCollectionNfts = styled.div`

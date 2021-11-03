@@ -52,9 +52,9 @@ function CollectionRow({ collection, className }: Props) {
         <TextContainer>
           <BodyRegular>{unescapedCollectionName}</BodyRegular>
           <Spacer height={4} />
-          <Caption color={colors.gray50}>
+          <StyledCaption color={colors.gray50}>
             <Markdown text={truncatedCollectorsNote} />
-          </Caption>
+          </StyledCaption>
         </TextContainer>
         <Settings />
       </Header>
@@ -103,6 +103,11 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const StyledCaption = styled(Caption)`
+  /* ensures linebreaks are reflected in UI */
+  white-space: pre-line;
 `;
 
 const TextContainer = styled.div`
