@@ -25,7 +25,7 @@ export default function GalleryLink({ to, href, children, underlined = true, und
 
   if (href) {
     return (
-      <StyledAnchor href={href} target="_blank" rel="noopener noreferrer" underlined={underlined} underlineOnHover={underlineOnHover}>{children}</StyledAnchor>
+      <StyledAnchor href={href} target="_blank" underlined={underlined} underlineOnHover={underlineOnHover}>{children}</StyledAnchor>
     );
   }
 
