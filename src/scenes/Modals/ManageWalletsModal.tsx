@@ -1,3 +1,4 @@
+import breakpoints from 'components/core/breakpoints';
 import ManageWallets from 'components/ManageWallets/ManageWallets';
 import styled from 'styled-components';
 
@@ -14,7 +15,9 @@ function ManageWalletsModal({ newAddress }: Props) {
 }
 
 const StyledManageWalletsModal = styled.div`
-  width: 480px;
+  @media only screen and ${breakpoints.tablet} {
+    width: 480px;
+  }
 `;
 
 export default ManageWalletsModal;

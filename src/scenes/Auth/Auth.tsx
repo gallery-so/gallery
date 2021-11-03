@@ -9,6 +9,8 @@ import { Caption } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
+import breakpoints from 'components/core/breakpoints';
+import Spacer from 'components/core/Spacer/Spacer';
 
 function Auth(_: RouteComponentProps) {
   // Whether the user is web3-authenticated
@@ -30,17 +32,22 @@ function Auth(_: RouteComponentProps) {
   }
 
   return (
-    <Page centered>
+    <StyledAuthPage centered>
       <StyledWalletSelectorWrapper>
         <WalletSelector />
       </StyledWalletSelectorWrapper>
+      <Spacer height={32}/>
       <StyledCaption color={colors.gray50}>
-        Gallery is non-custodial and secure. We will never request access to
+        Gallery is non-custodial and secure.{'\n'} We will never request access to
         your NFTs.
       </StyledCaption>
-    </Page>
+    </StyledAuthPage>
   );
 }
+
+const StyledAuthPage = styled(Page)`
+  margin: 0 16px;
+`;
 
 const StyledWalletSelectorWrapper = styled.div`
   flex-grow: 1;
@@ -49,8 +56,12 @@ const StyledWalletSelectorWrapper = styled.div`
 `;
 
 const StyledCaption = styled(Caption)`
-  position: absolute;
-  bottom: 16px;
+  text-align: center;
+  white-space: pre-line;
+
+  @media only screen and ${breakpoints.tablet} {
+    white-space: initial;
+  }
 `;
 
 export default memo(Auth);

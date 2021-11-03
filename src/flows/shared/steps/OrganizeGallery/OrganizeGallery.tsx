@@ -14,8 +14,10 @@ import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
-import Header from './Header';
+import detectMobileDevice from 'utils/detectMobileDevice';
+import { useToastActions } from 'contexts/toast/ToastContext';
 import CollectionDnd from './CollectionDnd';
+import Header from './Header';
 
 type ConfigProps = {
   wizardId: string;
@@ -24,6 +26,18 @@ type ConfigProps = {
   sortedCollections: Collection[];
   next: WizardContext['next'];
 };
+
+const isMobileDevice = detectMobileDevice();
+
+function useNotOptimizedForMobileWarning() {
+  const { pushToast } = useToastActions();
+
+  useEffect(() => {
+    if (isMobileDevice) {
+      pushToast('This page isn\'t optimized for mobile yet. Please use a computer to organize your Gallery.');
+    }
+  }, []);
+}
 
 function useWizardConfig({
   wizardId,
@@ -72,6 +86,8 @@ function OrganizeGallery({ next }: WizardContext) {
   const { id, collections } = useAuthenticatedGallery();
   const [sortedCollections, setSortedCollections] = useState(collections);
 
+  useNotOptimizedForMobileWarning();
+
   useEffect(() => {
     // When the server sends down its source of truth, sync the local state
     setSortedCollections(collections);
@@ -102,9 +118,9 @@ function OrganizeGallery({ next }: WizardContext) {
           </BodyRegular>
         </StyledEmptyGalleryMessage>
           : <CollectionDnd
-            galleryId={id}
-            sortedCollections={sortedCollections}
-            setSortedCollections={setSortedCollections}
+              galleryId={id}
+              sortedCollections={sortedCollections}
+              setSortedCollections={setSortedCollections}
           />
         }
         <Spacer height={120} />
