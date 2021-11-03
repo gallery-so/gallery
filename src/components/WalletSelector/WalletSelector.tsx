@@ -97,6 +97,8 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       if (error instanceof UserRejectedRequestError) {
         return getErrorMessage('REJECTED_SIGNATURE');
       }
+
+      return getErrorMessage('UNKNOWN_ERROR');
     }
 
     // detectedError is an error we manually set elsewhere in the app
