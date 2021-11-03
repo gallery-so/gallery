@@ -7,6 +7,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
 import { useMemo } from 'react';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   collection: Collection;
@@ -27,7 +28,7 @@ function UserGalleryCollection({ collection }: Props) {
           && <>
             <Spacer height={8} />
             <StyledCollectorsNote color={colors.gray50}>
-              {unescapedCollectorsNote}
+              <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
         }
@@ -57,6 +58,9 @@ const StyledCollectionHeader = styled.div`
   flex-direction: column;
   width: 100%;
 
+  // to appear above content underneath
+  z-index: 1;
+
   @media only screen and ${breakpoints.mobile} {
     margin-bottom: 20px;
   }
@@ -78,7 +82,7 @@ const StyledCollectionHeader = styled.div`
 
 const StyledCollectorsNote = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
-  white-space: pre-wrap;
+  white-space: pre-line;
 `;
 
 const StyledCollectionNfts = styled.div`

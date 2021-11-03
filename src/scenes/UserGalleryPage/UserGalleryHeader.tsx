@@ -4,6 +4,7 @@ import unescape from 'lodash.unescape';
 import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   username: string;
@@ -18,9 +19,9 @@ function UserGalleryHeader({ username, bio }: Props) {
       <Subdisplay>{username}</Subdisplay>
       <Spacer height={8} />
       <StyledUserDetails>
-        <StyledBodyRegular color={colors.gray50}>
-          {unescapedBio}
-        </StyledBodyRegular>
+        <StyledBio color={colors.gray50}>
+          <Markdown text={unescapedBio} />
+        </StyledBio>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
@@ -41,9 +42,9 @@ const StyledUserDetails = styled.div`
   word-break: break-word;
 `;
 
-const StyledBodyRegular = styled(BodyRegular)`
+const StyledBio = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
-  white-space: pre-wrap;
+  white-space: pre-line;
 `;
 
 export default UserGalleryHeader;

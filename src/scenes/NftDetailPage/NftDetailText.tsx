@@ -5,6 +5,7 @@ import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
+import Markdown from 'components/core/Markdown/Markdown';
 import NftAdditionalDetails from './NftAdditionalDetails';
 
 type Props = {
@@ -19,7 +20,7 @@ function NftDetailText({ nft }: Props) {
       <BodyRegular>{nft.token_collection_name}</BodyRegular>
       <Spacer height={16} />
       <StyledNftDescription color={colors.gray50}>
-        {nft.description}
+        <Markdown text={nft.description} />
       </StyledNftDescription>
       <Spacer height={32} />
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
@@ -77,6 +78,7 @@ const StyledLink = styled.a`
 `;
 
 const StyledNftDescription = styled(BodyRegular)`
+  /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;
 
