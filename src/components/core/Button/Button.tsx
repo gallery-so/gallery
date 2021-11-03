@@ -42,7 +42,7 @@ function Button({
       {loading ? (
         <Loader inverted size={mini ? 'mini' : 'small'} />
       ) : (
-        <ButtonText color={type === 'primary' ? colors.white : colors.black}>
+        <ButtonText color={type === 'primary' ? colors.white : colors.gray80}>
           {text}
         </ButtonText>
       )}

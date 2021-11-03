@@ -15,7 +15,7 @@ function NftPreviewAsset({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
     if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
-      return <StyledVideo src={nft.image_url} onLoadStart={setContentIsLoaded}></StyledVideo>;
+      return <StyledVideo src={`${nft.image_url}#t=0.5`} onLoadStart={setContentIsLoaded} preload="metadata"></StyledVideo>;
     }
 
     const isObit = nft.asset_contract?.name?.toLowerCase() === '0bits';

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
@@ -11,6 +11,7 @@ import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { convertWalletName } from 'utils/wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
+import { UserRejectedRequestError } from '@web3-react/injected-connector';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
@@ -31,10 +32,6 @@ type ErrorMessage = {
 // TODO: consider making these enums
 const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   // Client-side provider errors: https://eips.ethereum.org/EIPS/eip-1193#provider-errors
-  4001: {
-    heading: 'Authorization denied',
-    body: 'Please approve your wallet to connect to Gallery.',
-  },
   UNSUPPORTED_CHAIN: {
     heading: 'Authorization error',
     body: 'The selected chain is unsupported. We currently only support the Ethereum network.',
@@ -92,33 +89,33 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   // to manually set error. since not all errors come with an
   // error code, we'll add them as they come up case-by-case
   const displayedError = useMemo(() => {
-    const errorToDisplay = (error as Web3Error | undefined) ?? detectedError;
-    console.log(error, detectedError);
-    if (!errorToDisplay) {
-      return null;
-    }
-
-    // Handle error from server
-    if (errorToDisplay.code === 'GALLERY_SERVER_ERROR') {
-      return {
-        heading: 'Authorization error',
-        body: errorToDisplay.message,
-      };
-    }
-
-    // Handle error from web3 lib
-    if (!errorToDisplay.code) {
-      // Manually handle error cases as we run into them with wallets
-      if (errorToDisplay.name === 'UserRejectedRequestError') {
-        errorToDisplay.code = '4001';
+    // error is an error from the web3 provider
+    if (error) {
+      if (error instanceof UnsupportedChainIdError) {
+        return getErrorMessage('UNSUPPORTED_CHAIN');
       }
 
-      if (errorToDisplay.name === 'UnsupportedChainIdError') {
-        errorToDisplay.code = 'UNSUPPORTED_CHAIN';
+      if (error instanceof UserRejectedRequestError) {
+        return getErrorMessage('REJECTED_SIGNATURE');
       }
+
+      return getErrorMessage('UNKNOWN_ERROR');
     }
 
-    return getErrorMessage(errorToDisplay.code ?? '');
+    // detectedError is an error we manually set elsewhere in the app
+    if (detectedError) {
+      // Handle error from server
+      if (detectedError.code === 'GALLERY_SERVER_ERROR') {
+        return {
+          heading: 'Authorization error',
+          body: detectedError.message,
+        };
+      }
+
+      return getErrorMessage(detectedError.code);
+    }
+
+    return null;
   }, [error, detectedError]);
 
   const setToPendingState = useCallback(
