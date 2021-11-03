@@ -8,6 +8,7 @@ import { Nft } from 'types/Nft';
 import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { Collection } from 'types/Collection';
 import { NftMediaType } from 'components/core/enums';
+import Markdown from 'components/core/Markdown/Markdown';
 import { ReactComponent as Settings } from './collection-settings.svg';
 
 type Props = {
@@ -51,7 +52,9 @@ function CollectionRow({ collection, className }: Props) {
         <TextContainer>
           <BodyRegular>{unescapedCollectionName}</BodyRegular>
           <Spacer height={4} />
-          <Caption color={colors.gray50}>{truncatedCollectorsNote}</Caption>
+          <Caption color={colors.gray50}>
+            <Markdown text={truncatedCollectorsNote} />
+          </Caption>
         </TextContainer>
         <Settings />
       </Header>
