@@ -48,8 +48,8 @@ function MembershipMintPage({ membershipColor }: Props) {
   const [totalSupply, setTotalSupply] = useState(0);
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(null);
-  const [transactionHash, setTransactionHash] = useState('a');
-  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(TransactionStatus.SUCCESS);
+  const [transactionHash, setTransactionHash] = useState('');
+  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(null);
 
   const membershipProperties = useMemo(() => MEMBERSHIP_PROPERTIES_MAP[membershipColor], [membershipColor]);
   // check the contract whether the user's address is allowed to call mint, and set the result in local state
