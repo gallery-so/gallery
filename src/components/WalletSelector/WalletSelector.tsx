@@ -10,6 +10,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { convertWalletName } from 'utils/wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
+import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
@@ -206,8 +207,12 @@ const StyledWalletSelector = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  max-width: 480px;
-  width: 400px;
+  width: 70vw;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 400px;
+    max-width: 480px;
+  }
 `;
 
 const StyledBodyMedium = styled(BodyMedium)`
