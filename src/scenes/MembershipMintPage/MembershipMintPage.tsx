@@ -48,8 +48,8 @@ function MembershipMintPage({ membershipColor }: Props) {
   const [totalSupply, setTotalSupply] = useState(0);
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(null);
-  const [transactionHash, setTransactionHash] = useState('');
-  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(null);
+  const [transactionHash, setTransactionHash] = useState('a');
+  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(TransactionStatus.SUCCESS);
 
   const membershipProperties = useMemo(() => MEMBERSHIP_PROPERTIES_MAP[membershipColor], [membershipColor]);
   // check the contract whether the user's address is allowed to call mint, and set the result in local state
@@ -201,8 +201,16 @@ function MembershipMintPage({ membershipColor }: Props) {
               <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`} >
                 <BodyRegular>View on Etherscan</BodyRegular>
               </GalleryLink>
-            </div></>
+            </div>
+          </>
           }
+          {transactionStatus === TransactionStatus.SUCCESS && <>
+            <Spacer height={16}/>
+            <BodyRegular>You can now sign up for Gallery.</BodyRegular>
+            <GalleryLink to="/auth">
+              <BodyRegular>Proceed to Onboarding</BodyRegular>
+            </GalleryLink>
+          </>}
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
         </StyledDetailText>
