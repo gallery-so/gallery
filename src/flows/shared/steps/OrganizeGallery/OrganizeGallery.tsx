@@ -14,6 +14,7 @@ import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
@@ -31,14 +32,21 @@ function useWizardConfig({
   next,
 }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
+  const { getVisitedPagesLength } = useGalleryNavigationActions();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
     setOnPrevious(undefined);
   }, [setOnNext, setOnPrevious]);
 
-  const returnToProfile = useCallback(() => {
-    void navigate(`/${username}`);
+  const returnToPrevious = useCallback(() => {
+    const visitedPagesLength = getVisitedPagesLength();
+    if (visitedPagesLength === 1) {
+      void navigate(`/${username}`);
+    } else {
+      void navigate(-1);
+    }
+
     clearOnNext();
   }, [clearOnNext, username]);
 
@@ -56,12 +64,12 @@ function useWizardConfig({
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
-    setOnPrevious(returnToProfile);
+    setOnPrevious(returnToPrevious);
   }, [
     setOnPrevious,
     setOnNext,
     saveGalleryAndReturnToProfile,
-    returnToProfile,
+    returnToPrevious,
   ]);
 }
 
