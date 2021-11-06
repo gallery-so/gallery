@@ -7,6 +7,7 @@ import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
 import useRemoveUserAddress from 'hooks/api/users/useRemoveUserAddress';
 import ReactTooltip from 'react-tooltip';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   address: string;
@@ -68,4 +69,9 @@ const StyledWalletRow = styled.div`
   padding: 16px;
   margin-bottom: 8px;
   justify-content: space-between;
+  flex-direction: column;
+
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;
