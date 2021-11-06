@@ -34,4 +34,19 @@ export type Nft = {
   token_collection_name: string;
   token_metadata_url: string;
   user_id: string;
+  ownership_history: OwnershipHistory;
+};
+
+type OwnershipHistory = {
+  created_at: string;
+  id: string;
+  nft_id: string;
+  owners: Owner[];
+};
+
+export type Owner = {
+  address?: string;
+  user_id?: string;
+  username?: string;
+  time_obtained?: string;
 };
