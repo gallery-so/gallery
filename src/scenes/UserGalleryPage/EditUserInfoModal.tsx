@@ -8,6 +8,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { navigate } from '@reach/router';
+import breakpoints from 'components/core/breakpoints';
 
 function EditUserInfoModal() {
   const existingUser = useAuthenticatedUser();
@@ -85,7 +86,9 @@ const StyledEditUserInfoModal = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 480px;
+  @media only screen and ${breakpoints.tablet} {
+    width: 480px;
+  }
 `;
 
 const StyledButton = styled(Button)`

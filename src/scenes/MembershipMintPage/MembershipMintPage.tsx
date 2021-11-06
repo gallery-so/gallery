@@ -201,8 +201,16 @@ function MembershipMintPage({ membershipColor }: Props) {
               <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`} >
                 <BodyRegular>View on Etherscan</BodyRegular>
               </GalleryLink>
-            </div></>
+            </div>
+          </>
           }
+          {transactionStatus === TransactionStatus.SUCCESS && <>
+            <Spacer height={16}/>
+            <BodyRegular>You can now sign up for Gallery.</BodyRegular>
+            <GalleryLink to="/auth">
+              <BodyRegular>Proceed to Onboarding</BodyRegular>
+            </GalleryLink>
+          </>}
           {error && <>
             <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
         </StyledDetailText>

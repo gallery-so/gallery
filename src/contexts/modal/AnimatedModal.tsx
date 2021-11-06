@@ -2,6 +2,7 @@ import { ReactElement, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   isActive: boolean;
@@ -98,6 +99,11 @@ const StyledContentContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 90vw;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: initial;
+  }
 
   // should appear above the overlay
   z-index: 2;

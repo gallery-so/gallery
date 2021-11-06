@@ -15,6 +15,8 @@ import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
+import detectMobileDevice from 'utils/detectMobileDevice';
+import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 
@@ -25,6 +27,18 @@ type ConfigProps = {
   sortedCollections: Collection[];
   next: WizardContext['next'];
 };
+
+const isMobileDevice = detectMobileDevice();
+
+function useNotOptimizedForMobileWarning() {
+  const { pushToast } = useToastActions();
+
+  useEffect(() => {
+    if (isMobileDevice) {
+      pushToast('This page isn\'t optimized for mobile yet. Please use a computer to organize your Gallery.');
+    }
+  }, []);
+}
 
 function useWizardConfig({
   wizardId,
@@ -79,6 +93,8 @@ function OrganizeGallery({ next }: WizardContext) {
 
   const { id, collections } = useAuthenticatedGallery();
   const [sortedCollections, setSortedCollections] = useState(collections);
+
+  useNotOptimizedForMobileWarning();
 
   useEffect(() => {
     // When the server sends down its source of truth, sync the local state
