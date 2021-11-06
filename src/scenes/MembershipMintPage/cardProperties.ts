@@ -1,3 +1,5 @@
+import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
+
 const DESCRIPTION_SILVER = `Become a member of Gallery.\n
 Holding this grants you the ability to sign up as a new user and access the Gallery beta. You must be holding a membership card at all times in order to continue updating your gallery.\n
 While the Silver Member Card supply is capped at 500, we will be releasing other tiers of Member Cards for future users.\n
@@ -15,7 +17,7 @@ Limit 1 per wallet address.`;
 const DESCRIPTION_GOLD = `Become a member of Gallery.\n
 Holding this grants you the ability to sign up as a new user and access the Gallery beta. You must be holding a membership card at all times in order to continue updating your gallery.\n
 There is a total supply of 250 Gold Membership Cards.\n
-[Join the Discord](https://discord.gg/BM4qhEy3Qj) and follow our Twitter [@useGALLERY](https://twitter.com/usegallery) to find ways to earn this NFT.\n
+[Join the Discord](${GALLERY_DISCORD}) and follow our Twitter [@useGALLERY](${GALLERY_TWITTER}) to find ways to earn this NFT.\n
 Limit 1 per wallet address.\n
 Connect your wallet to see if you're eligible to mint.`;
 

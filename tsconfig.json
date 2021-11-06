@@ -19,16 +19,17 @@
     "paths": {
       "abis/*": ["src/abis/*"],
       "assets/*": ["src/assets/*"],
-      "scenes/*": ["src/scenes/*"],
-      "contexts/*": ["src/contexts/*"],
       "components/*": ["src/components/*"],
       "connectors/*": ["src/connectors/*"],
+      "constants/*": ["src/constants/*"],
+      "contexts/*": ["src/contexts/*"],
+      "errors/*": ["src/errors/*"],
       "flows/*": ["src/flows/*"],
       "hooks/*": ["src/hooks/*"],
-      "utils/*": ["src/utils/*"],
       "mocks/*": ["src/mocks/*"],
+      "scenes/*": ["src/scenes/*"],
       "types/*": ["src/types/*"],
-      "errors/*": ["src/errors/*"]
+      "utils/*": ["src/utils/*"],
     },
     "downlevelIteration": true
   },
