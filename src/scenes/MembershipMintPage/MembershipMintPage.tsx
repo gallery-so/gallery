@@ -6,6 +6,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
+import Markdown from 'components/core/Markdown/Markdown';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -166,7 +167,7 @@ function MembershipMintPage({ membershipColor }: Props) {
           <Heading>{membershipProperties.title}</Heading>
           <Spacer height={16} />
           <StyledNftDescription color={colors.gray50}>
-            {membershipProperties.description}
+            <Markdown text={membershipProperties.description}/>
           </StyledNftDescription>
           <Spacer height={32} />
           {

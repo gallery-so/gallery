@@ -5,6 +5,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { GLOBAL_FOOTER_HEIGHT } from './constants';
+import { GALLERY_DISCORD, GALLERY_MEMBERSHIP_OPENSEA, GALLERY_TWITTER } from 'constants/urls';
 
 function GlobalFooter() {
   return (
@@ -15,7 +16,7 @@ function GlobalFooter() {
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink
-            href="https://opensea.io/collection/gallery-membership-cards"
+            href={GALLERY_MEMBERSHIP_OPENSEA}
             target="_blank"
             rel="noreferrer"
           >
@@ -23,7 +24,7 @@ function GlobalFooter() {
           </StyledLink>
           <Spacer width={8}></Spacer>
           <StyledLink
-            href="https://discord.gg/BM4qhEy3Qj"
+            href={GALLERY_DISCORD}
             target="_blank"
             rel="noreferrer"
           >
@@ -31,7 +32,7 @@ function GlobalFooter() {
           </StyledLink>
           <Spacer width={8}></Spacer>
           <StyledLink
-            href="https://twitter.com/usegallery"
+            href={GALLERY_TWITTER}
             target="_blank"
             rel="noreferrer"
           >
