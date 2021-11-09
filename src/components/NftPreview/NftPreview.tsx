@@ -7,6 +7,7 @@ import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import { navigateToUrl } from 'utils/navigate';
+import { LAYOUT_DIMENSIONS } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
 
@@ -14,15 +15,25 @@ type Props = {
   nft: Nft;
   collectionId: string;
   gap: number;
+  columns: number;
 };
 
-function NftPreview({ nft, collectionId, gap }: Props) {
+// const LAYOUT_DIMENSIONS: Record<number, any> = {
+//   1: { size: 600, gap: 40 },
+//   2: { size: 380, gap: 80 },
+//   3: { size: 288, gap: 40 },
+//   4: { size: 214, gap: 28 },
+//   5: { size: 160, gap: 28 },
+//   6: { size: 136, gap: 20 },
+// };
+
+function NftPreview({ nft, collectionId, columns }: Props) {
   const handleNftClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
   }, [collectionId, nft.id]);
 
   return (
-    <StyledNftPreview key={nft.id} gap={gap}>
+    <StyledNftPreview key={nft.id} size={LAYOUT_DIMENSIONS[columns].size} gap={LAYOUT_DIMENSIONS[columns].gap}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           <NftPreviewAsset nft={nft}/>
@@ -62,7 +73,7 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ gap: number }>`
+const StyledNftPreview = styled.div<{ gap: number; size: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,7 +103,7 @@ const StyledNftPreview = styled.div<{ gap: number }>`
 
   // use margin to create row-gap for now
   @media only screen and ${breakpoints.desktop} {
-    width: 288px;
+    width: ${({ size }) => size}px;
     margin: ${({ gap }) => gap}px;
   }
 `;

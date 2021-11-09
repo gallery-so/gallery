@@ -12,12 +12,13 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import Dropdown from 'components/core/Dropdown/Dropdown';
+import useEffectAfterMount from 'hooks/useEffectAfterMount';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
-import Dropdown from 'components/core/Dropdown/Dropdown';
 import ColumnAdjuster from './ColumnAdjuster';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
@@ -49,12 +50,21 @@ function CollectionEditor() {
 
   const { collections } = useAuthenticatedGallery();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
-  const nftsFromCollectionBeingEdited = useMemo(() => {
-    const collectionBeingEdited = collections.find(
-      coll => coll.id === collectionIdBeingEditedRef.current,
-    );
-    return collectionBeingEdited?.nfts ?? [];
-  }, [collections]);
+  const collectionBeingEdited = useMemo(
+    () => collections.find(coll => coll.id === collectionIdBeingEditedRef.current),
+    [collections]);
+  const nftsFromCollectionBeingEdited = useMemo(() => collectionBeingEdited?.nfts ?? [], [collectionBeingEdited]);
+
+  // Set collection layout if we are editing an existing collection
+  const { setColumns } = useCollectionEditorActions();
+  const mountRef = useRef(false);
+  useEffect(() => {
+    if (collectionBeingEdited) {
+      setColumns(collectionBeingEdited.layout.columns);
+    }
+
+    mountRef.current = true;
+  }, [collectionBeingEdited]);
 
   const sidebarNftsRef = useRef<SidebarNftsState>({});
   useEffect(() => {
@@ -139,8 +149,9 @@ function CollectionEditor() {
       </StyledSidebarContainer>
       <StyledEditorContainer>
         <StyledMenuContainer>
-        <Dropdown mainText="Canvas Settings"><ColumnAdjuster/></Dropdown>
-
+          <Dropdown mainText="Canvas Settings">
+            <ColumnAdjuster/>
+          </Dropdown>
         </StyledMenuContainer>
         {stagedNfts.length > 0 ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
@@ -166,6 +177,6 @@ const StyledMenuContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin: 32px;
-`
+`;
 
 export default CollectionEditor;

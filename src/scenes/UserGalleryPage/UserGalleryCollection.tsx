@@ -16,9 +16,19 @@ type Props = {
 // Space between NFTs in pixels
 const GAP_PX = 40;
 
+export const LAYOUT_DIMENSIONS: Record<number, any> = {
+  1: { size: 600, gap: 40 },
+  2: { size: 380, gap: 80 },
+  3: { size: 288, gap: 40 },
+  4: { size: 214, gap: 28 },
+  5: { size: 160, gap: 28 },
+  6: { size: 137, gap: 20 },
+};
+
 function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
+  const columns = useMemo(() => collection.layout.columns, [collection.layout.columns]);
 
   return (
     <StyledCollectionWrapper>
@@ -33,13 +43,14 @@ function UserGalleryCollection({ collection }: Props) {
           </>
         }
       </StyledCollectionHeader>
-      <StyledCollectionNfts>
+      <StyledCollectionNfts gap={LAYOUT_DIMENSIONS[columns].gap} columns={columns}>
         {collection.nfts.map(nft => (
           <NftPreview
             key={nft.id}
             nft={nft}
             collectionId={collection.id}
             gap={GAP_PX}
+            columns={columns}
           />
         ))}
       </StyledCollectionNfts>
@@ -85,24 +96,25 @@ const StyledCollectorsNote = styled(BodyRegular)`
   white-space: pre-line;
 `;
 
-const StyledCollectionNfts = styled.div`
+const StyledCollectionNfts = styled.div<{ gap: number; columns: number }>`
   margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: ${({ columns }) => columns < 3 ? 'center' : 'flex-start'};
 
   // Can't use these for now due to lack of Safari support
   // column-gap: ${GAP_PX}px;
   // row-gap: ${GAP_PX}px;
 
   @media only screen and ${breakpoints.mobileLarge} {
-    width: calc(100% + ${GAP_PX}px);
+    width: calc(100% + ${({ gap }) => gap}px);
     margin-left: -${GAP_PX / 2}px;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    width: calc(100% + ${GAP_PX * 2}px);
-    margin-left: -${GAP_PX}px;
+    width: calc(100% + ${({ gap }) => gap * 2}px);
+    margin-left: -${({ gap }) => gap}px;
   }
 `;
 

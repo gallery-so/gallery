@@ -73,6 +73,7 @@ type CollectionEditorActions = {
   handleSortNfts: (event: DragEndEvent) => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
+  setColumns: (columns: number) => void;
 };
 
 const CollectionEditorActionsContext = createContext<
@@ -171,6 +172,13 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     }));
   }, []);
 
+  const setColumns = useCallback((columns: number) => {
+    setCollectionMetadataState(previous => ({
+      ...previous,
+      layout: { ...previous.layout, columns },
+    }));
+  }, []);
+
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
       setSidebarNfts,
@@ -180,8 +188,9 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       handleSortNfts,
       incrementColumns,
       decrementColumns,
+      setColumns,
     }),
-    [setSidebarNfts, setNftsIsSelected, stageNfts, unstageNfts, handleSortNfts, incrementColumns, decrementColumns],
+    [setSidebarNfts, setNftsIsSelected, stageNfts, unstageNfts, handleSortNfts, incrementColumns, decrementColumns, setColumns],
   );
 
   return (
