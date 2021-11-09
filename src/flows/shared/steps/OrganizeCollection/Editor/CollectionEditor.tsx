@@ -17,6 +17,8 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
+import Dropdown from 'components/core/Dropdown/Dropdown';
+import ColumnAdjuster from './ColumnAdjuster';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
@@ -136,6 +138,10 @@ function CollectionEditor() {
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
+        <StyledMenuContainer>
+        <Dropdown mainText="Canvas Settings"><ColumnAdjuster/></Dropdown>
+
+        </StyledMenuContainer>
         {stagedNfts.length > 0 ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
     </StyledOrganizeCollection>
@@ -155,5 +161,11 @@ const StyledSidebarContainer = styled.div`
 const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
+
+const StyledMenuContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 32px;
+`
 
 export default CollectionEditor;
