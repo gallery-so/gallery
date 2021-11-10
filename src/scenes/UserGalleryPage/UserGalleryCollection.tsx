@@ -44,19 +44,28 @@ function UserGalleryCollection({ collection }: Props) {
         }
       </StyledCollectionHeader>
       <StyledCollectionNfts gap={LAYOUT_DIMENSIONS[columns].gap} columns={columns}>
-        {collection.nfts.map(nft => (
-          <NftPreview
-            key={nft.id}
-            nft={nft}
-            collectionId={collection.id}
-            gap={GAP_PX}
-            columns={columns}
-          />
-        ))}
+        <StyledTest>
+          {collection.nfts.map(nft => (
+            <NftPreview
+              key={nft.id}
+              nft={nft}
+              collectionId={collection.id}
+              gap={GAP_PX}
+              columns={columns}
+            />
+          ))}
+        </StyledTest>
       </StyledCollectionNfts>
     </StyledCollectionWrapper>
   );
 }
+
+const StyledTest = styled.div`
+display: flex;
+flex-wrap: wrap;
+padding: 0 auto;
+margin: 0 auto;
+`;
 
 const StyledCollectionWrapper = styled.div`
   display: flex;

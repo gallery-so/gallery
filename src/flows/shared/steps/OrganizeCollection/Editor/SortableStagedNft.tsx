@@ -41,7 +41,7 @@ function SortableStagedNft({ editModeNft, size }: Props) {
       // @ts-expect-error force overload
       style={style}
     >
-      <StyledGradient type="top" />
+      {/* <StyledGradient type="top" /> */}
       <StagedNftImage
         editModeNft={editModeNft}
         size={size}
@@ -50,6 +50,7 @@ function SortableStagedNft({ editModeNft, size }: Props) {
         {...listeners}
       />
       <StyledUnstageButton editModeNft={editModeNft} />
+      <StyledGradient type="top" direction="up" />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
   );

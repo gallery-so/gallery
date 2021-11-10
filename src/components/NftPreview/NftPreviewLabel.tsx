@@ -28,6 +28,8 @@ export const StyledNftPreviewLabel = styled.div`
   text-align: right;
   padding: 8px;
   z-index: 10;
+  height: 100%;
+  justify-content: end;
 `;
 
 const StyledBodyRegular = styled(BodyRegular)`

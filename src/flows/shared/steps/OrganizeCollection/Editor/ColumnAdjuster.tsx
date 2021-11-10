@@ -1,9 +1,36 @@
-import TextButton from 'components/core/Button/TextButton';
+import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
+import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BodyRegular, Caption } from 'components/core/Text/Text';
 import { useCollectionEditorActions, useCollectionMetadataState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
+
+type Props = {
+  onClick: () => void;
+};
+
+function SymbolButton({ onClick }: Props) {
+  return (
+    <StyledSymbolButton onClick={onClick}>﹣</StyledSymbolButton>
+  );
+}
+
+const StyledSymbolButton = styled.button`
+  padding: 0;
+  border-style: none;
+  cursor: pointer;
+  background: none;
+  width: max-content;
+
+  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
+
+  `;
+  // &:hover ${StyledButtonText} {
+  //   color: ${colors.black};
+  //   text-decoration: ${({ underlineOnHover }) =>
+  //   underlineOnHover ? 'underline' : undefined};
+  // }
 
 function ColumnAdjuster() {
   const collectionMetadata = useCollectionMetadataState();
@@ -24,7 +51,8 @@ function ColumnAdjuster() {
       <Caption>COLUMNS</Caption>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton text="-" onClick={handleDecrementButtonClick} disabled={columns <= 1}/>
+        {/* <SymbolButton onClick={handleDecrementButtonClick} /> */}
+        <StyledColumnButton text="−" onClick={handleDecrementButtonClick} disabled={columns <= 1}/>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
         <StyledColumnButton text="+" onClick={handleIncrementButtonClick} disabled={columns > 5}/>
       </StyledButtonContainer>
@@ -34,17 +62,25 @@ function ColumnAdjuster() {
 
 const StyledColumnAdjuster = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const StyledButtonContainer = styled.div`
   display: flex;
-  `;
+  align-items: baseline;
+`;
 
-const StyledColumnButton = styled(TextButton)`
-  font-size: 16px;`;
-
+const StyledColumnButton = styled(TextButton)<{ disabled: boolean }>`
+  font-size: 16px;
+  
+  // Override default TextButton font size
+  ${StyledButtonText} {
+    color: ${({ disabled }) => disabled ? colors.gray20 : colors.gray70};
+    font-size: 20px;
+  }
+`;
 const StyledNumberOfColumns = styled(BodyRegular)`
   padding: 0 8px;
-  `;
+`;
 
 export default ColumnAdjuster;
