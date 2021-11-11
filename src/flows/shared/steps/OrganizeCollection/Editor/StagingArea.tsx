@@ -145,7 +145,6 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   flex-wrap: wrap;
 
   margin-top: 20px;
-  justify-content: center;
 
   // Limit DnD to 3 columns
   max-width: ${({ width }) => width}px;

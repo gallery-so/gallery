@@ -18,7 +18,7 @@ const GAP_PX = 40;
 
 export const LAYOUT_DIMENSIONS: Record<number, any> = {
   1: { size: 600, gap: 40 },
-  2: { size: 380, gap: 80 },
+  2: { size: 482, gap: 30 },
   3: { size: 288, gap: 40 },
   4: { size: 214, gap: 28 },
   5: { size: 160, gap: 28 },
@@ -44,27 +44,25 @@ function UserGalleryCollection({ collection }: Props) {
         }
       </StyledCollectionHeader>
       <StyledCollectionNfts gap={LAYOUT_DIMENSIONS[columns].gap} columns={columns}>
-        <StyledTest>
-          {collection.nfts.map(nft => (
-            <NftPreview
-              key={nft.id}
-              nft={nft}
-              collectionId={collection.id}
-              gap={GAP_PX}
-              columns={columns}
-            />
-          ))}
-        </StyledTest>
+        {/* <StyledTest> */}
+        {collection.nfts.map(nft => (
+          <NftPreview
+            key={nft.id}
+            nft={nft}
+            collectionId={collection.id}
+            gap={GAP_PX}
+            columns={columns}
+          />
+        ))}
+        {/* </StyledTest> */}
       </StyledCollectionNfts>
     </StyledCollectionWrapper>
   );
 }
 
 const StyledTest = styled.div`
-display: flex;
-flex-wrap: wrap;
-padding: 0 auto;
-margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -110,7 +108,7 @@ const StyledCollectionNfts = styled.div<{ gap: number; columns: number }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: ${({ columns }) => columns < 3 ? 'center' : 'flex-start'};
+  justify-content: ${({ columns }) => columns === 1 ? 'center' : 'initial'};
 
   // Can't use these for now due to lack of Safari support
   // column-gap: ${GAP_PX}px;
