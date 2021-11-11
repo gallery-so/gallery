@@ -1,42 +1,49 @@
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
+import breakpoints, { size } from 'components/core/breakpoints';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
-import { useCallback } from 'react';
-import { navigate } from '@reach/router';
+import { useCallback, useMemo } from 'react';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import { navigateToUrl } from 'utils/navigate';
-import { LAYOUT_DIMENSIONS } from 'scenes/UserGalleryPage/UserGalleryCollection';
+import { useBreakpoint } from 'hooks/useWindowSize';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
 
 type Props = {
   nft: Nft;
   collectionId: string;
-  gap: number;
   columns: number;
 };
 
-// const LAYOUT_DIMENSIONS: Record<number, any> = {
-//   1: { size: 600, gap: 40 },
-//   2: { size: 380, gap: 80 },
-//   3: { size: 288, gap: 40 },
-//   4: { size: 214, gap: 28 },
-//   5: { size: 160, gap: 28 },
-//   6: { size: 136, gap: 20 },
-// };
+export const LAYOUT_GAP_BREAKPOINTS: Record<string, number> = {
+  mobileLarge: 20,
+  desktop: 40,
+};
+
+const LAYOUT_DIMENSIONS: Record<number, any> = {
+  1: 600,
+  2: 482,
+  3: 310,
+  4: 242,
+  5: 170,
+  6: 134,
+};
 
 function NftPreview({ nft, collectionId, columns }: Props) {
   const handleNftClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
   }, [collectionId, nft.id]);
+  const screenWidth = useBreakpoint();
+
+  // width for rendering so that we request the apprpriate size image
+  const assetSize = useMemo(() => screenWidth === size.mobile ? 288 : LAYOUT_DIMENSIONS[columns], []);
 
   return (
-    <StyledNftPreview key={nft.id} size={LAYOUT_DIMENSIONS[columns].size} gap={LAYOUT_DIMENSIONS[columns].gap}>
+    <StyledNftPreview key={nft.id} columns={columns}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
-          <NftPreviewAsset nft={nft}/>
+          <NftPreviewAsset nft={nft} size={assetSize}/>
           <StyledNftFooter>
             <StyledNftLabel nft={nft} />
             <StyledGradient type="bottom" direction="down" />
@@ -73,7 +80,7 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ gap: number; size: number }>`
+const StyledNftPreview = styled.div<{ columns: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,21 +97,25 @@ const StyledNftPreview = styled.div<{ gap: number; size: number }>`
   }
 
   // use margin to create row-gap for now
-  @media only screen and ${breakpoints.mobile} {
-    width: 100%;
-    margin-bottom: 40px;
-  }
+  width: 100%;
+  margin-bottom: 40px;
 
-  // use margin to create row-gap for now
+  // width looks nasty but it allows us to conditionally apply different width rules based on # columns:
+  // - if single columm, use hardcoded width because the NFT isnt as wide as the whole page
+  // - if more columns, use calc to automatically set width based on column #
+  // this is important because while we *could* use hardcoded widths for desktop, we need to use dynamic widths for tablet
   @media only screen and ${breakpoints.mobileLarge} {
-    width: calc((100% - ${({ gap }) => gap * 3}px) / 3);
-    margin: ${({ gap }) => gap / 2}px;
+    width: ${({ columns }) => columns === 1
+    ? (LAYOUT_DIMENSIONS[1] + 'px')
+    : 'calc((100% - ' + LAYOUT_GAP_BREAKPOINTS.mobileLarge * columns + 'px) / ' + columns + ')'};
+    margin: ${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;
   }
 
-  // use margin to create row-gap for now
   @media only screen and ${breakpoints.desktop} {
-    width: ${({ size }) => size}px;
-    margin: ${({ gap }) => gap}px;
+    width: ${({ columns }) => columns === 1
+    ? (LAYOUT_DIMENSIONS[1] + 'px')
+    : 'calc((100% - ' + LAYOUT_GAP_BREAKPOINTS.desktop * columns + 'px) / ' + columns + ')'};
+    margin: ${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
   }
 `;
 

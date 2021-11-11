@@ -9,16 +9,17 @@ import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   nft: Nft;
+  size: number;
 };
 
-function NftPreviewAsset({ nft }: Props) {
+function NftPreviewAsset({ nft, size }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
     if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
       return <StyledVideo src={`${nft.image_url}#t=0.5`} onLoadStart={setContentIsLoaded} preload="metadata"></StyledVideo>;
     }
 
-    return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft)} alt={nft.name} />;
+    return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft, size)} alt={nft.name} />;
   }
   , [nft, setContentIsLoaded]);
 
