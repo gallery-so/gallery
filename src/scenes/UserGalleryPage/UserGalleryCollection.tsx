@@ -17,7 +17,7 @@ function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
 
-  const columns = useMemo(() => (collection.layout?.columns ?? 3), [collection.layout.columns]);
+  const columns = useMemo(() => (collection?.layout?.columns ?? 3), [collection.layout]);
 
   return (<StyledCollectionWrapper>
     <StyledCollectionHeader>
