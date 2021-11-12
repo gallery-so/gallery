@@ -24,16 +24,14 @@ import {
 import StagedNftImageDragging from './StagedNftImageDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 
-const DND_WIDTH = 984;
-
 // Width of DND area for each Column # setting
 const DND_WIDTHS: Record<number, number> = {
   1: 600,
   2: 800,
   3: 984,
-  4: 1160,
-  5: 1160,
-  6: 1160,
+  4: 1020,
+  5: 1020,
+  6: 1020,
 };
 
 // Width of draggable image for each Column # setting
@@ -41,9 +39,9 @@ const IMAGE_SIZES: Record<number, number> = {
   1: 400,
   2: 320,
   3: 280,
-  4: 240,
-  5: 180,
-  6: 140,
+  4: 207,
+  5: 156,
+  6: 122,
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -114,7 +112,7 @@ function StagingArea() {
 
 const StyledHeadingWrapper = styled.div`
   width: 100%;
-  padding: 0 24px;
+  padding: 0 8px;
 `;
 
 const StyledStagingArea = styled.div`

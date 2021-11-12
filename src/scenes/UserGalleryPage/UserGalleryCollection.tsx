@@ -16,7 +16,8 @@ type Props = {
 function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
-  const columns = useMemo(() => collection.layout.columns, [collection.layout.columns]);
+
+  const columns = useMemo(() => (collection.layout?.columns ?? 3), [collection.layout.columns]);
 
   return (<StyledCollectionWrapper>
     <StyledCollectionHeader>
@@ -31,7 +32,6 @@ function UserGalleryCollection({ collection }: Props) {
       }
     </StyledCollectionHeader>
     <StyledCollectionNfts columns={columns}>
-      {/* <StyledTest> */}
       {collection.nfts.map(nft => (
         <NftPreview
           key={nft.id}
@@ -40,16 +40,10 @@ function UserGalleryCollection({ collection }: Props) {
           columns={columns}
         />
       ))}
-      {/* </StyledTest> */}
     </StyledCollectionNfts>
   </StyledCollectionWrapper>
   );
 }
-
-const StyledTest = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
 
 const StyledCollectionWrapper = styled.div`
   display: flex;
