@@ -12,7 +12,7 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
 
   // Resizes if google image: https://developers.google.com/people/image-sizing
   if (image_url?.includes('googleusercontent')) {
-    return `${image_url}=s${size}`;
+    return `${image_url}=w${size}`;
   }
 
   return image_original_url || image_url || contract_image_url || FALLBACK_URL;
