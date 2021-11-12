@@ -13,6 +13,8 @@ module.exports = {
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'capitalized-comments': 'off',
 
+    'prefer-destructuring': 'off',
+
     // Typescript Specific Rules
     '@typescript-eslint/object-curly-spacing': ['error', 'always'],
     '@typescript-eslint/prefer-return-this-type': 'off',
@@ -26,7 +28,7 @@ module.exports = {
   overrides: [
     // Ensure we enable an ecmaVersion for all Javascript files
     {
-      files: ['**/*.js'],
+      files: ['**/*.js', '**/*.cjs'],
       parserOptions: {
         ecmaVersion: '2020',
       },
