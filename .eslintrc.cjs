@@ -11,6 +11,7 @@ const rules = {
   'no-console': ['error', { allow: ['warn', 'error'] }],
   'capitalized-comments': 'off',
   'prefer-destructuring': 'off',
+  'default-case': 'off',
 
   // React Specific Rules
   'react/react-in-jsx-scope': 'off',
@@ -33,6 +34,7 @@ const rules = {
   '@typescript-eslint/no-unsafe-call': 'off',
   '@typescript-eslint/no-unsafe-assignment': 'off',
   '@typescript-eslint/no-unsafe-member-access': 'off',
+  '@typescript-eslint/switch-exhaustiveness-check': 'off',
 };
 
 module.exports = {
