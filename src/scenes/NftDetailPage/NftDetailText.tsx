@@ -16,7 +16,7 @@ type Props = {
 function NftDetailText({ nft }: Props) {
   const currentOwner = useMemo((): Owner => {
     const owners = nft.ownership_history?.owners;
-    return owners.length > 0 ? owners[0] : {};
+    return owners?.length > 0 ? owners[0] : {};
   }, [nft]);
 
   return (
