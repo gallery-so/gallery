@@ -20,6 +20,7 @@ const rules = {
   'react/boolean-prop-naming': 'off',
   'react/jsx-key': 'warn',
   'react/jsx-pascal-case': 'off',
+  'react/require-default-props': 'off',
 
   // Typescript Specific Rules
   '@typescript-eslint/naming-convention': 'off',
@@ -28,6 +29,10 @@ const rules = {
   '@typescript-eslint/no-unused-expressions': ['error', { allowTernary: true }],
   '@typescript-eslint/restrict-template-expressions': 'off',
   '@typescript-eslint/no-empty-function': 'off',
+  '@typescript-eslint/no-unsafe-return': 'off',
+  '@typescript-eslint/no-unsafe-call': 'off',
+  '@typescript-eslint/no-unsafe-assignment': 'off',
+  '@typescript-eslint/no-unsafe-member-access': 'off',
 };
 
 module.exports = {
