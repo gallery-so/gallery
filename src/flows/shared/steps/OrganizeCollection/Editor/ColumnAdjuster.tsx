@@ -6,32 +6,6 @@ import { useCollectionEditorActions, useCollectionMetadataState } from 'contexts
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-type Props = {
-  onClick: () => void;
-};
-
-function SymbolButton({ onClick }: Props) {
-  return (
-    <StyledSymbolButton onClick={onClick}>﹣</StyledSymbolButton>
-  );
-}
-
-const StyledSymbolButton = styled.button`
-  padding: 0;
-  border-style: none;
-  cursor: pointer;
-  background: none;
-  width: max-content;
-
-  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
-
-  `;
-  // &:hover ${StyledButtonText} {
-  //   color: ${colors.black};
-  //   text-decoration: ${({ underlineOnHover }) =>
-  //   underlineOnHover ? 'underline' : undefined};
-  // }
-
 function ColumnAdjuster() {
   const collectionMetadata = useCollectionMetadataState();
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
@@ -51,7 +25,6 @@ function ColumnAdjuster() {
       <Caption>COLUMNS</Caption>
       <Spacer width={24} />
       <StyledButtonContainer>
-        {/* <SymbolButton onClick={handleDecrementButtonClick} /> */}
         <StyledColumnButton text="−" onClick={handleDecrementButtonClick} disabled={columns <= 1}/>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
         <StyledColumnButton text="+" onClick={handleIncrementButtonClick} disabled={columns > 5}/>
