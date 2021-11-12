@@ -15,7 +15,7 @@ function NftPreviewAsset({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
     if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
-      return <StyledVideo src={`${nft.image_url}#t=0.5`} onLoadStart={setContentIsLoaded} preload="metadata"></StyledVideo>;
+      return <StyledVideo src={`${nft.image_url}#t=0.5`} onLoadStart={setContentIsLoaded} preload="metadata" />;
     }
 
     return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft)} alt={nft.name} />;

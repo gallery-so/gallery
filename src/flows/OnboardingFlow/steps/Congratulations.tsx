@@ -20,7 +20,7 @@ function Congratulations() {
       <Display>Welcome to your Gallery</Display>
       <Spacer height={8} />
       <StyledBodyText color={colors.gray50}>
-        Let's show your collection to the world.
+        Let&apos;s show your collection to the world.
       </StyledBodyText>
       <Spacer height={24} />
       <StyledButton text="Enter" onClick={handleClick} />

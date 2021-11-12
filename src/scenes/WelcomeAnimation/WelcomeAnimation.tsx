@@ -8,7 +8,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
 import './intro.css';
 import Mixpanel from 'utils/mixpanel';
-import { useAuthenticatedUser, useAuthenticatedUsername } from 'hooks/api/users/useUser';
+import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { navigate } from '@reach/router';
 
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -38,8 +38,7 @@ type AnimatedImage = {
 
 const animatedImages: AnimatedImage[] = [
   {
-    src:
-      'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', // Chair
+    src: 'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', // Chair
     width: 180,
     zIndex: -40,
     offsetX: 180,
@@ -49,8 +48,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 800,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', // Punk
+    src: 'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', // Punk
     width: 100,
     zIndex: -13,
     offsetX: -105,
@@ -90,8 +88,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 1200,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
+    src: 'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
     width: 250,
     zIndex: 37,
     offsetX: -510,
@@ -101,8 +98,7 @@ const animatedImages: AnimatedImage[] = [
     fadeInDelay: 500,
   },
   {
-    src:
-      'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
+    src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
     width: 220,
     zIndex: 25,
     offsetX: 440,
@@ -191,7 +187,9 @@ export default function WelcomeAnimation({ next }: Props) {
   }, [next, username]);
 
   return (
-    <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
+    <StyledContainer
+      onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
+    >
       <animated.div
         className="animate"
         style={{
@@ -210,7 +208,7 @@ export default function WelcomeAnimation({ next }: Props) {
           <StyledButton text="Enter Gallery" onClick={handleClick} />
         </StyledTextContainer>
       </animated.div>
-      {animatedImages.map(animatedImage => (
+      {animatedImages.map((animatedImage) => (
         <StyledMovementWrapper
           shouldExplode={shouldExplode}
           animatedImage={animatedImage}
@@ -219,7 +217,7 @@ export default function WelcomeAnimation({ next }: Props) {
             className="animate"
             style={{
               transform: props.xy.interpolate(
-                getTransformCallback(animatedImage),
+                getTransformCallback(animatedImage)
               ),
             }}
           >
@@ -262,8 +260,8 @@ const StyledTextContainer = styled.div<{
   animation-delay: 2s;
 
   ${({ shouldFadeOut }) =>
-    shouldFadeOut
-    && css`
+    shouldFadeOut &&
+    css`
       animation: ${fadeOut} 1s forwards;
     `}
 `;
@@ -278,8 +276,8 @@ const StyledMovementWrapper = styled.div<{
     shouldExplode
       ? `transform: translate(${animatedImage.offsetX}px, ${animatedImage.offsetY}px)`
       : `transform: translate(${animatedImage.offsetXStart - 120}px, ${
-        animatedImage.offsetYStart - 150
-      }px)`};
+          animatedImage.offsetYStart - 150
+        }px)`};
 `;
 
 const StyledContainer = styled.div`
@@ -303,8 +301,8 @@ const Image = styled.img<{
   animation: ${fadeInGrow} 2s forwards ${({ fadeInDelay }) => fadeInDelay}ms;
 
   ${({ shouldFadeOut, fadeInDelay }) =>
-    shouldFadeOut
-    && css`
+    shouldFadeOut &&
+    css`
       animation: ${fadeOutGrow} 500ms forwards ${fadeInDelay / 3}ms;
       opacity: 1;
     `}

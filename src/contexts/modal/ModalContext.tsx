@@ -9,7 +9,6 @@ import {
   useCallback,
   useMemo,
 } from 'react';
-import ReactTooltip from 'react-tooltip';
 import AnimatedModal from './AnimatedModal';
 
 type ModalActions = {
@@ -38,7 +37,7 @@ function ModalProvider({ children }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [content, setContent] = useState<ReactElement | null>(null);
 
-  const showModal = useCallback(providedContent => {
+  const showModal = useCallback((providedContent) => {
     setIsActive(true);
     setIsMounted(true);
     setContent(providedContent);
@@ -61,7 +60,7 @@ function ModalProvider({ children }: Props) {
       showModal,
       hideModal,
     }),
-    [showModal, hideModal],
+    [showModal, hideModal]
   );
 
   return (

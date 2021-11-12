@@ -8,11 +8,11 @@ import { formatDetailedError } from 'errors/formatError';
 import colors from 'components/core/colors';
 
 class ErrorBoundary extends Component {
-  state: { error: null | Error } = { error: null };
-
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
+
+  state: { error: null | Error } = { error: null };
 
   render() {
     if (this.state.error !== null) {
@@ -24,7 +24,13 @@ class ErrorBoundary extends Component {
           <Spacer height={8} />
           <BodyRegular>{description}</BodyRegular>
           <Spacer height={48} />
-          <StyledReachOut color={colors.gray50}>If you're continuing to see this error, reach out to us on <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.</StyledReachOut>
+          <StyledReachOut color={colors.gray50}>
+            If you&apos;re continuing to see this error, reach out to us on{' '}
+            <GalleryLink href="https://discord.gg/QcJjCDucwK">
+              Discord
+            </GalleryLink>
+            .
+          </StyledReachOut>
           <Spacer height={16} />
         </Page>
       );

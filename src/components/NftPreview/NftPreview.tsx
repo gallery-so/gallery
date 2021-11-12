@@ -3,7 +3,6 @@ import breakpoints from 'components/core/breakpoints';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { useCallback } from 'react';
-import { navigate } from '@reach/router';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import { navigateToUrl } from 'utils/navigate';
@@ -17,15 +16,21 @@ type Props = {
 };
 
 function NftPreview({ nft, collectionId, gap }: Props) {
-  const handleNftClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
-  }, [collectionId, nft.id]);
+  const handleNftClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      navigateToUrl(
+        `${window.location.pathname}/${collectionId}/${nft.id}`,
+        event
+      );
+    },
+    [collectionId, nft.id]
+  );
 
   return (
     <StyledNftPreview key={nft.id} gap={gap}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
-          <NftPreviewAsset nft={nft}/>
+          <NftPreviewAsset nft={nft} />
           <StyledNftFooter>
             <StyledNftLabel nft={nft} />
             <StyledGradient type="bottom" direction="down" />

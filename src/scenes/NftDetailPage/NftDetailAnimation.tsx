@@ -11,7 +11,7 @@ function NftDetailAnimation({ nft }: Props) {
 
   return (
     <StyledNftDetailAnimation>
-      <StyledIframe src={nft.animation_url} onLoad={setContentIsLoaded}></StyledIframe>
+      <StyledIframe src={nft.animation_url} onLoad={setContentIsLoaded} />
     </StyledNftDetailAnimation>
   );
 }
