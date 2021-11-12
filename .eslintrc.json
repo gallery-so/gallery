@@ -1,7 +1,0 @@
-{
-  "extends": "react-app",
-  "rules": {
-    "react/jsx-pascal-case": "off",
-    "no-throw-literal": "off"
-  }
-}
