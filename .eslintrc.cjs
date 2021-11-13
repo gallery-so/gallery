@@ -22,6 +22,8 @@ const rules = {
   'react/jsx-key': 'warn',
   'react/jsx-pascal-case': 'off',
   'react/require-default-props': 'off',
+  'react-hooks/rules-of-hooks': 'error',
+  'react-hooks/exhaustive-deps': 'error',
 
   // Typescript Specific Rules
   '@typescript-eslint/naming-convention': 'off',

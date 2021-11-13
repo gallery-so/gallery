@@ -35,16 +35,14 @@ function useNotOptimizedForMobileWarning() {
 
   useEffect(() => {
     if (isMobileDevice) {
-      pushToast('This page isn\'t optimized for mobile yet. Please use a computer to organize your Gallery.');
+      pushToast(
+        "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery."
+      );
     }
-  }, []);
+  }, [pushToast]);
 }
 
-function useWizardConfig({
-  wizardId,
-  username,
-  next,
-}: ConfigProps) {
+function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const { getVisitedPagesLength } = useGalleryNavigationActions();
 
@@ -62,7 +60,7 @@ function useWizardConfig({
     }
 
     clearOnNext();
-  }, [clearOnNext, username]);
+  }, [clearOnNext, getVisitedPagesLength, username]);
 
   const saveGalleryAndReturnToProfile = useCallback(async () => {
     clearOnNext();
@@ -109,7 +107,10 @@ function OrganizeGallery({ next }: WizardContext) {
     next,
   });
 
-  const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
+  const isEmptyGallery = useMemo(
+    () => sortedCollections.length === 0,
+    [sortedCollections.length]
+  );
 
   return (
     <StyledOrganizeGallery>
@@ -117,20 +118,22 @@ function OrganizeGallery({ next }: WizardContext) {
       <Content>
         <Header />
         <Spacer height={24} />
-        {isEmptyGallery ? <StyledEmptyGalleryMessage>
-          <Heading>Create your first collection</Heading>
-          <Spacer height={8} />
-          <BodyRegular color={colors.gray50}>
-            Organize your gallery with collections. Use them to group NFTs by
-            creator, theme, or anything that feels right.
-          </BodyRegular>
-        </StyledEmptyGalleryMessage>
-          : <CollectionDnd
+        {isEmptyGallery ? (
+          <StyledEmptyGalleryMessage>
+            <Heading>Create your first collection</Heading>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>
+              Organize your gallery with collections. Use them to group NFTs by
+              creator, theme, or anything that feels right.
+            </BodyRegular>
+          </StyledEmptyGalleryMessage>
+        ) : (
+          <CollectionDnd
             galleryId={id}
             sortedCollections={sortedCollections}
             setSortedCollections={setSortedCollections}
           />
-        }
+        )}
         <Spacer height={120} />
       </Content>
     </StyledOrganizeGallery>
@@ -138,9 +141,9 @@ function OrganizeGallery({ next }: WizardContext) {
 }
 
 const StyledEmptyGalleryMessage = styled.div`
-text-align: center;
-max-width: 390px;
-margin: 240px auto 0;
+  text-align: center;
+  max-width: 390px;
+  margin: 240px auto 0;
 `;
 
 const StyledOrganizeGallery = styled.div`
