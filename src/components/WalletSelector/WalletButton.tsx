@@ -7,17 +7,14 @@ import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
-import metamaskIcon from 'assets/icons/metamask.svg';
-import walletConnectIcon from 'assets/icons/walletconnect.svg';
-import walletLinkIcon from 'assets/icons/walletlink.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
 import { convertWalletName } from 'utils/wallet';
 
 const walletIconMap: Record<string, string> = {
-  metamask: metamaskIcon,
-  walletconnect: walletConnectIcon,
-  walletlink: walletLinkIcon,
+  metamask: '/icons/metamask.svg',
+  walletconnect: '/icons/walletconnect.svg',
+  walletlink: '/icons/walletlink.svg',
 };
 
 type WalletButtonProps = {
@@ -54,23 +51,32 @@ function WalletButton({
     }
   }, [activate, connector, setToPendingState, walletName]);
 
-  const loadingView = useMemo(() => (
-    <>
-      <BodyRegular>Connecting...</BodyRegular>
-      <Loader thicc size="medium" />
-    </>
-  ), []);
+  const loadingView = useMemo(
+    () => (
+      <>
+        <BodyRegular>Connecting...</BodyRegular>
+        <Loader thicc size="medium" />
+      </>
+    ),
+    []
+  );
 
-  const iconView = useMemo(() => (
-    <>
-      <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
-      <Icon src={walletIconMap[walletName.toLowerCase()]} />
-    </>
-  ), [walletName]);
+  const iconView = useMemo(
+    () => (
+      <>
+        <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
+        <Icon src={walletIconMap[walletName.toLowerCase()]} />
+      </>
+    ),
+    [walletName]
+  );
 
   // Injected is the connector type used for browser wallet extensions/dApp browsers
-  if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    && !(window.web3 || window.ethereum) && walletName.toLowerCase() === 'metamask') {
+  if (
+    connector === injected && // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
+    !(window.web3 || window.ethereum) &&
+    walletName.toLowerCase() === 'metamask'
+  ) {
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
