@@ -17,7 +17,7 @@ describe.skip('WalletButton', () => {
         connector={injected}
         activate={activate}
         setToPendingState={setToPendingState}
-      ></WalletButton>,
+       />,
     );
 
     fireEvent.click(screen.getByTestId('wallet-button'));
@@ -34,7 +34,7 @@ describe.skip('WalletButton', () => {
         connector={injected}
         activate={activate}
         setToPendingState={setToPendingState}
-      ></WalletButton>,
+       />,
     );
 
     expect(screen.getByTestId('wallet-button')).toHaveTextContent(

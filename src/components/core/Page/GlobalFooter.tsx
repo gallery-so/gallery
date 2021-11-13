@@ -22,7 +22,7 @@ function GlobalFooter() {
           >
             <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>
           </StyledLink>
-          <Spacer width={8}></Spacer>
+          <Spacer width={8} />
           <StyledLink
             href={GALLERY_DISCORD}
             target="_blank"
@@ -30,7 +30,7 @@ function GlobalFooter() {
           >
             <StyledLinkText color={colors.gray40}>Discord</StyledLinkText>
           </StyledLink>
-          <Spacer width={8}></Spacer>
+          <Spacer width={8} />
           <StyledLink
             href={GALLERY_TWITTER}
             target="_blank"

@@ -3,4 +3,7 @@
 	"xo.format.enable": true,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "samverschueren.linter-xo",
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
 }

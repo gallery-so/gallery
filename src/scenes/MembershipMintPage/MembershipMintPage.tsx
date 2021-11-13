@@ -213,7 +213,7 @@ function MembershipMintPage({ membershipColor }: Props) {
             </GalleryLink>
           </>}
           {error && <>
-            <Spacer height={16}/><ErrorText message={error}></ErrorText></>}
+            <Spacer height={16}/><ErrorText message={error} /></>}
         </StyledDetailText>
       </StyledContent>
     </StyledMintPage>);
