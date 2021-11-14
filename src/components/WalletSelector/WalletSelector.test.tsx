@@ -7,12 +7,13 @@ describe.skip('WalletSelector', () => {
     // Silence console.warn that is logged when wallet connection is unsuccesful
     console.warn = jest.fn();
     // Mock Metamask installed (metamask injects a global API at window.ethereum)
+    // @ts-expect-error Missing global typedefs
     global.ethereum = {};
 
     render(
       <AuthProvider>
         <WalletSelector />
-      </AuthProvider>,
+      </AuthProvider>
     );
     fireEvent.click(screen.getAllByTestId('wallet-button')[0]);
     await waitFor(() => {
