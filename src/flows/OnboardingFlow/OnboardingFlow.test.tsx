@@ -3,6 +3,8 @@ import OnboardingFlow from './OnboardingFlow';
 
 test.skip('Next button is disabled by default', () => {
   render(<OnboardingFlow />);
-  const button = screen.getByTestId('wizard-footer-next-button');
+  const button = screen.getByTestId(
+    'wizard-footer-next-button'
+  ) as HTMLButtonElement;
   expect(button.disabled).toBe(true);
 });
