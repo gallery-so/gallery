@@ -81,7 +81,7 @@ function WalletButton({
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
           <BodyRegular>Install Metamask</BodyRegular>
-          <Icon src={metamaskIcon} />
+          <Icon src="/icons/metamask.svg" />
         </StyledButton>
       </StyledExternalLink>
     );
