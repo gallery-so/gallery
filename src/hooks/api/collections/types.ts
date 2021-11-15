@@ -1,10 +1,11 @@
-import { Collection } from 'types/Collection';
+import { Collection, CollectionLayout } from 'types/Collection';
 
 export type CreateCollectionRequest = {
   gallery_id: string;
   name: string;
   collectors_note: string;
   nfts: string[];
+  layout: CollectionLayout;
 };
 
 export type CreateCollectionResponse = {
@@ -30,6 +31,7 @@ export type UpdateCollectionInfoResponse = null;
 export type UpdateCollectionNftsRequest = {
   id: string;
   nfts: string[];
+  layout: CollectionLayout;
 };
 
 export type UpdateCollectionNftsResponse = null;

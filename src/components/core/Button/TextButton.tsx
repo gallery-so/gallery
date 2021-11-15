@@ -36,7 +36,7 @@ function TextButton({
   );
 }
 
-const StyledButtonText = styled(ActionText)<
+export const StyledButtonText = styled(ActionText)<
 Pick<Props, 'disableTextTransform'>
 >`
   text-transform: ${({ disableTextTransform }) =>

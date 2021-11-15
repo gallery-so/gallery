@@ -3,6 +3,7 @@ import { WizardContext } from 'react-albus';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
+  useCollectionMetadataState,
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
@@ -42,6 +43,8 @@ function useWizardConfig({ push }: ConfigProps) {
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
   const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
+  const collectionMetadata = useCollectionMetadataState();
+
   const goToOrganizeGalleryStep = useCallback(() => {
     // Clear selected collection when moving to next step
     setCollectionIdBeingEdited('');
@@ -56,6 +59,7 @@ function useWizardConfig({ push }: ConfigProps) {
         await updateCollection(
           collectionIdBeingEdited,
           stagedNftIdsRef.current,
+          collectionMetadata.layout,
         );
         await refreshUnassignedNfts();
 
@@ -73,6 +77,7 @@ function useWizardConfig({ push }: ConfigProps) {
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
           nftIds={stagedNftIdsRef.current}
+          layout={collectionMetadata.layout}
         />,
       );
     });
@@ -82,7 +87,7 @@ function useWizardConfig({ push }: ConfigProps) {
     if (wizardId === 'edit-gallery') {
       setOnPrevious(goToOrganizeGalleryStep);
     }
-  }, [collectionIdBeingEdited, goToOrganizeGalleryStep, refreshUnassignedNfts, setOnNext, setOnPrevious, showModal, updateCollection, wizardId]);
+  }, [collectionIdBeingEdited, goToOrganizeGalleryStep, refreshUnassignedNfts, setOnNext, setOnPrevious, showModal, updateCollection, wizardId, collectionMetadata]);
 }
 
 // In order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
