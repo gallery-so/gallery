@@ -1,3 +1,4 @@
+import { LAYOUT_GAP_BREAKPOINTS } from 'constants/layout';
 import styled from 'styled-components';
 import breakpoints, { size } from 'components/core/breakpoints';
 import Gradient from 'components/core/Gradient/Gradient';
@@ -14,11 +15,6 @@ type Props = {
   nft: Nft;
   collectionId: string;
   columns: number;
-};
-
-export const LAYOUT_GAP_BREAKPOINTS: Record<string, number> = {
-  mobileLarge: 20,
-  desktop: 40,
 };
 
 const SINGLE_COLUMN_NFT_WIDTH = 600;
@@ -40,7 +36,7 @@ function NftPreview({ nft, collectionId, columns }: Props) {
   const screenWidth = useBreakpoint();
 
   // width for rendering so that we request the apprpriate size image.
-  const previewSize = useMemo(() => screenWidth === size.mobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns], []);
+  const previewSize = useMemo(() => screenWidth === size.mobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns], [columns, screenWidth]);
 
   return (
     <StyledNftPreview key={nft.id} columns={columns}>
@@ -110,15 +106,15 @@ const StyledNftPreview = styled.div<{ columns: number }>`
   // this is important because while we *could* use hardcoded widths for desktop, we need to use dynamic widths for tablet
   @media only screen and ${breakpoints.mobileLarge} {
     width: ${({ columns }) => columns === 1
-    ? (SINGLE_COLUMN_NFT_WIDTH + 'px')
-    : 'calc((100% - ' + LAYOUT_GAP_BREAKPOINTS.mobileLarge * columns + 'px) / ' + columns + ')'};
+    ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
+    : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.mobileLarge * columns}px) / ${columns});`}
     margin: ${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;
   }
 
   @media only screen and ${breakpoints.desktop} {
     width: ${({ columns }) => columns === 1
-    ? (SINGLE_COLUMN_NFT_WIDTH + 'px')
-    : 'calc((100% - ' + LAYOUT_GAP_BREAKPOINTS.desktop * columns + 'px) / ' + columns + ')'};
+    ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
+    : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.desktop * columns}px) / ${columns});`}
     margin: ${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
   }
 `;

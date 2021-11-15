@@ -1,3 +1,4 @@
+import { DEFAULT_COLUMNS } from 'constants/layout';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +14,7 @@ import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import Dropdown from 'components/core/Dropdown/Dropdown';
-import useEffectAfterMount from 'hooks/useEffectAfterMount';
+import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
@@ -60,7 +61,8 @@ function CollectionEditor() {
   const mountRef = useRef(false);
   useEffect(() => {
     if (collectionBeingEdited) {
-      setColumns(collectionBeingEdited.layout.columns);
+      const columns = isValidColumns(collectionBeingEdited.layout.columns) ? collectionBeingEdited.layout.columns : DEFAULT_COLUMNS;
+      setColumns(columns);
     }
 
     mountRef.current = true;

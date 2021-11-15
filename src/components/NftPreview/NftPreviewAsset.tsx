@@ -21,7 +21,7 @@ function NftPreviewAsset({ nft, size }: Props) {
 
     return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft, size)} alt={nft.name} />;
   }
-  , [nft, setContentIsLoaded]);
+  , [nft, setContentIsLoaded, size]);
 
   return nftAssetComponent;
 }

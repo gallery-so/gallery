@@ -1,7 +1,8 @@
+import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
-import NftPreview, { LAYOUT_GAP_BREAKPOINTS } from 'components/NftPreview/NftPreview';
+import NftPreview from 'components/NftPreview/NftPreview';
 import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
@@ -13,11 +14,20 @@ type Props = {
   collection: Collection;
 };
 
+export function isValidColumns(columns: number) {
+  return columns >= 1 && columns <= 6;
+}
+
 function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
+  const columns = useMemo(() => {
+    if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
+      return collection.layout.columns;
+    }
 
-  const columns = useMemo(() => (collection?.layout?.columns ?? 3), [collection.layout]);
+    return DEFAULT_COLUMNS;
+  }, [collection.layout]);
 
   return (<StyledCollectionWrapper>
     <StyledCollectionHeader>

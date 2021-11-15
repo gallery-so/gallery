@@ -74,8 +74,7 @@ function StagingArea() {
 
   const activeNft = useMemo(() => stagedNfts.find(({ nft }) => nft.id === activeId), [stagedNfts, activeId]);
 
-  const columns = useMemo(() => collectionMetadata.layout.columns, [collectionMetadata.layout.columns]);
-  const dndWidth = useMemo(() => DND_WIDTHS[columns], [columns]);
+  const columns = collectionMetadata.layout.columns;
 
   return (
     <StyledStagingArea>
@@ -89,7 +88,7 @@ function StagingArea() {
           <StyledHeadingWrapper>
             <Heading>Your collection</Heading>
           </StyledHeadingWrapper>
-          <StyledStagedNftContainer width={dndWidth}>
+          <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedNfts.map(editModeNft => (
               <SortableStagedNft
                 key={editModeNft.id}

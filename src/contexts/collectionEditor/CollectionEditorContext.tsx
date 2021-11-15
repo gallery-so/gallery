@@ -26,10 +26,12 @@ export type CollectionEditorState = {
   collectionMetadata: CollectionMetadataState;
 };
 
+const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3 } };
+
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarNfts: {},
   stagedNfts: [],
-  collectionMetadata: { layout: { columns: 3 } },
+  collectionMetadata: DEFAULT_COLLECTION_METADATA,
 });
 
 export const useSidebarNftsState = (): SidebarNftsState => {
@@ -98,7 +100,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     {},
   );
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
-  const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>({ layout: { columns: 3 } });
+  const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(DEFAULT_COLLECTION_METADATA);
 
   const collectionEditorState = useMemo(
     () => ({

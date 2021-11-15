@@ -10,14 +10,6 @@ function ColumnAdjuster() {
   const collectionMetadata = useCollectionMetadataState();
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
-  const handleDecrementButtonClick = useCallback(() => {
-    decrementColumns();
-  }, []);
-
-  const handleIncrementButtonClick = useCallback(() => {
-    incrementColumns();
-  }, []);
-
   const columns = useMemo(() => collectionMetadata.layout.columns, [collectionMetadata.layout.columns]);
 
   return (
@@ -25,9 +17,9 @@ function ColumnAdjuster() {
       <Caption>COLUMNS</Caption>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton text="−" onClick={handleDecrementButtonClick} disabled={columns <= 1}/>
+        <StyledColumnButton text="−" onClick={decrementColumns} disabled={columns <= 1}/>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton text="+" onClick={handleIncrementButtonClick} disabled={columns > 5}/>
+        <StyledColumnButton text="+" onClick={incrementColumns} disabled={columns > 5}/>
       </StyledButtonContainer>
     </StyledColumnAdjuster>
   );
