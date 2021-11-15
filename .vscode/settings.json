@@ -1,4 +1,7 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // formatter
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // source-fixer
+  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"]
 }
