@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BodyRegular, Caption } from 'components/core/Text/Text';
 import { useCollectionEditorActions, useCollectionMetadataState } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 function ColumnAdjuster() {

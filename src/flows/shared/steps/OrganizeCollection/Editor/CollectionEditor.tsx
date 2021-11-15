@@ -66,7 +66,7 @@ function CollectionEditor() {
     }
 
     mountRef.current = true;
-  }, [collectionBeingEdited]);
+  }, [collectionBeingEdited, setColumns]);
 
   const sidebarNftsRef = useRef<SidebarNftsState>({});
   useEffect(() => {

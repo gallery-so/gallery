@@ -126,6 +126,7 @@ function CollectionCreateOrEditForm({
     title,
     createCollection,
     galleryId,
+    layout
   ]);
 
   return (
