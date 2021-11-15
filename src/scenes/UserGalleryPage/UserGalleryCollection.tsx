@@ -1,4 +1,4 @@
-import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS } from 'constants/layout';
+import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS, MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export function isValidColumns(columns: number) {
-  return columns >= 1 && columns <= 6;
+  return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
 function UserGalleryCollection({ collection }: Props) {
