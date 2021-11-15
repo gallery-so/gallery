@@ -10,8 +10,14 @@ function NotFound() {
     <Page centered>
       <Display>404</Display>
       <Spacer height={16} />
-      <StyledBody>This user doesn't exist yet. If you think they should,<br/>{'share their collection in a tweet and tag us '}
-        <GalleryLink href="https://twitter.com/usegallery">@usegallery</GalleryLink>.
+      <StyledBody>
+        This user doesn&apos;t exist yet. If you think they should,
+        <br />
+        {'share their collection in a tweet and tag us '}
+        <GalleryLink href="https://twitter.com/usegallery">
+          @usegallery
+        </GalleryLink>
+        .
       </StyledBody>
       <Spacer height={32} />
       <GalleryLink to="/">

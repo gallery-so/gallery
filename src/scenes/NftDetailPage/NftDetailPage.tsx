@@ -10,7 +10,6 @@ import Page from 'components/core/Page/Page';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import { navigateToUrl } from 'utils/navigate';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 
@@ -19,34 +18,35 @@ type Props = {
   nftId: string;
 };
 
-function NftDetailPage({
-  nftId,
-}: RouteComponentProps<Props>) {
+function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
   const { getVisitedPagesLength } = useGalleryNavigationActions();
 
-  const handleBackClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    const username = window.location.pathname.split('/')[1];
+  const handleBackClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      const username = window.location.pathname.split('/')[1];
 
-    if (event.metaKey) {
-      window.open(`/${username}`);
-      return;
-    }
+      if (event.metaKey) {
+        window.open(`/${username}`);
+        return;
+      }
 
-    const visitedPagesLength = getVisitedPagesLength();
+      const visitedPagesLength = getVisitedPagesLength();
 
-    // if the user arrived on the page via direct link, send them to the
-    // owner's profile page (since there is no "previous page")
-    if (visitedPagesLength === 1) {
-      // NOTE: this scheme will have to change if we no longer have the
-      // username included in the URL
-      void navigate(`/${username}`);
-      return;
-    }
+      // if the user arrived on the page via direct link, send them to the
+      // owner's profile page (since there is no "previous page")
+      if (visitedPagesLength === 1) {
+        // NOTE: this scheme will have to change if we no longer have the
+        // username included in the URL
+        void navigate(`/${username}`);
+        return;
+      }
 
-    // otherwise, simply send them back to where they came from. this ensures scroll
-    // position is maintained when going back (see: GalleryNavigationContext.tsx)
-    void navigate(-1);
-  }, [getVisitedPagesLength]);
+      // otherwise, simply send them back to where they came from. this ensures scroll
+      // position is maintained when going back (see: GalleryNavigationContext.tsx)
+      void navigate(-1);
+    },
+    [getVisitedPagesLength]
+  );
 
   const nft = useNft({ id: nftId ?? '' });
 

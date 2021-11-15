@@ -29,9 +29,9 @@
       "mocks/*": ["src/mocks/*"],
       "scenes/*": ["src/scenes/*"],
       "types/*": ["src/types/*"],
-      "utils/*": ["src/utils/*"],
+      "utils/*": ["src/utils/*"]
     },
     "downlevelIteration": true
   },
-  "include": ["src"]
+  "include": ["src", "scripts", "dev_server", "config"]
 }

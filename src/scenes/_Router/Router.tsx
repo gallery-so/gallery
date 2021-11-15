@@ -4,8 +4,6 @@ import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
-import WhiteMembershipMintPage from 'scenes/MembershipMintPage/WhiteMembershipMintPage';
-import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
@@ -18,11 +16,15 @@ export default function Routes() {
   return (
     <Location>
       {({ location }) => (
-        <GalleryNavigationContextProvider locationKey={location.key} pathname={location.pathname}>
+        <GalleryNavigationContextProvider
+          locationKey={location.key}
+          pathname={location.pathname}
+        >
           <FadeTransitioner>
             <Router
               primary={false} // prevents jumpiness on nav: https://github.com/reach/router/issues/242
-              location={location}>
+              location={location}
+            >
               <GalleryRoute
                 path="/"
                 component={Home}
@@ -60,19 +62,12 @@ export default function Routes() {
                 component={GoldMembershipMintPage}
                 navbar={false}
               />
-              <GalleryRoute
-                path="/nuke"
-                component={Nuke}
-                navbar={false}
-              />
+              <GalleryRoute path="/nuke" component={Nuke} navbar={false} />
               <GalleryRoute
                 path="/:userName/:collectionId/:nftId"
                 component={NftDetailPage}
               />
-              <GalleryRoute
-                path="/:username"
-                component={UserGalleryPage}
-              />
+              <GalleryRoute path="/:username" component={UserGalleryPage} />
             </Router>
           </FadeTransitioner>
         </GalleryNavigationContextProvider>

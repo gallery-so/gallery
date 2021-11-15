@@ -30,9 +30,15 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
 };
 
 function NftPreview({ nft, collectionId, columns }: Props) {
-  const handleNftClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
-  }, [collectionId, nft.id]);
+  const handleNftClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      navigateToUrl(
+        `${window.location.pathname}/${collectionId}/${nft.id}`,
+        event
+      );
+    },
+    [collectionId, nft.id]
+  );
   const screenWidth = useBreakpoint();
 
   // width for rendering so that we request the apprpriate size image.

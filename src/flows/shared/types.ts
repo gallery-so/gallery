@@ -1,5 +1,4 @@
 import { WizardContext, StepObject } from 'react-albus';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { History } from 'history';
 
 // Overload History with extra props provided by the WizardContext
