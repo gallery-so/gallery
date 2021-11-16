@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,56 +17,23 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "abis/*": [
-        "src/abis/*"
-      ],
-      "assets/*": [
-        "src/assets/*"
-      ],
-      "components/*": [
-        "src/components/*"
-      ],
-      "connectors/*": [
-        "src/connectors/*"
-      ],
-      "constants/*": [
-        "src/constants/*"
-      ],
-      "contexts/*": [
-        "src/contexts/*"
-      ],
-      "errors/*": [
-        "src/errors/*"
-      ],
-      "flows/*": [
-        "src/flows/*"
-      ],
-      "hooks/*": [
-        "src/hooks/*"
-      ],
-      "mocks/*": [
-        "src/mocks/*"
-      ],
-      "scenes/*": [
-        "src/scenes/*"
-      ],
-      "types/*": [
-        "src/types/*"
-      ],
-      "utils/*": [
-        "src/utils/*"
-      ]
+      "abis/*": ["src/abis/*"],
+      "assets/*": ["src/assets/*"],
+      "components/*": ["src/components/*"],
+      "connectors/*": ["src/connectors/*"],
+      "constants/*": ["src/constants/*"],
+      "contexts/*": ["src/contexts/*"],
+      "errors/*": ["src/errors/*"],
+      "flows/*": ["src/flows/*"],
+      "hooks/*": ["src/hooks/*"],
+      "mocks/*": ["src/mocks/*"],
+      "scenes/*": ["src/scenes/*"],
+      "types/*": ["src/types/*"],
+      "utils/*": ["src/utils/*"]
     },
     "downlevelIteration": true,
     "incremental": true
   },
-  "include": [
-    "src",
-    "scripts",
-    "pages",
-    "next-env.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "scripts", "pages", "next-env.d.ts", "app.d.ts"],
+  "exclude": ["node_modules"]
 }
