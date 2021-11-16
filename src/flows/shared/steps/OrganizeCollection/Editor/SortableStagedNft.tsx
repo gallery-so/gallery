@@ -12,9 +12,10 @@ import UnstageButton from './UnstageButton';
 
 type Props = {
   editModeNft: EditModeNft;
+  size: number;
 };
 
-function SortableStagedNft({ editModeNft }: Props) {
+function SortableStagedNft({ editModeNft, size }: Props) {
   const {
     attributes,
     listeners,
@@ -40,14 +41,15 @@ function SortableStagedNft({ editModeNft }: Props) {
       // @ts-expect-error force overload
       style={style}
     >
-      <StyledGradient type="top" />
       <StagedNftImage
         editModeNft={editModeNft}
+        size={size}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
       />
       <StyledUnstageButton editModeNft={editModeNft} />
+      <StyledGradient type="top" direction="up" />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
   );

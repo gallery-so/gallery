@@ -69,7 +69,7 @@ export const StyledSidebarNftIcon = styled.div`
   width: 64px;
   height: 64px;
   overflow: hidden;
-  margin: 6px;
+  margin: 5px;
 
   display: flex;
   justify-content: center;

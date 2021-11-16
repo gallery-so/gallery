@@ -1,3 +1,4 @@
+import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS, MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
@@ -13,37 +14,44 @@ type Props = {
   collection: Collection;
 };
 
-// Space between NFTs in pixels
-const GAP_PX = 40;
+export function isValidColumns(columns: number) {
+  return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
+}
 
 function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
+  const columns = useMemo(() => {
+    if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
+      return collection.layout.columns;
+    }
 
-  return (
-    <StyledCollectionWrapper>
-      <StyledCollectionHeader>
-        <TitleSerif>{unescapedCollectionName}</TitleSerif>
-        {unescapedCollectorsNote
+    return DEFAULT_COLUMNS;
+  }, [collection.layout]);
+
+  return (<StyledCollectionWrapper>
+    <StyledCollectionHeader>
+      <TitleSerif>{unescapedCollectionName}</TitleSerif>
+      {unescapedCollectorsNote
           && <>
             <Spacer height={8} />
             <StyledCollectorsNote color={colors.gray50}>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
-        }
-      </StyledCollectionHeader>
-      <StyledCollectionNfts>
-        {collection.nfts.map(nft => (
-          <NftPreview
-            key={nft.id}
-            nft={nft}
-            collectionId={collection.id}
-            gap={GAP_PX}
-          />
-        ))}
-      </StyledCollectionNfts>
-    </StyledCollectionWrapper>
+      }
+    </StyledCollectionHeader>
+    <StyledCollectionNfts columns={columns}>
+      {collection.nfts.map(nft => (
+        <NftPreview
+          key={nft.id}
+          nft={nft}
+          collectionId={collection.id}
+          columns={columns}
+        />
+      ))}
+    </StyledCollectionNfts>
+  </StyledCollectionWrapper>
   );
 }
 
@@ -85,24 +93,24 @@ const StyledCollectorsNote = styled(BodyRegular)`
   white-space: pre-line;
 `;
 
-const StyledCollectionNfts = styled.div`
+const StyledCollectionNfts = styled.div<{ columns: number }>`
   margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: ${({ columns }) => columns === 1 ? 'center' : 'initial'};
 
   // Can't use these for now due to lack of Safari support
-  // column-gap: ${GAP_PX}px;
-  // row-gap: ${GAP_PX}px;
+  // column-gap: px;
+  // row-gap: px;
+
 
   @media only screen and ${breakpoints.mobileLarge} {
-    width: calc(100% + ${GAP_PX}px);
-    margin-left: -${GAP_PX / 2}px;
+    margin-left: -${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    width: calc(100% + ${GAP_PX * 2}px);
-    margin-left: -${GAP_PX}px;
+    margin-left: -${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
   }
 `;
 

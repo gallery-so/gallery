@@ -13,7 +13,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
-import { Collection } from 'types/Collection';
+import { Collection, CollectionLayout } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
@@ -25,6 +25,7 @@ type Props = {
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
   nftIds?: string[];
+  layout?: CollectionLayout;
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
@@ -35,6 +36,7 @@ function CollectionCreateOrEditForm({
   collectionName,
   collectionCollectorsNote,
   nftIds,
+  layout,
 }: Props) {
   const { hideModal } = useModal();
 
@@ -95,12 +97,12 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && nftIds) {
+      if (!collectionId && nftIds && layout) {
         Mixpanel.track('Add Name & Description to collection', {
           'Added Name': title.length > 0,
           'Added description': description.length > 0,
         });
-        await createCollection(galleryId, title, description, nftIds);
+        await createCollection(galleryId, title, description, nftIds, layout);
       }
 
       // Refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
@@ -124,6 +126,7 @@ function CollectionCreateOrEditForm({
     title,
     createCollection,
     galleryId,
+    layout
   ]);
 
   return (
