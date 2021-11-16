@@ -68,24 +68,15 @@ const StyledCollectionHeader = styled.div`
 
   // to appear above content underneath
   z-index: 1;
-
-  @media only screen and ${breakpoints.mobile} {
-    margin-bottom: 20px;
-  }
+  margin-bottom: 16px;
 
   @media only screen and ${breakpoints.mobileLarge} {
-    margin-bottom: 0px;
-    width: 70%;
-  }
- 
-  @media only screen and ${breakpoints.tablet} {
-    margin-bottom: 0px;
     width: 70%;
   }
 
-  @media only screen and ${breakpoints.desktop} {
-    margin-bottom: -20px;
-  }  
+  @media only screen and ${breakpoints.tablet} {
+    width: 70%;
+  }
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
@@ -94,7 +85,6 @@ const StyledCollectorsNote = styled(BodyRegular)`
 `;
 
 const StyledCollectionNfts = styled.div<{ columns: number }>`
-  margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

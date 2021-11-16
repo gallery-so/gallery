@@ -91,6 +91,7 @@ const StyledWizardFooter = styled.div`
   position: fixed;
   bottom: 0;
   left: 0;
+  z-index: 50;
 
   display: flex;
   align-items: center;
