@@ -12,7 +12,7 @@ beforeEach(() => {
   render(
     <GalleryWizardProvider id="add-user-info">
       <Wizard
-        render={wizardProps => (
+        render={(wizardProps) => (
           <>
             <Steps>
               <Step id="addUserInfo" render={AddUserInfo} />
@@ -21,15 +21,19 @@ beforeEach(() => {
           </>
         )}
       />
-    </GalleryWizardProvider>,
+    </GalleryWizardProvider>
   );
 });
 
 test.skip('Validates username input and enables Next button accordingly', () => {
   const wizardFooterNextButton = screen.getByTestId(
-    'wizard-footer-next-button',
+    'wizard-footer-next-button'
   );
-  const input = screen.getByPlaceholderText('Username') as HTMLInputElement;
+  const input = screen.getByPlaceholderText('Username');
+
+  if (!(input instanceof HTMLInputElement)) {
+    throw Error('Element was not an input');
+  }
 
   //   Initial state
   expect(wizardFooterNextButton).toBeDisabled();
