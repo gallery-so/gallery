@@ -48,7 +48,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   const [canMintToken, setCanMintToken] = useState(false);
   const [totalSupply, setTotalSupply] = useState(0);
   const [remainingSupply, setRemainingSupply] = useState(0);
-  const [price, setPrice] = useState(null);
+  const [price, setPrice] = useState(0);
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null >(null);
 
@@ -71,7 +71,7 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   const getPrice = useCallback(async (contract: Contract) => {
     const priceResponse = await contract.getPrice(membershipProperties.tokenId);
-    setPrice(priceResponse);
+    setPrice(priceResponse / 1000000000000000000);
   }, [membershipProperties.tokenId]);
 
   const handleMintButtonClick = useCallback(async () => {
