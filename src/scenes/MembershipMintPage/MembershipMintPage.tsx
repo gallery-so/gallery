@@ -71,7 +71,7 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   const getPrice = useCallback(async (contract: Contract) => {
     const priceResponse = await contract.getPrice(membershipProperties.tokenId);
-    setPrice(priceResponse / 1000000000000000000);
+    setPrice(priceResponse);
   }, [membershipProperties.tokenId]);
 
   const handleMintButtonClick = useCallback(async () => {
@@ -173,7 +173,7 @@ function MembershipMintPage({ membershipColor }: Props) {
           {
             Number(price) > 0 && <>
               <BodyRegular color={colors.gray50}>Price</BodyRegular>
-              <BodyRegular>{Number(price)} ETH</BodyRegular>
+              <BodyRegular>{Number(price/ 1000000000000000000)} ETH</BodyRegular>
             </>
           }
           <Spacer height={16} />
