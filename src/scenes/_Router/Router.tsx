@@ -11,6 +11,7 @@ import NftDetailPage from '../NftDetailPage/NftDetailPage';
 import Nuke from '../Nuke/Nuke';
 import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
 import GalleryRoute from './GalleryRoute';
+import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 
 export default function Routes() {
   return (
@@ -47,11 +48,11 @@ export default function Routes() {
                 component={EditGalleryFlow}
                 freshLayout
               />
-              {/* <GalleryRoute
+              <GalleryRoute
                 path="/membership/silver"
                 component={SilverMembershipMintPage}
                 navbar={false}
-              /> */}
+              />
               {/* <GalleryRoute
                 path="/membership/white"
                 component={WhiteMembershipMintPage}
