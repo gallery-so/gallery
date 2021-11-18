@@ -11,6 +11,8 @@ type Props = {
   nft: Nft;
 };
 
+const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
+
 function NftAdditionalDetails({ nft }: Props) {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
   const handleToggleClick = useCallback(() => {
@@ -35,11 +37,11 @@ function NftAdditionalDetails({ nft }: Props) {
         <Spacer height={16} />
         <StyledLinkContainer>
           <StyledLink
-            href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}`}
+            href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}?ref=${GALLERY_OS_ADDRESS}`}
             target="_blank"
             rel="noreferrer"
           >
-            <ActionText color={colors.gray40}>Bid</ActionText>
+            <ActionText color={colors.gray50}>View on OpenSea</ActionText>
           </StyledLink>
           <Spacer width={16} />
         </StyledLinkContainer>
