@@ -1,7 +1,9 @@
 import mixpanel from 'mixpanel-browser';
 
 if (process.env.REACT_APP_MIXPANEL_TOKEN) {
-  mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN);
+  mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN, {
+    api_host: 'https://analytics.dev.gallery.so',
+  });
 }
 
 type EventProps = Record<string, unknown>;
