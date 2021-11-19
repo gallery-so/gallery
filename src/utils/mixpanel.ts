@@ -1,14 +1,14 @@
 import mixpanel from 'mixpanel-browser';
 
-if (process.env.REACT_APP_MIXPANEL_TOKEN) {
+if (process.env.REACT_APP_MIXPANEL_TOKEN && process.env.REACT_APP_ANALYTICS_API_URL) {
   mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN, {
-    api_host: 'https://analytics.dev.gallery.so',
+    api_host: process.env.REACT_APP_ANALYTICS_API_URL,
   });
 }
 
 type EventProps = Record<string, unknown>;
 
-const mixpanelEnabled = process.env.NODE_ENV === 'production';
+const mixpanelEnabled = process.env.REACT_APP_MIXPANEL_TOKEN && process.env.REACT_APP_ANALYTICS_API_URL;
 
 const Mixpanel = {
   track: (eventname: string, props: EventProps = {}) => {
