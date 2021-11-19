@@ -15,6 +15,8 @@ import { UserRejectedRequestError } from '@web3-react/injected-connector';
 import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending';
+import Markdown from 'components/core/Markdown/Markdown';
+import { GALLERY_DISCORD, GALLERY_MEMBERSHIP_OPENSEA } from 'constants/urls';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -53,6 +55,8 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'Please try again.',
   },
 };
+
+const MISSING_NFT_ERROR_MESSAGE = `You must have a [Membership Card](${GALLERY_MEMBERSHIP_OPENSEA}) to use Gallery.\n\nJoin our [Discord](${GALLERY_DISCORD}) to learn more.`;
 
 function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
@@ -106,6 +110,13 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     if (detectedError) {
       // Handle error from server
       if (detectedError.code === 'GALLERY_SERVER_ERROR') {
+        if (detectedError.message.includes('Required tokens not owned')) {
+          return {
+            heading: 'Authorization Error',
+            body: `${detectedError.message}\n\n ${MISSING_NFT_ERROR_MESSAGE}`
+          }
+        }
+
         return {
           heading: 'Authorization error',
           body: detectedError.message,
@@ -138,7 +149,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       <StyledWalletSelector>
         <BodyMedium>{displayedError.heading}</BodyMedium>
         <Spacer height={16} />
-        <StyledBody color={colors.gray50}>{displayedError.body}</StyledBody>
+        <StyledBody color={colors.gray50}><Markdown text={displayedError.body}/></StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
     );
