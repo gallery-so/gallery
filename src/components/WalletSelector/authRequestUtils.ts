@@ -141,7 +141,9 @@ async function signMessage(
     if (connector instanceof WalletConnectConnector) {
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+      const signatureResult = await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+      console.log('signatureResult', signatureResult)
+      return signatureResult;
     }
 
     if (connector instanceof WalletLinkConnector) {
@@ -275,7 +277,7 @@ async function createUser(
     const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
-    Mixpanel.track('Create user', { 'Address': body.address });
+    Mixpanel.track('Create user', { 'address': body.address });
     return result;
   } catch (error: unknown) {
     if (error instanceof Error) {

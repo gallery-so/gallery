@@ -8,7 +8,7 @@ const rules = {
   'node/prefer-global/process': ['error', 'always'],
   radix: 'off',
   'unicorn/no-array-reduce': 'off',
-  'no-console': ['error', { allow: ['warn', 'error'] }],
+  'no-console': ['warn', { allow: ['warn', 'error'] }],
   'capitalized-comments': 'off',
   'prefer-destructuring': 'off',
   'default-case': 'off',
