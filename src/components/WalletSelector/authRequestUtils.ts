@@ -141,9 +141,7 @@ async function signMessage(
     if (connector instanceof WalletConnectConnector) {
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      const signatureResult = await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
-      console.log('signatureResult', signatureResult)
-      return signatureResult;
+      return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
     }
 
     if (connector instanceof WalletLinkConnector) {
