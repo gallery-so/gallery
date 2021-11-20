@@ -99,8 +99,8 @@ function CollectionCreateOrEditForm({
       // Collection is being created
       if (!collectionId && nftIds && layout) {
         Mixpanel.track('Add Name & Description to collection', {
-          'Added Name': title.length > 0,
-          'Added description': description.length > 0,
+          'added_name': title.length > 0,
+          'added_description': description.length > 0,
         });
         await createCollection(galleryId, title, description, nftIds, layout);
       }
