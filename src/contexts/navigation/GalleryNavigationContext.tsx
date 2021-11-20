@@ -77,6 +77,9 @@ const GalleryNavigationContextProvider = memo(
 
     // track pageviews
     useEffect(() => {
+      console.log('test1');
+      console.warn('test2');
+      console.error('test3');
       Mixpanel.track('Page view');
     }, [sanitizedPathname]);
 
