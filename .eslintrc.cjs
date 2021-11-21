@@ -40,6 +40,8 @@ const rules = {
 };
 
 module.exports = {
+  ignorePatterns: ['next-env.d.ts'],
+
   extends: ['xo', 'xo-react', 'prettier'],
   plugins: ['node'],
   rules,
