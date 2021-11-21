@@ -5,11 +5,14 @@ import { BodyRegular, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import {
+  getMediaTypeForAssetUrl,
+  getResizedNftImageUrlWithFallback,
+} from 'utils/nft';
 import { Collection } from 'types/Collection';
 import { NftMediaType } from 'components/core/enums';
 import Markdown from 'components/core/Markdown/Markdown';
-import { ReactComponent as Settings } from './collection-settings.svg';
+import Settings from './collection-settings.svg';
 
 type Props = {
   collection: Collection;
@@ -26,7 +29,10 @@ function CollectionRow({ collection, className }: Props) {
   const { name, collectors_note, nfts, hidden } = collection;
 
   const unescapedCollectionName = useMemo(() => unescape(name), [name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collectors_note), [collectors_note]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collectors_note),
+    [collectors_note]
+  );
 
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
@@ -43,7 +49,9 @@ function CollectionRow({ collection, className }: Props) {
     }
 
     // If it's single line, only truncate if it's longer than 100ch
-    return firstLine.length > 100 ? `${firstLine.slice(0, 97).trim()}...` : firstLine;
+    return firstLine.length > 100
+      ? `${firstLine.slice(0, 97).trim()}...`
+      : firstLine;
   }, [unescapedCollectorsNote]);
 
   return (
@@ -60,19 +68,20 @@ function CollectionRow({ collection, className }: Props) {
       </Header>
       <Spacer height={12} />
       <Body>
-        {firstThreeNfts.map(nft => {
+        {firstThreeNfts.map((nft) => {
           const imageUrl = getResizedNftImageUrlWithFallback(
             nft,
-            BIG_NFT_SIZE_PX,
+            BIG_NFT_SIZE_PX
           );
-          const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+          const isVideo =
+            getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
           return (
             <BigNftContainer>
-              {
-                isVideo
-                  ? <BigNftVideoPreview src={imageUrl} />
-                  : <BigNftImagePreview src={imageUrl} />
-              }
+              {isVideo ? (
+                <BigNftVideoPreview src={imageUrl} />
+              ) : (
+                <BigNftImagePreview src={imageUrl} />
+              )}
             </BigNftContainer>
           );
         })}
@@ -173,19 +182,20 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
       <Content>
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
-            {firstThreeNfts.map(nft => {
+            {firstThreeNfts.map((nft) => {
               const imageUrl = getResizedNftImageUrlWithFallback(
                 nft,
-                SMOL_NFT_SIZE_PX,
+                SMOL_NFT_SIZE_PX
               );
-              const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+              const isVideo =
+                getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
               return (
                 <SmolNftContainer>
-                  {
-                    isVideo
-                      ? <SmolNftVideoPreview src={imageUrl} />
-                      : <SmolNftImagePreview src={imageUrl} />
-                  }
+                  {isVideo ? (
+                    <SmolNftVideoPreview src={imageUrl} />
+                  ) : (
+                    <SmolNftImagePreview src={imageUrl} />
+                  )}
                 </SmolNftContainer>
               );
             })}
@@ -193,23 +203,24 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
             <BodyRegular>+{overflowCountText} more</BodyRegular>
           </NftsWithMoreText>
         ) : (
-          firstFiveNfts.map(nft => {
+          firstFiveNfts.map((nft) => {
             if (!nft) {
               return null;
             }
 
             const imageUrl = getResizedNftImageUrlWithFallback(
               nft,
-              SMOL_NFT_SIZE_PX,
+              SMOL_NFT_SIZE_PX
             );
-            const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+            const isVideo =
+              getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
             return (
               <SmolNftContainer>
-                {
-                  isVideo
-                    ? <SmolNftVideoPreview src={imageUrl} />
-                    : <SmolNftImagePreview src={imageUrl} />
-                }
+                {isVideo ? (
+                  <SmolNftVideoPreview src={imageUrl} />
+                ) : (
+                  <SmolNftImagePreview src={imageUrl} />
+                )}
               </SmolNftContainer>
             );
           })
