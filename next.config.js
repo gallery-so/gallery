@@ -7,6 +7,12 @@ module.exports = {
   },
 
   target: 'serverless',
+
+  experimental: {
+    // Enables the styled-components SWC transform
+    styledComponents: true
+  },
+
   async rewrites() {
     return [
       // Rewrite everything to `pages/index`
