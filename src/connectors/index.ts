@@ -14,8 +14,10 @@ enum SupportedChainId {
 export const NETWORK_CONTEXT_NAME = 'NETWORK';
 
 const NETWORK_URLS = {
-  [SupportedChainId.MAINNET]: 'https://mainnet.infura.io/v3/84842078b09946638c03157f83405213',
-  [SupportedChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/84842078b09946638c03157f83405213',
+  [SupportedChainId.MAINNET]:
+    'https://mainnet.infura.io/v3/84842078b09946638c03157f83405213',
+  [SupportedChainId.RINKEBY]:
+    'https://rinkeby.infura.io/v3/84842078b09946638c03157f83405213',
 };
 
 const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
@@ -28,7 +30,9 @@ const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
 
 export const network = new NetworkConnector({
   urls: NETWORK_URLS,
-  defaultChainId: Number(process.env.REACT_APP_NETWORK_CONNECTOR_CHAIN_ID ?? 1),
+  defaultChainId: Number(
+    process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID ?? 1
+  ),
 });
 
 export const injected = new InjectedConnector({
