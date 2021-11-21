@@ -1,7 +1,12 @@
 import colors from 'components/core/colors';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
-import SearchIcon from 'assets/icons/search.svg';
 import useDebounce from 'hooks/useDebounce';
 import { EditModeNft } from '../types';
 
@@ -15,50 +20,65 @@ type Props = {
 function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
   const lowerCaseQuery = query.toLowerCase();
 
-  return editModeNfts.filter(editModeNft => {
-    const nft = editModeNft.nft;
+  return editModeNfts
+    .filter((editModeNft) => {
+      const nft = editModeNft.nft;
 
-    if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
-      return true;
-    }
+      if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
+        return true;
+      }
 
-    // if (nft.creator_name.toLowerCase().includes(lowerCaseQuery)) {
-    //   return true;
-    // }
+      // if (nft.creator_name.toLowerCase().includes(lowerCaseQuery)) {
+      //   return true;
+      // }
 
-    if (nft.token_collection_name?.toLowerCase().includes(lowerCaseQuery)) {
-      return true;
-    }
+      if (nft.token_collection_name?.toLowerCase().includes(lowerCaseQuery)) {
+        return true;
+      }
 
-    return false;
-  }).map(editModeNft => editModeNft.id);
+      return false;
+    })
+    .map((editModeNft) => editModeNft.id);
 }
 
-function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: Props) {
+function SearchBar({
+  setSearchResults,
+  setDebouncedSearchQuery,
+  sidebarNfts,
+}: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
-  const handleQueryChange = useCallback((event: any) => {
-    const searchQuery = event.target.value;
-    setSearchQuery(searchQuery);
-  }, [setSearchQuery]);
+  const handleQueryChange = useCallback(
+    (event: any) => {
+      const searchQuery = event.target.value;
+      setSearchQuery(searchQuery);
+    },
+    [setSearchQuery]
+  );
 
   useEffect(() => {
-    const searchResults = searchNftsWithQuery(sidebarNfts, debouncedSearchQuery);
+    const searchResults = searchNftsWithQuery(
+      sidebarNfts,
+      debouncedSearchQuery
+    );
     setDebouncedSearchQuery(debouncedSearchQuery);
     setSearchResults(searchResults);
-  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, sidebarNfts]);
+  }, [
+    debouncedSearchQuery,
+    setDebouncedSearchQuery,
+    setSearchResults,
+    sidebarNfts,
+  ]);
 
-  return (<StyledSearchBar>
-    <StyledSearchInput
-      onChange={handleQueryChange}
-      placeholder="Search"
-    />
-  </StyledSearchBar>);
+  return (
+    <StyledSearchBar>
+      <StyledSearchInput onChange={handleQueryChange} placeholder="Search" />
+    </StyledSearchBar>
+  );
 }
 
-const StyledSearchBar = styled.div`
-`;
+const StyledSearchBar = styled.div``;
 
 const StyledSearchInput = styled.input`
   border: 1px solid ${colors.gray30};
@@ -66,7 +86,7 @@ const StyledSearchInput = styled.input`
   padding: 8px;
   padding-left: 30px;
   color: ${colors.gray50};
-  background: url(${SearchIcon}) no-repeat scroll 10px 9px;
+  background: url(/icons/search.svg) no-repeat scroll 10px 9px;
 
   ::placeholder {
     color: ${colors.gray30};
