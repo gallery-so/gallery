@@ -8,9 +8,18 @@ module.exports = {
 
   target: 'serverless',
 
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
+    return config;
+  },
+
   experimental: {
     // Enables the styled-components SWC transform
-    styledComponents: true
+    styledComponents: true,
   },
 
   async rewrites() {
