@@ -18,12 +18,31 @@ import { Heading } from 'components/core/Text/Text';
 
 import {
   useCollectionEditorActions,
+  useCollectionMetadataState,
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import StagedNftImageDragging from './StagedNftImageDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 
-const DND_WIDTH = 984;
+// Width of DND area for each Column # setting
+const DND_WIDTHS: Record<number, number> = {
+  1: 600,
+  2: 800,
+  3: 984,
+  4: 1020,
+  5: 1020,
+  6: 1020,
+};
+
+// Width of draggable image for each Column # setting
+const IMAGE_SIZES: Record<number, number> = {
+  1: 400,
+  2: 320,
+  3: 280,
+  4: 207,
+  5: 156,
+  6: 122,
+};
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -35,6 +54,8 @@ const layoutMeasuring = { strategy: LayoutMeasuringStrategy.Always };
 function StagingArea() {
   const stagedNfts = useStagedNftsState();
   const { handleSortNfts } = useCollectionEditorActions();
+
+  const collectionMetadata = useCollectionMetadataState();
 
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
 
@@ -53,6 +74,8 @@ function StagingArea() {
 
   const activeNft = useMemo(() => stagedNfts.find(({ nft }) => nft.id === activeId), [stagedNfts, activeId]);
 
+  const columns = collectionMetadata.layout.columns;
+
   return (
     <StyledStagingArea>
       <DndContext
@@ -62,14 +85,15 @@ function StagingArea() {
         layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedNfts}>
-          <StyledStagedNftContainer>
-            <StyledHeadingWrapper>
-              <Heading>Your collection</Heading>
-            </StyledHeadingWrapper>
+          <StyledHeadingWrapper>
+            <Heading>Your collection</Heading>
+          </StyledHeadingWrapper>
+          <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedNfts.map(editModeNft => (
               <SortableStagedNft
                 key={editModeNft.id}
                 editModeNft={editModeNft}
+                size={IMAGE_SIZES[columns]}
               />
             ))}
           </StyledStagedNftContainer>
@@ -78,7 +102,7 @@ function StagingArea() {
           adjustScale
           dropAnimation={defaultDropAnimationConfig}
         >
-          {activeNft ? <StagedNftImageDragging nft={activeNft.nft} /> : null}
+          {activeNft ? <StagedNftImageDragging nft={activeNft.nft} size={IMAGE_SIZES[columns]}/> : null}
         </DragOverlay>
       </DndContext>
     </StyledStagingArea>
@@ -87,7 +111,7 @@ function StagingArea() {
 
 const StyledHeadingWrapper = styled.div`
   width: 100%;
-  padding: 0 24px;
+  padding: 0 8px;
 `;
 
 const StyledStagingArea = styled.div`
@@ -109,14 +133,18 @@ const StyledStagingArea = styled.div`
   }
 `;
 
-const StyledStagedNftContainer = styled.div`
+type StyledStagedNftContainerProps = {
+  width: number;
+};
+
+const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   display: flex;
   flex-wrap: wrap;
 
   margin-top: 20px;
 
   // Limit DnD to 3 columns
-  max-width: ${DND_WIDTH}px;
+  max-width: ${({ width }) => width}px;
 
   // Safari doesn't support this yet
   // column-gap: 48px;

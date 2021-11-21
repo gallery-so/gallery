@@ -7,10 +7,11 @@ import { EditModeNft } from '../types';
 
 type Props = {
   editModeNft: EditModeNft;
+  size: number;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
+function StagedNftImage({ editModeNft, size, setNodeRef, ...props }: Props) {
   const nft = editModeNft.nft;
   const srcUrl = getResizedNftImageUrlWithFallback(nft);
 
@@ -19,18 +20,18 @@ function StagedNftImage({ editModeNft, setNodeRef, ...props }: Props) {
   // TODO:
   // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
   // 2) OR simply use custom indexer when that's ready
-  return isVideo ? <VideoContainer ref={setNodeRef} {...props}>
+  return isVideo ? <VideoContainer ref={setNodeRef} size={size} {...props}>
     <StyledGridVideo src={srcUrl} />
     <StyledNftPreviewLabel nft={nft} />
-  </VideoContainer> : <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} {...props}>
+  </VideoContainer> : <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} size={size} {...props}>
     <StyledNftPreviewLabel nft={nft} />
   </StyledGridImage>;
 }
 
-const VideoContainer = styled.div`
+const VideoContainer = styled.div<{ size: number }>`
   // TODO handle non square videos
-  height: 280px;
-  width: 280px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
   position: relative;
 `;
 
@@ -38,14 +39,19 @@ const StyledGridVideo = styled.video`
   width: 100%;
 `;
 
-const StyledGridImage = styled.div<{ srcUrl: string }>`
+type StyledGridImageProps = {
+  srcUrl: string;
+  size: number;
+};
+
+const StyledGridImage = styled.div<StyledGridImageProps>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   // TODO handle non square images
-  height: 280px;
-  width: 280px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
   position: relative;
 `;
 

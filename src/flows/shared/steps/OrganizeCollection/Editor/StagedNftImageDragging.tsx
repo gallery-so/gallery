@@ -1,14 +1,16 @@
 import { NftMediaType } from 'components/core/enums';
 import useMouseUp from 'hooks/useMouseUp';
+import { useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Nft } from 'types/Nft';
 import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
 
 type Props = {
   nft: Nft;
+  size: number;
 };
 
-function StagedNftImageDragging({ nft }: Props) {
+function StagedNftImageDragging({ nft, size }: Props) {
   const srcUrl = getResizedNftImageUrlWithFallback(nft);
   const isMouseUp = useMouseUp();
 
@@ -17,12 +19,15 @@ function StagedNftImageDragging({ nft }: Props) {
   // 2) OR simply use custom indexer when that's ready
   const isVideo = getMediaTypeForAssetUrl(srcUrl) === NftMediaType.VIDEO;
 
+  // slightly enlarge the image when dragging
+  const zoomedSize = useMemo(() => size * 1.02, [size]);
+
   return isVideo
-    ? <VideoContainer isMouseUp={isMouseUp}>
+    ? <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
       <StyledDraggingVideo src={srcUrl} />
     </VideoContainer>
-    : <ImageContainer>
-      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} />
+    : <ImageContainer size={zoomedSize}>
+      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} size={zoomedSize}/>
     </ImageContainer>;
 }
 
@@ -31,11 +36,11 @@ const grow = keyframes`
   to {height: 284px; width: 284px}
 `;
 
-const VideoContainer = styled.div<{ isMouseUp: boolean }>`
+const VideoContainer = styled.div<{ isMouseUp: boolean; size: number }>`
   // TODO handle non square videos
   box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
-  height: 284px;
-  width: 284px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
 
   // we need to manually use isMouseUp instead of :active to set the grabbing cursor
   // because this element was never clicked, so it is not considered active
@@ -46,15 +51,16 @@ const StyledDraggingVideo = styled.video`
   width: 100%;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ size: number }>`
   background: white;
-  height: 284px;
-  width: 284px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
 `;
 
 const StyledDraggingImage = styled.div<{
   srcUrl: string;
   isMouseUp: boolean;
+  size: number;
 }>`
   background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
   background-size: contain;
@@ -62,8 +68,8 @@ const StyledDraggingImage = styled.div<{
   background-position: center;
 
   box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
-  height: 284px;
-  width: 284px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
 
   // we need to manually use isMouseUp instead of :active to set the grabbing cursor
   // because this element was never clicked, so it is not considered active

@@ -1,3 +1,4 @@
+import { DEFAULT_COLUMNS } from 'constants/layout';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -12,11 +13,14 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
+import Dropdown from 'components/core/Dropdown/Dropdown';
+import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
+import ColumnAdjuster from './ColumnAdjuster';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
@@ -47,12 +51,22 @@ function CollectionEditor() {
 
   const { collections } = useAuthenticatedGallery();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
-  const nftsFromCollectionBeingEdited = useMemo(() => {
-    const collectionBeingEdited = collections.find(
-      coll => coll.id === collectionIdBeingEditedRef.current,
-    );
-    return collectionBeingEdited?.nfts ?? [];
-  }, [collections]);
+  const collectionBeingEdited = useMemo(
+    () => collections.find(coll => coll.id === collectionIdBeingEditedRef.current),
+    [collections]);
+  const nftsFromCollectionBeingEdited = useMemo(() => collectionBeingEdited?.nfts ?? [], [collectionBeingEdited]);
+
+  // Set collection layout if we are editing an existing collection
+  const { setColumns } = useCollectionEditorActions();
+  const mountRef = useRef(false);
+  useEffect(() => {
+    if (collectionBeingEdited) {
+      const columns = isValidColumns(collectionBeingEdited.layout.columns) ? collectionBeingEdited.layout.columns : DEFAULT_COLUMNS;
+      setColumns(columns);
+    }
+
+    mountRef.current = true;
+  }, [collectionBeingEdited, setColumns]);
 
   const sidebarNftsRef = useRef<SidebarNftsState>({});
   useEffect(() => {
@@ -136,6 +150,11 @@ function CollectionEditor() {
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
+        <StyledMenuContainer>
+          <Dropdown mainText="Canvas Settings">
+            <ColumnAdjuster/>
+          </Dropdown>
+        </StyledMenuContainer>
         {stagedNfts.length > 0 ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
     </StyledOrganizeCollection>
@@ -154,6 +173,12 @@ const StyledSidebarContainer = styled.div`
 
 const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
+`;
+
+const StyledMenuContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 32px;
 `;
 
 export default CollectionEditor;

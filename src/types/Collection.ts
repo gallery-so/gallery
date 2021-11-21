@@ -9,4 +9,9 @@ export type Collection = {
   owner_user_id: string;
   version: number;
   nfts: Nft[];
+  layout: CollectionLayout;
+};
+
+export type CollectionLayout = {
+  columns: number;
 };
