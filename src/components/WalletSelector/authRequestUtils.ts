@@ -8,6 +8,7 @@ import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 import capitalize from 'utils/capitalize';
 import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
+import Mixpanel from 'utils/mixpanel';
 import walletlinkSigner from './walletlinkSigner';
 
 /**
@@ -292,9 +293,11 @@ async function createUser(
   fetcher: FetcherType
 ): Promise<CreateUserResponse> {
   try {
-    return await fetcher<CreateUserResponse>('/users/create', 'create user', {
+    const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
+    Mixpanel.track('Create user', { 'address': body.address });
+    return result;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user creation', error);
