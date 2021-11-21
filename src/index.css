@@ -1,17 +1,17 @@
 @font-face {
   font-family: 'Gallery Display';
-  src: url('./assets/fonts/gallery-display.woff2') format('woff2');
+  src: url('/fonts/gallery-display.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('./assets/fonts/HelveticaNeue.otf') format('opentype'), url('./assets/fonts/HelveticaNeue.ttf') format('truetype');
+  src: url('/fonts/HelveticaNeue.otf') format('opentype'), url('/fonts/HelveticaNeue.ttf') format('truetype');
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('./assets/fonts/HelveticaNeue-Medium.otf') format('opentype'), url('./assets/fonts/HelveticaNeue-Medium.ttf') format('truetype');
+  src: url('/fonts/HelveticaNeue-Medium.otf') format('opentype'), url('/fonts/HelveticaNeue-Medium.ttf') format('truetype');
   font-weight: 500;
 }
 
