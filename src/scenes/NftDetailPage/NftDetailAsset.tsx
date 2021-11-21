@@ -5,7 +5,10 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
 import { getMediaType } from 'utils/nft';
-import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
+import {
+  GLOBAL_FOOTER_HEIGHT,
+  GLOBAL_NAVBAR_HEIGHT,
+} from 'components/core/Page/constants';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
@@ -37,7 +40,13 @@ type Props = {
 };
 
 // number that determines a reasonable max height for the displayed NFT
-const heightWithoutNavAndFooterGutters = window.screen.availHeight - (2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT));
+let heightWithoutNavAndFooterGutters: number;
+
+if (typeof window !== 'undefined') {
+  heightWithoutNavAndFooterGutters =
+    window.screen.availHeight -
+    2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
+}
 
 function NftDetailAsset({ nft }: Props) {
   const maxHeight = Math.min(
@@ -45,7 +54,7 @@ function NftDetailAsset({ nft }: Props) {
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
     // we should grab its dimensions and set it on the shimmer context. this will allow us to display very large
     // NFTs on very large screens
-    600,
+    600
   );
 
   return (
