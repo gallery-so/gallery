@@ -8,6 +8,7 @@ const setToPendingState = jest.fn();
 describe.skip('WalletButton', () => {
   test('WalletButton attempts to connect on click', () => {
     // Mock Metamask installed (metamask injects a global API at window.ethereum)
+    // @ts-expect-error Missing global typedefs
     global.ethereum = {};
 
     render(
@@ -17,7 +18,7 @@ describe.skip('WalletButton', () => {
         connector={injected}
         activate={activate}
         setToPendingState={setToPendingState}
-       />,
+      />
     );
 
     fireEvent.click(screen.getByTestId('wallet-button'));
@@ -26,6 +27,7 @@ describe.skip('WalletButton', () => {
   });
 
   test('WalletButton for Metamask option prompts Metamask install if Metamask is not installed', () => {
+    // @ts-expect-error Missing global typedefs
     global.ethereum = undefined;
     render(
       <WalletButton
@@ -34,11 +36,11 @@ describe.skip('WalletButton', () => {
         connector={injected}
         activate={activate}
         setToPendingState={setToPendingState}
-       />,
+      />
     );
 
     expect(screen.getByTestId('wallet-button')).toHaveTextContent(
-      'Install Metamask',
+      'Install Metamask'
     );
   });
 });
