@@ -133,7 +133,7 @@ const StyledSidebar = styled.div`
 
   background: #f7f7f7;
 
-  padding: 50px 32px;
+  padding: 32px;
 
   overflow: scroll;
 
