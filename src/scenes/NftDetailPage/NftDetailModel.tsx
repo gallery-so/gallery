@@ -1,7 +1,7 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import '@google/model-viewer'
+import '@google/model-viewer';
 import './model-viewer.css';
 
 type Props = {
@@ -21,14 +21,14 @@ declare global {
 }
 
 interface ModelViewerJSX {
-  src: string
-  poster?: string
-  class: string
+  src: string;
+  poster?: string;
+  class: string;
 }
 
 function NftDetailModel({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
-  setContentIsLoaded()
+  setContentIsLoaded();
   return (
     <StyledNftDetailModel>
       <model-viewer class="model-viewer" auto-rotate camera-controls src={nft.animation_url}/>
