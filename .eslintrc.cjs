@@ -37,6 +37,7 @@ const rules = {
   '@typescript-eslint/no-unsafe-assignment': 'off',
   '@typescript-eslint/no-unsafe-member-access': 'off',
   '@typescript-eslint/switch-exhaustiveness-check': 'off',
+  '@typescript-eslint/no-namespace': 'off',
 };
 
 module.exports = {

@@ -10,4 +10,5 @@ export enum NftMediaType {
   VIDEO,
   ANIMATION,
   AUDIO,
+  MODEL,
 }

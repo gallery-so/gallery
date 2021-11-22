@@ -57,22 +57,27 @@ export function getMediaTypeForAssetUrl(assetUrl: string) {
       return NftMediaType.VIDEO;
     case 'mp3':
       return NftMediaType.AUDIO;
-    case 'html':
-      return NftMediaType.ANIMATION;
+    case 'glb':
+      return NftMediaType.MODEL;
     default:
       return NftMediaType.IMAGE;
   }
 }
 
 export function getMediaType(nft: Nft) {
+  // Check the image_url first
   const imageUrlType = getMediaTypeForAssetUrl(nft.image_url);
+
+  // OpenSea sometimes sets a video file for both image_url and animation_url.
+  // If image_url is a video, it is a video NFT. no need to check animation_url
   if (imageUrlType === NftMediaType.VIDEO) {
-    return imageUrlType;
+    return NftMediaType.VIDEO;
   }
 
   if (!nft.animation_url) {
     return NftMediaType.IMAGE;
   }
 
+  // OpenSea 
   return getMediaTypeForAssetUrl(nft.animation_url);
 }
