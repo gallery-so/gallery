@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import '@google/model-viewer';
 import './model-viewer.css';
+import { useEffect } from 'react';
 
 type Props = {
   nft: Nft;
@@ -28,7 +29,8 @@ interface ModelViewerJSX {
 
 function NftDetailModel({ nft }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
-  setContentIsLoaded();
+  useEffect(setContentIsLoaded, [setContentIsLoaded]);
+
   return (
     <StyledNftDetailModel>
       <model-viewer class="model-viewer" auto-rotate camera-controls src={nft.animation_url}/>
