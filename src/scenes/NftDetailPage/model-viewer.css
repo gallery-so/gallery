@@ -1,0 +1,7 @@
+/* TODO: make model viewer a styled component once this issue is resolved
+https://github.com/google/model-viewer/issues/1502 */
+
+.model-viewer {
+  width: 100%;
+  height: 100%;
+}

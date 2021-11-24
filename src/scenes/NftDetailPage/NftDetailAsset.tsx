@@ -12,6 +12,7 @@ import {
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
+import NftDetailModel from './NftDetailModel';
 
 type AssetComponentProps = {
   nft: Nft;
@@ -30,6 +31,8 @@ function AssetComponent({ nft, maxHeight }: AssetComponentProps) {
       return <NftDetailVideo nft={nft} maxHeight={maxHeight} />;
     case NftMediaType.ANIMATION:
       return <NftDetailAnimation nft={nft} />;
+    case NftMediaType.MODEL:
+      return <NftDetailModel nft={nft} />;
     default:
       return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
   }

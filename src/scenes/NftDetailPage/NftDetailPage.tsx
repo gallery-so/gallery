@@ -85,12 +85,12 @@ function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
 
 const StyledBody = styled.div`
   display: flex;
+  width: 100%;
 
   @media only screen and ${breakpoints.mobile} {
-    width: 100%;
   }
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     width: auto;
   }
 `;
@@ -121,6 +121,9 @@ const StyledContentContainer = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     width: initial;
   }
 `;
