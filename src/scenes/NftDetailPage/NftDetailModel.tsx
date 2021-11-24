@@ -1,8 +1,14 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import '@google/model-viewer';
 import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+dynamic(
+  // @ts-expect-error No types on google model viewer
+  async () => import('@google/model-viewer'),
+  { ssr: false }
+)
 
 type Props = {
   nft: Nft;
