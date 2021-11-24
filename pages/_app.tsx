@@ -3,6 +3,8 @@ import { FC, ComponentType } from 'react';
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
 import 'src/index.css';
+import 'src/scenes/NftDetailPage/model-viewer.css';
+
 import Head from 'next/head';
 
 const SafeHydrate: FC = ({ children }) => (

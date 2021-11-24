@@ -2,7 +2,6 @@ import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
 import '@google/model-viewer';
-import './model-viewer.css';
 import { useEffect } from 'react';
 
 type Props = {
