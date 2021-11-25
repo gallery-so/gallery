@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "build": "bash build.sh",
+    "build": "next build && next export -o build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "tsc --noEmit"
