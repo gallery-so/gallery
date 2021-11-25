@@ -15,14 +15,15 @@ type Props = {
   username: string;
 };
 
-const isMobileDevice = detectMobileDevice();
-
 // suggest mobile users to use landscape mode for 3-column experience.
 // use localStorage to prevent showing the toast again.
 function useSuggestion() {
   const screenWidth = useBreakpoint();
   const { pushToast, dismissToast: removeToastFromView } = useToastActions();
-  const [dismissed, setDismissed] = usePersistedState('dismissed_mobile_landscape_suggestion', false);
+  const [dismissed, setDismissed] = usePersistedState(
+    'dismissed_mobile_landscape_suggestion',
+    false
+  );
 
   const markToastAsDismissedInLocalStorage = useCallback(() => {
     setDismissed(true);
@@ -30,17 +31,30 @@ function useSuggestion() {
 
   const previousWidth = usePrevious<size>(screenWidth);
 
-  const rotationDetected = useMemo(() => previousWidth === size.mobile && screenWidth !== size.mobile, [previousWidth, screenWidth]);
+  const rotationDetected = useMemo(
+    () => previousWidth === size.mobile && screenWidth !== size.mobile,
+    [previousWidth, screenWidth]
+  );
 
   useEffect(() => {
-    if (!dismissed && isMobileDevice && screenWidth === size.mobile) {
-      pushToast('Rotate your phone to view in landscape mode', markToastAsDismissedInLocalStorage);
+    if (!dismissed && detectMobileDevice() && screenWidth === size.mobile) {
+      pushToast(
+        'Rotate your phone to view in landscape mode',
+        markToastAsDismissedInLocalStorage
+      );
     }
 
     if (rotationDetected) {
       removeToastFromView();
     }
-  }, [pushToast, dismissed, markToastAsDismissedInLocalStorage, screenWidth, rotationDetected, removeToastFromView]);
+  }, [
+    pushToast,
+    dismissed,
+    markToastAsDismissedInLocalStorage,
+    screenWidth,
+    rotationDetected,
+    removeToastFromView,
+  ]);
 }
 
 function UserGalleryPage({ username }: RouteComponentProps<Props>) {

@@ -80,7 +80,7 @@ export default async function initializeAuthPipeline({
       address,
       nonce,
     },
-    fetcher,
+    fetcher
   );
 
   // The user's nfts should be fetched here so that they're ready to go by the time
@@ -102,17 +102,21 @@ type NonceResponse = {
 
 async function fetchNonce(
   address: string,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(
       `/auth/get_preflight?address=${address}`,
-      'fetch nonce',
+      'fetch nonce'
     );
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while retrieving nonce', error);
-      const errorWithCode: Web3Error = { ...error, code: 'GALLERY_SERVER_ERROR', message: capitalize(error.message) };
+      const errorWithCode: Web3Error = {
+        ...error,
+        code: 'GALLERY_SERVER_ERROR',
+        message: capitalize(error.message),
+      };
       throw errorWithCode;
     }
 
@@ -128,20 +132,27 @@ async function fetchNonce(
 type Signature = string;
 
 function isRpcSignatureError(error: Record<string, any>) {
-  return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 4001
+  );
 }
 
 async function signMessage(
   address: string,
   nonce: string,
   signer: JsonRpcSigner,
-  connector: AbstractConnector,
+  connector: AbstractConnector
 ): Promise<Signature> {
   try {
     if (connector instanceof WalletConnectConnector) {
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+      return (await connector.walletConnectProvider.connector.signPersonalMessage(
+        [nonce, address]
+      )) as Signature;
     }
 
     if (connector instanceof WalletLinkConnector) {
@@ -176,7 +187,7 @@ type LoginUserResponse = {
 
 async function loginUser(
   body: LoginUserRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<LoginUserResponse> {
   try {
     return await fetcher<LoginUserResponse>('/users/login', 'log in user', {
@@ -185,7 +196,10 @@ async function loginUser(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user login', error);
-      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      const errorWithCode: Web3Error = {
+        code: 'GALLERY_SERVER_ERROR',
+        ...error,
+      };
       throw errorWithCode;
     }
 
@@ -207,12 +221,16 @@ type AddUserAddressResponse = {
 
 async function addUserAddress(
   body: AddUserAddressRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<AddUserAddressResponse> {
   try {
-    return await fetcher<AddUserAddressResponse>('/users/update/addresses/add', 'add user address', {
-      body,
-    });
+    return await fetcher<AddUserAddressResponse>(
+      '/users/update/addresses/add',
+      'add user address',
+      {
+        body,
+      }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting adding user address', error);
@@ -230,18 +248,21 @@ type RemoveUserAddressRequest = {
   addresses: string[];
 };
 
-type RemoveUserAddressResponse = {
-
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+type RemoveUserAddressResponse = {};
 
 export async function removeUserAddress(
   body: RemoveUserAddressRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<RemoveUserAddressResponse> {
   try {
-    return await fetcher<RemoveUserAddressRequest>('/users/update/addresses/remove', 'remove user address', {
-      body,
-    });
+    return await fetcher<RemoveUserAddressRequest>(
+      '/users/update/addresses/remove',
+      'remove user address',
+      {
+        body,
+      }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting remove user address', error);
@@ -269,7 +290,7 @@ type CreateUserResponse = {
 
 async function createUser(
   body: CreateUserRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<CreateUserResponse> {
   try {
     const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
@@ -280,7 +301,10 @@ async function createUser(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user creation', error);
-      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      const errorWithCode: Web3Error = {
+        code: 'GALLERY_SERVER_ERROR',
+        ...error,
+      };
       throw errorWithCode;
     }
 
@@ -290,7 +314,9 @@ async function createUser(
 
 async function triggerOpenseaSync(fetcher: FetcherType, jwt?: string) {
   try {
-    const headers = jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : undefined;
+    const headers = jwt
+      ? { headers: { Authorization: `Bearer ${jwt}` } }
+      : undefined;
     let payload = { body: {} };
     if (headers) {
       payload = { ...payload, ...headers };
@@ -299,12 +325,12 @@ async function triggerOpenseaSync(fetcher: FetcherType, jwt?: string) {
     await fetcher<OpenseaSyncResponse>(
       '/nfts/opensea/refresh',
       'refresh and sync nfts',
-      payload,
+      payload
     );
     await fetcher<OpenseaSyncResponse>(
       '/nfts/opensea/get',
       'fetch and sync nfts',
-      headers,
+      headers
     );
   } catch (error: unknown) {
     // Error silently; TODO: send error analytics

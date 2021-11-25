@@ -4,7 +4,7 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
 
-const baseurl = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:4000';
+const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 
 const ERR_UNAUTHORIZED = 401;
 
@@ -32,7 +32,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
-  const parsedLocalJwt = localJwt && JSON.parse(localJwt) as string;
+  const parsedLocalJwt = localJwt && (JSON.parse(localJwt) as string);
   if (parsedLocalJwt && requestOptions.headers) {
     // @ts-expect-error: Authorization is a legit header
     requestOptions.headers.Authorization = `Bearer ${parsedLocalJwt}`;
@@ -91,6 +91,6 @@ export default function useFetcher(): FetcherType {
   return useCallback(
     async (path, action, parameters) =>
       _fetch(path, action, { ...parameters, unauthorizedErrorHandler: logOut }),
-    [logOut],
+    [logOut]
   );
 }

@@ -25,7 +25,7 @@ function EditUserInfoModal() {
         void navigate(`/${newUsername}`);
       }
     },
-    [hideModal, existingUser.username],
+    [hideModal, existingUser.username]
   );
 
   const {

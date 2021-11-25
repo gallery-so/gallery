@@ -6,7 +6,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import styled, { css, keyframes } from 'styled-components';
 import { useSpring, animated } from 'react-spring';
-import './intro.css';
 import Mixpanel from 'utils/mixpanel';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { navigate } from '@reach/router';

@@ -28,13 +28,11 @@ type ConfigProps = {
   next: WizardContext['next'];
 };
 
-const isMobileDevice = detectMobileDevice();
-
 function useNotOptimizedForMobileWarning() {
   const { pushToast } = useToastActions();
 
   useEffect(() => {
-    if (isMobileDevice) {
+    if (detectMobileDevice()) {
       pushToast(
         "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery."
       );
