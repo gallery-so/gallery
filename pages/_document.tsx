@@ -91,6 +91,11 @@ export default class MyDocument extends Document {
             }}
           />
           <script async src="https://cdn.splitbee.io/sb.js" />
+          <script
+            async
+            type="module"
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+          />
         </Head>
         <body>
           <Main />
