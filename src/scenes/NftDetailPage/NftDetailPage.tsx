@@ -66,12 +66,12 @@ function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
             nftId={prevNftId}
           ></NavigationHandle>
         )} */}
-        <ShimmerProvider>
-          <StyledContentContainer>
+        <StyledContentContainer>
+          <ShimmerProvider>
             <NftDetailAsset nft={nft} />
-            <NftDetailText nft={nft} />
-          </StyledContentContainer>
-        </ShimmerProvider>
+          </ShimmerProvider>
+          <NftDetailText nft={nft} />
+        </StyledContentContainer>
         {/* {nextNftId && (
           <NavigationHandle
             direction={Directions.RIGHT}
