@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
-import { getMediaType } from 'utils/nft';
+import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import {
   GLOBAL_FOOTER_HEIGHT,
   GLOBAL_NAVBAR_HEIGHT,
@@ -14,17 +14,27 @@ import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
 
-type AssetComponentProps = {
+type NftDetailAssetComponentProps = {
   nft: Nft;
   maxHeight: number;
 };
 
-function AssetComponent({ nft, maxHeight }: AssetComponentProps) {
+function NftDetailAssetComponent({
+  nft,
+  maxHeight,
+}: NftDetailAssetComponentProps) {
   const assetType = getMediaType(nft);
 
   switch (assetType) {
     case NftMediaType.IMAGE:
-      return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
+      return (
+        <ImageWithLoading
+          src={getResizedNftImageUrlWithFallback(nft, 1200)}
+          alt={nft.name}
+          widthType="maxWidth"
+          heightType="maxHeightScreen"
+        />
+      );
     case NftMediaType.AUDIO:
       return <NftDetailAudio nft={nft} />;
     case NftMediaType.VIDEO:
@@ -34,7 +44,14 @@ function AssetComponent({ nft, maxHeight }: AssetComponentProps) {
     case NftMediaType.MODEL:
       return <NftDetailModel nft={nft} />;
     default:
-      return <ImageWithLoading src={nft.image_url} alt={nft.name} />;
+      return (
+        <ImageWithLoading
+          src={getResizedNftImageUrlWithFallback(nft, 1200)}
+          alt={nft.name}
+          widthType="maxWidth"
+          heightType="maxHeightScreen"
+        />
+      );
   }
 }
 
@@ -62,7 +79,7 @@ function NftDetailAsset({ nft }: Props) {
 
   return (
     <StyledAssetContainer maxHeight={maxHeight}>
-      <AssetComponent nft={nft} maxHeight={maxHeight} />
+      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
     </StyledAssetContainer>
   );
 }
