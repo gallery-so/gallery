@@ -29,7 +29,7 @@ export const useContentState = (): ShimmerState => {
 };
 
 type ShimmerAction = {
-  setContentIsLoaded: (event: SyntheticEvent) => void;
+  setContentIsLoaded: (event?: SyntheticEvent) => void;
 };
 
 const ShimmerActionContext = createContext<ShimmerAction | undefined>(
@@ -67,18 +67,21 @@ const ShimmerProvider = memo(({ children }: Props) => {
 
   const actions = useMemo(
     () => ({
-      setContentIsLoaded: (event: SyntheticEvent) => {
-        // @ts-expect-error: issues with TS image onload event
-        const aspectRatio = event.target.width / event.target.height;
-        if (aspectRatio === 1) {
-          setAspectRatioType('square');
-        } else if (aspectRatio > 1) {
-          setAspectRatioType('wide');
-        } else if (aspectRatio < 1) {
-          setAspectRatioType('tall');
+      setContentIsLoaded: (event?: SyntheticEvent) => {
+        if (event) {
+          // @ts-expect-error: issues with TS image onload event
+          const aspectRatio = event.target.width / event.target.height;
+          if (aspectRatio === 1) {
+            setAspectRatioType('square');
+          } else if (aspectRatio > 1) {
+            setAspectRatioType('wide');
+          } else if (aspectRatio < 1) {
+            setAspectRatioType('tall');
+          }
+
+          setAspectRatio(aspectRatio);
         }
 
-        setAspectRatio(aspectRatio);
         setIsLoaded(true);
       },
     }),
