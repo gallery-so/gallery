@@ -55,7 +55,7 @@ function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
   }
 
   return (
-    <StyledNftDetailPage centered>
+    <StyledNftDetailPage centered fixedFullPageHeight>
       <StyledBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
