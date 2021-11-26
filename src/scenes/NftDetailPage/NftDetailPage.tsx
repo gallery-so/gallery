@@ -55,7 +55,7 @@ function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
   }
 
   return (
-    <StyledNftDetailPage centered>
+    <StyledNftDetailPage centered fixedFullPageHeight>
       <StyledBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
@@ -130,7 +130,6 @@ const StyledContentContainer = styled.div`
 
 const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
-    margin-top: 64px;
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
   }
