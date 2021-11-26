@@ -5,13 +5,15 @@
 
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeue.otf') format('opentype'), url('/fonts/HelveticaNeue.ttf') format('truetype');
+  src: url('/fonts/HelveticaNeue.otf') format('opentype'),
+    url('/fonts/HelveticaNeue.ttf') format('truetype');
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeue-Medium.otf') format('opentype'), url('/fonts/HelveticaNeue-Medium.ttf') format('truetype');
+  src: url('/fonts/HelveticaNeue-Medium.otf') format('opentype'),
+    url('/fonts/HelveticaNeue-Medium.ttf') format('truetype');
   font-weight: 500;
 }
 
@@ -53,3 +55,15 @@ code {
   opacity: 1;
 }
 
+/* always display scrollbar if scrollable for accessibility */
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+/* end custom scrollbar */
