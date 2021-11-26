@@ -88,7 +88,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
     padding-right: 16px;
     `
       : `
-      margin-top: 40px;
+      margin: 40px 0px;
     `}
 
   @media only screen and ${breakpoints.tablet} {
