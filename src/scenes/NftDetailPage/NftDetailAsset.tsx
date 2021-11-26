@@ -78,14 +78,26 @@ function NftDetailAsset({ nft }: Props) {
     600
   );
 
+  const breakpoint = useBreakpoint();
+  const shouldEnforceAspectRatio =
+    breakpoint === size.desktop || breakpoint === size.tablet;
+
   return (
-    <StyledAssetContainer maxHeight={maxHeight}>
+    <StyledAssetContainer
+      maxHeight={maxHeight}
+      shouldEnforceAspectRatio={shouldEnforceAspectRatio}
+    >
       <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
     </StyledAssetContainer>
   );
 }
 
-const StyledAssetContainer = styled.div<{ maxHeight: number }>`
+type AssetContainerProps = {
+  maxHeight: number;
+  shouldEnforceAspectRatio: boolean;
+};
+
+const StyledAssetContainer = styled.div<AssetContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,7 +105,8 @@ const StyledAssetContainer = styled.div<{ maxHeight: number }>`
   width: 100%;
   height: 100%;
 
-  aspect-ratio: 1;
+  ${({ shouldEnforceAspectRatio }) =>
+    shouldEnforceAspectRatio ? 'aspect-ratio: 1' : ''};
 
   @media only screen and ${breakpoints.desktop} {
     width: ${({ maxHeight }) => maxHeight}px;

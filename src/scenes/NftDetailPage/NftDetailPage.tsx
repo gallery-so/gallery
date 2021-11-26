@@ -130,7 +130,6 @@ const StyledContentContainer = styled.div`
 
 const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
-    margin-top: 64px;
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
   }

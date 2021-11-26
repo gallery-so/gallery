@@ -2,13 +2,14 @@ import { Heading, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
-import breakpoints from 'components/core/breakpoints';
+import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import { Nft, Owner } from 'types/Nft';
 import Markdown from 'components/core/Markdown/Markdown';
 import { useMemo } from 'react';
 import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type Props = {
   nft: Nft;
@@ -20,8 +21,12 @@ function NftDetailText({ nft }: Props) {
     return owners?.length > 0 ? owners[0] : {};
   }, [nft]);
 
+  const breakpoint = useBreakpoint();
+  const horizontalLayout =
+    breakpoint === size.desktop || breakpoint === size.tablet;
+
   return (
-    <StyledDetailLabel>
+    <StyledDetailLabel horizontalLayout={horizontalLayout}>
       <Heading>{nft.name}</Heading>
       <Spacer height={16} />
       <BodyRegular>{nft.token_collection_name}</BodyRegular>
@@ -69,15 +74,22 @@ function NftOwnerLink({ owner, ownerAddress }: NftOwnerProps) {
   );
 }
 
-const StyledDetailLabel = styled.div`
+const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
   display: block;
   max-width: 296px;
   min-width: 296px;
   word-wrap: break-word;
 
-  max-height: ${fullPageHeightWithoutNavbarAndFooter};
-  overflow: scroll;
-  padding-right: 16px;
+  ${({ horizontalLayout }) =>
+    horizontalLayout
+      ? `
+    max-height: ${fullPageHeightWithoutNavbarAndFooter};
+    overflow: scroll;
+    padding-right: 16px;
+    `
+      : `
+      margin-top: 40px;
+    `}
 
   @media only screen and ${breakpoints.tablet} {
     margin-left: 72px;
