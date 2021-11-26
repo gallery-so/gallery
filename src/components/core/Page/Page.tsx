@@ -24,13 +24,16 @@ function Page({
 }: Props) {
   const breakpoint = useBreakpoint();
 
+  const isFullPageHeightSupported =
+    breakpoint === size.desktop || breakpoint === size.tablet;
+
   return (
     <>
       {topPadding ? <Filler /> : null}
       <StyledPage
         className={className}
         centered={centered}
-        fixedFullPageHeight={breakpoint === size.desktop && fixedFullPageHeight}
+        fixedFullPageHeight={isFullPageHeightSupported && fixedFullPageHeight}
       >
         {children}
       </StyledPage>

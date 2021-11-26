@@ -46,6 +46,6 @@ const StyledImg = styled.img<StyledImgProps>`
   display: block;
   ${({ widthType }) =>
     widthType === 'fullWidth' ? 'width' : 'max-width'}: 100%;
-  ${({ heightType }) =>
-    heightType === 'maxHeightScreen' ? 'max-height: 100vh;' : ''}
+  max-height: ${({ heightType }) =>
+    heightType === 'maxHeightScreen' ? '100vh' : '100%'};
 `;

@@ -1,4 +1,4 @@
-import breakpoints from 'components/core/breakpoints';
+import breakpoints, { size } from 'components/core/breakpoints';
 import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
 
@@ -13,6 +13,8 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
+import { useBreakpoint } from 'hooks/useWindowSize';
+import { useMemo } from 'react';
 
 type NftDetailAssetComponentProps = {
   nft: Nft;
@@ -24,17 +26,23 @@ function NftDetailAssetComponent({
   maxHeight,
 }: NftDetailAssetComponentProps) {
   const assetType = getMediaType(nft);
+  const breakpoint = useBreakpoint();
+
+  const resizableImage = useMemo(
+    () => (
+      <ImageWithLoading
+        src={getResizedNftImageUrlWithFallback(nft, 1200)}
+        alt={nft.name}
+        widthType="maxWidth"
+        heightType={breakpoint === size.desktop ? 'maxHeightScreen' : undefined}
+      />
+    ),
+    [breakpoint, nft]
+  );
 
   switch (assetType) {
     case NftMediaType.IMAGE:
-      return (
-        <ImageWithLoading
-          src={getResizedNftImageUrlWithFallback(nft, 1200)}
-          alt={nft.name}
-          widthType="maxWidth"
-          heightType="maxHeightScreen"
-        />
-      );
+      return resizableImage;
     case NftMediaType.AUDIO:
       return <NftDetailAudio nft={nft} />;
     case NftMediaType.VIDEO:
@@ -44,14 +52,7 @@ function NftDetailAssetComponent({
     case NftMediaType.MODEL:
       return <NftDetailModel nft={nft} />;
     default:
-      return (
-        <ImageWithLoading
-          src={getResizedNftImageUrlWithFallback(nft, 1200)}
-          alt={nft.name}
-          widthType="maxWidth"
-          heightType="maxHeightScreen"
-        />
-      );
+      return resizableImage;
   }
 }
 
