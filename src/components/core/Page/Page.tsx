@@ -1,6 +1,8 @@
+import { useBreakpoint } from 'hooks/useWindowSize';
 import { ReactNode } from 'react';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import styled from 'styled-components';
+import { size } from '../breakpoints';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from './constants';
 
 type Props = {
@@ -8,7 +10,7 @@ type Props = {
   centered?: boolean;
   // simulates navbar filler if being used for rendering a page outside of GalleryRoute
   topPadding?: boolean;
-  // forces page to take up the screen height exactly
+  // forces page to take up the screen height exactly. only applies for desktop.
   fixedFullPageHeight?: boolean;
   children: ReactNode | ReactNode[];
 };
@@ -20,13 +22,15 @@ function Page({
   fixedFullPageHeight = false,
   children,
 }: Props) {
+  const breakpoint = useBreakpoint();
+
   return (
     <>
       {topPadding ? <Filler /> : null}
       <StyledPage
         className={className}
         centered={centered}
-        fixedFullPageHeight={fixedFullPageHeight}
+        fixedFullPageHeight={breakpoint === size.desktop && fixedFullPageHeight}
       >
         {children}
       </StyledPage>
