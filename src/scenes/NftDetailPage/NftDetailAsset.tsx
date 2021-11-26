@@ -15,6 +15,7 @@ import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
+import { useContentState } from 'contexts/shimmer/ShimmerContext';
 
 type NftDetailAssetComponentProps = {
   nft: Nft;
@@ -78,14 +79,17 @@ function NftDetailAsset({ nft }: Props) {
     600
   );
 
+  const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
-  const shouldEnforceAspectRatio =
-    breakpoint === size.desktop || breakpoint === size.tablet;
+  const shouldEnforceSquareAspectRatio =
+    breakpoint === size.desktop ||
+    breakpoint === size.tablet ||
+    aspectRatioType !== 'wide';
 
   return (
     <StyledAssetContainer
       maxHeight={maxHeight}
-      shouldEnforceAspectRatio={shouldEnforceAspectRatio}
+      shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
     >
       <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
     </StyledAssetContainer>
@@ -94,7 +98,7 @@ function NftDetailAsset({ nft }: Props) {
 
 type AssetContainerProps = {
   maxHeight: number;
-  shouldEnforceAspectRatio: boolean;
+  shouldEnforceSquareAspectRatio: boolean;
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
@@ -102,11 +106,11 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
 
-  ${({ shouldEnforceAspectRatio }) =>
-    shouldEnforceAspectRatio ? 'aspect-ratio: 1' : ''};
+  ${({ shouldEnforceSquareAspectRatio }) =>
+    shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
 
   @media only screen and ${breakpoints.desktop} {
     width: ${({ maxHeight }) => maxHeight}px;
