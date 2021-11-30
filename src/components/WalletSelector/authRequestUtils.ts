@@ -147,26 +147,23 @@ async function signMessage(
 ): Promise<Signature> {
   try {
     if (connector instanceof WalletConnectConnector) {
+      
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-
-      // for gnosis, signature will always be 0x
       const signature = await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+      // for gnosis, signature will always be 0x. see Notion for explanation
 
       // todo create separate signMessage func for gnosis/smart contracts.
 
       if (library){
         const gnosisContract = new Contract(GNOSIS_SIGN_CONTRACT_ADDRESS, GNOSIS_SAFE_CONTRACT_ABI, library as any)
-        console.log('gnosisContract', gnosisContract)
 
-
-        // this is just to test that we are able to call isValidSignature correctly. the msg argument is from a previous succesful SignMsg transaction
+        // ignore this line. this is just to test that we are able to call isValidSignature correctly. the msg argument is from a previous succesful SignMsg transaction
         const isValidSignature = await gnosisContract.isValidSignature('0x3df03ecd8626b1a26e90b64c0f7a2e7e4dc4789e6a1c346ee7b189a201031d7b', signature);
         console.log('isValidSignature', isValidSignature)
         
-        const listenForGnosis = new Promise((resolve, reject) => {
-
-          
+        // create listener that will listen for the SignMsg event on the Gnosis contract
+        const listenForGnosis = new Promise((resolve, reject) => {          
           gnosisContract.on('SignMsg', async (msgHash:any, event: any, error: any) =>  {
             console.log('msgHash', msgHash)
             console.log('event', event)
@@ -176,6 +173,7 @@ async function signMessage(
               reject(error)
             }
             
+            // Upon detecing the SignMsg event, validate that the contract signed the message
             const isValidSignature = await gnosisContract.isValidSignature(msgHash, signature);
             // todo: is not valid, keep listening. it could be an event from a stale tx in the queue
             
