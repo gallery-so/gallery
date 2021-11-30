@@ -1,4 +1,5 @@
-import { JsonRpcSigner } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -10,6 +11,8 @@ import capitalize from 'utils/capitalize';
 import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import Mixpanel from 'utils/mixpanel';
 import walletlinkSigner from './walletlinkSigner';
+// todo rename 
+import GNOSIS_SAFE_CONTRACT_ABI from 'abis/gnosis-safe-contract.json';
 
 /**
  * Auth Pipeline:
@@ -23,6 +26,7 @@ type AuthPipelineProps = {
   signer: JsonRpcSigner;
   fetcher: FetcherType;
   connector: AbstractConnector;
+  library?: Web3Provider;
 };
 
 type AddWalletResult = {
@@ -34,6 +38,7 @@ export async function initializeAddWalletPipeline({
   signer,
   fetcher,
   connector,
+  library
 }: AuthPipelineProps): Promise<AddWalletResult> {
   // Check if address already belongs to a user in the database
   // If so, the user shouldn't be able to add the address. In the future we might allow user merge
@@ -43,7 +48,7 @@ export async function initializeAddWalletPipeline({
     throw { code: 'EXISTING_USER' } as Web3Error;
   }
 
-  const signature = await signMessage(address, nonce, signer, connector);
+  const signature = await signMessage(address, nonce, signer, connector, library);
   const response = await addUserAddress({ signature, address }, fetcher);
 
   await triggerOpenseaSync(fetcher);
@@ -60,7 +65,7 @@ export default async function initializeAuthPipeline({
   address,
   signer,
   fetcher,
-  connector,
+  connector
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
   const signature = await signMessage(address, nonce, signer, connector);
@@ -131,17 +136,59 @@ function isRpcSignatureError(error: Record<string, any>) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
 }
 
+// todo this will be diff for mainnet
+const GNOSIS_SIGN_CONTRACT_ADDRESS = '0x60facecd4dbf14f1ae647afc3d1d071b1c29ace4'
 async function signMessage(
   address: string,
   nonce: string,
   signer: JsonRpcSigner,
   connector: AbstractConnector,
+  library?: Web3Provider,
 ): Promise<Signature> {
   try {
     if (connector instanceof WalletConnectConnector) {
       // This keeps the nonce message intact instead of encrypting it for WalletConnect users
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+
+      // for gnosis, signature will always be 0x
+      const signature = await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
+
+      // todo create separate signMessage func for gnosis/smart contracts.
+
+      if (library){
+        const gnosisContract = new Contract(GNOSIS_SIGN_CONTRACT_ADDRESS, GNOSIS_SAFE_CONTRACT_ABI, library as any)
+        console.log('gnosisContract', gnosisContract)
+
+
+        // this is just to test that we are able to call isValidSignature correctly. the msg argument is from a previous succesful SignMsg transaction
+        const isValidSignature = await gnosisContract.isValidSignature('0x3df03ecd8626b1a26e90b64c0f7a2e7e4dc4789e6a1c346ee7b189a201031d7b', signature);
+        console.log('isValidSignature', isValidSignature)
+        
+        const listenForGnosis = new Promise((resolve, reject) => {
+
+          
+          gnosisContract.on('SignMsg', async (msgHash:any, event: any, error: any) =>  {
+            console.log('msgHash', msgHash)
+            console.log('event', event)
+            console.log('error', error)
+            
+            if (error) {
+              reject(error)
+            }
+            
+            const isValidSignature = await gnosisContract.isValidSignature(msgHash, signature);
+            // todo: is not valid, keep listening. it could be an event from a stale tx in the queue
+            
+            resolve(msgHash)
+          })
+        })
+
+        console.log('start listen')
+        await listenForGnosis
+        console.log('after await')
+      }
+
+      return signature;
     }
 
     if (connector instanceof WalletLinkConnector) {
@@ -150,11 +197,13 @@ async function signMessage(
 
     return await signer.signMessage(nonce);
   } catch (error: unknown) {
+    console.log(error)
     if (error instanceof Error) {
       throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
     } else if (error instanceof Object && isRpcSignatureError(error)) {
       throw { code: 'REJECTED_SIGNATURE' } as Web3Error;
     }
+
 
     throw new Error('Unknown error');
   }

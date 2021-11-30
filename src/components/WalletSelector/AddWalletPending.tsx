@@ -52,6 +52,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
         signer,
         fetcher,
         connector: pendingWallet,
+        library
       });
       Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
       openManageWalletsModal(address);
@@ -70,7 +71,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
         setDetectedError(web3Error);
       }
     }
-  }, [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError]);
+  }, [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError, library]);
 
   const isMetamask = useMemo(() => userFriendlyWalletName.toLowerCase() === 'metamask', [userFriendlyWalletName]);
 
