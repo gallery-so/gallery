@@ -23,6 +23,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import StagedNftImageDragging from './StagedNftImageDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
+import { MENU_HEIGHT } from './CollectionEditor';
 
 // Width of DND area for each Column # setting
 const DND_WIDTHS: Record<number, number> = {
@@ -69,10 +70,13 @@ function StagingArea() {
     (event: DragEndEvent) => {
       handleSortNfts(event);
     },
-    [handleSortNfts],
+    [handleSortNfts]
   );
 
-  const activeNft = useMemo(() => stagedNfts.find(({ nft }) => nft.id === activeId), [stagedNfts, activeId]);
+  const activeNft = useMemo(
+    () => stagedNfts.find(({ nft }) => nft.id === activeId),
+    [stagedNfts, activeId]
+  );
 
   const columns = collectionMetadata.layout.columns;
 
@@ -89,7 +93,7 @@ function StagingArea() {
             <Heading>Your collection</Heading>
           </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
-            {stagedNfts.map(editModeNft => (
+            {stagedNfts.map((editModeNft) => (
               <SortableStagedNft
                 key={editModeNft.id}
                 editModeNft={editModeNft}
@@ -98,11 +102,13 @@ function StagingArea() {
             ))}
           </StyledStagedNftContainer>
         </SortableContext>
-        <DragOverlay
-          adjustScale
-          dropAnimation={defaultDropAnimationConfig}
-        >
-          {activeNft ? <StagedNftImageDragging nft={activeNft.nft} size={IMAGE_SIZES[columns]}/> : null}
+        <DragOverlay adjustScale dropAnimation={defaultDropAnimationConfig}>
+          {activeNft ? (
+            <StagedNftImageDragging
+              nft={activeNft.nft}
+              size={IMAGE_SIZES[columns]}
+            />
+          ) : null}
         </DragOverlay>
       </DndContext>
     </StyledStagingArea>
@@ -122,7 +128,7 @@ const StyledStagingArea = styled.div`
   margin: 0 auto;
 
   width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  height: calc(100vh - ${FOOTER_HEIGHT}px - ${MENU_HEIGHT}px);
 
   padding: 100px 80px;
 

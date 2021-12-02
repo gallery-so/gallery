@@ -160,16 +160,20 @@ function CollectionEditor() {
     stageNfts(selectedNfts);
   }, [refreshSidebarNfts, setSidebarNfts, stageNfts]);
 
+  const shouldDisplayEditor = stagedNfts.length > 0;
+
   return (
     <StyledOrganizeCollection>
       <StyledSidebarContainer>
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
-        <StyledMenuContainer>
-          <ColumnAdjuster />
-        </StyledMenuContainer>
-        {stagedNfts.length > 0 ? <StagingArea /> : <Directions />}
+        {shouldDisplayEditor && (
+          <StyledMenuContainer>
+            <ColumnAdjuster />
+          </StyledMenuContainer>
+        )}
+        {shouldDisplayEditor ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
     </StyledOrganizeCollection>
   );
@@ -189,10 +193,13 @@ const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
 
+export const MENU_HEIGHT = 20;
+
 const StyledMenuContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin: 32px;
+  height: ${MENU_HEIGHT}px;
 `;
 
 export default CollectionEditor;
