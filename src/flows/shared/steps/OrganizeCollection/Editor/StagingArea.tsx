@@ -23,7 +23,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import StagedNftImageDragging from './StagedNftImageDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
-import { MENU_HEIGHT } from './CollectionEditor';
+import { MENU_HEIGHT } from './EditorMenu';
 
 // Width of DND area for each Column # setting
 const DND_WIDTHS: Record<number, number> = {

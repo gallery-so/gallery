@@ -1,5 +1,5 @@
 import { DEFAULT_COLUMNS } from 'constants/layout';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -19,7 +19,7 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
-import ColumnAdjuster from './ColumnAdjuster';
+import EditorMenu from './EditorMenu';
 
 function convertNftsToEditModeNfts(
   nfts: Nft[],
@@ -168,12 +168,14 @@ function CollectionEditor() {
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
-        {shouldDisplayEditor && (
-          <StyledMenuContainer>
-            <ColumnAdjuster />
-          </StyledMenuContainer>
+        {shouldDisplayEditor ? (
+          <>
+            <EditorMenu />
+            <StagingArea />
+          </>
+        ) : (
+          <Directions />
         )}
-        {shouldDisplayEditor ? <StagingArea /> : <Directions />}
       </StyledEditorContainer>
     </StyledOrganizeCollection>
   );
@@ -191,15 +193,6 @@ const StyledSidebarContainer = styled.div`
 
 const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
-`;
-
-export const MENU_HEIGHT = 20;
-
-const StyledMenuContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin: 32px;
-  height: ${MENU_HEIGHT}px;
 `;
 
 export default CollectionEditor;
