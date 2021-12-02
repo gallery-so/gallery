@@ -64,7 +64,6 @@ const ShimmerProvider = memo(({ children }: Props) => {
     }),
     [aspectRatio, aspectRatioType]
   );
-
   const actions = useMemo(
     () => ({
       setContentIsLoaded: (event?: SyntheticEvent) => {
