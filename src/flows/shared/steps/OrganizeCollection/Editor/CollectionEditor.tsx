@@ -1,5 +1,5 @@
 import { DEFAULT_COLUMNS } from 'constants/layout';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -13,16 +13,18 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import Dropdown from 'components/core/Dropdown/Dropdown';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
-import ColumnAdjuster from './ColumnAdjuster';
+import EditorMenu from './EditorMenu';
 
-function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
+function convertNftsToEditModeNfts(
+  nfts: Nft[],
+  isSelected = false
+): EditModeNft[] {
   return nfts.map((nft, index) => ({
     index,
     nft,
@@ -45,23 +47,35 @@ function CollectionEditor() {
   }, [setNextEnabled, stagedNfts]);
 
   const { collectionIdBeingEdited } = useCollectionWizardState();
-  const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
+  const { setSidebarNfts, stageNfts, unstageNfts } =
+    useCollectionEditorActions();
 
   const unassignedNfts = useUnassignedNfts();
 
   const { collections } = useAuthenticatedGallery();
-  const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
+  const collectionIdBeingEditedRef = useRef<string>(
+    collectionIdBeingEdited ?? ''
+  );
   const collectionBeingEdited = useMemo(
-    () => collections.find(coll => coll.id === collectionIdBeingEditedRef.current),
-    [collections]);
-  const nftsFromCollectionBeingEdited = useMemo(() => collectionBeingEdited?.nfts ?? [], [collectionBeingEdited]);
+    () =>
+      collections.find(
+        (coll) => coll.id === collectionIdBeingEditedRef.current
+      ),
+    [collections]
+  );
+  const nftsFromCollectionBeingEdited = useMemo(
+    () => collectionBeingEdited?.nfts ?? [],
+    [collectionBeingEdited]
+  );
 
   // Set collection layout if we are editing an existing collection
   const { setColumns } = useCollectionEditorActions();
   const mountRef = useRef(false);
   useEffect(() => {
     if (collectionBeingEdited) {
-      const columns = isValidColumns(collectionBeingEdited.layout.columns) ? collectionBeingEdited.layout.columns : DEFAULT_COLUMNS;
+      const columns = isValidColumns(collectionBeingEdited.layout.columns)
+        ? collectionBeingEdited.layout.columns
+        : DEFAULT_COLUMNS;
       setColumns(columns);
     }
 
@@ -82,9 +96,10 @@ function CollectionEditor() {
 
     const unassignedEditModeNfts = convertNftsToEditModeNfts(unassignedNfts);
 
-    return Object.fromEntries(unassignedEditModeNfts.map(nft => [nft.id, nft]));
-  }
-  , [unassignedNfts]);
+    return Object.fromEntries(
+      unassignedEditModeNfts.map((nft) => [nft.id, nft])
+    );
+  }, [unassignedNfts]);
 
   // decorates NFTs in collection with additional fields for the purpose of editing / dnd
   const editModeNftsInCollection: EditModeNft[] = useMemo(() => {
@@ -92,10 +107,7 @@ function CollectionEditor() {
       return [];
     }
 
-    return convertNftsToEditModeNfts(
-      nftsFromCollectionBeingEdited,
-      true,
-    );
+    return convertNftsToEditModeNfts(nftsFromCollectionBeingEdited, true);
   }, [nftsFromCollectionBeingEdited]);
 
   // refreshes the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
@@ -139,10 +151,16 @@ function CollectionEditor() {
     const sidebarNftsWithSelection = refreshSidebarNfts();
 
     setSidebarNfts(sidebarNftsWithSelection);
-    const sidebarNftsWithSelectionAsArray = convertObjectToArray(sidebarNftsWithSelection);
-    const selectedNfts = sidebarNftsWithSelectionAsArray.filter(sidebarNft => sidebarNft.isSelected);
+    const sidebarNftsWithSelectionAsArray = convertObjectToArray(
+      sidebarNftsWithSelection
+    );
+    const selectedNfts = sidebarNftsWithSelectionAsArray.filter(
+      (sidebarNft) => sidebarNft.isSelected
+    );
     stageNfts(selectedNfts);
   }, [refreshSidebarNfts, setSidebarNfts, stageNfts]);
+
+  const shouldDisplayEditor = stagedNfts.length > 0;
 
   return (
     <StyledOrganizeCollection>
@@ -150,12 +168,14 @@ function CollectionEditor() {
         <Sidebar />
       </StyledSidebarContainer>
       <StyledEditorContainer>
-        <StyledMenuContainer>
-          <Dropdown mainText="Canvas Settings">
-            <ColumnAdjuster/>
-          </Dropdown>
-        </StyledMenuContainer>
-        {stagedNfts.length > 0 ? <StagingArea /> : <Directions />}
+        {shouldDisplayEditor ? (
+          <>
+            <EditorMenu />
+            <StagingArea />
+          </>
+        ) : (
+          <Directions />
+        )}
       </StyledEditorContainer>
     </StyledOrganizeCollection>
   );
@@ -173,12 +193,6 @@ const StyledSidebarContainer = styled.div`
 
 const StyledEditorContainer = styled.div`
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
-`;
-
-const StyledMenuContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin: 32px;
 `;
 
 export default CollectionEditor;
