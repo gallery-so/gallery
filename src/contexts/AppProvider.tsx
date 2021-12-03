@@ -1,4 +1,3 @@
-
 import { SwrProvider } from './swr/SwrContext';
 import Boundary from './boundary/Boundary';
 import AuthProvider from './auth/AuthContext';
@@ -19,7 +18,6 @@ export default function AppProvider({ children }: Props) {
             <SwrProvider>
               <ModalProvider>{children}</ModalProvider>
             </SwrProvider>
-
           </Web3ProviderNetwork>
         </AuthProvider>
       </ToastProvider>

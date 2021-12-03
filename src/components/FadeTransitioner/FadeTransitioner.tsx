@@ -1,4 +1,4 @@
-import { CSSProperties, memo } from 'react';
+import { Suspense, CSSProperties, memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import {
@@ -6,6 +6,7 @@ import {
   useGalleryNavigationState,
 } from 'contexts/navigation/GalleryNavigationContext';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
+import FullPageLoader from 'components/core/Loader/FullPageLoader';
 
 type Props = {
   locationKey?: string;
@@ -47,7 +48,11 @@ function FadeTransitioner({ locationKey, children }: Props) {
         classNames="fade"
         onExit={handleNavigationScrollPosition}
       >
-        <div style={childNodeStyles as CSSProperties}>{children}</div>
+        {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
+            to remain uninterrupted upon navigation */}
+        <Suspense fallback={<FullPageLoader />}>
+          <div style={childNodeStyles as CSSProperties}>{children}</div>
+        </Suspense>
       </CSSTransition>
     </TransitionGroup>
   );
