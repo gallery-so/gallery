@@ -10,6 +10,7 @@ import transitions from 'components/core/transitions';
 import metamaskIcon from 'assets/icons/metamask.svg';
 import walletConnectIcon from 'assets/icons/walletconnect.svg';
 import walletLinkIcon from 'assets/icons/walletlink.svg';
+import gnosisSafeIcon from 'assets/icons/gnosis_safe.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
 import { convertWalletName } from 'utils/wallet';
@@ -18,6 +19,7 @@ const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
   walletconnect: walletConnectIcon,
   walletlink: walletLinkIcon,
+  gnosissafe: gnosisSafeIcon,
 };
 
 type WalletButtonProps = {

@@ -22,6 +22,7 @@ const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
   WalletConnect: walletconnect,
   WalletLink: walletlink,
+  GnosisSafe: walletconnect,
 };
 
 type ErrorCode = string;
@@ -195,6 +196,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
 
   return (
     <StyledWalletSelector>
+      <Spacer height={16} />
       <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
       <Spacer height={16} />
       {Object.keys(walletConnectorMap).map(walletName => (

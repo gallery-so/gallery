@@ -47,6 +47,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   const attemptAddWallet = useCallback(async (address: string, signer: JsonRpcSigner) => {
     try {
       setIsConnecting(true);
+      setPendingState(PROMPT_SIGNATURE);
       const { signatureValid } = await initializeAddWalletPipeline({
         address,
         signer,
@@ -74,6 +75,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
   }, [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError, library]);
 
   const isMetamask = useMemo(() => userFriendlyWalletName.toLowerCase() === 'metamask', [userFriendlyWalletName]);
+  const isGnosisSafe = useMemo(() => userFriendlyWalletName.toLowerCase() === 'gnosis safe', [userFriendlyWalletName]);
 
   useEffect(() => {
     async function authenticate() {
@@ -84,6 +86,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
         }
 
         if (isMetamask) {
+          // For metamask, prompt the user to confirm the address provided by the extension is the one they want to connect with
           setPendingState(CONFIRM_ADDRESS);
         } else {
           await attemptAddWallet(account.toLowerCase(), signer);
@@ -111,6 +114,7 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
       </div>);
   }
 
+  // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account && signer) {
     return (
       <div>
@@ -134,8 +138,21 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
     return (
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        {isGnosisSafe
+        ? <>
+          <Spacer height={8}/>
+          <BodyRegular color={colors.gray50}>Connecting with Gnosis requires an on chain transaction.</BodyRegular>
+          <Spacer height={8}/>
+          <BodyRegular color={colors.gray50}>Follow the prompts in the Gnosis app to sign the message.</BodyRegular>
+          <Spacer height={8}/>
+          <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
+        </>
+        : <>
         <Spacer height={8}/>
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
+
+        </>
+        }
       </div>
     );
   }

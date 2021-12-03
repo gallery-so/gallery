@@ -22,29 +22,37 @@ type Props = {
 type PendingState = typeof INITIAL | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedError }: Props) {
-  const {
-    library,
-    account,
-  } = useWeb3React<Web3Provider>();
-  const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
+function AuthenticateWalletPending({
+  pendingWallet,
+  userFriendlyWalletName,
+  setDetectedError,
+}: Props) {
+  const { library, account } = useWeb3React<Web3Provider>();
+  const signer = useMemo(
+    () => (library && account ? library.getSigner(account) : undefined),
+    [library, account]
+  );
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
   const { logIn } = useAuthActions();
 
-  const attemptAuthentication = useCallback(async (address: string, signer: JsonRpcSigner) => {
-    setPendingState(PROMPT_SIGNATURE);
-    const { jwt, userId } = await initializeAuthPipeline({
-      address,
-      signer,
-      fetcher,
-      connector: pendingWallet,
-    });
-    Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
-    logIn({ jwt, userId }, address);
-  }, [fetcher, logIn, pendingWallet, userFriendlyWalletName]);
+  const attemptAuthentication = useCallback(
+    async (address: string, signer: JsonRpcSigner) => {
+      setPendingState(PROMPT_SIGNATURE);
+      const { jwt, userId } = await initializeAuthPipeline({
+        address,
+        signer,
+        fetcher,
+        connector: pendingWallet,
+        library,
+      });
+      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
+      logIn({ jwt, userId }, address);
+    },
+    [fetcher, library, logIn, pendingWallet, userFriendlyWalletName]
+  );
 
   useEffect(() => {
     async function authenticate() {
@@ -72,7 +80,7 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
     return (
       <StyledAuthenticateWalletPending>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-        <Spacer height={8}/>
+        <Spacer height={8} />
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </StyledAuthenticateWalletPending>
     );
@@ -81,13 +89,12 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
   return (
     <StyledAuthenticateWalletPending>
       <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-      <Spacer height={8}/>
+      <Spacer height={8} />
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </StyledAuthenticateWalletPending>
   );
 }
 
-const StyledAuthenticateWalletPending = styled.div`
-`;
+const StyledAuthenticateWalletPending = styled.div``;
 
 export default AuthenticateWalletPending;

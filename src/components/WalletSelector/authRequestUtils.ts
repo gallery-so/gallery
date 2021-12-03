@@ -1,18 +1,13 @@
-import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
-
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 import capitalize from 'utils/capitalize';
 import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import Mixpanel from 'utils/mixpanel';
-import walletlinkSigner from './walletlinkSigner';
-// todo rename 
-import GNOSIS_SAFE_CONTRACT_ABI from 'abis/gnosis-safe-contract.json';
+
+import { getWalletTypeId, signMessage } from './walletUtils';
 
 /**
  * Auth Pipeline:
@@ -38,7 +33,7 @@ export async function initializeAddWalletPipeline({
   signer,
   fetcher,
   connector,
-  library
+  library,
 }: AuthPipelineProps): Promise<AddWalletResult> {
   // Check if address already belongs to a user in the database
   // If so, the user shouldn't be able to add the address. In the future we might allow user merge
@@ -48,8 +43,9 @@ export async function initializeAddWalletPipeline({
     throw { code: 'EXISTING_USER' } as Web3Error;
   }
 
-  const signature = await signMessage(address, nonce, signer, connector, library);
-  const response = await addUserAddress({ signature, address }, fetcher);
+  const walletTypeId = getWalletTypeId(connector);
+  const signature = await signMessage(address, nonce, connector, signer, library);
+  const response = await addUserAddress({ signature, address, wallet_type: walletTypeId }, fetcher);
 
   await triggerOpenseaSync(fetcher);
 
@@ -65,13 +61,15 @@ export default async function initializeAuthPipeline({
   address,
   signer,
   fetcher,
-  connector
+  connector,
+  library,
 }: AuthPipelineProps): Promise<AuthResult> {
   const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-  const signature = await signMessage(address, nonce, signer, connector);
+  const walletTypeId = getWalletTypeId(connector);
+  const signature = await signMessage(address, nonce, connector, signer, library);
 
   if (userExists) {
-    const response = await loginUser({ signature, address }, fetcher);
+    const response = await loginUser({ signature, address, wallet_type: walletTypeId }, fetcher);
     return { jwt: response.jwt_token, userId: response.user_id };
   }
 
@@ -84,8 +82,9 @@ export default async function initializeAuthPipeline({
       signature,
       address,
       nonce,
+      wallet_type: walletTypeId,
     },
-    fetcher,
+    fetcher
   );
 
   // The user's nfts should be fetched here so that they're ready to go by the time
@@ -105,103 +104,19 @@ type NonceResponse = {
   user_exists: boolean;
 };
 
-async function fetchNonce(
-  address: string,
-  fetcher: FetcherType,
-): Promise<NonceResponse> {
+async function fetchNonce(address: string, fetcher: FetcherType): Promise<NonceResponse> {
   try {
-    return await fetcher<NonceResponse>(
-      `/auth/get_preflight?address=${address}`,
-      'fetch nonce',
-    );
+    return await fetcher<NonceResponse>(`/auth/get_preflight?address=${address}`, 'fetch nonce');
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while retrieving nonce', error);
-      const errorWithCode: Web3Error = { ...error, code: 'GALLERY_SERVER_ERROR', message: capitalize(error.message) };
+      const errorWithCode: Web3Error = {
+        ...error,
+        code: 'GALLERY_SERVER_ERROR',
+        message: capitalize(error.message),
+      };
       throw errorWithCode;
     }
-
-    throw new Error('Unknown error');
-  }
-}
-
-/**
- * Once we receive a nonce from gallery servers, we'll ask the
- * client to sign it. The method will hang here until a signature
- * is provided or denied (example: Metamask pop-up)
- */
-type Signature = string;
-
-function isRpcSignatureError(error: Record<string, any>) {
-  return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
-}
-
-// todo this will be diff for mainnet
-const GNOSIS_SIGN_CONTRACT_ADDRESS = '0x60facecd4dbf14f1ae647afc3d1d071b1c29ace4'
-async function signMessage(
-  address: string,
-  nonce: string,
-  signer: JsonRpcSigner,
-  connector: AbstractConnector,
-  library?: Web3Provider,
-): Promise<Signature> {
-  try {
-    if (connector instanceof WalletConnectConnector) {
-      
-      // This keeps the nonce message intact instead of encrypting it for WalletConnect users
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      const signature = await connector.walletConnectProvider.connector.signPersonalMessage([nonce, address]) as Signature;
-      // for gnosis, signature will always be 0x. see Notion for explanation
-
-      // todo create separate signMessage func for gnosis/smart contracts.
-
-      if (library){
-        const gnosisContract = new Contract(GNOSIS_SIGN_CONTRACT_ADDRESS, GNOSIS_SAFE_CONTRACT_ABI, library as any)
-
-        // ignore this line. this is just to test that we are able to call isValidSignature correctly. the msg argument is from a previous succesful SignMsg transaction
-        const isValidSignature = await gnosisContract.isValidSignature('0x3df03ecd8626b1a26e90b64c0f7a2e7e4dc4789e6a1c346ee7b189a201031d7b', signature);
-        console.log('isValidSignature', isValidSignature)
-        
-        // create listener that will listen for the SignMsg event on the Gnosis contract
-        const listenForGnosis = new Promise((resolve, reject) => {          
-          gnosisContract.on('SignMsg', async (msgHash:any, event: any, error: any) =>  {
-            console.log('msgHash', msgHash)
-            console.log('event', event)
-            console.log('error', error)
-            
-            if (error) {
-              reject(error)
-            }
-            
-            // Upon detecing the SignMsg event, validate that the contract signed the message
-            const isValidSignature = await gnosisContract.isValidSignature(msgHash, signature);
-            // todo: is not valid, keep listening. it could be an event from a stale tx in the queue
-            
-            resolve(msgHash)
-          })
-        })
-
-        console.log('start listen')
-        await listenForGnosis
-        console.log('after await')
-      }
-
-      return signature;
-    }
-
-    if (connector instanceof WalletLinkConnector) {
-      return await walletlinkSigner({ connector, nonce, address });
-    }
-
-    return await signer.signMessage(nonce);
-  } catch (error: unknown) {
-    console.log(error)
-    if (error instanceof Error) {
-      throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
-    } else if (error instanceof Object && isRpcSignatureError(error)) {
-      throw { code: 'REJECTED_SIGNATURE' } as Web3Error;
-    }
-
 
     throw new Error('Unknown error');
   }
@@ -213,6 +128,7 @@ async function signMessage(
 type LoginUserRequest = {
   signature: string;
   address: string;
+  wallet_type: number;
 };
 
 type LoginUserResponse = {
@@ -221,10 +137,7 @@ type LoginUserResponse = {
   user_id: string;
 };
 
-async function loginUser(
-  body: LoginUserRequest,
-  fetcher: FetcherType,
-): Promise<LoginUserResponse> {
+async function loginUser(body: LoginUserRequest, fetcher: FetcherType): Promise<LoginUserResponse> {
   try {
     return await fetcher<LoginUserResponse>('/users/login', 'log in user', {
       body,
@@ -232,7 +145,10 @@ async function loginUser(
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user login', error);
-      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      const errorWithCode: Web3Error = {
+        code: 'GALLERY_SERVER_ERROR',
+        ...error,
+      };
       throw errorWithCode;
     }
 
@@ -246,6 +162,7 @@ async function loginUser(
 type AddUserAddressRequest = {
   signature: string;
   address: string;
+  wallet_type?: number;
 };
 
 type AddUserAddressResponse = {
@@ -254,12 +171,16 @@ type AddUserAddressResponse = {
 
 async function addUserAddress(
   body: AddUserAddressRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<AddUserAddressResponse> {
   try {
-    return await fetcher<AddUserAddressResponse>('/users/update/addresses/add', 'add user address', {
-      body,
-    });
+    return await fetcher<AddUserAddressResponse>(
+      '/users/update/addresses/add',
+      'add user address',
+      {
+        body,
+      }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting adding user address', error);
@@ -277,18 +198,20 @@ type RemoveUserAddressRequest = {
   addresses: string[];
 };
 
-type RemoveUserAddressResponse = {
-
-};
+type RemoveUserAddressResponse = Record<string, unknown>;
 
 export async function removeUserAddress(
   body: RemoveUserAddressRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<RemoveUserAddressResponse> {
   try {
-    return await fetcher<RemoveUserAddressRequest>('/users/update/addresses/remove', 'remove user address', {
-      body,
-    });
+    return await fetcher<RemoveUserAddressRequest>(
+      '/users/update/addresses/remove',
+      'remove user address',
+      {
+        body,
+      }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting remove user address', error);
@@ -306,6 +229,7 @@ type CreateUserRequest = {
   signature: string;
   address: string;
   nonce: string;
+  wallet_type: number;
 };
 
 type CreateUserResponse = {
@@ -316,18 +240,21 @@ type CreateUserResponse = {
 
 async function createUser(
   body: CreateUserRequest,
-  fetcher: FetcherType,
+  fetcher: FetcherType
 ): Promise<CreateUserResponse> {
   try {
     const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
-    Mixpanel.track('Create user', { 'address': body.address });
+    Mixpanel.track('Create user', { address: body.address });
     return result;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('error while attempting user creation', error);
-      const errorWithCode: Web3Error = { code: 'GALLERY_SERVER_ERROR', ...error };
+      const errorWithCode: Web3Error = {
+        code: 'GALLERY_SERVER_ERROR',
+        ...error,
+      };
       throw errorWithCode;
     }
 
@@ -343,16 +270,8 @@ async function triggerOpenseaSync(fetcher: FetcherType, jwt?: string) {
       payload = { ...payload, ...headers };
     }
 
-    await fetcher<OpenseaSyncResponse>(
-      '/nfts/opensea/refresh',
-      'refresh and sync nfts',
-      payload,
-    );
-    await fetcher<OpenseaSyncResponse>(
-      '/nfts/opensea/get',
-      'fetch and sync nfts',
-      headers,
-    );
+    await fetcher<OpenseaSyncResponse>('/nfts/opensea/refresh', 'refresh and sync nfts', payload);
+    await fetcher<OpenseaSyncResponse>('/nfts/opensea/get', 'fetch and sync nfts', headers);
   } catch (error: unknown) {
     // Error silently; TODO: send error analytics
     console.error(error);

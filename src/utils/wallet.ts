@@ -1,6 +1,7 @@
 
 const overrides: Record<string, string> = {
   WalletLink: 'Coinbase Wallet',
+  GnosisSafe: 'Gnosis Safe',
 };
 
 // Convert wallet provider name to user friendly name
