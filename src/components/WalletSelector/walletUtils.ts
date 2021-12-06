@@ -38,6 +38,8 @@ export async function signMessage(
   const accountType = getEthereumAccountType(connector);
 
   if (accountType === CONTRACT_ACCOUNT) {
+    // if theres a nonce in local storage, prompt to try again
+
     return signMessageWithContractAccount(address, nonce, connector, library);
   }
 
@@ -100,13 +102,6 @@ async function signMessageWithContractAccount(
     const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
     const messageHash = generateMessageHash(nonce);
 
-    // TEST STUFF WILL DELETE AFTER CONFIRMING ON RINKEBY
-    // const TEST_NONCE =
-    //   'Gallery uses this cryptographic signature in place of a password, verifying that you are the owner of this Ethereum address: TEST NONCE';
-    // const prependedTestNonce = `\x19Ethereum Signed Message:\n${TEST_NONCE.length}${TEST_NONCE}`;
-    // console.log('prependedTestNonce', prependedTestNonce);
-    // console.log(keccak256(toUtf8Bytes(prependedTestNonce)));
-
     // create listener that will listen for the SignMsg event on the Gnosis contract
     const listenToGnosisSafeContract = new Promise((resolve) => {
       gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: any) => {
@@ -117,6 +112,8 @@ async function signMessageWithContractAccount(
         if (messageWasSigned) {
           resolve(msgHash);
         }
+
+        console.log('messageWasSigned', messageWasSigned);
 
         // If the message was not signed, keep listening without throwing an error.
         // It's possible that we detected a SignMsg event from an older tx in the queue, since Gnosis requires all txs in its queue to be processed

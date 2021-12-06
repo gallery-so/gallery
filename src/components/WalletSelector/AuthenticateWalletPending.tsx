@@ -54,6 +54,11 @@ function AuthenticateWalletPending({
     [fetcher, library, logIn, pendingWallet, userFriendlyWalletName]
   );
 
+  const isGnosisSafe = useMemo(
+    () => userFriendlyWalletName.toLowerCase() === 'gnosis safe',
+    [userFriendlyWalletName]
+  );
+
   useEffect(() => {
     async function authenticate() {
       if (account && signer) {
@@ -80,8 +85,25 @@ function AuthenticateWalletPending({
     return (
       <StyledAuthenticateWalletPending>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-        <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
+        {isGnosisSafe ? (
+          <>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>
+              Connecting with Gnosis requires an on chain transaction.
+            </BodyRegular>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>
+              Follow the prompts in the Gnosis app to sign the message.
+            </BodyRegular>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
+          </>
+        ) : (
+          <>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
+          </>
+        )}
       </StyledAuthenticateWalletPending>
     );
   }
