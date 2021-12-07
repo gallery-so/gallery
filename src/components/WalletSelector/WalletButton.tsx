@@ -13,20 +13,28 @@ import walletLinkIcon from 'assets/icons/walletlink.svg';
 import gnosisSafeIcon from 'assets/icons/gnosis_safe.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
-import { convertWalletName } from 'utils/wallet';
+import { getUserFriendlyWalletName } from 'utils/wallet';
+import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
 
 const walletIconMap: Record<string, string> = {
   metamask: metamaskIcon,
   walletconnect: walletConnectIcon,
   walletlink: walletLinkIcon,
-  gnosissafe: gnosisSafeIcon,
+  gnosis_safe: gnosisSafeIcon,
+};
+
+const walletNameSymbolMap: Record<string, WalletName> = {
+  Metamask: METAMASK,
+  WalletConnect: WALLETCONNECT,
+  WalletLink: WALLETLINK,
+  GnosisSafe: GNOSIS_SAFE,
 };
 
 type WalletButtonProps = {
   walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
   connector?: AbstractConnector;
-  setToPendingState: (connector: AbstractConnector, walletName: string) => void;
+  setToPendingState: (connector: AbstractConnector, walletName: WalletName) => void;
   isPending: boolean;
 };
 
@@ -37,6 +45,8 @@ function WalletButton({
   setToPendingState,
   isPending,
 }: WalletButtonProps) {
+  const walletSymbol = useMemo(() => walletNameSymbolMap[walletName], [walletName]);
+
   const handleClick = useCallback(() => {
     if (connector) {
       if (connector instanceof WalletConnectConnector) {
@@ -50,29 +60,43 @@ function WalletButton({
         }
       }
 
-      setToPendingState(connector, walletName);
+      setToPendingState(connector, walletSymbol);
 
       void activate(connector);
     }
-  }, [activate, connector, setToPendingState, walletName]);
+  }, [activate, connector, setToPendingState, walletSymbol]);
 
-  const loadingView = useMemo(() => (
-    <>
-      <BodyRegular>Connecting...</BodyRegular>
-      <Loader thicc size="medium" />
-    </>
-  ), []);
+  const loadingView = useMemo(
+    () => (
+      <>
+        <BodyRegular>Connecting...</BodyRegular>
+        <Loader thicc size="medium" />
+      </>
+    ),
+    []
+  );
 
-  const iconView = useMemo(() => (
-    <>
-      <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
-      <Icon src={walletIconMap[walletName.toLowerCase()]} />
-    </>
-  ), [walletName]);
+  const userFriendlyWalletName = useMemo(
+    () => getUserFriendlyWalletName(walletSymbol?.description ?? ''),
+    [walletSymbol]
+  );
+
+  const iconView = useMemo(
+    () => (
+      <>
+        <BodyRegular>{userFriendlyWalletName}</BodyRegular>
+        <Icon src={walletIconMap[(walletSymbol?.description ?? '').toLowerCase()]} />
+      </>
+    ),
+    [userFriendlyWalletName, walletSymbol?.description]
+  );
 
   // Injected is the connector type used for browser wallet extensions/dApp browsers
-  if (connector === injected // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
-    && !(window.web3 || window.ethereum) && walletName.toLowerCase() === 'metamask') {
+  if (
+    connector === injected && // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
+    !(window.web3 || window.ethereum) &&
+    walletSymbol === METAMASK
+  ) {
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
@@ -84,11 +108,7 @@ function WalletButton({
   }
 
   return (
-    <StyledButton
-      data-testid="wallet-button"
-      onClick={handleClick}
-      disabled={isPending}
-    >
+    <StyledButton data-testid="wallet-button" onClick={handleClick} disabled={isPending}>
       {isPending ? loadingView : iconView}
     </StyledButton>
   );

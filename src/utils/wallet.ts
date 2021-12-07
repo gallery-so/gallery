@@ -1,11 +1,14 @@
-
+// map WalletName symbol description to user friendly name
 const overrides: Record<string, string> = {
-  WalletLink: 'Coinbase Wallet',
-  GnosisSafe: 'Gnosis Safe',
+  METAMASK: 'MetaMask',
+  WALLETCONNECT: 'WalletConnect',
+  WALLETLINK: 'Coinbase Wallet',
+  GNOSIS_SAFE: 'Gnosis Safe',
 };
 
 // Convert wallet provider name to user friendly name
-export function convertWalletName(name: string) {
+export function getUserFriendlyWalletName(name: string) {
+  console.log(name);
   if (name in overrides) {
     return overrides[name];
   }

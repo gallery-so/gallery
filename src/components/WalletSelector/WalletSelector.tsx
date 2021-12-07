@@ -7,16 +7,16 @@ import colors from 'components/core/colors';
 import { BodyRegular, Caption, BodyMedium, TitleMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
-import { convertWalletName } from 'utils/wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
 import WalletButton from './WalletButton';
-import AuthenticateWalletPending from './AuthenticateWalletPending';
-import AddWalletPending from './AddWalletPending';
+import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
+import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
 import { GALLERY_DISCORD, GALLERY_MEMBERSHIP_OPENSEA } from 'constants/urls';
+import { getUserFriendlyWalletName } from 'utils/wallet';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -45,7 +45,7 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   },
   USER_SIGNUP_DISABLED: {
     heading: 'Coming Soon',
-    body: 'We\'ve detected a Gallery Member Card in your wallet! You\'ll be able to use it to create an account with us soon.\n\n For further updates, find us on Twitter or join our Discord.',
+    body: "We've detected a Gallery Member Card in your wallet! You'll be able to use it to create an account with us soon.\n\n For further updates, find us on Twitter or join our Discord.",
   },
   EXISTING_USER: {
     heading: 'This address is already associated with an existing user.',
@@ -74,17 +74,16 @@ type Props = {
 };
 
 function WalletSelector({ connectionMode = AUTH }: Props) {
-  const {
-    activate,
-    deactivate,
-    error,
-  } = useWeb3React<Web3Provider>();
+  const { activate, deactivate, error } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
-  const [pendingWalletName, setPendingWalletName] = useState('');
+  const [pendingWalletName, setPendingWalletName] = useState<WalletName>();
 
-  const userFriendlyWalletName = useMemo(() => convertWalletName(pendingWalletName), [pendingWalletName]);
+  const userFriendlyWalletName = useMemo(
+    () => getUserFriendlyWalletName(pendingWalletName?.description ?? ''),
+    [pendingWalletName]
+  );
 
   // Manually detected error not provided by web3 provider;
   // we need to set this on state ourselves
@@ -114,8 +113,8 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         if (detectedError.message.includes('Required tokens not owned')) {
           return {
             heading: 'Authorization Error',
-            body: `${detectedError.message}\n\n ${MISSING_NFT_ERROR_MESSAGE}`
-          }
+            body: `${detectedError.message}\n\n ${MISSING_NFT_ERROR_MESSAGE}`,
+          };
         }
 
         return {
@@ -130,14 +129,11 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     return null;
   }, [error, detectedError]);
 
-  const setToPendingState = useCallback(
-    (connector: AbstractConnector, walletName: string) => {
-      setIsPending(true);
-      setPendingWallet(connector);
-      setPendingWalletName(walletName);
-    },
-    [],
-  );
+  const setToPendingState = useCallback((connector: AbstractConnector, walletName: WalletName) => {
+    setIsPending(true);
+    setPendingWallet(connector);
+    setPendingWalletName(walletName);
+  }, []);
 
   const retryConnectWallet = useCallback(() => {
     setIsPending(false);
@@ -150,13 +146,15 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       <StyledWalletSelector>
         <BodyMedium>{displayedError.heading}</BodyMedium>
         <Spacer height={16} />
-        <StyledBody color={colors.gray50}><Markdown text={displayedError.body}/></StyledBody>
+        <StyledBody color={colors.gray50}>
+          <Markdown text={displayedError.body} />
+        </StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
       </StyledWalletSelector>
     );
   }
 
-  if (isPending && pendingWallet) {
+  if (isPending && pendingWallet && pendingWalletName) {
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
@@ -164,6 +162,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
             userFriendlyWalletName={userFriendlyWalletName}
+            walletName={pendingWalletName}
           />
         </StyledWalletSelector>
       );
@@ -174,8 +173,10 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         <StyledWalletSelector>
           <div>
             <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-            <Spacer height={8}/>
-            <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
+            <Spacer height={8} />
+            <BodyRegular color={colors.gray50}>
+              Approve your wallet to connect to Gallery.
+            </BodyRegular>
           </div>
         </StyledWalletSelector>
       );
@@ -188,6 +189,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
             userFriendlyWalletName={userFriendlyWalletName}
+            walletName={pendingWalletName}
           />
         </StyledWalletSelector>
       );
@@ -199,7 +201,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       <Spacer height={16} />
       <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
       <Spacer height={16} />
-      {Object.keys(walletConnectorMap).map(walletName => (
+      {Object.keys(walletConnectorMap).map((walletName) => (
         <WalletButton
           key={walletName}
           walletName={walletName}
@@ -208,9 +210,8 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           setToPendingState={setToPendingState}
           isPending={isPending}
         />
-      ))
-      }
-      <Spacer height={8}/>
+      ))}
+      <Spacer height={8} />
       <Caption color={colors.gray50}>More wallets coming soon™</Caption>
     </StyledWalletSelector>
   );

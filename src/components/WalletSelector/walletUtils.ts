@@ -20,10 +20,13 @@ type Signature = string;
 // The contract accounts that Gallery supports (Gnosis, Argent, etc). ID is used by the backend to know which contract to call
 type ContractAccount = { name: string; id: number };
 
-// List of contract account wallets that Gallery supports. Used to detect if the user is trying to log in with a contract account
-const SUPPORTED_CONTRACT_ACCOUNTS: [ContractAccount] = [{ name: 'Gnosis Safe', id: 1 }];
 // Externally Owned Accounts will always have Wallet Type ID = 0 because the backend will handle all EOAs the same way.
-const DEFAULT_WALLET_TYPE_ID = 0;
+export const DEFAULT_WALLET_TYPE_ID = 0;
+export const GNOSIS_SAFE_WALLET_TYPE_ID = 1;
+// List of contract account wallets that Gallery supports. Used to detect if the user is trying to log in with a contract account
+const SUPPORTED_CONTRACT_ACCOUNTS: [ContractAccount] = [
+  { name: 'Gnosis Safe', id: GNOSIS_SAFE_WALLET_TYPE_ID },
+];
 
 /**
  * Checks what type of Ethereum account the wallet is and signs the message accordingly
@@ -46,7 +49,7 @@ export async function signMessage(
   return signMessageWithEOA(address, nonce, signer, connector);
 }
 
-async function signMessageWithEOA(
+export async function signMessageWithEOA(
   address: string,
   nonce: string,
   signer: JsonRpcSigner,
@@ -77,7 +80,7 @@ async function signMessageWithEOA(
   }
 }
 
-async function signMessageWithContractAccount(
+export async function signMessageWithContractAccount(
   address: string,
   nonce: string,
   connector: AbstractConnector,
@@ -93,37 +96,10 @@ async function signMessageWithContractAccount(
     }
 
     // This keeps the nonce message intact instead of encrypting it for WalletConnect users
-    const signature = (await connector.walletConnectProvider.connector.signPersonalMessage([
+    return (await connector.walletConnectProvider.connector.signPersonalMessage([
       nonce,
       address,
     ])) as Signature;
-
-    // Instantiate the Gnosis Safe contract and generate the message hash. These will be used to validate the signature
-    const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
-    const messageHash = generateMessageHash(nonce);
-
-    // create listener that will listen for the SignMsg event on the Gnosis contract
-    const listenToGnosisSafeContract = new Promise((resolve) => {
-      gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: any) => {
-        // Upon detecing the SignMsg event, validate that the contract signed the message
-        const magicValue = await gnosisSafeContract.isValidSignature(messageHash, signature);
-        const messageWasSigned = magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
-
-        if (messageWasSigned) {
-          resolve(msgHash);
-        }
-
-        console.log('messageWasSigned', messageWasSigned);
-
-        // If the message was not signed, keep listening without throwing an error.
-        // It's possible that we detected a SignMsg event from an older tx in the queue, since Gnosis requires all txs in its queue to be processed
-        // We will keep listening for the event until we detect that the message was signed
-      });
-    });
-
-    await listenToGnosisSafeContract;
-
-    return signature;
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
@@ -133,6 +109,35 @@ async function signMessageWithContractAccount(
 
     throw new Error('Unknown error');
   }
+}
+
+export async function listenForGnosisSignature(
+  address: string,
+  nonce: string,
+  library?: Web3Provider
+) {
+  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
+  const messageHash = generateMessageHash(nonce);
+  // create listener that will listen for the SignMsg event on the Gnosis contract
+  const listenToGnosisSafeContract = new Promise((resolve) => {
+    gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: any) => {
+      // Upon detecing the SignMsg event, validate that the contract signed the message
+      const magicValue = await gnosisSafeContract.isValidSignature(messageHash, '0x');
+      const messageWasSigned = magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
+
+      if (messageWasSigned) {
+        resolve(msgHash);
+      }
+
+      console.log('messageWasSigned', messageWasSigned);
+
+      // If the message was not signed, keep listening without throwing an error.
+      // It's possible that we detected a SignMsg event from an older tx in the queue, since Gnosis requires all txs in its queue to be processed
+      // We will keep listening for the event until we detect that the message was signed
+    });
+  });
+
+  await listenToGnosisSafeContract;
 }
 
 // Determines if the account is an EOA or a Contract Account

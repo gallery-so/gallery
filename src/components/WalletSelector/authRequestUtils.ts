@@ -1,5 +1,3 @@
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
@@ -7,69 +5,21 @@ import capitalize from 'utils/capitalize';
 import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import Mixpanel from 'utils/mixpanel';
 
-import { getWalletTypeId, signMessage } from './walletUtils';
-
-/**
- * Auth Pipeline:
- * 1. Fetch nonce from server with provided wallet address
- * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
- * 3a. If wallet exists, log user in
- * 3b. If wallet is new, sign user up
- */
-type AuthPipelineProps = {
-  address: string;
-  signer: JsonRpcSigner;
-  fetcher: FetcherType;
-  connector: AbstractConnector;
-  library?: Web3Provider;
-};
-
-type AddWalletResult = {
-  signatureValid: boolean;
-};
-
-export async function initializeAddWalletPipeline({
-  address,
-  signer,
-  fetcher,
-  connector,
-  library,
-}: AuthPipelineProps): Promise<AddWalletResult> {
-  // Check if address already belongs to a user in the database
-  // If so, the user shouldn't be able to add the address. In the future we might allow user merge
-  const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-
-  if (userExists) {
-    throw { code: 'EXISTING_USER' } as Web3Error;
-  }
-
-  const walletTypeId = getWalletTypeId(connector);
-  const signature = await signMessage(address, nonce, connector, signer, library);
-  const response = await addUserAddress({ signature, address, wallet_type: walletTypeId }, fetcher);
+export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
+  const response = await addUserAddress(payload, fetcher);
 
   await triggerOpenseaSync(fetcher);
 
   return { signatureValid: response.signature_valid };
 }
 
-type AuthResult = {
-  jwt: string;
-  userId: string;
-};
-
-export default async function initializeAuthPipeline({
-  address,
-  signer,
-  fetcher,
-  connector,
-  library,
-}: AuthPipelineProps): Promise<AuthResult> {
-  const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-  const walletTypeId = getWalletTypeId(connector);
-  const signature = await signMessage(address, nonce, connector, signer, library);
-
+export async function loginOrCreateUser(
+  userExists: boolean,
+  payload: LoginUserRequest | CreateUserRequest,
+  fetcher: FetcherType
+) {
   if (userExists) {
-    const response = await loginUser({ signature, address, wallet_type: walletTypeId }, fetcher);
+    const response = await loginUser(payload as LoginUserRequest, fetcher);
     return { jwt: response.jwt_token, userId: response.user_id };
   }
 
@@ -77,15 +27,7 @@ export default async function initializeAuthPipeline({
     throw { code: 'USER_SIGNUP_DISABLED' } as Web3Error;
   }
 
-  const response = await createUser(
-    {
-      signature,
-      address,
-      nonce,
-      wallet_type: walletTypeId,
-    },
-    fetcher
-  );
+  const response = await createUser(payload as CreateUserRequest, fetcher);
 
   // The user's nfts should be fetched here so that they're ready to go by the time
   // they arrive at the Create First Collection step
@@ -104,7 +46,7 @@ type NonceResponse = {
   user_exists: boolean;
 };
 
-async function fetchNonce(address: string, fetcher: FetcherType): Promise<NonceResponse> {
+export async function fetchNonce(address: string, fetcher: FetcherType): Promise<NonceResponse> {
   try {
     return await fetcher<NonceResponse>(`/auth/get_preflight?address=${address}`, 'fetch nonce');
   } catch (error: unknown) {

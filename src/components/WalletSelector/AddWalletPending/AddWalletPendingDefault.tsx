@@ -15,26 +15,30 @@ import {
   INITIAL,
   CONFIRM_ADDRESS,
   PROMPT_SIGNATURE,
+  PendingState,
+  WalletName,
+  METAMASK,
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import Mixpanel from 'utils/mixpanel';
-import { initializeAddWalletPipeline } from './authRequestUtils';
+import { addWallet, fetchNonce } from '../authRequestUtils';
+import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
 
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
   setDetectedError: (error: Web3Error) => void;
+  walletName: WalletName;
 };
 
-type PendingState =
-  | typeof INITIAL
-  | typeof ADDRESS_ALREADY_CONNECTED
-  | typeof CONFIRM_ADDRESS
-  | typeof PROMPT_SIGNATURE;
-
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedError }: Props) {
+function AddWalletPendingDefault({
+  pendingWallet,
+  userFriendlyWalletName,
+  setDetectedError,
+  walletName,
+}: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
   const signer = useMemo(
     () => (library && account ? library.getSigner(account) : undefined),
@@ -56,18 +60,31 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
     [showModal]
   );
 
+  /**
+   * Add Wallet Pipeline:
+   * 1. Fetch nonce from server with provided wallet address
+   * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
+   * 3. Add wallet address to user's account
+   */
   const attemptAddWallet = useCallback(
     async (address: string, signer: JsonRpcSigner) => {
       try {
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
-        const { signatureValid } = await initializeAddWalletPipeline({
+        const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+
+        if (userExists) {
+          throw { code: 'EXISTING_USER' } as Web3Error;
+        }
+
+        const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
+        const payload = {
+          signature,
           address,
-          signer,
-          fetcher,
-          connector: pendingWallet,
-          library,
-        });
+          wallet_type: DEFAULT_WALLET_TYPE_ID,
+        };
+        const { signatureValid } = await addWallet(payload, fetcher);
+
         Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
         openManageWalletsModal(address);
         setIsConnecting(false);
@@ -86,24 +103,10 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
         }
       }
     },
-    [
-      fetcher,
-      openManageWalletsModal,
-      pendingWallet,
-      userFriendlyWalletName,
-      setDetectedError,
-      library,
-    ]
+    [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError]
   );
 
-  const isMetamask = useMemo(
-    () => userFriendlyWalletName.toLowerCase() === 'metamask',
-    [userFriendlyWalletName]
-  );
-  const isGnosisSafe = useMemo(
-    () => userFriendlyWalletName.toLowerCase() === 'gnosis safe',
-    [userFriendlyWalletName]
-  );
+  const isMetamask = useMemo(() => walletName === METAMASK, [walletName]);
 
   useEffect(() => {
     async function authenticate() {
@@ -176,25 +179,8 @@ function AddWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedEr
     return (
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-        {isGnosisSafe ? (
-          <>
-            <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
-              Connecting with Gnosis requires an on chain transaction.
-            </BodyRegular>
-            <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
-              Follow the prompts in the Gnosis app to sign the message.
-            </BodyRegular>
-            <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
-          </>
-        ) : (
-          <>
-            <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
-          </>
-        )}
+        <Spacer height={8} />
+        <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </div>
     );
   }
@@ -216,4 +202,4 @@ const StyledButton = styled(Button)`
   height: 100%;
 `;
 
-export default AddWalletPending;
+export default AddWalletPendingDefault;
