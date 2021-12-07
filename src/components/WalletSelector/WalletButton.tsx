@@ -7,20 +7,16 @@ import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
-import metamaskIcon from 'assets/icons/metamask.svg';
-import walletConnectIcon from 'assets/icons/walletconnect.svg';
-import walletLinkIcon from 'assets/icons/walletlink.svg';
-import gnosisSafeIcon from 'assets/icons/gnosis_safe.svg';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
 
 const walletIconMap: Record<string, string> = {
-  metamask: metamaskIcon,
-  walletconnect: walletConnectIcon,
-  walletlink: walletLinkIcon,
-  gnosis_safe: gnosisSafeIcon,
+  metamask: '/icons/metamask.svg',
+  walletconnect: '/icons/walletconnect.svg',
+  walletlink: '/icons/walletlink.svg',
+  gnosis_safe: '/icons/gnosis_safe.svg',
 };
 
 const walletNameSymbolMap: Record<string, WalletName> = {
@@ -101,7 +97,7 @@ function WalletButton({
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
           <BodyRegular>Install Metamask</BodyRegular>
-          <Icon src={metamaskIcon} />
+          <Icon src="/icons/metamask.svg" />
         </StyledButton>
       </StyledExternalLink>
     );

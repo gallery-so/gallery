@@ -1,8 +1,6 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
-import '@google/model-viewer';
-import './model-viewer.css';
 import { useEffect } from 'react';
 
 type Props = {
@@ -15,8 +13,8 @@ type Props = {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-    'model-viewer': ModelViewerJSX &
-        React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
+      'model-viewer': ModelViewerJSX &
+        React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
   }
 }
@@ -33,7 +31,12 @@ function NftDetailModel({ nft }: Props) {
 
   return (
     <StyledNftDetailModel>
-      <model-viewer class="model-viewer" auto-rotate camera-controls src={nft.animation_url}/>
+      <model-viewer
+        class="model-viewer"
+        auto-rotate
+        camera-controls
+        src={nft.animation_url}
+      />
     </StyledNftDetailModel>
   );
 }

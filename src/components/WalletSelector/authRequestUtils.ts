@@ -140,7 +140,8 @@ type RemoveUserAddressRequest = {
   addresses: string[];
 };
 
-type RemoveUserAddressResponse = Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+type RemoveUserAddressResponse = {};
 
 export async function removeUserAddress(
   body: RemoveUserAddressRequest,

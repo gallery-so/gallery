@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
       "abis/*": ["src/abis/*"],
@@ -31,7 +31,9 @@
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"]
     },
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "incremental": true
   },
-  "include": ["src", "scripts", "dev_server", "config"]
+  "include": ["src", "scripts", "pages", "next-env.d.ts", "app.d.ts"],
+  "exclude": ["node_modules"]
 }

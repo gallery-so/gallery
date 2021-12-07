@@ -10,6 +10,7 @@ import {
   GALLERY_DISCORD,
   GALLERY_MEMBERSHIP_OPENSEA,
   GALLERY_TWITTER,
+  GALLERY_MIRROR,
 } from 'constants/urls';
 
 function GlobalFooter() {
@@ -20,10 +21,6 @@ function GlobalFooter() {
       <StyledBottomText>
         <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
         <StyledLinkContainer>
-          <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Jobs</StyledLinkText>
-          </StyledLink>
-          <Spacer width={8} />
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>Twitter</StyledLinkText>
           </StyledLink>
@@ -32,12 +29,20 @@ function GlobalFooter() {
             <StyledLinkText color={colors.gray40}>Discord</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
+          <StyledLink href={GALLERY_MIRROR} target="_blank" rel="noreferrer">
+            <StyledLinkText color={colors.gray40}>Mirror</StyledLinkText>
+          </StyledLink>
+          <Spacer width={8} />
           <StyledLink
             href={GALLERY_MEMBERSHIP_OPENSEA}
             target="_blank"
             rel="noreferrer"
           >
             <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>
+          </StyledLink>
+          <Spacer width={8} />
+          <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
+            <StyledLinkText color={colors.gray40}>Jobs</StyledLinkText>
           </StyledLink>
         </StyledLinkContainer>
       </StyledBottomText>

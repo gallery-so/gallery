@@ -1,9 +1,12 @@
-import { CSSProperties, memo } from 'react';
+import { Suspense, CSSProperties, memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import './transition.css';
 
-import { useGalleryNavigationActions, useGalleryNavigationState } from 'contexts/navigation/GalleryNavigationContext';
+import {
+  useGalleryNavigationActions,
+  useGalleryNavigationState,
+} from 'contexts/navigation/GalleryNavigationContext';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
+import FullPageLoader from 'components/core/Loader/FullPageLoader';
 
 type Props = {
   locationKey?: string;
@@ -23,7 +26,9 @@ const childNodeStyles = {
   width: '100%',
 };
 
-const transitionGroupStyles = { minHeight: fullPageHeightWithoutNavbarAndFooter };
+const transitionGroupStyles = {
+  minHeight: fullPageHeightWithoutNavbarAndFooter,
+};
 
 /**
  * Fades child elements in and out as they mount/unmount.
@@ -41,8 +46,13 @@ function FadeTransitioner({ locationKey, children }: Props) {
         key={locationKey ?? sanitizedPathname}
         timeout={timeoutConfig}
         classNames="fade"
-        onExit={handleNavigationScrollPosition}>
-        <div style={childNodeStyles as CSSProperties}>{children}</div>
+        onExit={handleNavigationScrollPosition}
+      >
+        {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
+            to remain uninterrupted upon navigation */}
+        <Suspense fallback={<FullPageLoader />}>
+          <div style={childNodeStyles as CSSProperties}>{children}</div>
+        </Suspense>
       </CSSTransition>
     </TransitionGroup>
   );

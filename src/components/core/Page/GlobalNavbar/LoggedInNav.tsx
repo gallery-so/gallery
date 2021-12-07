@@ -22,11 +22,14 @@ function LoggedInNav() {
   const userAddress = useAuthenticatedUserAddress();
   const { showModal } = useModal();
 
-  const truncatedUserAddress = useMemo(() => truncateAddress(userAddress), [userAddress]);
+  const truncatedUserAddress = useMemo(
+    () => truncateAddress(userAddress),
+    [userAddress]
+  );
 
   const handleGalleryRedirect = useCallback(() => {
-    const authenticatedUserIsOnTheirOwnPage
-      = window.location.pathname.slice(1) === user.username;
+    const authenticatedUserIsOnTheirOwnPage =
+      window.location.pathname.slice(1) === user.username;
     if (authenticatedUserIsOnTheirOwnPage) {
       return;
     }
@@ -62,14 +65,16 @@ function LoggedInNav() {
             />
           </CopyToClipboard>
           <Spacer height={12} />
-          {MULTI_WALLET_ENABLED && <>
-            <TextButton
-              text="Manage Wallets"
-              onClick={handleManageWalletsClick}
-              underlineOnHover
-            />
-            <Spacer height={12} />
-          </>}
+          {MULTI_WALLET_ENABLED && (
+            <>
+              <TextButton
+                text="Manage Wallets"
+                onClick={handleManageWalletsClick}
+                underlineOnHover
+              />
+              <Spacer height={12} />
+            </>
+          )}
           <TextButton
             text="Edit Gallery"
             onClick={handleEditGalleryClick}
