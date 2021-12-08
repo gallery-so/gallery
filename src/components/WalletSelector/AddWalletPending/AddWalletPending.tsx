@@ -22,14 +22,19 @@ function AddWalletPending({
   if (walletName === GNOSIS_SAFE) {
     return (
       <AddWalletPendingGnosisSafe
-        {...{ pendingWallet, userFriendlyWalletName, setDetectedError }}
+        pendingWallet={pendingWallet}
+        userFriendlyWalletName={userFriendlyWalletName}
+        setDetectedError={setDetectedError}
       />
     );
   }
 
   return (
     <AddWalletPendingDefault
-      {...{ pendingWallet, userFriendlyWalletName, setDetectedError, walletName }}
+      pendingWallet={pendingWallet}
+      userFriendlyWalletName={userFriendlyWalletName}
+      setDetectedError={setDetectedError}
+      walletName={walletName}
     />
   );
 }

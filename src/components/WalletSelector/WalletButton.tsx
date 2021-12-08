@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { injected } from 'connectors/index';
-import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
@@ -31,16 +30,9 @@ type WalletButtonProps = {
   activate: Web3ReactManagerFunctions['activate'];
   connector?: AbstractConnector;
   setToPendingState: (connector: AbstractConnector, walletName: WalletName) => void;
-  isPending: boolean;
 };
 
-function WalletButton({
-  walletName,
-  activate,
-  connector,
-  setToPendingState,
-  isPending,
-}: WalletButtonProps) {
+function WalletButton({ walletName, activate, connector, setToPendingState }: WalletButtonProps) {
   const walletSymbol = useMemo(() => walletNameSymbolMap[walletName], [walletName]);
 
   const handleClick = useCallback(() => {
@@ -61,16 +53,6 @@ function WalletButton({
       void activate(connector);
     }
   }, [activate, connector, setToPendingState, walletSymbol]);
-
-  const loadingView = useMemo(
-    () => (
-      <>
-        <BodyRegular>Connecting...</BodyRegular>
-        <Loader thicc size="medium" />
-      </>
-    ),
-    []
-  );
 
   const userFriendlyWalletName = useMemo(
     () => getUserFriendlyWalletName(walletSymbol?.description ?? ''),
@@ -104,15 +86,11 @@ function WalletButton({
   }
 
   return (
-    <StyledButton data-testid="wallet-button" onClick={handleClick} disabled={isPending}>
-      {isPending ? loadingView : iconView}
+    <StyledButton data-testid="wallet-button" onClick={handleClick}>
+      {iconView}
     </StyledButton>
   );
 }
-
-type StyledButtonProps = {
-  isPending?: boolean;
-};
 
 const Icon = styled.img`
   width: 30px;
@@ -123,7 +101,7 @@ const Icon = styled.img`
   transition: transform ${transitions.cubic};
 `;
 
-const StyledButton = styled.button<StyledButtonProps>`
+const StyledButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;

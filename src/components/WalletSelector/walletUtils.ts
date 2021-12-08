@@ -41,7 +41,7 @@ export async function signMessage(
   const accountType = getEthereumAccountType(connector);
 
   if (accountType === CONTRACT_ACCOUNT) {
-    // if theres a nonce in local storage, prompt to try again
+    // TODO: if theres a nonce in local storage, prompt to try again
 
     return signMessageWithContractAccount(address, nonce, connector, library);
   }
@@ -128,8 +128,6 @@ export async function listenForGnosisSignature(
       if (messageWasSigned) {
         resolve(msgHash);
       }
-
-      console.log('messageWasSigned', messageWasSigned);
 
       // If the message was not signed, keep listening without throwing an error.
       // It's possible that we detected a SignMsg event from an older tx in the queue, since Gnosis requires all txs in its queue to be processed

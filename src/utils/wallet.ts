@@ -8,7 +8,6 @@ const overrides: Record<string, string> = {
 
 // Convert wallet provider name to user friendly name
 export function getUserFriendlyWalletName(name: string) {
-  console.log(name);
   if (name in overrides) {
     return overrides[name];
   }

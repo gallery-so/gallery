@@ -28,14 +28,18 @@ function AuthenticateWalletPending({
   if (walletName === GNOSIS_SAFE) {
     return (
       <AuthenticateWalletPendingGnosisSafe
-        {...{ pendingWallet, userFriendlyWalletName, setDetectedError }}
+        pendingWallet={pendingWallet}
+        userFriendlyWalletName={userFriendlyWalletName}
+        setDetectedError={setDetectedError}
       />
     );
   }
 
   return (
     <AuthenticateWalletPendingDefault
-      {...{ pendingWallet, userFriendlyWalletName, setDetectedError }}
+      pendingWallet={pendingWallet}
+      userFriendlyWalletName={userFriendlyWalletName}
+      setDetectedError={setDetectedError}
     />
   );
 }
