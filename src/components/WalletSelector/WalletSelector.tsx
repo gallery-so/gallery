@@ -208,7 +208,6 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           activate={activate}
           connector={walletConnectorMap[walletName]}
           setToPendingState={setToPendingState}
-          isPending={isPending}
         />
       ))}
       <Spacer height={8} />
