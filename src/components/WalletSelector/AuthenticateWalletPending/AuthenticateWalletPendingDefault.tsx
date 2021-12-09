@@ -8,10 +8,11 @@ import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
-import { INITIAL, CONFIRM_ADDRESS, PROMPT_SIGNATURE } from 'types/Wallet';
+import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import Mixpanel from 'utils/mixpanel';
 import Spacer from 'components/core/Spacer/Spacer';
-import initializeAuthPipeline from './authRequestUtils';
+import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
+import { signMessageWithEOA } from '../walletUtils';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -19,32 +20,50 @@ type Props = {
   setDetectedError: (error: Web3Error) => void;
 };
 
-type PendingState = typeof INITIAL | typeof CONFIRM_ADDRESS | typeof PROMPT_SIGNATURE;
-
-// This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setDetectedError }: Props) {
-  const {
-    library,
-    account,
-  } = useWeb3React<Web3Provider>();
-  const signer = useMemo(() => library && account ? library.getSigner(account) : undefined, [library, account]);
+function AuthenticateWalletPendingDefault({
+  pendingWallet,
+  userFriendlyWalletName,
+  setDetectedError,
+}: Props) {
+  const { library, account } = useWeb3React<Web3Provider>();
+  const signer = useMemo(
+    () => (library && account ? library.getSigner(account) : undefined),
+    [library, account]
+  );
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
   const { logIn } = useAuthActions();
 
-  const attemptAuthentication = useCallback(async (address: string, signer: JsonRpcSigner) => {
-    setPendingState(PROMPT_SIGNATURE);
-    const { jwt, userId } = await initializeAuthPipeline({
-      address,
-      signer,
-      fetcher,
-      connector: pendingWallet,
-    });
-    Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
-    logIn({ jwt, userId }, address);
-  }, [fetcher, logIn, pendingWallet, userFriendlyWalletName]);
+  /**
+   * Auth Pipeline:
+   * 1. Fetch nonce from server with provided wallet address
+   * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
+   * 3a. If wallet exists, log user in
+   * 3b. If wallet is new, sign user up
+   */
+  const attemptAuthentication = useCallback(
+    async (address: string, signer: JsonRpcSigner) => {
+      setPendingState(PROMPT_SIGNATURE);
+
+      const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+
+      const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
+
+      const payload = {
+        signature,
+        address,
+        wallet_type: 0,
+        nonce,
+      };
+
+      const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
+      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
+      logIn({ jwt, userId }, address);
+    },
+    [fetcher, logIn, pendingWallet, userFriendlyWalletName]
+  );
 
   useEffect(() => {
     async function authenticate() {
@@ -72,7 +91,7 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
     return (
       <StyledAuthenticateWalletPending>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-        <Spacer height={8}/>
+        <Spacer height={8} />
         <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
       </StyledAuthenticateWalletPending>
     );
@@ -81,13 +100,12 @@ function AuthenticateWalletPending({ pendingWallet, userFriendlyWalletName, setD
   return (
     <StyledAuthenticateWalletPending>
       <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-      <Spacer height={8}/>
+      <Spacer height={8} />
       <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
     </StyledAuthenticateWalletPending>
   );
 }
 
-const StyledAuthenticateWalletPending = styled.div`
-`;
+const StyledAuthenticateWalletPending = styled.div``;
 
-export default AuthenticateWalletPending;
+export default AuthenticateWalletPendingDefault;

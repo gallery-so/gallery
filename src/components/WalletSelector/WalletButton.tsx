@@ -3,35 +3,38 @@ import styled from 'styled-components';
 import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { injected } from 'connectors/index';
-import Loader from 'components/core/Loader/Loader';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { BodyRegular } from 'components/core/Text/Text';
-import { convertWalletName } from 'utils/wallet';
+import { getUserFriendlyWalletName } from 'utils/wallet';
+import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
 
 const walletIconMap: Record<string, string> = {
   metamask: '/icons/metamask.svg',
   walletconnect: '/icons/walletconnect.svg',
   walletlink: '/icons/walletlink.svg',
+  gnosis_safe: '/icons/gnosis_safe.svg',
+};
+
+const walletNameSymbolMap: Record<string, WalletName> = {
+  Metamask: METAMASK,
+  WalletConnect: WALLETCONNECT,
+  WalletLink: WALLETLINK,
+  GnosisSafe: GNOSIS_SAFE,
 };
 
 type WalletButtonProps = {
   walletName: string;
   activate: Web3ReactManagerFunctions['activate'];
   connector?: AbstractConnector;
-  setToPendingState: (connector: AbstractConnector, walletName: string) => void;
-  isPending: boolean;
+  setToPendingState: (connector: AbstractConnector, walletName: WalletName) => void;
 };
 
-function WalletButton({
-  walletName,
-  activate,
-  connector,
-  setToPendingState,
-  isPending,
-}: WalletButtonProps) {
+function WalletButton({ walletName, activate, connector, setToPendingState }: WalletButtonProps) {
+  const walletSymbol = useMemo(() => walletNameSymbolMap[walletName], [walletName]);
+
   const handleClick = useCallback(() => {
     if (connector) {
       if (connector instanceof WalletConnectConnector) {
@@ -45,37 +48,32 @@ function WalletButton({
         }
       }
 
-      setToPendingState(connector, walletName);
+      setToPendingState(connector, walletSymbol);
 
       void activate(connector);
     }
-  }, [activate, connector, setToPendingState, walletName]);
+  }, [activate, connector, setToPendingState, walletSymbol]);
 
-  const loadingView = useMemo(
-    () => (
-      <>
-        <BodyRegular>Connecting...</BodyRegular>
-        <Loader thicc size="medium" />
-      </>
-    ),
-    []
+  const userFriendlyWalletName = useMemo(
+    () => getUserFriendlyWalletName(walletSymbol?.description ?? ''),
+    [walletSymbol]
   );
 
   const iconView = useMemo(
     () => (
       <>
-        <BodyRegular>{convertWalletName(walletName)}</BodyRegular>
-        <Icon src={walletIconMap[walletName.toLowerCase()]} />
+        <BodyRegular>{userFriendlyWalletName}</BodyRegular>
+        <Icon src={walletIconMap[(walletSymbol?.description ?? '').toLowerCase()]} />
       </>
     ),
-    [walletName]
+    [userFriendlyWalletName, walletSymbol?.description]
   );
 
   // Injected is the connector type used for browser wallet extensions/dApp browsers
   if (
     connector === injected && // Metamask injects a global API at window.ethereum (web3 for legacy) if it is installed
     !(window.web3 || window.ethereum) &&
-    walletName.toLowerCase() === 'metamask'
+    walletSymbol === METAMASK
   ) {
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
@@ -88,19 +86,11 @@ function WalletButton({
   }
 
   return (
-    <StyledButton
-      data-testid="wallet-button"
-      onClick={handleClick}
-      disabled={isPending}
-    >
-      {isPending ? loadingView : iconView}
+    <StyledButton data-testid="wallet-button" onClick={handleClick}>
+      {iconView}
     </StyledButton>
   );
 }
-
-type StyledButtonProps = {
-  isPending?: boolean;
-};
 
 const Icon = styled.img`
   width: 30px;
@@ -111,7 +101,7 @@ const Icon = styled.img`
   transition: transform ${transitions.cubic};
 `;
 
-const StyledButton = styled.button<StyledButtonProps>`
+const StyledButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;
