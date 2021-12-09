@@ -9,7 +9,6 @@ The premier gallery experience for your NFTs.
 1. [Install Yarn](https://classic.yarnpkg.com/en/docs/install)
 2. [Install NVM](https://github.com/nvm-sh/nvm)
 
- 
 ### Setup
 
 Create a local .env file by copying values from .env.sample:
@@ -43,7 +42,6 @@ The app will be available on localhost:3000.
 - `yarn test` for tests
 - `yarn lint` for linting
 - `yarn typecheck` for checking type validity
-
 
 ## 🤔 What's going on with Next.JS?
 
