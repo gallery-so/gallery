@@ -129,6 +129,14 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     return null;
   }, [error, detectedError]);
 
+  const availableWalletOptions = useMemo(() => {
+    if (connectionMode === CONNECT_WALLET_ONLY) {
+      return ['Metamask', 'WalletConnect', 'WalletLink'];
+    }
+
+    return ['Metamask', 'WalletConnect', 'WalletLink', 'GnosisSafe'];
+  }, [connectionMode]);
+
   const setToPendingState = useCallback((connector: AbstractConnector, walletName: WalletName) => {
     setIsPending(true);
     setPendingWallet(connector);
@@ -201,7 +209,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       <Spacer height={16} />
       <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
       <Spacer height={16} />
-      {Object.keys(walletConnectorMap).map((walletName) => (
+      {availableWalletOptions.map((walletName) => (
         <WalletButton
           key={walletName}
           walletName={walletName}
