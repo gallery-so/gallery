@@ -75,8 +75,8 @@ function AddWalletPendingGnosisSafe({
         await listenForGnosisSignature(address, nonce, library);
 
         const payload = {
-          signature,
           address,
+          nonce,
           wallet_type: GNOSIS_SAFE_WALLET_TYPE_ID,
         };
 
