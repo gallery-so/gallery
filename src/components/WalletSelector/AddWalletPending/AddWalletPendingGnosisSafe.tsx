@@ -63,20 +63,15 @@ function AddWalletPendingGnosisSafe({
           throw { code: 'EXISTING_USER' } as Web3Error;
         }
 
-        const signature = await signMessageWithContractAccount(
-          address,
-          nonce,
-          pendingWallet,
-          library
-        );
+        await signMessageWithContractAccount(address, nonce, pendingWallet, library);
 
         setPendingState(LISTENING_ONCHAIN);
 
         await listenForGnosisSignature(address, nonce, library);
 
         const payload = {
-          signature,
           address,
+          nonce,
           wallet_type: GNOSIS_SAFE_WALLET_TYPE_ID,
         };
 
