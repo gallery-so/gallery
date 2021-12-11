@@ -104,7 +104,7 @@ async function loginUser(body: LoginUserRequest, fetcher: FetcherType): Promise<
 type AddUserAddressRequest = {
   signature?: string;
   address: string;
-  nonce: string;
+  nonce?: string;
   wallet_type?: number;
 };
 
