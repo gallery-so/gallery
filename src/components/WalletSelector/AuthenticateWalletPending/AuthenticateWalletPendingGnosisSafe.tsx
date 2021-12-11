@@ -10,7 +10,7 @@ import Mixpanel from 'utils/mixpanel';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
 import {
-  getWalletTypeId,
+  GNOSIS_SAFE_WALLET_TYPE_ID,
   listenForGnosisSignature,
   signMessageWithContractAccount,
 } from '../walletUtils';
@@ -38,21 +38,15 @@ function AuthenticateWalletPendingGnosisSafe({
       setPendingState(PROMPT_SIGNATURE);
 
       const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
-      const signature = await signMessageWithContractAccount(
-        address,
-        nonce,
-        pendingWallet,
-        library
-      );
+      await signMessageWithContractAccount(address, nonce, pendingWallet, library);
 
       setPendingState(LISTENING_ONCHAIN);
 
       await listenForGnosisSignature(address, nonce, library);
 
       const payload = {
-        signature,
         address,
-        wallet_type: getWalletTypeId(pendingWallet),
+        wallet_type: GNOSIS_SAFE_WALLET_TYPE_ID,
         nonce,
       };
 

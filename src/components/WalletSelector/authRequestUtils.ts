@@ -68,7 +68,7 @@ export async function fetchNonce(address: string, fetcher: FetcherType): Promise
  * Log in user with signature if user already exists
  */
 type LoginUserRequest = {
-  signature: string;
+  signature?: string;
   address: string;
   wallet_type: number;
 };
@@ -102,8 +102,9 @@ async function loginUser(body: LoginUserRequest, fetcher: FetcherType): Promise<
  * Add address to user
  */
 type AddUserAddressRequest = {
-  signature: string;
+  signature?: string;
   address: string;
+  nonce?: string;
   wallet_type?: number;
 };
 
@@ -169,7 +170,7 @@ export async function removeUserAddress(
  * Create user with signature if user doesn't exist yet
  */
 type CreateUserRequest = {
-  signature: string;
+  signature?: string;
   address: string;
   nonce: string;
   wallet_type: number;
