@@ -11,7 +11,6 @@ import {
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 import { Nft } from 'types/Nft';
-import useUnassignedNfts from 'hooks/api/nfts/useUnassignedNfts';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import { EditModeNft } from '../types';
@@ -20,11 +19,9 @@ import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
+import useAllNfts from 'hooks/api/nfts/useAllNfts';
 
-function convertNftsToEditModeNfts(
-  nfts: Nft[],
-  isSelected = false
-): EditModeNft[] {
+function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
     index,
     nft,
@@ -47,20 +44,14 @@ function CollectionEditor() {
   }, [setNextEnabled, stagedNfts]);
 
   const { collectionIdBeingEdited } = useCollectionWizardState();
-  const { setSidebarNfts, stageNfts, unstageNfts } =
-    useCollectionEditorActions();
+  const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
 
-  const unassignedNfts = useUnassignedNfts();
+  const allNfts = useAllNfts();
 
   const { collections } = useAuthenticatedGallery();
-  const collectionIdBeingEditedRef = useRef<string>(
-    collectionIdBeingEdited ?? ''
-  );
+  const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
   const collectionBeingEdited = useMemo(
-    () =>
-      collections.find(
-        (coll) => coll.id === collectionIdBeingEditedRef.current
-      ),
+    () => collections.find((coll) => coll.id === collectionIdBeingEditedRef.current),
     [collections]
   );
   const nftsFromCollectionBeingEdited = useMemo(
@@ -87,40 +78,20 @@ function CollectionEditor() {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
 
-  // converts unassignedNfts to an object where key is nft Id and value is editmodenft
-  // this makes it easier to update specific NFTs compared to iterating through an array
-  const unassignedEditModeNftObject = useMemo(() => {
-    if (!unassignedNfts) {
-      return {};
-    }
+  // decorates NFTs returned from useAllNfts with additional fields for the purpose of editing / dnd
+  const allEditModeNfts: SidebarNftsState = useMemo(() => {
+    const editModeNfts = convertNftsToEditModeNfts(allNfts);
+    return Object.fromEntries(editModeNfts.map((nft) => [nft.id, nft]));
+  }, [allNfts]);
 
-    const unassignedEditModeNfts = convertNftsToEditModeNfts(unassignedNfts);
-
-    return Object.fromEntries(
-      unassignedEditModeNfts.map((nft) => [nft.id, nft])
-    );
-  }, [unassignedNfts]);
-
-  // decorates NFTs in collection with additional fields for the purpose of editing / dnd
-  const editModeNftsInCollection: EditModeNft[] = useMemo(() => {
-    if (!collectionIdBeingEditedRef.current) {
-      return [];
-    }
-
-    return convertNftsToEditModeNfts(nftsFromCollectionBeingEdited, true);
-  }, [nftsFromCollectionBeingEdited]);
-
-  // refreshes the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
   const refreshSidebarNfts = useCallback(() => {
     // Initialize new sidebar nfts
-    let newSidebarNfts: SidebarNftsState = {};
-    // Add nfts in current collection to sidebar
-    for (const nft of editModeNftsInCollection) {
-      newSidebarNfts[nft.id] = nft;
-    }
+    const newSidebarNfts: SidebarNftsState = allEditModeNfts;
 
-    // Add unassigned nfts to sidebar
-    newSidebarNfts = { ...newSidebarNfts, ...unassignedEditModeNftObject };
+    // select all the nfts that are in the collection being edited
+    nftsFromCollectionBeingEdited.forEach((nft) => {
+      newSidebarNfts[nft.id].isSelected = true;
+    });
 
     const oldSidebarNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
 
@@ -128,7 +99,7 @@ function CollectionEditor() {
       return newSidebarNfts;
     }
 
-    // Iterate through nfts that used to be in the sidebar before refresh, so that we can retain whether each was selected or not
+    // iterate through old sidebar nfts, so that we can retain the selection state
     for (const oldSidebarNft of oldSidebarNftsAsArray) {
       const newSidebarNft = newSidebarNfts[oldSidebarNft.id];
 
@@ -143,7 +114,7 @@ function CollectionEditor() {
     }
 
     return newSidebarNfts;
-  }, [editModeNftsInCollection, unassignedEditModeNftObject, unstageNfts]);
+  }, [allEditModeNfts, nftsFromCollectionBeingEdited, unstageNfts]);
 
   // Initialize sidebarNfts
   useEffect(() => {
@@ -151,9 +122,7 @@ function CollectionEditor() {
     const sidebarNftsWithSelection = refreshSidebarNfts();
 
     setSidebarNfts(sidebarNftsWithSelection);
-    const sidebarNftsWithSelectionAsArray = convertObjectToArray(
-      sidebarNftsWithSelection
-    );
+    const sidebarNftsWithSelectionAsArray = convertObjectToArray(sidebarNftsWithSelection);
     const selectedNfts = sidebarNftsWithSelectionAsArray.filter(
       (sidebarNft) => sidebarNft.isSelected
     );

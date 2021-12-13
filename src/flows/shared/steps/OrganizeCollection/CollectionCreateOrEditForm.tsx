@@ -16,7 +16,6 @@ import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionIn
 import { Collection, CollectionLayout } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
-import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import Mixpanel from 'utils/mixpanel';
 
 type Props = {
@@ -41,7 +40,10 @@ function CollectionCreateOrEditForm({
   const { hideModal } = useModal();
 
   const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collectionCollectorsNote), [collectionCollectorsNote]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collectionCollectorsNote),
+    [collectionCollectorsNote]
+  );
 
   const [title, setTitle] = useState(unescapedCollectionName ?? '');
   const [description, setDescription] = useState(unescapedCollectorsNote ?? '');
@@ -57,7 +59,10 @@ function CollectionCreateOrEditForm({
     setDescription(event.target?.value);
   }, []);
 
-  const hasEnteredValue = useMemo(() => (title.length > 0) || (description.length > 0), [title, description]);
+  const hasEnteredValue = useMemo(
+    () => title.length > 0 || description.length > 0,
+    [title, description]
+  );
 
   const buttonText = useMemo(() => {
     // Collection is being created
@@ -79,8 +84,6 @@ function CollectionCreateOrEditForm({
   const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
 
-  const refreshUnassignedNfts = useRefreshUnassignedNfts();
-
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
@@ -99,14 +102,11 @@ function CollectionCreateOrEditForm({
       // Collection is being created
       if (!collectionId && nftIds && layout) {
         Mixpanel.track('Add Name & Description to collection', {
-          'added_name': title.length > 0,
-          'added_description': description.length > 0,
+          added_name: title.length > 0,
+          added_description: description.length > 0,
         });
         await createCollection(galleryId, title, description, nftIds, layout);
       }
-
-      // Refresh unassigned NFTs so that they're ready to go when the user returns to the create screen
-      await refreshUnassignedNfts();
 
       goToNextStep();
     } catch (error: unknown) {
@@ -120,13 +120,12 @@ function CollectionCreateOrEditForm({
     description,
     collectionId,
     nftIds,
-    refreshUnassignedNfts,
     goToNextStep,
     updateCollection,
     title,
     createCollection,
     galleryId,
-    layout
+    layout,
   ]);
 
   return (

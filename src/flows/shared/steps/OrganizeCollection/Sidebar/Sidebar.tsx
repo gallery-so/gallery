@@ -9,23 +9,18 @@ import {
   useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useMutateUnassignedNftsCache, useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
+import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
-  const {
-    setNftsIsSelected,
-    stageNfts,
-    unstageNfts,
-  } = useCollectionEditorActions();
+  const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
   const refreshOpenseaSync = useRefreshOpenseaSync();
-  const refreshUnassignedNfts = useRefreshUnassignedNfts();
-  const mutateUnassignedNftsCache = useMutateUnassignedNftsCache();
+  const mutateAllNftsCache = useMutateAllNftsCache();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -47,11 +42,14 @@ function Sidebar() {
     return sidebarNftsAsArray;
   }, [debouncedSearchQuery, searchResults, sidebarNfts, sidebarNftsAsArray]);
 
-  const isAllNftsSelected = useMemo(() => !nftsToDisplayInSidebar.some((nft: EditModeNft) => !nft.isSelected), [nftsToDisplayInSidebar]);
+  const isAllNftsSelected = useMemo(
+    () => !nftsToDisplayInSidebar.some((nft: EditModeNft) => !nft.isSelected),
+    [nftsToDisplayInSidebar]
+  );
 
   const handleSelectAllClick = useCallback(() => {
     // Stage all nfts that are !isSelected
-    const nftsToStage = nftsToDisplayInSidebar.filter(nft => !nft.isSelected);
+    const nftsToStage = nftsToDisplayInSidebar.filter((nft) => !nft.isSelected);
     if (nftsToStage.length === 0) {
       return;
     }
@@ -62,7 +60,7 @@ function Sidebar() {
 
   const handleDeselectAllClick = useCallback(() => {
     // Unstage all nfts
-    const nftIdsToUnstage = nftsToDisplayInSidebar.map(nft => nft.id);
+    const nftIdsToUnstage = nftsToDisplayInSidebar.map((nft) => nft.id);
     if (nftIdsToUnstage.length === 0) {
       return;
     }
@@ -77,14 +75,13 @@ function Sidebar() {
     setIsRefreshing(true);
     try {
       await refreshOpenseaSync();
-      await refreshUnassignedNfts();
-      void mutateUnassignedNftsCache();
+      void mutateAllNftsCache();
     } catch {
       // TODO: error while attempting torefresh!
     }
 
     setIsRefreshing(false);
-  }, [mutateUnassignedNftsCache, refreshOpenseaSync, refreshUnassignedNfts]);
+  }, [mutateAllNftsCache, refreshOpenseaSync]);
 
   return (
     <StyledSidebar>
