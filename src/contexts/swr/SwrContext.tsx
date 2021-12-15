@@ -21,7 +21,7 @@ export const SwrProvider = memo(({ children }) => {
       // revalidate data every 5 mins. only impacts hooks/data that's on screen
       refreshInterval: 5 * MINUTE,
       // prevent auto-revalidation on window focus
-      refreshOnFocus: false,
+      revalidateOnFocus: false,
       // automatically revalidate if browser loses network connection and recovers
       revalidateOnReconnect: true,
       // dedupe requests with the same key within 2 seconds
