@@ -28,7 +28,7 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
   return (
     <StyledConfirmation>
       <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
-      <Spacer height={20} />
+      <Spacer height={48} />
       <ButtonContainer>
         <StyledCancelButton mini text="Nevermind" type="secondary" onClick={hideModal} />
         <StyledButton
