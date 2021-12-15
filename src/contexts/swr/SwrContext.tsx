@@ -36,7 +36,6 @@ export const SwrProvider = memo(({ children }) => {
       refreshInterval: 5 * MINUTE,
       // prevent auto-revalidation on window focus
       revalidateOnFocus: false,
-      // revalidateOnMount: false,
       // automatically revalidate if browser loses network connection and recovers
       revalidateOnReconnect: true,
       // dedupe requests with the same key within 2 seconds
