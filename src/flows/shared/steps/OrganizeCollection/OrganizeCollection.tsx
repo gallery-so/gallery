@@ -50,11 +50,15 @@ function useWizardConfig({ push }: ConfigProps) {
     if (collectionIdBeingEdited) {
       setOnNext(async () => {
         // Errors will be handled in the catch block within `WizardFooter.tsx`
-        await updateCollection(
-          collectionIdBeingEdited,
-          stagedNftsRaw.current,
-          collectionMetadata.layout
-        );
+        try {
+          await updateCollection(
+            collectionIdBeingEdited,
+            stagedNftsRaw.current,
+            collectionMetadata.layout
+          );
+        } catch (e: unknown) {
+          // TODO: display error toast here
+        }
 
         goToOrganizeGalleryStep();
       });

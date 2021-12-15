@@ -1,29 +1,28 @@
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import cloneDeep from 'lodash.clonedeep';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
-import {
-  UpdateCollectionInfoRequest,
-  UpdateCollectionInfoResponse,
-} from './types';
+import { UpdateCollectionInfoRequest, UpdateCollectionInfoResponse } from './types';
 
 export default function useUpdateCollectionInfo() {
   const updateCollection = usePost();
   const authenticatedUser = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (collectionId: string, name: string, collectors_note: string) => {
-      await updateCollection<
-      UpdateCollectionInfoResponse,
-      UpdateCollectionInfoRequest
-      >('/collections/update/info', 'update collection info', {
-        id: collectionId,
-        name,
-        collectors_note,
-      });
+      await updateCollection<UpdateCollectionInfoResponse, UpdateCollectionInfoRequest>(
+        '/collections/update/info',
+        'update collection info',
+        {
+          id: collectionId,
+          name,
+          collectors_note,
+        }
+      );
 
       // Optimistically update the collection within gallery cache.
       // it should be less messy in the future when we have a dedicated
@@ -33,7 +32,7 @@ export default function useUpdateCollectionInfo() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
-          const newCollections = gallery.collections.map(collection => {
+          const newCollections = gallery.collections.map((collection) => {
             if (collection.id === collectionId) {
               return { ...collection, name, collectors_note };
             }
@@ -43,9 +42,9 @@ export default function useUpdateCollectionInfo() {
           newValue.galleries[0].collections = newCollections;
           return newValue;
         },
-        false,
+        false
       );
     },
-    [authenticatedUser, updateCollection],
+    [authenticatedUser.id, mutate, updateCollection]
   );
 }

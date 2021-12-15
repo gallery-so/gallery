@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import cloneDeep from 'lodash.clonedeep';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { CollectionLayout } from 'types/Collection';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
@@ -12,6 +12,7 @@ import { GetGalleriesResponse } from '../galleries/types';
 export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (collectionId: string, nfts: Nft[], layout: CollectionLayout) => {
@@ -45,6 +46,6 @@ export default function useUpdateCollectionNfts() {
 
       return result;
     },
-    [userId, updateCollection]
+    [updateCollection, mutate, userId]
   );
 }

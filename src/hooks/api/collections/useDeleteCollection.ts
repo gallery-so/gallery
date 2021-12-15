@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Collection } from 'types/Collection';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
@@ -11,6 +11,7 @@ import { DeleteCollectionRequest, DeleteCollectionResponse } from './types';
 export default function useDeleteCollection() {
   const deleteCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (collectionId: string) => {

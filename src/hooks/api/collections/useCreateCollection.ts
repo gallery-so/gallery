@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import cloneDeep from 'lodash.clonedeep';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Collection, CollectionLayout } from 'types/Collection';
 import usePost from '../_rest/usePost';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
@@ -12,6 +12,7 @@ import { GetGalleriesResponse } from '../galleries/types';
 export default function useCreateCollection() {
   const createCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (
@@ -63,6 +64,6 @@ export default function useCreateCollection() {
 
       return result;
     },
-    [createCollection, userId]
+    [createCollection, mutate, userId]
   );
 }

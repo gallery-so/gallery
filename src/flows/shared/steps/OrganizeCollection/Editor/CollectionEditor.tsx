@@ -118,7 +118,7 @@ function CollectionEditor() {
 
   // Initialize sidebarNfts
   useEffect(() => {
-    // refresh the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
+    // refresh the sidebar nfts with the latest NFTs, while retaining the current user selections
     const sidebarNftsWithSelection = refreshSidebarNfts();
 
     setSidebarNfts(sidebarNftsWithSelection);
