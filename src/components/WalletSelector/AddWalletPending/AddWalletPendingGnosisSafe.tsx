@@ -97,6 +97,8 @@ function AddWalletPendingGnosisSafe({
     [fetcher, openManageWalletsModal, userFriendlyWalletName]
   );
 
+  // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
+  // This is the default flow
   const attemptAddWallet = useCallback(
     async (address: string, nonce: string, userExists: boolean) => {
       try {
@@ -113,20 +115,16 @@ function AddWalletPendingGnosisSafe({
 
         await authenticateWithBackend(address, nonce);
       } catch (error: unknown) {
-        if (isWeb3Error(error)) {
-          setDetectedError(error);
-        }
-
-        // Fall back to generic error message
-        if (error instanceof Error) {
-          const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-          setDetectedError(web3Error);
-        }
+        handleError(error);
       }
     },
-    [pendingWallet, library, authenticateWithBackend, setDetectedError]
+    [pendingWallet, library, authenticateWithBackend, handleError]
   );
 
+  // Validates the signature on-chain. If it hasnt been signed yet, initializes a listener to wait for the SignMsg event.
+  // This is used in 2 cases:
+  // 1. The user has previously tried to sign a message, and they opted to retry using the same nonce+transaction
+  // 2. This gets automatically called on an interval as a backup to validate the signature in case the listener fails to detect the SignMsg event
   const manuallyValidateSignature = useCallback(async () => {
     if (!account) {
       return;

@@ -127,7 +127,7 @@ export async function listenForGnosisSignature(
       const messageWasSigned = await validateGnosisSignature(gnosisSafeContract, messageHash);
 
       if (messageWasSigned) {
-        // resolve(msgHash);
+        resolve(msgHash);
       }
 
       // If the message was not signed, keep listening without throwing an error.

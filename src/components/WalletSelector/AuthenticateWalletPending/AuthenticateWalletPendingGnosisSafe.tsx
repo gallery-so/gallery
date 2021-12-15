@@ -73,6 +73,8 @@ function AuthenticateWalletPendingGnosisSafe({
   );
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
 
+  // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
+  // This is the default flow
   const attemptAuthentication = useCallback(
     async (address: string, nonce: string) => {
       try {
@@ -94,7 +96,10 @@ function AuthenticateWalletPendingGnosisSafe({
     [authenticateWithBackend, handleError, library, pendingWallet]
   );
 
-  // instead of waiting for the SignMsg event, explicitly check on-chain if the message has been signed
+  // Validates the signature on-chain. If it hasnt been signed yet, initializes a listener to wait for the SignMsg event.
+  // This is used in 2 cases:
+  // 1. The user has previously tried to sign a message, and they opted to retry using the same nonce+transaction
+  // 2. This gets automatically called on an interval as a backup to validate the signature in case the listener fails to detect the SignMsg event
   const manuallyValidateSignature = useCallback(async () => {
     if (!account) {
       return;
