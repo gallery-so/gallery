@@ -34,7 +34,7 @@ export default function useCreateCollection() {
         }
       );
 
-      const optimisticallyGeneratedCollection: Collection = {
+      const optimisticallyCreatedCollection: Collection = {
         version: 0,
         id: result.collection_id,
         name: title,
@@ -54,7 +54,7 @@ export default function useCreateCollection() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
-          const newCollections = [...gallery.collections, optimisticallyGeneratedCollection];
+          const newCollections = [...gallery.collections, optimisticallyCreatedCollection];
           newValue.galleries[0].collections = newCollections;
           return newValue;
         },

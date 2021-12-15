@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -14,27 +14,23 @@ import {
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import Mixpanel from 'utils/mixpanel';
-import { EditModeNft } from './types';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
+import { Nft } from 'types/Nft';
 
 type ConfigProps = {
   push: WizardContext['push'];
 };
 
-function mapStagedNftsToNftIds(stagedNfts: EditModeNft[]) {
-  return stagedNfts.map((stagedNft: EditModeNft) => stagedNft.nft.id);
-}
-
 function useWizardConfig({ push }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
-  const stagedNfts = useStagedNftsState();
   const wizardId = useWizardId();
 
-  const stagedNftIdsRef = useRef<string[]>([]);
+  const stagedNfts = useStagedNftsState();
+  const stagedNftsRaw = useRef<Nft[]>([]);
   useEffect(() => {
-    stagedNftIdsRef.current = mapStagedNftsToNftIds(stagedNfts);
+    stagedNftsRaw.current = stagedNfts.map(({ nft }) => nft);
   }, [stagedNfts]);
 
   const updateCollection = useUpdateCollectionNfts();
@@ -56,7 +52,7 @@ function useWizardConfig({ push }: ConfigProps) {
         // Errors will be handled in the catch block within `WizardFooter.tsx`
         await updateCollection(
           collectionIdBeingEdited,
-          stagedNftIdsRef.current,
+          stagedNftsRaw.current,
           collectionMetadata.layout
         );
 
@@ -73,7 +69,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
-          nftIds={stagedNftIdsRef.current}
+          nfts={stagedNftsRaw.current}
           layout={collectionMetadata.layout}
         />
       );
@@ -93,6 +89,7 @@ function useWizardConfig({ push }: ConfigProps) {
     updateCollection,
     wizardId,
     collectionMetadata,
+    stagedNfts,
   ]);
 }
 
