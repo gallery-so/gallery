@@ -1,15 +1,71 @@
+import Button from 'components/core/Button/Button';
 import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
+import { useMemo, useEffect } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
+import { getLocalStorageItem } from 'utils/localStorage';
+
+const GNOSIS_NONCE_STORAGE_KEY = 'gallery_gnosis_nonce';
 
 type Props = {
   pendingState: PendingState;
   userFriendlyWalletName: string;
+  onRestartClick?: () => void;
+  manuallyValidateSignature: () => void;
 };
 
-function GnosisSafePendingMessage({ pendingState, userFriendlyWalletName }: Props) {
+function GnosisSafeListeningOnChainScreen({
+  userFriendlyWalletName,
+  manuallyValidateSignature,
+}: {
+  userFriendlyWalletName: string;
+  manuallyValidateSignature: () => void;
+}) {
+  // Check if the message has been signed every 10seconds so we can be sure to validate the signature in case we miss the SignMsg event
+  useEffect(() => {
+    const interval = setInterval(() => {
+      manuallyValidateSignature();
+    }, 10000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [manuallyValidateSignature]);
+
+  return (
+    <StyledContentWrapper>
+      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <Spacer height={24} />
+      <BodyRegular color={colors.gray50}>
+        Connecting with Gnosis requires an on-chain transaction.
+      </BodyRegular>
+      <Spacer height={8} />
+      <BodyRegular color={colors.gray50}>
+        Awaiting confirmation and execution by remaining Gnosis Safe owners.
+      </BodyRegular>
+      <Spacer height={24} />
+      <StyledLoaderWrapper>
+        <StyledLoader />
+      </StyledLoaderWrapper>
+      <Spacer height={24} />
+      <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
+    </StyledContentWrapper>
+  );
+}
+
+function GnosisSafePendingMessage({
+  pendingState,
+  userFriendlyWalletName,
+  onRestartClick,
+  manuallyValidateSignature,
+}: Props) {
+  const { account } = useWeb3React<Web3Provider>();
+
+  const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
+
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
@@ -30,35 +86,56 @@ function GnosisSafePendingMessage({ pendingState, userFriendlyWalletName }: Prop
 
   if (pendingState === LISTENING_ONCHAIN) {
     return (
-      <div>
-        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-        <Spacer height={24} />
-        <BodyRegular color={colors.gray50}>
-          Connecting with Gnosis requires an on-chain transaction.
-        </BodyRegular>
-        <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
-          Transaction submitted. Awaiting confirmation and execution by remaining Gnosis Safe
-          owners.
-        </BodyRegular>
-        <Spacer height={24} />
-        <StyledLoaderWrapper>
-          <StyledLoader />
-        </StyledLoaderWrapper>
-        <Spacer height={24} />
-        <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
-      </div>
+      <GnosisSafeListeningOnChainScreen
+        userFriendlyWalletName={userFriendlyWalletName}
+        manuallyValidateSignature={manuallyValidateSignature}
+      />
     );
   }
 
   return (
-    <div>
+    <StyledContentWrapper>
       <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
-      <Spacer height={8} />
-      <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
-    </div>
+      <Spacer height={24} />
+      {previousAttemptNonce && account ? (
+        <>
+          <BodyRegular color={colors.gray50}>
+            We detected that you previously tried signing a message. Would you like to try
+            authenticating again using the same transaction?
+          </BodyRegular>
+          <Spacer height={48} />
+          <StyledButtonWrapper>
+            <Button text="Yes, retry" onClick={manuallyValidateSignature} />
+            <Spacer height={8} />
+            <StyledRestartButton
+              type="secondary"
+              text="No, sign new message"
+              onClick={onRestartClick}
+            />
+          </StyledButtonWrapper>
+        </>
+      ) : (
+        <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
+      )}
+    </StyledContentWrapper>
   );
 }
+
+const StyledContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledButtonWrapper = styled.div`
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledRestartButton = styled(Button)`
+  border: none;
+  color: ${colors.gray50};
+`;
 
 const StyledLoaderWrapper = styled.div`
   display: flex;

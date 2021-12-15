@@ -26,18 +26,15 @@ function ManageWallets({ newAddress }: Props) {
   }, [showAddWalletModal]);
 
   const addWalletDisabled = useMemo(() => addresses.length >= 5, [addresses]);
-  const [userSigninAddress] = usePersistedState(
-    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-    ''
-  );
+  const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   return (
     <StyledManageWallets>
       <BodyMedium>Manage Wallets</BodyMedium>
-      <Spacer height={4} />
+      <Spacer height={8} />
+      <BodyRegular color={colors.gray50}>Add more wallets to access your other NFTs.</BodyRegular>
       <BodyRegular color={colors.gray50}>
-        Add more wallets to access your other NFTs. You&apos;ll also be able to
-        sign in using any connected wallet.
+        You&apos;ll also be able to sign in using any connected wallet.
       </BodyRegular>
       {newAddress && (
         <>
@@ -45,11 +42,7 @@ function ManageWallets({ newAddress }: Props) {
           <BodyRegular>Wallet {newAddress} was added.</BodyRegular>
         </>
       )}
-      {errorMessage ? (
-        <StyledErrorText message={errorMessage} />
-      ) : (
-        <Spacer height={16} />
-      )}
+      {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
       {addresses.map((address) => (
         <ManageWalletsRow
           key={address}
@@ -58,11 +51,7 @@ function ManageWallets({ newAddress }: Props) {
           userSigninAddress={userSigninAddress}
         />
       ))}
-      <StyledButton
-        text="+ Add new wallet"
-        onClick={handleSubmit}
-        disabled={addWalletDisabled}
-      />
+      <StyledButton text="+ Add new wallet" onClick={handleSubmit} disabled={addWalletDisabled} />
     </StyledManageWallets>
   );
 }

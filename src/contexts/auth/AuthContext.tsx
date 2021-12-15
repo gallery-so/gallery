@@ -20,11 +20,7 @@ import {
 } from './constants';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 
-export type AuthState =
-  | LoggedInState
-  | typeof LOGGED_OUT
-  | typeof LOADING
-  | typeof UNKNOWN;
+export type AuthState = LoggedInState | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
 
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
 
@@ -65,7 +61,10 @@ const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
   const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
   const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
-  const [userSigninAddress, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
+  const [userSigninAddress, setUserSigninAddress] = usePersistedState(
+    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+    ''
+  );
 
   /**
    * Only sets the user state to logged out.
@@ -97,14 +96,14 @@ const AuthProvider = memo(({ children }: Props) => {
         setToken(payload.jwt);
         setUserId(payload.userId);
         setAuthState(payload);
-        setUserSigninAddress(address);
+        setUserSigninAddress(address.toLowerCase());
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         logOut();
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [logOut, setToken, setUserId, setUserSigninAddress],
+    [logOut, setToken, setUserId, setUserSigninAddress]
   );
 
   const setStateToLoading = useCallback(() => {
@@ -120,10 +119,7 @@ const AuthProvider = memo(({ children }: Props) => {
         setAuthState(LOADING);
 
         if (token && userId && userSigninAddress) {
-          const response = await _fetch<ValidateJwtResponse>(
-            '/auth/jwt_valid',
-            'validate jwt',
-          );
+          const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid', 'validate jwt');
           if (!response.valid) {
             pushToast('Your session is invalid or expired. Please try again.');
             logOut();
@@ -141,15 +137,18 @@ const AuthProvider = memo(({ children }: Props) => {
         void loadAuthState();
       }
     },
-    [authState, logIn, logOut, pushToast, setLoggedOut, token, userId, userSigninAddress],
+    [authState, logIn, logOut, pushToast, setLoggedOut, token, userId, userSigninAddress]
   );
 
   const authActions: AuthActions = useMemo(
     () => ({ logIn, logOut, setStateToLoading }),
-    [logIn, logOut, setStateToLoading],
+    [logIn, logOut, setStateToLoading]
   );
 
-  const shouldDisplayUniversalLoader = useMemo(() => authState === UNKNOWN || authState === LOADING, [authState]);
+  const shouldDisplayUniversalLoader = useMemo(
+    () => authState === UNKNOWN || authState === LOADING,
+    [authState]
+  );
 
   // TODO: display a loader instead of `null`
   return shouldDisplayUniversalLoader ? null : (

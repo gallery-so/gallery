@@ -101,6 +101,7 @@ export async function signMessageWithContractAccount(
       address,
     ])) as Signature;
   } catch (error: unknown) {
+    console.error(error);
     if (error instanceof Error) {
       throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
     } else if (error instanceof Object && isRpcSignatureError(error)) {
@@ -122,11 +123,11 @@ export async function listenForGnosisSignature(
   const listenToGnosisSafeContract = new Promise((resolve) => {
     gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: any) => {
       // Upon detecing the SignMsg event, validate that the contract signed the message
-      const magicValue = await gnosisSafeContract.isValidSignature(messageHash, '0x');
-      const messageWasSigned = magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
+      console.log('Gnosis Safe Contract Event: ', GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME);
+      const messageWasSigned = await validateGnosisSignature(gnosisSafeContract, messageHash);
 
       if (messageWasSigned) {
-        resolve(msgHash);
+        // resolve(msgHash);
       }
 
       // If the message was not signed, keep listening without throwing an error.
@@ -136,6 +137,25 @@ export async function listenForGnosisSignature(
   });
 
   await listenToGnosisSafeContract;
+  gnosisSafeContract.removeAllListeners(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME);
+}
+
+export async function validateGnosisSignature(gnosisSafeContract: Contract, messageHash: string) {
+  const magicValue = await gnosisSafeContract
+    .isValidSignature(messageHash, '0x')
+    .catch(() => false);
+  return magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
+}
+
+export async function validateNonceSignedByGnosis(
+  address: string,
+  nonce: string,
+  library?: Web3Provider
+) {
+  console.log('Querying Gnosis Safe');
+  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
+  const messageHash = generateMessageHash(nonce);
+  return validateGnosisSignature(gnosisSafeContract, messageHash);
 }
 
 // Determines if the account is an EOA or a Contract Account
