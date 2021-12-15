@@ -14,7 +14,6 @@ import {
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import Mixpanel from 'utils/mixpanel';
-import { useRefreshUnassignedNfts } from 'hooks/api/nfts/useUnassignedNfts';
 import { EditModeNft } from './types';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
@@ -41,7 +40,6 @@ function useWizardConfig({ push }: ConfigProps) {
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
-  const refreshUnassignedNfts = useRefreshUnassignedNfts();
 
   const collectionMetadata = useCollectionMetadataState();
 
@@ -59,9 +57,8 @@ function useWizardConfig({ push }: ConfigProps) {
         await updateCollection(
           collectionIdBeingEdited,
           stagedNftIdsRef.current,
-          collectionMetadata.layout,
+          collectionMetadata.layout
         );
-        await refreshUnassignedNfts();
 
         goToOrganizeGalleryStep();
       });
@@ -78,7 +75,7 @@ function useWizardConfig({ push }: ConfigProps) {
           onNext={goToOrganizeGalleryStep}
           nftIds={stagedNftIdsRef.current}
           layout={collectionMetadata.layout}
-        />,
+        />
       );
     });
 
@@ -87,7 +84,16 @@ function useWizardConfig({ push }: ConfigProps) {
     if (wizardId === 'edit-gallery') {
       setOnPrevious(goToOrganizeGalleryStep);
     }
-  }, [collectionIdBeingEdited, goToOrganizeGalleryStep, refreshUnassignedNfts, setOnNext, setOnPrevious, showModal, updateCollection, wizardId, collectionMetadata]);
+  }, [
+    collectionIdBeingEdited,
+    goToOrganizeGalleryStep,
+    setOnNext,
+    setOnPrevious,
+    showModal,
+    updateCollection,
+    wizardId,
+    collectionMetadata,
+  ]);
 }
 
 // In order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
