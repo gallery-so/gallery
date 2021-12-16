@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
+import { BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
