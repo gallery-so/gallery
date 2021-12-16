@@ -7,7 +7,7 @@ type Props = {
   userId: User['id'];
 };
 
-const getGalleriesAction = 'fetch gallery';
+export const getGalleriesAction = 'fetch gallery';
 
 const getGalleriesBaseUrl = '/galleries/user_get';
 
@@ -27,7 +27,7 @@ export function getGalleriesCacheKey({ userId }: Props) {
 export default function useGalleries({ userId }: Props): Gallery[] | undefined {
   const data = useGet<GetGalleriesResponse>(
     userId ? `${getGalleriesBaseUrlWithQuery({ userId })}` : null,
-    getGalleriesAction,
+    getGalleriesAction
   );
 
   return data?.galleries;
