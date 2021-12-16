@@ -229,6 +229,7 @@ const StyledWalletSelector = styled.div`
   display: flex;
   flex-direction: column;
   width: 70vw;
+  justify-content: center;
 
   @media only screen and ${breakpoints.tablet} {
     width: 400px;

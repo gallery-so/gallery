@@ -6,7 +6,7 @@ import { ADD_WALLET_TO_USER } from 'types/Wallet';
 
 const AddWalletModal = () => (
   <Container>
-    <WalletSelector connectionMode={ADD_WALLET_TO_USER}/>
+    <WalletSelector connectionMode={ADD_WALLET_TO_USER} />
   </Container>
 );
 
@@ -23,5 +23,5 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 303px;
+  min-height: 280px;
 `;
