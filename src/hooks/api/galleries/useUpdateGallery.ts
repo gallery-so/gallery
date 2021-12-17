@@ -2,6 +2,7 @@ import cloneDeep from 'lodash.clonedeep';
 import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import { Collection } from 'types/Collection';
+import { getISODate } from 'utils/time';
 import { useAuthenticatedUser } from '../users/useUser';
 import usePost from '../_rest/usePost';
 import { GetGalleriesResponse, UpdateGalleryRequest, UpdateGalleryResponse } from './types';
@@ -32,6 +33,7 @@ export default function useUpdateGallery() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           newValue.galleries[0].collections = collections;
+          newValue.galleries[0].last_updated = getISODate();
           return newValue;
         },
         false

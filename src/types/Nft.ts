@@ -20,8 +20,8 @@ export type Nft = {
   description: string;
   external_url: string;
   id: string;
-  created_at: number;
-  last_updated: number;
+  created_at: string;
+  last_updated: string;
   image_original_url: string;
   image_preview_url: string;
   image_thumbnail_url: string;

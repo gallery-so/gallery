@@ -1,7 +1,7 @@
 export type User = {
   id: string;
   created_at: string;
-  last_updated: number;
+  last_updated: string;
   username: string;
   bio: string;
   addresses: string[];

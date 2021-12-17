@@ -6,6 +6,7 @@ import { useAuthenticatedUser } from '../users/useUser';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { UpdateCollectionInfoRequest, UpdateCollectionInfoResponse } from './types';
+import { getISODate } from 'utils/time';
 
 export default function useUpdateCollectionInfo() {
   const updateCollection = usePost();
@@ -39,7 +40,8 @@ export default function useUpdateCollectionInfo() {
 
             return collection;
           });
-          newValue.galleries[0].collections = newCollections;
+          gallery.collections = newCollections;
+          gallery.last_updated = getISODate();
           return newValue;
         },
         false

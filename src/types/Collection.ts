@@ -2,8 +2,8 @@ import { Nft } from './Nft';
 
 export type Collection = {
   id: string;
-  created_at: number;
-  last_updated: number;
+  created_at: string;
+  last_updated: string;
   name: string;
   collectors_note: string;
   hidden: boolean;

@@ -8,6 +8,7 @@ import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { UpdateCollectionNftsRequest, UpdateCollectionNftsResponse } from './types';
 import { Nft } from 'types/Nft';
 import { GetGalleriesResponse } from '../galleries/types';
+import { getISODate } from 'utils/time';
 
 export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
@@ -31,14 +32,17 @@ export default function useUpdateCollectionNfts() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
+
+          const now = getISODate();
           const newCollections = gallery.collections.map((collection) => {
             if (collection.id === collectionId) {
-              return { ...collection, last_updated: Date.now(), nfts, layout };
+              return { ...collection, last_updated: now, nfts, layout };
             }
 
             return collection;
           });
-          newValue.galleries[0].collections = newCollections;
+          gallery.collections = newCollections;
+          gallery.last_updated = now;
           return newValue;
         },
         false

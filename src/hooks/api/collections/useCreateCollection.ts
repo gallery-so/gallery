@@ -8,6 +8,7 @@ import { useAuthenticatedUser } from '../users/useUser';
 import { CreateCollectionRequest, CreateCollectionResponse } from './types';
 import { Nft } from 'types/Nft';
 import { GetGalleriesResponse } from '../galleries/types';
+import { getISODate } from 'utils/time';
 
 export default function useCreateCollection() {
   const createCollection = usePost();
@@ -35,16 +36,16 @@ export default function useCreateCollection() {
         }
       );
 
+      const now = getISODate();
+
       const optimisticallyCreatedCollection: Collection = {
         version: 0,
+        created_at: now,
+        last_updated: now,
         id: result.collection_id,
         name: title,
         collectors_note: description,
         hidden: false,
-        // TODO: update according to what the server is using
-        created_at: Date.now(),
-        // TODO: update according to what the server is using
-        last_updated: Date.now(),
         owner_user_id: userId,
         nfts,
         layout: collectionLayout,
@@ -56,7 +57,8 @@ export default function useCreateCollection() {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
           const newCollections = [...gallery.collections, optimisticallyCreatedCollection];
-          newValue.galleries[0].collections = newCollections;
+          gallery.collections = newCollections;
+          gallery.last_updated = now;
           return newValue;
         },
         false

@@ -6,6 +6,7 @@ import { useAuthenticatedUser } from '../users/useUser';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { GetGalleriesResponse } from '../galleries/types';
 import { UpdateCollectionHiddenRequest, UpdateCollectionHiddenResponse } from './types';
+import { getISODate } from 'utils/time';
 
 export default function useUpdateCollectionHidden() {
   const updateCollection = usePost();
@@ -38,7 +39,8 @@ export default function useUpdateCollectionHidden() {
 
             return collection;
           });
-          newValue.galleries[0].collections = newCollections;
+          gallery.collections = newCollections;
+          gallery.last_updated = getISODate();
           return newValue;
         },
         false
