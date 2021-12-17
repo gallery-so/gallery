@@ -1,43 +1,43 @@
+import { useEffect, useRef } from 'react';
+import { Key, Middleware } from 'swr';
+import { GetGalleriesResponse } from 'hooks/api/galleries/types';
 import { getGalleriesAction } from 'hooks/api/galleries/useGalleries';
-import { Key, Middleware, unstable_serialize } from 'swr';
 
 function getTimeFromISOString(timestamp: string) {
   return new Date(timestamp).getTime();
 }
 
+// @ts-expect-error: TODO this is erroring because of `data` type returned in L39
 const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, config) => {
-  console.log('key', key[0]);
-  const dataInCache = config.cache.get(unstable_serialize(key));
-  console.log(JSON.stringify(dataInCache));
+  const swr = useSWRNext(key, fetcher, config);
+
+  // gallery requests are identified through a tuple of [endpoint, action_type]
   const isFetchingGallery = Array.isArray(key) && key[1] === getGalleriesAction;
-  if (!isFetchingGallery) {
-    return useSWRNext(key, fetcher, config);
+  if (!isFetchingGallery || !swr.data) {
+    return swr;
   }
 
-  // console.log(key);
+  const galleryWithLatestTimestamp = useRef<GetGalleriesResponse | undefined>(undefined);
 
-  // @ts-expect-error: `cache` field is not publicly accessible on TS def
-  // const dataInCache = config.cache.get(unstable_serialize(key));
-  // let localLastUpdated = 0
-  // if (dataInCache) {
-  // const localLastUpdated = dataInCache.galleries[0].last_updated;
-  // console.log('prev', localLastUpdated);
-  // console.log({ dataInCache });
-  // }
+  // @ts-expect-error this route will always return `GetGalleriesResponse` type
+  const currentTimestamp = swr.data.galleries[0].last_updated;
+  const previousTimestamp = galleryWithLatestTimestamp.current?.galleries[0].last_updated ?? 0;
+  useEffect(() => {
+    if (getTimeFromISOString(currentTimestamp) > previousTimestamp) {
+      // @ts-expect-error this route will always return `GetGalleriesResponse` type
+      galleryWithLatestTimestamp.current = swr.data;
+    }
+  }, [currentTimestamp, previousTimestamp, swr.data]);
 
-  // const swr = useSWRNext(key, fetcher, config);
+  const isFirstRender = !galleryWithLatestTimestamp.current;
+  if (isFirstRender) {
+    return swr;
+  }
 
-  // const dataFromServer = swr.data;
-  // if (dataInCache && dataFromServer) {
-  //   const localLastUpdated = dataInCache.galleries[0].last_updated;
-  //   const serverLastUpdated = dataFromServer.galleries[0].last_updated;
-  //   console.log({ localLastUpdated, serverLastUpdated });
-  //   // if (getTimeFromISOString(localLastUpdated) > getTimeFromISOString(serverLastUpdated)) {
-
-  //   // }
-  // }
-
-  // return useSWRNext(key, fetcher, config);
+  return {
+    ...swr,
+    data: galleryWithLatestTimestamp.current,
+  };
 };
 
 export default ensureLatestGallery;
