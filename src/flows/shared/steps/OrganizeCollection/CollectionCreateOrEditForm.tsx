@@ -17,13 +17,14 @@ import { Collection, CollectionLayout } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import Mixpanel from 'utils/mixpanel';
+import { Nft } from 'types/Nft';
 
 type Props = {
   onNext: WizardContext['next'];
   collectionId?: Collection['id'];
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
-  nftIds?: string[];
+  nfts?: Nft[];
   layout?: CollectionLayout;
 };
 
@@ -34,7 +35,7 @@ function CollectionCreateOrEditForm({
   collectionId,
   collectionName,
   collectionCollectorsNote,
-  nftIds,
+  nfts,
   layout,
 }: Props) {
   const { hideModal } = useModal();
@@ -66,12 +67,12 @@ function CollectionCreateOrEditForm({
 
   const buttonText = useMemo(() => {
     // Collection is being created
-    if (nftIds) {
+    if (nfts) {
       return 'create';
     }
 
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue, nftIds]);
+  }, [hasEnteredValue, nfts]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -100,12 +101,12 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && nftIds && layout) {
+      if (!collectionId && nfts && layout) {
         Mixpanel.track('Add Name & Description to collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
         });
-        await createCollection(galleryId, title, description, nftIds, layout);
+        await createCollection(galleryId, title, description, nfts, layout);
       }
 
       goToNextStep();
@@ -119,7 +120,7 @@ function CollectionCreateOrEditForm({
   }, [
     description,
     collectionId,
-    nftIds,
+    nfts,
     goToNextStep,
     updateCollection,
     title,

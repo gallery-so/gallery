@@ -1,5 +1,4 @@
 import { FetcherType } from 'contexts/swr/useFetcher';
-import { OpenseaSyncResponse } from 'hooks/api/nfts/useOpenseaSync';
 import { Web3Error } from 'types/Error';
 import capitalize from 'utils/capitalize';
 import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
@@ -7,8 +6,6 @@ import Mixpanel from 'utils/mixpanel';
 
 export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
   const response = await addUserAddress(payload, fetcher);
-
-  await triggerOpenseaSync(fetcher);
 
   return { signatureValid: response.signature_valid };
 }
@@ -28,10 +25,6 @@ export async function loginOrCreateUser(
   }
 
   const response = await createUser(payload as CreateUserRequest, fetcher);
-
-  // The user's nfts should be fetched here so that they're ready to go by the time
-  // they arrive at the Create First Collection step
-  await triggerOpenseaSync(fetcher, response.jwt_token);
 
   return { jwt: response.jwt_token, userId: response.user_id };
 }
@@ -203,21 +196,5 @@ async function createUser(
     }
 
     throw new Error('Unknown error');
-  }
-}
-
-async function triggerOpenseaSync(fetcher: FetcherType, jwt?: string) {
-  try {
-    const headers = jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : undefined;
-    let payload = { body: {} };
-    if (headers) {
-      payload = { ...payload, ...headers };
-    }
-
-    await fetcher<OpenseaSyncResponse>('/nfts/opensea/refresh', 'refresh and sync nfts', payload);
-    await fetcher<OpenseaSyncResponse>('/nfts/opensea/get', 'fetch and sync nfts', headers);
-  } catch (error: unknown) {
-    // Error silently; TODO: send error analytics
-    console.error(error);
   }
 }

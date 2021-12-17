@@ -36,7 +36,7 @@
     "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.1",
     "styled-components": "^5.2.3",
-    "swr": "^0.5.4",
+    "swr": "^1.1.1",
     "utf-8-validate": "^5.0.7"
   },
   "devDependencies": {

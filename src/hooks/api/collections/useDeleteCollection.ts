@@ -1,7 +1,8 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Collection } from 'types/Collection';
+import { getISODate } from 'utils/time';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { useAuthenticatedUser } from '../users/useUser';
@@ -11,6 +12,7 @@ import { DeleteCollectionRequest, DeleteCollectionResponse } from './types';
 export default function useDeleteCollection() {
   const deleteCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (collectionId: string) => {
@@ -30,12 +32,13 @@ export default function useDeleteCollection() {
           const newCollections = gallery.collections.filter(
             (collection: Collection) => collection.id !== collectionId
           );
-          newValue.galleries[0].collections = newCollections;
+          gallery.collections = newCollections;
+          gallery.last_updated = getISODate();
           return newValue;
         },
         false
       );
     },
-    [userId, deleteCollection]
+    [deleteCollection, mutate, userId]
   );
 }

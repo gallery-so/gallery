@@ -12,6 +12,7 @@ const rules = {
   'capitalized-comments': 'off',
   'prefer-destructuring': 'off',
   'default-case': 'off',
+  'max-params': 'off',
 
   // React Specific Rules
   'react/react-in-jsx-scope': 'off',

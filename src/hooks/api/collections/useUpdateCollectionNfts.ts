@@ -1,34 +1,55 @@
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import cloneDeep from 'lodash.clonedeep';
+import { useSWRConfig } from 'swr';
 import { CollectionLayout } from 'types/Collection';
 import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { UpdateCollectionNftsRequest, UpdateCollectionNftsResponse } from './types';
+import { Nft } from 'types/Nft';
+import { GetGalleriesResponse } from '../galleries/types';
+import { getISODate } from 'utils/time';
 
 export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
-  const authenticatedUser = useAuthenticatedUser();
+  const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
-    async (collectionId: string, nfts: string[], collectionLayout: CollectionLayout) => {
-      if (!authenticatedUser) {
-        return;
-      }
-
+    async (collectionId: string, nfts: Nft[], layout: CollectionLayout) => {
+      const nftIds = nfts.map((nft) => nft.id);
       const result = await updateCollection<
         UpdateCollectionNftsResponse,
         UpdateCollectionNftsRequest
       >('/collections/update/nfts', 'update collection nfts', {
         id: collectionId,
-        nfts,
-        layout: collectionLayout,
+        nfts: nftIds,
+        layout,
       });
 
-      await mutate(getGalleriesCacheKey({ userId: authenticatedUser.id }));
+      await mutate(
+        getGalleriesCacheKey({ userId }),
+        (value: GetGalleriesResponse) => {
+          const newValue = cloneDeep<GetGalleriesResponse>(value);
+          const gallery = newValue.galleries[0];
+
+          const now = getISODate();
+          const newCollections = gallery.collections.map((collection) => {
+            if (collection.id === collectionId) {
+              return { ...collection, last_updated: now, nfts, layout };
+            }
+
+            return collection;
+          });
+          gallery.collections = newCollections;
+          gallery.last_updated = now;
+          return newValue;
+        },
+        false
+      );
 
       return result;
     },
-    [authenticatedUser, updateCollection]
+    [updateCollection, mutate, userId]
   );
 }

@@ -1,5 +1,5 @@
 import { DEFAULT_COLUMNS } from 'constants/layout';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -54,7 +54,7 @@ function CollectionEditor() {
     () => collections.find((coll) => coll.id === collectionIdBeingEditedRef.current),
     [collections]
   );
-  const nftsFromCollectionBeingEdited = useMemo(
+  const nftsInCollection = useMemo(
     () => collectionBeingEdited?.nfts ?? [],
     [collectionBeingEdited]
   );
@@ -84,50 +84,46 @@ function CollectionEditor() {
     return Object.fromEntries(editModeNfts.map((nft) => [nft.id, nft]));
   }, [allNfts]);
 
-  const refreshSidebarNfts = useCallback(() => {
-    // Initialize new sidebar nfts
-    const newSidebarNfts: SidebarNftsState = allEditModeNfts;
-
-    // select all the nfts that are in the collection being edited
-    nftsFromCollectionBeingEdited.forEach((nft) => {
-      newSidebarNfts[nft.id].isSelected = true;
-    });
-
-    const oldSidebarNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
-
-    if (oldSidebarNftsAsArray.length === 0) {
-      return newSidebarNfts;
+  // Either initialize sidebar NFTs or refresh sidebar NFTs
+  // while retaining the current user selections
+  useEffect(() => {
+    // Handle initializing sidebar with NFTs
+    const preRefreshNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
+    const initialRender = preRefreshNftsAsArray.length === 0;
+    if (initialRender) {
+      stageNfts(convertNftsToEditModeNfts(nftsInCollection, true));
     }
 
+    // Mark NFTs as selected if they're in the collection being edited
+    const newSidebarNfts: SidebarNftsState = allEditModeNfts;
+    nftsInCollection.forEach((nft) => {
+      const preRefreshNft = newSidebarNfts[nft.id];
+      if (preRefreshNft) {
+        preRefreshNft.isSelected = true;
+      }
+    });
+
+    const nftsToUnstage = [];
     // iterate through old sidebar nfts, so that we can retain the selection state
-    for (const oldSidebarNft of oldSidebarNftsAsArray) {
-      const newSidebarNft = newSidebarNfts[oldSidebarNft.id];
+    for (const preRefreshNft of preRefreshNftsAsArray) {
+      const newSidebarNft = newSidebarNfts[preRefreshNft.id];
 
       if (newSidebarNft) {
         // nft that used to be in sidebar is still in new sidebar, so copy over isSelected.
         // this ensures user selections are not reset when we refresh the sidebar
-        newSidebarNft.isSelected = oldSidebarNft.isSelected;
-      } else if (oldSidebarNft.isSelected) {
+        newSidebarNft.isSelected = preRefreshNft.isSelected;
+      } else if (preRefreshNft.isSelected) {
         // if any previously selected NFTs are no longer in the new sidebar, unstage it
-        unstageNfts([oldSidebarNft.id]);
+        nftsToUnstage.push(preRefreshNft.id);
       }
     }
 
-    return newSidebarNfts;
-  }, [allEditModeNfts, nftsFromCollectionBeingEdited, unstageNfts]);
+    if (nftsToUnstage.length) {
+      unstageNfts(nftsToUnstage);
+    }
 
-  // Initialize sidebarNfts
-  useEffect(() => {
-    // refresh the sidebar nfts with the latest unassigned NFTs, while retaining the current user selections
-    const sidebarNftsWithSelection = refreshSidebarNfts();
-
-    setSidebarNfts(sidebarNftsWithSelection);
-    const sidebarNftsWithSelectionAsArray = convertObjectToArray(sidebarNftsWithSelection);
-    const selectedNfts = sidebarNftsWithSelectionAsArray.filter(
-      (sidebarNft) => sidebarNft.isSelected
-    );
-    stageNfts(selectedNfts);
-  }, [refreshSidebarNfts, setSidebarNfts, stageNfts]);
+    setSidebarNfts(newSidebarNfts);
+  }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
 

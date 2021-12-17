@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BodyMedium, BodyRegular } from 'components/core/Text/Text';
+import { BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
@@ -28,19 +28,9 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
   return (
     <StyledConfirmation>
       <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
-      <Spacer height={8} />
-      <BodyRegular color={colors.gray50}>
-        All NFTs in this collection will be unassigned and available to
-        place in other collections.
-      </BodyRegular>
-      <Spacer height={20} />
+      <Spacer height={48} />
       <ButtonContainer>
-        <StyledCancelButton
-          mini
-          text="Nevermind"
-          type="secondary"
-          onClick={hideModal}
-        />
+        <StyledCancelButton mini text="Nevermind" type="secondary" onClick={hideModal} />
         <StyledButton
           mini
           text="Delete"
@@ -66,7 +56,7 @@ const StyledCancelButton = styled(Button)`
   border: none;
   width: 125px;
   margin-right: 8px;
-  color: ${colors.gray50}
+  color: ${colors.gray50};
 `;
 
 const StyledButton = styled(Button)`
