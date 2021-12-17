@@ -17,31 +17,30 @@ const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, conf
     return swr;
   }
 
-  const galleryWithLatestTimestamp = useRef<GetGalleriesResponse | undefined>(undefined);
+  const previousData = useRef<GetGalleriesResponse | undefined>(undefined);
 
   // @ts-expect-error this route will always return `GetGalleriesResponse` type
   const currentTimestamp = getTimeFromISOString(swr.data.galleries[0].last_updated);
   const previousTimestamp = getTimeFromISOString(
-    galleryWithLatestTimestamp.current?.galleries[0].last_updated ?? 0
+    previousData.current?.galleries[0].last_updated ?? 0
   );
-  useEffect(() => {
-    if (getTimeFromISOString(currentTimestamp) > previousTimestamp) {
-      // @ts-expect-error this route will always return `GetGalleriesResponse` type
-      galleryWithLatestTimestamp.current = swr.data;
-    }
-  }, [currentTimestamp, previousTimestamp, swr.data]);
 
-  const isFirstRender = !galleryWithLatestTimestamp.current;
-  console.log(previousTimestamp, currentTimestamp, isFirstRender);
-  if (isFirstRender) {
+  const serverHasLatestTimestamp = currentTimestamp > previousTimestamp;
+
+  useEffect(() => {
+    if (serverHasLatestTimestamp) {
+      // @ts-expect-error this route will always return `GetGalleriesResponse` type
+      previousData.current = swr.data;
+    }
+  }, [serverHasLatestTimestamp, swr.data]);
+
+  if (serverHasLatestTimestamp) {
     return swr;
   }
 
-  console.log(galleryWithLatestTimestamp.current);
-
   return {
     ...swr,
-    data: galleryWithLatestTimestamp.current,
+    data: previousData.current,
   };
 };
 
