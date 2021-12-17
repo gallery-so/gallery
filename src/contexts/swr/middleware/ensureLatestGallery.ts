@@ -3,7 +3,7 @@ import { Key, Middleware } from 'swr';
 import { GetGalleriesResponse } from 'hooks/api/galleries/types';
 import { getGalleriesAction } from 'hooks/api/galleries/useGalleries';
 
-function getTimeFromISOString(timestamp: string) {
+function getTimeFromISOString(timestamp: string | number) {
   return new Date(timestamp).getTime();
 }
 
@@ -20,8 +20,10 @@ const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, conf
   const galleryWithLatestTimestamp = useRef<GetGalleriesResponse | undefined>(undefined);
 
   // @ts-expect-error this route will always return `GetGalleriesResponse` type
-  const currentTimestamp = swr.data.galleries[0].last_updated;
-  const previousTimestamp = galleryWithLatestTimestamp.current?.galleries[0].last_updated ?? 0;
+  const currentTimestamp = getTimeFromISOString(swr.data.galleries[0].last_updated);
+  const previousTimestamp = getTimeFromISOString(
+    galleryWithLatestTimestamp.current?.galleries[0].last_updated ?? 0
+  );
   useEffect(() => {
     if (getTimeFromISOString(currentTimestamp) > previousTimestamp) {
       // @ts-expect-error this route will always return `GetGalleriesResponse` type
@@ -30,9 +32,12 @@ const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, conf
   }, [currentTimestamp, previousTimestamp, swr.data]);
 
   const isFirstRender = !galleryWithLatestTimestamp.current;
+  console.log(previousTimestamp, currentTimestamp, isFirstRender);
   if (isFirstRender) {
     return swr;
   }
+
+  console.log(galleryWithLatestTimestamp.current);
 
   return {
     ...swr,
