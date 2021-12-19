@@ -67,11 +67,7 @@ function ModalProvider({ children }: Props) {
     <ModalContext.Provider value={actions}>
       {children}
       {isMounted && content && (
-        <AnimatedModal
-          isActive={isActive}
-          hideModal={hideModal}
-          content={content}
-        />
+        <AnimatedModal isActive={isActive} hideModal={hideModal} content={content} />
       )}
     </ModalContext.Provider>
   );

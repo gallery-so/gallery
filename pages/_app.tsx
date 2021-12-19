@@ -8,9 +8,7 @@ import 'src/scenes/NftDetailPage/model-viewer.css';
 import Head from 'next/head';
 
 const SafeHydrate: FC = ({ children }) => (
-  <div suppressHydrationWarning>
-    {typeof window === 'undefined' ? null : children}
-  </div>
+  <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 );
 
 const App: FC<{

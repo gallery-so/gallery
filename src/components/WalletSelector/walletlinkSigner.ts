@@ -17,7 +17,10 @@ type JSONRPCResponse<T> = {
 type Callback<T> = (error: Error | null, response: JSONRPCResponse<T>) => void;
 
 type WalletLinkProvider = {
-  sendAsync: <RequestPayload, ResponsePayload>(request: JSONRPCRequest<RequestPayload>, callback: Callback<ResponsePayload>) => void;
+  sendAsync: <RequestPayload, ResponsePayload>(
+    request: JSONRPCRequest<RequestPayload>,
+    callback: Callback<ResponsePayload>
+  ) => void;
 };
 
 type Parameters = {
@@ -28,25 +31,32 @@ type Parameters = {
 
 type Signature = string;
 
-export default async function walletlinkSigner({ connector, nonce, address }: Parameters): Promise<Signature> {
-  const provider = await connector.getProvider() as WalletLinkProvider;
+export default async function walletlinkSigner({
+  connector,
+  nonce,
+  address,
+}: Parameters): Promise<Signature> {
+  const provider = (await connector.getProvider()) as WalletLinkProvider;
 
   return new Promise((resolve, reject) => {
-    provider.sendAsync<string[], string>({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'personal_sign',
-      params: [nonce, address],
-    }, (error, response) => {
-      if (error) {
-        reject(error);
-      }
+    provider.sendAsync<string[], string>(
+      {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'personal_sign',
+        params: [nonce, address],
+      },
+      (error, response) => {
+        if (error) {
+          reject(error);
+        }
 
-      if (!response) {
-        reject(new Error('no signature received'));
-      }
+        if (!response) {
+          reject(new Error('no signature received'));
+        }
 
-      resolve(response?.result);
-    });
+        resolve(response?.result);
+      }
+    );
   });
 }

@@ -1,12 +1,4 @@
-import {
-  createContext,
-  memo,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
@@ -37,9 +29,7 @@ const CollectionEditorStateContext = createContext<CollectionEditorState>({
 export const useSidebarNftsState = (): SidebarNftsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use CollectionEditorStateContext without a provider',
-    );
+    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
   }
 
   return context.sidebarNfts;
@@ -48,9 +38,7 @@ export const useSidebarNftsState = (): SidebarNftsState => {
 export const useStagedNftsState = (): StagedNftsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use CollectionEditorStateContext without a provider',
-    );
+    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
   }
 
   return context.stagedNfts;
@@ -59,9 +47,7 @@ export const useStagedNftsState = (): StagedNftsState => {
 export const useCollectionMetadataState = (): CollectionMetadataState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use CollectionEditorStateContext without a provider',
-    );
+    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
   }
 
   return context.collectionMetadata;
@@ -78,16 +64,14 @@ type CollectionEditorActions = {
   setColumns: (columns: number) => void;
 };
 
-const CollectionEditorActionsContext = createContext<
-CollectionEditorActions | undefined
->(undefined);
+const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
+  undefined
+);
 
 export const useCollectionEditorActions = (): CollectionEditorActions => {
   const context = useContext(CollectionEditorActionsContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use CollectionEditorActionsContext without a provider',
-    );
+    throw new Error('Attempted to use CollectionEditorActionsContext without a provider');
   }
 
   return context;
@@ -96,11 +80,11 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
 type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>(
-    {},
-  );
+  const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>({});
   const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
-  const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(DEFAULT_COLLECTION_METADATA);
+  const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(
+    DEFAULT_COLLECTION_METADATA
+  );
 
   const collectionEditorState = useMemo(
     () => ({
@@ -108,32 +92,29 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       stagedNfts: stagedNftsState,
       collectionMetadata: collectionMetadataState,
     }),
-    [sidebarNftsState, stagedNftsState, collectionMetadataState],
+    [sidebarNftsState, stagedNftsState, collectionMetadataState]
   );
 
   const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
     setSidebarNftsState(nfts);
   }, []);
 
-  const setNftsIsSelected = useCallback(
-    (nfts: EditModeNft[], isSelected: boolean) => {
-      setSidebarNftsState(previous => {
-        const next = { ...previous };
-        for (const nft of nfts) {
-          const selectedNft = next[nft.id];
-          next[nft.id] = { ...selectedNft, isSelected };
-        }
+  const setNftsIsSelected = useCallback((nfts: EditModeNft[], isSelected: boolean) => {
+    setSidebarNftsState((previous) => {
+      const next = { ...previous };
+      for (const nft of nfts) {
+        const selectedNft = next[nft.id];
+        next[nft.id] = { ...selectedNft, isSelected };
+      }
 
-        return next;
-      });
-    },
-    [],
-  );
+      return next;
+    });
+  }, []);
 
   const stageNfts = useCallback((nfts: EditModeNft[]) => {
-    setStagedNftsState(previous => {
+    setStagedNftsState((previous) => {
       const ids = previous.map(({ id }) => id);
-      const stagedNfts = Object.fromEntries(ids.map(key => [key, true]));
+      const stagedNfts = Object.fromEntries(ids.map((key) => [key, true]));
 
       const nftsNotYetStaged = nfts.filter(({ id }) => !stagedNfts[id]);
 
@@ -142,17 +123,15 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
-    const idsMap = Object.fromEntries(ids.map(key => [key, true]));
+    const idsMap = Object.fromEntries(ids.map((key) => [key, true]));
 
-    setStagedNftsState(previous =>
-      previous.filter(editModeNft => !idsMap[editModeNft.id]),
-    );
+    setStagedNftsState((previous) => previous.filter((editModeNft) => !idsMap[editModeNft.id]));
   }, []);
 
   const handleSortNfts = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      setStagedNftsState(previous => {
+      setStagedNftsState((previous) => {
         const oldIndex = previous.findIndex(({ nft }) => nft.id === active.id);
         const newIndex = previous.findIndex(({ nft }) => nft.id === over?.id);
         return arrayMove(previous, oldIndex, newIndex);
@@ -161,21 +140,21 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const incrementColumns = useCallback(() => {
-    setCollectionMetadataState(previous => ({
+    setCollectionMetadataState((previous) => ({
       ...previous,
       layout: { ...previous.layout, columns: previous.layout.columns + 1 },
     }));
   }, []);
 
   const decrementColumns = useCallback(() => {
-    setCollectionMetadataState(previous => ({
+    setCollectionMetadataState((previous) => ({
       ...previous,
       layout: { ...previous.layout, columns: previous.layout.columns - 1 },
     }));
   }, []);
 
   const setColumns = useCallback((columns: number) => {
-    setCollectionMetadataState(previous => ({
+    setCollectionMetadataState((previous) => ({
       ...previous,
       layout: { ...previous.layout, columns },
     }));
@@ -192,7 +171,16 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       decrementColumns,
       setColumns,
     }),
-    [setSidebarNfts, setNftsIsSelected, stageNfts, unstageNfts, handleSortNfts, incrementColumns, decrementColumns, setColumns],
+    [
+      setSidebarNfts,
+      setNftsIsSelected,
+      stageNfts,
+      unstageNfts,
+      handleSortNfts,
+      incrementColumns,
+      decrementColumns,
+      setColumns,
+    ]
   );
 
   return (

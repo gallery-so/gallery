@@ -24,8 +24,7 @@ function Page({
 }: Props) {
   const breakpoint = useBreakpoint();
 
-  const isFullPageHeightSupported =
-    breakpoint === size.desktop || breakpoint === size.tablet;
+  const isFullPageHeightSupported = breakpoint === size.desktop || breakpoint === size.tablet;
 
   return (
     <>
@@ -47,8 +46,7 @@ const StyledPage = styled.div<Props>`
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
 
-  ${({ fixedFullPageHeight }) =>
-    fixedFullPageHeight ? 'height' : 'min-height'}: calc(
+  ${({ fixedFullPageHeight }) => (fixedFullPageHeight ? 'height' : 'min-height')}: calc(
     100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px
   );
 `;

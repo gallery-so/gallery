@@ -12,10 +12,7 @@ import { navigate } from '@reach/router';
 
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
-const calc = (x: number, y: number) => [
-  (x - window.innerWidth) / 2,
-  (y - window.innerHeight) / 2,
-];
+const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window.innerHeight) / 2];
 type AnimatedImage = {
   src?: string;
   width: number;
@@ -144,8 +141,7 @@ function getTransformCallback(animatedImage: AnimatedImage) {
   // -500 is an arbitrarily large number so that we have a large range (-100~100) of z-index to work with,
   // without getting a movementRatio of 1. movementRatio of 1 moves the image too much.
   const movementRatio = -500 / animatedImage.zIndex;
-  return (x: number, y: number) =>
-    `translate3d(${x / movementRatio}px,${y / movementRatio}px,0)`;
+  return (x: number, y: number) => `translate3d(${x / movementRatio}px,${y / movementRatio}px,0)`;
 }
 
 type Props = {
@@ -186,9 +182,7 @@ export default function WelcomeAnimation({ next }: Props) {
   }, [next, username]);
 
   return (
-    <StyledContainer
-      onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}
-    >
+    <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
       <animated.div
         className="animate"
         style={{
@@ -199,25 +193,19 @@ export default function WelcomeAnimation({ next }: Props) {
           <Display>Welcome to Gallery</Display>
           <Spacer height={8} />
           <StyledBodyText color={colors.gray50}>
-            This is your space to share your pieces and the stories that
-            surround them. Curate, arrange, and display your collection exactly
-            how it was meant to be.
+            This is your space to share your pieces and the stories that surround them. Curate,
+            arrange, and display your collection exactly how it was meant to be.
           </StyledBodyText>
           <Spacer height={16} />
           <StyledButton text="Enter Gallery" onClick={handleClick} />
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (
-        <StyledMovementWrapper
-          shouldExplode={shouldExplode}
-          animatedImage={animatedImage}
-        >
+        <StyledMovementWrapper shouldExplode={shouldExplode} animatedImage={animatedImage}>
           <animated.div
             className="animate"
             style={{
-              transform: props.xy.interpolate(
-                getTransformCallback(animatedImage)
-              ),
+              transform: props.xy.interpolate(getTransformCallback(animatedImage)),
             }}
           >
             <Image
@@ -294,8 +282,7 @@ const Image = styled.img<{
   shouldFadeOut?: boolean;
 }>`
   width: ${({ width }) => width}px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   opacity: 0;
   animation: ${fadeInGrow} 2s forwards ${({ fadeInDelay }) => fadeInDelay}ms;
 

@@ -22,13 +22,15 @@ function StagedNftImageDragging({ nft, size }: Props) {
   // slightly enlarge the image when dragging
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
-  return isVideo
-    ? <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
+  return isVideo ? (
+    <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
       <StyledDraggingVideo src={srcUrl} />
     </VideoContainer>
-    : <ImageContainer size={zoomedSize}>
-      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} size={zoomedSize}/>
-    </ImageContainer>;
+  ) : (
+    <ImageContainer size={zoomedSize}>
+      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} size={zoomedSize} />
+    </ImageContainer>
+  );
 }
 
 const grow = keyframes`

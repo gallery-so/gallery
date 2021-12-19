@@ -26,10 +26,7 @@ class ErrorBoundary extends Component {
           <Spacer height={48} />
           <StyledReachOut color={colors.gray50}>
             If you&apos;re continuing to see this error, reach out to us on{' '}
-            <GalleryLink href="https://discord.gg/QcJjCDucwK">
-              Discord
-            </GalleryLink>
-            .
+            <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
           </StyledReachOut>
           <Spacer height={16} />
         </Page>

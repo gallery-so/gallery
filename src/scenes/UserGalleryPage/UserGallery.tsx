@@ -18,11 +18,10 @@ function UserGallery({ username }: Props) {
   const authenticatedUser = usePossiblyAuthenticatedUser();
 
   if (!user) {
-    return <NotFound/>;
+    return <NotFound />;
   }
 
-  const isAuthenticatedUsersPage
-    = user.username === authenticatedUser?.username;
+  const isAuthenticatedUsersPage = user.username === authenticatedUser?.username;
 
   const collectionsView = gallery ? (
     <UserGalleryCollections

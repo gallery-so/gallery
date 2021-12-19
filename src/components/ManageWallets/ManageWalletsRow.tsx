@@ -36,13 +36,16 @@ function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props
     }
   }, [address, setErrorMessage, removeUserAddress]);
 
-  const showDisconnectButton = useMemo(() => address !== userSigninAddress, [address, userSigninAddress]);
+  const showDisconnectButton = useMemo(
+    () => address !== userSigninAddress,
+    [address, userSigninAddress]
+  );
 
   return (
-    <StyledWalletRow >
+    <StyledWalletRow>
       <BodyRegular>{truncateAddress(address)}</BodyRegular>
-      {showDisconnectButton
-        && <>
+      {showDisconnectButton && (
+        <>
           <div
             data-tip="Disconnecting a wallet will remove its NFTs from your collections."
             data-class="tooltip"
@@ -53,10 +56,9 @@ function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props
               underlineOnHover
             />
           </div>
-          <ReactTooltip place="left" effect="solid"/>
+          <ReactTooltip place="left" effect="solid" />
         </>
-
-      }
+      )}
     </StyledWalletRow>
   );
 }

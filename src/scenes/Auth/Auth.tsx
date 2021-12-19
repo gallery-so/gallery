@@ -36,10 +36,9 @@ function Auth(_: RouteComponentProps) {
       <StyledWalletSelectorWrapper>
         <WalletSelector />
       </StyledWalletSelectorWrapper>
-      <Spacer height={32}/>
+      <Spacer height={32} />
       <StyledCaption color={colors.gray50}>
-        Gallery is non-custodial and secure.{'\n'} We will never request access to
-        your NFTs.
+        Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledCaption>
     </StyledAuthPage>
   );

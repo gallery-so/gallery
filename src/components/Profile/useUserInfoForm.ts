@@ -90,14 +90,7 @@ export default function useUserInfoForm({
       generalError,
       onEditUser: handleCreateOrEditUser,
     }),
-    [
-      bio,
-      generalError,
-      handleClearUsernameError,
-      handleCreateOrEditUser,
-      username,
-      usernameError,
-    ],
+    [bio, generalError, handleClearUsernameError, handleCreateOrEditUser, username, usernameError]
   );
 
   return values;

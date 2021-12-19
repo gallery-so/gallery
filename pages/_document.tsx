@@ -1,10 +1,4 @@
-import Document, {
-  DocumentContext,
-  Html,
-  Head,
-  Main,
-  NextScript,
-} from 'next/document';
+import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
@@ -15,8 +9,7 @@ export default class MyDocument extends Document {
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
+          enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
         });
 
       const initialProps = await Document.getInitialProps(ctx);
@@ -38,23 +31,9 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/favicon-16x16.png"
-          />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
           <meta name="msapplication-TileColor" content="#da532c" />
@@ -62,10 +41,7 @@ export default class MyDocument extends Document {
 
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Gallery" />
-          <meta
-            property="og:description"
-            content="Show your collection to the world."
-          />
+          <meta property="og:description" content="Show your collection to the world." />
           <meta
             property="og:image"
             content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
@@ -76,10 +52,7 @@ export default class MyDocument extends Document {
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:site" content="@usegallery" />
           <meta name="twitter:title" content="Gallery" />
-          <meta
-            name="twitter:description"
-            content="Show your collection to the world."
-          />
+          <meta name="twitter:description" content="Show your collection to the world." />
           <meta
             name="twitter:image"
             content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"

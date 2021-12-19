@@ -32,30 +32,23 @@ type ShimmerAction = {
   setContentIsLoaded: (event?: SyntheticEvent) => void;
 };
 
-const ShimmerActionContext = createContext<ShimmerAction | undefined>(
-  undefined
-);
+const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
 
-export const useSetContentIsLoaded =
-  (): ShimmerAction['setContentIsLoaded'] => {
-    const context = useContext(ShimmerActionContext);
-    if (!context) {
-      throw new Error(
-        'Attempted to use ShimmerActionContext without a provider!'
-      );
-    }
+export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => {
+  const context = useContext(ShimmerActionContext);
+  if (!context) {
+    throw new Error('Attempted to use ShimmerActionContext without a provider!');
+  }
 
-    return context.setContentIsLoaded;
-  };
+  return context.setContentIsLoaded;
+};
 
 type Props = { children: ReactNode | ReactNode[] };
 
 const ShimmerProvider = memo(({ children }: Props) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<null | number>(null);
-  const [aspectRatioType, setAspectRatioType] = useState<null | AspectRatio>(
-    null
-  );
+  const [aspectRatioType, setAspectRatioType] = useState<null | AspectRatio>(null);
 
   const state = useMemo(
     () => ({

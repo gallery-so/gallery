@@ -16,14 +16,9 @@ type Props = {
 };
 
 function SortableStagedNft({ editModeNft, size }: Props) {
-  const {
-    attributes,
-    listeners,
-    isDragging,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: editModeNft.id });
+  const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
+    id: editModeNft.id,
+  });
 
   const style = useMemo(
     () => ({
@@ -31,7 +26,7 @@ function SortableStagedNft({ editModeNft, size }: Props) {
       transition,
       opacity: isDragging ? '0.2' : '1',
     }),
-    [isDragging, transform, transition],
+    [isDragging, transform, transition]
   );
 
   return (

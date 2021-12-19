@@ -12,15 +12,9 @@ type SidebarNftIconProps = {
 };
 
 function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
-  const isSelected = useMemo(() => Boolean(editModeNft.isSelected), [
-    editModeNft.isSelected,
-  ]);
+  const isSelected = useMemo(() => Boolean(editModeNft.isSelected), [editModeNft.isSelected]);
 
-  const {
-    setNftsIsSelected,
-    stageNfts,
-    unstageNfts,
-  } = useCollectionEditorActions();
+  const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
     setNftsIsSelected([editModeNft], !isSelected);
@@ -44,21 +38,18 @@ function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
   }, [editModeNft.id, isSelected]);
 
   // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
-  const useVideoAsImage = useMemo(() =>
-    getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO
-  , [editModeNft.nft.image_url]);
+  const useVideoAsImage = useMemo(
+    () => getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO,
+    [editModeNft.nft.image_url]
+  );
 
   return (
     <StyledSidebarNftIcon>
-      {useVideoAsImage
-        ? <StyledVideo isSelected={isSelected}
-            src={editModeNft.nft.image_url}/>
-        : <StyledImage
-            isSelected={isSelected}
-            src={editModeNft.nft.image_thumbnail_url}
-            alt="nft"
-        />
-      }
+      {useVideoAsImage ? (
+        <StyledVideo isSelected={isSelected} src={editModeNft.nft.image_url} />
+      ) : (
+        <StyledImage isSelected={isSelected} src={editModeNft.nft.image_thumbnail_url} alt="nft" />
+      )}
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );

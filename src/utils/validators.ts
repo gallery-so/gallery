@@ -2,10 +2,7 @@
  * Helpers for client-side input validation
  */
 
-import {
-  ALPHANUMERIC_UNDERSCORES,
-  NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES,
-} from './regex';
+import { ALPHANUMERIC_UNDERSCORES, NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES } from './regex';
 
 type OK = false;
 type ValidatorReturnType = Error | OK;
@@ -56,17 +53,13 @@ export function maxLength(length: number) {
 
 export function alphanumericUnderscores(s: string): ValidatorReturnType {
   if (!ALPHANUMERIC_UNDERSCORES.test(s)) {
-    throw new Error(
-      'Must only contain alphanumeric characters, or underscores.',
-    );
+    throw new Error('Must only contain alphanumeric characters, or underscores.');
   }
 
   return false;
 }
 
-export function noConsecutivePeriodsOrUnderscores(
-  s: string,
-): ValidatorReturnType {
+export function noConsecutivePeriodsOrUnderscores(s: string): ValidatorReturnType {
   if (!NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES.test(s)) {
     throw new Error('Must not contain consecutive underscores or periods.');
   }

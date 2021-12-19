@@ -33,12 +33,12 @@ const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
   const pushToast = useCallback((message: string, onDismiss: DismissToastHandler = noop) => {
-    setToasts(previousMessages => [...previousMessages, { message, onDismiss }]);
+    setToasts((previousMessages) => [...previousMessages, { message, onDismiss }]);
   }, []);
 
   // TODO: allow consumer to specify which toast to dismissbyID
   const dismissToast = useCallback(() => {
-    setToasts(previousMessages => {
+    setToasts((previousMessages) => {
       if (previousMessages.length === 0) {
         return previousMessages;
       }
@@ -53,17 +53,23 @@ const ToastProvider = memo(({ children }: Props) => {
     setToasts([]);
   }, []);
 
-  const value = useMemo(() => ({
-    pushToast, dismissToast, dismissAllToasts,
-  }), [pushToast, dismissToast, dismissAllToasts]);
+  const value = useMemo(
+    () => ({
+      pushToast,
+      dismissToast,
+      dismissAllToasts,
+    }),
+    [pushToast, dismissToast, dismissAllToasts]
+  );
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, onDismiss }) => <AnimatedToast key={message} message={message} onClose={onDismiss} />)}
+      {toasts.map(({ message, onDismiss }) => (
+        <AnimatedToast key={message} message={message} onClose={onDismiss} />
+      ))}
       {children}
     </ToastActionsContext.Provider>
   );
 });
 
 export default ToastProvider;
-

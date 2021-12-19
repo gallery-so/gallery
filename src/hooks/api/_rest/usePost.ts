@@ -25,14 +25,13 @@ export default function usePost() {
   const fetcher = useFetcher();
 
   return useCallback(
-    async function postRequest<ResponseType = Record<string, unknown>, RequestBody = Record<string, unknown>>(
-      path: string,
-      action: RequestAction,
-      requestBody: RequestBody,
-    ) {
+    async function postRequest<
+      ResponseType = Record<string, unknown>,
+      RequestBody = Record<string, unknown>
+    >(path: string, action: RequestAction, requestBody: RequestBody) {
       const body = requestBody as Record<string, unknown>;
       return fetcher<ResponseType>(path, action, { body });
     },
-    [fetcher],
+    [fetcher]
   );
 }

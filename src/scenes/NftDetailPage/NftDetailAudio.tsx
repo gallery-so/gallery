@@ -10,13 +10,7 @@ function NftDetailAudio({ nft }: Props) {
   return (
     <StyledAudioContainer>
       <ImageWithLoading src={nft.image_url} alt={nft.name} />
-      <StyledAudio
-        controls
-        loop
-        controlsList="nodownload"
-        preload="none"
-        src={nft.animation_url}
-      />
+      <StyledAudio controls loop controlsList="nodownload" preload="none" src={nft.animation_url} />
     </StyledAudioContainer>
   );
 }

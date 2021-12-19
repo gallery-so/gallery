@@ -63,9 +63,7 @@ const Toast = styled.div<{ isActive: boolean }>`
   pointer-events: none;
 
   animation: ${({ isActive }) => css`
-    ${isActive
-    ? translateUpAndFadeIn
-    : translateDownAndFadeOut} ${SECTION_DURATION_MS}ms
+    ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${SECTION_DURATION_MS}ms
   `};
   animation-fill-mode: forwards;
 `;

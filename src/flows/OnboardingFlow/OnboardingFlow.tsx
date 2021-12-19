@@ -25,7 +25,7 @@ function OnboardingFlow(_: RouteComponentProps) {
     <GalleryWizardProvider id="onboarding">
       <CollectionWizardProvider>
         <Wizard
-          render={wizardProps => (
+          render={(wizardProps) => (
             <>
               <FadeTransitioner locationKey={wizardProps.step.id}>
                 <Steps key={wizardProps.step.id} step={wizardProps.step}>
@@ -39,12 +39,9 @@ function OnboardingFlow(_: RouteComponentProps) {
               </FadeTransitioner>
               <WizardFooter
                 shouldHideFooter={
-                  wizardProps.step.id === 'welcome'
-                    || wizardProps.step.id === 'congratulations'
+                  wizardProps.step.id === 'welcome' || wizardProps.step.id === 'congratulations'
                 }
-                shouldHideSecondaryButton={
-                  wizardProps.step.id === 'organizeGallery'
-                }
+                shouldHideSecondaryButton={wizardProps.step.id === 'organizeGallery'}
                 footerButtonTextMap={footerButtonTextMap}
                 {...(wizardProps as WizardProps)}
               />

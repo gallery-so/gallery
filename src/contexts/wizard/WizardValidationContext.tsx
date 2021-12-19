@@ -1,12 +1,4 @@
-import {
-  createContext,
-  memo,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 export type WizardValidationState = {
   isNextEnabled: boolean;
@@ -18,9 +10,7 @@ const WizardValidationStateContext = createContext<WizardValidationState>({
 export const useWizardValidationState = (): WizardValidationState => {
   const context = useContext(WizardValidationStateContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use WizardValidationStateContext without a provider',
-    );
+    throw new Error('Attempted to use WizardValidationStateContext without a provider');
   }
 
   return context;
@@ -30,16 +20,14 @@ type WizardValidationActions = {
   setNextEnabled: (isEnabled: boolean) => void;
 };
 
-const WizardValidationActionsContext = createContext<
-WizardValidationActions | undefined
->(undefined);
+const WizardValidationActionsContext = createContext<WizardValidationActions | undefined>(
+  undefined
+);
 
 export const useWizardValidationActions = (): WizardValidationActions => {
   const context = useContext(WizardValidationActionsContext);
   if (!context) {
-    throw new Error(
-      'Attempted to use WizardValidationActionsContext without a provider',
-    );
+    throw new Error('Attempted to use WizardValidationActionsContext without a provider');
   }
 
   return context;
@@ -48,20 +36,17 @@ export const useWizardValidationActions = (): WizardValidationActions => {
 type Props = { children: ReactNode };
 
 const WizardValidationProvider = memo(({ children }: Props) => {
-  const [
-    wizardValidationState,
-    setWizardValidationState,
-  ] = useState<WizardValidationState>({
+  const [wizardValidationState, setWizardValidationState] = useState<WizardValidationState>({
     isNextEnabled: true,
   });
 
   const setNextEnabled = useCallback((isNextEnabled: boolean) => {
-    setWizardValidationState(previousState => ({ ...previousState, isNextEnabled }));
+    setWizardValidationState((previousState) => ({ ...previousState, isNextEnabled }));
   }, []);
 
   const wizardValidationActions: WizardValidationActions = useMemo(
     () => ({ setNextEnabled }),
-    [setNextEnabled],
+    [setNextEnabled]
   );
 
   return (

@@ -11,9 +11,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import { useModal } from 'contexts/modal/ModalContext';
-import ShimmerProvider, {
-  useSetContentIsLoaded,
-} from 'contexts/shimmer/ShimmerContext';
+import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMembershipCardContract } from 'hooks/useContract';
 import useWalletModal from 'hooks/useWalletModal';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -48,8 +46,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   const [remainingSupply, setRemainingSupply] = useState(0);
   const [price, setPrice] = useState(0);
   const [transactionHash, setTransactionHash] = useState('');
-  const [transactionStatus, setTransactionStatus] =
-    useState<TransactionStatus | null>(null);
+  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
 
   const membershipProperties = useMemo(
     () => MEMBERSHIP_PROPERTIES_MAP[membershipColor],
@@ -71,26 +68,18 @@ function MembershipMintPage({ membershipColor }: Props) {
 
   const getSupply = useCallback(
     async (contract: Contract) => {
-      const usedSupply = await contract.getUsedSupply(
-        membershipProperties.tokenId
-      );
-      const totalSupply = await contract.getTotalSupply(
-        membershipProperties.tokenId
-      );
+      const usedSupply = await contract.getUsedSupply(membershipProperties.tokenId);
+      const totalSupply = await contract.getTotalSupply(membershipProperties.tokenId);
 
       setTotalSupply(Number(totalSupply));
-      setRemainingSupply(
-        computeRemainingSupply(Number(usedSupply), totalSupply)
-      );
+      setRemainingSupply(computeRemainingSupply(Number(usedSupply), totalSupply));
     },
     [membershipProperties.tokenId]
   );
 
   const getPrice = useCallback(
     async (contract: Contract) => {
-      const priceResponse = await contract.getPrice(
-        membershipProperties.tokenId
-      );
+      const priceResponse = await contract.getPrice(membershipProperties.tokenId);
       setPrice(priceResponse);
     },
     [membershipProperties.tokenId]
@@ -108,11 +97,7 @@ function MembershipMintPage({ membershipColor }: Props) {
       const mintResult = await contract
         .mint(account, membershipProperties.tokenId, { value: price })
         .catch((error: any) => {
-          setError(
-            `Error while calling contract - "${
-              error?.error?.message ?? error?.message
-            }"`
-          );
+          setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
           setTransactionStatus(TransactionStatus.FAILED);
         });
 
@@ -155,9 +140,7 @@ function MembershipMintPage({ membershipColor }: Props) {
   }, [active, showWalletModal]);
 
   const isMintButtonEnabled = useMemo(
-    () =>
-      (Number(price) > 0 || canMintToken) &&
-      transactionStatus !== TransactionStatus.PENDING,
+    () => (Number(price) > 0 || canMintToken) && transactionStatus !== TransactionStatus.PENDING,
     [canMintToken, price, transactionStatus]
   );
 
@@ -215,9 +198,7 @@ function MembershipMintPage({ membershipColor }: Props) {
           {Number(price) > 0 && (
             <>
               <BodyRegular color={colors.gray50}>Price</BodyRegular>
-              <BodyRegular>
-                {Number(price / 1000000000000000000)} ETH
-              </BodyRegular>
+              <BodyRegular>{Number(price / 1000000000000000000)} ETH</BodyRegular>
             </>
           )}
           <Spacer height={16} />
@@ -225,8 +206,7 @@ function MembershipMintPage({ membershipColor }: Props) {
             <>
               <BodyRegular color={colors.gray50}>Available</BodyRegular>
               <BodyRegular>
-                {membershipProperties.tokenId === 6 ? 0 : remainingSupply}/
-                {totalSupply}
+                {membershipProperties.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
               </BodyRegular>
             </>
           )}
@@ -245,10 +225,7 @@ function MembershipMintPage({ membershipColor }: Props) {
               onClick={handleMintButtonClick}
             />
           ) : (
-            <Button
-              text={buttonText}
-              onClick={handleConnectWalletButtonClick}
-            />
+            <Button text={buttonText} onClick={handleConnectWalletButtonClick} />
           )}
           {transactionHash && (
             <>
@@ -259,9 +236,7 @@ function MembershipMintPage({ membershipColor }: Props) {
                     ? 'Transaction successful!'
                     : 'Transaction submitted. This may take several minutes.'}
                 </BodyRegular>
-                <GalleryLink
-                  href={`https://etherscan.io/tx/${transactionHash}`}
-                >
+                <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
                   <BodyRegular>View on Etherscan</BodyRegular>
                 </GalleryLink>
               </div>
@@ -294,16 +269,7 @@ type VideoProps = {
 
 function MembershipVideo({ src }: VideoProps) {
   const setContentIsLoaded = useSetContentIsLoaded();
-  return (
-    <StyledVideo
-      src={src}
-      autoPlay
-      loop
-      playsInline
-      muted
-      onLoadStart={setContentIsLoaded}
-    />
-  );
+  return <StyledVideo src={src} autoPlay loop playsInline muted onLoadStart={setContentIsLoaded} />;
 }
 
 const StyledMintPage = styled(Page)`

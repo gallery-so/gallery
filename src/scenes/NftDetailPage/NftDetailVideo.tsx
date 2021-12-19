@@ -22,7 +22,6 @@ function NftDetailVideo({ nft, maxHeight }: Props) {
       playsInline
       controls
       onLoadStart={setContentIsLoaded}
-
       maxHeight={maxHeight}
     />
   );

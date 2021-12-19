@@ -9,7 +9,7 @@ type Props = {
 function ManageWalletsModal({ newAddress }: Props) {
   return (
     <StyledManageWalletsModal>
-      <ManageWallets newAddress={newAddress}/>
+      <ManageWallets newAddress={newAddress} />
     </StyledManageWalletsModal>
   );
 }

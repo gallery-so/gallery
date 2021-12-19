@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
-import Dropdown, {
-  StyledDropdownButton,
-} from 'components/core/Dropdown/Dropdown';
+import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModal } from 'contexts/modal/ModalContext';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -20,10 +18,7 @@ type Props = {
   collection: Collection;
 };
 
-function CollectionRowSettings({
-  collection,
-  wizard: { push },
-}: Props & WizardComponentProps) {
+function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardComponentProps) {
   const { showModal } = useModal();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
@@ -43,7 +38,7 @@ function CollectionRowSettings({
         collectionId={id}
         collectionName={name}
         collectionCollectorsNote={collectors_note}
-      />,
+      />
     );
   }, [collectors_note, id, name, showModal]);
 
@@ -63,17 +58,9 @@ function CollectionRowSettings({
   return (
     <StyledCollectionRowSettings>
       <Dropdown>
-        <TextButton
-          onClick={handleEditCollectionClick}
-          text="Edit collection"
-          underlineOnHover
-        />
+        <TextButton onClick={handleEditCollectionClick} text="Edit collection" underlineOnHover />
         <Spacer height={12} />
-        <TextButton
-          onClick={handleEditNameClick}
-          text="Edit name & description"
-          underlineOnHover
-        />
+        <TextButton onClick={handleEditNameClick} text="Edit name & description" underlineOnHover />
         <Spacer height={12} />
         <TextButton
           onClick={handleToggleHiddenClick}
@@ -81,11 +68,7 @@ function CollectionRowSettings({
           underlineOnHover
         />
         <Spacer height={12} />
-        <TextButton
-          onClick={handleDeleteClick}
-          text="Delete"
-          underlineOnHover
-        />
+        <TextButton onClick={handleDeleteClick} text="Delete" underlineOnHover />
       </Dropdown>
     </StyledCollectionRowSettings>
   );
