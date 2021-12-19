@@ -39,10 +39,7 @@ export function getUserCacheKey(queryParameters: Props) {
 export default function useUser(props: Props): User | undefined {
   const validParameters = props.id ?? props.username ?? props.address;
 
-  const data = useGet<User>(
-    validParameters ? getUserBaseUrlWithQuery(props) : null,
-    getUserAction,
-  );
+  const data = useGet<User>(validParameters ? getUserBaseUrlWithQuery(props) : null, getUserAction);
 
   return data;
 }

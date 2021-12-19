@@ -38,10 +38,7 @@ function useSuggestion() {
 
   useEffect(() => {
     if (!dismissed && detectMobileDevice() && screenWidth === size.mobile) {
-      pushToast(
-        'Rotate your phone to view in landscape mode',
-        markToastAsDismissedInLocalStorage
-      );
+      pushToast('Rotate your phone to view in landscape mode', markToastAsDismissedInLocalStorage);
     }
 
     if (rotationDetected) {

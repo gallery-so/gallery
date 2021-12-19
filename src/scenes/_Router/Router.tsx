@@ -17,37 +17,16 @@ export default function Routes() {
   return (
     <Location>
       {({ location }) => (
-        <GalleryNavigationContextProvider
-          locationKey={location.key}
-          pathname={location.pathname}
-        >
+        <GalleryNavigationContextProvider locationKey={location.key} pathname={location.pathname}>
           <FadeTransitioner>
             <Router
               primary={false} // prevents jumpiness on nav: https://github.com/reach/router/issues/242
               location={location}
             >
-              <GalleryRoute
-                path="/"
-                component={Home}
-                navbar={false}
-                footerVisibleOutOfView
-              />
-              <GalleryRoute
-                path="/auth"
-                component={Auth}
-                navbar={false}
-                footerVisibleOutOfView
-              />
-              <GalleryAuthenticatedRoute
-                path="/welcome"
-                component={OnboardingFlow}
-                freshLayout
-              />
-              <GalleryAuthenticatedRoute
-                path="/edit"
-                component={EditGalleryFlow}
-                freshLayout
-              />
+              <GalleryRoute path="/" component={Home} navbar={false} footerVisibleOutOfView />
+              <GalleryRoute path="/auth" component={Auth} navbar={false} footerVisibleOutOfView />
+              <GalleryAuthenticatedRoute path="/welcome" component={OnboardingFlow} freshLayout />
+              <GalleryAuthenticatedRoute path="/edit" component={EditGalleryFlow} freshLayout />
               <GalleryRoute
                 path="/membership/silver"
                 component={SilverMembershipMintPage}
@@ -64,10 +43,7 @@ export default function Routes() {
                 navbar={false}
               />
               <GalleryRoute path="/nuke" component={Nuke} navbar={false} />
-              <GalleryRoute
-                path="/:userName/:collectionId/:nftId"
-                component={NftDetailPage}
-              />
+              <GalleryRoute path="/:userName/:collectionId/:nftId" component={NftDetailPage} />
               <GalleryRoute path="/:username" component={UserGalleryPage} />
             </Router>
           </FadeTransitioner>

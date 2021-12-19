@@ -50,14 +50,10 @@ const WizardCallbackProvider = memo(({ children }: Props) => {
 
   const state = useMemo(
     () => ({ onNext, setOnNext, onPrevious, setOnPrevious }),
-    [onNext, setOnNext, onPrevious, setOnPrevious],
+    [onNext, setOnNext, onPrevious, setOnPrevious]
   );
 
-  return (
-    <WizardCallbackContext.Provider value={state}>
-      {children}
-    </WizardCallbackContext.Provider>
-  );
+  return <WizardCallbackContext.Provider value={state}>{children}</WizardCallbackContext.Provider>;
 });
 
 export default WizardCallbackProvider;

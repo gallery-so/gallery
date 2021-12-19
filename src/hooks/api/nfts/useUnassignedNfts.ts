@@ -22,10 +22,7 @@ function getUnassignedNftsBaseUrlWithQuery({ userId }: QueryProps) {
 }
 
 export function getUnassignedNftsCacheKey({ userId }: QueryProps) {
-  return [
-    getUnassignedNftsBaseUrlWithQuery({ userId }),
-    getUnassignedNftsAction,
-  ];
+  return [getUnassignedNftsBaseUrlWithQuery({ userId }), getUnassignedNftsAction];
 }
 
 export const unassignedNftsAction = 'fetch unassigned nfts';
@@ -35,7 +32,7 @@ export default function useUnassignedNfts(): Nft[] | undefined {
 
   const data = useGet<UnassignedNftsResponse>(
     getUnassignedNftsBaseUrlWithQuery({ userId: user.id }),
-    unassignedNftsAction,
+    unassignedNftsAction
   );
 
   return data?.nfts;
@@ -45,22 +42,21 @@ export default function useUnassignedNfts(): Nft[] | undefined {
 export function useMutateUnassignedNftsCache() {
   const { id: userId } = useAuthenticatedUser();
 
-  return useCallback(
-    async () => {
-      await mutate(getUnassignedNftsCacheKey({ userId }));
-    },
-    [userId],
-  );
+  return useCallback(async () => {
+    await mutate(getUnassignedNftsCacheKey({ userId }));
+  }, [userId]);
 }
 
 // use this hook to refresh the redis cache of unassigned nfts
 export function useRefreshUnassignedNfts() {
   const refreshUnassignedNfts = usePost();
 
-  return useCallback(
-    async () => {
-      const result = await refreshUnassignedNfts('/nfts/unassigned/refresh', 'refresh unassigned nfts', {});
-      return result;
-    }, [refreshUnassignedNfts],
-  );
+  return useCallback(async () => {
+    const result = await refreshUnassignedNfts(
+      '/nfts/unassigned/refresh',
+      'refresh unassigned nfts',
+      {}
+    );
+    return result;
+  }, [refreshUnassignedNfts]);
 }

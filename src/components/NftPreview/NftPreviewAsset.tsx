@@ -16,12 +16,17 @@ function NftPreviewAsset({ nft, size }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
     if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
-      return <StyledVideo src={`${nft.image_url}#t=0.5`} onLoadStart={setContentIsLoaded} preload="metadata" />;
+      return (
+        <StyledVideo
+          src={`${nft.image_url}#t=0.5`}
+          onLoadStart={setContentIsLoaded}
+          preload="metadata"
+        />
+      );
     }
 
     return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft, size)} alt={nft.name} />;
-  }
-  , [nft, setContentIsLoaded, size]);
+  }, [nft, setContentIsLoaded, size]);
 
   return nftAssetComponent;
 }

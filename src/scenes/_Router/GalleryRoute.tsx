@@ -21,7 +21,8 @@ export type LayoutProps = {
 
 export type GalleryRouteProps = {
   component: ComponentType<RouteComponentProps>;
-} & LayoutProps & RouteComponentProps;
+} & LayoutProps &
+  RouteComponentProps;
 
 // fills up the space where the navbar or footer would be
 export const Filler = () => <Spacer height={80} />;
@@ -52,7 +53,7 @@ export default function GalleryRoute({
       return (
         <>
           <Filler />
-          <GlobalFooter/>
+          <GlobalFooter />
         </>
       );
     }
@@ -74,4 +75,3 @@ export default function GalleryRoute({
     </>
   );
 }
-

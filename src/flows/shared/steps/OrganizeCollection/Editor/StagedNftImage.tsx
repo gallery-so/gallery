@@ -20,12 +20,16 @@ function StagedNftImage({ editModeNft, size, setNodeRef, ...props }: Props) {
   // TODO:
   // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
   // 2) OR simply use custom indexer when that's ready
-  return isVideo ? <VideoContainer ref={setNodeRef} size={size} {...props}>
-    <StyledGridVideo src={srcUrl} />
-    <StyledNftPreviewLabel nft={nft} />
-  </VideoContainer> : <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} size={size} {...props}>
-    <StyledNftPreviewLabel nft={nft} />
-  </StyledGridImage>;
+  return isVideo ? (
+    <VideoContainer ref={setNodeRef} size={size} {...props}>
+      <StyledGridVideo src={srcUrl} />
+      <StyledNftPreviewLabel nft={nft} />
+    </VideoContainer>
+  ) : (
+    <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} size={size} {...props}>
+      <StyledNftPreviewLabel nft={nft} />
+    </StyledGridImage>
+  );
 }
 
 const VideoContainer = styled.div<{ size: number }>`

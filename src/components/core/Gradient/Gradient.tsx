@@ -7,18 +7,8 @@ type Props = {
   direction?: 'up' | 'down';
 };
 
-export default memo(function Gradient({
-  className,
-  height = 64,
-  direction = 'up',
-}: Props) {
-  return (
-    <StyledGradient
-      className={className}
-      height={height}
-      direction={direction}
-    />
-  );
+export default memo(function Gradient({ className, height = 64, direction = 'up' }: Props) {
+  return <StyledGradient className={className} height={height} direction={direction} />;
 });
 
 const StyledGradient = styled.div<Props>`

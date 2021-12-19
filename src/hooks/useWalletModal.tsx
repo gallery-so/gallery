@@ -6,7 +6,7 @@ import { CONNECT_WALLET_ONLY } from 'types/Wallet';
 
 const WalletModal = () => (
   <Container>
-    <WalletSelector connectionMode={CONNECT_WALLET_ONLY}/>
+    <WalletSelector connectionMode={CONNECT_WALLET_ONLY} />
   </Container>
 );
 

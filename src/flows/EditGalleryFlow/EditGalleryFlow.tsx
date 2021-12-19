@@ -18,7 +18,7 @@ function EditGalleryFlow(_: RouteComponentProps) {
     <GalleryWizardProvider id="edit-gallery">
       <CollectionWizardProvider>
         <Wizard
-          render={wizardProps => (
+          render={(wizardProps) => (
             <>
               <Steps>
                 <Step id="organizeGallery" render={OrganizeGallery} />

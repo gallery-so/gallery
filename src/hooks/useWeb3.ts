@@ -8,4 +8,3 @@ export function useActiveWeb3React() {
 
   return context.active ? context : contextNetwork;
 }
-

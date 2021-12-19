@@ -10,14 +10,9 @@ type Props = {
 };
 
 function SortableCollectionRow({ collection }: Props) {
-  const {
-    attributes,
-    listeners,
-    isDragging,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: collection.id });
+  const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
+    id: collection.id,
+  });
 
   const style = useMemo(
     () => ({
@@ -25,7 +20,7 @@ function SortableCollectionRow({ collection }: Props) {
       transition,
       opacity: isDragging ? '0.2' : '1',
     }),
-    [isDragging, transform, transition],
+    [isDragging, transform, transition]
   );
 
   return (

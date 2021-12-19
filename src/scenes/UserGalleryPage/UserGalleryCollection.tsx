@@ -1,4 +1,9 @@
-import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS, MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
+import {
+  DEFAULT_COLUMNS,
+  LAYOUT_GAP_BREAKPOINTS,
+  MAX_COLUMNS,
+  MIN_COLUMNS,
+} from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
@@ -20,7 +25,10 @@ export function isValidColumns(columns: number) {
 
 function UserGalleryCollection({ collection }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [collection.collectors_note]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectors_note),
+    [collection.collectors_note]
+  );
   const columns = useMemo(() => {
     if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
       return collection.layout.columns;
@@ -29,29 +37,25 @@ function UserGalleryCollection({ collection }: Props) {
     return DEFAULT_COLUMNS;
   }, [collection.layout]);
 
-  return (<StyledCollectionWrapper>
-    <StyledCollectionHeader>
-      <TitleSerif>{unescapedCollectionName}</TitleSerif>
-      {unescapedCollectorsNote
-          && <>
+  return (
+    <StyledCollectionWrapper>
+      <StyledCollectionHeader>
+        <TitleSerif>{unescapedCollectionName}</TitleSerif>
+        {unescapedCollectorsNote && (
+          <>
             <Spacer height={8} />
             <StyledCollectorsNote color={colors.gray50}>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
-      }
-    </StyledCollectionHeader>
-    <StyledCollectionNfts columns={columns}>
-      {collection.nfts.map(nft => (
-        <NftPreview
-          key={nft.id}
-          nft={nft}
-          collectionId={collection.id}
-          columns={columns}
-        />
-      ))}
-    </StyledCollectionNfts>
-  </StyledCollectionWrapper>
+        )}
+      </StyledCollectionHeader>
+      <StyledCollectionNfts columns={columns}>
+        {collection.nfts.map((nft) => (
+          <NftPreview key={nft.id} nft={nft} collectionId={collection.id} columns={columns} />
+        ))}
+      </StyledCollectionNfts>
+    </StyledCollectionWrapper>
   );
 }
 
@@ -88,12 +92,11 @@ const StyledCollectionNfts = styled.div<{ columns: number }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: ${({ columns }) => columns === 1 ? 'center' : 'initial'};
+  justify-content: ${({ columns }) => (columns === 1 ? 'center' : 'initial')};
 
   // Can't use these for now due to lack of Safari support
   // column-gap: px;
   // row-gap: px;
-
 
   @media only screen and ${breakpoints.mobileLarge} {
     margin-left: -${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;

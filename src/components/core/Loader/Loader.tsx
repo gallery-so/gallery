@@ -14,10 +14,10 @@ const spin = keyframes`
 `;
 
 const Loader = styled.div<LoaderProps>`
-  border: ${({ thicc, extraThicc }) => (extraThicc ? 4 : (thicc ? 3 : 2))}px solid
+  border: ${({ thicc, extraThicc }) => (extraThicc ? 4 : thicc ? 3 : 2)}px solid
     ${({ inverted }) => (inverted ? colors.white : colors.black)};
-  border-top: ${({ thicc, extraThicc }) => (extraThicc ? 4 : (thicc ? 3 : 2))}px
-    solid ${({ inverted }) => (inverted ? colors.black : colors.white)};
+  border-top: ${({ thicc, extraThicc }) => (extraThicc ? 4 : thicc ? 3 : 2)}px solid
+    ${({ inverted }) => (inverted ? colors.black : colors.white)};
   border-radius: 50%;
 
   ${({ size = 'small' }) => {

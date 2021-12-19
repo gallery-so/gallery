@@ -1,11 +1,5 @@
 import colors from 'components/core/colors';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'hooks/useDebounce';
 import { EditModeNft } from '../types';
@@ -41,11 +35,7 @@ function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
     .map((editModeNft) => editModeNft.id);
 }
 
-function SearchBar({
-  setSearchResults,
-  setDebouncedSearchQuery,
-  sidebarNfts,
-}: Props) {
+function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
@@ -58,18 +48,10 @@ function SearchBar({
   );
 
   useEffect(() => {
-    const searchResults = searchNftsWithQuery(
-      sidebarNfts,
-      debouncedSearchQuery
-    );
+    const searchResults = searchNftsWithQuery(sidebarNfts, debouncedSearchQuery);
     setDebouncedSearchQuery(debouncedSearchQuery);
     setSearchResults(searchResults);
-  }, [
-    debouncedSearchQuery,
-    setDebouncedSearchQuery,
-    setSearchResults,
-    sidebarNfts,
-  ]);
+  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, sidebarNfts]);
 
   return (
     <StyledSearchBar>

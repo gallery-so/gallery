@@ -1,15 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import {
-  createHistory,
-  createMemorySource,
-  LocationProvider,
-} from '@reach/router';
+import { createHistory, createMemorySource, LocationProvider } from '@reach/router';
 import AppProvider from 'contexts/AppProvider';
 import Routes from './Router';
 
 function renderWithRouter(
   ui: React.ReactNode,
-  { route = '/', history = createHistory(createMemorySource(route)) } = {},
+  { route = '/', history = createHistory(createMemorySource(route)) } = {}
 ) {
   return {
     ...render(<LocationProvider history={history}>{ui}</LocationProvider>),
@@ -25,7 +21,7 @@ test('Does not render navbar on homepage', async () => {
     <AppProvider>
       <Routes />
     </AppProvider>,
-    { route: '/' },
+    { route: '/' }
   );
 
   expect(screen.queryByTestId('navbar')).toBeNull();
@@ -36,7 +32,7 @@ test('Renders navbar on profile page', () => {
     <AppProvider>
       <Routes />
     </AppProvider>,
-    { route: '/fabricsoftener' },
+    { route: '/fabricsoftener' }
   );
 
   expect(screen.queryByTestId('navbar')).not.toBeNull();

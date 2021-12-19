@@ -13,10 +13,7 @@ import RequestAction from './RequestAction';
  *   return <Title>{collection.name}</Title>
  *
  */
-export default function useGet<ResponseType>(
-  path: string | null,
-  action: RequestAction,
-) {
+export default function useGet<ResponseType>(path: string | null, action: RequestAction) {
   const { data } = useSwr<ResponseType>(path ? [path, action] : null);
   return data;
 }

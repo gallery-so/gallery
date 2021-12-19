@@ -8,15 +8,8 @@ import {
   DragStartEvent,
   DropAnimation,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import {
-  restrictToVerticalAxis,
-  restrictToWindowEdges,
-} from '@dnd-kit/modifiers';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { Collection } from 'types/Collection';
@@ -48,7 +41,7 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
 
       if (active.id !== over?.id) {
         let updatedCollections = sortedCollections;
-        setSortedCollections(previous => {
+        setSortedCollections((previous) => {
           const oldIndex = previous.findIndex(({ id }) => id === active.id);
           const newIndex = previous.findIndex(({ id }) => id === over?.id);
           updatedCollections = arrayMove(previous, oldIndex, newIndex);
@@ -57,7 +50,7 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
         void updateGallery(galleryId, updatedCollections);
       }
     },
-    [galleryId, setSortedCollections, sortedCollections, updateGallery],
+    [galleryId, setSortedCollections, sortedCollections, updateGallery]
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -69,13 +62,16 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
     setActiveId(active.id);
   }, []);
 
-  const activeCollection = useMemo(() => collections.find(({ id }) => id === activeId), [activeId, collections]);
+  const activeCollection = useMemo(
+    () => collections.find(({ id }) => id === activeId),
+    [activeId, collections]
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       handleSortCollections(event);
     },
-    [handleSortCollections],
+    [handleSortCollections]
   );
 
   return (
@@ -85,18 +81,13 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
       collisionDetection={closestCenter}
       modifiers={modifiers}
     >
-      <SortableContext
-        items={sortedCollections}
-        strategy={verticalListSortingStrategy}
-      >
-        {sortedCollections.map(collection => (
+      <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
+        {sortedCollections.map((collection) => (
           <CollectionRowWrapper key={collection.id} collection={collection} />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={defaultDropAnimationConfig}>
-        {activeCollection ? (
-          <CollectionRowDragging collection={activeCollection} />
-        ) : null}
+        {activeCollection ? <CollectionRowDragging collection={activeCollection} /> : null}
       </DragOverlay>
     </DndContext>
   );

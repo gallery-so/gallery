@@ -5,10 +5,7 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
 import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
-import {
-  GLOBAL_FOOTER_HEIGHT,
-  GLOBAL_NAVBAR_HEIGHT,
-} from 'components/core/Page/constants';
+import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
@@ -22,10 +19,7 @@ type NftDetailAssetComponentProps = {
   maxHeight: number;
 };
 
-function NftDetailAssetComponent({
-  nft,
-  maxHeight,
-}: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProps) {
   const assetType = getMediaType(nft);
   const breakpoint = useBreakpoint();
 
@@ -66,8 +60,7 @@ let heightWithoutNavAndFooterGutters: number;
 
 if (typeof window !== 'undefined') {
   heightWithoutNavAndFooterGutters =
-    window.screen.availHeight -
-    2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
+    window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
 function NftDetailAsset({ nft }: Props) {
@@ -82,9 +75,7 @@ function NftDetailAsset({ nft }: Props) {
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
   const shouldEnforceSquareAspectRatio =
-    breakpoint === size.desktop ||
-    breakpoint === size.tablet ||
-    aspectRatioType !== 'wide';
+    breakpoint === size.desktop || breakpoint === size.tablet || aspectRatioType !== 'wide';
 
   return (
     <StyledAssetContainer

@@ -39,8 +39,6 @@ describe.skip('WalletButton', () => {
       />
     );
 
-    expect(screen.getByTestId('wallet-button')).toHaveTextContent(
-      'Install Metamask'
-    );
+    expect(screen.getByTestId('wallet-button')).toHaveTextContent('Install Metamask');
   });
 });

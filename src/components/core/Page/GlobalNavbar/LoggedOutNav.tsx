@@ -5,9 +5,11 @@ import NavElement from './NavElement';
 function LoggedOutNav() {
   const showAuthModal = useAuthModal();
 
-  return <NavElement>
-    <TextButton onClick={showAuthModal} text="Sign In" />
-  </NavElement>;
+  return (
+    <NavElement>
+      <TextButton onClick={showAuthModal} text="Sign In" />
+    </NavElement>
+  );
 }
 
 export default LoggedOutNav;

@@ -21,19 +21,13 @@ function Header({ wizard: { push } }: WizardComponentProps) {
       <TitleContainer>
         <Heading>Organize your Gallery</Heading>
         <Spacer height={4} />
-        <Caption color={colors.gray50}>
-          Drag and drop to reorder your collection
-        </Caption>
+        <Caption color={colors.gray50}>Drag and drop to reorder your collection</Caption>
       </TitleContainer>
       <OptionsContainer>
         {/* TODO: support gallery preview
         <TextButton text="Preview Gallery" onClick={handleGalleryPreview} /> */}
         <Spacer width={16} />
-        <StyledButton
-          type="secondary"
-          text="+ Add Collection"
-          onClick={handleAddCollection}
-        />
+        <StyledButton type="secondary" text="+ Add Collection" onClick={handleAddCollection} />
       </OptionsContainer>
     </StyledHeader>
   );

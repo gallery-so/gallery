@@ -12,9 +12,7 @@ function NftPreviewLabel({ nft, className }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
       <StyledBodyRegular color={colors.white}>{nft.name}</StyledBodyRegular>
-      <StyledBodyRegular color={colors.white}>
-        {nft.token_collection_name}
-      </StyledBodyRegular>
+      <StyledBodyRegular color={colors.white}>{nft.token_collection_name}</StyledBodyRegular>
     </StyledNftPreviewLabel>
   );
 }

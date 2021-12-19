@@ -37,12 +37,8 @@ function WrappedComponent<T extends (props: any) => JSX.Element>({
   );
 }
 
-function Fader<T extends (props: any) => JSX.Element, P>(
-  Component: React.ComponentType | T,
-) {
-  return (props: React.Attributes | P) => (
-    <WrappedComponent<T> Component={Component} {...props} />
-  );
+function Fader<T extends (props: any) => JSX.Element, P>(Component: React.ComponentType | T) {
+  return (props: React.Attributes | P) => <WrappedComponent<T> Component={Component} {...props} />;
 }
 
 const fadeIn = keyframes`

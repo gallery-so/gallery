@@ -15,11 +15,10 @@ const ActionText = styled(ButtonText)<Props>`
 
   cursor: pointer;
 
-  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
   color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
-  text-decoration: ${({ underlined }) =>
-    underlined ? 'underline' : undefined};
+  text-decoration: ${({ underlined }) => (underlined ? 'underline' : undefined)};
 
   &:hover {
     color: ${colors.black};

@@ -127,4 +127,3 @@ describe('getVideoUrl', () => {
     expect(getVideoUrl(VIDEO_NFT)).toEqual(VIDEO_URL);
   });
 });
-
