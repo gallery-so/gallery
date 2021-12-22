@@ -1,8 +1,13 @@
-import { MembershipColor } from './cardProperties';
-import MembershipMintPage from './MembershipMintPage';
+import { MEMBERSHIP_NFT_GOLD } from './cardProperties';
+import PremiumMembershipMintPage from './PremiumMembershipMintPage';
+import MembershipMintPageProvider from 'contexts/membershipMintPage/MembershipMintPageContext';
 
 function GoldMembershipMintPage() {
-  return (<MembershipMintPage membershipColor={MembershipColor.GOLD}/>);
+  return (
+    <MembershipMintPageProvider>
+      <PremiumMembershipMintPage membershipNft={MEMBERSHIP_NFT_GOLD} />;
+    </MembershipMintPageProvider>
+  );
 }
 
 export default GoldMembershipMintPage;

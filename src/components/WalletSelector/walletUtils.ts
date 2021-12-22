@@ -143,7 +143,11 @@ export async function listenForGnosisSignature(
 export async function validateGnosisSignature(gnosisSafeContract: Contract, messageHash: string) {
   const magicValue = await gnosisSafeContract
     .isValidSignature(messageHash, '0x')
-    .catch(() => false);
+    .catch((error: unknown) => {
+      console.error(error);
+      return false;
+    });
+  console.log('Gnosis Safe Contract Signature: ', magicValue);
   return magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
 }
 
@@ -153,8 +157,15 @@ export async function validateNonceSignedByGnosis(
   library?: Web3Provider
 ) {
   console.log('Querying Gnosis Safe');
-  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
-  const messageHash = generateMessageHash(nonce);
+  const gnosisSafeContract = new Contract(
+    '0x99c63b3f73d8cf8a56a4621c74d0ac5fda357f8a',
+    GNOSIS_SAFE_CONTRACT_ABI,
+    library as any
+  );
+  // const messageHash = generateMessageHash(
+  //   'Gallery uses this cryptographic signature in place of a password, verifying that you are the owner of this Ethereum address: 8141774415619188378'
+  // );
+  const messageHash = '0x1e12c5ce13f4ee6041e7a71b79df1ce54cc9695929d43519d46fc010a48242d5';
   return validateGnosisSignature(gnosisSafeContract, messageHash);
 }
 
@@ -219,5 +230,6 @@ function isRpcSignatureError(error: Record<string, any>) {
 // This is the same value that is passed into the wallet's sign method
 function generateMessageHash(nonce: string) {
   const prependedNonce = `\x19Ethereum Signed Message:\n${nonce.length}${nonce}`;
+  console.log(keccak256(toUtf8Bytes(prependedNonce)));
   return keccak256(toUtf8Bytes(prependedNonce));
 }

@@ -37,7 +37,8 @@
     "react-transition-group": "^4.4.1",
     "styled-components": "^5.2.3",
     "swr": "^0.5.4",
-    "utf-8-validate": "^5.0.7"
+    "utf-8-validate": "^5.0.7",
+    "web3": "^1.6.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",

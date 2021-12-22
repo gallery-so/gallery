@@ -1,8 +1,13 @@
-import { MembershipColor } from './cardProperties';
-import MembershipMintPage from './MembershipMintPage';
+import { MEMBERSHIP_NFT_SILVER } from './cardProperties';
+import PremiumMembershipMintPage from './PremiumMembershipMintPage';
+import MembershipMintPageProvider from 'contexts/membershipMintPage/MembershipMintPageContext';
 
 function SilverMembershipMintPage() {
-  return (<MembershipMintPage membershipColor={MembershipColor.SILVER}/>);
+  return (
+    <MembershipMintPageProvider>
+      <PremiumMembershipMintPage membershipNft={MEMBERSHIP_NFT_SILVER} />;
+    </MembershipMintPageProvider>
+  );
 }
 
 export default SilverMembershipMintPage;
