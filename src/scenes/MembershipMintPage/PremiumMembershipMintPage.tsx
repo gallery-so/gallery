@@ -34,9 +34,8 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
   );
 
   const mintToken = useCallback(
-    async (contract: Contract, tokenId: number) => {
-      await contract.mint(account, tokenId, { value: price });
-    },
+    async (contract: Contract, tokenId: number) =>
+      contract.mint(account, tokenId, { value: price }),
     [account, price]
   );
 

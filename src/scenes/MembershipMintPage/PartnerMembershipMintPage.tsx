@@ -3,7 +3,10 @@ import { MembershipMintPage } from 'scenes/MembershipMintPage/MembershipMintPage
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useGeneralMembershipCardContract } from 'hooks/useContract';
+import {
+  GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
+  useGeneralMembershipCardContract,
+} from 'hooks/useContract';
 import Web3 from 'web3';
 import MerkleTree from './MerkleTree';
 import { Contract } from '@ethersproject/contracts';
@@ -15,15 +18,16 @@ import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 
 const web3 = new Web3();
 
-type AssetContract = {
+export type AssetContract = {
   address: string;
 };
 
-type Asset = {
+export type OpenseaAsset = {
   asset_contract: AssetContract;
 };
 
-const whitelistedContracts = {
+// A list of whitelisted partner contracts. contract address + name
+const partnerContracts: Record<string, string> = {
   '0xb3d5858d11ff402e3626dba53009cb46666f3c54': 'Gallery Membership Card',
 };
 
@@ -34,95 +38,123 @@ function encodeParameters(parameters: Array<string | number>) {
   );
 }
 
+// reduces a list of Opensea Assets to a list just the contract addresses
+export function reduceOpenseaAssetsToContractAddresses(assets: OpenseaAsset[]) {
+  const partnerNftAddressesOwned = assets.reduce(
+    (acc: Record<string, boolean>, asset: OpenseaAsset) => {
+      if (asset.asset_contract.address) {
+        acc[asset.asset_contract.address] = true;
+      }
+
+      return acc;
+    },
+    {}
+  );
+  return Object.keys(partnerNftAddressesOwned);
+}
+
+function generateMerkleProof(encodedAbi1: string, encodedAbi2: string) {
+  const elements = [encodedAbi1, encodedAbi2];
+  const merkleTree = new MerkleTree(elements);
+  return merkleTree.getHexProof(elements[0]);
+}
+
+// Checks to see if the address owns any partner NFTs by
+// retrieving all NFTs owned by a user from opensea,
+// and filtering the list by whitelisted partner contract addresses
+async function detectOwnedPartnerNftsFromOpensea(
+  account: string,
+  addresses: string[]
+): Promise<string[]> {
+  const params = getContractAddressQueryParams(addresses);
+  const response = await fetch(
+    `https://testnets-api.opensea.io/api/v1/assets?owner=${account}${params}`,
+    {}
+  );
+
+  const responseBody = await response.json();
+  // const responseBody = { assets: [] };
+  if (responseBody.assets.length > 0) {
+    return reduceOpenseaAssetsToContractAddresses(responseBody.assets);
+  }
+
+  return [];
+}
+
+async function detectOwnedGeneralCardsFromOpensea(account: string) {
+  const response = await fetch(
+    `https://testnets-api.opensea.io/api/v1/assets?owner=${account}&asset_contract_addresses=${GENERAL_MEMBERSHIP_CONRTACT_ADDRESS}`,
+    {}
+  );
+
+  const responseBody = await response.json();
+  return responseBody.assets.length > 0;
+}
+
 // Turns list of contract addresses into url parameters for the GET call to Opensea
-function getContractAddressParameters() {
-  return Object.keys(whitelistedContracts)
-    .map((address) => `&asset_contract_addresses=${address}`)
-    .join('');
+function getContractAddressQueryParams(addresses: string[]) {
+  return addresses.map((address) => `&asset_contract_addresses=${address}`).join('');
 }
 
 function PartnerMembershipMintPageContent() {
   const { account } = useWeb3React<Web3Provider>();
   const contract = useGeneralMembershipCardContract();
 
-  const [ownedPartnerTokens, setOwnedPartnerTokens] = useState<string[]>([]);
-
-  const ownsPartnerTokens = useMemo(() => ownedPartnerTokens.length > 0, [ownedPartnerTokens]);
-
-  const canMintToken = useMemo(() => ownsPartnerTokens, [ownsPartnerTokens]);
-
   const { getSupply } = useMembershipMintPageActions();
 
-  // determine logic for choosing an address. first one?
-  const partnerContractAddress = useMemo(() => ownedPartnerTokens[0], [ownedPartnerTokens]);
-
-  const encodedAbi1 = useMemo(
-    () => encodeParameters([partnerContractAddress, 0, 0, 1, 0]),
-    [partnerContractAddress]
+  const [ownedPartnerNfts, setOwnedPartnerNfts] = useState<string[]>([]);
+  const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
+  const canMintToken = useMemo(
+    () => !ownsGeneralCard && ownedPartnerNfts.length > 0,
+    [ownedPartnerNfts.length, ownsGeneralCard]
   );
 
-  const encodedAbi2 = useMemo(
-    () => encodeParameters([partnerContractAddress, 0, 10, 1, 1]),
-    [partnerContractAddress]
-  );
+  // Regardless of how many partner NFTs they own, we just need one contract address to mint with, so pick first one in list.
+  const partnerContractAddress = useMemo(() => ownedPartnerNfts[0], [ownedPartnerNfts]);
 
   // use a ref to track if we called OS, to limit to only calling them once
   const calledOpenseaRef = useRef(false);
   useEffect(() => {
-    if (account && !calledOpenseaRef.current) {
-      console.log(getContractAddressParameters());
-      // const response = await fetch(
-      //   `https://api.opensea.io/api/v1/assets?owner=${account}&asset_contract_addresses=${partnerContractAddress}`,
-      //   {}
-      // );
-      calledOpenseaRef.current = true;
+    async function checkIfUserCanMint(account: string, addresses: string[]) {
+      const ownsGeneralCard = await detectOwnedGeneralCardsFromOpensea(account);
 
-      // const responseBody = await response.json();
-      const responseBody = { assets: [] };
-      if (responseBody.assets.length > 0) {
-        // TODO turn into function and test
-        const ownedContracts = responseBody.assets.reduce(
-          (acc: Record<string, boolean>, asset: Asset) => {
-            if (asset.asset_contract.address) {
-              acc[asset.asset_contract.address] = true;
-            }
-
-            return acc;
-          },
-          {}
-        );
-        setOwnedPartnerTokens(Object.keys(ownedContracts));
-        // return Object.keys(ownedContracts);
+      if (ownsGeneralCard) {
+        calledOpenseaRef.current = true;
+        setOwnsGeneralCard(true);
+        return;
       }
 
-      // console.log(response);
+      const ownedPartnerNfts = await detectOwnedPartnerNftsFromOpensea(account, addresses);
+      calledOpenseaRef.current = true;
+      setOwnedPartnerNfts(ownedPartnerNfts);
+    }
+
+    if (account && !calledOpenseaRef.current) {
+      void checkIfUserCanMint(account, Object.keys(partnerContracts));
     }
   }, [account]);
 
-  const merkleProof = useMemo(() => {
-    // todo: turn into function that returns the merkle proof
-    const elements = [encodedAbi1, encodedAbi2];
-    console.log(new MerkleTree(elements));
-    const merkleTree = new MerkleTree(elements);
-    return merkleTree.getHexProof(elements[0]);
-  }, [encodedAbi1, encodedAbi2]);
-
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
-      console.log('contract', contract);
       if (contract) {
-        console.log('aaah im mintinngg');
-        await contract.mint(account, tokenId, 0, encodedAbi1, merkleProof);
+        const encodedAbi1 = encodeParameters([partnerContractAddress, 0, 0, 1, 0]);
+        const encodedAbi2 = encodeParameters([partnerContractAddress, 0, 10, 1, 1]);
+        const merkleProof = generateMerkleProof(encodedAbi1, encodedAbi2);
+        return contract.mint(account, tokenId, 0, encodedAbi1, merkleProof);
       }
     },
-    [account, encodedAbi1, merkleProof]
+    [account, partnerContractAddress]
   );
+
+  const onMintSuccess = useCallback(async () => {
+    setOwnsGeneralCard(true);
+  }, []);
 
   useEffect(() => {
     if (contract) {
-      getSupply(contract, 0);
+      getSupply(contract, MEMBERSHIP_NFT_GENERAL.tokenId);
     }
-  }, [getSupply, contract, merkleProof]);
+  }, [getSupply, contract]);
 
   return (
     <MembershipMintPage
@@ -130,6 +162,7 @@ function PartnerMembershipMintPageContent() {
       canMintToken={canMintToken}
       contract={contract}
       mintToken={mintToken}
+      onMintSuccess={onMintSuccess}
     />
   );
 }

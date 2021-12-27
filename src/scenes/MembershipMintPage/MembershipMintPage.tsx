@@ -22,12 +22,6 @@ import {
 import { Contract } from '@ethersproject/contracts';
 import { MembershipNft } from './cardProperties';
 
-// export type MembershipNft = {
-//   videoUrl: string;
-//   title: string;
-//   tokenId: number;
-// };
-
 type Props = {
   membershipNft: MembershipNft;
   canMintToken: boolean;

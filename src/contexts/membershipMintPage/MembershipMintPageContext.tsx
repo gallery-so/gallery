@@ -81,7 +81,6 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
     async (contract: Contract, tokenId: number) => {
       const totalSupply = await contract.getTotalSupply(tokenId);
       const usedSupply = await contract.getUsedSupply(tokenId);
-      console.log('geting ', Number(totalSupply), Number(usedSupply));
 
       setTotalSupply(Number(totalSupply));
       setRemainingSupply(computeRemainingSupply(Number(usedSupply), Number(totalSupply)));
