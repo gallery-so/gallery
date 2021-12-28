@@ -5,6 +5,13 @@ import { BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
+import { Directions } from 'src/components/core/enums';
+
+// Get which side of the owner name to show the preview on
+// 1st and 2nd column should be right, 3rd and 4th column should be left
+function getPreviewDirection(index: number) {
+  return index % 4 < 2 ? Directions.RIGHT : Directions.LEFT;
+}
 
 function MemberListTier({ tier }: { tier: MembershipTier }) {
   const sortedOwners = useMemo(
@@ -17,8 +24,12 @@ function MemberListTier({ tier }: { tier: MembershipTier }) {
       <StyledTierHeading>{tier.name} members</StyledTierHeading>
       <Spacer height={24} />
       <StyledOwnersWrapper>
-        {sortedOwners.map((owner) => (
-          <MemberListOwner key={owner.user_id} owner={owner} />
+        {sortedOwners.map((owner, index) => (
+          <MemberListOwner
+            key={owner.user_id}
+            owner={owner}
+            direction={getPreviewDirection(index)}
+          />
         ))}
       </StyledOwnersWrapper>
       <Spacer height={56} />

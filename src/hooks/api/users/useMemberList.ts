@@ -17,7 +17,16 @@ export default function useMemberList() {
       id: '1',
       name: 'Tier 1',
       owners: [
-        { user_id: '1', username: 'robin', address: '0x1', preview_nfts: ['1', '2'] },
+        {
+          user_id: '1',
+          username: 'robin',
+          address: '0x1',
+          preview_nfts: [
+            'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ',
+            'https://lh3.googleusercontent.com/e6TUIbQkZnRj7mMlCZQY5CSO_Dw8Sxd96QzkcjC_btVW-9R3Mw8uPLuXLLF1C3tF-XKY8mtiRnsR3-fo3hK7r74_VVTluAe1lr_-lQ',
+            'https://lh3.googleusercontent.com/M3XJmG6g8ESS7a2aM4MInWoHpM9pdiQVRoqtbSqBP02y2tFMbHK3SlZc_9tQjEmy4ZWJZP9lKsdAy3mkCcm0026Vlzu2uZ-BEXSeCw',
+          ],
+        },
         { user_id: '2', username: 'kaito', address: '0x2', preview_nfts: ['3', '4'] },
         { user_id: '3', username: 'mike', address: '0x3', preview_nfts: ['5', '6'] },
         { user_id: '4', username: 'benny', address: '0x4', preview_nfts: ['7', '8'] },
