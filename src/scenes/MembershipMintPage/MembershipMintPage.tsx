@@ -140,12 +140,11 @@ export function MembershipMintPage({
             </>
           )}
           <Spacer height={16} />
-          {/* todo: handle case for premium id 6 (sold out) */}
           {Boolean(totalSupply) && (
             <>
               <BodyRegular color={colors.gray50}>Available</BodyRegular>
               <BodyRegular>
-                {remainingSupply}/{totalSupply}
+                {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
               </BodyRegular>
             </>
           )}
@@ -229,7 +228,7 @@ function MembershipVideo({ src }: VideoProps) {
   return <StyledVideo src={src} autoPlay loop playsInline muted onLoadStart={setContentIsLoaded} />;
 }
 
-export function MembershipNftVisual({ src }: VideoProps) {
+function MembershipNftVisual({ src }: VideoProps) {
   return (
     <div>
       <ShimmerProvider>
