@@ -40,9 +40,7 @@ export function isAnimationUrl(assetUrl: string, fileExtension: string) {
     return true;
   }
 
-  return animationDomains.some(animationDomain =>
-    assetUrl.includes(animationDomain),
-  );
+  return animationDomains.some((animationDomain) => assetUrl.includes(animationDomain));
 }
 
 export function getMediaTypeForAssetUrl(assetUrl: string) {
@@ -78,6 +76,6 @@ export function getMediaType(nft: Nft) {
     return NftMediaType.IMAGE;
   }
 
-  // OpenSea 
+  // OpenSea
   return getMediaTypeForAssetUrl(nft.animation_url);
 }

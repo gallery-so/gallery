@@ -75,12 +75,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
     setOnPrevious(returnToPrevious);
-  }, [
-    setOnPrevious,
-    setOnNext,
-    saveGalleryAndReturnToProfile,
-    returnToPrevious,
-  ]);
+  }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
 }
 
 function OrganizeGallery({ next }: WizardContext) {
@@ -105,10 +100,7 @@ function OrganizeGallery({ next }: WizardContext) {
     next,
   });
 
-  const isEmptyGallery = useMemo(
-    () => sortedCollections.length === 0,
-    [sortedCollections.length]
-  );
+  const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
 
   return (
     <StyledOrganizeGallery>
@@ -121,8 +113,8 @@ function OrganizeGallery({ next }: WizardContext) {
             <Heading>Create your first collection</Heading>
             <Spacer height={8} />
             <BodyRegular color={colors.gray50}>
-              Organize your gallery with collections. Use them to group NFTs by
-              creator, theme, or anything that feels right.
+              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+              anything that feels right.
             </BodyRegular>
           </StyledEmptyGalleryMessage>
         ) : (

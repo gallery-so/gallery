@@ -31,12 +31,7 @@ function NftDetailModel({ nft }: Props) {
 
   return (
     <StyledNftDetailModel>
-      <model-viewer
-        class="model-viewer"
-        auto-rotate
-        camera-controls
-        src={nft.animation_url}
-      />
+      <model-viewer class="model-viewer" auto-rotate camera-controls src={nft.animation_url} />
     </StyledNftDetailModel>
   );
 }

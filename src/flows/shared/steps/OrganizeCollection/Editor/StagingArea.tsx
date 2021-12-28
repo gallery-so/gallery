@@ -104,10 +104,7 @@ function StagingArea() {
         </SortableContext>
         <DragOverlay adjustScale dropAnimation={defaultDropAnimationConfig}>
           {activeNft ? (
-            <StagedNftImageDragging
-              nft={activeNft.nft}
-              size={IMAGE_SIZES[columns]}
-            />
+            <StagedNftImageDragging nft={activeNft.nft} size={IMAGE_SIZES[columns]} />
           ) : null}
         </DragOverlay>
       </DndContext>

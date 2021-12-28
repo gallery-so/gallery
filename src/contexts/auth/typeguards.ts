@@ -8,4 +8,3 @@ export function isLoggedInState(state: AuthState): state is LoggedInState {
 export function isLoadingState(state: AuthState) {
   return state === LOADING;
 }
-

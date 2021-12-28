@@ -26,21 +26,15 @@ function TextButton({
       underlineOnHover={underlineOnHover}
       disabled={disabled}
     >
-      <StyledButtonText
-        disableTextTransform={disableTextTransform}
-        disabled={disabled}
-      >
+      <StyledButtonText disableTextTransform={disableTextTransform} disabled={disabled}>
         {text}
       </StyledButtonText>
     </StyledButton>
   );
 }
 
-export const StyledButtonText = styled(ActionText)<
-Pick<Props, 'disableTextTransform'>
->`
-  text-transform: ${({ disableTextTransform }) =>
-    disableTextTransform ? 'none' : undefined};
+export const StyledButtonText = styled(ActionText)<Pick<Props, 'disableTextTransform'>>`
+  text-transform: ${({ disableTextTransform }) => (disableTextTransform ? 'none' : undefined)};
 `;
 
 const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>`
@@ -50,12 +44,11 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>
   background: none;
   width: max-content;
 
-  pointer-events: ${({ disabled }) => disabled ? 'none' : 'inherit'};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
   &:hover ${StyledButtonText} {
     color: ${colors.black};
-    text-decoration: ${({ underlineOnHover }) =>
-    underlineOnHover ? 'underline' : undefined};
+    text-decoration: ${({ underlineOnHover }) => (underlineOnHover ? 'underline' : undefined)};
   }
 `;
 

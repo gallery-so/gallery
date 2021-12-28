@@ -32,24 +32,24 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
 function NftPreview({ nft, collectionId, columns }: Props) {
   const handleNftClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      navigateToUrl(
-        `${window.location.pathname}/${collectionId}/${nft.id}`,
-        event
-      );
+      navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
     },
     [collectionId, nft.id]
   );
   const screenWidth = useBreakpoint();
 
   // width for rendering so that we request the apprpriate size image.
-  const previewSize = useMemo(() => screenWidth === size.mobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns], [columns, screenWidth]);
+  const previewSize = useMemo(
+    () => (screenWidth === size.mobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns]),
+    [columns, screenWidth]
+  );
 
   return (
     <StyledNftPreview key={nft.id} columns={columns}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
-          <NftPreviewAsset nft={nft} size={previewSize * 2}/>
+          <NftPreviewAsset nft={nft} size={previewSize * 2} />
           <StyledNftFooter>
             <StyledNftLabel nft={nft} />
             <StyledGradient type="bottom" direction="down" />
@@ -111,16 +111,18 @@ const StyledNftPreview = styled.div<{ columns: number }>`
   // - if more columns, use calc to automatically set width based on column #
   // this is important because while we *could* use hardcoded widths for desktop, we need to use dynamic widths for tablet
   @media only screen and ${breakpoints.mobileLarge} {
-    width: ${({ columns }) => columns === 1
-    ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
-    : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.mobileLarge * columns}px) / ${columns});`}
+    width: ${({ columns }) =>
+      columns === 1
+        ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
+        : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.mobileLarge * columns}px) / ${columns});`}
     margin: ${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    width: ${({ columns }) => columns === 1
-    ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
-    : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.desktop * columns}px) / ${columns});`}
+    width: ${({ columns }) =>
+      columns === 1
+        ? `${SINGLE_COLUMN_NFT_WIDTH}px;`
+        : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.desktop * columns}px) / ${columns});`}
     margin: ${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
   }
 `;

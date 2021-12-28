@@ -42,9 +42,7 @@ function Button({
       {loading ? (
         <Loader inverted size={mini ? 'mini' : 'small'} />
       ) : (
-        <ButtonText color={type === 'primary' ? colors.white : colors.gray80}>
-          {text}
-        </ButtonText>
+        <ButtonText color={type === 'primary' ? colors.white : colors.gray80}>{text}</ButtonText>
       )}
     </StyledButton>
   );
@@ -66,8 +64,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   height: ${({ mini }) => (mini ? 32 : 40)}px;
 
-  background: ${({ buttonStyle }) =>
-    buttonStyle === 'primary' ? colors.black : colors.white};
+  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.black : colors.white)};
 
   cursor: pointer;
 

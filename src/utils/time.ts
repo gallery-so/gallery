@@ -13,10 +13,13 @@ export const msToTimestamp = (ms: number): string => {
     t.unshift(h);
   }
 
-  return t.map(element => _appendLeadingZero(element)).join(':');
+  return t.map((element) => _appendLeadingZero(element)).join(':');
 };
 
 export const pause = async (ms: number) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+
+// e.g. '2021-12-17T09:24:34.891Z', which is our DB timestamp format
+export const getISODate = () => new Date().toISOString();

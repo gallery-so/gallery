@@ -16,44 +16,46 @@ const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 function NftAdditionalDetails({ nft }: Props) {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
   const handleToggleClick = useCallback(() => {
-    setShowAdditionalDetails(value => !value);
+    setShowAdditionalDetails((value) => !value);
   }, []);
   return (
     <StyledNftAdditionalDetails>
-      <TextButton text={showAdditionalDetails ? 'Hide Details' : 'Additional Details'} onClick={handleToggleClick}/>
-      <Spacer height={12}/>
-      {showAdditionalDetails && <div>
-        <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
-        <StyledLink
-          href={`https://etherscan.io/address/${nft.asset_contract.address}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <BodyRegular>{nft.asset_contract.address}</BodyRegular>
-        </StyledLink>
-        <Spacer height={16} />
-        <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-        <BodyRegular>{nft.opensea_token_id}</BodyRegular>
-        <Spacer height={16} />
-        <StyledLinkContainer>
+      <TextButton
+        text={showAdditionalDetails ? 'Hide Details' : 'Additional Details'}
+        onClick={handleToggleClick}
+      />
+      <Spacer height={12} />
+      {showAdditionalDetails && (
+        <div>
+          <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
           <StyledLink
-            href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}?ref=${GALLERY_OS_ADDRESS}`}
+            href={`https://etherscan.io/address/${nft.asset_contract.address}`}
             target="_blank"
             rel="noreferrer"
           >
-            <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+            <BodyRegular>{nft.asset_contract.address}</BodyRegular>
           </StyledLink>
-          <Spacer width={16} />
-        </StyledLinkContainer>
-      </div>
-      }
-
+          <Spacer height={16} />
+          <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
+          <BodyRegular>{nft.opensea_token_id}</BodyRegular>
+          <Spacer height={16} />
+          <StyledLinkContainer>
+            <StyledLink
+              href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}?ref=${GALLERY_OS_ADDRESS}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+            </StyledLink>
+            <Spacer width={16} />
+          </StyledLinkContainer>
+        </div>
+      )}
     </StyledNftAdditionalDetails>
   );
 }
 
-const StyledNftAdditionalDetails = styled.div`
-`;
+const StyledNftAdditionalDetails = styled.div``;
 
 const StyledLink = styled.a`
   text-decoration: none;
@@ -64,7 +66,7 @@ const StyledLink = styled.a`
 `;
 
 const StyledLinkContainer = styled.div`
-  display: flex
+  display: flex;
 `;
 
 export default NftAdditionalDetails;

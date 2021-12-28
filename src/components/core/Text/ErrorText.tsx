@@ -7,5 +7,9 @@ type Props = {
 };
 
 export default function ErrorText({ message, className }: Props) {
-  return <Caption className={className} color={colors.error}>{message}</Caption>;
+  return (
+    <Caption className={className} color={colors.error}>
+      {message}
+    </Caption>
+  );
 }

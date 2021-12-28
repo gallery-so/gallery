@@ -1,23 +1,21 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Collection } from 'types/Collection';
+import { getISODate } from 'utils/time';
 import { useAuthenticatedUser } from '../users/useUser';
 import usePost from '../_rest/usePost';
-import {
-  GetGalleriesResponse,
-  UpdateGalleryRequest,
-  UpdateGalleryResponse,
-} from './types';
+import { GetGalleriesResponse, UpdateGalleryRequest, UpdateGalleryResponse } from './types';
 import { getGalleriesCacheKey } from './useGalleries';
 
 function mapCollectionsToCollectionIds(collections: Collection[]) {
-  return collections.map(collection => collection.id);
+  return collections.map((collection) => collection.id);
 }
 
 export default function useUpdateGallery() {
   const updateGallery = usePost();
   const authenticatedUser = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(
     async (galleryId: string, collections: Collection[]) => {
@@ -27,7 +25,7 @@ export default function useUpdateGallery() {
         {
           id: galleryId,
           collections: mapCollectionsToCollectionIds(collections),
-        },
+        }
       );
 
       void mutate(
@@ -35,11 +33,12 @@ export default function useUpdateGallery() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           newValue.galleries[0].collections = collections;
+          newValue.galleries[0].last_updated = getISODate();
           return newValue;
         },
-        false,
+        false
       );
     },
-    [authenticatedUser.id, updateGallery],
+    [authenticatedUser.id, mutate, updateGallery]
   );
 }

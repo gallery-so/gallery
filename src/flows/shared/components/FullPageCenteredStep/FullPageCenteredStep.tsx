@@ -20,7 +20,5 @@ const StyledPage = styled.div<{ withFooter?: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(
-    100vh - ${({ withFooter }) => (withFooter ? FOOTER_HEIGHT : 0)}px
-  );
+  height: calc(100vh - ${({ withFooter }) => (withFooter ? FOOTER_HEIGHT : 0)}px);
 `;

@@ -22,8 +22,7 @@ function NftDetailText({ nft }: Props) {
   }, [nft]);
 
   const breakpoint = useBreakpoint();
-  const horizontalLayout =
-    breakpoint === size.desktop || breakpoint === size.tablet;
+  const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
@@ -64,11 +63,7 @@ function NftOwnerLink({ owner, ownerAddress }: NftOwnerProps) {
   const address = owner?.address ?? ownerAddress;
 
   return (
-    <StyledLink
-      href={`https://etherscan.io/address/${address}`}
-      target="_blank"
-      rel="noreferrer"
-    >
+    <StyledLink href={`https://etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
       <BodyRegular>{address}</BodyRegular>
     </StyledLink>
   );

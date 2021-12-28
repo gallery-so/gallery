@@ -23,8 +23,6 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   const wizardDataState = useMemo(() => ({ id }), [id]);
 
   return (
-    <WizardDataContext.Provider value={wizardDataState}>
-      {children}
-    </WizardDataContext.Provider>
+    <WizardDataContext.Provider value={wizardDataState}>{children}</WizardDataContext.Provider>
   );
 });

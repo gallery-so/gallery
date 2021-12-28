@@ -11,9 +11,7 @@ export default function Markdown({ text }: Props) {
       components={{
         // TODO: come up with a sane default if NFT doesn't have an href provided
         a: ({ href, children }) => (
-          <GalleryLink href={href ?? window.location.origin}>
-            {children}
-          </GalleryLink>
+          <GalleryLink href={href ?? window.location.origin}>{children}</GalleryLink>
         ),
       }}
     >

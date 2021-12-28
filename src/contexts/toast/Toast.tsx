@@ -43,12 +43,10 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-    animation: ${({ isActive }) => css`
-      ${isActive
-    ? translateUpAndFadeIn
-    : translateDownAndFadeOut} ${transitions.cubic}
-    `};
-    animation-fill-mode: forwards;
+  animation: ${({ isActive }) => css`
+    ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
+  `};
+  animation-fill-mode: forwards;
 `;
 
 function Toast({ message, onClose, cornerPositioned }: Props) {
@@ -56,46 +54,44 @@ function Toast({ message, onClose, cornerPositioned }: Props) {
     onClose?.();
   }, [onClose]);
 
-  const pill = useMemo(() => (
-    <StyledToast>
-      <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
-      <BodyRegular>{message}</BodyRegular>
-    </StyledToast>
-  ), [handleClose, message]);
+  const pill = useMemo(
+    () => (
+      <StyledToast>
+        <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
+        <BodyRegular>{message}</BodyRegular>
+      </StyledToast>
+    ),
+    [handleClose, message]
+  );
 
   if (cornerPositioned) {
-    return (
-      <CornerPosition>
-        {pill}
-      </CornerPosition>
-    );
+    return <CornerPosition>{pill}</CornerPosition>;
   }
 
   return pill;
 }
 
 const CornerPosition = styled.div`
-    z-index: 2; // appears above navbar
-    position: fixed;
-    top: 24px;
-    right: 24px;
+  z-index: 2; // appears above navbar
+  position: fixed;
+  top: 24px;
+  right: 24px;
 `;
 
 const StyledToast = styled.div`
-    position: relative;
-    border: 1px solid black;
-    padding: 16px 32px 16px 24px;
-    width: 288px;
-    background: white;
+  position: relative;
+  border: 1px solid black;
+  padding: 16px 32px 16px 24px;
+  width: 288px;
+  background: white;
 `;
 
 const StyledClose = styled.span`
-    position: absolute;
-    right: 6px;
-    top: 7px;
-    padding: 10px;
-    cursor: pointer;
+  position: absolute;
+  right: 6px;
+  top: 7px;
+  padding: 10px;
+  cursor: pointer;
 `;
 
 export default Toast;
-

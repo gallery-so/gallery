@@ -16,10 +16,8 @@ type Props = {
   children?: ReactNode;
 };
 
-const refContainsEventTarget = (
-  ref: RefObject<HTMLDivElement>,
-  event: MouseEvent,
-) => ref.current?.contains(event.target as Node);
+const refContainsEventTarget = (ref: RefObject<HTMLDivElement>, event: MouseEvent) =>
+  ref.current?.contains(event.target as Node);
 
 const dropdownMenuWrapperStyle: CSSProperties = { position: 'relative' };
 const dropdownButtonWrapperStyle: CSSProperties = { display: 'flex' };
@@ -28,7 +26,7 @@ function Dropdown({ mainText, children }: Props) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const handleDropdownButtonClick = useCallback(() => {
-    setIsDropdownVisible(previousIsDropdownVisible => !previousIsDropdownVisible);
+    setIsDropdownVisible((previousIsDropdownVisible) => !previousIsDropdownVisible);
   }, []);
 
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
@@ -65,9 +63,7 @@ function Dropdown({ mainText, children }: Props) {
         />
       </div>
       <div ref={dropdownMenuRef} style={dropdownMenuWrapperStyle}>
-        <StyledDropdownBox isDropdownVisible={isDropdownVisible}>
-          {children}
-        </StyledDropdownBox>
+        <StyledDropdownBox isDropdownVisible={isDropdownVisible}>{children}</StyledDropdownBox>
       </div>
     </StyledDropdown>
   );
@@ -85,22 +81,19 @@ const StyledDropdown = styled.div`
 export const StyledDropdownButton = styled(TextButton)<StyledDropdownProps>`
   width: fit-content;
 
-  text-decoration: ${({ isDropdownVisible }) =>
-    isDropdownVisible ? 'underline' : 'inherit'};
+  text-decoration: ${({ isDropdownVisible }) => (isDropdownVisible ? 'underline' : 'inherit')};
 
   &:focus {
     underline: 1px solid;
   }
 
   > p {
-    color: ${({ isDropdownVisible }) =>
-    isDropdownVisible ? 'black' : undefined};
+    color: ${({ isDropdownVisible }) => (isDropdownVisible ? 'black' : undefined)};
   }
 `;
 
 const StyledDropdownBox = styled.div<StyledDropdownProps>`
-  visibility: ${({ isDropdownVisible }) =>
-    isDropdownVisible ? 'visible' : 'hidden'};
+  visibility: ${({ isDropdownVisible }) => (isDropdownVisible ? 'visible' : 'hidden')};
 
   display: flex;
   flex-direction: column;

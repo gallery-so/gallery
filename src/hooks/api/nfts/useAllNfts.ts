@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Nft } from 'types/Nft';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGet from '../_rest/useGet';
@@ -32,8 +32,9 @@ export default function useAllNfts(): Nft[] {
 // use this hook to force SWR to refetch all nfts for user
 export function useMutateAllNftsCache() {
   const { id: userId } = useAuthenticatedUser();
+  const { mutate } = useSWRConfig();
 
   return useCallback(async () => {
     await mutate(getAllNftsCacheKey({ userId }));
-  }, [userId]);
+  }, [mutate, userId]);
 }

@@ -10,7 +10,7 @@ import {
   GALLERY_DISCORD,
   GALLERY_MEMBERSHIP_OPENSEA,
   GALLERY_TWITTER,
-  GALLERY_MIRROR,
+  GALLERY_BLOG,
 } from 'constants/urls';
 
 function GlobalFooter() {
@@ -29,15 +29,11 @@ function GlobalFooter() {
             <StyledLinkText color={colors.gray40}>Discord</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_MIRROR} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Mirror</StyledLinkText>
+          <StyledLink href={GALLERY_BLOG} target="_blank" rel="noreferrer">
+            <StyledLinkText color={colors.gray40}>Blog</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
-          <StyledLink
-            href={GALLERY_MEMBERSHIP_OPENSEA}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <StyledLink href={GALLERY_MEMBERSHIP_OPENSEA} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />

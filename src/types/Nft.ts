@@ -15,12 +15,13 @@ export type Nft = {
     contract_image_url: string;
   };
   collectors_note: string;
-  creation_time: number;
   creator_address: string;
   creator_name: string;
   description: string;
   external_url: string;
   id: string;
+  created_at: string;
+  last_updated: string;
   image_original_url: string;
   image_preview_url: string;
   image_thumbnail_url: string;

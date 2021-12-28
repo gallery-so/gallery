@@ -50,7 +50,7 @@ function UserInfoForm({
 
       setIsSubmitting(false);
     },
-    [isSubmitting, onSubmit],
+    [isSubmitting, onSubmit]
   );
 
   const handleUsernameChange = useCallback(
@@ -58,14 +58,14 @@ function UserInfoForm({
       onUsernameChange(event.target.value);
       clearUsernameError();
     },
-    [onUsernameChange, clearUsernameError],
+    [onUsernameChange, clearUsernameError]
   );
 
   const handleBioChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       onBioChange(event.target.value);
     },
-    [onBioChange],
+    [onBioChange]
   );
 
   // If username isn't filled in, autofocus on field

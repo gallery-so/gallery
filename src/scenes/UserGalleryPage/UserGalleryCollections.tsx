@@ -13,13 +13,11 @@ type Props = {
 
 const COLLECTION_SPACING = 48;
 
-function UserGalleryCollections({
-  collections,
-  isAuthenticatedUsersPage,
-}: Props) {
-  const visibleCollections = useMemo(() => collections.filter(collection =>
-    !collection.hidden && collection.nfts.length > 0,
-  ), [collections]);
+function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props) {
+  const visibleCollections = useMemo(
+    () => collections.filter((collection) => !collection.hidden && collection.nfts.length > 0),
+    [collections]
+  );
 
   if (visibleCollections.length === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
