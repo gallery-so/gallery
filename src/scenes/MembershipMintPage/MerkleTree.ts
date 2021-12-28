@@ -1,10 +1,8 @@
 // test/helpers/merkleTree.js
 // SPDX-License-Identifier: MIT
-// copied from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
+// from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
 
-// const { bufferToHex } = require('ethereumjs-util');
 import { bufferToHex } from 'ethereumjs-util';
-// const { ethers } = require('hardhat');
 import web3 from 'web3';
 
 export default class MerkleTree {
