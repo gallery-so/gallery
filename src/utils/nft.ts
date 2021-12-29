@@ -23,6 +23,7 @@ const animationDomains = [
   'https://generator.artblocks',
   'https://api.heaven.computer',
   'https://tokens.mathcastles.xyz',
+  'https://art-ai.com',
 ];
 
 export function getFileExtension(url: string) {
