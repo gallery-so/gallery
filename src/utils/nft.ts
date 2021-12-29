@@ -22,6 +22,7 @@ const animationDomains = [
   'https://api.artblocks',
   'https://generator.artblocks',
   'https://api.heaven.computer',
+  'https://tokens.mathcastles.xyz',
   'https://art-ai.com',
 ];
 
