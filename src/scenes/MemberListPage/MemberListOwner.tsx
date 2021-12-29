@@ -17,10 +17,12 @@ type Props = {
 function MemberListOwner({ owner, direction }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const debouncedIsHovering = useDebounce(isHovering, 200) as boolean;
+  const debouncedIsHovering = useDebounce(isHovering, 150) as boolean;
 
   useEffect(() => {
-    setShowPreview(debouncedIsHovering);
+    if (debouncedIsHovering) {
+      setShowPreview(true);
+    }
   }, [debouncedIsHovering]);
 
   const onMouseEnter = useCallback(() => {
@@ -51,6 +53,7 @@ function MemberListOwner({ owner, direction }: Props) {
 const StyledOwner = styled.div`
   width: 50%;
   flex-shrink: 0;
+  display: flex;
 
   @media only screen and ${breakpoints.tablet} {
     width: 33%;
