@@ -17,13 +17,24 @@ type Props = {
 function MemberListOwner({ owner, direction }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [startFadeOut, setStartFadeOut] = useState(false);
   const debouncedIsHovering = useDebounce(isHovering, 150) as boolean;
 
   useEffect(() => {
     if (debouncedIsHovering) {
       setShowPreview(true);
+      return;
     }
-  }, [debouncedIsHovering]);
+
+    // Delay hiding the preview so we can show a fadeout animation
+    if (!debouncedIsHovering && showPreview) {
+      setStartFadeOut(true);
+      setTimeout(() => {
+        setShowPreview(false);
+        setStartFadeOut(false);
+      }, 500);
+    }
+  }, [debouncedIsHovering, showPreview]);
 
   const onMouseEnter = useCallback(() => {
     setIsHovering(true);
@@ -31,7 +42,6 @@ function MemberListOwner({ owner, direction }: Props) {
 
   const onMouseLeave = useCallback(() => {
     setIsHovering(false);
-    setShowPreview(false);
   }, []);
 
   const isMobile = useMemo(() => detectMobileDevice(), []);
@@ -44,7 +54,11 @@ function MemberListOwner({ owner, direction }: Props) {
         </GalleryLink>
       </div>
       {!isMobile && showPreview && (
-        <MemberListImagePreview direction={direction} nftUrls={owner.preview_nfts} />
+        <MemberListImagePreview
+          direction={direction}
+          nftUrls={owner.preview_nfts}
+          startFadeOut={startFadeOut}
+        />
       )}
     </StyledOwner>
   );
