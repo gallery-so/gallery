@@ -15,7 +15,7 @@ export default function useMemberList() {
   return [
     {
       id: '1',
-      name: 'Tier 1',
+      name: 'VIP',
       owners: [
         {
           user_id: '1',
@@ -81,7 +81,7 @@ export default function useMemberList() {
     },
     {
       id: '2',
-      name: 'Tier 2',
+      name: 'Founding',
       owners: [
         { user_id: '4', username: 'user4', address: '0x4', preview_nfts: ['7', '8'] },
         { user_id: '5', username: 'user5', address: '0x5', preview_nfts: ['9', '10'] },
@@ -103,7 +103,7 @@ export default function useMemberList() {
     },
     {
       id: '3',
-      name: 'Tier 3',
+      name: 'Gold',
       owners: [
         { user_id: '4', username: 'user4', address: '0x4', preview_nfts: ['7', '8'] },
         { user_id: '5', username: 'user5', address: '0x5', preview_nfts: ['9', '10'] },

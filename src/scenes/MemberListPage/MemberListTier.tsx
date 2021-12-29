@@ -13,18 +13,28 @@ function getPreviewDirection(index: number) {
   return index % 4 < 2 ? Directions.RIGHT : Directions.LEFT;
 }
 
-function MemberListTier({ tier }: { tier: MembershipTier }) {
+function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQuery: string }) {
   const sortedOwners = useMemo(
     () => tier.owners.sort((a, b) => a.username.localeCompare(b.username)),
     [tier.owners]
   );
+
+  const filteredOwners = useMemo(() => {
+    if (!searchQuery) {
+      return sortedOwners;
+    }
+
+    return sortedOwners.filter((owner) =>
+      owner.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
+    );
+  }, [searchQuery, sortedOwners]);
 
   return (
     <div>
       <StyledTierHeading>{tier.name} members</StyledTierHeading>
       <Spacer height={24} />
       <StyledOwnersWrapper>
-        {sortedOwners.map((owner, index) => (
+        {filteredOwners.map((owner, index) => (
           <MemberListOwner
             key={owner.user_id}
             owner={owner}

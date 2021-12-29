@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
 import { MembershipOwner } from 'types/MembershipTier';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import breakpoints from 'components/core/breakpoints';
+import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
 import { Directions } from 'src/components/core/enums';
 import MemberListImagePreview from './MemberListImagePreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type Props = {
   owner: MembershipOwner;
@@ -44,16 +45,21 @@ function MemberListOwner({ owner, direction }: Props) {
     setIsHovering(false);
   }, []);
 
-  const isMobile = useMemo(() => detectMobileDevice(), []);
+  const breakpoint = useBreakpoint();
+
+  const isDesktop = useMemo(
+    () => breakpoint === size.desktop && !detectMobileDevice(),
+    [breakpoint]
+  );
 
   return (
     <StyledOwner>
-      <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <GalleryLink to={`/${owner.username}`} underlined={false} underlineOnHover>
           <StyledUsername>{owner.username}</StyledUsername>
         </GalleryLink>
-      </div>
-      {!isMobile && showPreview && (
+      </StyledUsernameWrapper>
+      {isDesktop && showPreview && (
         <MemberListImagePreview
           direction={direction}
           nftUrls={owner.preview_nfts}
@@ -78,10 +84,14 @@ const StyledOwner = styled.div`
   }
 `;
 
+const StyledUsernameWrapper = styled.div`
+  max-width: 100%;
+`;
+
 const StyledUsername = styled(Heading)`
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 8px;
+  margin-right: 16px;
 `;
 
 export default MemberListOwner;
