@@ -24,6 +24,10 @@ function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQue
       return sortedOwners;
     }
 
+    if (searchQuery === '#') {
+      return sortedOwners.filter((owner) => !/^[A-Za-z]/.test(owner.username));
+    }
+
     return sortedOwners.filter((owner) =>
       owner.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
     );

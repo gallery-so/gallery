@@ -15,8 +15,6 @@ type FilterButtonProps = {
 };
 
 function FilterButton({ character, setSearchQuery, searchQuery }: FilterButtonProps) {
-  // const [selected, setSelected] = useState(false);
-
   const isSelected = useMemo(
     () => character.toLocaleLowerCase() === searchQuery.toLowerCase(),
     [character, searchQuery]
@@ -30,7 +28,6 @@ function FilterButton({ character, setSearchQuery, searchQuery }: FilterButtonPr
   const handleClick = useCallback(() => {
     const searchQuery = isSelected ? '' : character;
     setSearchQuery(searchQuery);
-    // setSelected((prevSelected) => !prevSelected);
   }, [character, isSelected, setSearchQuery]);
   return (
     <StyledFilterButton onClick={handleClick} selected={showActiveColor}>
@@ -72,12 +69,16 @@ type Props = {
 };
 
 function MemberListFilter({ setSearchQuery, searchQuery }: Props) {
-  const alphabet = useMemo(() => getAlphabet(), []);
+  const filterCharacters = useMemo(() => {
+    const alphabet = getAlphabet();
+    alphabet.push('#');
+    return alphabet;
+  }, []);
   const hasSearchQuery = useMemo(() => searchQuery.length > 0, [searchQuery]);
 
   return (
     <StyledMemberListFilter hasSearchQuery={hasSearchQuery}>
-      {alphabet.map((character) => (
+      {filterCharacters.map((character) => (
         <FilterButton
           key={character}
           character={character}

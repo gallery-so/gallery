@@ -13,6 +13,7 @@ import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
 import GalleryRoute from './GalleryRoute';
 import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 import MemberListPage from 'scenes/MemberListPage/MemberListPage';
+import { MEMBERS_LIST_ENABLED } from 'utils/featureFlag';
 
 export default function Routes() {
   return (
@@ -28,7 +29,7 @@ export default function Routes() {
               <GalleryRoute path="/auth" component={Auth} navbar={false} footerVisibleOutOfView />
               <GalleryAuthenticatedRoute path="/welcome" component={OnboardingFlow} freshLayout />
               <GalleryAuthenticatedRoute path="/edit" component={EditGalleryFlow} freshLayout />
-              <GalleryRoute path="/members" component={MemberListPage} />
+              {MEMBERS_LIST_ENABLED && <GalleryRoute path="/members" component={MemberListPage} />}
               <GalleryRoute
                 path="/membership/silver"
                 component={SilverMembershipMintPage}
