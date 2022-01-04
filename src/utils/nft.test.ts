@@ -90,6 +90,14 @@ describe('getMediaType', () => {
     };
 
     expect(getMediaType(ANIMATION_NFT_2)).toEqual(NftMediaType.ANIMATION);
+
+    const ANIMATION_NFT_3 = {
+      ...MOCK_NFT,
+      image_url: 'randomimage?h=140',
+      animation_url: 'https://ethblock.art/canvas/blockart/420',
+    };
+
+    expect(getMediaType(ANIMATION_NFT_3)).toEqual(NftMediaType.ANIMATION);
   });
 
   test('Audio', () => {
