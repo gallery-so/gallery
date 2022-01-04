@@ -37,22 +37,12 @@ export function getVideoUrl(nft: Nft) {
   return imageUrlFileExtension === 'mp4' ? nft.image_url : nft.animation_url;
 }
 
-export function isAnimationUrl(assetUrl: string, fileExtension: string) {
-  if (fileExtension === 'html') {
-    return true;
-  }
-
-  return animationDomains.some((animationDomain) => assetUrl.includes(animationDomain));
-}
-
 export function getMediaTypeForAssetUrl(assetUrl: string) {
   const fileExtension = getFileExtension(assetUrl);
 
-  if (isAnimationUrl(assetUrl, fileExtension)) {
-    return NftMediaType.ANIMATION;
-  }
-
   switch (fileExtension) {
+    case 'html':
+      return NftMediaType.ANIMATION;
     case 'mp4':
       return NftMediaType.VIDEO;
     case 'mp3':
@@ -60,7 +50,7 @@ export function getMediaTypeForAssetUrl(assetUrl: string) {
     case 'glb':
       return NftMediaType.MODEL;
     default:
-      return NftMediaType.IMAGE;
+      return NftMediaType.ANIMATION;
   }
 }
 
