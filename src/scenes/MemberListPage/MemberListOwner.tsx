@@ -59,7 +59,7 @@ function MemberListOwner({ owner, direction }: Props) {
           <StyledUsername>{owner.username}</StyledUsername>
         </GalleryLink>
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && (
+      {isDesktop && showPreview && owner.preview_nfts && (
         <MemberListImagePreview
           direction={direction}
           nftUrls={owner.preview_nfts}

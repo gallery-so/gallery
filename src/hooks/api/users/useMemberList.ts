@@ -114,16 +114,16 @@ const mockData = [
   },
 ] as MembershipTier[];
 
-export default function useMemberList() {
-  // const data = useGet<GetMemberListResponse>(`/users/membership`, 'fetch member list');
+type GetMemberListResponse = {
+  tiers: MembershipTier[];
+};
 
-  // if (!data) {
-  //   throw new Error('Error fetching member list');
-  // }
+export default function useMemberList(): MembershipTier[] {
+  const data = useGet<GetMemberListResponse>(`/users/membership`, 'fetch member list');
 
-  // console.log({ data });
+  if (!data) {
+    throw new Error('Error fetching member list');
+  }
 
-  // return data.tiers;
-
-  return mockData;
+  return data.tiers;
 }

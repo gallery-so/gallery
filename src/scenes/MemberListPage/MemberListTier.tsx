@@ -14,10 +14,14 @@ function getPreviewDirection(index: number) {
 }
 
 function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQuery: string }) {
-  const sortedOwners = useMemo(
-    () => tier.owners.sort((a, b) => a.username.localeCompare(b.username)),
-    [tier.owners]
-  );
+  const sortedOwners = useMemo(() => {
+    if (!tier.owners) {
+      return [];
+    }
+    return tier.owners
+      .filter((owner) => !!owner.username)
+      .sort((a, b) => a.username.localeCompare(b.username));
+  }, [tier.owners]);
 
   const filteredOwners = useMemo(() => {
     if (!searchQuery) {

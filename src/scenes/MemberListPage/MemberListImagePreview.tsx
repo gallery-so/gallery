@@ -32,6 +32,17 @@ function getAnimationMovement() {
   };
 }
 
+// for images stored in google, add or replace the size param
+function getFormattedImageUrl(url: string) {
+  if (!url.includes('googleusercontent')) {
+    return url;
+  }
+  if (url.includes('=s250')) {
+    return url.replace('=s250', '=w250');
+  }
+  return `${url}=w250`;
+}
+
 type Props = {
   direction: Directions.LEFT | Directions.RIGHT;
   nftUrls: string[];
@@ -48,7 +59,7 @@ function MemberListImagePreview({ direction, nftUrls, startFadeOut }: Props) {
         {nftUrls.map((url, index) => (
           <StyledPreviewImage
             key={url}
-            src={`${url}=w250`}
+            src={getFormattedImageUrl(url)}
             top={imagePositions[index].top}
             left={imagePositions[index].left}
             movement={animationMovements[index]}
@@ -76,7 +87,7 @@ type StyledPreviewImageWrapperProps = {
 const StyledPreviewImageWrapper = styled.div<StyledPreviewImageWrapperProps>`
   position: absolute;
   top: -250px;
-  left: ${({ direction }) => (direction === Directions.RIGHT ? '50px' : '-550px')};
+  left: ${({ direction }) => (direction === Directions.RIGHT ? '50px' : '-600px')};
 
   ${({ startFadeOut }) =>
     startFadeOut &&
