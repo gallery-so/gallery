@@ -11,11 +11,9 @@ export type MembershipMintPageState = {
   price: number;
 };
 
-export const MembershipMintPageContext = createContext<MembershipMintPageState>({
-  totalSupply: 0,
-  remainingSupply: 0,
-  price: 0,
-});
+export const MembershipMintPageContext = createContext<MembershipMintPageState | undefined>(
+  undefined
+);
 
 export const useMembershipMintPageState = (): MembershipMintPageState => {
   const context = useContext(MembershipMintPageContext);
@@ -50,32 +48,18 @@ export const useMembershipMintPageActions = (): MembershipMintPageActions => {
 type Props = { children: ReactNode };
 
 const MembershipMintPageProvider = memo(({ children }: Props) => {
-  const [MembershipMintPageState, setMembershipMintPageState] = useState<MembershipMintPageState>({
-    totalSupply: 0,
-    remainingSupply: 0,
-    price: 0,
-  });
+  const [totalSupply, setTotalSupply] = useState<number>(0);
+  const [remainingSupply, setRemainingSupply] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
 
-  const setTotalSupply = useCallback((totalSupply: number) => {
-    setMembershipMintPageState((previousState) => ({
-      ...previousState,
+  const state = useMemo(
+    () => ({
       totalSupply,
-    }));
-  }, []);
-
-  const setRemainingSupply = useCallback((remainingSupply: number) => {
-    setMembershipMintPageState((previousState) => ({
-      ...previousState,
       remainingSupply,
-    }));
-  }, []);
-
-  const setPrice = useCallback((price: number) => {
-    setMembershipMintPageState((previousState) => ({
-      ...previousState,
       price,
-    }));
-  }, []);
+    }),
+    [price, remainingSupply, totalSupply]
+  );
 
   const getSupply = useCallback(
     async (contract: Contract, tokenId: number) => {
@@ -102,7 +86,7 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
   );
 
   return (
-    <MembershipMintPageContext.Provider value={MembershipMintPageState}>
+    <MembershipMintPageContext.Provider value={state}>
       <MembershipMintPageActionsContext.Provider value={MembershipMintPageActions}>
         {children}
       </MembershipMintPageActionsContext.Provider>

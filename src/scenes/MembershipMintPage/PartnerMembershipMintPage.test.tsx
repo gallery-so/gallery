@@ -1,7 +1,7 @@
 import { OpenseaAsset, reduceOpenseaAssetsToContractAddresses } from './PartnerMembershipMintPage';
 
 describe('reduceOpenseaAssetsToContractAddresses', () => {
-  test('', () => {
+  test('Dedupes assets from the same contract and returns contract address only', () => {
     const asset1: OpenseaAsset = {
       asset_contract: {
         address: '0x123',

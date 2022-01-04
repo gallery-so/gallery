@@ -38,6 +38,8 @@ function encodeParameters(parameters: Array<string | number>) {
   );
 }
 
+const OPENSEA_API_BASEURL = process.env.NEXT_PUBLIC_OPENSEA_API_BASEURL ?? 'https://api.opensea.io';
+
 // reduces a list of Opensea Assets to a list just the contract addresses
 export function reduceOpenseaAssetsToContractAddresses(assets: OpenseaAsset[]) {
   const partnerNftAddressesOwned = assets.reduce(
@@ -68,7 +70,7 @@ async function detectOwnedPartnerNftsFromOpensea(
 ): Promise<string[]> {
   const params = getContractAddressQueryParams(addresses);
   const response = await fetch(
-    `https://testnets-api.opensea.io/api/v1/assets?owner=${account}${params}`,
+    `${OPENSEA_API_BASEURL}/api/v1/assets?owner=${account}${params}`,
     {}
   );
 
@@ -83,7 +85,7 @@ async function detectOwnedPartnerNftsFromOpensea(
 
 async function detectOwnedGeneralCardsFromOpensea(account: string) {
   const response = await fetch(
-    `https://testnets-api.opensea.io/api/v1/assets?owner=${account}&asset_contract_addresses=${GENERAL_MEMBERSHIP_CONRTACT_ADDRESS}`,
+    `${OPENSEA_API_BASEURL}/api/v1/assets?owner=${account}&asset_contract_addresses=${GENERAL_MEMBERSHIP_CONRTACT_ADDRESS}`,
     {}
   );
 
@@ -110,26 +112,26 @@ function PartnerMembershipMintPageContent() {
   );
 
   // Regardless of how many partner NFTs they own, we just need one contract address to mint with, so pick first one in list.
-  const partnerContractAddress = useMemo(() => ownedPartnerNfts[0], [ownedPartnerNfts]);
+  const partnerContractAddress = ownedPartnerNfts[0];
 
   // use a ref to track if we called OS, to limit to only calling them once
-  const calledOpenseaRef = useRef(false);
+  const finishedCallingOpensea = useRef(false);
   useEffect(() => {
     async function checkIfUserCanMint(account: string, addresses: string[]) {
-      const ownsGeneralCard = await detectOwnedGeneralCardsFromOpensea(account);
+      const generalCardDetectedInAccount = await detectOwnedGeneralCardsFromOpensea(account);
 
-      if (ownsGeneralCard) {
-        calledOpenseaRef.current = true;
+      if (generalCardDetectedInAccount) {
+        finishedCallingOpensea.current = true;
         setOwnsGeneralCard(true);
         return;
       }
 
       const ownedPartnerNfts = await detectOwnedPartnerNftsFromOpensea(account, addresses);
-      calledOpenseaRef.current = true;
+      finishedCallingOpensea.current = true;
       setOwnedPartnerNfts(ownedPartnerNfts);
     }
 
-    if (account && !calledOpenseaRef.current) {
+    if (account && !finishedCallingOpensea.current) {
       void checkIfUserCanMint(account, Object.keys(partnerContracts));
     }
   }, [account]);

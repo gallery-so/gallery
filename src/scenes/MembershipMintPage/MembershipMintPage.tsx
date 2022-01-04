@@ -230,11 +230,9 @@ function MembershipVideo({ src }: VideoProps) {
 
 function MembershipNftVisual({ src }: VideoProps) {
   return (
-    <div>
-      <ShimmerProvider>
-        <MembershipVideo src={src} />
-      </ShimmerProvider>
-    </div>
+    <ShimmerProvider>
+      <MembershipVideo src={src} />
+    </ShimmerProvider>
   );
 }
 
