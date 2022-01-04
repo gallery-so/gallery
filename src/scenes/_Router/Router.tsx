@@ -43,7 +43,7 @@ export default function Routes() {
                 navbar={false}
               />
               <GalleryRoute path="/nuke" component={Nuke} navbar={false} />
-              <GalleryRoute path="/:userName/:collectionId/:nftId" component={NftDetailPage} />
+              <GalleryRoute path="/:username/:collectionId/:nftId" component={NftDetailPage} />
               <GalleryRoute path="/:username" component={UserGalleryPage} />
             </Router>
           </FadeTransitioner>

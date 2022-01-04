@@ -10,6 +10,7 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import usePrevious from 'hooks/usePrevious';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
+import Head from 'next/head';
 
 type Props = {
   username: string;
@@ -59,6 +60,9 @@ function UserGalleryPage({ username }: RouteComponentProps<Props>) {
 
   return (
     <UserGalleryPageErrorBoundary>
+      <Head>
+        <title>{username} | Gallery</title>
+      </Head>
       <Page>
         <StyledUserGalleryWrapper>
           <UserGallery username={username} />
