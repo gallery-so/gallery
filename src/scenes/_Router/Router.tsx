@@ -13,6 +13,7 @@ import GalleryRoute from './GalleryRoute';
 import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
 import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 import PartnerMembershipMintPage from 'scenes/MembershipMintPage/PartnerMembershipMintPage';
+import { PARTNER_MINT_ENABLED } from 'utils/featureFlag';
 
 export default function Routes() {
   return (
@@ -33,11 +34,13 @@ export default function Routes() {
                 component={SilverMembershipMintPage}
                 navbar={false}
               />
-              <GalleryRoute
-                path="/membership/partners"
-                component={PartnerMembershipMintPage}
-                navbar={false}
-              />
+              {PARTNER_MINT_ENABLED && (
+                <GalleryRoute
+                  path="/membership/partners"
+                  component={PartnerMembershipMintPage}
+                  navbar={false}
+                />
+              )}
               <GalleryRoute
                 path="/membership/gold"
                 component={GoldMembershipMintPage}
