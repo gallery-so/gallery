@@ -18,14 +18,6 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
   return image_original_url || image_url || contract_image_url || FALLBACK_URL;
 }
 
-const animationDomains = [
-  'https://api.artblocks',
-  'https://generator.artblocks',
-  'https://api.heaven.computer',
-  'https://tokens.mathcastles.xyz',
-  'https://art-ai.com',
-];
-
 export function getFileExtension(url: string) {
   const splitUrl = url.split('.');
 
