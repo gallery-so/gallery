@@ -11,7 +11,7 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
     asset_contract: { contract_image_url },
   } = nft;
 
-  if (animation_original_url.endsWith('.gif')) {
+  if (animation_original_url?.endsWith('.gif')) {
     return animation_original_url;
   }
 
