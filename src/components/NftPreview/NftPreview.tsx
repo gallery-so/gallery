@@ -36,7 +36,7 @@ function NftPreview({ nft, collectionId, columns }: Props) {
     (event: React.MouseEvent<HTMLElement>) => {
       navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
     },
-    [collectionId, navigate, nft.id]
+    [collectionId, navigateToUrl, nft.id]
   );
   const screenWidth = useBreakpoint();
 
