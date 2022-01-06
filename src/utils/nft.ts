@@ -7,8 +7,13 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
   const {
     image_url,
     image_original_url,
+    animation_original_url,
     asset_contract: { contract_image_url },
   } = nft;
+
+  if (animation_original_url?.endsWith('.gif')) {
+    return animation_original_url;
+  }
 
   // Resizes if google image: https://developers.google.com/people/image-sizing
   if (image_url?.includes('googleusercontent')) {
@@ -17,12 +22,6 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
 
   return image_original_url || image_url || contract_image_url || FALLBACK_URL;
 }
-
-const animationDomains = [
-  'https://api.artblocks',
-  'https://generator.artblocks',
-  'https://api.heaven.computer',
-];
 
 export function getFileExtension(url: string) {
   const splitUrl = url.split('.');
@@ -35,30 +34,22 @@ export function getVideoUrl(nft: Nft) {
   return imageUrlFileExtension === 'mp4' ? nft.image_url : nft.animation_url;
 }
 
-export function isAnimationUrl(assetUrl: string, fileExtension: string) {
-  if (fileExtension === 'html') {
-    return true;
-  }
-
-  return animationDomains.some((animationDomain) => assetUrl.includes(animationDomain));
-}
-
 export function getMediaTypeForAssetUrl(assetUrl: string) {
   const fileExtension = getFileExtension(assetUrl);
 
-  if (isAnimationUrl(assetUrl, fileExtension)) {
-    return NftMediaType.ANIMATION;
-  }
-
   switch (fileExtension) {
+    case 'html':
+      return NftMediaType.ANIMATION;
     case 'mp4':
       return NftMediaType.VIDEO;
     case 'mp3':
       return NftMediaType.AUDIO;
     case 'glb':
       return NftMediaType.MODEL;
-    default:
+    case 'gif':
       return NftMediaType.IMAGE;
+    default:
+      return NftMediaType.ANIMATION;
   }
 }
 

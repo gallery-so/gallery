@@ -143,7 +143,11 @@ export async function listenForGnosisSignature(
 export async function validateGnosisSignature(gnosisSafeContract: Contract, messageHash: string) {
   const magicValue = await gnosisSafeContract
     .isValidSignature(messageHash, '0x')
-    .catch(() => false);
+    .catch((error: unknown) => {
+      console.error(error);
+      return false;
+    });
+
   return magicValue === GNOSIS_VALID_SIGNATURE_MAGIC_VALUE;
 }
 

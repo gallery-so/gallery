@@ -4,16 +4,17 @@ import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
 import EditGalleryFlow from 'flows/EditGalleryFlow/EditGalleryFlow';
 import GalleryNavigationContextProvider from 'contexts/navigation/GalleryNavigationContext';
-import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
 import NftDetailPage from '../NftDetailPage/NftDetailPage';
 import Nuke from '../Nuke/Nuke';
 import UserGalleryPage from '../UserGalleryPage/UserGalleryPage';
 import GalleryRoute from './GalleryRoute';
+import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
 import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
 import MemberListPage from 'scenes/MemberListPage/MemberListPage';
-import { MEMBERS_LIST_ENABLED } from 'utils/featureFlag';
+import { MEMBERS_LIST_ENABLED, PARTNER_MINT_ENABLED } from 'utils/featureFlag';
+import PartnerMembershipMintPage from 'scenes/MembershipMintPage/PartnerMembershipMintPage';
 
 export default function Routes() {
   return (
@@ -35,11 +36,13 @@ export default function Routes() {
                 component={SilverMembershipMintPage}
                 navbar={false}
               />
-              {/* <GalleryRoute
-                path="/membership/white"
-                component={WhiteMembershipMintPage}
-                navbar={false}
-              /> */}
+              {PARTNER_MINT_ENABLED && (
+                <GalleryRoute
+                  path="/membership/partners"
+                  component={PartnerMembershipMintPage}
+                  navbar={false}
+                />
+              )}
               <GalleryRoute
                 path="/membership/gold"
                 component={GoldMembershipMintPage}
