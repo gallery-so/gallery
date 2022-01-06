@@ -49,7 +49,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
     setOnPrevious(undefined);
   }, [setOnNext, setOnPrevious]);
 
-  const { replace, back } = useRouter();
+  const { replace, back, push } = useRouter();
   const returnToPrevious = useCallback(() => {
     if (canGoBack) {
       back();
