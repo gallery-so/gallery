@@ -1,11 +1,14 @@
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { useMemo } from 'react';
-import ABI from 'abis/invite-1155.json';
+import PREMIUM_MEMBERSHIP_CONTRACT_ABI from 'abis/premium-membership-contract.json';
+import GENERAL_MEMBERSHIP_CONTRACT_ABI from 'abis/general-membership-contract.json';
 import { network } from 'connectors/index';
 import { useActiveWeb3React } from './useWeb3';
 
-export const MEMBERSHIP_CONTRACT_ADDRESS = '0xe01569ca9b39E55Bc7C0dFa09F05fa15CB4C7698';
+export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS = '0xe01569ca9b39E55Bc7C0dFa09F05fa15CB4C7698';
+// rinkeby address
+export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS = '0x989Cb023620Cec6798161EcA6C7eccFf68C0C9c3';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
@@ -25,7 +28,7 @@ function getContract(address: string, ABI: any, library: Web3Provider, account?:
   return new Contract(address, ABI, getProviderOrSigner(library, account));
 }
 
-function useContract(address: string) {
+function useContract(address: string, abi: any) {
   const { library, account, activate } = useActiveWeb3React();
 
   if (!library) {
@@ -39,14 +42,18 @@ function useContract(address: string) {
     }
 
     try {
-      return getContract(address, ABI, library, account ? account : undefined);
+      return getContract(address, abi, library, account ? account : undefined);
     } catch {
       console.error('Error getting contract');
       return null;
     }
-  }, [account, address, library]);
+  }, [abi, account, address, library]);
 }
 
-export function useMembershipCardContract() {
-  return useContract(MEMBERSHIP_CONTRACT_ADDRESS);
+export function usePremiumMembershipCardContract() {
+  return useContract(PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS, PREMIUM_MEMBERSHIP_CONTRACT_ABI);
+}
+
+export function useGeneralMembershipCardContract() {
+  return useContract(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS, GENERAL_MEMBERSHIP_CONTRACT_ABI);
 }
