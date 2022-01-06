@@ -1,6 +1,5 @@
 import { memo } from 'react';
-import { RouteComponentProps } from '@reach/router';
-import { Wizard, Steps, Step } from 'react-albus';
+import { Step, Steps, Wizard } from 'react-albus';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
@@ -13,7 +12,7 @@ const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   organizeGallery: 'Save',
 };
 
-function EditGalleryFlow(_: RouteComponentProps) {
+function EditGalleryFlow() {
   return (
     <GalleryWizardProvider id="edit-gallery">
       <CollectionWizardProvider>
