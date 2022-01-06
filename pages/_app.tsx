@@ -6,6 +6,7 @@ import 'src/index.css';
 import 'src/scenes/NftDetailPage/model-viewer.css';
 
 import Head from 'next/head';
+import AppProvider from 'contexts/AppProvider';
 
 const SafeHydrate: FC = ({ children }) => (
   <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
@@ -44,7 +45,9 @@ const App: FC<{
       <title>Gallery</title>
     </Head>
     <SafeHydrate>
-      <Component {...pageProps} />
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
     </SafeHydrate>
   </>
 );
