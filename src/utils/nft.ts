@@ -7,8 +7,13 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
   const {
     image_url,
     image_original_url,
+    animation_original_url,
     asset_contract: { contract_image_url },
   } = nft;
+
+  if (animation_original_url?.endsWith('.gif')) {
+    return animation_original_url;
+  }
 
   // Resizes if google image: https://developers.google.com/people/image-sizing
   if (image_url?.includes('googleusercontent')) {
@@ -41,6 +46,8 @@ export function getMediaTypeForAssetUrl(assetUrl: string) {
       return NftMediaType.AUDIO;
     case 'glb':
       return NftMediaType.MODEL;
+    case 'gif':
+      return NftMediaType.IMAGE;
     default:
       return NftMediaType.ANIMATION;
   }
