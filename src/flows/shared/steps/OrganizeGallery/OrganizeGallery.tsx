@@ -18,7 +18,7 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 import { useRouter } from 'next/router';
-import { useCanGoBack } from 'contexts/navigation/CanGoBackProvider';
+import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 
 type ConfigProps = {
   wizardId: string;
