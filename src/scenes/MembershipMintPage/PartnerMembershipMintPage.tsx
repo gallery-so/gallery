@@ -75,7 +75,7 @@ async function detectOwnedPartnerNftsFromOpensea(
   );
 
   const responseBody = await response.json();
-  // const responseBody = { assets: [] };
+
   if (responseBody.assets.length > 0) {
     return reduceOpenseaAssetsToContractAddresses(responseBody.assets);
   }
