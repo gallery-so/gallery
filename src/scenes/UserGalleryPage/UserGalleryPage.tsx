@@ -58,10 +58,14 @@ function useSuggestion() {
 function UserGalleryPage({ username }: RouteComponentProps<Props>) {
   useSuggestion();
 
+  const headTitle = `${username} | Gallery`;
+
   return (
     <UserGalleryPageErrorBoundary>
       <Head>
-        <title>{username} | Gallery</title>
+        <title>{headTitle}</title>
+        <meta property="og:title" content={headTitle} key="og:title" />
+        <meta name="twitter:title" content={headTitle} key="twitter:title" />
       </Head>
       <Page>
         <StyledUserGalleryWrapper>

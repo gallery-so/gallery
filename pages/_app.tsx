@@ -19,6 +19,8 @@ const App: FC<{
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="description" content="Show your collection to the world." />
+      <meta property="og:title" content="Gallery" key="og:title" />
+      <meta name="twitter:title" content="Gallery" key="twitter:title" />
 
       <title>Gallery</title>
     </Head>

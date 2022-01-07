@@ -40,7 +40,6 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
 
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Gallery" />
           <meta property="og:description" content="Show your collection to the world." />
           <meta
             property="og:image"
@@ -51,7 +50,6 @@ export default class MyDocument extends Document {
 
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:site" content="@usegallery" />
-          <meta name="twitter:title" content="Gallery" />
           <meta name="twitter:description" content="Show your collection to the world." />
           <meta
             name="twitter:image"
