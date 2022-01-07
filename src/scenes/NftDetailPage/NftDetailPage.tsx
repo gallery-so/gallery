@@ -25,8 +25,6 @@ function NftDetailPage({ username, nftId }: RouteComponentProps<Props>) {
 
   const handleBackClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      // const username = window.location.pathname.split('/')[1];
-
       if (event.metaKey) {
         window.open(`/${username}`);
         return;
