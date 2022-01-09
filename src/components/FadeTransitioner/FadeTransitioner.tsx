@@ -10,7 +10,7 @@ type Props = {
 };
 
 // NOTE: if you change these, make sure to update `transition.css`
-const FADE_TIME_MS = 300;
+export const FADE_TIME_MS = 300;
 export const NAVIGATION_TRANSITION_TIME_MS = 700;
 
 const timeoutConfig = {

@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { FADE_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 
 type GalleryNavigationContextType = { historyStackLength: number };
 
@@ -54,6 +55,28 @@ export function GalleryNavigationProvider({ children }: Props) {
     };
 
     function handlePopState() {
+      const originalScrollTo = window.scrollTo;
+
+      // This part exists to delay Next.JS built in scroll restoration.
+      //
+      // Without this bit, the scroll restoration happens as soon as the
+      // animation starts. This means the user will see a scroll event
+      // happen even though the previous page hasn't fully been covered
+      // by the white overlay.
+      //
+      // We can fix this by intercepting the Next.JS scroll restoration
+      // when they call popState, and delaying the actual call until
+      // the animation is where we want it to be.
+      // @ts-expect-error We're getting too raw here
+      window.scrollTo = (...args) => {
+        setTimeout(() => {
+          // @ts-expect-error We're getting too raw here
+          originalScrollTo(...args);
+        }, FADE_TIME_MS);
+
+        window.scrollTo = originalScrollTo;
+      };
+
       setHistoryStackLength(window.history.state.idx ?? 0);
     }
 
