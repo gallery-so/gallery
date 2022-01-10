@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import { Directions } from 'src/components/core/enums';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const verticalOffset = [0, 130, 260];
 const horizontalOffset = [0, 90, 180];
@@ -45,13 +45,47 @@ function getFormattedImageUrl(url: string) {
   return `${url}=w250`;
 }
 
-type Props = {
+type PreviewImageProps = {
+  src: string;
+  top: number;
+  left: number;
+  movement: {
+    x: number;
+    y: number;
+    time: number;
+  };
+};
+
+function PreviewImage({ src, top, left, movement }: PreviewImageProps) {
+  // use the isLoaded state to trigger the image to fade in after it's loaded, so the image doesn't appear suddenly
+  const [isLoaded, setIsLoaded] = useState(false);
+  const onLoad = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+
+  return (
+    <StyledPreviewImage
+      src={getFormattedImageUrl(src)}
+      top={top}
+      left={left}
+      movement={movement}
+      onLoad={onLoad}
+      isLoaded={isLoaded}
+    />
+  );
+}
+
+type MemberListGalleryPreviewProps = {
   direction: Directions.LEFT | Directions.RIGHT;
   nftUrls: string[];
   startFadeOut?: boolean;
 };
 
-function MemberListImagePreview({ direction, nftUrls, startFadeOut }: Props) {
+function MemberListGalleryPreview({
+  direction,
+  nftUrls,
+  startFadeOut,
+}: MemberListGalleryPreviewProps) {
   const animationMovements = useMemo(() => nftUrls.map(() => getAnimationMovement()), [nftUrls]);
   const imagePositions = useMemo(() => getImagePositions(nftUrls), [nftUrls]);
 
@@ -59,9 +93,9 @@ function MemberListImagePreview({ direction, nftUrls, startFadeOut }: Props) {
     <StyledPreview>
       <StyledPreviewImageWrapper direction={direction} startFadeOut={startFadeOut}>
         {nftUrls.map((url, index) => (
-          <StyledPreviewImage
+          <PreviewImage
             key={url}
-            src={getFormattedImageUrl(url)}
+            src={url}
             top={imagePositions[index].top}
             left={imagePositions[index].left}
             movement={animationMovements[index]}
@@ -127,6 +161,7 @@ type StyledPreviewImageProps = {
   top: number;
   left: number;
   movement: Movement;
+  isLoaded: boolean;
 };
 
 const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
@@ -135,10 +170,15 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
   left: ${({ left }) => left}px;
   background-color: white;
   width: 250px;
+  opacity: 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;
-  animation: ${({ movement }) => float(movement.x, movement.y)} ${({ movement }) => movement.time}s
-      ease-in-out infinite,
-    ${fadeIn} 0.5s forwards;
+
+  ${({ isLoaded, movement }) =>
+    isLoaded &&
+    css`
+      animation: ${float(movement.x, movement.y)} ${movement.time}s ease-in-out infinite,
+        ${fadeIn} 0.5s forwards;
+    `}
 `;
 
-export default MemberListImagePreview;
+export default MemberListGalleryPreview;

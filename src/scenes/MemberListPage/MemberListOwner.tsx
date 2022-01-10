@@ -6,7 +6,7 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
 import { Directions } from 'src/components/core/enums';
-import MemberListImagePreview from './MemberListImagePreview';
+import MemberListGalleryPreview from './MemberListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
 
@@ -60,7 +60,7 @@ function MemberListOwner({ owner, direction }: Props) {
         </GalleryLink>
       </StyledUsernameWrapper>
       {isDesktop && showPreview && owner.preview_nfts && (
-        <MemberListImagePreview
+        <MemberListGalleryPreview
           direction={direction}
           nftUrls={owner.preview_nfts}
           startFadeOut={startFadeOut}
