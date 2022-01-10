@@ -13,12 +13,12 @@ import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
-import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 import { useRouter } from 'next/router';
+import { useCanGoBack } from 'contexts/navigation/CanGoBackProvider';
 
 type ConfigProps = {
   wizardId: string;
@@ -42,25 +42,23 @@ function useNotOptimizedForMobileWarning() {
 
 function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
-  const { getVisitedPagesLength } = useGalleryNavigationActions();
+  const canGoBack = useCanGoBack();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
     setOnPrevious(undefined);
   }, [setOnNext, setOnPrevious]);
 
-  const { push, back } = useRouter();
+  const { replace, back } = useRouter();
   const returnToPrevious = useCallback(() => {
-    const visitedPagesLength = getVisitedPagesLength();
-    if (visitedPagesLength === 1) {
-      void push(`/${username}`);
-    } else {
-      // TODO(Terence): check in with Robin on expected behavior here.
+    if (canGoBack) {
       back();
+    } else {
+      void replace(`/${username}`);
     }
 
     clearOnNext();
-  }, [back, clearOnNext, getVisitedPagesLength, push, username]);
+  }, [canGoBack, clearOnNext, back, replace, username]);
 
   const saveGalleryAndReturnToProfile = useCallback(async () => {
     clearOnNext();
