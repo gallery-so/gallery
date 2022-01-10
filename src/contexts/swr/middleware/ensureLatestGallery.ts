@@ -19,8 +19,11 @@ const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, conf
 
   const previousData = useRef<GetGalleriesResponse | undefined>(undefined);
 
-  // @ts-expect-error this route will always return `GetGalleriesResponse` type
-  const currentTimestamp = getTimeFromISOString(swr.data.galleries[0]?.last_updated);
+  const currentTimestamp = getTimeFromISOString(
+    // @ts-expect-error this route will always return `GetGalleriesResponse` type
+    swr.data.galleries.length > 0 ? swr.data.galleries[0].last_updated : 0
+  );
+
   const previousTimestamp = getTimeFromISOString(
     previousData.current?.galleries[0]?.last_updated ?? 0
   );
