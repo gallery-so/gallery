@@ -7,13 +7,14 @@ import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import { navigate } from '@reach/router';
 import breakpoints from 'components/core/breakpoints';
+import { useRouter } from 'next/router';
 
 function EditUserInfoModal() {
   const existingUser = useAuthenticatedUser();
 
   const { hideModal } = useModal();
+  const { push } = useRouter();
 
   const closeModalAndNavigateToNewUsername = useCallback(
     (newUsername: string) => {
@@ -22,10 +23,10 @@ function EditUserInfoModal() {
       // If the user chooses a new username, we should navigate them there
       const previousUsername = existingUser.username;
       if (newUsername !== previousUsername) {
-        void navigate(`/${newUsername}`);
+        void push(`/${newUsername}`);
       }
     },
-    [hideModal, existingUser.username]
+    [hideModal, existingUser.username, push]
   );
 
   const {

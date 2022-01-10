@@ -1,4 +1,4 @@
-import { globalHistory, navigate } from '@reach/router';
+import { globalHistory } from '@reach/router';
 import { NAVIGATION_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import {
   createContext,
@@ -52,16 +52,6 @@ type Props = {
 
 const GalleryNavigationContextProvider = memo(({ children, pathname, locationKey }: Props) => {
   const sanitizedPathname = useMemo(() => sanitizePathname(pathname), [pathname]);
-
-  // drop trailing slash: /bingbong/ => /bingbong
-  useEffect(() => {
-    if (pathname !== sanitizedPathname) {
-      void navigate(
-        sanitizedPathname,
-        { replace: true } // option to keep history unchanged
-      );
-    }
-  }, [pathname, sanitizedPathname]);
 
   // track pageviews
   useEffect(() => {

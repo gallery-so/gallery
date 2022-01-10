@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { navigate } from '@reach/router';
 import styled from 'styled-components';
 import { BodyRegular, Display } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
@@ -7,13 +6,15 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
+import { useRouter } from 'next/router';
 
 function Congratulations() {
   const username = useAuthenticatedUsername();
+  const { push } = useRouter();
 
   const handleClick = useCallback(() => {
-    void navigate(`/${username}`);
-  }, [username]);
+    void push(`/${username}`);
+  }, [username, push]);
 
   return (
     <FullPageCenteredStep>

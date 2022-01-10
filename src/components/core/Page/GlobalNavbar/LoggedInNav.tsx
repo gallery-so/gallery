@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { navigate } from '@reach/router';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
@@ -12,12 +11,14 @@ import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { truncateAddress } from 'utils/wallet';
 import { MULTI_WALLET_ENABLED } from 'utils/featureFlag';
 import NavElement from './NavElement';
+import { useRouter } from 'next/router';
 
 function LoggedInNav() {
   const { logOut } = useAuthActions();
   const user = useAuthenticatedUser();
   const userAddress = useAuthenticatedUserAddress();
   const { showModal } = useModal();
+  const { push } = useRouter();
 
   const truncatedUserAddress = useMemo(() => truncateAddress(userAddress), [userAddress]);
 
@@ -27,8 +28,8 @@ function LoggedInNav() {
       return;
     }
 
-    void navigate(`/${user.username}`);
-  }, [user.username]);
+    void push(`/${user.username}`);
+  }, [push, user.username]);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal(<ManageWalletsModal />);
@@ -39,8 +40,8 @@ function LoggedInNav() {
   }, [showModal]);
 
   const handleEditGalleryClick = useCallback(() => {
-    void navigate('/edit');
-  }, []);
+    void push('/edit');
+  }, [push]);
 
   return (
     <>

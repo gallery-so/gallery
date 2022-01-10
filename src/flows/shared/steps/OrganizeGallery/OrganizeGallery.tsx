@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -19,6 +18,7 @@ import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
+import { useRouter } from 'next/router';
 
 type ConfigProps = {
   wizardId: string;
@@ -49,16 +49,18 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
     setOnPrevious(undefined);
   }, [setOnNext, setOnPrevious]);
 
+  const { push, back } = useRouter();
   const returnToPrevious = useCallback(() => {
     const visitedPagesLength = getVisitedPagesLength();
     if (visitedPagesLength === 1) {
-      void navigate(`/${username}`);
+      void push(`/${username}`);
     } else {
-      void navigate(-1);
+      // TODO(Terence): check in with Robin on expected behavior here.
+      back();
     }
 
     clearOnNext();
-  }, [clearOnNext, getVisitedPagesLength, username]);
+  }, [back, clearOnNext, getVisitedPagesLength, push, username]);
 
   const saveGalleryAndReturnToProfile = useCallback(async () => {
     clearOnNext();
@@ -69,8 +71,8 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
       return;
     }
 
-    void navigate(`/${username}`);
-  }, [clearOnNext, next, username, wizardId]);
+    void push(`/${username}`);
+  }, [clearOnNext, next, push, username, wizardId]);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);

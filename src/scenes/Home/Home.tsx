@@ -1,16 +1,18 @@
-import { navigate, RouteComponentProps } from '@reach/router';
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
 import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
+import { useRouter } from 'next/router';
 
-function Home(_: RouteComponentProps) {
+function Home() {
+  const { push } = useRouter();
+
   const handleEnterGallery = useCallback(() => {
     // If the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
-    void navigate('/auth');
-  }, []);
+    void push('/auth');
+  }, [push]);
 
   return (
     <Page centered>

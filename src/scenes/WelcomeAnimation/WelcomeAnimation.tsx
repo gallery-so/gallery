@@ -1,14 +1,14 @@
-import { useCallback, useState, useEffect } from 'react';
-import { Display, BodyRegular } from 'components/core/Text/Text';
+import { useCallback, useEffect, useState } from 'react';
+import { BodyRegular, Display } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import styled, { css, keyframes } from 'styled-components';
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 import Mixpanel from 'utils/mixpanel';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
-import { navigate } from '@reach/router';
+import { useRouter } from 'next/router';
 
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
@@ -161,6 +161,7 @@ export default function WelcomeAnimation({ next }: Props) {
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [shouldExplode, setShouldExplode] = useState(false);
   const username = useAuthenticatedUsername();
+  const { push } = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
@@ -170,7 +171,7 @@ export default function WelcomeAnimation({ next }: Props) {
   const handleClick = useCallback(() => {
     Mixpanel.track('Click through welcome page');
     if (username) {
-      void navigate(`/${username}`);
+      void push(`/${username}`);
       return;
     }
 
@@ -179,7 +180,7 @@ export default function WelcomeAnimation({ next }: Props) {
     setTimeout(() => {
       next();
     }, 2000);
-  }, [next, username]);
+  }, [next, username, push]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
