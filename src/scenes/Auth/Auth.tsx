@@ -1,6 +1,5 @@
 import { memo } from 'react';
 
-import { RouteComponentProps } from '@reach/router';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
@@ -12,7 +11,7 @@ import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import breakpoints from 'components/core/breakpoints';
 import Spacer from 'components/core/Spacer/Spacer';
 
-function Auth(_: RouteComponentProps) {
+function Auth() {
   // Whether the user is web3-authenticated
   const isAuthenticated = useIsAuthenticated();
   const user = usePossiblyAuthenticatedUser();

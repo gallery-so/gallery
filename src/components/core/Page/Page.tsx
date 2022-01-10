@@ -12,7 +12,7 @@ type Props = {
   topPadding?: boolean;
   // forces page to take up the screen height exactly. only applies for desktop.
   fixedFullPageHeight?: boolean;
-  children: ReactNode | ReactNode[];
+  children?: ReactNode | ReactNode[];
 };
 
 function Page({

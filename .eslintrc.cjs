@@ -39,11 +39,11 @@ const rules = {
   '@typescript-eslint/no-unsafe-member-access': 'off',
   '@typescript-eslint/switch-exhaustiveness-check': 'off',
   '@typescript-eslint/no-namespace': 'off',
-  '@typescript-eslint/no-unused-vars': 'warn',
+  '@typescript-eslint/no-unused-vars': 'error',
 };
 
 module.exports = {
-  ignorePatterns: ['next-env.d.ts'],
+  ignorePatterns: ['next-env.d.ts', 'node_modules', 'build'],
 
   extends: ['xo', 'xo-react', 'prettier'],
   plugins: ['node'],

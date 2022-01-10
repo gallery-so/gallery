@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { RouteComponentProps } from '@reach/router';
 import { Wizard, Steps, Step } from 'react-albus';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
@@ -20,7 +19,7 @@ const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   organizeGallery: 'Publish Gallery',
 };
 
-function OnboardingFlow(_: RouteComponentProps) {
+function OnboardingFlow() {
   return (
     <GalleryWizardProvider id="onboarding">
       <CollectionWizardProvider>

@@ -4,6 +4,7 @@ import AuthProvider from './auth/AuthContext';
 import ModalProvider from './modal/ModalContext';
 import ToastProvider from './toast/ToastContext';
 import { Web3ProviderNetwork } from './auth/Web3WalletContext';
+import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
 
 type Props = {
   children: React.ReactNode;
@@ -16,7 +17,9 @@ export default function AppProvider({ children }: Props) {
         <AuthProvider>
           <Web3ProviderNetwork>
             <SwrProvider>
-              <ModalProvider>{children}</ModalProvider>
+              <GalleryNavigationProvider>
+                <ModalProvider>{children}</ModalProvider>
+              </GalleryNavigationProvider>
             </SwrProvider>
           </Web3ProviderNetwork>
         </AuthProvider>

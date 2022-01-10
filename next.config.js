@@ -20,15 +20,6 @@ module.exports = {
   experimental: {
     // Enables the styled-components SWC transform
     styledComponents: true,
-  },
-
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ];
+    scrollRestoration: true,
   },
 };

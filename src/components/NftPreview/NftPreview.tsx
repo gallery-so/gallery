@@ -6,7 +6,7 @@ import transitions from 'components/core/transitions';
 import { useCallback, useMemo } from 'react';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
-import { navigateToUrl } from 'utils/navigate';
+import { useNavigateToUrl } from 'utils/navigate';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
@@ -30,11 +30,13 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
 };
 
 function NftPreview({ nft, collectionId, columns }: Props) {
+  const navigateToUrl = useNavigateToUrl();
+
   const handleNftClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       navigateToUrl(`${window.location.pathname}/${collectionId}/${nft.id}`, event);
     },
-    [collectionId, nft.id]
+    [collectionId, navigateToUrl, nft.id]
   );
   const screenWidth = useBreakpoint();
 
