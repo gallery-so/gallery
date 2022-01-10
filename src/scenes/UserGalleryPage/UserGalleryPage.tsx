@@ -10,6 +10,7 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import usePrevious from 'hooks/usePrevious';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
+import Head from 'next/head';
 
 type Props = {
   username: string;
@@ -57,8 +58,15 @@ function useSuggestion() {
 function UserGalleryPage({ username }: RouteComponentProps<Props>) {
   useSuggestion();
 
+  const headTitle = `${username} | Gallery`;
+
   return (
     <UserGalleryPageErrorBoundary>
+      <Head>
+        <title>{headTitle}</title>
+        <meta property="og:title" content={headTitle} key="og:title" />
+        <meta name="twitter:title" content={headTitle} key="twitter:title" />
+      </Head>
       <Page>
         <StyledUserGalleryWrapper>
           <UserGallery username={username} />

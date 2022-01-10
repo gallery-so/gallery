@@ -36,27 +36,6 @@ export default class MyDocument extends Document {
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
-          <meta name="msapplication-TileColor" content="#da532c" />
-          <meta name="theme-color" content="#ffffff" />
-
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="Gallery" />
-          <meta property="og:description" content="Show your collection to the world." />
-          <meta
-            property="og:image"
-            content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
-          />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:site" content="@usegallery" />
-          <meta name="twitter:title" content="Gallery" />
-          <meta name="twitter:description" content="Show your collection to the world." />
-          <meta
-            name="twitter:image"
-            content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
-          />
           <script
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{

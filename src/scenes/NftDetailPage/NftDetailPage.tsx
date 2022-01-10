@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { navigate, RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
 
@@ -12,19 +12,19 @@ import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigati
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
+import Head from 'next/head';
 
 type Props = {
   collectionId: string;
   nftId: string;
+  username: string;
 };
 
-function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
+function NftDetailPage({ username, nftId }: RouteComponentProps<Props>) {
   const { getVisitedPagesLength } = useGalleryNavigationActions();
 
   const handleBackClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      const username = window.location.pathname.split('/')[1];
-
       if (event.metaKey) {
         window.open(`/${username}`);
         return;
@@ -45,41 +45,49 @@ function NftDetailPage({ nftId }: RouteComponentProps<Props>) {
       // position is maintained when going back (see: GalleryNavigationContext.tsx)
       void navigate(-1);
     },
-    [getVisitedPagesLength]
+    [getVisitedPagesLength, username]
   );
 
   const nft = useNft({ id: nftId ?? '' });
+  const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
   }
 
   return (
-    <StyledNftDetailPage centered fixedFullPageHeight>
-      <StyledBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
-      </StyledBackLink>
-      <StyledBody>
-        {/* {prevNftId && (
+    <>
+      <Head>
+        <title>{headTitle}</title>
+        <meta property="og:title" content={headTitle} key="og:title" />
+        <meta name="twitter:title" content={headTitle} key="twitter:title" />
+      </Head>
+      <StyledNftDetailPage centered fixedFullPageHeight>
+        <StyledBackLink>
+          <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
+        </StyledBackLink>
+        <StyledBody>
+          {/* {prevNftId && (
           <NavigationHandle
             direction={Directions.LEFT}
             nftId={prevNftId}
           ></NavigationHandle>
         )} */}
-        <StyledContentContainer>
-          <ShimmerProvider>
-            <NftDetailAsset nft={nft} />
-          </ShimmerProvider>
-          <NftDetailText nft={nft} />
-        </StyledContentContainer>
-        {/* {nextNftId && (
+          <StyledContentContainer>
+            <ShimmerProvider>
+              <NftDetailAsset nft={nft} />
+            </ShimmerProvider>
+            <NftDetailText nft={nft} />
+          </StyledContentContainer>
+          {/* {nextNftId && (
           <NavigationHandle
             direction={Directions.RIGHT}
             nftId={nextNftId}
           ></NavigationHandle>
         )} */}
-      </StyledBody>
-    </StyledNftDetailPage>
+        </StyledBody>
+      </StyledNftDetailPage>
+    </>
   );
 }
 
