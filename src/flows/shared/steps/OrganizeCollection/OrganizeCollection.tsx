@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { WizardContext } from 'react-albus';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -56,7 +56,7 @@ function useWizardConfig({ push }: ConfigProps) {
             stagedNftsRaw.current,
             collectionMetadata.layout
           );
-        } catch (e: unknown) {
+        } catch {
           // TODO: display error toast here
         }
 

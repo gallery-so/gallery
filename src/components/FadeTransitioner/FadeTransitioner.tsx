@@ -1,9 +1,8 @@
-import { CSSProperties, memo, Suspense, useCallback, useEffect, useRef } from 'react';
+import { CSSProperties, memo, Suspense } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import { useRouter } from 'next/router';
 
 type Props = {
   locationKey?: string;

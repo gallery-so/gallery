@@ -5,11 +5,14 @@ import { useRouter } from 'next/router';
 export function useNavigateToUrl() {
   const { push } = useRouter();
 
-  return useCallback((url: string, event: MouseEvent<HTMLElement>) => {
-    if (event.metaKey || event.ctrlKey) {
-      window.open(url);
-    } else {
-      void push(url);
-    }
-  }, []);
+  return useCallback(
+    (url: string, event: MouseEvent<HTMLElement>) => {
+      if (event.metaKey || event.ctrlKey) {
+        window.open(url);
+      } else {
+        void push(url);
+      }
+    },
+    [push]
+  );
 }

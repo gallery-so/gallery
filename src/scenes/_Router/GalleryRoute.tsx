@@ -32,7 +32,6 @@ export default function GalleryRoute({
   footer = true,
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
-  ...routeProps
 }: GalleryRouteProps) {
   const navbarComponent = useMemo(() => {
     if (navbar) {
