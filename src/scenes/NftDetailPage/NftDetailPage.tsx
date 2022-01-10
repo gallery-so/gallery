@@ -12,7 +12,7 @@ import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCanGoBack } from 'contexts/navigation/CanGoBackProvider';
+import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 
 type Props = {
   nftId: string;
