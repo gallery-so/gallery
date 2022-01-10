@@ -1,5 +1,4 @@
 import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
-import { RouteComponentProps } from '@reach/router';
 import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import detectMobileDevice from 'utils/detectMobileDevice';
@@ -11,10 +10,6 @@ import usePrevious from 'hooks/usePrevious';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 import Head from 'next/head';
-
-type Props = {
-  username: string;
-};
 
 // suggest mobile users to use landscape mode for 3-column experience.
 // use localStorage to prevent showing the toast again.
@@ -55,7 +50,11 @@ function useSuggestion() {
   ]);
 }
 
-function UserGalleryPage({ username }: RouteComponentProps<Props>) {
+type UserGalleryPageProps = {
+  username: string;
+};
+
+function UserGalleryPage({ username }: UserGalleryPageProps) {
   useSuggestion();
 
   const headTitle = `${username} | Gallery`;
