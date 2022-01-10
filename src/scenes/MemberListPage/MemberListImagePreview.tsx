@@ -37,9 +37,11 @@ function getFormattedImageUrl(url: string) {
   if (!url.includes('googleusercontent')) {
     return url;
   }
+
   if (url.includes('=s250')) {
     return url.replace('=s250', '=w250');
   }
+
   return `${url}=w250`;
 }
 
@@ -132,6 +134,7 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
   top: ${({ top }) => top}px;
   left: ${({ left }) => left}px;
   background-color: white;
+  width: 250px;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;
   animation: ${({ movement }) => float(movement.x, movement.y)} ${({ movement }) => movement.time}s
       ease-in-out infinite,
