@@ -37,7 +37,7 @@ function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
 
 function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 200) as string;
+  const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
   const handleQueryChange = useCallback(
     (event: any) => {

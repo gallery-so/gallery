@@ -25,6 +25,7 @@ function FilterButton({ character, setSearchQuery, searchQuery }: FilterButtonPr
     [isSelected, searchQuery]
   );
 
+  // If the we've already filtered to a character, clicking on it again clears the filter
   const handleClick = useCallback(() => {
     const searchQuery = isSelected ? '' : character;
     setSearchQuery(searchQuery);
@@ -68,12 +69,9 @@ type Props = {
   searchQuery: string;
 };
 
+const filterCharacters = [...getAlphabet(), '#'];
+
 function MemberListFilter({ setSearchQuery, searchQuery }: Props) {
-  const filterCharacters = useMemo(() => {
-    const alphabet = getAlphabet();
-    alphabet.push('#');
-    return alphabet;
-  }, []);
   const hasSearchQuery = useMemo(() => searchQuery.length > 0, [searchQuery]);
 
   return (
@@ -100,10 +98,16 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: stretch;
+  margin-left: -28px;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
     flex-wrap: nowrap;
+    margin-left: -16px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    margin-left: -28px;
   }
 
   ${({ hasSearchQuery }) =>

@@ -18,8 +18,9 @@ function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQue
     if (!tier.owners) {
       return [];
     }
+
     return tier.owners
-      .filter((owner) => !!owner.username)
+      .filter((owner) => Boolean(owner.username))
       .sort((a, b) => a.username.localeCompare(b.username));
   }, [tier.owners]);
 

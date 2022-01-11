@@ -6,7 +6,7 @@ type GetMemberListResponse = {
 };
 
 export default function useMemberList(): MembershipTier[] {
-  const data = useGet<GetMemberListResponse>(`/users/membership`, 'fetch member list');
+  const data = useGet<GetMemberListResponse>('/users/membership', 'fetch member list');
 
   if (!data) {
     throw new Error('Error fetching member list');

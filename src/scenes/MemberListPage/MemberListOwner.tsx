@@ -16,20 +16,28 @@ type Props = {
 };
 
 function MemberListOwner({ owner, direction }: Props) {
-  const [showPreview, setShowPreview] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
+  // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
+  // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
+
   const [startFadeOut, setStartFadeOut] = useState(false);
-  const debouncedIsHovering = useDebounce(isHovering, 150) as boolean;
+  // isHovering is updated immediately on mouseEnter and mouseLeave.
+  const [isHovering, setIsHovering] = useState(false);
+  // debounce isHovering by 150ms. so debouncedIsHovering will only be true if the user hovers over a name for at least 150ms.
+  const debouncedIsHovering = useDebounce(isHovering, 150);
+  //
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
+    // If the user hovered over the name for at least 150ms, show the preview.
     if (debouncedIsHovering) {
       setShowPreview(true);
       return;
     }
 
-    // Delay hiding the preview so we can show a fadeout animation
+    // If the user stopped hovering over the name and we are currently showing the preview, fade out the preview.
     if (!debouncedIsHovering && showPreview) {
       setStartFadeOut(true);
+      // Delay hiding the preview so we the fadeout animation has time to finish.
       setTimeout(() => {
         setShowPreview(false);
         setStartFadeOut(false);
