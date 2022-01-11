@@ -1,5 +1,6 @@
-import App from 'src/App';
+import HomeScene from 'scenes/Home/Home';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
-const Index = () => <App />;
-
-export default Index;
+export default function Index() {
+  return <GalleryRoute element={<HomeScene />} navbar={false} footerVisibleOutOfView />;
+}

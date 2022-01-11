@@ -1,5 +1,6 @@
-import { Redirect } from '@reach/router';
 import Page from 'components/core/Page/Page';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 type Props = {
   to: string;
@@ -8,9 +9,10 @@ type Props = {
 // 1) enables redirect without erroring
 // 2) wraps in Page component to prevent footer from flashing
 export default function GalleryRedirect({ to }: Props) {
-  return (
-    <Page>
-      <Redirect to={to} noThrow />
-    </Page>
-  );
+  const { replace } = useRouter();
+  useEffect(() => {
+    void replace(to);
+  }, [replace, to]);
+
+  return <Page />;
 }

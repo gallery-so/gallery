@@ -5,8 +5,8 @@ import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
-import { navigate } from '@reach/router';
 import { Directions } from 'components/core/enums';
+import { useRouter } from 'next/router';
 
 const ARROWS = new Map<number, string>([
   [Directions.LEFT, '←'],
@@ -28,9 +28,12 @@ function NavigationHandle({ direction, nftId }: Props) {
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
+  const { push } = useRouter();
   const handleOnClick = useCallback(() => {
-    void navigate(nftId, { state: { collection: [] } });
-  }, [nftId]);
+    // TODO(Terence): Figure out how to get this state across since Next doesn't support navigation state
+    // void push(nftId, { state: { collection: [] } });
+    void push({ pathname: nftId });
+  }, [nftId, push]);
 
   return (
     <StyledNavigationHandle onClick={handleOnClick}>

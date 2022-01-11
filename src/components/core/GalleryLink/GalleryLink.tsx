@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link } from '@reach/router';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 type Props = {
@@ -23,7 +23,7 @@ export default function GalleryLink({
 
   if (to) {
     return (
-      <StyledLink to={to} $underlined={underlined} $underlineOnHover={underlineOnHover}>
+      <StyledLink href={to} $underlined={underlined} $underlineOnHover={underlineOnHover}>
         {children}
       </StyledLink>
     );

@@ -1,8 +1,7 @@
-import { RouteComponentProps } from '@reach/router';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ComponentType, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export type LayoutProps = {
   // whether the navbar should be rendered
@@ -20,21 +19,19 @@ export type LayoutProps = {
 };
 
 export type GalleryRouteProps = {
-  component: ComponentType<RouteComponentProps>;
-} & LayoutProps &
-  RouteComponentProps;
+  element: JSX.Element;
+} & LayoutProps;
 
 // fills up the space where the navbar or footer would be
 export const Filler = () => <Spacer height={80} />;
 
 export default function GalleryRoute({
-  component: RouteComponent,
+  element,
   freshLayout = false,
   navbar = true,
   footer = true,
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
-  ...routeProps
 }: GalleryRouteProps) {
   const navbarComponent = useMemo(() => {
     if (navbar) {
@@ -64,13 +61,13 @@ export default function GalleryRoute({
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView]);
 
   if (freshLayout) {
-    return <RouteComponent {...routeProps} />;
+    return element;
   }
 
   return (
     <>
       {navbarComponent}
-      <RouteComponent {...routeProps} />
+      {element}
       {footerComponent}
     </>
   );

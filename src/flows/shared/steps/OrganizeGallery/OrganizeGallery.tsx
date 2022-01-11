@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { navigate } from '@reach/router';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -14,11 +13,12 @@ import Mixpanel from 'utils/mixpanel';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BodyRegular, Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
-import { useGalleryNavigationActions } from 'contexts/navigation/GalleryNavigationContext';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';
 import CollectionDnd from './CollectionDnd';
+import { useRouter } from 'next/router';
+import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 
 type ConfigProps = {
   wizardId: string;
@@ -42,23 +42,23 @@ function useNotOptimizedForMobileWarning() {
 
 function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
-  const { getVisitedPagesLength } = useGalleryNavigationActions();
+  const canGoBack = useCanGoBack();
 
   const clearOnNext = useCallback(() => {
     setOnNext(undefined);
     setOnPrevious(undefined);
   }, [setOnNext, setOnPrevious]);
 
+  const { replace, back, push } = useRouter();
   const returnToPrevious = useCallback(() => {
-    const visitedPagesLength = getVisitedPagesLength();
-    if (visitedPagesLength === 1) {
-      void navigate(`/${username}`);
+    if (canGoBack) {
+      back();
     } else {
-      void navigate(-1);
+      void replace(`/${username}`);
     }
 
     clearOnNext();
-  }, [clearOnNext, getVisitedPagesLength, username]);
+  }, [canGoBack, clearOnNext, back, replace, username]);
 
   const saveGalleryAndReturnToProfile = useCallback(async () => {
     clearOnNext();
@@ -69,8 +69,8 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
       return;
     }
 
-    void navigate(`/${username}`);
-  }, [clearOnNext, next, username, wizardId]);
+    void push(`/${username}`);
+  }, [clearOnNext, next, push, username, wizardId]);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);

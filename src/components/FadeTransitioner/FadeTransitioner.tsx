@@ -1,10 +1,6 @@
-import { Suspense, CSSProperties, memo } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { CSSProperties, memo, Suspense } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import {
-  useGalleryNavigationActions,
-  useGalleryNavigationState,
-} from 'contexts/navigation/GalleryNavigationContext';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
 
@@ -14,7 +10,7 @@ type Props = {
 };
 
 // NOTE: if you change these, make sure to update `transition.css`
-const FADE_TIME_MS = 300;
+export const FADE_TIME_MS = 300;
 export const NAVIGATION_TRANSITION_TIME_MS = 700;
 
 const timeoutConfig = {
@@ -37,17 +33,9 @@ const transitionGroupStyles = {
  * around timing + classNames. More info: https://reactjs.org/docs/animation.html
  */
 function FadeTransitioner({ locationKey, children }: Props) {
-  const { sanitizedPathname } = useGalleryNavigationState();
-  const { handleNavigationScrollPosition } = useGalleryNavigationActions();
-
   return (
     <TransitionGroup style={transitionGroupStyles}>
-      <CSSTransition
-        key={locationKey ?? sanitizedPathname}
-        timeout={timeoutConfig}
-        classNames="fade"
-        onExit={handleNavigationScrollPosition}
-      >
+      <CSSTransition key={locationKey} timeout={timeoutConfig} classNames="fade">
         {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
             to remain uninterrupted upon navigation */}
         <Suspense fallback={<FullPageLoader />}>
