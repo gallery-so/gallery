@@ -13,7 +13,14 @@ function getPreviewDirection(index: number) {
   return index % 4 < 2 ? Directions.RIGHT : Directions.LEFT;
 }
 
-function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQuery: string }) {
+type Props = {
+  tier: MembershipTier;
+  searchQuery: string;
+  setFadeUsernames: (fadeUsernames: boolean) => void;
+  fadeUsernames: boolean;
+}
+
+function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: Props) {
   const sortedOwners = useMemo(() => {
     if (!tier.owners) {
       return [];
@@ -42,12 +49,13 @@ function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQue
     <div>
       <StyledTierHeading>{tier.name} members</StyledTierHeading>
       <Spacer height={24} />
-      <StyledOwnersWrapper>
+      <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
           <MemberListOwner
             key={owner.user_id}
             owner={owner}
             direction={getPreviewDirection(index)}
+            setFadeUsernames={setFadeUsernames}
           />
         ))}
       </StyledOwnersWrapper>
@@ -56,9 +64,13 @@ function MemberListTier({ tier, searchQuery }: { tier: MembershipTier; searchQue
   );
 }
 
-const StyledOwnersWrapper = styled.div`
+const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
   display: flex;
   flex-wrap: wrap;
+
+  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.gray30 : colors.black)};
+
+  transition: color 0.2s ease-in-out;
 `;
 
 const StyledTierHeading = styled(BodyMedium)`

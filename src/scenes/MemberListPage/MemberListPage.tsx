@@ -17,6 +17,8 @@ function MemberListPage() {
   const breakpoint = useBreakpoint();
   const isMobileScreenSize = useMemo(() => breakpoint === size.mobile, [breakpoint]);
 
+  const [fadeUsernames, setFadeUsernames] = useState(false);
+
   return (
     <StyledPage centered>
       <Spacer height={128} />
@@ -30,7 +32,7 @@ function MemberListPage() {
       <Spacer height={56} />
       <StyledTierWrapper>
         {memberList.map((tier) => (
-          <MemberListTier key={tier.id} tier={tier} searchQuery={searchQuery} />
+          <MemberListTier key={tier.id} tier={tier} searchQuery={searchQuery} setFadeUsernames={setFadeUsernames} fadeUsernames={fadeUsernames}/>
         ))}
       </StyledTierWrapper>
     </StyledPage>

@@ -9,13 +9,15 @@ import { Directions } from 'src/components/core/enums';
 import MemberListGalleryPreview from './MemberListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
+import colors from 'components/core/colors';
 
 type Props = {
   owner: MembershipOwner;
   direction: Directions.LEFT | Directions.RIGHT;
+  setFadeUsernames: (fadeUsernames: boolean) => void;
 };
 
-function MemberListOwner({ owner, direction }: Props) {
+function MemberListOwner({ owner, direction, setFadeUsernames }: Props) {
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
   // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
 
@@ -47,11 +49,13 @@ function MemberListOwner({ owner, direction }: Props) {
 
   const onMouseEnter = useCallback(() => {
     setIsHovering(true);
-  }, []);
+    setFadeUsernames(true);
+  }, [setFadeUsernames]);
 
   const onMouseLeave = useCallback(() => {
     setIsHovering(false);
-  }, []);
+    setFadeUsernames(false)
+  }, [setFadeUsernames]);
 
   const breakpoint = useBreakpoint();
 
@@ -63,7 +67,7 @@ function MemberListOwner({ owner, direction }: Props) {
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <GalleryLink to={`/${owner.username}`} underlined={false} underlineOnHover>
+        <GalleryLink href={`/${owner.username}`} underlined={false} >
           <StyledUsername>{owner.username}</StyledUsername>
         </GalleryLink>
       </StyledUsernameWrapper>
@@ -90,6 +94,10 @@ const StyledOwner = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: 25%;
   }
+
+  &:hover {
+    color: ${colors.black}
+  }
 `;
 
 const StyledUsernameWrapper = styled.div`
@@ -100,6 +108,9 @@ const StyledUsername = styled(Heading)`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 16px;
+  color: inherit;
+
+
 `;
 
 export default MemberListOwner;
