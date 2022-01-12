@@ -109,8 +109,6 @@ const StyledUsername = styled(Heading)`
   text-overflow: ellipsis;
   margin-right: 16px;
   color: inherit;
-
-
 `;
 
 export default MemberListOwner;
