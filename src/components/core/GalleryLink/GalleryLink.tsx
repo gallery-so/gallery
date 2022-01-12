@@ -23,7 +23,7 @@ export default function GalleryLink({
 
   if (to) {
     return (
-      <StyledLink href={to} underlined={underlined} underlineOnHover={underlineOnHover}>
+      <StyledLink href={to} $underlined={underlined} $underlineOnHover={underlineOnHover}>
         {children}
       </StyledLink>
     );
@@ -34,8 +34,8 @@ export default function GalleryLink({
       <StyledAnchor
         href={href}
         target="_blank"
-        underlined={underlined}
-        underlineOnHover={underlineOnHover}
+        $underlined={underlined}
+        $underlineOnHover={underlineOnHover}
       >
         {children}
       </StyledAnchor>
@@ -46,24 +46,24 @@ export default function GalleryLink({
 }
 
 type StyledProps = {
-  underlineOnHover: boolean;
-  underlined: boolean;
+  $underlineOnHover: boolean;
+  $underlined: boolean;
 };
 
 const StyledLink = styled(Link)<StyledProps>`
   color: inherit;
-  ${({ underlined }) => !underlined && 'text-decoration: none;'}
+  ${(props) => !props.$underlined && 'text-decoration: none'};
 
   &:hover {
-    ${({ underlineOnHover }) => underlineOnHover && 'text-decoration: underline;'}
+    ${(prop) => prop.$underlineOnHover && 'text-decoration: underline'};
   }
 `;
 
 const StyledAnchor = styled.a<StyledProps>`
   color: inherit;
-  ${({ underlined }) => !underlined && 'text-decoration: none;'}
+  ${(props) => !props.$underlined && 'text-decoration: none;'}
 
   &:hover {
-    ${({ underlineOnHover }) => underlineOnHover && 'text-decoration: underline;'}
+    ${(prop) => prop.$underlineOnHover && 'text-decoration: underline'};
   }
 `;
