@@ -25,7 +25,7 @@ function Sidebar() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
-  const sidebarNftsAsArray = useMemo(() => convertObjectToArray(sidebarNfts).reverse(), [sidebarNfts])
+  const sidebarNftsAsArray = useMemo(() => convertObjectToArray(sidebarNfts).reverse(), [sidebarNfts]);
 
   const nftsToDisplayInSidebar = useMemo(() => {
     if (debouncedSearchQuery) {
