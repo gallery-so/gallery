@@ -11,7 +11,15 @@ function localStorageProvider() {
 
   // Before unloading the app, we write back all the data into `localStorage`.
   window.addEventListener('beforeunload', () => {
-    const appCache = JSON.stringify(Array.from(map.entries()));
+    if (window.location.pathname === '/nuke') {
+      return;
+    }
+
+    const arrayMap = Array.from(map.entries()) as Array<[string, any]>;
+    // ignore inflight requests (labeled with $req$) and errors (labeled with $err$) in the cache.
+    // in fact, aggressively caching an error response can result in pain!
+    const saneArrayMap = arrayMap.filter((arr) => !(arr[0].includes('$req$') || arr[0].includes('$err$')))
+    const appCache = JSON.stringify(saneArrayMap);
     localStorage.setItem('app-cache', appCache);
   });
 

@@ -23,3 +23,5 @@ export const pause = async (ms: number) =>
 
 // e.g. '2021-12-17T09:24:34.891Z', which is our DB timestamp format
 export const getISODate = () => new Date().toISOString();
+
+export const getTimeFromISOString = (timestamp: string | number) => new Date(timestamp).getTime()

@@ -8,8 +8,8 @@ import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
 import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
 
 const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
+  organizeGallery: 'Done',
   organizeCollection: 'Save Collection',
-  organizeGallery: 'Save',
 };
 
 function EditGalleryFlow() {
@@ -25,6 +25,7 @@ function EditGalleryFlow() {
               </Steps>
               <WizardFooter
                 footerButtonTextMap={footerButtonTextMap}
+                shouldHideSecondaryButton={wizardProps.step.id === 'organizeGallery'}
                 {...(wizardProps as WizardProps)}
               />
             </>
