@@ -2,10 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Key, Middleware } from 'swr';
 import { GetGalleriesResponse } from 'hooks/api/galleries/types';
 import { getGalleriesAction } from 'hooks/api/galleries/useGalleries';
-
-function getTimeFromISOString(timestamp: string | number) {
-  return new Date(timestamp).getTime();
-}
+import { getTimeFromISOString } from 'utils/time';
 
 // @ts-expect-error: TODO this is erroring because of `data` type returned in L39
 const ensureLatestGallery: Middleware = (useSWRNext) => (key: Key, fetcher, config) => {
