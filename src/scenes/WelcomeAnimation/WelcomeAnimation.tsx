@@ -275,6 +275,7 @@ const StyledContainer = styled.div`
   align-items: center;
   justify-content: center;
   animation: ${fadeInGrow} 2s;
+  overflow: hidden;
 `;
 
 const Image = styled.img<{
