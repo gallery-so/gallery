@@ -62,7 +62,7 @@ export default function WelcomeAnimation({ next }: Props) {
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [shouldExplode, setShouldExplode] = useState(false);
   const [imagesFaded, setImagesFaded] = useState(false);
-  // const username = useAuthenticatedUsername();
+  const username = useAuthenticatedUsername();
   const { push } = useRouter();
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function WelcomeAnimation({ next }: Props) {
     setTimeout(() => {
       next();
     }, FADE_DURATION);
-  }, [next, push]);
+  }, [next, username, push]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
