@@ -5,27 +5,8 @@
 
 .hover-listener {
   perspective: 400px;
-  /* cursor: crosshair; */
 }
 
 .rotatable {
   transform-style: preserve-3d;
-}
-
-.hover-listener .rotatable {
-  transition: transform 400ms ease-in-out;
-  -webkit-transition: transform 400ms ease-in-out;
-  -moz-transition: transform 400ms ease-in-out;
-  -ms-transition: transform 400ms ease-in-out;
-  -o-transition: transform 400ms ease-in-out;
-}
-
-/* If the user is already hovering on the card, we want the transform to respond near-immediately 
-We don't want 0ms because this makes it look choppy when you first hover */
-.hover-listener:hover .rotatable {
-  transition: transform 100ms linear;
-  -webkit-transition: transform 100ms linear;
-  -moz-transition: transform 100ms linear;
-  -ms-transition: transform 100ms linear;
-  -o-transition: transform 100ms linear;
 }

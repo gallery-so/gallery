@@ -1,5 +1,6 @@
 import styled, { css, Keyframes } from 'styled-components';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { animated, useSpring } from 'react-spring';
 
 type Props = {
   src: string;
@@ -39,6 +40,14 @@ const StyledImage = styled.img<{
     `};
 `;
 
+const calc = (
+  x: number,
+  y: number,
+  rect: { top: number; left: number; width: number; height: number }
+): number[] => [-(y - rect.top - rect.height / 2) / 8, (x - rect.left - rect.width / 2) / 8, 1.05];
+const trans = (x: number, y: number, s: number): string =>
+  `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
+
 function Image({
   width,
   src,
@@ -48,44 +57,42 @@ function Image({
   fadeOutGrow,
   imagesFaded,
 }: Props) {
-  const [xRotation, setXRotation] = useState(0);
-  const [yRotation, setYRotation] = useState(0);
+  const ref = useRef(null);
+  const [xys, set] = useState([0, 0, 1]);
+  const config = {
+    mass: 1,
+    tension: 170,
+    friction: 75,
+    clamp: false,
+    precision: 0.01,
+    velocity: 0,
+    easing: (t) => t,
+  };
+  const props = useSpring({ xys, config });
 
   return (
     <div
       className="hover-listener"
-      onMouseMove={(e) => {
-        const x = e.nativeEvent.offsetX;
-        const y = e.nativeEvent.offsetY;
-
-        const width = e.target.width;
-        const height = e.target.height;
-
-        const MAX_X_ROTATION = 12.5;
-        const MAX_Y_ROTATION = 12.5;
-
-        const xDistance = (Math.abs(x - width / 2) / (width / 2)) * (x < width / 2 ? -1 : 1);
-        const yDistance = (Math.abs(y - height / 2) / (height / 2)) * (y < height / 2 ? 1 : -1);
-
-        setXRotation(xDistance * MAX_X_ROTATION);
-        setYRotation(yDistance * MAX_Y_ROTATION);
-      }}
+      ref={ref}
       onMouseLeave={() => {
-        setXRotation(0);
-        setYRotation(0);
+        set([0, 0, 1]);
+      }}
+      onMouseMove={(e) => {
+        const rect = ref.current.getBoundingClientRect();
+        set(calc(e.clientX, e.clientY, rect));
       }}
     >
-      <StyledImage
-        src={src}
-        width={width}
-        style={{ transform: `rotateX(${yRotation}deg) rotateY(${xRotation}deg) scale3d(1, 1, 1)` }}
-        className="rotatable"
-        shouldFadeOut={shouldFadeOut}
-        fadeInDelay={fadeInDelay}
-        fadeInGrow={fadeInGrow}
-        fadeOutGrow={fadeOutGrow}
-        imagesFaded={imagesFaded}
-      />
+      <animated.div className="rotatable" style={{ transform: props.xys.to(trans) }}>
+        <StyledImage
+          src={src}
+          width={width}
+          shouldFadeOut={shouldFadeOut}
+          fadeInDelay={fadeInDelay}
+          fadeInGrow={fadeInGrow}
+          fadeOutGrow={fadeOutGrow}
+          imagesFaded={imagesFaded}
+        />
+      </animated.div>
     </div>
   );
 }
