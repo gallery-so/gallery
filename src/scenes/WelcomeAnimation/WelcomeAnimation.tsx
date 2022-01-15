@@ -4,126 +4,20 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
+import Image from './Image';
+import { AnimatedImage, animatedImages } from './Images';
+
 import styled, { css, keyframes } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import Mixpanel from 'utils/mixpanel';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
+import useWindowSize from 'src/hooks/useWindowSize';
 
+const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
 // example usage: https://codesandbox.io/embed/r5x34869vq
 const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window.innerHeight) / 2];
-type AnimatedImage = {
-  src?: string;
-  width: number;
-  // ZIndex is the "depth" of image from viewer's pov.
-  // It is used to calculate how the image will move based on mousemovement.
-  // z-index of 0 is essentially the axis of movement.
-  // values can be -100 to 100, with -100 being the furthest from viewer and 100 being closest.
-  // positive values move the image in one direction on mouse movement, negative values move in opposite.
-  zIndex: number;
-  // Offset is the x or y position of the image after the explosion and they fan out
-  offsetX: number;
-  offsetY: number;
-  // Offset start is the x or y position of the image when they first load in
-  offsetXStart: number;
-  offsetYStart: number;
-  // Delay in ms so that images don't all appear at once
-  fadeInDelay: number;
-};
-
-const animatedImages: AnimatedImage[] = [
-  {
-    src: 'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', // Chair
-    width: 180,
-    zIndex: -40,
-    offsetX: 180,
-    offsetY: -370,
-    offsetXStart: 0,
-    offsetYStart: 0,
-    fadeInDelay: 800,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', // Punk
-    width: 100,
-    zIndex: -13,
-    offsetX: -105,
-    offsetY: 210,
-    offsetXStart: 0,
-    offsetYStart: 0,
-    fadeInDelay: 0,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/CpwTm306giMTU90lJrdEqs_SuUWa9DPT7r6CzDJZErJAdbLC8RoB-3GEh_QBtcmPrr6SmsywUPjbO9IN0i6VmwpteirK5ptSePYPzQ=w335', // Fidenza
-    width: 280,
-    zIndex: -18,
-    offsetX: 370,
-    offsetY: 80,
-    offsetXStart: -20,
-    offsetYStart: -12,
-    fadeInDelay: 300,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/kghKAvKiZ6dCQaPtfcyuNKnNDNtijiwoalY3ZGeo4WwOyLIZvDeX7auYyiVX2vNKI_GU8Wrt88pLTNNAi5n3ENwsaJ5y2ZWvH0rzMw=w335', // Squiggle
-    width: 200,
-    zIndex: 20,
-    offsetX: -150,
-    offsetY: -390,
-    offsetXStart: 0,
-    offsetYStart: 0,
-    fadeInDelay: 0,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/dvrP8rJNswBrdAo4eYia2y808Od_vjtmxn3-41-WDxs2K5jElLUQEsIUGw7X0uGVLe8ywqrUg-70OlrpjIGKiiK4FBy1SyMCmpmIaA=w336', // Elementals
-    width: 200,
-    zIndex: 11,
-    offsetX: -550,
-    offsetY: -340,
-    offsetXStart: 0,
-    offsetYStart: 0,
-    fadeInDelay: 1200,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
-    width: 250,
-    zIndex: 37,
-    offsetX: -510,
-    offsetY: 110,
-    offsetXStart: 0,
-    offsetYStart: 30,
-    fadeInDelay: 500,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
-    width: 220,
-    zIndex: 25,
-    offsetX: 440,
-    offsetY: -240,
-    offsetXStart: -40,
-    offsetYStart: 0,
-    fadeInDelay: 0,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
-    width: 200,
-    zIndex: 30,
-    offsetX: 80,
-    offsetY: 150,
-    offsetXStart: 0,
-    offsetYStart: -40,
-    fadeInDelay: 300,
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Rebirth of Venus
-    width: 230,
-    zIndex: -11,
-    offsetX: -660,
-    offsetY: -120,
-    offsetXStart: 0,
-    offsetYStart: 0,
-    fadeInDelay: 0,
-  },
-];
 
 const textAnimationOptions = {
   width: 300,
@@ -154,20 +48,30 @@ export default function WelcomeAnimation({ next }: Props) {
     config: { mass: 10, tension: 550, friction: 140 },
   }));
 
+  // Check for vertical screens and render images in different positions if so
+  const [aspectRatio, setAspectRatio] = useState(0);
+  const windowSize = useWindowSize();
+  useEffect(() => {
+    setAspectRatio(windowSize.width / windowSize.height);
+  }, [windowSize]);
+
   // If we want to use transitions instead of keyframes, we could add a class to each image after X seconds
   // to trigger the transition. Using a transition allows us to not have to add keyframes for each image.
 
   // const [isTextDisplayed, setIsTextDisplayed] = useState(false);
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [shouldExplode, setShouldExplode] = useState(false);
-  const username = useAuthenticatedUsername();
+  const [imagesFaded, setImagesFaded] = useState(false);
+  // const username = useAuthenticatedUsername();
   const { push } = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
       setShouldExplode(true);
-    }, 2000);
-  }, [setShouldExplode]);
+      setImagesFaded(true);
+    }, FADE_DURATION);
+  }, [setShouldExplode, setImagesFaded]);
+
   const handleClick = useCallback(() => {
     Mixpanel.track('Click through welcome page');
     if (username) {
@@ -179,8 +83,8 @@ export default function WelcomeAnimation({ next }: Props) {
     setShouldFadeOut(true);
     setTimeout(() => {
       next();
-    }, 2000);
-  }, [next, username, push]);
+    }, FADE_DURATION);
+  }, [next, push]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
@@ -202,7 +106,12 @@ export default function WelcomeAnimation({ next }: Props) {
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (
-        <StyledMovementWrapper shouldExplode={shouldExplode} animatedImage={animatedImage}>
+        <StyledMovementWrapper
+          shouldExplode={shouldExplode}
+          aspectRatio={aspectRatio}
+          animatedImage={animatedImage}
+          key={animatedImage.src}
+        >
           <animated.div
             className="animate"
             style={{
@@ -214,6 +123,9 @@ export default function WelcomeAnimation({ next }: Props) {
               src={animatedImage.src}
               fadeInDelay={animatedImage.fadeInDelay}
               shouldFadeOut={shouldFadeOut}
+              fadeInGrow={fadeInGrow}
+              fadeOutGrow={fadeOutGrow}
+              imagesFaded={imagesFaded}
             />
           </animated.div>
         </StyledMovementWrapper>
@@ -245,7 +157,7 @@ const StyledTextContainer = styled.div<{
   align-items: center;
   opacity: 0;
   animation: ${fadeInGrow} 1s forwards;
-  animation-delay: 2s;
+  animation-delay: ${FADE_DURATION}ms;
 
   ${({ shouldFadeOut }) =>
     shouldFadeOut &&
@@ -256,16 +168,26 @@ const StyledTextContainer = styled.div<{
 
 const StyledMovementWrapper = styled.div<{
   shouldExplode: boolean;
+  aspectRatio: number;
   animatedImage: AnimatedImage;
 }>`
   position: relative;
   transition: transform 1000ms cubic-bezier(0, 0, 0, 1.07);
-  ${({ shouldExplode, animatedImage }) =>
+
+  ${({ shouldExplode, animatedImage, aspectRatio }) =>
     shouldExplode
-      ? `transform: translate(${animatedImage.offsetX}px, ${animatedImage.offsetY}px)`
+      ? `transform: translate(${
+          aspectRatio < 1 && animatedImage.moveOnVertical
+            ? animatedImage.verticalX
+            : animatedImage.offsetX
+        }px, ${
+          aspectRatio < 1 && animatedImage.moveOnVertical
+            ? animatedImage.verticalY
+            : animatedImage.offsetY
+        }px);`
       : `transform: translate(${animatedImage.offsetXStart - 120}px, ${
           animatedImage.offsetYStart - 150
-        }px)`};
+        }px);`}
 `;
 
 const StyledContainer = styled.div`
@@ -276,24 +198,6 @@ const StyledContainer = styled.div`
   justify-content: center;
   animation: ${fadeInGrow} 2s;
   overflow: hidden;
-`;
-
-const Image = styled.img<{
-  width?: number;
-  fadeInDelay: number;
-  shouldFadeOut?: boolean;
-}>`
-  width: ${({ width }) => width}px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-  opacity: 0;
-  animation: ${fadeInGrow} 2s forwards ${({ fadeInDelay }) => fadeInDelay}ms;
-
-  ${({ shouldFadeOut, fadeInDelay }) =>
-    shouldFadeOut &&
-    css`
-      animation: ${fadeOutGrow} 500ms forwards ${fadeInDelay / 3}ms;
-      opacity: 1;
-    `}
 `;
 
 const StyledBodyText = styled(BodyRegular)`
