@@ -23,7 +23,8 @@ const StyledImage = styled.img<{
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   opacity: 1;
 
-  /* After creating <Image />, the fade in animation ran twice (once on load and once on explosion) This prevents that and only applies fade animation if images have not already faded in */
+  /*  We only want to apply the animation to fade in the images, and then we can remove the animation
+   We need to remove animation property once faded in, so that transform can be modified in hover events */
   ${({ imagesFaded, fadeInGrow, fadeInDelay }) =>
     !imagesFaded &&
     css`

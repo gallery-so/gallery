@@ -45,8 +45,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: -350,
-    verticalY: 50,
+    verticalX: -375,
+    verticalY: -50,
   },
   {
     src: 'https://lh3.googleusercontent.com/CpwTm306giMTU90lJrdEqs_SuUWa9DPT7r6CzDJZErJAdbLC8RoB-3GEh_QBtcmPrr6SmsywUPjbO9IN0i6VmwpteirK5ptSePYPzQ=w335', // Fidenza
@@ -58,7 +58,7 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: -12,
     fadeInDelay: 300,
     moveOnVertical: true,
-    verticalX: 200,
+    verticalX: 150,
     verticalY: 100,
   },
   {
@@ -71,8 +71,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: 130,
-    verticalY: -430,
+    verticalX: -200,
+    verticalY: 400,
   },
   {
     src: 'https://lh3.googleusercontent.com/dvrP8rJNswBrdAo4eYia2y808Od_vjtmxn3-41-WDxs2K5jElLUQEsIUGw7X0uGVLe8ywqrUg-70OlrpjIGKiiK4FBy1SyMCmpmIaA=w336', // Elementals
@@ -83,6 +83,9 @@ export const animatedImages: AnimatedImage[] = [
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 1200,
+    moveOnVertical: true,
+    verticalX: 0,
+    verticalY: -350,
   },
   {
     src: 'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
@@ -94,8 +97,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 30,
     fadeInDelay: 500,
     moveOnVertical: true,
-    verticalX: -510,
-    verticalY: 310,
+    verticalX: -400,
+    verticalY: 100,
   },
   {
     src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
@@ -108,7 +111,7 @@ export const animatedImages: AnimatedImage[] = [
     fadeInDelay: 0,
     moveOnVertical: true,
     verticalX: 50,
-    verticalY: -700,
+    verticalY: -600,
   },
   {
     src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
@@ -120,8 +123,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: -40,
     fadeInDelay: 300,
     moveOnVertical: true,
-    verticalX: -150,
-    verticalY: 160,
+    verticalX: -100,
+    verticalY: 150,
   },
   {
     src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Rebirth of Venus
@@ -133,7 +136,7 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: -230,
-    verticalY: -400,
+    verticalX: -300,
+    verticalY: -350,
   },
 ];
