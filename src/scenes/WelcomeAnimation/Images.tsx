@@ -45,8 +45,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: -400,
-    verticalY: 30,
+    verticalX: -350,
+    verticalY: 50,
   },
   {
     src: 'https://lh3.googleusercontent.com/CpwTm306giMTU90lJrdEqs_SuUWa9DPT7r6CzDJZErJAdbLC8RoB-3GEh_QBtcmPrr6SmsywUPjbO9IN0i6VmwpteirK5ptSePYPzQ=w335', // Fidenza
@@ -71,8 +71,8 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: 150,
-    verticalY: -450,
+    verticalX: 130,
+    verticalY: -430,
   },
   {
     src: 'https://lh3.googleusercontent.com/dvrP8rJNswBrdAo4eYia2y808Od_vjtmxn3-41-WDxs2K5jElLUQEsIUGw7X0uGVLe8ywqrUg-70OlrpjIGKiiK4FBy1SyMCmpmIaA=w336', // Elementals
@@ -95,7 +95,7 @@ export const animatedImages: AnimatedImage[] = [
     fadeInDelay: 500,
     moveOnVertical: true,
     verticalX: -510,
-    verticalY: 210,
+    verticalY: 310,
   },
   {
     src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
@@ -107,7 +107,7 @@ export const animatedImages: AnimatedImage[] = [
     offsetYStart: 0,
     fadeInDelay: 0,
     moveOnVertical: true,
-    verticalX: -100,
+    verticalX: 50,
     verticalY: -700,
   },
   {
