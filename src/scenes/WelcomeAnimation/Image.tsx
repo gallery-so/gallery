@@ -57,7 +57,7 @@ function Image({
   fadeOutGrow,
   imagesFaded,
 }: Props) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [xys, set] = useState([0, 0, 1]);
   const config = {
     mass: 1,
@@ -66,7 +66,6 @@ function Image({
     clamp: false,
     precision: 0.01,
     velocity: 0,
-    easing: (t) => t,
   };
   const props = useSpring({ xys, config });
 
@@ -78,8 +77,10 @@ function Image({
         set([0, 0, 1]);
       }}
       onMouseMove={(e) => {
-        const rect = ref.current.getBoundingClientRect();
-        set(calc(e.clientX, e.clientY, rect));
+        if (ref.current) {
+          const rect = ref.current.getBoundingClientRect();
+          set(calc(e.clientX, e.clientY, rect));
+        }
       }}
     >
       <animated.div className="rotatable" style={{ transform: props.xys.to(trans) }}>
