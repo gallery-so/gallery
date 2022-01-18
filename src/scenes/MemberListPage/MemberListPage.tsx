@@ -6,19 +6,14 @@ import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import MemberListFilter from './MemberListFilter';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 
 function MemberListPage() {
   const memberList = useMemberList();
-
-  // const [searchQuery, setSearchQuery] = useState('');
-
   const breakpoint = useBreakpoint();
   const isMobileScreenSize = useMemo(() => breakpoint === size.mobile, [breakpoint]);
-
-  // const [fadeUsernames, setFadeUsernames] = useState(false);
 
   return (
     <StyledPage centered>

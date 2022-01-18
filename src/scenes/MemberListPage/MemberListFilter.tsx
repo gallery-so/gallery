@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
@@ -65,11 +65,6 @@ const StyledFilterButton = styled.button<TextProps>`
 const StyledFilterButtonText = styled(Heading)`
   color: inherit;
 `;
-
-// type Props = {
-//   setSearchQuery: Dispatch<SetStateAction<string>>;
-//   searchQuery: string;
-// };
 
 const filterCharacters = [...getAlphabet(), '#'];
 
