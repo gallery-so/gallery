@@ -120,7 +120,7 @@ export default function WelcomeAnimation({ next }: Props) {
           >
             <Image
               width={animatedImage.width}
-              src={animatedImage.src}
+              src={animatedImage.src ?? ''}
               fadeInDelay={animatedImage.fadeInDelay}
               shouldFadeOut={shouldFadeOut}
               fadeInGrow={fadeInGrow}

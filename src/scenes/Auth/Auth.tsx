@@ -17,7 +17,7 @@ import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 const preloadImages = () => {
   animatedImages.forEach((image) => {
     const img = new Image();
-    img.src = image.src;
+    img.src = image.src ?? '';
   });
 };
 
