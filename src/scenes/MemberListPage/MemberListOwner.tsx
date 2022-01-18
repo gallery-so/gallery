@@ -10,14 +10,15 @@ import MemberListGalleryPreview from './MemberListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
+import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 
 type Props = {
   owner: MembershipOwner;
   direction: Directions.LEFT | Directions.RIGHT;
-  setFadeUsernames: (fadeUsernames: boolean) => void;
 };
 
-function MemberListOwner({ owner, direction, setFadeUsernames }: Props) {
+function MemberListOwner({ owner, direction }: Props) {
+  const { setFadeUsernames } = useMemberListPageActions();
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
   // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
 

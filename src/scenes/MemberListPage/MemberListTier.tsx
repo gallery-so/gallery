@@ -6,6 +6,7 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
 import { Directions } from 'src/components/core/enums';
+import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 
 // Get which side of the owner name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -15,12 +16,12 @@ function getPreviewDirection(index: number) {
 
 type Props = {
   tier: MembershipTier;
-  searchQuery: string;
-  setFadeUsernames: (fadeUsernames: boolean) => void;
-  fadeUsernames: boolean;
 }
 
-function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: Props) {
+function MemberListTier({ tier }: Props) {
+  const { fadeUsernames } = useMemberListPageState();
+  
+  const { searchQuery } = useMemberListPageState();
   const sortedOwners = useMemo(() => {
     if (!tier.owners) {
       return [];
@@ -47,15 +48,14 @@ function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: 
 
   return (
     <div>
-      <StyledTierHeading>{tier.name} members</StyledTierHeading>
+      <StyledTierHeading>{tier.name}</StyledTierHeading>
       <Spacer height={24} />
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
           <MemberListOwner
-            key={owner.user_id}
+            key={`${owner.user_id}-${tier.name}`}
             owner={owner}
             direction={getPreviewDirection(index)}
-            setFadeUsernames={setFadeUsernames}
           />
         ))}
       </StyledOwnersWrapper>
@@ -70,7 +70,7 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
 
   color: ${({ fadeUsernames }) => (fadeUsernames ? colors.gray30 : colors.black)};
 
-  transition: color 0.2s ease-in-out;
+  transition: color 0.15s ease-in-out;
 `;
 
 const StyledTierHeading = styled(BodyMedium)`
