@@ -28,7 +28,7 @@ export type FetcherType = <ResponseData, RequestBody = Record<string, unknown>>(
 export const _fetch: FetcherType = async (path, action, parameters = {}) => {
   const { body, headers = {}, unauthorizedErrorHandler } = parameters;
 
-  const requestOptions: RequestInit = { headers };
+  const requestOptions: RequestInit = { headers, credentials: 'include' };
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
