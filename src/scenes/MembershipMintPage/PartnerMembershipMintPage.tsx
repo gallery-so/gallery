@@ -26,7 +26,7 @@ export type OpenseaAsset = {
   asset_contract: AssetContract;
 };
 
-// A list of whitelisted partner contracts. contract address + name
+// A list of allowlisted partner contracts. contract address + name
 const partnerContracts: Record<string, string> = {
   '0xb3d5858d11ff402e3626dba53009cb46666f3c54': 'Gallery Membership Card',
 };
@@ -63,7 +63,7 @@ function generateMerkleProof(encodedAbi1: string, encodedAbi2: string) {
 
 // Checks to see if the address owns any partner NFTs by
 // retrieving all NFTs owned by a user from opensea,
-// and filtering the list by whitelisted partner contract addresses
+// and filtering the list by allowlisted partner contract addresses
 async function detectOwnedPartnerNftsFromOpensea(
   account: string,
   addresses: string[]
