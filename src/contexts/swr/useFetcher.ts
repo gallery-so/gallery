@@ -3,7 +3,6 @@ import { useAuthActions } from 'contexts/auth/AuthContext';
 import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
-import isProduction from 'utils/isProduction';
 
 const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 
@@ -32,14 +31,11 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
   const requestOptions: RequestInit = {
     headers,
     /**
-     * credentials are for setting cookies: https://developer.mozilla.org/en-US/docs/Web/API/fetch#parameters
-     * 1) same-origin: enforces same-origin URLs
-     * 2) include:     allows cross-origin URLs
+     * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
      *
-     * TODO: for some reason setting `same-origin` does not work when connecting from
-     * https://gallery.so <> api.gallery.so.
+     * The Access-Control-Allow-Credentials response header tells browsers whether to expose the
+     * response to the frontend JavaScript code when the request's credentials mode is `include`
      */
-    // credentials: isProduction() ? 'same-origin' : 'include',
     credentials: 'include',
   };
 
