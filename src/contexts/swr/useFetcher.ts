@@ -33,10 +33,8 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
     headers,
     /**
      * credentials are for setting cookies: https://developer.mozilla.org/en-US/docs/Web/API/fetch#parameters
-     *
-     *   same-origin: enforces same-origin URLs
-     *   include:     allows cross-origin URLs
-     *
+     * 1) same-origin: enforces same-origin URLs
+     * 2) include:     allows cross-origin URLs
      */
     credentials: isProduction() ? 'same-origin' : 'include',
   };
