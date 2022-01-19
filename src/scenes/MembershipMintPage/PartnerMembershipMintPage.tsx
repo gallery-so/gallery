@@ -15,6 +15,7 @@ import MembershipMintPageProvider, {
   useMembershipMintPageActions,
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
+import { ALLOWLIST } from './GeneralCardAllowlist';
 
 export type AssetContract = {
   address: string;
@@ -26,10 +27,8 @@ export type OpenseaAsset = {
 
 const OPENSEA_API_BASEURL = process.env.NEXT_PUBLIC_OPENSEA_API_BASEURL ?? 'https://api.opensea.io';
 
-const allowList = ['0xtest'];
-
 function generateMerkleProof(address: string) {
-  const merkleTree = new MerkleTree(allowList);
+  const merkleTree = new MerkleTree(ALLOWLIST);
   return merkleTree.getHexProof(address);
 }
 
@@ -50,7 +49,7 @@ function PartnerMembershipMintPageContent() {
   const { getSupply } = useMembershipMintPageActions();
 
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
-  const onAllowList = useMemo(() => Boolean(account) && allowList.includes(account!), [account]);
+  const onAllowList = useMemo(() => Boolean(account) && ALLOWLIST.includes(account!), [account]);
 
   const canMintToken = useMemo(
     () => !ownsGeneralCard && onAllowList,
