@@ -1,3 +1,4 @@
+import Banner from 'components/Banner/Banner';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -60,12 +61,25 @@ export default function GalleryRoute({
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView]);
 
+  const banner = useMemo(
+    () => (
+      <Banner text="We are currently migrating our backend systems to improve reliability. You will not be able to update your gallery for the next 1-2 hours (until 1 AM EST)." />
+    ),
+    []
+  );
+
   if (freshLayout) {
-    return element;
+    return (
+      <>
+        {banner}
+        {element}
+      </>
+    );
   }
 
   return (
     <>
+      {banner}
       {navbarComponent}
       {element}
       {footerComponent}
