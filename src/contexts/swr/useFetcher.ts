@@ -36,8 +36,7 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
      * 1) same-origin: enforces same-origin URLs
      * 2) include:     allows cross-origin URLs
      */
-    // credentials: isProduction() ? 'same-origin' : 'include',
-    credentials: 'include',
+    credentials: isProduction() ? 'same-origin' : 'include',
   };
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
