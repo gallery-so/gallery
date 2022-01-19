@@ -63,7 +63,7 @@ export default function GalleryRoute({
 
   const banner = useMemo(
     () => (
-      <Banner text="We are currently migrating our backend and auth systems to improve reliability. We expect to complete the migration in 1-2 hours (by 1AM EST). You will not be able to update your gallery during this time." />
+      <Banner text="We are currently migrating our backend systems to improve reliability. You will not be able to update your gallery for the next 1-2 hours (until 1 AM EST)." />
     ),
     []
   );
