@@ -1,8 +1,9 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
+import { useMemberListPageActions, useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 
 function getAlphabet() {
   return [...Array(26)].map((_, i) => String.fromCharCode(65 + i));
@@ -10,11 +11,12 @@ function getAlphabet() {
 
 type FilterButtonProps = {
   character: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-  searchQuery: string;
 };
 
-function FilterButton({ character, setSearchQuery, searchQuery }: FilterButtonProps) {
+function FilterButton({ character }: FilterButtonProps) {
+  const { searchQuery } = useMemberListPageState();
+  const { setSearchQuery }= useMemberListPageActions()
+
   const isSelected = useMemo(
     () => character.toLocaleLowerCase() === searchQuery.toLowerCase(),
     [character, searchQuery]
@@ -64,14 +66,11 @@ const StyledFilterButtonText = styled(Heading)`
   color: inherit;
 `;
 
-type Props = {
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-  searchQuery: string;
-};
-
 const filterCharacters = [...getAlphabet(), '#'];
 
-function MemberListFilter({ setSearchQuery, searchQuery }: Props) {
+function MemberListFilter() {
+  const { searchQuery } = useMemberListPageState();
+
   const hasSearchQuery = useMemo(() => searchQuery.length > 0, [searchQuery]);
 
   return (
@@ -80,8 +79,6 @@ function MemberListFilter({ setSearchQuery, searchQuery }: Props) {
         <FilterButton
           key={character}
           character={character}
-          setSearchQuery={setSearchQuery}
-          searchQuery={searchQuery}
         />
       ))}
     </StyledMemberListFilter>
