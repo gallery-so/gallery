@@ -35,8 +35,12 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
      * credentials are for setting cookies: https://developer.mozilla.org/en-US/docs/Web/API/fetch#parameters
      * 1) same-origin: enforces same-origin URLs
      * 2) include:     allows cross-origin URLs
+     *
+     * TODO: for some reason setting `same-origin` does not work when connecting from
+     * https://gallery.so <> api.gallery.so.
      */
-    credentials: isProduction() ? 'same-origin' : 'include',
+    // credentials: isProduction() ? 'same-origin' : 'include',
+    credentials: 'include',
   };
 
   const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
