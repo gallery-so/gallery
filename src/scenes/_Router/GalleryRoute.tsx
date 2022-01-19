@@ -62,9 +62,10 @@ export default function GalleryRoute({
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView]);
 
   const banner = useMemo(
-    () => (
-      <Banner text="We are currently migrating our backend systems to improve reliability. You will not be able to update your gallery for the next 1-2 hours (until 1 AM EST)." />
-    ),
+    () =>
+      // uncomment if we need this next time
+      // <Banner text="We are currently migrating our backend systems to improve reliability. You will not be able to update your gallery for the next 1-2 hours (until 1 AM EST)." />
+      null,
     []
   );
 
