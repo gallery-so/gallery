@@ -25,7 +25,10 @@ function Sidebar() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
-  const sidebarNftsAsArray = useMemo(() => convertObjectToArray(sidebarNfts).reverse(), [sidebarNfts]);
+  const sidebarNftsAsArray = useMemo(
+    () => convertObjectToArray(sidebarNfts).reverse(),
+    [sidebarNfts]
+  );
 
   const nftsToDisplayInSidebar = useMemo(() => {
     if (debouncedSearchQuery) {
@@ -71,6 +74,7 @@ function Sidebar() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // TODO: use context values here
   const handleRefreshWalletClick = useCallback(async () => {
     setIsRefreshing(true);
     try {
