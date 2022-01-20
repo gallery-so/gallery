@@ -4,9 +4,9 @@ import Button from 'components/core/Button/Button';
 import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import { useRouter } from 'next/router';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import TextButton from 'components/core/Button/TextButton';
-import Spacer from 'components/core/Spacer/Spacer';
+// import GalleryLink from 'components/core/GalleryLink/GalleryLink';
+// import TextButton from 'components/core/Button/TextButton';
+// import Spacer from 'components/core/Spacer/Spacer';
 
 function Home() {
   const { push } = useRouter();
@@ -21,10 +21,10 @@ function Home() {
     <Page centered>
       <GalleryIntro />
       <StyledButton text="Sign In" onClick={handleEnterGallery} />
-      <Spacer height={16} />
+      {/* <Spacer height={16} />
       <GalleryLink to="/members">
         <TextButton text="explore galleries" />
-      </GalleryLink>
+      </GalleryLink> */}
     </Page>
   );
 }
