@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { MembershipMintPage } from 'scenes/MembershipMintPage/MembershipMintPage';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
@@ -52,7 +52,7 @@ function PartnerMembershipMintPageContent() {
 
   const allowlist = getAllowlist();
   const onAllowList = useMemo(
-    () => Boolean(account) && allowlist.includes(account!),
+    () => Boolean(account) && allowlist.includes(account!.toLowerCase()),
     [account, allowlist]
   );
 

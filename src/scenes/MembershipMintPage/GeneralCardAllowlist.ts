@@ -590,5 +590,4 @@ export const ALLOWLIST_PROD = [
   '0x161b79d4e135693361cb42b6a3e8067c8c34e744',
 ];
 
-// export const getAllowlist = () => (isProduction() ? ALLOWLIST_PROD : ALLOWLIST_DEV);
-export const getAllowlist = () => ALLOWLIST_PROD;
+export const getAllowlist = () => (isProduction() ? ALLOWLIST_PROD : ALLOWLIST_DEV);
