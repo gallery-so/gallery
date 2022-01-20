@@ -42,6 +42,8 @@ type Props = {
   next: () => void;
 };
 
+type AspectRatio = 'vertical' | 'horizontal' | undefined;
+
 export default function WelcomeAnimation({ next }: Props) {
   const [props, set] = useSpring(() => ({
     xy: [0, 0],
@@ -49,7 +51,6 @@ export default function WelcomeAnimation({ next }: Props) {
   }));
 
   // Check for vertical screens and render images in different positions if so
-  type AspectRatio = 'vertical' | 'horizontal' | undefined;
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>(undefined);
   const windowSize = useWindowSize();
 
