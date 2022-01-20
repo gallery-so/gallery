@@ -61,20 +61,13 @@ function PartnerMembershipMintPageContent() {
     [onAllowList, ownsGeneralCard]
   );
 
-  // use a ref to track if we called OS, to limit to only calling them once
-  const finishedCallingOpensea = useRef(false);
   useEffect(() => {
     async function checkIfUserCanMint(account: string) {
       const generalCardDetectedInAccount = await detectOwnedGeneralCardsFromOpensea(account);
-
-      if (generalCardDetectedInAccount) {
-        setOwnsGeneralCard(true);
-      }
-
-      finishedCallingOpensea.current = true;
+      setOwnsGeneralCard(generalCardDetectedInAccount);
     }
 
-    if (account && !finishedCallingOpensea.current) {
+    if (account) {
       void checkIfUserCanMint(account);
     }
   }, [account]);
@@ -113,7 +106,7 @@ function PartnerMembershipMintPageContent() {
 function PartnerMembershipMintPage() {
   return (
     <MembershipMintPageProvider>
-      <PartnerMembershipMintPageContent />;
+      <PartnerMembershipMintPageContent />
     </MembershipMintPageProvider>
   );
 }
