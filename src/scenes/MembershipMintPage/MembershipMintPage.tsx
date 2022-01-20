@@ -185,7 +185,7 @@ export function MembershipMintPage({
             <>
               <Spacer height={16} />
               <BodyRegular>You can now sign up for Gallery.</BodyRegular>
-              <GalleryLink to="/auth">
+              <GalleryLink href="/auth">
                 <BodyRegular>Proceed to Onboarding</BodyRegular>
               </GalleryLink>
             </>
