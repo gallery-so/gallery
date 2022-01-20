@@ -7,8 +7,7 @@ import { network } from 'connectors/index';
 import { useActiveWeb3React } from './useWeb3';
 
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS = '0xe01569ca9b39E55Bc7C0dFa09F05fa15CB4C7698';
-// rinkeby address
-export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS = '0xfd979fA7B1433fFC6e7E2c9498C03E9eC7134028';
+export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS = '0xe3d0fe9b7e0b951663267a3ed1e6577f6f79757e';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
