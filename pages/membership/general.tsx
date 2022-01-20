@@ -3,7 +3,7 @@ import PartnerMembershipMintPage from 'scenes/MembershipMintPage/PartnerMembersh
 import { PARTNER_MINT_ENABLED } from 'utils/featureFlag';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
-export default function Partners() {
+export default function General() {
   if (!PARTNER_MINT_ENABLED) {
     return <GalleryRedirect to="/" />;
   }
