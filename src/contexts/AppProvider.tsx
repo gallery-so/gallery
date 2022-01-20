@@ -5,21 +5,26 @@ import ModalProvider from './modal/ModalContext';
 import ToastProvider from './toast/ToastContext';
 import { Web3ProviderNetwork } from './auth/Web3WalletContext';
 import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
+import { RelayProvider } from 'contexts/RelayProvider';
+import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 type Props = {
   children: React.ReactNode;
+  relayCache?: RecordMap;
 };
 
-export default function AppProvider({ children }: Props) {
+export default function AppProvider({ children, relayCache }: Props) {
   return (
     <Boundary>
       <ToastProvider>
         <AuthProvider>
           <Web3ProviderNetwork>
             <SwrProvider>
-              <GalleryNavigationProvider>
-                <ModalProvider>{children}</ModalProvider>
-              </GalleryNavigationProvider>
+              <RelayProvider initialCache={relayCache}>
+                <GalleryNavigationProvider>
+                  <ModalProvider>{children}</ModalProvider>
+                </GalleryNavigationProvider>
+              </RelayProvider>
             </SwrProvider>
           </Web3ProviderNetwork>
         </AuthProvider>
