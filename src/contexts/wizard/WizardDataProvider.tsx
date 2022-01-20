@@ -50,6 +50,8 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   const mutateAllNftsCache = useMutateAllNftsCache();
 
   const handleRefreshNfts = useCallback(async () => {
+    setIsRefreshingNfts(true);
+
     try {
       await refreshOpenseaSync();
       void mutateAllNftsCache();
@@ -61,7 +63,9 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   }, [mutateAllNftsCache, refreshOpenseaSync]);
 
   useEffect(() => {
-    void handleRefreshNfts();
+    if (id === 'onboarding') {
+      void handleRefreshNfts();
+    }
     // just want this running once for the welcome screen
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
