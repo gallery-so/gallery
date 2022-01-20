@@ -49,26 +49,24 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const mutateAllNftsCache = useMutateAllNftsCache();
 
+  console.log({ isRefreshingNfts });
+
   const handleRefreshNfts = useCallback(async () => {
-    setIsRefreshingNfts(true);
-    console.log('refreshing');
     try {
       await refreshOpenseaSync();
       void mutateAllNftsCache();
-      console.log('done');
     } catch {
-      // TODO: error while attempting torefresh!
-      console.log('not done');
+      // TODO: error while attempting to refresh!
     }
 
     setIsRefreshingNfts(false);
   }, [mutateAllNftsCache, refreshOpenseaSync]);
 
   useEffect(() => {
-    if (id === 'onboarding' && !isRefreshingNfts) {
-      void handleRefreshNfts();
-    }
-  }, [id, isRefreshingNfts, handleRefreshNfts]);
+    void handleRefreshNfts();
+    // just want this running once for the welcome screen
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const wizardDataState = useMemo(
     () => ({ id, isRefreshingNfts, handleRefreshNfts }),
