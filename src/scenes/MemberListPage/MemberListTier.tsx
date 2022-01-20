@@ -16,11 +16,11 @@ function getPreviewDirection(index: number) {
 
 type Props = {
   tier: MembershipTier;
-}
+};
 
 function MemberListTier({ tier }: Props) {
   const { fadeUsernames } = useMemberListPageState();
-  
+
   const { searchQuery } = useMemberListPageState();
   const sortedOwners = useMemo(() => {
     if (!tier.owners) {
@@ -29,7 +29,7 @@ function MemberListTier({ tier }: Props) {
 
     return tier.owners
       .filter((owner) => Boolean(owner.username))
-      .sort((a, b) => a.username.localeCompare(b.username));
+      .sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
   }, [tier.owners]);
 
   const filteredOwners = useMemo(() => {
