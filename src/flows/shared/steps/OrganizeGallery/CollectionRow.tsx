@@ -23,7 +23,7 @@ const SMOL_NFT_SIZE_PX = 25;
  * Displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
 function CollectionRow({ collection, className }: Props) {
-  const { name, collectors_note, nfts, hidden } = collection;
+  const { name, collectors_note, nfts = [], hidden } = collection;
 
   const unescapedCollectionName = useMemo(() => unescape(name), [name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collectors_note), [collectors_note]);
