@@ -5,7 +5,7 @@ import MembershipMintPageProvider from 'contexts/membershipMintPage/MembershipMi
 function SilverMembershipMintPage() {
   return (
     <MembershipMintPageProvider>
-      <PremiumMembershipMintPage membershipNft={MEMBERSHIP_NFT_SILVER} />;
+      <PremiumMembershipMintPage membershipNft={MEMBERSHIP_NFT_SILVER} />
     </MembershipMintPageProvider>
   );
 }
