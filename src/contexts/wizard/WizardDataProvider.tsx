@@ -49,8 +49,6 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const mutateAllNftsCache = useMutateAllNftsCache();
 
-  console.log({ isRefreshingNfts });
-
   const handleRefreshNfts = useCallback(async () => {
     try {
       await refreshOpenseaSync();
