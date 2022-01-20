@@ -49,10 +49,17 @@ export default function WelcomeAnimation({ next }: Props) {
   }));
 
   // Check for vertical screens and render images in different positions if so
-  const [aspectRatio, setAspectRatio] = useState(0);
+  type AspectRatio = 'vertical' | 'horizontal' | undefined;
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>(undefined);
   const windowSize = useWindowSize();
+
   useEffect(() => {
-    setAspectRatio(windowSize.width / windowSize.height);
+    if (windowSize.width / windowSize.height < 1) {
+      setAspectRatio('vertical');
+      return;
+    }
+
+    setAspectRatio('horizontal');
   }, [windowSize]);
 
   // If we want to use transitions instead of keyframes, we could add a class to each image after X seconds
@@ -168,7 +175,7 @@ const StyledTextContainer = styled.div<{
 
 const StyledMovementWrapper = styled.div<{
   shouldExplode: boolean;
-  aspectRatio: number;
+  aspectRatio: AspectRatio;
   animatedImage: AnimatedImage;
 }>`
   position: relative;
@@ -177,11 +184,11 @@ const StyledMovementWrapper = styled.div<{
   ${({ shouldExplode, animatedImage, aspectRatio }) =>
     shouldExplode
       ? `transform: translate(${
-          aspectRatio < 1 && animatedImage.moveOnVertical
+          aspectRatio === 'vertical' && animatedImage.moveOnVertical
             ? animatedImage.verticalX
             : animatedImage.offsetX
         }px, ${
-          aspectRatio < 1 && animatedImage.moveOnVertical
+          aspectRatio === 'vertical' && animatedImage.moveOnVertical
             ? animatedImage.verticalY
             : animatedImage.offsetY
         }px);`

@@ -1,5 +1,5 @@
 import styled, { css, Keyframes } from 'styled-components';
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { animated, useSpring } from 'react-spring';
 
 type Props = {
@@ -48,6 +48,15 @@ const calc = (
 const trans = (x: number, y: number, s: number): string =>
   `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
 
+const config = {
+  mass: 1,
+  tension: 170,
+  friction: 75,
+  clamp: false,
+  precision: 0.01,
+  velocity: 0,
+};
+
 function Image({
   width,
   src,
@@ -57,31 +66,28 @@ function Image({
   fadeOutGrow,
   imagesFaded,
 }: Props) {
+  const [xys, setXys] = useState([0, 0, 1]);
+
+  const handleMouseLeave = useCallback(() => {
+    setXys([0, 0, 1]);
+  }, []);
+
+  const handleMouseMove = useCallback((e) => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setXys(calc(e.clientX, e.clientY, rect));
+    }
+  }, []);
+
   const ref = useRef<HTMLDivElement>(null);
-  const [xys, set] = useState([0, 0, 1]);
-  const config = {
-    mass: 1,
-    tension: 170,
-    friction: 75,
-    clamp: false,
-    precision: 0.01,
-    velocity: 0,
-  };
   const props = useSpring({ xys, config });
 
   return (
     <div
       className="hover-listener"
       ref={ref}
-      onMouseLeave={() => {
-        set([0, 0, 1]);
-      }}
-      onMouseMove={(e) => {
-        if (ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          set(calc(e.clientX, e.clientY, rect));
-        }
-      }}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
     >
       <animated.div className="rotatable" style={{ transform: props.xys.to(trans) }}>
         <StyledImage

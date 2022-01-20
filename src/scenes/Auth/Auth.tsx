@@ -28,12 +28,7 @@ function Auth() {
   const username = user?.username;
 
   // Before the welcome screen, we should preload images so that the animation is smooth
-  // NOTE: This means that we preload images for *all* users on /auth, not just new users
-  // This is a necessary tradeoff because the Welcome screen is the first screen for new users,
-  // So there is no 'buffer' screen where we could preload images
-  useEffect(() => {
-    preloadImages();
-  });
+  useEffect(preloadImages, []);
 
   if (isAuthenticated) {
     // If user exists in DB, send them to their profile
