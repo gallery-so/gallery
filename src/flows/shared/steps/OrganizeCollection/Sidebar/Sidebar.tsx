@@ -9,18 +9,15 @@ import {
   useSidebarNftsState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
-import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
+import { useRefreshNftConfig } from 'contexts/wizard/WizardDataProvider';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
   const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
-  const refreshOpenseaSync = useRefreshOpenseaSync();
-  const mutateAllNftsCache = useMutateAllNftsCache();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -72,29 +69,16 @@ function Sidebar() {
     setNftsIsSelected(nftsToDisplayInSidebar, false);
   }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageNfts]);
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // TODO: use context values here
-  const handleRefreshWalletClick = useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refreshOpenseaSync();
-      void mutateAllNftsCache();
-    } catch {
-      // TODO: error while attempting torefresh!
-    }
-
-    setIsRefreshing(false);
-  }, [mutateAllNftsCache, refreshOpenseaSync]);
+  const { isRefreshingNfts, handleRefreshNfts } = useRefreshNftConfig();
 
   return (
     <StyledSidebar>
       <Header>
         <BodyMedium>Your NFTs</BodyMedium>
         <TextButton
-          text={isRefreshing ? 'Refreshing...' : 'Refresh Wallet'}
-          onClick={handleRefreshWalletClick}
-          disabled={isRefreshing}
+          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
+          onClick={handleRefreshNfts}
+          disabled={isRefreshingNfts}
         />
       </Header>
       <Spacer height={16} />
