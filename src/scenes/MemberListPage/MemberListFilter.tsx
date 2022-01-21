@@ -106,7 +106,6 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    flex-wrap: wrap;
     margin-left: -28px;
     justify-content: flex-start;
   }
