@@ -11,7 +11,19 @@ type Props = {
   nft: Nft;
 };
 
-const hex = (str: string) => parseInt(str, 16);
+// If the address contains alphabetical characters, it is hexidecimal, and we convert it
+const hexHandler = (str: string) => (/[a-zA-Z]/.test(str) ? parseInt(str, 16) : str);
+
+const getOpenseaExternalUrl = (nft: Nft) => {
+  const contractAddress = nft.asset_contract.address;
+  const tokenId = hexHandler(nft.opensea_token_id);
+
+  // allows us to get referral credit
+  const ref = GALLERY_OS_ADDRESS;
+
+  return `https://opensea.io/assets/${contractAddress}/${tokenId}?ref=${ref}`;
+};
+
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
 function NftAdditionalDetails({ nft }: Props) {
@@ -19,6 +31,9 @@ function NftAdditionalDetails({ nft }: Props) {
   const handleToggleClick = useCallback(() => {
     setShowAdditionalDetails((value) => !value);
   }, []);
+
+  // Check for contract address befor rendering additional details
+  const hasContractAddress = nft.asset_contract?.address !== '';
 
   return (
     <StyledNftAdditionalDetails>
@@ -29,7 +44,7 @@ function NftAdditionalDetails({ nft }: Props) {
       <Spacer height={12} />
       {showAdditionalDetails && (
         <div>
-          {nft.asset_contract.address && nft.asset_contract.address !== '' && (
+          {hasContractAddress && (
             <>
               <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
               <StyledLink
@@ -43,17 +58,11 @@ function NftAdditionalDetails({ nft }: Props) {
           )}
           <Spacer height={16} />
           <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-          <BodyRegular>{hex(nft.opensea_token_id)}</BodyRegular>
+          <BodyRegular>{hexHandler(nft.opensea_token_id)}</BodyRegular>
           <Spacer height={16} />
-          {nft.asset_contract.address && nft.asset_contract.address !== '' && (
+          {hasContractAddress && (
             <StyledLinkContainer>
-              <StyledLink
-                href={`https://opensea.io/assets/${nft.asset_contract.address}/${hex(
-                  nft.opensea_token_id
-                )}?ref=${GALLERY_OS_ADDRESS}`}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <StyledLink href={getOpenseaExternalUrl(nft)} target="_blank" rel="noreferrer">
                 <ActionText color={colors.gray50}>View on OpenSea</ActionText>
               </StyledLink>
               <Spacer width={16} />
