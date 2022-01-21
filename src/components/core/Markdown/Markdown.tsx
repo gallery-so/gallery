@@ -9,10 +9,15 @@ export default function Markdown({ text }: Props) {
   return (
     <ReactMarkdown
       components={{
-        // TODO: come up with a sane default if NFT doesn't have an href provided
-        a: ({ href, children }) => (
-          <GalleryLink href={href ?? window.location.origin}>{children}</GalleryLink>
-        ),
+        a: ({ href, children }) =>
+          href ? (
+            <GalleryLink href={href}>{children}</GalleryLink>
+          ) : (
+            // if href is blank, we must render the empty string this way;
+            // simply rendering `children` causes the markdown library to crash
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <>{children}</>
+          ),
       }}
     >
       {text}
