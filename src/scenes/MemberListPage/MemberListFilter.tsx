@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
-import { useMemberListPageActions, useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
+import {
+  useMemberListPageActions,
+  useMemberListPageState,
+} from 'contexts/memberListPage/MemberListPageContext';
 
 function getAlphabet() {
   return [...Array(26)].map((_, i) => String.fromCharCode(65 + i));
@@ -15,7 +18,7 @@ type FilterButtonProps = {
 
 function FilterButton({ character }: FilterButtonProps) {
   const { searchQuery } = useMemberListPageState();
-  const { setSearchQuery }= useMemberListPageActions()
+  const { setSearchQuery } = useMemberListPageActions();
 
   const isSelected = useMemo(
     () => character.toLocaleLowerCase() === searchQuery.toLowerCase(),
@@ -76,10 +79,7 @@ function MemberListFilter() {
   return (
     <StyledMemberListFilter hasSearchQuery={hasSearchQuery}>
       {filterCharacters.map((character) => (
-        <FilterButton
-          key={character}
-          character={character}
-        />
+        <FilterButton key={character} character={character} />
       ))}
     </StyledMemberListFilter>
   );
@@ -95,7 +95,7 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: stretch;
-  margin-left: -28px;
+  // margin-left: -28px;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
@@ -106,6 +106,11 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   @media only screen and ${breakpoints.desktop} {
     margin-left: -28px;
   }
+
+  // &:after {
+  //   content: '';
+  //   flex: auto;
+  // }
 
   ${({ hasSearchQuery }) =>
     !hasSearchQuery &&
