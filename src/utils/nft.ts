@@ -1,5 +1,6 @@
 import { NftMediaType } from 'components/core/enums';
 import { Nft } from 'types/Nft';
+import { GOOGLE_CONTENT_IMG_URL } from './regex';
 
 const FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
 
@@ -17,6 +18,10 @@ export function getResizedNftImageUrlWithFallback(nft: Nft, size = 288): string 
 
   // Resizes if google image: https://developers.google.com/people/image-sizing
   if (image_url?.includes('googleusercontent')) {
+    if (image_url.match(GOOGLE_CONTENT_IMG_URL)) {
+      return image_url.replace(GOOGLE_CONTENT_IMG_URL, `=w${size}`);
+    }
+
     return `${image_url}=w${size}`;
   }
 
