@@ -90,27 +90,25 @@ type StyledMemberListFilterProps = {
 };
 
 const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
-  display: flex;
-  width: 100%;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 48px);
+  grid-gap: 0;
+  justify-content: space-between;
   align-content: stretch;
-  // margin-left: -28px;
+  width: 95vw;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
     flex-wrap: nowrap;
     margin-left: -16px;
+    width: 100%;
+    display: flex;
   }
 
   @media only screen and ${breakpoints.desktop} {
     margin-left: -28px;
+    justify-content: flex-start;
   }
-
-  // &:after {
-  //   content: '';
-  //   flex: auto;
-  // }
 
   ${({ hasSearchQuery }) =>
     !hasSearchQuery &&
