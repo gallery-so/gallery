@@ -95,7 +95,7 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   grid-gap: 0;
   justify-content: space-between;
   align-content: stretch;
-  width: 95vw;
+  width: 97vw;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
