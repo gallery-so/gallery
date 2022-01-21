@@ -40,11 +40,26 @@ const StyledImage = styled.img<{
     `};
 `;
 
-const calc = (
+function calc(
   x: number,
   y: number,
   rect: { top: number; left: number; width: number; height: number }
-): number[] => [-(y - rect.top - rect.height / 2) / 8, (x - rect.left - rect.width / 2) / 8, 1.05];
+): number[] {
+  const rotationCeiling = 5; // Maximum degrees to rotate on both axes
+
+  // Do not let xRotation or yRotation go over the ceiling
+  const yRotationUnscaled = (y - rect.top - rect.height / 2) / 10;
+  const xRotationUnscaled = (x - rect.left - rect.width / 2) / 10;
+
+  const ceiling = function (rotation: number): number {
+    return rotation < 0
+      ? Math.max(rotation, rotationCeiling * -1)
+      : Math.min(rotation, rotationCeiling);
+  };
+
+  return [ceiling(yRotationUnscaled) * -1, ceiling(xRotationUnscaled), 1.05];
+}
+
 const trans = (x: number, y: number, s: number): string =>
   `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
 
