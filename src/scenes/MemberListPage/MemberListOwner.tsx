@@ -27,7 +27,6 @@ function MemberListOwner({ owner, direction }: Props) {
   const [isHovering, setIsHovering] = useState(false);
   // debounce isHovering by 150ms. so debouncedIsHovering will only be true if the user hovers over a name for at least 150ms.
   const debouncedIsHovering = useDebounce(isHovering, 150);
-  //
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
@@ -55,7 +54,7 @@ function MemberListOwner({ owner, direction }: Props) {
 
   const onMouseLeave = useCallback(() => {
     setIsHovering(false);
-    setFadeUsernames(false)
+    setFadeUsernames(false);
   }, [setFadeUsernames]);
 
   const breakpoint = useBreakpoint();
@@ -68,7 +67,7 @@ function MemberListOwner({ owner, direction }: Props) {
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <GalleryLink href={`/${owner.username}`} underlined={false} >
+        <GalleryLink href={`/${owner.username}`} underlined={false}>
           <StyledUsername>{owner.username}</StyledUsername>
         </GalleryLink>
       </StyledUsernameWrapper>
@@ -97,7 +96,7 @@ const StyledOwner = styled.div`
   }
 
   &:hover {
-    color: ${colors.black}
+    color: ${colors.black};
   }
 `;
 

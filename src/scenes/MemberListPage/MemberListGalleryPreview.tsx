@@ -1,6 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 import { Directions } from 'src/components/core/enums';
 import { useCallback, useMemo, useState } from 'react';
+import { GOOGLE_CONTENT_IMG_URL } from 'utils/regex';
 
 const verticalOffset = [0, 130, 260];
 const horizontalOffset = [0, 90, 180];
@@ -38,8 +39,8 @@ function getFormattedImageUrl(url: string) {
     return url;
   }
 
-  if (url.includes('=s250')) {
-    return url.replace('=s250', '=w250');
+  if (url.match(GOOGLE_CONTENT_IMG_URL)) {
+    return url.replace(GOOGLE_CONTENT_IMG_URL, '=w250');
   }
 
   return `${url}=w250`;
