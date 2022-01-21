@@ -21,7 +21,7 @@ function MemberListPage() {
         <Spacer height={128} />
         <StyledBanner>
           <StyledBannerText>
-            <i>Thank you,</i> for being a member of Gallery.
+            <i>Thank you,</i> for being a patron of Gallery.
           </StyledBannerText>
         </StyledBanner>
         <Spacer height={isMobileScreenSize ? 65 : 96} />
