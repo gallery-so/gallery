@@ -11,6 +11,7 @@ type Props = {
   nft: Nft;
 };
 
+const hex = (str: string) => parseInt(str, 16);
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
 function NftAdditionalDetails({ nft }: Props) {
@@ -18,6 +19,7 @@ function NftAdditionalDetails({ nft }: Props) {
   const handleToggleClick = useCallback(() => {
     setShowAdditionalDetails((value) => !value);
   }, []);
+
   return (
     <StyledNftAdditionalDetails>
       <TextButton
@@ -37,11 +39,13 @@ function NftAdditionalDetails({ nft }: Props) {
           </StyledLink>
           <Spacer height={16} />
           <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-          <BodyRegular>{nft.opensea_token_id}</BodyRegular>
+          <BodyRegular>{hex(nft.opensea_token_id)}</BodyRegular>
           <Spacer height={16} />
           <StyledLinkContainer>
             <StyledLink
-              href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}?ref=${GALLERY_OS_ADDRESS}`}
+              href={`https://opensea.io/assets/${nft.asset_contract.address}/${hex(
+                nft.opensea_token_id
+              )}?ref=${GALLERY_OS_ADDRESS}`}
               target="_blank"
               rel="noreferrer"
             >
