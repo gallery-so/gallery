@@ -29,30 +29,36 @@ function NftAdditionalDetails({ nft }: Props) {
       <Spacer height={12} />
       {showAdditionalDetails && (
         <div>
-          <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
-          <StyledLink
-            href={`https://etherscan.io/address/${nft.asset_contract.address}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BodyRegular>{nft.asset_contract.address}</BodyRegular>
-          </StyledLink>
+          {nft.asset_contract.address && nft.asset_contract.address !== '' && (
+            <>
+              <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
+              <StyledLink
+                href={`https://etherscan.io/address/${nft.asset_contract.address}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <BodyRegular>{nft.asset_contract.address}</BodyRegular>
+              </StyledLink>
+            </>
+          )}
           <Spacer height={16} />
           <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
           <BodyRegular>{hex(nft.opensea_token_id)}</BodyRegular>
           <Spacer height={16} />
-          <StyledLinkContainer>
-            <StyledLink
-              href={`https://opensea.io/assets/${nft.asset_contract.address}/${hex(
-                nft.opensea_token_id
-              )}?ref=${GALLERY_OS_ADDRESS}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <ActionText color={colors.gray50}>View on OpenSea</ActionText>
-            </StyledLink>
-            <Spacer width={16} />
-          </StyledLinkContainer>
+          {nft.asset_contract.address && nft.asset_contract.address !== '' && (
+            <StyledLinkContainer>
+              <StyledLink
+                href={`https://opensea.io/assets/${nft.asset_contract.address}/${hex(
+                  nft.opensea_token_id
+                )}?ref=${GALLERY_OS_ADDRESS}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+              </StyledLink>
+              <Spacer width={16} />
+            </StyledLinkContainer>
+          )}
         </div>
       )}
     </StyledNftAdditionalDetails>
