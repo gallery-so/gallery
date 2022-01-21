@@ -48,16 +48,13 @@ function calc(
   const rotationCeiling = 5; // Maximum degrees to rotate on both axes
 
   // Do not let xRotation or yRotation go over the ceiling
-  const yRotationUnscaled = (y - rect.top - rect.height / 2) / 10;
-  const xRotationUnscaled = (x - rect.left - rect.width / 2) / 10;
+  const ceiling = (num: number) => Math.min(Math.max(num, rotationCeiling * -1), rotationCeiling);
 
-  const ceiling = function (rotation: number): number {
-    return rotation < 0
-      ? Math.max(rotation, rotationCeiling * -1)
-      : Math.min(rotation, rotationCeiling);
-  };
-
-  return [ceiling(yRotationUnscaled) * -1, ceiling(xRotationUnscaled), 1.05];
+  return [
+    ceiling((y - rect.top - rect.height / 2) / 10) * -1,
+    ceiling((x - rect.left - rect.width / 2) / 10),
+    1.05,
+  ];
 }
 
 const trans = (x: number, y: number, s: number): string =>
