@@ -10,7 +10,10 @@ class UserGalleryPageErrorBoundary extends Component {
   state: { error: null | Error | ApiError } = { error: null };
 
   render() {
-    if (this.state.error instanceof ApiError && this.state.error.code === 404) {
+    if (
+      (this.state.error instanceof ApiError && this.state.error.code === 404) ||
+      this.state.error?.message.toLowerCase().includes('not found')
+    ) {
       return <NotFound />;
     }
 
