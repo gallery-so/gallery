@@ -4,6 +4,12 @@
 }
 
 @font-face {
+  font-family: 'Gallery Display';
+  src: url('/fonts/gallery-display-italics.woff2') format('woff2');
+  font-style: italic;
+}
+
+@font-face {
   font-family: 'Helvetica Neue';
   src: url('/fonts/HelveticaNeue.otf') format('opentype'),
     url('/fonts/HelveticaNeue.ttf') format('truetype');
