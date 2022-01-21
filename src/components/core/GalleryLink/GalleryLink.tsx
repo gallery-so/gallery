@@ -18,7 +18,7 @@ export default function GalleryLink({
   underlineOnHover = false,
 }: Props) {
   if (!to && !href) {
-    throw new Error('no link provided for GalleryLink');
+    console.error('no link provided for GalleryLink');
   }
 
   if (to) {
