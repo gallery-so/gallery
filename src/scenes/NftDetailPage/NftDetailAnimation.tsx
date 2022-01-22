@@ -18,7 +18,6 @@ function NftDetailAnimation({ nft }: Props) {
 
 const StyledNftDetailAnimation = styled.div`
   width: 100%;
-  height: 100%;
 `;
 const StyledIframe = styled.iframe`
   width: 100%;
