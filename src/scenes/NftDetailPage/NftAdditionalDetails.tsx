@@ -12,13 +12,14 @@ type Props = {
 };
 
 // If the address contains alphabetical characters, it is hexidecimal, and we convert it
+// TODO: This is broken for long strings (> 21 characters?) because JS converts to scientific
 const hexHandler = (str: string) => (/[a-zA-Z]/.test(str) ? parseInt(str, 16) : str);
 
 const getOpenseaExternalUrl = (nft: Nft) => {
   const contractAddress = nft.asset_contract.address;
   const tokenId = hexHandler(nft.opensea_token_id);
 
-  // allows us to get referral credit
+  // Allows us to get referral credit
   const ref = GALLERY_OS_ADDRESS;
 
   return `https://opensea.io/assets/${contractAddress}/${tokenId}?ref=${ref}`;
