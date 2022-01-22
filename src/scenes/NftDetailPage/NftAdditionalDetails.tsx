@@ -62,14 +62,21 @@ function NftAdditionalDetails({ nft }: Props) {
           <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
           <BodyRegular>{hexHandler(nft.opensea_token_id)}</BodyRegular>
           <Spacer height={16} />
-          {hasContractAddress && (
-            <StyledLinkContainer>
-              <StyledLink href={getOpenseaExternalUrl(nft)} target="_blank" rel="noreferrer">
-                <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+          <StyledLinkContainer>
+            {hasContractAddress && (
+              <>
+                <StyledLink href={getOpenseaExternalUrl(nft)} target="_blank" rel="noreferrer">
+                  <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+                </StyledLink>
+                <Spacer width={16} />
+              </>
+            )}
+            {nft?.external_url !== '' && (
+              <StyledLink href={nft.external_url} target="_blank" rel="noreferrer">
+                <ActionText color={colors.gray50}>More Info</ActionText>
               </StyledLink>
-              <Spacer width={16} />
-            </StyledLinkContainer>
-          )}
+            )}
+          </StyledLinkContainer>
         </div>
       )}
     </StyledNftAdditionalDetails>
