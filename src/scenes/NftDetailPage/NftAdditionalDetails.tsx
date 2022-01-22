@@ -12,7 +12,8 @@ type Props = {
 };
 
 // If the address contains alphabetical characters, it is hexidecimal, and we convert it
-// TODO: This is broken for long strings (> 21 characters?) because JS converts to scientific
+// TODO: Fix parseInt() for long strings (> 21 characters?), when JS converts to scientific
+// Example: https://gallery.so/robin/21Qt76R6bIyM7fIDsBsgU9DrKCg/21R0nPXR1nlqXP9UD8hn7CQUsUP
 const hexHandler = (str: string) => (/[a-zA-Z]/.test(str) ? parseInt(str, 16) : str);
 
 const getOpenseaExternalUrl = (nft: Nft) => {
