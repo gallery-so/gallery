@@ -11,6 +11,21 @@ type Props = {
   nft: Nft;
 };
 
+// If the address contains alphabetical characters, it is hexidecimal, and we convert it
+// TODO: Fix parseInt() for long strings (> 21 characters?), when JS converts to scientific https://gallery.so/robin/21Qt76R6bIyM7fIDsBsgU9DrKCg/21R0nPXR1nlqXP9UD8hn7CQUsUP
+// TODO: This currently fails to convert token IDs that have hexes with 3 digits https://gallery.so/robin/20qynDqailFfmP5VlVHhB2AYrAN/20qyZkjvBh3fxYyY1zryrvKH4pC
+const hexHandler = (str: string) => (/[a-zA-Z]/.test(str) ? parseInt(str, 16) : str);
+
+const getOpenseaExternalUrl = (nft: Nft) => {
+  const contractAddress = nft.asset_contract.address;
+  const tokenId = hexHandler(nft.opensea_token_id);
+
+  // Allows us to get referral credit
+  const ref = GALLERY_OS_ADDRESS;
+
+  return `https://opensea.io/assets/${contractAddress}/${tokenId}?ref=${ref}`;
+};
+
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
 function NftAdditionalDetails({ nft }: Props) {
@@ -18,6 +33,10 @@ function NftAdditionalDetails({ nft }: Props) {
   const handleToggleClick = useCallback(() => {
     setShowAdditionalDetails((value) => !value);
   }, []);
+
+  // Check for contract address befor rendering additional details
+  const hasContractAddress = nft.asset_contract?.address !== '';
+
   return (
     <StyledNftAdditionalDetails>
       <TextButton
@@ -27,28 +46,30 @@ function NftAdditionalDetails({ nft }: Props) {
       <Spacer height={12} />
       {showAdditionalDetails && (
         <div>
-          <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
-          <StyledLink
-            href={`https://etherscan.io/address/${nft.asset_contract.address}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BodyRegular>{nft.asset_contract.address}</BodyRegular>
-          </StyledLink>
+          {hasContractAddress && (
+            <>
+              <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
+              <StyledLink
+                href={`https://etherscan.io/address/${nft.asset_contract.address}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <BodyRegular>{nft.asset_contract.address}</BodyRegular>
+              </StyledLink>
+            </>
+          )}
           <Spacer height={16} />
           <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-          <BodyRegular>{nft.opensea_token_id}</BodyRegular>
+          <BodyRegular>{hexHandler(nft.opensea_token_id)}</BodyRegular>
           <Spacer height={16} />
-          <StyledLinkContainer>
-            <StyledLink
-              href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.opensea_token_id}?ref=${GALLERY_OS_ADDRESS}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <ActionText color={colors.gray50}>View on OpenSea</ActionText>
-            </StyledLink>
-            <Spacer width={16} />
-          </StyledLinkContainer>
+          {hasContractAddress && (
+            <StyledLinkContainer>
+              <StyledLink href={getOpenseaExternalUrl(nft)} target="_blank" rel="noreferrer">
+                <ActionText color={colors.gray50}>View on OpenSea</ActionText>
+              </StyledLink>
+              <Spacer width={16} />
+            </StyledLinkContainer>
+          )}
         </div>
       )}
     </StyledNftAdditionalDetails>
