@@ -4,7 +4,7 @@ import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
 
-const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
+const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://api.gallery.so';
 
 const ERR_UNAUTHORIZED = 401;
 
