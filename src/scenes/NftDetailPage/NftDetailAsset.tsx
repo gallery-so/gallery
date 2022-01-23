@@ -10,6 +10,9 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
+
+import NftDetailNote from './NftDetailNote';
+
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
@@ -17,11 +20,13 @@ import { useContentState } from 'contexts/shimmer/ShimmerContext';
 type NftDetailAssetComponentProps = {
   nft: Nft;
   maxHeight: number;
+  userOwnsAsset: boolean;
 };
 
-function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ nft, maxHeight, userOwnsAsset }: NftDetailAssetComponentProps) {
   const assetType = getMediaType(nft);
   const breakpoint = useBreakpoint();
+  console.log(userOwnsAsset);
 
   const resizableImage = useMemo(
     () => (
@@ -53,6 +58,7 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
 
 type Props = {
   nft: Nft;
+  userOwnsAsset: boolean;
 };
 
 // number that determines a reasonable max height for the displayed NFT
@@ -63,7 +69,7 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft }: Props) {
+function NftDetailAsset({ nft, userOwnsAsset }: Props) {
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -87,7 +93,10 @@ function NftDetailAsset({ nft }: Props) {
       maxHeight={maxHeight}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
     >
-      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+      <StyledAssetAndNoteContainer>
+        <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} userOwnsAsset={userOwnsAsset} />
+        {userOwnsAsset && <NftDetailNote nftId={nft.id} />}
+      </StyledAssetAndNoteContainer>
     </StyledAssetContainer>
   );
 }
@@ -96,6 +105,15 @@ type AssetContainerProps = {
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
 };
+
+const StyledAssetAndNoteContainer = styled.div`
+  height: 100%;
+  justify-content: center;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
   display: flex;

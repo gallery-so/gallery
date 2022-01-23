@@ -115,6 +115,7 @@ const StyledShimmerComponent = styled.div<VisibleProps>`
 const StyledChildren = styled.div<VisibleProps>`
   height: 100%;
   width: 100%;
+  // flex-basis: calc(100% - 64px); /* For collecttor's note */
   opacity: ${({ visible }) => (visible ? 1 : 0)};
 `;
 
