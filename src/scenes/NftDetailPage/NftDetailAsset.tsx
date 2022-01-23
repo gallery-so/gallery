@@ -75,7 +75,7 @@ function NftDetailAsset({ nft }: Props) {
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
   const shouldEnforceSquareAspectRatio =
-    breakpoint === size.desktop || breakpoint === size.tablet || aspectRatioType !== 'wide';
+    breakpoint === size.desktop || breakpoint === size.tablet || aspectRatioType === 'square';
 
   return (
     <StyledAssetContainer
