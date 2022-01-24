@@ -145,13 +145,13 @@ const AuthProvider = memo(({ children }: Props) => {
     [logIn, logOut, setStateToLoading]
   );
 
-  const shouldDisplayUniversalLoader = useMemo(
-    () => authState === UNKNOWN || authState === LOADING,
-    [authState]
-  );
+  // const shouldDisplayUniversalLoader = useMemo(
+  //   () => authState === UNKNOWN || authState === LOADING,
+  //   [authState]
+  // );
 
   // TODO: display a loader instead of `null`
-  return shouldDisplayUniversalLoader ? null : (
+  return (
     <AuthStateContext.Provider value={authState}>
       <AuthActionsContext.Provider value={authActions}>
         <Web3WalletProvider>{children}</Web3WalletProvider>

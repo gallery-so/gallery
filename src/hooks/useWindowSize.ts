@@ -3,8 +3,8 @@ import { size } from 'components/core/breakpoints';
 
 export default function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: typeof window === 'undefined' ? 0 : window.innerWidth,
+    height: typeof window === 'undefined' ? 0 : window.innerHeight,
   });
 
   useEffect(() => {

@@ -7,7 +7,8 @@ type SetValue<T> = Dispatch<SetStateAction<T>>;
 // you do this manually if you're testing!
 function usePersistedState<T>(key: string, defaultValue: T): [T, SetValue<T>] {
   const [value, setValue] = useState(() => {
-    const persistedValue = window.localStorage.getItem(key);
+    const persistedValue =
+      typeof window === 'undefined' ? defaultValue : window.localStorage.getItem(key);
 
     // Use user provided default if not in local storage
     if (persistedValue === null) {
