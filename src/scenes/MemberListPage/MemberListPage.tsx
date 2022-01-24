@@ -8,9 +8,27 @@ import MemberListTier from './MemberListTier';
 import MemberListFilter from './MemberListFilter';
 import { useMemo, useState } from 'react';
 import { useBreakpoint } from 'hooks/useWindowSize';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { MemberListPageFragment$key } from '../../../__generated__/MemberListPageFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
-function MemberListPage() {
-  const memberList = useMemberList();
+type Props = {
+  queryRef: MemberListPageFragment$key;
+};
+
+function MemberListPage({ queryRef }: Props) {
+  const { membershipTiers } = useFragment(
+    graphql`
+      fragment MemberListPageFragment on Query {
+        membershipTiers @required(action: THROW) {
+          id
+          ...MemberListTierFragment
+        }
+      }
+    `,
+    queryRef
+  );
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -31,8 +49,14 @@ function MemberListPage() {
       <MemberListFilter setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
       <Spacer height={56} />
       <StyledTierWrapper>
-        {memberList.map((tier) => (
-          <MemberListTier key={tier.id} tier={tier} searchQuery={searchQuery} setFadeUsernames={setFadeUsernames} fadeUsernames={fadeUsernames}/>
+        {removeNullValues(membershipTiers).map((tier) => (
+          <MemberListTier
+            key={tier.id}
+            tierRef={tier}
+            searchQuery={searchQuery}
+            setFadeUsernames={setFadeUsernames}
+            fadeUsernames={fadeUsernames}
+          />
         ))}
       </StyledTierWrapper>
     </StyledPage>

@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { MembershipTier } from 'types/MembershipTier';
 import { BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
 import { Directions } from 'src/components/core/enums';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { MemberListTierFragment$key } from '../../../__generated__/MemberListTierFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
 // Get which side of the owner name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -14,21 +17,36 @@ function getPreviewDirection(index: number) {
 }
 
 type Props = {
-  tier: MembershipTier;
+  tierRef: MemberListTierFragment$key;
   searchQuery: string;
   setFadeUsernames: (fadeUsernames: boolean) => void;
   fadeUsernames: boolean;
-}
+};
 
-function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: Props) {
+function MemberListTier({ tierRef, searchQuery, setFadeUsernames, fadeUsernames }: Props) {
+  const tier = useFragment(
+    graphql`
+      fragment MemberListTierFragment on MembershipTier {
+        name
+        owners {
+          id
+          user @required(action: NONE) {
+            username @required(action: NONE)
+          }
+            
+            ...MemberListOwnerFragment
+        }
+      }
+    `,
+    tierRef
+  );
+
   const sortedOwners = useMemo(() => {
-    if (!tier.owners) {
-      return [];
-    }
+    const nonNullOwners = removeNullValues(tier.owners ?? []);
 
-    return tier.owners
-      .filter((owner) => Boolean(owner.username))
-      .sort((a, b) => a.username.localeCompare(b.username));
+    nonNullOwners.sort((a, b) => a.user.username.localeCompare(b.user.username));
+
+    return nonNullOwners;
   }, [tier.owners]);
 
   const filteredOwners = useMemo(() => {
@@ -37,11 +55,11 @@ function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: 
     }
 
     if (searchQuery === '#') {
-      return sortedOwners.filter((owner) => !/^[A-Za-z]/.test(owner.username));
+      return sortedOwners.filter((owner) => !/^[A-Za-z]/.test(owner.user.username));
     }
 
     return sortedOwners.filter((owner) =>
-      owner.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
+      owner.user.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
     );
   }, [searchQuery, sortedOwners]);
 
@@ -52,8 +70,8 @@ function MemberListTier({ tier, searchQuery, setFadeUsernames, fadeUsernames }: 
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
           <MemberListOwner
-            key={owner.user_id}
-            owner={owner}
+            key={owner.id}
+            ownerRef={owner}
             direction={getPreviewDirection(index)}
             setFadeUsernames={setFadeUsernames}
           />
