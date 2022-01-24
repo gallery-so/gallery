@@ -15,7 +15,7 @@ const COLLECTION_SPACING = 48;
 
 function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props) {
   const visibleCollections = useMemo(
-    () => collections.filter((collection) => !collection.hidden && collection.nfts.length > 0),
+    () => collections.filter((collection) => !collection.hidden && collection.nfts?.length > 0),
     [collections]
   );
 

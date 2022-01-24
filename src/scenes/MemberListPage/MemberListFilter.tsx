@@ -1,8 +1,12 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
+import {
+  useMemberListPageActions,
+  useMemberListPageState,
+} from 'contexts/memberListPage/MemberListPageContext';
 
 function getAlphabet() {
   return [...Array(26)].map((_, i) => String.fromCharCode(65 + i));
@@ -10,11 +14,12 @@ function getAlphabet() {
 
 type FilterButtonProps = {
   character: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-  searchQuery: string;
 };
 
-function FilterButton({ character, setSearchQuery, searchQuery }: FilterButtonProps) {
+function FilterButton({ character }: FilterButtonProps) {
+  const { searchQuery } = useMemberListPageState();
+  const { setSearchQuery } = useMemberListPageActions();
+
   const isSelected = useMemo(
     () => character.toLocaleLowerCase() === searchQuery.toLowerCase(),
     [character, searchQuery]
@@ -64,25 +69,17 @@ const StyledFilterButtonText = styled(Heading)`
   color: inherit;
 `;
 
-type Props = {
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-  searchQuery: string;
-};
-
 const filterCharacters = [...getAlphabet(), '#'];
 
-function MemberListFilter({ setSearchQuery, searchQuery }: Props) {
+function MemberListFilter() {
+  const { searchQuery } = useMemberListPageState();
+
   const hasSearchQuery = useMemo(() => searchQuery.length > 0, [searchQuery]);
 
   return (
     <StyledMemberListFilter hasSearchQuery={hasSearchQuery}>
       {filterCharacters.map((character) => (
-        <FilterButton
-          key={character}
-          character={character}
-          setSearchQuery={setSearchQuery}
-          searchQuery={searchQuery}
-        />
+        <FilterButton key={character} character={character} />
       ))}
     </StyledMemberListFilter>
   );
@@ -93,21 +90,24 @@ type StyledMemberListFilterProps = {
 };
 
 const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
-  display: flex;
-  width: 100%;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 48px);
+  grid-gap: 0;
+  justify-content: space-between;
   align-content: stretch;
-  margin-left: -28px;
+  width: 97vw;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
     flex-wrap: nowrap;
     margin-left: -16px;
+    width: 100%;
+    display: flex;
   }
 
   @media only screen and ${breakpoints.desktop} {
     margin-left: -28px;
+    justify-content: flex-start;
   }
 
   ${({ hasSearchQuery }) =>

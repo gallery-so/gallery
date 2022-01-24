@@ -13,14 +13,16 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListOwnerFragment$key } from '../../../__generated__/MemberListOwnerFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 
 type Props = {
   ownerRef: MemberListOwnerFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
-  setFadeUsernames: (fadeUsernames: boolean) => void;
 };
 
-function MemberListOwner({ ownerRef, direction, setFadeUsernames }: Props) {
+function MemberListOwner({ ownerRef, direction }: Props) {
+  const { setFadeUsernames } = useMemberListPageActions();
+
   const owner = useFragment(
     graphql`
       fragment MemberListOwnerFragment on MembershipTierOwner {
@@ -42,7 +44,6 @@ function MemberListOwner({ ownerRef, direction, setFadeUsernames }: Props) {
   const [isHovering, setIsHovering] = useState(false);
   // debounce isHovering by 150ms. so debouncedIsHovering will only be true if the user hovers over a name for at least 150ms.
   const debouncedIsHovering = useDebounce(isHovering, 150);
-  //
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {

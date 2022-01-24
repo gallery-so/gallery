@@ -9,6 +9,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListTierFragment$key } from '../../../__generated__/MemberListTierFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 
 // Get which side of the owner name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -18,12 +19,9 @@ function getPreviewDirection(index: number) {
 
 type Props = {
   tierRef: MemberListTierFragment$key;
-  searchQuery: string;
-  setFadeUsernames: (fadeUsernames: boolean) => void;
-  fadeUsernames: boolean;
 };
 
-function MemberListTier({ tierRef, searchQuery, setFadeUsernames, fadeUsernames }: Props) {
+function MemberListTier({ tierRef }: Props) {
   const tier = useFragment(
     graphql`
       fragment MemberListTierFragment on MembershipTier {
@@ -33,13 +31,15 @@ function MemberListTier({ tierRef, searchQuery, setFadeUsernames, fadeUsernames 
           user @required(action: NONE) {
             username @required(action: NONE)
           }
-            
-            ...MemberListOwnerFragment
+
+          ...MemberListOwnerFragment
         }
       }
     `,
     tierRef
   );
+
+  const { fadeUsernames, searchQuery } = useMemberListPageState();
 
   const sortedOwners = useMemo(() => {
     const nonNullOwners = removeNullValues(tier.owners ?? []);
@@ -65,16 +65,11 @@ function MemberListTier({ tierRef, searchQuery, setFadeUsernames, fadeUsernames 
 
   return (
     <div>
-      <StyledTierHeading>{tier.name} members</StyledTierHeading>
+      <StyledTierHeading>{tier.name}</StyledTierHeading>
       <Spacer height={24} />
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
-          <MemberListOwner
-            key={owner.id}
-            ownerRef={owner}
-            direction={getPreviewDirection(index)}
-            setFadeUsernames={setFadeUsernames}
-          />
+          <MemberListOwner key={owner.id} ownerRef={owner} direction={getPreviewDirection(index)} />
         ))}
       </StyledOwnersWrapper>
       <Spacer height={56} />
@@ -88,7 +83,7 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
 
   color: ${({ fadeUsernames }) => (fadeUsernames ? colors.gray30 : colors.black)};
 
-  transition: color 0.2s ease-in-out;
+  transition: color 0.15s ease-in-out;
 `;
 
 const StyledTierHeading = styled(BodyMedium)`

@@ -1,13 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { MembershipMintPage } from 'scenes/MembershipMintPage/MembershipMintPage';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
   useGeneralMembershipCardContract,
 } from 'hooks/useContract';
-import Web3 from 'web3';
+
 import MerkleTree from './MerkleTree';
 import { Contract } from '@ethersproject/contracts';
 
@@ -15,8 +15,7 @@ import MembershipMintPageProvider, {
   useMembershipMintPageActions,
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
-
-const web3 = new Web3();
+import { getAllowlist } from './GeneralCardAllowlist';
 
 export type AssetContract = {
   address: string;
@@ -26,61 +25,11 @@ export type OpenseaAsset = {
   asset_contract: AssetContract;
 };
 
-// A list of allowlisted partner contracts. contract address + name
-const partnerContracts: Record<string, string> = {
-  '0xb3d5858d11ff402e3626dba53009cb46666f3c54': 'Gallery Membership Card',
-};
-
-function encodeParameters(parameters: Array<string | number>) {
-  return web3.eth.abi.encodeParameters(
-    ['address', 'uint256', 'uint256', 'uint256', 'uint256'],
-    parameters
-  );
-}
-
 const OPENSEA_API_BASEURL = process.env.NEXT_PUBLIC_OPENSEA_API_BASEURL ?? 'https://api.opensea.io';
 
-// reduces a list of Opensea Assets to a list just the contract addresses
-export function reduceOpenseaAssetsToContractAddresses(assets: OpenseaAsset[]) {
-  const partnerNftAddressesOwned = assets.reduce(
-    (acc: Record<string, boolean>, asset: OpenseaAsset) => {
-      if (asset.asset_contract.address) {
-        acc[asset.asset_contract.address] = true;
-      }
-
-      return acc;
-    },
-    {}
-  );
-  return Object.keys(partnerNftAddressesOwned);
-}
-
-function generateMerkleProof(encodedAbi1: string, encodedAbi2: string) {
-  const elements = [encodedAbi1, encodedAbi2];
-  const merkleTree = new MerkleTree(elements);
-  return merkleTree.getHexProof(elements[0]);
-}
-
-// Checks to see if the address owns any partner NFTs by
-// retrieving all NFTs owned by a user from opensea,
-// and filtering the list by allowlisted partner contract addresses
-async function detectOwnedPartnerNftsFromOpensea(
-  account: string,
-  addresses: string[]
-): Promise<string[]> {
-  const params = getContractAddressQueryParams(addresses);
-  const response = await fetch(
-    `${OPENSEA_API_BASEURL}/api/v1/assets?owner=${account}${params}`,
-    {}
-  );
-
-  const responseBody = await response.json();
-
-  if (responseBody.assets.length > 0) {
-    return reduceOpenseaAssetsToContractAddresses(responseBody.assets);
-  }
-
-  return [];
+function generateMerkleProof(address: string, allowlist: string[]) {
+  const merkleTree = new MerkleTree(allowlist);
+  return merkleTree.getHexProof(address);
 }
 
 async function detectOwnedGeneralCardsFromOpensea(account: string) {
@@ -93,59 +42,44 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
-// Turns list of contract addresses into url parameters for the GET call to Opensea
-function getContractAddressQueryParams(addresses: string[]) {
-  return addresses.map((address) => `&asset_contract_addresses=${address}`).join('');
-}
-
 function PartnerMembershipMintPageContent() {
   const { account } = useWeb3React<Web3Provider>();
   const contract = useGeneralMembershipCardContract();
 
   const { getSupply } = useMembershipMintPageActions();
 
-  const [ownedPartnerNfts, setOwnedPartnerNfts] = useState<string[]>([]);
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
-  const canMintToken = useMemo(
-    () => !ownsGeneralCard && ownedPartnerNfts.length > 0,
-    [ownedPartnerNfts.length, ownsGeneralCard]
+
+  const allowlist = getAllowlist();
+  const onAllowList = useMemo(
+    () => Boolean(account) && allowlist.includes(account!.toLowerCase()),
+    [account, allowlist]
   );
 
-  // Regardless of how many partner NFTs they own, we just need one contract address to mint with, so pick first one in list.
-  const partnerContractAddress = ownedPartnerNfts[0];
+  const canMintToken = useMemo(
+    () => !ownsGeneralCard && onAllowList,
+    [onAllowList, ownsGeneralCard]
+  );
 
-  // use a ref to track if we called OS, to limit to only calling them once
-  const finishedCallingOpensea = useRef(false);
   useEffect(() => {
-    async function checkIfUserCanMint(account: string, addresses: string[]) {
+    async function checkIfUserCanMint(account: string) {
       const generalCardDetectedInAccount = await detectOwnedGeneralCardsFromOpensea(account);
-
-      if (generalCardDetectedInAccount) {
-        finishedCallingOpensea.current = true;
-        setOwnsGeneralCard(true);
-        return;
-      }
-
-      const ownedPartnerNfts = await detectOwnedPartnerNftsFromOpensea(account, addresses);
-      finishedCallingOpensea.current = true;
-      setOwnedPartnerNfts(ownedPartnerNfts);
+      setOwnsGeneralCard(generalCardDetectedInAccount);
     }
 
-    if (account && !finishedCallingOpensea.current) {
-      void checkIfUserCanMint(account, Object.keys(partnerContracts));
+    if (account) {
+      void checkIfUserCanMint(account);
     }
   }, [account]);
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
-      if (contract) {
-        const encodedAbi1 = encodeParameters([partnerContractAddress, 0, 0, 1, 0]);
-        const encodedAbi2 = encodeParameters([partnerContractAddress, 0, 10, 1, 1]);
-        const merkleProof = generateMerkleProof(encodedAbi1, encodedAbi2);
-        return contract.mint(account, tokenId, 0, encodedAbi1, merkleProof);
+      if (contract && account) {
+        const merkleProof = generateMerkleProof(account, allowlist);
+        return contract.mint(account, tokenId, merkleProof);
       }
     },
-    [account, partnerContractAddress]
+    [account, allowlist]
   );
 
   const onMintSuccess = useCallback(async () => {
@@ -172,7 +106,7 @@ function PartnerMembershipMintPageContent() {
 function PartnerMembershipMintPage() {
   return (
     <MembershipMintPageProvider>
-      <PartnerMembershipMintPageContent />;
+      <PartnerMembershipMintPageContent />
     </MembershipMintPageProvider>
   );
 }

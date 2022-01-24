@@ -119,12 +119,12 @@ const AuthProvider = memo(({ children }: Props) => {
         setAuthState(LOADING);
 
         if (token && userId && userSigninAddress) {
-          const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid', 'validate jwt');
-          if (!response.valid) {
-            pushToast('Your session is invalid or expired. Please try again.');
-            logOut();
-            return;
-          }
+          // const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid', 'validate jwt');
+          // if (!response.valid) {
+          //   pushToast('Your session is invalid or expired. Please try again.');
+          //   logOut();
+          //   return;
+          // }
 
           await logIn({ jwt: token, userId }, userSigninAddress);
           return;
