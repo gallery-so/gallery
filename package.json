@@ -5,7 +5,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "relay": "relay-compiler",
+    "relay:watch": "relay-compiler --watch"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.1",
