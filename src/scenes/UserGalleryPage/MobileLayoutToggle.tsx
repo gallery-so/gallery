@@ -41,6 +41,9 @@ const Icon = styled.img<{ isSelected: boolean }>`
   width: 20px;
   height: 20px;
   opacity: ${({ isSelected }) => (isSelected ? 0.75 : 0.3)};
+  pointer-events: none;
+  // prevent "save image" popup when holding down on icon
+  -webkit-touch-callout: none;
 `;
 
 export default MobileLayoutToggle;
