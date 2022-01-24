@@ -5,7 +5,7 @@ import ModalProvider from './modal/ModalContext';
 import ToastProvider from './toast/ToastContext';
 import { Web3ProviderNetwork } from './auth/Web3WalletContext';
 import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
-import { RelayProvider } from 'contexts/RelayProvider';
+import { RelayProvider } from 'contexts/relay/RelayProvider';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 type Props = {

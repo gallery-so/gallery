@@ -7,7 +7,7 @@ import { GetServerSideProps } from 'next';
 import {
   createServerSideRelayEnvironment,
   serializeRelayEnvironment,
-} from 'contexts/RelayProvider';
+} from 'contexts/relay/RelayProvider';
 
 const pageQuery = graphql`
   query membersQuery {
