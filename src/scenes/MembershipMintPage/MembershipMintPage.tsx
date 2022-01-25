@@ -61,8 +61,16 @@ export function MembershipMintPage({
       return 'Connect Wallet';
     }
 
-    return 'Mint Card';
-  }, [active]);
+    if (transactionStatus === TransactionStatus.PENDING) {
+      return 'Minting...';
+    }
+
+    if (transactionStatus === TransactionStatus.SUCCESS) {
+      return 'Mint Successful';
+    }
+
+    return canMintToken ? 'Mint Card' : 'Mint Ineligible';
+  }, [active, canMintToken, transactionStatus]);
 
   const isMintButtonEnabled = useMemo(
     () => (Number(price) > 0 || canMintToken) && transactionStatus !== TransactionStatus.PENDING,
