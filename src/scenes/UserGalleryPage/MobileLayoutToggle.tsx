@@ -9,32 +9,31 @@ type Props = {
 
 function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
   const handleGridClick = useCallback(() => {
-    setMobileLayout(DisplayLayout.GRID);
-  }, [setMobileLayout]);
-
-  const handleListClick = useCallback(() => {
     setMobileLayout(DisplayLayout.LIST);
   }, [setMobileLayout]);
 
+  const handleListClick = useCallback(() => {
+    setMobileLayout(DisplayLayout.GRID);
+  }, [setMobileLayout]);
+
   return (
-    <StyledMobileLayoutToggle>
+    // <StyledMobileLayoutToggle>
+    mobileLayout === DisplayLayout.GRID ? (
       <StyledToggleButton onClick={handleGridClick} title="Grid view">
         <Icon src="/icons/grid_layout.svg" isSelected={mobileLayout === DisplayLayout.GRID} />
       </StyledToggleButton>
+    ) : (
       <StyledToggleButton onClick={handleListClick} title="List view">
         <Icon src="/icons/list_layout.svg" isSelected={mobileLayout === DisplayLayout.LIST} />
       </StyledToggleButton>
-    </StyledMobileLayoutToggle>
+    )
   );
 }
 
-const StyledMobileLayoutToggle = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
 const StyledToggleButton = styled.button`
   background: none;
   border: 0;
+  margin-top: 12px;
 `;
 
 const Icon = styled.img<{ isSelected: boolean }>`

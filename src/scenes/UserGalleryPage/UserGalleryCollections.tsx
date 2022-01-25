@@ -6,32 +6,20 @@ import { Fragment, useMemo } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
-import usePersistedState from 'hooks/usePersistedState';
-import { MOBILE_GALLERY_LAYOUT_STORAGE_KEY } from 'constants/storageKeys';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { size } from 'components/core/breakpoints';
-import MobileLayoutToggle from './MobileLayoutToggle';
 
 type Props = {
   collections: Collection[];
   isAuthenticatedUsersPage: boolean;
+  mobileLayout: DisplayLayout;
 };
 
 const COLLECTION_SPACING = 48;
 
-function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props) {
+function UserGalleryCollections({ collections, isAuthenticatedUsersPage, mobileLayout }: Props) {
   const visibleCollections = useMemo(
     () => collections.filter((collection) => !collection.hidden && collection.nfts?.length > 0),
     [collections]
   );
-
-  const [mobileLayout, setMobileLayout] = usePersistedState(
-    MOBILE_GALLERY_LAYOUT_STORAGE_KEY,
-    DisplayLayout.GRID
-  );
-
-  const screenWidth = useBreakpoint();
-  const showMobileLayoutToggle = screenWidth === size.mobile;
 
   if (visibleCollections.length === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
@@ -44,9 +32,6 @@ function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props
   return (
     <StyledUserGalleryCollections>
       <Spacer height={32} />
-      {showMobileLayoutToggle && (
-        <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-      )}
       {visibleCollections.map((collection, index) => (
         <Fragment key={collection.id}>
           <Spacer height={index === 0 ? 16 : COLLECTION_SPACING} />
