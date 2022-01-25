@@ -16,11 +16,12 @@ const hexHandler = (str: string) => {
   if (str.length % 2) {
     str = '0' + str;
   }
+
   const bn = BigInt('0x' + str);
   const d = bn.toString(10);
-  return d
-}
-  
+  return d;
+};
+
 const getOpenseaExternalUrl = (nft: Nft) => {
   const contractAddress = nft.asset_contract.address;
   const tokenId = hexHandler(nft.opensea_token_id);
