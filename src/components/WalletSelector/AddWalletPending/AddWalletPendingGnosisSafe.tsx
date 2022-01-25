@@ -30,9 +30,6 @@ import {
 import { getLocalStorageItem } from 'utils/localStorage';
 import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
 
-// for mixpanel
-const CONNECTION_MODE = 'Add Wallet';
-
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
@@ -67,7 +64,7 @@ function AddWalletPendingGnosisSafe({
 
   const handleError = useCallback(
     (error: unknown) => {
-      Mixpanel.trackConnectWalletOutcomeError('Gnosis Safe', CONNECTION_MODE, error);
+      Mixpanel.trackAddWalletError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -95,7 +92,7 @@ function AddWalletPendingGnosisSafe({
         throw new Error('Signature is not valid');
       }
 
-      Mixpanel.trackConnectWalletOutcomeSuccess('Gnosis Safe', CONNECTION_MODE);
+      Mixpanel.trackAddWalletSuccess('Gnosis Safe');
       openManageWalletsModal(address);
     },
     [fetcher, openManageWalletsModal]
@@ -111,7 +108,7 @@ function AddWalletPendingGnosisSafe({
         }
 
         setPendingState(PROMPT_SIGNATURE);
-        Mixpanel.trackConnectWalletAttempt('Gnosis Safe', CONNECTION_MODE);
+        Mixpanel.trackAddWalletAttempt('Gnosis Safe');
         await signMessageWithContractAccount(address, nonce, pendingWallet, library);
         window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
 

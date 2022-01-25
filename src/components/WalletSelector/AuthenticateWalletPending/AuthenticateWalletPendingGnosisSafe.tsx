@@ -18,9 +18,6 @@ import {
 import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
 import { getLocalStorageItem } from 'utils/localStorage';
 
-// for mixpanel
-const CONNECTION_MODE = 'Sign In';
-
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
@@ -54,7 +51,7 @@ function AuthenticateWalletPendingGnosisSafe({
       const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
-      Mixpanel.trackConnectWalletOutcomeSuccess('Gnosis Safe', CONNECTION_MODE);
+      Mixpanel.trackSignInSuccess('Gnosis Safe');
       logIn({ jwt, userId }, address);
     },
     [fetcher, logIn, userExists]
@@ -62,7 +59,7 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const handleError = useCallback(
     (error: unknown) => {
-      Mixpanel.trackConnectWalletOutcomeError('Gnosis Safe', CONNECTION_MODE, error);
+      Mixpanel.trackSignInError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -144,7 +141,7 @@ function AuthenticateWalletPendingGnosisSafe({
       if (account) {
         setAuthenticationFlowStarted(true);
         try {
-          Mixpanel.trackConnectWalletAttempt('Gnosis Safe', 'Sign In');
+          Mixpanel.trackSignInAttempt('Gnosis Safe');
           const { nonce, user_exists: userExists } = await fetchNonce(account, fetcher);
           setNonce(nonce);
           setUserExists(userExists);

@@ -25,9 +25,6 @@ import Mixpanel from 'utils/mixpanel';
 import { addWallet, fetchNonce } from '../authRequestUtils';
 import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
 
-// for mixpanel
-const CONNECTION_MODE = 'Add Wallet';
-
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
@@ -74,7 +71,7 @@ function AddWalletPendingDefault({
       try {
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
-        Mixpanel.trackConnectWalletAttempt(userFriendlyWalletName, CONNECTION_MODE);
+        Mixpanel.trackAddWalletAttempt(userFriendlyWalletName);
         const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
         if (userExists) {
@@ -89,14 +86,14 @@ function AddWalletPendingDefault({
         };
         const { signatureValid } = await addWallet(payload, fetcher);
 
-        Mixpanel.trackConnectWalletOutcomeSuccess(userFriendlyWalletName, CONNECTION_MODE);
+        Mixpanel.trackAddWalletSuccess(userFriendlyWalletName);
         openManageWalletsModal(address);
         setIsConnecting(false);
 
         return signatureValid;
       } catch (error: unknown) {
         setIsConnecting(false);
-        Mixpanel.trackConnectWalletOutcomeError(userFriendlyWalletName, CONNECTION_MODE, error);
+        Mixpanel.trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
           setDetectedError(error);
         }
