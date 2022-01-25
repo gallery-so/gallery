@@ -12,6 +12,7 @@ type Props = {
 };
 
 // The backend converts all token IDs to hexadecimals; here, we convert back
+// https://stackoverflow.com/a/53751162
 const hexHandler = (str: string) => {
   if (str.length % 2) {
     str = '0' + str;
