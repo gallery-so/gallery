@@ -40,25 +40,7 @@ The app will be available on localhost:3000.
 ### Other commands
 
 - `yarn test` for tests
+- `yarn relay` to run relay compiler 
+- `yarn relay:watch` to run relay compiler in watch mode
 - `yarn lint` for linting
 - `yarn typecheck` for checking type validity
-
-## 🤔 What's going on with Next.JS?
-
-We're in the middle of a migration to Next.JS. So we're not fully leveraging all of the Next.JS features.
-Temporarily, we are re-routing all requests to use `/` under the hood or `pages/index.tsx` which renders
-our root `App` component. We're achieving this through this `next.config.js` section.
-
-```js
-{
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ];
-  }
-}
-```

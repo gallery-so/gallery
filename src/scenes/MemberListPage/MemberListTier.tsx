@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { MembershipTier } from 'types/MembershipTier';
 import { BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
 import { Directions } from 'src/components/core/enums';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { MemberListTierFragment$key } from '../../../__generated__/MemberListTierFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 
 // Get which side of the owner name to show the preview on
@@ -15,21 +18,37 @@ function getPreviewDirection(index: number) {
 }
 
 type Props = {
-  tier: MembershipTier;
+  tierRef: MemberListTierFragment$key;
 };
 
-function MemberListTier({ tier }: Props) {
-  const { fadeUsernames } = useMemberListPageState();
+function MemberListTier({ tierRef }: Props) {
+  const tier = useFragment(
+    graphql`
+      fragment MemberListTierFragment on MembershipTier {
+        name
+        owners {
+          id
+          user @required(action: NONE) {
+            username @required(action: NONE)
+          }
 
-  const { searchQuery } = useMemberListPageState();
+          ...MemberListOwnerFragment
+        }
+      }
+    `,
+    tierRef
+  );
+
+  const { fadeUsernames, searchQuery } = useMemberListPageState();
+
   const sortedOwners = useMemo(() => {
-    if (!tier.owners) {
-      return [];
-    }
+    const nonNullOwners = removeNullValues(tier.owners ?? []);
 
-    return tier.owners
-      .filter((owner) => Boolean(owner.username))
-      .sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
+    nonNullOwners.sort((a, b) =>
+      a.user.username.toLowerCase().localeCompare(b.user.username.toLowerCase())
+    );
+
+    return nonNullOwners;
   }, [tier.owners]);
 
   const filteredOwners = useMemo(() => {
@@ -38,11 +57,11 @@ function MemberListTier({ tier }: Props) {
     }
 
     if (searchQuery === '#') {
-      return sortedOwners.filter((owner) => !/^[A-Za-z]/.test(owner.username));
+      return sortedOwners.filter((owner) => !/^[A-Za-z]/.test(owner.user.username));
     }
 
     return sortedOwners.filter((owner) =>
-      owner.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
+      owner.user.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
     );
   }, [searchQuery, sortedOwners]);
 
@@ -52,11 +71,7 @@ function MemberListTier({ tier }: Props) {
       <Spacer height={24} />
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
-          <MemberListOwner
-            key={`${owner.user_id}-${tier.name}`}
-            owner={owner}
-            direction={getPreviewDirection(index)}
-          />
+          <MemberListOwner key={owner.id} ownerRef={owner} direction={getPreviewDirection(index)} />
         ))}
       </StyledOwnersWrapper>
       <Spacer height={56} />

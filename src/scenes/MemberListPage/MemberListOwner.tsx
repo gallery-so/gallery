@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Heading } from 'components/core/Text/Text';
-import { MembershipOwner } from 'types/MembershipTier';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
@@ -10,15 +9,33 @@ import MemberListGalleryPreview from './MemberListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { MemberListOwnerFragment$key } from '../../../__generated__/MemberListOwnerFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 
 type Props = {
-  owner: MembershipOwner;
+  ownerRef: MemberListOwnerFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
 };
 
-function MemberListOwner({ owner, direction }: Props) {
+function MemberListOwner({ ownerRef, direction }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
+
+  const owner = useFragment(
+    graphql`
+      fragment MemberListOwnerFragment on MembershipTierOwner {
+        user @required(action: THROW) {
+          username @required(action: THROW)
+        }
+
+        previewNfts
+      }
+    `,
+    ownerRef
+  );
+
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
   // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
 
@@ -64,17 +81,22 @@ function MemberListOwner({ owner, direction }: Props) {
     [breakpoint]
   );
 
+  const previewNfts = useMemo(
+    () => (owner.previewNfts ? removeNullValues(owner.previewNfts) : null),
+    [owner.previewNfts]
+  );
+
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <GalleryLink href={`/${owner.username}`} underlined={false}>
-          <StyledUsername>{owner.username}</StyledUsername>
+        <GalleryLink href={`/${owner.user.username}`} underlined={false}>
+          <StyledUsername>{owner.user.username}</StyledUsername>
         </GalleryLink>
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && owner.preview_nfts && (
+      {isDesktop && showPreview && previewNfts && (
         <MemberListGalleryPreview
           direction={direction}
-          nftUrls={owner.preview_nfts}
+          nftUrls={previewNfts}
           startFadeOut={startFadeOut}
         />
       )}

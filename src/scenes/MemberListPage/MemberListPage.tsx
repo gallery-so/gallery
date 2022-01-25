@@ -1,5 +1,4 @@
 import Page from 'components/core/Page/Page';
-import useMemberList from 'hooks/api/users/useMemberList';
 import styled from 'styled-components';
 import { Display } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -9,9 +8,28 @@ import MemberListFilter from './MemberListFilter';
 import { useMemo } from 'react';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { MemberListPageFragment$key } from '../../../__generated__/MemberListPageFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
-function MemberListPage() {
-  const memberList = useMemberList();
+type Props = {
+  queryRef: MemberListPageFragment$key;
+};
+
+function MemberListPage({ queryRef }: Props) {
+  const { membershipTiers } = useFragment(
+    graphql`
+      fragment MemberListPageFragment on Query {
+        membershipTiers @required(action: THROW) {
+          id
+          ...MemberListTierFragment
+        }
+      }
+    `,
+    queryRef
+  );
+
   const breakpoint = useBreakpoint();
   const isMobileScreenSize = useMemo(() => breakpoint === size.mobile, [breakpoint]);
 
@@ -28,8 +46,8 @@ function MemberListPage() {
         <MemberListFilter />
         <Spacer height={56} />
         <StyledTierWrapper>
-          {memberList.map((tier) => (
-            <MemberListTier key={tier.id} tier={tier} />
+          {removeNullValues(membershipTiers).map((tier) => (
+            <MemberListTier key={tier.id} tierRef={tier} />
           ))}
         </StyledTierWrapper>
       </MemberListPageProvider>
