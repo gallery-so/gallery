@@ -42,7 +42,7 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
-function PartnerMembershipMintPageContent() {
+function GeneralMembershipMintPageContent() {
   const { account } = useWeb3React<Web3Provider>();
   const contract = useGeneralMembershipCardContract();
 
@@ -103,12 +103,12 @@ function PartnerMembershipMintPageContent() {
   );
 }
 
-function PartnerMembershipMintPage() {
+function GeneralMembershipMintPage() {
   return (
     <MembershipMintPageProvider>
-      <PartnerMembershipMintPageContent />
+      <GeneralMembershipMintPageContent />
     </MembershipMintPageProvider>
   );
 }
 
-export default PartnerMembershipMintPage;
+export default GeneralMembershipMintPage;
