@@ -44,7 +44,9 @@ function MemberListTier({ tierRef }: Props) {
   const sortedOwners = useMemo(() => {
     const nonNullOwners = removeNullValues(tier.owners ?? []);
 
-    nonNullOwners.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    nonNullOwners.sort((a, b) =>
+      a.user.username.toLowerCase().localeCompare(b.user.username.toLowerCase())
+    );
 
     return nonNullOwners;
   }, [tier.owners]);
