@@ -10,6 +10,7 @@ import AppProvider from 'contexts/AppProvider';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
 import Mixpanel from 'utils/mixpanel';
+import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 const SafeHydrate: FC = ({ children }) => (
   <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
@@ -20,6 +21,8 @@ const App: FC<{
   pageProps: Record<string, unknown>;
 }> = ({ Component, pageProps }) => {
   const { asPath } = useRouter();
+
+  const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
   useEffect(() => {
     Mixpanel.track('Page view', { path: asPath });
@@ -55,7 +58,7 @@ const App: FC<{
         <title>Gallery</title>
       </Head>
       <SafeHydrate>
-        <AppProvider>
+        <AppProvider relayCache={relayCache}>
           <FadeTransitioner locationKey={asPath}>
             <Component {...pageProps} />
           </FadeTransitioner>

@@ -11,10 +11,17 @@ type Props = {
   nft: Nft;
 };
 
-// If the address contains alphabetical characters, it is hexidecimal, and we convert it
-// TODO: Fix parseInt() for long strings (> 21 characters?), when JS converts to scientific https://gallery.so/robin/21Qt76R6bIyM7fIDsBsgU9DrKCg/21R0nPXR1nlqXP9UD8hn7CQUsUP
-// TODO: This currently fails to convert token IDs that have hexes with 3 digits https://gallery.so/robin/20qynDqailFfmP5VlVHhB2AYrAN/20qyZkjvBh3fxYyY1zryrvKH4pC
-const hexHandler = (str: string) => (/[a-zA-Z]/.test(str) ? parseInt(str, 16) : str);
+// The backend converts all token IDs to hexadecimals; here, we convert back
+// https://stackoverflow.com/a/53751162
+const hexHandler = (str: string) => {
+  if (str.length % 2) {
+    str = '0' + str;
+  }
+
+  const bn = BigInt('0x' + str);
+  const d = bn.toString(10);
+  return d;
+};
 
 const getOpenseaExternalUrl = (nft: Nft) => {
   const contractAddress = nft.asset_contract.address;

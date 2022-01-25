@@ -39,7 +39,8 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
     credentials: 'include',
   };
 
-  const localJwt = window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
+  const localJwt =
+    typeof window === 'undefined' ? null : window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
 
   const parsedLocalJwt = localJwt && (JSON.parse(localJwt) as string);
   if (parsedLocalJwt && requestOptions.headers) {

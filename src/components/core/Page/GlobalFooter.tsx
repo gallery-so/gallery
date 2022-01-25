@@ -19,7 +19,7 @@ function GlobalFooter() {
       <StyledLogo>GALLERY</StyledLogo>
       <Spacer height={4} />
       <StyledBottomText>
-        <Caption color={colors.gray40}>2021 - All rights reserved</Caption>
+        <Caption color={colors.gray40}>{new Date().getFullYear()} - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>Twitter</StyledLinkText>
