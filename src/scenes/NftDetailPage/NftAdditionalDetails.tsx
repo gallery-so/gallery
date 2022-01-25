@@ -12,9 +12,15 @@ type Props = {
 };
 
 // The backend converts all token IDs to hexadecimals; here, we convert back
-// TODO: Fix parseInt() for long strings (> 21 characters?), when JS converts to scientific https://gallery.so/robin/21Qt76R6bIyM7fIDsBsgU9DrKCg/21R0nPXR1nlqXP9UD8hn7CQUsUP
-const hexHandler = (str: string) => parseInt(str, 16);
-
+const hexHandler = (str: string) => {
+  if (str.length % 2) {
+    str = '0' + str;
+  }
+  const bn = BigInt('0x' + str);
+  const d = bn.toString(10);
+  return d
+}
+  
 const getOpenseaExternalUrl = (nft: Nft) => {
   const contractAddress = nft.asset_contract.address;
   const tokenId = hexHandler(nft.opensea_token_id);
