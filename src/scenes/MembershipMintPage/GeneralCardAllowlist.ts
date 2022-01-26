@@ -2842,6 +2842,6 @@ export const ALLOWLIST_PROD = [
   ...ALLOW_LIST_LEGENDA,
   ...ALLOW_LIST_POOLSUITE,
   ...ALLOW_LIST_CUSTOM,
-];
+].map((s) => s.toLowerCase());
 
 export const getAllowlist = () => (isProduction() ? ALLOWLIST_PROD : ALLOWLIST_DEV);
