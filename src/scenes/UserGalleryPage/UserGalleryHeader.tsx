@@ -7,6 +7,7 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   username: string;
@@ -65,8 +66,12 @@ const StyledUserDetails = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 70%;
+  width: 100%;
   word-break: break-word;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 70%;
+  }
 `;
 
 const StyledBio = styled(BodyRegular)`
