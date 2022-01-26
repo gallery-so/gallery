@@ -71,6 +71,7 @@ function AddWalletPendingDefault({
       try {
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
+        Mixpanel.trackAddWalletAttempt(userFriendlyWalletName);
         const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
         if (userExists) {
@@ -85,13 +86,14 @@ function AddWalletPendingDefault({
         };
         const { signatureValid } = await addWallet(payload, fetcher);
 
-        Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
+        Mixpanel.trackAddWalletSuccess(userFriendlyWalletName);
         openManageWalletsModal(address);
         setIsConnecting(false);
 
         return signatureValid;
       } catch (error: unknown) {
         setIsConnecting(false);
+        Mixpanel.trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
           setDetectedError(error);
         }

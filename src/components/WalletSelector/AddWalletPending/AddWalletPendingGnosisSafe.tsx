@@ -64,6 +64,7 @@ function AddWalletPendingGnosisSafe({
 
   const handleError = useCallback(
     (error: unknown) => {
+      Mixpanel.trackAddWalletError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -91,10 +92,10 @@ function AddWalletPendingGnosisSafe({
         throw new Error('Signature is not valid');
       }
 
-      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Add Wallet');
+      Mixpanel.trackAddWalletSuccess('Gnosis Safe');
       openManageWalletsModal(address);
     },
-    [fetcher, openManageWalletsModal, userFriendlyWalletName]
+    [fetcher, openManageWalletsModal]
   );
 
   // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
@@ -107,6 +108,7 @@ function AddWalletPendingGnosisSafe({
         }
 
         setPendingState(PROMPT_SIGNATURE);
+        Mixpanel.trackAddWalletAttempt('Gnosis Safe');
         await signMessageWithContractAccount(address, nonce, pendingWallet, library);
         window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
 

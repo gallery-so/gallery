@@ -51,14 +51,15 @@ function AuthenticateWalletPendingGnosisSafe({
       const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
-      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
+      Mixpanel.trackSignInSuccess('Gnosis Safe');
       logIn({ jwt, userId }, address);
     },
-    [fetcher, logIn, userExists, userFriendlyWalletName]
+    [fetcher, logIn, userExists]
   );
 
   const handleError = useCallback(
     (error: unknown) => {
+      Mixpanel.trackSignInError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -140,6 +141,7 @@ function AuthenticateWalletPendingGnosisSafe({
       if (account) {
         setAuthenticationFlowStarted(true);
         try {
+          Mixpanel.trackSignInAttempt('Gnosis Safe');
           const { nonce, user_exists: userExists } = await fetchNonce(account, fetcher);
           setNonce(nonce);
           setUserExists(userExists);
