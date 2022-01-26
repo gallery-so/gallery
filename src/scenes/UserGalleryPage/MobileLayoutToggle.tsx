@@ -20,11 +20,11 @@ function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
     // <StyledMobileLayoutToggle>
     mobileLayout === DisplayLayout.GRID ? (
       <StyledToggleButton onClick={handleGridClick} title="Grid view">
-        <Icon src="/icons/grid_layout.svg" isSelected={mobileLayout === DisplayLayout.GRID} />
+        <Icon src="/icons/list_layout.svg" isSelected={mobileLayout === DisplayLayout.GRID} />
       </StyledToggleButton>
     ) : (
       <StyledToggleButton onClick={handleListClick} title="List view">
-        <Icon src="/icons/list_layout.svg" isSelected={mobileLayout === DisplayLayout.LIST} />
+        <Icon src="/icons/grid_layout.svg" isSelected={mobileLayout === DisplayLayout.LIST} />
       </StyledToggleButton>
     )
   );
