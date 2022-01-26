@@ -5,15 +5,17 @@ import { Collection } from 'types/Collection';
 import { Fragment, useMemo } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
+import { DisplayLayout } from 'components/core/enums';
 
 type Props = {
   collections: Collection[];
   isAuthenticatedUsersPage: boolean;
+  mobileLayout: DisplayLayout;
 };
 
 const COLLECTION_SPACING = 48;
 
-function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props) {
+function UserGalleryCollections({ collections, isAuthenticatedUsersPage, mobileLayout }: Props) {
   const visibleCollections = useMemo(
     () => collections.filter((collection) => !collection.hidden && collection.nfts?.length > 0),
     [collections]
@@ -29,10 +31,11 @@ function UserGalleryCollections({ collections, isAuthenticatedUsersPage }: Props
 
   return (
     <StyledUserGalleryCollections>
+      <Spacer height={32} />
       {visibleCollections.map((collection, index) => (
         <Fragment key={collection.id}>
-          <Spacer height={COLLECTION_SPACING} />
-          <UserGalleryCollection collection={collection} />
+          <Spacer height={index === 0 ? 16 : COLLECTION_SPACING} />
+          <UserGalleryCollection collection={collection} mobileLayout={mobileLayout} />
           <Spacer height={index === collections.length - 1 ? COLLECTION_SPACING : 0} />
         </Fragment>
       ))}

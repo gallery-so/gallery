@@ -14,16 +14,18 @@ import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
 import { useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
+import { DisplayLayout } from 'components/core/enums';
 
 type Props = {
   collection: Collection;
+  mobileLayout: DisplayLayout;
 };
 
 export function isValidColumns(columns: number) {
   return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
-function UserGalleryCollection({ collection }: Props) {
+function UserGalleryCollection({ collection, mobileLayout }: Props) {
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
     () => unescape(collection.collectors_note),
@@ -50,9 +52,15 @@ function UserGalleryCollection({ collection }: Props) {
           </>
         )}
       </StyledCollectionHeader>
-      <StyledCollectionNfts columns={columns}>
+      <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
         {collection.nfts.map((nft) => (
-          <NftPreview key={nft.id} nft={nft} collectionId={collection.id} columns={columns} />
+          <NftPreview
+            key={nft.id}
+            nft={nft}
+            collectionId={collection.id}
+            columns={columns}
+            mobileLayout={mobileLayout}
+          />
         ))}
       </StyledCollectionNfts>
     </StyledCollectionWrapper>
@@ -88,7 +96,7 @@ const StyledCollectorsNote = styled(BodyRegular)`
   white-space: pre-line;
 `;
 
-const StyledCollectionNfts = styled.div<{ columns: number }>`
+const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -97,6 +105,8 @@ const StyledCollectionNfts = styled.div<{ columns: number }>`
   // Can't use these for now due to lack of Safari support
   // column-gap: px;
   // row-gap: px;
+  margin-left: ${({ mobileLayout }) =>
+    mobileLayout === DisplayLayout.GRID ? `-${LAYOUT_GAP_BREAKPOINTS.mobileSmall / 2}px` : '0px'};
 
   @media only screen and ${breakpoints.mobileLarge} {
     margin-left: -${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;

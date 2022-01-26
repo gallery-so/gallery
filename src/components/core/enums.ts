@@ -12,3 +12,8 @@ export enum NftMediaType {
   AUDIO,
   MODEL,
 }
+
+export enum DisplayLayout {
+  GRID = 'GRID',
+  LIST = 'LIST',
+}

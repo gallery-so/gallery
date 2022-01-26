@@ -1,4 +1,4 @@
-import { contentSize } from 'components/core/breakpoints';
+import { contentSize, size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
@@ -7,6 +7,10 @@ import NotFound from 'scenes/NotFound/NotFound';
 import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
+import { useBreakpoint } from 'hooks/useWindowSize';
+import usePersistedState from 'hooks/usePersistedState';
+import { MOBILE_GALLERY_LAYOUT_STORAGE_KEY } from 'constants/storageKeys';
+import { DisplayLayout } from 'components/core/enums';
 
 type Props = {
   username?: string;
@@ -16,6 +20,12 @@ function UserGallery({ username }: Props) {
   const user = useUser({ username });
   const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
   const authenticatedUser = usePossiblyAuthenticatedUser();
+  const screenWidth = useBreakpoint();
+
+  const [mobileLayout, setMobileLayout] = usePersistedState(
+    MOBILE_GALLERY_LAYOUT_STORAGE_KEY,
+    DisplayLayout.GRID
+  );
 
   if (!user) {
     return <NotFound />;
@@ -23,10 +33,14 @@ function UserGallery({ username }: Props) {
 
   const isAuthenticatedUsersPage = user.username === authenticatedUser?.username;
 
+  const showMobileLayoutToggle =
+    screenWidth === size.mobile && gallery && gallery.collections?.length > 0;
+
   const collectionsView = gallery ? (
     <UserGalleryCollections
       collections={gallery.collections}
       isAuthenticatedUsersPage={isAuthenticatedUsersPage}
+      mobileLayout={mobileLayout}
     />
   ) : (
     <EmptyGallery message="This user has not set up their gallery yet." />
@@ -35,7 +49,13 @@ function UserGallery({ username }: Props) {
   return (
     <StyledUserGallery>
       <Spacer height={32} />
-      <UserGalleryHeader username={user.username} bio={user.bio} />
+      <UserGalleryHeader
+        username={user.username}
+        bio={user.bio}
+        showMobileLayoutToggle={showMobileLayoutToggle}
+        mobileLayout={mobileLayout}
+        setMobileLayout={setMobileLayout}
+      />
       {collectionsView}
     </StyledUserGallery>
   );

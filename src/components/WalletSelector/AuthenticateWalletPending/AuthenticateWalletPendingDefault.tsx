@@ -46,6 +46,7 @@ function AuthenticateWalletPendingDefault({
   const attemptAuthentication = useCallback(
     async (address: string, signer: JsonRpcSigner) => {
       setPendingState(PROMPT_SIGNATURE);
+      Mixpanel.trackSignInAttempt(userFriendlyWalletName);
 
       const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
@@ -59,7 +60,7 @@ function AuthenticateWalletPendingDefault({
       };
 
       const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
-      Mixpanel.trackConnectWallet(userFriendlyWalletName, 'Sign In');
+      Mixpanel.trackSignInSuccess(userFriendlyWalletName);
       logIn({ jwt, userId }, address);
     },
     [fetcher, logIn, pendingWallet, userFriendlyWalletName]
@@ -71,6 +72,7 @@ function AuthenticateWalletPendingDefault({
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
+          Mixpanel.trackSignInError(userFriendlyWalletName, error);
           if (isWeb3Error(error)) {
             setDetectedError(error);
           }
@@ -85,7 +87,7 @@ function AuthenticateWalletPendingDefault({
     }
 
     void authenticate();
-  }, [account, signer, setDetectedError, attemptAuthentication]);
+  }, [account, signer, setDetectedError, attemptAuthentication, userFriendlyWalletName]);
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (

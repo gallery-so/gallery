@@ -10,11 +10,13 @@ import { useNavigateToUrl } from 'utils/navigate';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
+import { DisplayLayout } from 'components/core/enums';
 
 type Props = {
   nft: Nft;
   collectionId: string;
   columns: number;
+  mobileLayout: DisplayLayout;
 };
 
 const SINGLE_COLUMN_NFT_WIDTH = 600;
@@ -29,7 +31,7 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
   6: 134,
 };
 
-function NftPreview({ nft, collectionId, columns }: Props) {
+function NftPreview({ nft, collectionId, columns, mobileLayout }: Props) {
   const navigateToUrl = useNavigateToUrl();
 
   const username = window.location.pathname.split('/')[1];
@@ -48,8 +50,16 @@ function NftPreview({ nft, collectionId, columns }: Props) {
     [columns, screenWidth]
   );
 
+  const NftPreviewComponent = useMemo(() => {
+    if (screenWidth === size.mobile && mobileLayout === DisplayLayout.LIST) {
+      return StyledNftPreviewList;
+    }
+
+    return StyledNftPreviewGrid;
+  }, [mobileLayout, screenWidth]);
+
   return (
-    <StyledNftPreview key={nft.id} columns={columns}>
+    <NftPreviewComponent key={nft.id} columns={columns}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
@@ -60,7 +70,7 @@ function NftPreview({ nft, collectionId, columns }: Props) {
           </StyledNftFooter>
         </ShimmerProvider>
       </StyledLinkWrapper>
-    </StyledNftPreview>
+    </NftPreviewComponent>
   );
 }
 
@@ -106,14 +116,19 @@ const StyledNftPreview = styled.div<{ columns: number }>`
     opacity: 1;
   }
 
-  // use margin to create row-gap for now
-  width: 100%;
   margin-bottom: 40px;
+`;
 
-  // width looks nasty but it allows us to conditionally apply different width rules based on # columns:
-  // - if single columm, use hardcoded width because the NFT isnt as wide as the whole page
+const StyledNftPreviewGrid = styled(StyledNftPreview)`
+  // width looks complex but it allows us to conditionally apply different width rules based on the # of columns in the collection:
+  // - if single columm, use hardcoded width because the NFT isnt as wide as the whole page (unless on mobile, in which case we use the mobile width)
   // - if more columns, use calc to automatically set width based on column #
   // this is important because while we *could* use hardcoded widths for desktop, we need to use dynamic widths for tablet
+
+  width: ${({ columns }) =>
+    `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.mobileSmall * columns}px) / ${columns});`}
+  margin: ${LAYOUT_GAP_BREAKPOINTS.mobileSmall / 2}px;
+
   @media only screen and ${breakpoints.mobileLarge} {
     width: ${({ columns }) =>
       columns === 1
@@ -129,6 +144,10 @@ const StyledNftPreview = styled.div<{ columns: number }>`
         : `calc((100% - ${LAYOUT_GAP_BREAKPOINTS.desktop * columns}px) / ${columns});`}
     margin: ${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
   }
+`;
+
+const StyledNftPreviewList = styled(StyledNftPreview)`
+  width: 100%;
 `;
 
 export default NftPreview;
