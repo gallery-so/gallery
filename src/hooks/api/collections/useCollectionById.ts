@@ -1,12 +1,9 @@
 import { Collection } from 'types/Collection';
-import useAuthenticatedGallery from '../galleries/useAuthenticatedGallery';
+import { GetCollectionResponse } from './types';
+import useGet from '../_rest/useGet';
 
-export default function useCollectionById(id: string): Collection {
-  const gallery = useAuthenticatedGallery();
-  const collection = gallery.collections.find((col) => col.id === id);
-  if (!collection) {
-    throw new Error('Collection by ID not found');
-  }
+export default function useCollectionById(id: string): Collection | undefined {
+  const data = useGet<GetCollectionResponse>(`/collections/get?id=${id}`, 'fetch collection');
 
-  return collection;
+  return data?.collection;
 }
