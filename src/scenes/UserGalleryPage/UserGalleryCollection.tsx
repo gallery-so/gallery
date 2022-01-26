@@ -1,9 +1,4 @@
-import {
-  DEFAULT_COLUMNS,
-  LAYOUT_GAP_BREAKPOINTS,
-  MAX_COLUMNS,
-  MIN_COLUMNS,
-} from 'constants/layout';
+import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
@@ -11,10 +6,11 @@ import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
+import { useNavigateToUrl } from 'utils/navigate';
 
 type Props = {
   collection: Collection;
@@ -26,15 +22,26 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
+  const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [
     collection.collectors_note,
   ]);
 
+  const username = window.location.pathname.split('/')[1];
+  const handleCollectionNameClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      navigateToUrl(`/${username}/${collection.id}`, event);
+    },
+    [collection.id, navigateToUrl, username]
+  );
+
   return (
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
-        <TitleSerif>{unescapedCollectionName}</TitleSerif>
+        <TitleSerif onClick={handleCollectionNameClick}>
+          <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+        </TitleSerif>
         {unescapedCollectorsNote && (
           <>
             <Spacer height={8} />
@@ -70,6 +77,14 @@ const StyledCollectionHeader = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
+  }
+`;
+
+const StyledCollectorsTitle = styled.span`
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  &:hover {
+    border-color: ${colors.black};
   }
 `;
 
