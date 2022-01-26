@@ -10,17 +10,19 @@ import {
   useMemo,
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
-import { useToastActions } from 'contexts/toast/ToastContext';
 import Web3WalletProvider from './Web3WalletContext';
-import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
-import {
-  JWT_LOCAL_STORAGE_KEY,
-  USER_ID_LOCAL_STORAGE_KEY,
-  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from './constants';
+import { LOADING, LoggedInState, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
+import { useCurrentUser } from 'hooks/api/users/useUser';
+import useLogout from 'hooks/api/auth/useLogout';
+import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 
-export type AuthState = LoggedInState | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState =
+  | LoggedInState
+  | typeof LOGGED_IN
+  | typeof LOGGED_OUT
+  | typeof LOADING
+  | typeof UNKNOWN;
 
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
 
@@ -34,7 +36,7 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  logIn: (payload: LoggedInState, address: string) => void;
+  logIn: (address: string) => void;
   logOut: () => void;
   setStateToLoading: () => void;
 };
@@ -52,34 +54,20 @@ export const useAuthActions = (): AuthActions => {
 
 type Props = { children: ReactNode };
 
-type ValidateJwtResponse = {
-  valid: boolean;
-  user_id: string;
-};
-
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
-  const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
   const [userSigninAddress, setUserSigninAddress] = usePersistedState(
     USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
     ''
   );
 
+  const callLogout = useLogout();
+
   /**
-   * Only sets the user state to logged out.
+   * Sets the user state to logged out and clears local storage
    */
   const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
-  }, []);
-
-  /**
-   * Fully logs user out and clears storage.
-   */
-  const logOut = useCallback(() => {
-    setLoggedOut();
-    setToken('');
-    setUserId('');
     setUserSigninAddress('');
     /**
      * NOTE: clearing localStorage completely will also clear the SWR cache, which
@@ -88,57 +76,47 @@ const AuthProvider = memo(({ children }: Props) => {
      * selectively (such as only sensitive data)
      */
     clearLocalStorageWithException([]);
-  }, [setLoggedOut, setToken, setUserId, setUserSigninAddress]);
+  }, [setUserSigninAddress]);
+
+  /**
+   * Fully logs user out by calling the logout endpoint and logging out in app state
+   */
+  const logOut = useCallback(async () => {
+    await callLogout();
+    setLoggedOut();
+  }, [callLogout, setLoggedOut]);
 
   const logIn = useCallback(
-    async (payload: LoggedInState, address: string) => {
+    async (address: string) => {
       try {
-        setToken(payload.jwt);
-        setUserId(payload.userId);
-        setAuthState(payload);
+        setAuthState(LOGGED_IN);
         setUserSigninAddress(address.toLowerCase());
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        logOut();
+        setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [logOut, setToken, setUserId, setUserSigninAddress]
+    [setLoggedOut, setUserSigninAddress]
   );
 
   const setStateToLoading = useCallback(() => {
     setAuthState(LOADING);
   }, []);
 
-  const { pushToast } = useToastActions();
-
-  useEffect(
-    function authProviderMounted() {
-      async function loadAuthState() {
-        // Show user loading screen while we figure out whether they are logged in or not
-        setAuthState(LOADING);
-
-        if (token && userId && userSigninAddress) {
-          // const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid', 'validate jwt');
-          // if (!response.valid) {
-          //   pushToast('Your session is invalid or expired. Please try again.');
-          //   logOut();
-          //   return;
-          // }
-
-          await logIn({ jwt: token, userId }, userSigninAddress);
-          return;
-        }
-
-        setLoggedOut();
+  useEffect(() => {
+    async function getCurrentUser() {
+      try {
+        await _fetch('/users/get/current', 'get current user');
+        setAuthState(LOGGED_IN);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error: unknown) {
+        setAuthState(LOGGED_OUT);
       }
+    }
 
-      if (authState === UNKNOWN) {
-        void loadAuthState();
-      }
-    },
-    [authState, logIn, logOut, pushToast, setLoggedOut, token, userId, userSigninAddress]
-  );
+    void getCurrentUser();
+  }, []);
 
   const authActions: AuthActions = useMemo(
     () => ({ logIn, logOut, setStateToLoading }),

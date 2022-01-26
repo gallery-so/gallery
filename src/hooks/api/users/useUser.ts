@@ -44,21 +44,29 @@ export default function useUser(props: Props): User | undefined {
   return data;
 }
 
+export function useCurrentUser(makeRequest = true): User | undefined {
+  const data = useGet<User>(makeRequest ? '/users/get/current' : null, 'get current user');
+  return data;
+}
+
+// TODO: we can probably remove this by refactoring the components that use it
+// use this hook to get the current logged in user when when you don't always expect one to be returned.
+// ie in a component that is rendered for all users
 export function usePossiblyAuthenticatedUser() {
   const state = useAuthState();
-  const userId = useMemo(() => {
-    if (isLoggedInState(state)) {
-      return state.userId;
-    }
+  const isLoggedIn = useMemo(() => isLoggedInState(state), [state]);
+  const user = useCurrentUser(isLoggedIn);
+  if (isLoggedIn && !user) {
+    throw new Error('Authenticated user not found');
+  }
 
-    return null;
-  }, [state]);
-  const user = useUser({ id: userId });
   return user;
 }
 
+// use this hook to get the current logged in user when you expect one to be returned.
+// ie in a component that is only rendered for authenticated users
 export function useAuthenticatedUser() {
-  const user = usePossiblyAuthenticatedUser();
+  const user = useCurrentUser();
   if (!user) {
     throw new Error('Authenticated user not found');
   }

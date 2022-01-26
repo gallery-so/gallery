@@ -48,11 +48,11 @@ function AuthenticateWalletPendingGnosisSafe({
         nonce,
       };
 
-      const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
+      await loginOrCreateUser(userExists, payload, fetcher);
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       Mixpanel.trackSignInSuccess('Gnosis Safe');
-      logIn({ jwt, userId }, address);
+      logIn(address);
     },
     [fetcher, logIn, userExists]
   );

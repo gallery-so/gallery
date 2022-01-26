@@ -1,6 +1,4 @@
 import { useCallback } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { JWT_LOCAL_STORAGE_KEY } from 'contexts/auth/constants';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
 
@@ -38,15 +36,6 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
      */
     credentials: 'include',
   };
-
-  const localJwt =
-    typeof window === 'undefined' ? null : window.localStorage.getItem(JWT_LOCAL_STORAGE_KEY);
-
-  const parsedLocalJwt = localJwt && (JSON.parse(localJwt) as string);
-  if (parsedLocalJwt && requestOptions.headers) {
-    // @ts-expect-error: Authorization is a legit header
-    requestOptions.headers.Authorization = `Bearer ${parsedLocalJwt}`;
-  }
 
   if (body) {
     requestOptions.method = 'POST';
@@ -96,11 +85,8 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
  * - usePost for mutations
  */
 export default function useFetcher(): FetcherType {
-  const { logOut } = useAuthActions();
-
   return useCallback(
-    async (path, action, parameters) =>
-      _fetch(path, action, { ...parameters, unauthorizedErrorHandler: logOut }),
-    [logOut]
+    async (path, action, parameters) => _fetch(path, action, { ...parameters }),
+    []
   );
 }

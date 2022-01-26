@@ -59,9 +59,9 @@ function AuthenticateWalletPendingDefault({
         nonce,
       };
 
-      const { jwt, userId } = await loginOrCreateUser(userExists, payload, fetcher);
+      await loginOrCreateUser(userExists, payload, fetcher);
       Mixpanel.trackSignInSuccess(userFriendlyWalletName);
-      logIn({ jwt, userId }, address);
+      logIn(address);
     },
     [fetcher, logIn, pendingWallet, userFriendlyWalletName]
   );
