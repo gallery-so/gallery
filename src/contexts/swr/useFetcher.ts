@@ -93,7 +93,3 @@ export default function useFetcher(): FetcherType {
     [handleUnauthorized]
   );
 }
-
-// handle 401s for
-// 1. refreshing a page on a stale session
-// 2. take action for stale session (refresh wallet, edit user bio)

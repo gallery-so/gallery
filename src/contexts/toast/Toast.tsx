@@ -74,7 +74,7 @@ function Toast({ message, onClose, cornerPositioned }: Props) {
 }
 
 const CornerPosition = styled.div`
-  z-index: 10; // appears above navbar
+  z-index: 2; // appears above navbar
   position: fixed;
   top: 24px;
   right: 24px;

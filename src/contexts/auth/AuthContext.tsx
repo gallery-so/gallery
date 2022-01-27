@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
-import { LOADING, LoggedInState, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
+import { LOADING, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 import {
   USER_LOGGED_IN_LOCAL_STORAGE_KEY,
@@ -19,12 +19,7 @@ import {
 } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
 
-export type AuthState =
-  | LoggedInState
-  | typeof LOGGED_IN
-  | typeof LOGGED_OUT
-  | typeof LOADING
-  | typeof UNKNOWN;
+export type AuthState = typeof LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
 
 const EXPIRED_SESSION_MESSAGE = 'Your session has expired. Please sign in again.';
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
@@ -39,7 +34,7 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  logIn: (address: string) => void;
+  setLoggedIn: (address: string) => void;
   logOut: () => void;
   setStateToLoading: () => void;
   handleUnauthorized: () => void;
@@ -98,7 +93,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setLoggedOut();
   }, [setLoggedOut]);
 
-  const logIn = useCallback(
+  const setLoggedIn = useCallback(
     async (address: string) => {
       try {
         setAuthState(LOGGED_IN);
@@ -152,8 +147,8 @@ const AuthProvider = memo(({ children }: Props) => {
   }, [authState, isLoggedInLocally, pushToast, setIsLoggedInLocally]);
 
   const authActions: AuthActions = useMemo(
-    () => ({ handleUnauthorized, logIn, logOut, setStateToLoading }),
-    [handleUnauthorized, logIn, logOut, setStateToLoading]
+    () => ({ handleUnauthorized, setLoggedIn, logOut, setStateToLoading }),
+    [handleUnauthorized, setLoggedIn, logOut, setStateToLoading]
   );
 
   const shouldDisplayUniversalLoader = useMemo(

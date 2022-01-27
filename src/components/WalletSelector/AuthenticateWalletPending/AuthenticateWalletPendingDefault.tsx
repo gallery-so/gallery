@@ -34,7 +34,7 @@ function AuthenticateWalletPendingDefault({
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
-  const { logIn } = useAuthActions();
+  const { setLoggedIn } = useAuthActions();
 
   /**
    * Auth Pipeline:
@@ -61,9 +61,9 @@ function AuthenticateWalletPendingDefault({
 
       await loginOrCreateUser(userExists, payload, fetcher);
       Mixpanel.trackSignInSuccess(userFriendlyWalletName);
-      logIn(address);
+      setLoggedIn(address);
     },
-    [fetcher, logIn, pendingWallet, userFriendlyWalletName]
+    [fetcher, setLoggedIn, pendingWallet, userFriendlyWalletName]
   );
 
   useEffect(() => {

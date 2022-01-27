@@ -34,7 +34,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
-  const { logIn } = useAuthActions();
+  const { setLoggedIn } = useAuthActions();
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
   const [nonce, setNonce] = useState('');
@@ -52,9 +52,9 @@ function AuthenticateWalletPendingGnosisSafe({
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       Mixpanel.trackSignInSuccess('Gnosis Safe');
-      logIn(address);
+      setLoggedIn(address);
     },
-    [fetcher, logIn, userExists]
+    [fetcher, setLoggedIn, userExists]
   );
 
   const handleError = useCallback(

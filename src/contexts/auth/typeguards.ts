@@ -1,7 +1,7 @@
 import { AuthState } from './AuthContext';
-import { LOADING, LoggedInState, LOGGED_IN } from './types';
+import { LOADING, LOGGED_IN } from './types';
 
-export function isLoggedInState(state: AuthState): state is LoggedInState {
+export function isLoggedInState(state: AuthState) {
   return state === LOGGED_IN;
 }
 
