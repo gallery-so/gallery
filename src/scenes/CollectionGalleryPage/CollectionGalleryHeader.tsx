@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   collection: Collection;
@@ -22,7 +23,7 @@ function CollectionGalleryHeader({ collection }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
 
-  const username = window.location.pathname.split('/')[1];
+  const username = useMemo(() => window.location.pathname.split('/')[1], []);
 
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note || ''), [
     collection.collectors_note,
@@ -33,6 +34,11 @@ function CollectionGalleryHeader({ collection }: Props) {
   const handleGalleryRedirect = useCallback(() => {
     void push(`/${username}`);
   }, [push, username]);
+
+  const handleEditCollectionClick = useCallback(() => {
+    Mixpanel.track('Update existing collection');
+    void push(`/edit?collectionId=${collection.id}`);
+  }, [collection.id]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
@@ -66,7 +72,7 @@ function CollectionGalleryHeader({ collection }: Props) {
             </NavElement>
             <Spacer width={12} />
             <NavElement>
-              <TextButton text="Edit Collection" />
+              <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
             </NavElement>
             <Spacer width={12} />
           </>
