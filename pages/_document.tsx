@@ -57,7 +57,6 @@ export default class MyDocument extends Document {
             name="twitter:image"
             content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
           />
-          <script async src="https://cdn.splitbee.io/sb.js" />
           <script
             async
             type="module"
