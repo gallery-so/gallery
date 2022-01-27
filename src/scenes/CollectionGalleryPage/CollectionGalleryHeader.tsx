@@ -16,18 +16,21 @@ import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/Co
 import noop from 'utils/noop';
 import Mixpanel from 'utils/mixpanel';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useBreakpoint } from 'hooks/useWindowSize';
+import { DisplayLayout } from 'components/core/enums';
 
 type Props = {
   collection: Collection;
+  mobileLayout: DisplayLayout;
+  setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
 
-function CollectionGalleryHeader({ collection }: Props) {
+function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
   const screenWidth = useBreakpoint();
   const user = usePossiblyAuthenticatedUser();
-
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
 
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note || ''), [
@@ -68,6 +71,9 @@ function CollectionGalleryHeader({ collection }: Props) {
           <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername> /{' '}
           {collection.name}
         </Subdisplay>
+        {isMobileScreen && (
+          <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+        )}
       </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>

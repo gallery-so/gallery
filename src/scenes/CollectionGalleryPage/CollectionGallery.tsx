@@ -5,7 +5,7 @@ import NotFound from 'scenes/NotFound/NotFound';
 import CollectionGalleryHeader from './CollectionGalleryHeader';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
 import NftGallery from 'components/NftGallery/NftGallery';
-import { DisplayLayout } from 'components/core/enums';
+import useMobileLayout from 'hooks/useMobileLayout';
 
 type Props = {
   collectionId?: string;
@@ -13,6 +13,7 @@ type Props = {
 
 function CollectionGallery({ collectionId }: Props) {
   const collection = useCollectionById(collectionId ?? '') ?? null;
+  const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   if (!collection) {
     return <NotFound />;
@@ -20,10 +21,13 @@ function CollectionGallery({ collectionId }: Props) {
 
   return (
     <StyledCollectionGallery>
-      <CollectionGalleryHeader collection={collection} />
+      <CollectionGalleryHeader
+        collection={collection}
+        mobileLayout={mobileLayout}
+        setMobileLayout={setMobileLayout}
+      />
       <Spacer height={80} />
-      {/* TODO: Confirm if we need to add grid/list view too */}
-      <NftGallery collection={collection} mobileLayout={DisplayLayout.GRID} />
+      <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionGallery>
   );
 }

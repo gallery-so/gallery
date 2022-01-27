@@ -8,9 +8,7 @@ import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
 import { useBreakpoint } from 'hooks/useWindowSize';
-import usePersistedState from 'hooks/usePersistedState';
-import { MOBILE_GALLERY_LAYOUT_STORAGE_KEY } from 'constants/storageKeys';
-import { DisplayLayout } from 'components/core/enums';
+import useMobileLayout from 'hooks/useMobileLayout';
 
 type Props = {
   username?: string;
@@ -21,11 +19,7 @@ function UserGallery({ username }: Props) {
   const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const screenWidth = useBreakpoint();
-
-  const [mobileLayout, setMobileLayout] = usePersistedState(
-    MOBILE_GALLERY_LAYOUT_STORAGE_KEY,
-    DisplayLayout.GRID
-  );
+  const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   if (!user) {
     return <NotFound />;
