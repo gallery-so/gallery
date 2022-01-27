@@ -44,7 +44,7 @@ export default function useUser(props: Props): User | undefined {
   return data;
 }
 
-export function useCurrentUser(makeRequest = true): User | undefined {
+function useCurrentUser(makeRequest = true): User | undefined {
   const data = useGet<User>(makeRequest ? '/users/get/current' : null, 'get current user');
   return data;
 }

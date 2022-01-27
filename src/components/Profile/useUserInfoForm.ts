@@ -34,6 +34,7 @@ export default function useUserInfoForm({
 
   // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
+
   const updateUser = useUpdateUser();
 
   const handleCreateOrEditUser = useCallback(async () => {
