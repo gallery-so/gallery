@@ -52,6 +52,7 @@ function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardC
   }, [id, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {
+    Mixpanel.track('Delete collection button clicked');
     showModal(<DeleteCollectionConfirmation collectionId={id} />);
   }, [id, showModal]);
 

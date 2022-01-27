@@ -98,6 +98,7 @@ function CollectionCreateOrEditForm({
       // Collection is being updated
       if (collectionId) {
         Mixpanel.track('Update collection', {
+          id: collectionId,
           title,
           description,
         });
