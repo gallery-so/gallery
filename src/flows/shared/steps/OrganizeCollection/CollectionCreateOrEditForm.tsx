@@ -97,14 +97,19 @@ function CollectionCreateOrEditForm({
     try {
       // Collection is being updated
       if (collectionId) {
+        Mixpanel.track('Update collection', {
+          title,
+          description,
+        });
         await updateCollection(collectionId, title, description);
       }
 
       // Collection is being created
       if (!collectionId && nfts && layout) {
-        Mixpanel.track('Add Name & Description to collection', {
+        Mixpanel.track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
+          nft_ids: nfts.map((nft) => nft.id),
         });
         await createCollection(galleryId, title, description, nfts, layout);
       }

@@ -25,7 +25,7 @@ function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardC
   const { id, name, collectors_note, hidden } = collection;
 
   const handleEditCollectionClick = useCallback(() => {
-    Mixpanel.track('Update existing collection');
+    Mixpanel.track('Update existing collection button clicked');
     setCollectionIdBeingEdited(id);
     push('organizeCollection');
   }, [id, push, setCollectionIdBeingEdited]);
