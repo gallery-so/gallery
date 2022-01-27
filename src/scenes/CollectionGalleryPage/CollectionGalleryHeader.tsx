@@ -10,12 +10,16 @@ import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { Collection } from 'types/Collection';
 import { useRouter } from 'next/router';
+import { useModal } from 'contexts/modal/ModalContext';
+import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import noop from 'utils/noop';
 
 type Props = {
   collection: Collection;
 };
 
 function CollectionGalleryHeader({ collection }: Props) {
+  const { showModal } = useModal();
   const { push } = useRouter();
 
   const username = window.location.pathname.split('/')[1];
@@ -29,6 +33,18 @@ function CollectionGalleryHeader({ collection }: Props) {
   const handleGalleryRedirect = useCallback(() => {
     void push(`/${username}`);
   }, [push, username]);
+
+  const handleEditNameClick = useCallback(() => {
+    showModal(
+      <CollectionCreateOrEditForm
+        // No need for onNext because this isn't part of a wizard
+        onNext={noop}
+        collectionId={collection.id}
+        collectionName={collection.name}
+        collectionCollectorsNote={collection.collectors_note}
+      />
+    );
+  }, [collection.collectors_note, collection.id, collection.name, showModal]);
 
   return (
     <StyledCollectionGalleryHeader>
@@ -44,6 +60,16 @@ function CollectionGalleryHeader({ collection }: Props) {
           </StyledCollectionNote>
         )}
         <StyledCollectionActions>
+          <>
+            <NavElement>
+              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+            </NavElement>
+            <Spacer width={12} />
+            <NavElement>
+              <TextButton text="Edit Collection" />
+            </NavElement>
+            <Spacer width={12} />
+          </>
           <NavElement>
             <CopyToClipboard textToCopy={collectionUrl}>
               <TextButton text="Share" />
