@@ -14,6 +14,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import Mixpanel from 'utils/mixpanel';
+import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 
 type Props = {
   collection: Collection;
@@ -22,12 +23,15 @@ type Props = {
 function CollectionGalleryHeader({ collection }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
+  const user = usePossiblyAuthenticatedUser();
 
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
 
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note || ''), [
     collection.collectors_note,
   ]);
+
+  const authenticatedUserIsOnTheirOwnPage = username === user?.username;
 
   const collectionUrl = window.location.href;
 
@@ -66,16 +70,18 @@ function CollectionGalleryHeader({ collection }: Props) {
           </StyledCollectionNote>
         )}
         <StyledCollectionActions>
-          <>
-            <NavElement>
-              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-            </NavElement>
-            <Spacer width={12} />
-            <NavElement>
-              <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-            </NavElement>
-            <Spacer width={12} />
-          </>
+          {authenticatedUserIsOnTheirOwnPage && (
+            <>
+              <NavElement>
+                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+              </NavElement>
+              <Spacer width={12} />
+              <NavElement>
+                <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+              </NavElement>
+              <Spacer width={12} />
+            </>
+          )}
           <NavElement>
             <CopyToClipboard textToCopy={collectionUrl}>
               <TextButton text="Share" />
