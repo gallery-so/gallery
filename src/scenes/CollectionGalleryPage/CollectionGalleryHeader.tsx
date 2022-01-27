@@ -7,6 +7,7 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import NavElement from 'components/core/Page/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
+import breakpoints, { size } from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { Collection } from 'types/Collection';
 import { useRouter } from 'next/router';
@@ -15,6 +16,7 @@ import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/Co
 import noop from 'utils/noop';
 import Mixpanel from 'utils/mixpanel';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type Props = {
   collection: Collection;
@@ -23,6 +25,7 @@ type Props = {
 function CollectionGalleryHeader({ collection }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
+  const screenWidth = useBreakpoint();
   const user = usePossiblyAuthenticatedUser();
 
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
@@ -34,6 +37,8 @@ function CollectionGalleryHeader({ collection }: Props) {
   const authenticatedUserIsOnTheirOwnPage = username === user?.username;
 
   const collectionUrl = window.location.href;
+
+  const isMobileScreen = screenWidth === size.mobile && collection && collection.nfts?.length > 0;
 
   const handleGalleryRedirect = useCallback(() => {
     void push(`/${username}`);
@@ -58,10 +63,12 @@ function CollectionGalleryHeader({ collection }: Props) {
 
   return (
     <StyledCollectionGalleryHeader>
-      <Subdisplay>
-        <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername> /{' '}
-        {collection.name}
-      </Subdisplay>
+      <StyledHeaderWrapper>
+        <Subdisplay>
+          <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername> /{' '}
+          {collection.name}
+        </Subdisplay>
+      </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>
         {unescapedCollectorsNote && (
@@ -69,16 +76,21 @@ function CollectionGalleryHeader({ collection }: Props) {
             <Markdown text={unescapedCollectorsNote} />
           </StyledCollectionNote>
         )}
+        <Spacer height={60} />
         <StyledCollectionActions>
           {authenticatedUserIsOnTheirOwnPage && (
             <>
               <NavElement>
                 <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
               </NavElement>
-              <Spacer width={12} />
-              <NavElement>
-                <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-              </NavElement>
+              {!isMobileScreen && (
+                <>
+                  <Spacer width={12} />
+                  <NavElement>
+                    <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                  </NavElement>
+                </>
+              )}
               <Spacer width={12} />
             </>
           )}
@@ -108,11 +120,22 @@ const StyledUsername = styled.span`
   }
 `;
 
+const StyledHeaderWrapper = styled(Subdisplay)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const StyledCollectionDetails = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
+  align-items: start;
   word-break: break-word;
+
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;
 
 const StyledCollectionNote = styled(BodyRegular)`
@@ -123,7 +146,8 @@ const StyledCollectionNote = styled(BodyRegular)`
 const StyledCollectionActions = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
+  width: 100%;
 `;
 
 export default CollectionGalleryHeader;
