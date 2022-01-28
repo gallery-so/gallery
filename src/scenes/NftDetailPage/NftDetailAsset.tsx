@@ -20,13 +20,11 @@ import { useContentState } from 'contexts/shimmer/ShimmerContext';
 type NftDetailAssetComponentProps = {
   nft: Nft;
   maxHeight: number;
-  userOwnsAsset: boolean;
 };
 
-function NftDetailAssetComponent({ nft, maxHeight, userOwnsAsset }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProps) {
   const assetType = getMediaType(nft);
   const breakpoint = useBreakpoint();
-  console.log(userOwnsAsset);
 
   const resizableImage = useMemo(
     () => (
@@ -59,6 +57,7 @@ function NftDetailAssetComponent({ nft, maxHeight, userOwnsAsset }: NftDetailAss
 type Props = {
   nft: Nft;
   userOwnsAsset: boolean;
+  assetHasNote: boolean;
 };
 
 // number that determines a reasonable max height for the displayed NFT
@@ -69,7 +68,7 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft, userOwnsAsset }: Props) {
+function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -93,10 +92,10 @@ function NftDetailAsset({ nft, userOwnsAsset }: Props) {
       maxHeight={maxHeight}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
     >
-      <StyledAssetAndNoteContainer>
-        <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} userOwnsAsset={userOwnsAsset} />
-        {userOwnsAsset && <NftDetailNote nftId={nft.id} />}
-      </StyledAssetAndNoteContainer>
+      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+      {(userOwnsAsset || assetHasNote) && (
+        <NftDetailNote nftId={nft.id} userOwnsAsset={userOwnsAsset} />
+      )}
     </StyledAssetContainer>
   );
 }
@@ -105,15 +104,6 @@ type AssetContainerProps = {
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
 };
-
-const StyledAssetAndNoteContainer = styled.div`
-  height: 100%;
-  justify-content: center;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
   display: flex;
@@ -127,6 +117,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   @media only screen and ${breakpoints.desktop} {
     width: ${({ maxHeight }) => maxHeight}px;
     height: ${({ maxHeight }) => maxHeight}px;
+    max-height: 80vh; /* max height is applied to asset + note now, not just asset */
   }
 `;
 

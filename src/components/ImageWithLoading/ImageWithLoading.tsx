@@ -46,4 +46,6 @@ const StyledImg = styled.img<StyledImgProps>`
   display: block;
   ${({ widthType }) => (widthType === 'fullWidth' ? 'width' : 'max-width')}: 100%;
   max-height: ${({ heightType }) => (heightType === 'maxHeightScreen' ? '80vh' : '100%')};
+  height: 100%;
+  flex-shrink: 1;
 `;

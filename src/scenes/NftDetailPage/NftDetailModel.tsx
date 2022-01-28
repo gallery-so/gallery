@@ -39,6 +39,7 @@ function NftDetailModel({ nft }: Props) {
 const StyledNftDetailModel = styled.div`
   width: 100%;
   height: 100%;
+  flex-shrink: 1;
 `;
 
 export default NftDetailModel;

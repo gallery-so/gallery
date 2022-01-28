@@ -19,6 +19,7 @@ const StyledAudioContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  flex-shrink: 1;
 `;
 
 const StyledAudio = styled.audio`

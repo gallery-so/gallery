@@ -1,7 +1,8 @@
 import { BodyRegular } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'lodash.unescape';
 import styled from 'styled-components';
@@ -13,14 +14,17 @@ const MAX_CHAR_COUNT = 400;
 type Props = {
   nftCollectorsNote?: string;
   nftId: string;
+  userOwnsAsset: boolean;
 };
 
-function NftDetailNote({ nftCollectorsNote, nftId }: Props) {
+function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
+  const [noteHeight, setNoteHeight] = useState(48);
   const [isEditing, setIsEditing] = useState(false);
-  const [hasCollectorsNote, setHasCollectorsNote] = useState(false);
+
+  // TODO: This should be done via API
+  const [hasCollectorsNote, setHasCollectorsNote] = useState(true);
 
   const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
-
   const [collectorsNote, setCollectorsNote] = useState(unescapedCollectorsNote ?? '');
 
   const handleEditCollectorsNote = useCallback(() => {
@@ -35,25 +39,36 @@ function NftDetailNote({ nftCollectorsNote, nftId }: Props) {
     await updateNft(nftId, collectorsNote);
   }, [updateNft, nftId, collectorsNote]);
 
-  const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCollectorsNote(event.target?.value);
-  }, []);
+  const handleNoteChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCollectorsNote(event.target?.value);
+      // setNoteHeight(Math.max(event.target?.scrollHeight, event.target?.offsetHeight));
+      setNoteHeight(event.target?.scrollHeight);
+    },
+    [noteHeight]
+  );
 
   return (
     <StyledContainer>
       <Spacer height={18} />
-      <TextButton
-        text={
-          isEditing
-            ? 'Submit'
-            : hasCollectorsNote
-            ? "Edit Collector's Note"
-            : `+ Add Collector's Note`
-        }
-        onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
-      />
 
-      <Spacer height={8} />
+      {/* Only show add/edit/submit button if user owns asset */}
+      {userOwnsAsset ? (
+        <TextButton
+          text={
+            isEditing
+              ? 'Submit'
+              : hasCollectorsNote
+              ? "Edit Collector's Note"
+              : `+ Add Collector's Note`
+          }
+          onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
+        />
+      ) : (
+        <StyledNoteTitle color={colors.gray50}>Collector&rsquo;s Note</StyledNoteTitle>
+      )}
+
+      <Spacer height={4} />
       {isEditing && (
         <StyledTextAreaWithCharCount
           onChange={handleNoteChange}
@@ -61,6 +76,7 @@ function NftDetailNote({ nftCollectorsNote, nftId }: Props) {
           defaultValue={collectorsNote}
           currentCharCount={collectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
+          noteHeight={noteHeight}
         />
       )}
       {hasCollectorsNote && !isEditing && (
@@ -77,27 +93,47 @@ const StyledContainer = styled.div`
   flex-shrink: 0;
 `;
 
+type TextAreaProps = {
+  noteHeight: number;
+};
+
 // These two are intentionally styled the same so that editing is seamless
-const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
   textarea {
-    height: 64px;
+    ${({ noteHeight }) => `height: ${noteHeight}px`};
+
+    min-height: 24px;
+    // height: 100%;
+    max-height: 84px;
     margin: 0;
     padding: 0;
     line-height: 20px;
     font-size: 14px;
     letter-spacing: 0.4px;
     display: block;
+    border-bottom: none;
+  }
+
+  p {
+    right: 20px;
   }
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
-  height: 64px;
+  min-height: 24px;
+  height: 100%;
+  max-height: 84px;
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
-  overflow: scroll;
+  overflow-y: auto;
+`;
+
+const StyledNoteTitle = styled(BodyRegular)`
+  text-transform: uppercase;
+  font-size: 12px;
 `;
 
 export default NftDetailNote;

@@ -32,6 +32,9 @@ const StyledVideo = styled.video<{ maxHeight: number }>`
   border: none;
 
   max-height: ${({ maxHeight }) => maxHeight}px;
+
+  height: 100%;
+  flex-shrink: 1;
 `;
 
 export default NftDetailVideo;
