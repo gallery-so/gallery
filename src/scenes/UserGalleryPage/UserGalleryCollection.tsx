@@ -37,9 +37,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 
   return (
-    <StyledCollectionWrapper>
+    <StyledCollectionWrapper onClick={handleCollectionNameClick}>
       <StyledCollectionHeader>
-        <TitleSerif onClick={handleCollectionNameClick}>
+        <TitleSerif>
           <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
         </TitleSerif>
         {unescapedCollectorsNote && (
@@ -60,6 +60,7 @@ const StyledCollectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  cursor: pointer;
 `;
 
 const StyledCollectionHeader = styled.div`
