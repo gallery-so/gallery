@@ -37,10 +37,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     collection.collectors_note,
   ]);
 
-  const authenticatedUserIsOnTheirOwnPage = useMemo(
-    () => username === user?.username.toLowerCase(),
-    [username, user]
-  );
+  const authenticatedUserIsOnTheirOwnPage = username.toLowerCase() === user?.username.toLowerCase();
 
   const collectionUrl = window.location.href;
 
@@ -68,15 +65,16 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   }, [collection.collectors_note, collection.id, collection.name, showModal]);
 
   return (
-    <StyledCollectionGalleryHeader>
+    <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
-        <Subdisplay>
-          <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername> /{' '}
-          {collection.name}
-        </Subdisplay>
-        {isMobileScreen && (
-          <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-        )}
+        <StyledUsernameWrapper>
+          <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername>{' '}
+          {isMobileScreen && (
+            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+          )}
+        </StyledUsernameWrapper>
+        {collection.name && <StyledSeparator>/</StyledSeparator>}
+        {collection.name}
       </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>
@@ -110,15 +108,38 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
           </NavElement>
         </StyledCollectionActions>
       </StyledCollectionDetails>
-    </StyledCollectionGalleryHeader>
+    </StyledCollectionGalleryHeaderWrapper>
   );
 }
 
-const StyledCollectionGalleryHeader = styled.div`
+const StyledCollectionGalleryHeaderWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
   width: 100%;
+`;
+
+const StyledHeaderWrapper = styled(Subdisplay)`
+  display: flex;
+  flex-direction: column;
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
+`;
+
+const StyledUsernameWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const StyledSeparator = styled.div`
+  margin: 0 10px;
+  display: none;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    display: block;
+  }
 `;
 
 const StyledUsername = styled.span`
@@ -127,12 +148,6 @@ const StyledUsername = styled.span`
   &:hover {
     color: ${colors.gray80};
   }
-`;
-
-const StyledHeaderWrapper = styled(Subdisplay)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;
 
 const StyledCollectionDetails = styled.div`
@@ -157,6 +172,10 @@ const StyledCollectionActions = styled.div`
   flex-direction: row;
   justify-content: flex-end;
   width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: auto;
+  }
 `;
 
 export default CollectionGalleryHeader;
