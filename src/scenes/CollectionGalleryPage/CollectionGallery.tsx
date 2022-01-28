@@ -1,4 +1,5 @@
-import { contentSize } from 'components/core/breakpoints';
+import { useMemo } from 'react';
+import { contentSize, size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import NotFound from 'scenes/NotFound/NotFound';
@@ -6,6 +7,7 @@ import CollectionGalleryHeader from './CollectionGalleryHeader';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
 import NftGallery from 'components/NftGallery/NftGallery';
 import useMobileLayout from 'hooks/useMobileLayout';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type Props = {
   collectionId?: string;
@@ -14,6 +16,9 @@ type Props = {
 function CollectionGallery({ collectionId }: Props) {
   const collection = useCollectionById(collectionId ?? '') ?? null;
   const { mobileLayout, setMobileLayout } = useMobileLayout();
+
+  const breakpoint = useBreakpoint();
+  const isMobileScreenSize = useMemo(() => breakpoint === size.mobile, [breakpoint]);
 
   if (!collection) {
     return <NotFound />;
@@ -26,7 +31,7 @@ function CollectionGallery({ collectionId }: Props) {
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
-      <Spacer height={80} />
+      <Spacer height={isMobileScreenSize ? 32 : 80} />
       <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionGallery>
   );

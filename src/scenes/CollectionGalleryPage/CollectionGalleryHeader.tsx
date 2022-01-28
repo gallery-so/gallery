@@ -83,7 +83,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
             <Markdown text={unescapedCollectorsNote} />
           </StyledCollectionNote>
         )}
-        <Spacer height={60} />
+        {isMobileScreen && <Spacer height={60} />}
         <StyledCollectionActions>
           {authenticatedUserIsOnTheirOwnPage && (
             <>
