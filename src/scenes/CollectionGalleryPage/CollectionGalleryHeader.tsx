@@ -37,7 +37,10 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     collection.collectors_note,
   ]);
 
-  const authenticatedUserIsOnTheirOwnPage = username === user?.username;
+  const authenticatedUserIsOnTheirOwnPage = useMemo(
+    () => username === user?.username.toLowerCase(),
+    [username, user]
+  );
 
   const collectionUrl = window.location.href;
 
