@@ -87,9 +87,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
         <StyledCollectionActions>
           {authenticatedUserIsOnTheirOwnPage && (
             <>
-              <NavElement>
-                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-              </NavElement>
+              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
               {!isMobileScreen && (
                 <>
                   <Spacer width={12} />
@@ -101,11 +99,9 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
               <Spacer width={12} />
             </>
           )}
-          <NavElement>
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" />
-            </CopyToClipboard>
-          </NavElement>
+          <CopyToClipboard textToCopy={collectionUrl}>
+            <TextButton text="Share" />
+          </CopyToClipboard>
         </StyledCollectionActions>
       </StyledCollectionDetails>
     </StyledCollectionGalleryHeaderWrapper>
