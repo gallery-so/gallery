@@ -10,18 +10,18 @@ import {
   useMemo,
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
-import { useToastActions } from 'contexts/toast/ToastContext';
 import Web3WalletProvider from './Web3WalletContext';
-import { LOADING, LoggedInState, LOGGED_OUT, UNKNOWN } from './types';
-import {
-  JWT_LOCAL_STORAGE_KEY,
-  USER_ID_LOCAL_STORAGE_KEY,
-  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from './constants';
+import { LOADING, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
+import {
+  USER_LOGGED_IN_LOCAL_STORAGE_KEY,
+  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+} from 'constants/storageKeys';
+import { useToastActions } from 'contexts/toast/ToastContext';
 
-export type AuthState = LoggedInState | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState = typeof LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
 
+const EXPIRED_SESSION_MESSAGE = 'Your session has expired. Please sign in again.';
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
 
 export const useAuthState = (): AuthState => {
@@ -34,9 +34,10 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  logIn: (payload: LoggedInState, address: string) => void;
+  setLoggedIn: (address: string) => void;
   logOut: () => void;
   setStateToLoading: () => void;
+  handleUnauthorized: () => void;
 };
 
 const AuthActionsContext = createContext<AuthActions | undefined>(undefined);
@@ -52,97 +53,101 @@ export const useAuthActions = (): AuthActions => {
 
 type Props = { children: ReactNode };
 
-type ValidateJwtResponse = {
-  valid: boolean;
-  user_id: string;
-};
-
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  const [token, setToken] = usePersistedState(JWT_LOCAL_STORAGE_KEY, '');
-  const [userId, setUserId] = usePersistedState(USER_ID_LOCAL_STORAGE_KEY, '');
-  const [userSigninAddress, setUserSigninAddress] = usePersistedState(
-    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-    ''
+  const [, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
+  const [isLoggedInLocally, setIsLoggedInLocally] = usePersistedState(
+    USER_LOGGED_IN_LOCAL_STORAGE_KEY,
+    false
+  );
+
+  const { pushToast } = useToastActions();
+
+  /**
+   * Sets the user state to logged out and clears local storage
+   */
+  const setLoggedOut = useCallback(
+    (isUnauthorized = false) => {
+      if (isUnauthorized) {
+        pushToast(EXPIRED_SESSION_MESSAGE);
+      }
+
+      setAuthState(LOGGED_OUT);
+      setUserSigninAddress('');
+      /**
+       * NOTE: clearing localStorage completely will also clear the SWR cache, which
+       * will require users to re-fetch data if they visit a profile they've already
+       * visited (including their own). In the future, we should clear data more
+       * selectively (such as only sensitive data)
+       */
+      clearLocalStorageWithException([]);
+    },
+    [pushToast, setUserSigninAddress]
   );
 
   /**
-   * Only sets the user state to logged out.
+   * Fully logs user out by calling the logout endpoint and logging out in app state
    */
-  const setLoggedOut = useCallback(() => {
-    setAuthState(LOGGED_OUT);
-  }, []);
-
-  /**
-   * Fully logs user out and clears storage.
-   */
-  const logOut = useCallback(() => {
+  const logOut = useCallback(async () => {
+    await _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
-    setToken('');
-    setUserId('');
-    setUserSigninAddress('');
-    /**
-     * NOTE: clearing localStorage completely will also clear the SWR cache, which
-     * will require users to re-fetch data if they visit a profile they've already
-     * visited (including their own). In the future, we should clear data more
-     * selectively (such as only sensitive data)
-     */
-    clearLocalStorageWithException([]);
-  }, [setLoggedOut, setToken, setUserId, setUserSigninAddress]);
+  }, [setLoggedOut]);
 
-  const logIn = useCallback(
-    async (payload: LoggedInState, address: string) => {
+  const setLoggedIn = useCallback(
+    async (address: string) => {
       try {
-        setToken(payload.jwt);
-        setUserId(payload.userId);
-        setAuthState(payload);
+        setAuthState(LOGGED_IN);
         setUserSigninAddress(address.toLowerCase());
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        logOut();
+        setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [logOut, setToken, setUserId, setUserSigninAddress]
+    [setLoggedOut, setUserSigninAddress]
   );
 
   const setStateToLoading = useCallback(() => {
     setAuthState(LOADING);
   }, []);
 
-  const { pushToast } = useToastActions();
+  const handleUnauthorized = useCallback(() => {
+    setLoggedOut(true);
+  }, [setLoggedOut]);
 
-  useEffect(
-    function authProviderMounted() {
-      async function loadAuthState() {
-        // Show user loading screen while we figure out whether they are logged in or not
-        setAuthState(LOADING);
+  useEffect(() => {
+    async function getAuthenticatedUser() {
+      try {
+        const authenticatedUser = await _fetch('/users/get/current', 'get current user');
 
-        if (token && userId && userSigninAddress) {
-          // const response = await _fetch<ValidateJwtResponse>('/auth/jwt_valid', 'validate jwt');
-          // if (!response.valid) {
-          //   pushToast('Your session is invalid or expired. Please try again.');
-          //   logOut();
-          //   return;
-          // }
-
-          await logIn({ jwt: token, userId }, userSigninAddress);
+        if (authenticatedUser) {
+          setAuthState(LOGGED_IN);
+          setIsLoggedInLocally(true);
           return;
         }
 
-        setLoggedOut();
-      }
+        // if no authenticated user is returned but they were logged in previously, show a toast
+        if (isLoggedInLocally) {
+          pushToast(EXPIRED_SESSION_MESSAGE);
+        }
 
-      if (authState === UNKNOWN) {
-        void loadAuthState();
+        setAuthState(LOGGED_OUT);
+        setIsLoggedInLocally(false);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error: unknown) {
+        setAuthState(LOGGED_OUT);
+        setIsLoggedInLocally(false);
       }
-    },
-    [authState, logIn, logOut, pushToast, setLoggedOut, token, userId, userSigninAddress]
-  );
+    }
+
+    if (authState === UNKNOWN) {
+      void getAuthenticatedUser();
+    }
+  }, [authState, isLoggedInLocally, pushToast, setIsLoggedInLocally]);
 
   const authActions: AuthActions = useMemo(
-    () => ({ logIn, logOut, setStateToLoading }),
-    [logIn, logOut, setStateToLoading]
+    () => ({ handleUnauthorized, setLoggedIn, logOut, setStateToLoading }),
+    [handleUnauthorized, setLoggedIn, logOut, setStateToLoading]
   );
 
   const shouldDisplayUniversalLoader = useMemo(

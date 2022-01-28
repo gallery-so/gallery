@@ -43,6 +43,8 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
+  z-index: 20;
+  position: relative;
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
