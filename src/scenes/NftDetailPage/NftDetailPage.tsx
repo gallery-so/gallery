@@ -19,10 +19,13 @@ type Props = {
 };
 
 function NftDetailPage({ nftId }: Props) {
-  const { replace, back } = useRouter();
+  const { replace, back, query } = useRouter();
   const canGoBack = useCanGoBack();
 
   const username = window.location.pathname.split('/')[1];
+  const collectionId = query.collectionId;
+  const isFromCollectionPage =
+    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
   const handleBackClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
@@ -62,7 +65,9 @@ function NftDetailPage({ nftId }: Props) {
       </Head>
       <StyledNftDetailPage centered fixedFullPageHeight>
         <StyledBackLink>
-          <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
+          <ActionText onClick={handleBackClick}>
+            {isFromCollectionPage ? '← Back to collection' : '← Back to gallery'}
+          </ActionText>
         </StyledBackLink>
         <StyledBody>
           {/* {prevNftId && (
