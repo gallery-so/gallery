@@ -2,7 +2,7 @@ import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo, useRef } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'lodash.unescape';
 import styled from 'styled-components';
@@ -39,20 +39,15 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     await updateNft(nftId, collectorsNote);
   }, [updateNft, nftId, collectorsNote]);
 
-  const handleNoteChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setCollectorsNote(event.target?.value);
-      // setNoteHeight(Math.max(event.target?.scrollHeight, event.target?.offsetHeight));
-      setNoteHeight(event.target?.scrollHeight);
-    },
-    [noteHeight]
-  );
+  const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCollectorsNote(event.target?.value);
+    setNoteHeight(event.target?.scrollHeight);
+  }, []);
 
   return (
     <StyledContainer>
       <Spacer height={18} />
 
-      {/* Only show add/edit/submit button if user owns asset */}
       {userOwnsAsset ? (
         <TextButton
           text={
@@ -79,6 +74,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
           noteHeight={noteHeight}
         />
       )}
+
       {hasCollectorsNote && !isEditing && (
         <StyledCollectorsNote onDoubleClick={handleEditCollectorsNote}>
           <Markdown text={collectorsNote} />
