@@ -116,16 +116,13 @@ const AuthProvider = memo(({ children }: Props) => {
   }, [setLoggedOut]);
 
   useEffect(() => {
-    setIsLoggedInLocally(authState === LOGGED_IN);
-  }, [authState, setIsLoggedInLocally]);
-
-  useEffect(() => {
     async function getAuthenticatedUser() {
       try {
         const authenticatedUser = await _fetch('/users/get/current', 'get current user');
 
         if (authenticatedUser) {
           setAuthState(LOGGED_IN);
+          setIsLoggedInLocally(true);
           return;
         }
 
@@ -135,9 +132,11 @@ const AuthProvider = memo(({ children }: Props) => {
         }
 
         setAuthState(LOGGED_OUT);
+        setIsLoggedInLocally(false);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error: unknown) {
         setAuthState(LOGGED_OUT);
+        setIsLoggedInLocally(false);
       }
     }
 
