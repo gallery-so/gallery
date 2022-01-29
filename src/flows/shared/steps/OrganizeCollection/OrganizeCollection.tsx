@@ -69,7 +69,7 @@ function useWizardConfig({ push }: ConfigProps) {
 
     // If collection is being created, trigger creation
     setOnNext(async () => {
-      Mixpanel.track('Save new collection');
+      Mixpanel.track('Save new collection button clicked');
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}

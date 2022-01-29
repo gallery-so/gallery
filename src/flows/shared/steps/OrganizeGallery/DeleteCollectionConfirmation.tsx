@@ -7,6 +7,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
 import useDeleteCollection from 'hooks/api/collections/useDeleteCollection';
 import { Collection } from 'types/Collection';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   collectionId: Collection['id'];
@@ -20,6 +21,9 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
 
   const handleConfirmClick = useCallback(async () => {
     setIsLoading(true);
+    Mixpanel.track('Delete collection', {
+      id: collectionId,
+    });
     await deleteCollection(collectionId);
     setIsLoading(false);
     hideModal();
