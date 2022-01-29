@@ -14,7 +14,7 @@ type Props = {
 };
 
 function CollectionGallery({ collectionId }: Props) {
-  const collection = useCollectionById(collectionId ?? '') ?? null;
+  const collection = useCollectionById({ id: collectionId ?? '' });
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   const breakpoint = useBreakpoint();

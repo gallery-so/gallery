@@ -2,8 +2,27 @@ import { Collection } from 'types/Collection';
 import { GetCollectionResponse } from './types';
 import useGet from '../_rest/useGet';
 
-export default function useCollectionById(id: string): Collection | undefined {
-  const data = useGet<GetCollectionResponse>(`/collections/get?id=${id}`, 'fetch collection');
+type Props = {
+  id: string;
+}
+
+const getCollectionByIdAction = 'fetch collection by id';
+const getCollectionByIdBaseUrl = '/collections/get';
+
+function getCollectionByIdBaseUrlWithQuery({ id }: Props) {
+  return `${getCollectionByIdBaseUrl}?id=${id}`;
+}
+
+export function getCollectionByIdCacheKey({ id }: Props) {
+  if (!id) {
+    return '';
+  }
+
+  return [getCollectionByIdBaseUrlWithQuery({ id }), getCollectionByIdAction];
+}
+
+export default function useCollectionById({ id }: Props): Collection | undefined {
+  const data = useGet<GetCollectionResponse>(id ? getCollectionByIdBaseUrlWithQuery({ id }) : null, getCollectionByIdAction);
 
   return data?.collection;
 }
