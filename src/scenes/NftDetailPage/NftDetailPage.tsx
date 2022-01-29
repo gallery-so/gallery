@@ -40,7 +40,9 @@ function NftDetailPage({ nftId }: Props) {
   useEffect(() => {
     Mixpanel.track('Page View: NFT Detail', { nftId });
   }, [nftId]);
-  const assetHasNote = nft?.collectors_note !== ''; /* TODO: implement via backend */
+
+  const assetHasNote =
+    nft?.collectors_note !== '' || nft.id === '1zsXvHQ92Z3K6K7JId3IIds3Q0B'; /* DELETE ME */
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;

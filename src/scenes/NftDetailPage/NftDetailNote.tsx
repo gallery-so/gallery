@@ -101,11 +101,16 @@ const StyledContainer = styled.div`
   }
 `;
 
+const StyledNoteTitle = styled(BodyRegular)`
+  text-transform: uppercase;
+  font-size: 12px;
+`;
+
 type TextAreaProps = {
   noteHeight: number;
 };
 
-// These two are intentionally styled the same so that editing is seamless
+// The two elements below are intentionally styled the same so that editing appears inline
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
@@ -136,11 +141,6 @@ const StyledCollectorsNote = styled(BodyRegular)`
   font-size: 14px;
   letter-spacing: 0.4px;
   overflow-y: auto;
-`;
-
-const StyledNoteTitle = styled(BodyRegular)`
-  text-transform: uppercase;
-  font-size: 12px;
 `;
 
 export default NftDetailNote;

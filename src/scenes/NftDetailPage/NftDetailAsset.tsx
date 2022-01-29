@@ -97,7 +97,10 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
         <NftDetailNote
           nftId={nft.id}
           userOwnsAsset={userOwnsAsset}
-          nftCollectorsNote={nft?.collectors_note}
+          nftCollectorsNote={
+            nft?.collectors_note ||
+            "This is where a collector's note would go. Just testing." /* DELETE ME */
+          }
         />
       )}
     </StyledAssetContainer>
