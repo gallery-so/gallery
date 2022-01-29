@@ -31,8 +31,6 @@ function NftDetailPage({ nftId }: Props) {
 
   const authenticatedUsername = useAuthenticatedUsername();
   const userOwnsAsset = authenticatedUsername === username;
-  const assetHasNote =
-    username === 'connorr' || username === 'robin'; /* TODO: implement via backend */
 
   const handleBackClick = useBackButton({ username });
 
@@ -42,10 +40,13 @@ function NftDetailPage({ nftId }: Props) {
   useEffect(() => {
     Mixpanel.track('Page View: NFT Detail', { nftId });
   }, [nftId]);
+  const assetHasNote = nft?.collectors_note !== ''; /* TODO: implement via backend */
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
   }
+
+  console.log(nft);
 
   return (
     <>

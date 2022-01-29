@@ -22,11 +22,10 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const [noteHeight, setNoteHeight] = useState(48);
   const [isEditing, setIsEditing] = useState(false);
 
-  // TODO: implement via backend
-  const [hasCollectorsNote, setHasCollectorsNote] = useState(true);
-
   const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
   const [collectorsNote, setCollectorsNote] = useState(unescapedCollectorsNote ?? '');
+
+  const hasCollectorsNote = useMemo(() => collectorsNote.length > 0, [collectorsNote]);
 
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
@@ -37,7 +36,6 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const handleSubmitCollectorsNote = useCallback(async () => {
     setIsEditing(false);
-    setHasCollectorsNote(true);
     await updateNft(nftId, collectorsNote);
   }, [updateNft, nftId, collectorsNote]);
 

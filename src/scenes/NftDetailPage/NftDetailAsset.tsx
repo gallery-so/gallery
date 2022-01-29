@@ -94,7 +94,11 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
     >
       <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
       {(userOwnsAsset || assetHasNote) && (
-        <NftDetailNote nftId={nft.id} userOwnsAsset={userOwnsAsset} />
+        <NftDetailNote
+          nftId={nft.id}
+          userOwnsAsset={userOwnsAsset}
+          nftCollectorsNote={nft?.collectors_note}
+        />
       )}
     </StyledAssetContainer>
   );
