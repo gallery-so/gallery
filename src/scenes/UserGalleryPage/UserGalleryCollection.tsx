@@ -11,6 +11,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
+import { SINGLE_COLLECTION_ENABLED } from 'utils/featureFlag';
 
 type Props = {
   collection: Collection;
@@ -31,6 +32,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   const username = window.location.pathname.split('/')[1];
   const handleCollectionNameClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
+      if (!SINGLE_COLLECTION_ENABLED) return;
       navigateToUrl(`/${username}/${collection.id}`, event);
     },
     [collection.id, navigateToUrl, username]
@@ -60,7 +62,7 @@ const StyledCollectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  cursor: pointer;
+  cursor: ${SINGLE_COLLECTION_ENABLED ? 'pointer' : 'initial'};
 `;
 
 const StyledCollectionHeader = styled.div`
