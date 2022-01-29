@@ -1,8 +1,8 @@
 import { AuthState } from './AuthContext';
-import { LOADING, LoggedInState } from './types';
+import { LOADING, LOGGED_IN } from './types';
 
-export function isLoggedInState(state: AuthState): state is LoggedInState {
-  return typeof state === 'object' && state !== null && 'jwt' in state;
+export function isLoggedInState(state: AuthState) {
+  return state === LOGGED_IN;
 }
 
 export function isLoadingState(state: AuthState) {

@@ -38,8 +38,7 @@ function Auth() {
 
     // If user is authenticated but hasn't set their username yet.
     // we should continue to take them through the welcome flow.
-    // this can happen if a user signs up and has a valid jwt but
-    // hasn't set their username yet.
+    // this can happen if a user signs up but hasn't set their username yet.
     return <GalleryRedirect to="/welcome" />;
   }
 

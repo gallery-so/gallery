@@ -17,7 +17,7 @@ export async function loginOrCreateUser(
 ) {
   if (userExists) {
     const response = await loginUser(payload as LoginUserRequest, fetcher);
-    return { jwt: response.jwt_token, userId: response.user_id };
+    return { userId: response.user_id };
   }
 
   if (!USER_SIGNUP_ENABLED) {
@@ -26,7 +26,7 @@ export async function loginOrCreateUser(
 
   const response = await createUser(payload as CreateUserRequest, fetcher);
 
-  return { jwt: response.jwt_token, userId: response.user_id };
+  return { userId: response.user_id };
 }
 
 /**
@@ -68,7 +68,6 @@ type LoginUserRequest = {
 
 type LoginUserResponse = {
   sig_valid: boolean;
-  jwt_token: string;
   user_id: string;
 };
 
@@ -171,7 +170,6 @@ type CreateUserRequest = {
 
 type CreateUserResponse = {
   sig_valid: boolean;
-  jwt_token: string;
   user_id: string;
 };
 
