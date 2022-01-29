@@ -42,6 +42,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
     setNoteHeight(event.target?.scrollHeight);
+    if (event.target?.value.length === 0) setNoteHeight(48);
   }, []);
 
   return (
@@ -112,7 +113,6 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
     ${({ noteHeight }) => `height: ${noteHeight}px`};
 
     min-height: 24px;
-    // height: 100%;
     max-height: 84px;
     margin: 0;
     padding: 0;
