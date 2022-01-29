@@ -8,6 +8,7 @@ import unescape from 'lodash.unescape';
 import styled from 'styled-components';
 import useUpdateNft from 'hooks/api/nfts/useUpdateNft';
 import Markdown from 'components/core/Markdown/Markdown';
+import breakpoints from 'components/core/breakpoints';
 
 const MAX_CHAR_COUNT = 400;
 
@@ -85,8 +86,19 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 }
 
 const StyledContainer = styled.div`
-  width: 100%;
-  flex-shrink: 0;
+  // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
+  display: block;
+  max-width: 296px;
+  min-width: 296px;
+  word-wrap: break-word;
+
+  // On larger screens, the note will be sized according to its parent container and will be flush with the asset
+  @media only screen and ${breakpoints.tablet} {
+    width: 100%;
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: none;
+  }
 `;
 
 type TextAreaProps = {

@@ -82,10 +82,11 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = getMediaType(nft) === NftMediaType.ANIMATION;
-  const shouldEnforceSquareAspectRatio =
-    breakpoint === size.desktop ||
-    breakpoint === size.tablet ||
-    (aspectRatioType !== 'wide' && !isIframe);
+  // const shouldEnforceSquareAspectRatio =
+  //   breakpoint === size.desktop ||
+  //   breakpoint === size.tablet ||
+  //   (aspectRatioType === 'square' && !isIframe);
+  const shouldEnforceSquareAspectRatio = false;
 
   return (
     <StyledAssetContainer
@@ -110,14 +111,16 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-height: 80vh; /* max height is applied to asset + note now, not just asset */
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
 
   @media only screen and ${breakpoints.desktop} {
-    width: ${({ maxHeight }) => maxHeight}px;
+    // max-width: ${({ maxHeight }) => maxHeight}px;
+    width: 100%;
+    min-width: ${({ maxHeight }) => maxHeight}px;
     height: ${({ maxHeight }) => maxHeight}px;
-    max-height: 80vh; /* max height is applied to asset + note now, not just asset */
   }
 `;
 
