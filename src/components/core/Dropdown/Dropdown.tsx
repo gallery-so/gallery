@@ -76,6 +76,7 @@ type StyledDropdownProps = {
 const StyledDropdown = styled.div`
   display: flex;
   flex-direction: column;
+  z-index: 1;
 `;
 
 export const StyledDropdownButton = styled(TextButton)<StyledDropdownProps>`
