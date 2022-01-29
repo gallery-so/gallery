@@ -78,11 +78,9 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>
-        {unescapedCollectorsNote && (
-          <StyledCollectionNote color={colors.gray50}>
-            <Markdown text={unescapedCollectorsNote} />
-          </StyledCollectionNote>
-        )}
+        <StyledCollectionNote color={colors.gray50}>
+          <Markdown text={unescapedCollectorsNote} />
+        </StyledCollectionNote>
         {isMobileScreen && <Spacer height={60} />}
         <StyledCollectionActions>
           {authenticatedUserIsOnTheirOwnPage && (
