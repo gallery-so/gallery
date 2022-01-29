@@ -16,8 +16,8 @@ export default function useUpdateNft() {
   return useCallback(
     async (nftId: string, collectorsNote: string) => {
       console.log('Hello from NFT ' + nftId + ': ' + collectorsNote);
+      // TODO: Implement
       //   await updateNft<UpdateNftInfoResponse, UpdateNftInfoRequest>(
-      //     // TODO: Make this real
       //     `/nfts/${nftId}/update/info`,
       //     'update nft info',
       //     {

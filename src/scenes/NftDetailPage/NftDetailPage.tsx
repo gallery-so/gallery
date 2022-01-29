@@ -31,7 +31,8 @@ function NftDetailPage({ nftId }: Props) {
 
   const authenticatedUsername = useAuthenticatedUsername();
   const userOwnsAsset = authenticatedUsername === username;
-  const assetHasNote = true; /* TODO: implement */
+  const assetHasNote =
+    username === 'connorr' || username === 'robin'; /* TODO: implement via backend */
 
   const handleBackClick = useBackButton({ username });
 

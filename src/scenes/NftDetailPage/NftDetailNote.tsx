@@ -22,7 +22,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const [noteHeight, setNoteHeight] = useState(48);
   const [isEditing, setIsEditing] = useState(false);
 
-  // TODO: This should be done via API
+  // TODO: implement via backend
   const [hasCollectorsNote, setHasCollectorsNote] = useState(true);
 
   const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
@@ -32,6 +32,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     setIsEditing(true);
   }, []);
 
+  // TODO: implement via backend
   const updateNft = useUpdateNft();
 
   const handleSubmitCollectorsNote = useCallback(async () => {
@@ -95,7 +96,7 @@ const StyledContainer = styled.div`
   // On larger screens, the note will be sized according to its parent container and will be flush with the asset
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
-    flex-shrink: 0;
+    // flex-shrink: 0;
     min-width: 0;
     max-width: none;
   }
