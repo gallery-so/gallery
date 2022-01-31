@@ -32,7 +32,9 @@ function CollectionGallery({ collectionId }: Props) {
         setMobileLayout={setMobileLayout}
       />
       <Spacer height={isMobileScreenSize ? 32 : 80} />
-      <NftGallery collection={collection} mobileLayout={mobileLayout} />
+      <NftGalleryWrapper>
+        <NftGallery collection={collection} mobileLayout={mobileLayout} />
+      </NftGalleryWrapper>
     </StyledCollectionGallery>
   );
 }
@@ -44,6 +46,10 @@ const StyledCollectionGallery = styled.div`
   width: 100%;
 
   max-width: ${contentSize.desktop}px;
+`;
+
+const NftGalleryWrapper = styled.div`
+  width: 100%;
 `;
 
 export default CollectionGallery;
