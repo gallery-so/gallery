@@ -9,7 +9,6 @@ import { useModal } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { truncateAddress } from 'utils/wallet';
-import { MULTI_WALLET_ENABLED } from 'utils/featureFlag';
 import NavElement from './NavElement';
 import { useRouter } from 'next/router';
 
@@ -55,16 +54,8 @@ function LoggedInNav() {
             <TextButton text={truncatedUserAddress} disableTextTransform underlineOnHover />
           </CopyToClipboard>
           <Spacer height={12} />
-          {MULTI_WALLET_ENABLED && (
-            <>
-              <TextButton
-                text="Manage Wallets"
-                onClick={handleManageWalletsClick}
-                underlineOnHover
-              />
-              <Spacer height={12} />
-            </>
-          )}
+          <TextButton text="Manage Wallets" onClick={handleManageWalletsClick} underlineOnHover />
+          <Spacer height={12} />
           <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} underlineOnHover />
           <Spacer height={12} />
           <TextButton text="Edit name & Bio" onClick={handleEditNameClick} underlineOnHover />

@@ -1,7 +1,6 @@
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { Web3Error } from 'types/Error';
 import capitalize from 'utils/capitalize';
-import { USER_SIGNUP_ENABLED } from 'utils/featureFlag';
 import Mixpanel from 'utils/mixpanel';
 
 export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
@@ -18,10 +17,6 @@ export async function loginOrCreateUser(
   if (userExists) {
     const response = await loginUser(payload as LoginUserRequest, fetcher);
     return { userId: response.user_id };
-  }
-
-  if (!USER_SIGNUP_ENABLED) {
-    throw { code: 'USER_SIGNUP_DISABLED' } as Web3Error;
   }
 
   const response = await createUser(payload as CreateUserRequest, fetcher);

@@ -2,15 +2,16 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGalleryPage';
-import { SINGLE_COLLECTION_ENABLED } from 'utils/featureFlag';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 
 type CollectionGalleryProps = {
   username?: string;
   collectionId?: string;
 };
 
-export default function UserGallery({ collectionId, username }: CollectionGalleryProps) {
-  if (!SINGLE_COLLECTION_ENABLED) {
+export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
+  if (!isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION)) {
     return <GalleryRedirect to={`/${username}`} />;
   }
 
