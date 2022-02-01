@@ -58,9 +58,13 @@ function WizardFooter({
         setIsLoading(false);
       }
 
+      // If coming from single collection page, the user should be redirected to the collection page
+      if (collectionId) {
+        void push(`/${username}/${collectionId}`);
+      }
+
       return;
     }
-
     next();
   }, [next, onNext]);
 
