@@ -105,6 +105,8 @@ const StyledDropdownBox = styled.div<StyledDropdownProps>`
   position: absolute;
   right: 0;
 
+  z-index: 1;
+
   padding: 12px;
   border: 1px solid ${colors.gray50};
   width: auto;

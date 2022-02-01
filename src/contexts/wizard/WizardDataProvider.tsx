@@ -1,3 +1,4 @@
+import { useToastActions } from 'contexts/toast/ToastContext';
 import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import {
@@ -48,6 +49,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
 
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const mutateAllNftsCache = useMutateAllNftsCache();
+  const { pushToast } = useToastActions();
 
   const handleRefreshNfts = useCallback(async () => {
     setIsRefreshingNfts(true);
@@ -56,11 +58,13 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
       await refreshOpenseaSync();
       void mutateAllNftsCache();
     } catch {
-      // TODO: error while attempting to refresh!
+      pushToast(
+        'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
+      );
     }
 
     setIsRefreshingNfts(false);
-  }, [mutateAllNftsCache, refreshOpenseaSync]);
+  }, [mutateAllNftsCache, pushToast, refreshOpenseaSync]);
 
   useEffect(() => {
     if (id === 'onboarding') {
