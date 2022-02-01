@@ -30,7 +30,6 @@ function NftGallery({ collection, mobileLayout }: Props) {
   );
 }
 
-// grid-template-columns: repeat(${({ columns }) => columns}, minmax(auto, 50%));
 const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
   display: grid;
   grid-template-columns: ${({ columns, mobileLayout }) =>
