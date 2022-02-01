@@ -41,7 +41,6 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
 }
 
 const Container = styled.span`
-  position: relative;
   display: flex;
   justify-content: center;
 `;

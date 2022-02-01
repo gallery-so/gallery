@@ -1,12 +1,28 @@
 import { Collection } from 'types/Collection';
-import useAuthenticatedGallery from '../galleries/useAuthenticatedGallery';
+import { GetCollectionResponse } from './types';
+import useGet from '../_rest/useGet';
 
-export default function useCollectionById(id: string): Collection {
-  const gallery = useAuthenticatedGallery();
-  const collection = gallery.collections.find((col) => col.id === id);
-  if (!collection) {
-    throw new Error('Collection by ID not found');
+type Props = {
+  id: string;
+}
+
+const getCollectionByIdAction = 'fetch collection by id';
+const getCollectionByIdBaseUrl = '/collections/get';
+
+function getCollectionByIdBaseUrlWithQuery({ id }: Props) {
+  return `${getCollectionByIdBaseUrl}?id=${id}`;
+}
+
+export function getCollectionByIdCacheKey({ id }: Props) {
+  if (!id) {
+    return '';
   }
 
-  return collection;
+  return [getCollectionByIdBaseUrlWithQuery({ id }), getCollectionByIdAction];
+}
+
+export default function useCollectionById({ id }: Props): Collection | undefined {
+  const data = useGet<GetCollectionResponse>(id ? getCollectionByIdBaseUrlWithQuery({ id }) : null, getCollectionByIdAction);
+
+  return data?.collection;
 }

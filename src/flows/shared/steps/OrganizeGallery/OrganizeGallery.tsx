@@ -19,6 +19,7 @@ import Header from './Header';
 import CollectionDnd from './CollectionDnd';
 import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
+import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 
 type ConfigProps = {
   wizardId: string;
@@ -78,7 +79,7 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
 }
 
-function OrganizeGallery({ next }: WizardContext) {
+function OrganizeGallery({ next, push }: WizardContext) {
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
 
@@ -86,6 +87,17 @@ function OrganizeGallery({ next }: WizardContext) {
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   useNotOptimizedForMobileWarning();
+
+  const router = useRouter();
+  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
+  const collectionId = (router.query.collectionId as string) || null;
+
+  useEffect(() => {
+    if (collectionId) {
+      setCollectionIdBeingEdited(collectionId);
+      push('organizeCollection');
+    }
+  }, [collectionId]);
 
   useEffect(() => {
     // When the server sends down its source of truth, sync the local state

@@ -5,8 +5,9 @@ import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
-import { UpdateCollectionInfoRequest, UpdateCollectionInfoResponse } from './types';
+import { GetCollectionResponse, UpdateCollectionInfoRequest, UpdateCollectionInfoResponse } from './types';
 import { getISODate } from 'utils/time';
+import { getCollectionByIdCacheKey } from './useCollectionById';
 
 export default function useUpdateCollectionInfo() {
   const updateCollection = usePost();
@@ -43,6 +44,19 @@ export default function useUpdateCollectionInfo() {
           gallery.collections = newCollections;
           gallery.last_updated = getISODate();
           return newValue;
+        },
+        false
+      );
+
+
+      // Update single collection cache
+      await mutate(
+        getCollectionByIdCacheKey({ id: collectionId }),
+        (value: GetCollectionResponse) => {
+          const newValue = cloneDeep<any>(value);
+          newValue.collection.name = name;
+          newValue.collection.collectors_note = collectors_note;
+          return newValue
         },
         false
       );
