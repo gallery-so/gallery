@@ -8,10 +8,10 @@ import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
 import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
-import { DisplayLayout } from 'components/core/enums';
+import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
-import { SINGLE_COLLECTION_ENABLED } from 'utils/featureFlag';
+import { isFeatureEnabled } from 'utils/featureFlag';
 
 type Props = {
   collection: Collection;
@@ -25,21 +25,27 @@ export function isValidColumns(columns: number) {
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [
-    collection.collectors_note,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectors_note),
+    [collection.collectors_note]
+  );
+
+  const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
   const username = window.location.pathname.split('/')[1];
   const handleCollectionNameClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      if (!SINGLE_COLLECTION_ENABLED) return;
+      if (!isSingleCollectionEnabled) return;
       navigateToUrl(`/${username}/${collection.id}`, event);
     },
-    [collection.id, navigateToUrl, username]
+    [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
   );
 
   return (
-    <StyledCollectionWrapper onClick={handleCollectionNameClick}>
+    <StyledCollectionWrapper
+      onClick={handleCollectionNameClick}
+      enablePointer={isSingleCollectionEnabled}
+    >
       <StyledCollectionHeader>
         <TitleSerif>
           <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
@@ -58,11 +64,11 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 }
 
-const StyledCollectionWrapper = styled.div`
+const StyledCollectionWrapper = styled.div<{ enablePointer: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  cursor: ${SINGLE_COLLECTION_ENABLED ? 'pointer' : 'initial'};
+  cursor: ${({ enablePointer }) => (enablePointer ? 'pointer' : 'initial')};
 `;
 
 const StyledCollectionHeader = styled.div`
