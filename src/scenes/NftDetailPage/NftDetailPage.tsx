@@ -24,6 +24,7 @@ function NftDetailPage({ nftId }: Props) {
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId;
+  // TODO: Should refactor to utilize navigation context instead of session storage
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 

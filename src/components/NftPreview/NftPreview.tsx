@@ -40,6 +40,7 @@ function NftPreview({ nft, collectionId, columns, mobileLayout }: Props) {
   const handleNftClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.stopPropagation();
+      // TODO: Should refactor to utilize navigation context instead of session storage
       if (storage) storage.setItem('prevPage', window.location.pathname);
       navigateToUrl(`/${username}/${collectionId}/${nft.id}`, event);
     },
