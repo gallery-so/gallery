@@ -35,11 +35,15 @@ const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: Display
   display: grid;
   grid-template-columns: ${({ columns, mobileLayout }) =>
     mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 50%))`};
-  grid-gap: 20px 20px;
+  grid-gap: 10px 10px;
   align-items: center;
   justify-content: center;
 
   @media only screen and ${breakpoints.tablet} {
+    grid-gap: 20px 20px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     grid-gap: 40px 40px;
   }
 `;
