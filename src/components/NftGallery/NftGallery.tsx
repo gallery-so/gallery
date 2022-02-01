@@ -1,4 +1,4 @@
-import { DEFAULT_COLUMNS, LAYOUT_GAP_BREAKPOINTS } from 'constants/layout';
+import { DEFAULT_COLUMNS } from 'constants/layout';
 import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
 import NftPreview from 'components/NftPreview/NftPreview';
@@ -24,36 +24,23 @@ function NftGallery({ collection, mobileLayout }: Props) {
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
       {collection.nfts.map((nft) => (
-        <NftPreview
-          key={nft.id}
-          nft={nft}
-          collectionId={collection.id}
-          columns={columns}
-          mobileLayout={mobileLayout}
-        />
+        <NftPreview key={nft.id} nft={nft} collectionId={collection.id} columns={columns} />
       ))}
     </StyledCollectionNfts>
   );
 }
 
+// grid-template-columns: repeat(${({ columns }) => columns}, minmax(auto, 50%));
 const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: ${({ columns, mobileLayout }) =>
+    mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 50%))`};
+  grid-gap: 20px 20px;
   align-items: center;
-  justify-content: ${({ columns }) => (columns === 1 ? 'center' : 'initial')};
+  justify-content: center;
 
-  // Can't use these for now due to lack of Safari support
-  // column-gap: px;
-  // row-gap: px;
-  margin-left: ${({ mobileLayout }) =>
-    mobileLayout === DisplayLayout.GRID ? `-${LAYOUT_GAP_BREAKPOINTS.mobileSmall / 2}px` : '0px'};
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    margin-left: -${LAYOUT_GAP_BREAKPOINTS.mobileLarge / 2}px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    margin-left: -${LAYOUT_GAP_BREAKPOINTS.desktop / 2}px;
+  @media only screen and ${breakpoints.tablet} {
+    grid-gap: 40px 40px;
   }
 `;
 
