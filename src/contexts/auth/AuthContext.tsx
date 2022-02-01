@@ -88,8 +88,8 @@ const AuthProvider = memo(({ children }: Props) => {
   /**
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
-  const logOut = useCallback(async () => {
-    await _fetch('/auth/logout', 'logout', { body: {} });
+  const logOut = useCallback(() => {
+    void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
 
