@@ -48,7 +48,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     >
       <StyledCollectionHeader>
         <TitleSerif>
-          <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+          <StyledCollectorsTitle enableUnderline={isSingleCollectionEnabled}>
+            {unescapedCollectionName}
+          </StyledCollectorsTitle>
         </TitleSerif>
         {unescapedCollectorsNote && (
           <>
@@ -89,11 +91,10 @@ const StyledCollectionHeader = styled.div`
   }
 `;
 
-const StyledCollectorsTitle = styled.span`
-  border-bottom: 1px solid transparent;
-  cursor: pointer;
+const StyledCollectorsTitle = styled.span<{ enableUnderline: boolean }>`
+  cursor: ${({ enableUnderline }) => (enableUnderline ? 'pointer' : 'initial')};
   &:hover {
-    border-color: ${colors.black};
+    text-decoration: ${({ enableUnderline }) => (enableUnderline ? 'underline' : 'none')};
   }
 `;
 
