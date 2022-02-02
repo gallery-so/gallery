@@ -37,10 +37,10 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
 
   const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
-  // TODO: Replace with useRouter() once we have a way to get the current route
-  const collectionUrl = window.location.href;
-
   const username = window.location.pathname.split('/')[1];
+  // TODO: Replace with useRouter() once we have a way to get the current route
+  const collectionUrl = `${window.location.href}/${collection.id}`;
+
   const handleCollectionNameClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (!isSingleCollectionEnabled) return;
