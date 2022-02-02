@@ -1,6 +1,6 @@
 export type UpdateNftInfoRequest = {
-  nftId: string;
-  collectorsNote: string;
+  id: string;
+  collectors_note: string;
 };
 
 export type UpdateNftInfoResponse = null;

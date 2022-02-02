@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import useUpdateNft from 'hooks/api/nfts/useUpdateNft';
 import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
+import ErrorText from 'components/core/Text/ErrorText';
+import formatError from 'errors/formatError';
 
 const MAX_CHAR_COUNT = 400;
 
@@ -19,6 +21,9 @@ type Props = {
 };
 
 function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
+  // Generic error that doesn't belong to collector's note
+  const [generalError, setGeneralError] = useState('');
+
   const [noteHeight, setNoteHeight] = useState(48);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -31,12 +36,19 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     setIsEditing(true);
   }, []);
 
-  // TODO: implement via backend
   const updateNft = useUpdateNft();
 
   const handleSubmitCollectorsNote = useCallback(async () => {
+    setGeneralError('');
     setIsEditing(false);
-    await updateNft(nftId, collectorsNote);
+
+    try {
+      await updateNft(nftId, collectorsNote);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setGeneralError(formatError(error));
+      }
+    }
   }, [updateNft, nftId, collectorsNote]);
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -63,7 +75,12 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
       ) : (
         <StyledNoteTitle color={colors.gray50}>Collector&rsquo;s Note</StyledNoteTitle>
       )}
-
+      {generalError && (
+        <>
+          <Spacer height={8} />
+          <ErrorText message={generalError} />
+        </>
+      )}
       <Spacer height={4} />
       {isEditing && (
         <StyledTextAreaWithCharCount

@@ -48,8 +48,6 @@ function NftDetailPage({ nftId }: Props) {
     return <GalleryRedirect to="/404" />;
   }
 
-  console.log(nft);
-
   return (
     <>
       <Head>
