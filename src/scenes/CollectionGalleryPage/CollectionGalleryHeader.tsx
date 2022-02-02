@@ -33,6 +33,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   const user = usePossiblyAuthenticatedUser();
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
 
+  const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note || ''), [
     collection.collectors_note,
   ]);
@@ -74,7 +75,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
           )}
         </StyledUsernameWrapper>
         {collection.name && <StyledSeparator>/</StyledSeparator>}
-        {collection.name}
+        {unescapedCollectionName}
       </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>
