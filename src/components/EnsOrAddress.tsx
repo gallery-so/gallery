@@ -9,10 +9,11 @@ type Props = {
 
 export const EnsOrAddress = ({ address }: Props) => {
   const { data } = useSWR(
-    `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address)}`,
+    `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.toLowerCase())}`,
     fetcher
   );
-  if (data) {
+
+  if (data?.address) {
     return <span title={data.address}>{data.name || data.address}</span>;
   }
 
