@@ -76,31 +76,29 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
         {unescapedCollectionName}
       </StyledHeaderWrapper>
       <Spacer height={8} />
-      <StyledCollectionDetails>
-        <StyledCollectionNote color={colors.gray50}>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
-        {isMobileScreen && <Spacer height={60} />}
-        <StyledCollectionActions>
-          {authenticatedUserIsOnTheirOwnPage && (
-            <>
-              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-              {!isMobileScreen && (
-                <>
-                  <Spacer width={12} />
-                  <NavElement>
-                    <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                  </NavElement>
-                </>
-              )}
-              <Spacer width={12} />
-            </>
-          )}
-          <CopyToClipboard textToCopy={collectionUrl}>
-            <TextButton text="Share" />
-          </CopyToClipboard>
-        </StyledCollectionActions>
-      </StyledCollectionDetails>
+      <StyledCollectionNote color={colors.gray50}>
+        <Markdown text={unescapedCollectorsNote} />
+      </StyledCollectionNote>
+      <Spacer height={60} />
+      <StyledCollectionActions>
+        {authenticatedUserIsOnTheirOwnPage && (
+          <>
+            <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+            {!isMobileScreen && (
+              <>
+                <Spacer width={12} />
+                <NavElement>
+                  <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                </NavElement>
+              </>
+            )}
+            <Spacer width={12} />
+          </>
+        )}
+        <CopyToClipboard textToCopy={collectionUrl}>
+          <TextButton text="Share" />
+        </CopyToClipboard>
+      </StyledCollectionActions>
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
@@ -143,19 +141,8 @@ const StyledUsername = styled.span`
   }
 `;
 
-const StyledCollectionDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: start;
-  word-break: break-word;
-
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-  }
-`;
-
 const StyledCollectionNote = styled(BodyRegular)`
+  word-break: break-word;
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;
