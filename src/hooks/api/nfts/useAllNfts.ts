@@ -4,7 +4,7 @@ import { Nft } from 'types/Nft';
 import { useAuthenticatedUser } from '../users/useUser';
 import useGet from '../_rest/useGet';
 
-type GetAllNFtsResponse = {
+export type GetAllNFtsResponse = {
   nfts: Nft[];
 };
 
@@ -12,7 +12,7 @@ type QueryProps = {
   userId: string;
 };
 
-const getAllNftsAction = 'fetch all nfts';
+export const getAllNftsAction = 'fetch all nfts';
 
 function getAllNftsCacheKey({ userId }: QueryProps) {
   return [`/nfts/user_get?user_id=${userId}`, getAllNftsAction];
@@ -26,7 +26,7 @@ export default function useAllNfts(): Nft[] {
     throw new Error(`No NFTs were found for user id: ${user.id}`);
   }
 
-  return data.nfts || [];
+  return data?.nfts;
 }
 
 // use this hook to force SWR to refetch all nfts for user

@@ -46,8 +46,6 @@ function CollectionEditor() {
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
 
-  const allNfts = useAllNfts();
-
   const { collections } = useAuthenticatedGallery();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
   const collectionBeingEdited = useMemo(
@@ -78,11 +76,21 @@ function CollectionEditor() {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
 
+  const allNfts = useAllNfts();
+
+  // stabilize `allNfts` returned from `useAllNfts`, since SWR middleware can make it referentially unstable
+  const allNftsCacheKey = useMemo(
+    () => allNfts.reduce((prev, curr) => `${prev}-${curr.last_updated}`, ''),
+    [allNfts]
+  );
+
   // decorates NFTs returned from useAllNfts with additional fields for the purpose of editing / dnd
   const allEditModeNfts: SidebarNftsState = useMemo(() => {
     const editModeNfts = convertNftsToEditModeNfts(allNfts);
     return Object.fromEntries(editModeNfts.map((nft) => [nft.id, nft]));
-  }, [allNfts]);
+    // use `allNftsCacheKey` as more stable memo dep. see comment where variable is defined.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allNftsCacheKey]);
 
   // Either initialize sidebar NFTs or refresh sidebar NFTs
   // while retaining the current user selections

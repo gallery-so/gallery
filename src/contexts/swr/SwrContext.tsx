@@ -4,6 +4,7 @@ import { MINUTE, SECOND } from 'utils/time';
 import useFetcher from './useFetcher';
 import Mixpanel from 'utils/mixpanel';
 import ensureLatestGallery from './middleware/ensureLatestGallery';
+import handleObscenelyLargeAssets from './middleware/handleObscenelyLargeAssets';
 
 function localStorageProvider() {
   // When initializing, we restore the data from `localStorage` into a map.
@@ -18,7 +19,9 @@ function localStorageProvider() {
     const arrayMap = Array.from(map.entries()) as Array<[string, any]>;
     // ignore inflight requests (labeled with $req$) and errors (labeled with $err$) in the cache.
     // in fact, aggressively caching an error response can result in pain!
-    const saneArrayMap = arrayMap.filter((arr) => !(arr[0].includes('$req$') || arr[0].includes('$err$')))
+    const saneArrayMap = arrayMap.filter(
+      (arr) => !(arr[0].includes('$req$') || arr[0].includes('$err$'))
+    );
     const appCache = JSON.stringify(saneArrayMap);
     localStorage.setItem('app-cache', appCache);
   });
@@ -27,7 +30,7 @@ function localStorageProvider() {
   return map;
 }
 
-const middleware = [ensureLatestGallery];
+const middleware = [ensureLatestGallery, handleObscenelyLargeAssets];
 
 export const SwrProvider = memo(({ children }) => {
   const fetcher = useFetcher();

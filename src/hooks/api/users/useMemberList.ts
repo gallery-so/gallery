@@ -7,14 +7,16 @@ type GetMemberListResponse = {
 
 function dedupeOwners(owners: MembershipTier['owners']) {
   const dedupedOwners: Record<string, MembershipOwner> = {};
-  owners.forEach(owner => {
+  owners.forEach((owner) => {
     dedupedOwners[owner.username] = owner;
-  })
+  });
   return Object.values(dedupedOwners);
 }
 
+export const getMembersListAction = 'fetch member list';
+
 export default function useMemberList(): MembershipTier[] {
-  const data = useGet<GetMemberListResponse>('/users/membership', 'fetch member list');
+  const data = useGet<GetMemberListResponse>('/users/membership', getMembersListAction);
 
   if (!data) {
     throw new Error('Error fetching member list');
@@ -25,7 +27,7 @@ export default function useMemberList(): MembershipTier[] {
     if (tier !== null) {
       tier.owners = dedupeOwners(tier.owners);
     }
-  })
+  });
 
   return data.tiers;
 }

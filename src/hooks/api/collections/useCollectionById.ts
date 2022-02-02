@@ -4,9 +4,9 @@ import useGet from '../_rest/useGet';
 
 type Props = {
   id: string;
-}
+};
 
-const getCollectionByIdAction = 'fetch collection by id';
+export const getCollectionByIdAction = 'fetch collection by id';
 const getCollectionByIdBaseUrl = '/collections/get';
 
 function getCollectionByIdBaseUrlWithQuery({ id }: Props) {
@@ -22,7 +22,10 @@ export function getCollectionByIdCacheKey({ id }: Props) {
 }
 
 export default function useCollectionById({ id }: Props): Collection | undefined {
-  const data = useGet<GetCollectionResponse>(id ? getCollectionByIdBaseUrlWithQuery({ id }) : null, getCollectionByIdAction);
+  const data = useGet<GetCollectionResponse>(
+    id ? getCollectionByIdBaseUrlWithQuery({ id }) : null,
+    getCollectionByIdAction
+  );
 
   return data?.collection;
 }
