@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -12,15 +12,14 @@ import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
+import useBackButton from 'hooks/useBackButton';
 
 type Props = {
   nftId: string;
 };
 
 function NftDetailPage({ nftId }: Props) {
-  const { replace, back, query } = useRouter();
-  const canGoBack = useCanGoBack();
+  const { query } = useRouter();
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId;
@@ -28,27 +27,7 @@ function NftDetailPage({ nftId }: Props) {
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
-  const handleBackClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      if (event.metaKey) {
-        window.open(`/${username}`);
-        return;
-      }
-
-      if (canGoBack) {
-        // If the user has history in their stack, simply send them back to where they came from.
-        // this ensures scroll position is maintained when going back (see: GalleryNavigationContext.tsx)
-        back();
-      } else {
-        // if the user arrived on the page via direct link, send them to the
-        // owner's profile page (since there is no "previous page")
-        // NOTE: this scheme will have to change if we no longer have the
-        // username included in the URL
-        void replace(`/${username}`);
-      }
-    },
-    [back, canGoBack, replace, username]
-  );
+  const handleBackClick = useBackButton({ username });
 
   const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);

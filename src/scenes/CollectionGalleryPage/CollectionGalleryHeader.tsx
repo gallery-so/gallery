@@ -19,6 +19,7 @@ import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
+import useBackButton from 'hooks/useBackButton';
 
 type Props = {
   collection: Collection;
@@ -32,7 +33,9 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   const screenWidth = useBreakpoint();
   const user = usePossiblyAuthenticatedUser();
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
+  const handleBackClick = useBackButton({ username });
 
+  const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note || ''), [
     collection.collectors_note,
   ]);
@@ -42,10 +45,6 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   const collectionUrl = window.location.href;
 
   const isMobileScreen = screenWidth === size.mobile && collection && collection.nfts?.length > 0;
-
-  const handleGalleryRedirect = useCallback(() => {
-    void push(`/${username}`);
-  }, [push, username]);
 
   const handleEditCollectionClick = useCallback(() => {
     Mixpanel.track('Update existing collection');
@@ -68,13 +67,13 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
         <StyledUsernameWrapper>
-          <StyledUsername onClick={handleGalleryRedirect}>{username}</StyledUsername>{' '}
+          <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>{' '}
           {isMobileScreen && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledUsernameWrapper>
         {collection.name && <StyledSeparator>/</StyledSeparator>}
-        {collection.name}
+        {unescapedCollectionName}
       </StyledHeaderWrapper>
       <Spacer height={8} />
       <StyledCollectionDetails>
