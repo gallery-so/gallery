@@ -5,7 +5,8 @@ import ActionText from '../ActionText/ActionText';
 type Props = {
   className?: string;
   text: string;
-  onClick?: () => void;
+  // TODO: Refactor to support more than MouseEvent
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   underlineOnHover?: boolean;
   disableTextTransform?: boolean;
   disabled?: boolean;
