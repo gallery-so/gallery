@@ -21,6 +21,7 @@ function CollectionGallery({ collectionId }: Props) {
 
   return (
     <StyledCollectionGallery>
+      <Spacer height={32} />
       <CollectionGalleryHeader
         collection={collection}
         mobileLayout={mobileLayout}
