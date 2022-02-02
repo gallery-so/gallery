@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import { useBreakpoint } from 'hooks/useWindowSize';
+import { EnsOrAddress } from 'components/EnsOrAddress';
 
 type Props = {
   nft: Nft;
@@ -38,7 +39,9 @@ function NftDetailText({ nft }: Props) {
       <NftOwnerLink owner={currentOwner} ownerAddress={nft.owner_address} />
       <Spacer height={16} />
       <BodyRegular color={colors.gray50}>Created By</BodyRegular>
-      <BodyRegular>{nft.creator_name || nft.creator_address}</BodyRegular>
+      <BodyRegular>
+        {nft.creator_name || <EnsOrAddress address={nft.creator_address} />}
+      </BodyRegular>
       <Spacer height={32} />
       <NftAdditionalDetails nft={nft} />
     </StyledDetailLabel>
@@ -64,7 +67,9 @@ function NftOwnerLink({ owner, ownerAddress }: NftOwnerProps) {
 
   return (
     <StyledLink href={`https://etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
-      <BodyRegular>{address}</BodyRegular>
+      <BodyRegular>
+        <EnsOrAddress address={address} />
+      </BodyRegular>
     </StyledLink>
   );
 }
