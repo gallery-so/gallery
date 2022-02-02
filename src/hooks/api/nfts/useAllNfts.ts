@@ -26,7 +26,7 @@ export default function useAllNfts(): Nft[] {
     throw new Error(`No NFTs were found for user id: ${user.id}`);
   }
 
-  return data.nfts || [];
+  return data?.nfts;
 }
 
 // use this hook to force SWR to refetch all nfts for user
