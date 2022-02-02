@@ -67,12 +67,14 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
         <StyledUsernameWrapper>
-          <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>{' '}
+          <StyledUsername onClick={handleBackClick}>
+            {username}
+            {collection.name && <StyledSeparator>/</StyledSeparator>}
+          </StyledUsername>
           {isMobileScreen && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledUsernameWrapper>
-        {collection.name && <StyledSeparator>/</StyledSeparator>}
         {unescapedCollectionName}
       </StyledHeaderWrapper>
       <Spacer height={8} />
@@ -136,6 +138,7 @@ const StyledSeparator = styled.div`
 const StyledUsername = styled.span`
   cursor: pointer;
   color: ${colors.gray40};
+  display: flex;
   &:hover {
     color: ${colors.gray80};
   }
