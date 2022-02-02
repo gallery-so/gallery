@@ -1,3 +1,5 @@
+const relayConfig = require('./relay.config');
+
 module.exports = {
   typescript: {
     // If we ever move to github actions, we can turn this on
@@ -21,5 +23,6 @@ module.exports = {
     // Enables the styled-components SWC transform
     styledComponents: true,
     scrollRestoration: true,
+    relay: relayConfig,
   },
 };
