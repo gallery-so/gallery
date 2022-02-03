@@ -24,9 +24,9 @@ function NftDetailPage({ nftId }: Props) {
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId;
-  const historyStack = useHistoryStack();
+  // TODO: Should refactor to utilize navigation context instead of session storage
   const isFromCollectionPage =
-    historyStack[historyStack.length - 2] === `/${username}/${collectionId}`;
+    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
   const handleBackClick = useBackButton({ username });
 

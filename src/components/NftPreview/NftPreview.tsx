@@ -32,13 +32,16 @@ function NftPreview({ nft, collectionId, columns }: Props) {
   const navigateToUrl = useNavigateToUrl();
 
   const username = window.location.pathname.split('/')[1];
+  const storage = globalThis?.sessionStorage;
 
   const handleNftClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.stopPropagation();
+      // TODO: Should refactor to utilize navigation context instead of session storage
+      if (storage) storage.setItem('prevPage', window.location.pathname);
       navigateToUrl(`/${username}/${collectionId}/${nft.id}`, event);
     },
-    [collectionId, navigateToUrl, nft.id, username]
+    [collectionId, navigateToUrl, nft.id, storage, username]
   );
   const screenWidth = useBreakpoint();
 
