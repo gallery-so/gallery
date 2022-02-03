@@ -15,7 +15,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import Mixpanel from 'utils/mixpanel';
-// import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
@@ -32,7 +32,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   const { showModal } = useModal();
   const { push } = useRouter();
   const screenWidth = useBreakpoint();
-  // const user = usePossiblyAuthenticatedUser();
+  const user = usePossiblyAuthenticatedUser();
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
   const handleBackClick = useBackButton({ username });
 
@@ -46,9 +46,9 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
   }, [collection.id, username]);
 
-  // const authenticatedUserIsOnTheirOwnPage = username.toLowerCase() === user?.username.toLowerCase();
+  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
   // TODO: enable edit collections actions once we have fixed navigation issues
-  const showEditActions = false;
+  // const showEditActions = false;
 
   const collectionUrl = window.location.href;
 

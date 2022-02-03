@@ -13,6 +13,7 @@ import NftDetailText from './NftDetailText';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
+import { useHistoryStack } from 'contexts/navigation/GalleryNavigationProvider';
 
 type Props = {
   nftId: string;
@@ -23,9 +24,9 @@ function NftDetailPage({ nftId }: Props) {
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId;
-  // TODO: Should refactor to utilize navigation context instead of session storage
+  const historyStack = useHistoryStack();
   const isFromCollectionPage =
-    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
+    historyStack[historyStack.length - 2] === `/${username}/${collectionId}`;
 
   const handleBackClick = useBackButton({ username });
 
