@@ -57,6 +57,12 @@ const StyledGlobalFooter = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px 16px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+
+    background: white;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%);
   }
 
   @media only screen and ${breakpoints.desktop} {

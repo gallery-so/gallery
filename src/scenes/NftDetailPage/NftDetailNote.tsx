@@ -11,6 +11,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
+import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 const MAX_CHAR_COUNT = 400;
 
@@ -24,7 +25,6 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
-  const [noteHeight, setNoteHeight] = useState(48);
   const [isEditing, setIsEditing] = useState(false);
 
   const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
@@ -53,12 +53,10 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
-    setNoteHeight(event.target?.scrollHeight);
-    if (event.target?.value.length === 0) setNoteHeight(48);
   }, []);
 
   return (
-    <StyledContainer>
+    <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
       <Spacer height={18} />
 
       {userOwnsAsset ? (
@@ -89,7 +87,6 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
           defaultValue={collectorsNote}
           currentCharCount={collectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
-          noteHeight={noteHeight}
         />
       )}
 
@@ -102,19 +99,26 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   );
 }
 
-const StyledContainer = styled.div`
+type ContainerProps = {
+  footerHeight: number;
+};
+
+const StyledContainer = styled.div<ContainerProps>`
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;
   max-width: 296px;
   min-width: 296px;
+  margin: auto;
   word-wrap: break-word;
 
   // On larger screens, the note will be sized according to its parent container and will be flush with the asset
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
-    // flex-shrink: 0;
     min-width: 0;
     max-width: none;
+
+    position: absolute; // So that it does not affect height of the flex container
+    padding-bottom: ${({ footerHeight }) => footerHeight}px;
   }
 `;
 
@@ -123,41 +127,37 @@ const StyledNoteTitle = styled(BodyRegular)`
   font-size: 12px;
 `;
 
-type TextAreaProps = {
-  noteHeight: number;
-};
-
 // The two elements below are intentionally styled the same so that editing appears inline
-const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   border: none;
 
   textarea {
-    ${({ noteHeight }) => `height: ${noteHeight}px`};
-
-    min-height: 24px;
-    max-height: 84px;
+    min-height: 44px;
+    height: 100%;
     margin: 0;
     padding: 0;
     line-height: 20px;
     font-size: 14px;
     letter-spacing: 0.4px;
     display: block;
+    // border-bottom: 14px solid white;
+
     border-bottom: none;
+    background: none;
   }
 
   p {
-    right: 20px;
+    right: 8px;
+    bottom: 0;
   }
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
-  min-height: 24px;
+  min-height: 44px;
   height: 100%;
-  max-height: 84px;
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
-  overflow-y: auto;
 `;
 
 export default NftDetailNote;

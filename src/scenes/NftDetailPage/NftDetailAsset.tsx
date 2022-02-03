@@ -88,11 +88,14 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
     (aspectRatioType === 'square' && !isIframe);
 
   return (
-    <StyledAssetContainer
-      maxHeight={maxHeight}
-      shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
-    >
-      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+    <>
+      <StyledAssetContainer
+        footerHeight={GLOBAL_FOOTER_HEIGHT}
+        maxHeight={maxHeight}
+        shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
+      >
+        <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+      </StyledAssetContainer>
       {(userOwnsAsset || assetHasNote) && (
         <NftDetailNote
           nftId={nft.id}
@@ -100,11 +103,12 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
           nftCollectorsNote={nft?.collectors_note}
         />
       )}
-    </StyledAssetContainer>
+    </>
   );
 }
 
 type AssetContainerProps = {
+  footerHeight: number;
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
 };
@@ -114,7 +118,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-height: 80vh; /* max height is applied to asset + note now, not just asset */
+  position: relative;
+  max-height: calc(85vh - 64px - ${({ footerHeight }) => footerHeight}px);
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
