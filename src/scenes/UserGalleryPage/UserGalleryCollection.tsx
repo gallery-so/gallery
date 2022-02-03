@@ -6,7 +6,7 @@ import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -15,6 +15,7 @@ import { isFeatureEnabled } from 'utils/featureFlag';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
+import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 
 type Props = {
   collection: Collection;
@@ -33,13 +34,14 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.collectors_note]
   );
 
+  const [isHovering, setIsHovering] = useState(false);
   const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
   const username = window.location.pathname.split('/')[1];
   // TODO: Replace with useRouter() once we have a way to get the current route
   const collectionUrl = `${window.location.href}/${collection.id}`;
 
-  const handleCollectionNameClick = useCallback(
+  const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (!isSingleCollectionEnabled) return;
       navigateToUrl(`/${username}/${collection.id}`, event);
@@ -47,25 +49,39 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
   );
 
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+  }, []);
+
+  const handleMouseExit = useCallback(() => {
+    setTimeout(() => {
+      setIsHovering(false);
+    }, 200);
+  }, []);
+
   return (
-    <StyledCollectionWrapper>
+    <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <TitleSerif onClick={handleCollectionNameClick}>
+          <TitleSerif onClick={handleViewCollectionClick}>
             <StyledCollectorsTitle enableUnderline={isSingleCollectionEnabled}>
               {unescapedCollectionName}
             </StyledCollectorsTitle>
           </TitleSerif>
           <StyledSettingsDropdown>
-            <TextButton
-              text="View Collection"
-              onClick={handleCollectionNameClick}
-              underlineOnHover
-            />
-            <Spacer height={12} />
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" underlineOnHover />
-            </CopyToClipboard>
+            {isHovering && (
+              <Dropdown>
+                <TextButton
+                  text="View Collection"
+                  onClick={handleViewCollectionClick}
+                  underlineOnHover
+                />
+                <Spacer height={12} />
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" underlineOnHover />
+                </CopyToClipboard>
+              </Dropdown>
+            )}
           </StyledSettingsDropdown>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
@@ -82,9 +98,17 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 }
 
-const StyledSettingsDropdown = styled(SettingsDropdown)`
+const StyledSettingsDropdown = styled.div`
   opacity: 0;
   transition: opacity 200ms ease-in-out;
+
+  background: url(/icons/settings.svg) no-repeat scroll 10px 9px;
+  height: 24px;
+
+  ${StyledDropdownButton} {
+    width: 32px;
+    height: 24px;
+  }
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -113,6 +137,7 @@ const StyledCollectionTitleWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  word-break: break-word;
 `;
 
 const StyledCollectorsTitle = styled.span<{ enableUnderline: boolean }>`
