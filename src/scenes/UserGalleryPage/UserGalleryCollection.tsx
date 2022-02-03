@@ -6,16 +6,15 @@ import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
 import { isFeatureEnabled } from 'utils/featureFlag';
-import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
-import Settings from 'flows/shared/steps/OrganizeGallery/collection-settings.svg';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
+import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 
 type Props = {
   collection: Collection;
@@ -27,13 +26,12 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
-  const [isSectionHover, setIsSectionHover] = useState(false);
-
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [
-    collection.collectors_note,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectors_note),
+    [collection.collectors_note]
+  );
 
   const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
@@ -49,12 +47,8 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
   );
 
-  const toggleOptions = useCallback(() => {
-    setIsSectionHover((isSectionHover) => !isSectionHover);
-  }, []);
-
   return (
-    <StyledCollectionWrapper onMouseEnter={toggleOptions} onMouseLeave={toggleOptions}>
+    <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <TitleSerif onClick={handleCollectionNameClick}>
@@ -62,24 +56,17 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               {unescapedCollectionName}
             </StyledCollectorsTitle>
           </TitleSerif>
-          <SettingWrapper isHover={isSectionHover}>
-            <Settings />
-            <DropdownWrapper>
-              {isSectionHover && (
-                <Dropdown>
-                  <TextButton
-                    text="View Collection"
-                    onClick={handleCollectionNameClick}
-                    underlineOnHover
-                  />
-                  <Spacer height={12} />
-                  <CopyToClipboard textToCopy={collectionUrl}>
-                    <TextButton text="Share" underlineOnHover />
-                  </CopyToClipboard>
-                </Dropdown>
-              )}
-            </DropdownWrapper>
-          </SettingWrapper>
+          <StyledSettingsDropdown>
+            <TextButton
+              text="View Collection"
+              onClick={handleCollectionNameClick}
+              underlineOnHover
+            />
+            <Spacer height={12} />
+            <CopyToClipboard textToCopy={collectionUrl}>
+              <TextButton text="Share" underlineOnHover />
+            </CopyToClipboard>
+          </StyledSettingsDropdown>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
@@ -90,15 +77,13 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           </>
         )}
       </StyledCollectionHeader>
-
       <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }
 
-const SettingWrapper = styled.div<{ isHover: boolean }>`
-  position: relative;
-  opacity: ${({ isHover }) => (isHover ? '1' : '0')};
+const StyledSettingsDropdown = styled(SettingsDropdown)`
+  opacity: 0;
   transition: opacity 200ms ease-in-out;
 `;
 
@@ -107,6 +92,10 @@ const StyledCollectionWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   position: relative;
+
+  &:hover ${StyledSettingsDropdown} {
+    opacity: 1;
+  }
 `;
 
 const StyledCollectionHeader = styled.div`
@@ -145,17 +134,6 @@ const StyledCollectorsNote = styled(BodyRegular)`
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
-  }
-`;
-
-const DropdownWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
   }
 `;
 
