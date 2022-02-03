@@ -6,13 +6,12 @@ import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
 import { isFeatureEnabled } from 'utils/featureFlag';
-import { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
@@ -27,8 +26,6 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
-  const [isSectionHover, setIsSectionHover] = useState(false);
-
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
@@ -50,12 +47,8 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
   );
 
-  const toggleOptions = useCallback(() => {
-    setIsSectionHover((isSectionHover) => !isSectionHover);
-  }, []);
-
   return (
-    <StyledCollectionWrapper onMouseEnter={toggleOptions} onMouseLeave={toggleOptions}>
+    <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <TitleSerif onClick={handleCollectionNameClick}>
@@ -63,7 +56,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               {unescapedCollectionName}
             </StyledCollectorsTitle>
           </TitleSerif>
-          {/* <StyledWrapper> */}
           <StyledSettingsDropdown>
             <TextButton
               text="View Collection"
@@ -75,14 +67,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               <TextButton text="Share" underlineOnHover />
             </CopyToClipboard>
           </StyledSettingsDropdown>
-          {/* <Settings />
-            <DropdownWrapper>
-              {isSectionHover && (
-                <Dropdown>
-                </Dropdown>
-              )}
-            </DropdownWrapper> */}
-          {/* </StyledWrapper> */}
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
@@ -93,14 +77,12 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           </>
         )}
       </StyledCollectionHeader>
-
       <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }
 
 const StyledSettingsDropdown = styled(SettingsDropdown)`
-  // position: relative;
   opacity: 0;
   transition: opacity 200ms ease-in-out;
 `;
@@ -152,17 +134,6 @@ const StyledCollectorsNote = styled(BodyRegular)`
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
-  }
-`;
-
-const DropdownWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
   }
 `;
 

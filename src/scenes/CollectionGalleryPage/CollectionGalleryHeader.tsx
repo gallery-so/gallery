@@ -185,21 +185,4 @@ const StyledCollectionActions = styled.div`
   }
 `;
 
-// const SettingWrapper = styled.div<{ isHover: boolean }>`
-//   position: relative;
-//   opacity: ${({ isHover }) => (isHover ? '1' : '0')};
-//   transition: opacity 200ms ease-in-out;
-// `;
-
-const DropdownWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
-  }
-`;
-
 export default CollectionGalleryHeader;
