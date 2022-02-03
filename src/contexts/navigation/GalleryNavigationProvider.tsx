@@ -98,10 +98,6 @@ export function GalleryNavigationProvider({ children }: Props) {
       };
 
       setHistoryStackLength(window.history.state.idx ?? 0);
-      // setHistoryStack((stack) => {
-      //   stack.pop();
-      //   return stack;
-      // });
     }
 
     window.addEventListener('popstate', handlePopState);
