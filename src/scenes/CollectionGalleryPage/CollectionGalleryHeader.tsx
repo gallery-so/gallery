@@ -47,8 +47,6 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   }, [collection.id, username]);
 
   const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
-  // TODO: enable edit collections actions once we have fixed navigation issues
-  // const showEditActions = false;
 
   const collectionUrl = window.location.href;
 
