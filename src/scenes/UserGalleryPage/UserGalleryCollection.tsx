@@ -12,10 +12,10 @@ import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
 import { isFeatureEnabled } from 'utils/featureFlag';
-import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
+import { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
-import Settings from 'flows/shared/steps/OrganizeGallery/collection-settings.svg';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
+import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 
 type Props = {
   collection: Collection;
@@ -31,9 +31,10 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
 
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [
-    collection.collectors_note,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectors_note),
+    [collection.collectors_note]
+  );
 
   const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
@@ -62,24 +63,26 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               {unescapedCollectionName}
             </StyledCollectorsTitle>
           </TitleSerif>
-          <SettingWrapper isHover={isSectionHover}>
-            <Settings />
+          {/* <StyledWrapper> */}
+          <StyledSettingsDropdown>
+            <TextButton
+              text="View Collection"
+              onClick={handleCollectionNameClick}
+              underlineOnHover
+            />
+            <Spacer height={12} />
+            <CopyToClipboard textToCopy={collectionUrl}>
+              <TextButton text="Share" underlineOnHover />
+            </CopyToClipboard>
+          </StyledSettingsDropdown>
+          {/* <Settings />
             <DropdownWrapper>
               {isSectionHover && (
                 <Dropdown>
-                  <TextButton
-                    text="View Collection"
-                    onClick={handleCollectionNameClick}
-                    underlineOnHover
-                  />
-                  <Spacer height={12} />
-                  <CopyToClipboard textToCopy={collectionUrl}>
-                    <TextButton text="Share" underlineOnHover />
-                  </CopyToClipboard>
                 </Dropdown>
               )}
-            </DropdownWrapper>
-          </SettingWrapper>
+            </DropdownWrapper> */}
+          {/* </StyledWrapper> */}
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
@@ -96,9 +99,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 }
 
-const SettingWrapper = styled.div<{ isHover: boolean }>`
-  position: relative;
-  opacity: ${({ isHover }) => (isHover ? '1' : '0')};
+const StyledSettingsDropdown = styled(SettingsDropdown)`
+  // position: relative;
+  opacity: 0;
   transition: opacity 200ms ease-in-out;
 `;
 
@@ -107,6 +110,10 @@ const StyledCollectionWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   position: relative;
+
+  &:hover ${StyledSettingsDropdown} {
+    opacity: 1;
+  }
 `;
 
 const StyledCollectionHeader = styled.div`
