@@ -31,16 +31,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  // TODO: figure out whether this is http or https
-  const url = new URL(path, `http://${req.headers.host}`).toString();
+  const width = parseInt(req.query.width as string) || 600;
+  const height = parseInt(req.query.height as string) || 300;
+  const pixelDensity = parseInt(req.query.pixelDensity as string) || 2;
+
+  // TODO: figure out whether the request is http or https instead of via env
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  const url = new URL(path, `${protocol}://${req.headers.host}`);
+  url.searchParams.set('width', width.toString());
+  url.searchParams.set('height', height.toString());
 
   let browser: Browser | BrowserCore | null = null;
 
   try {
     browser = await getBrowserInstance();
     const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 2 });
-    await page.goto(url);
+    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: pixelDensity });
+    await page.goto(url.toString());
 
     await page.waitForNetworkIdle();
 

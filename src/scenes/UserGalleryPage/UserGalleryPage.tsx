@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 import Head from 'next/head';
+import { baseUrl } from 'utils/baseUrl';
 
 type UserGalleryPageProps = {
   username: string;
@@ -19,6 +20,13 @@ function UserGalleryPage({ username }: UserGalleryPageProps) {
         <title>{headTitle}</title>
         <meta property="og:title" content={headTitle} key="og:title" />
         <meta name="twitter:title" content={headTitle} key="twitter:title" />
+        <meta
+          name="og:image"
+          content={`${baseUrl}/api/opengraph/image?${new URLSearchParams({
+            path: `/opengraph/user/${username}`,
+          }).toString()}`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Page>
         <StyledUserGalleryWrapper>

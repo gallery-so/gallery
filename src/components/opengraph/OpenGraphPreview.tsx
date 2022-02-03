@@ -17,10 +17,14 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
       </div>
       <div className="byline">
         <div className="username">{unescape(title)}</div>
-        <div className="separator" />
-        <div className="bio truncate">
-          <Markdown text={unescape(description)} />
-        </div>
+        {description ? (
+          <>
+            <div className="separator" />
+            <div className="bio truncate">
+              <Markdown text={unescape(description)} />
+            </div>
+          </>
+        ) : null}
       </div>
     </div>
     <style jsx>{`
