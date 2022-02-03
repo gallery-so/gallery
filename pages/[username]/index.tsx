@@ -2,6 +2,7 @@ import UserGalleryPage from 'scenes/UserGalleryPage/UserGalleryPage';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
+import Head from 'next/head';
 
 type UserGalleryProps = {
   username?: string;
@@ -12,7 +13,14 @@ export default function UserGallery({ username }: UserGalleryProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<UserGalleryPage username={username} />} />;
+  return (
+    <>
+      <Head>
+        <title>this should get rendered to the HTML returned from the server</title>
+      </Head>
+      <GalleryRoute element={<UserGalleryPage username={username} />} />
+    </>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => ({

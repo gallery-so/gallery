@@ -55,7 +55,7 @@ const App: FC<{
           content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
         />
 
-        <title>Gallery</title>
+        {/* <title>Gallery</title> */}
       </Head>
       <SafeHydrate>
         <AppProvider relayCache={relayCache}>
