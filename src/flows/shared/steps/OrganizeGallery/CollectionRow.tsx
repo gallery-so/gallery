@@ -9,7 +9,7 @@ import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'util
 import { Collection } from 'types/Collection';
 import { NftMediaType } from 'components/core/enums';
 import Markdown from 'components/core/Markdown/Markdown';
-import Settings from './collection-settings.svg';
+import Settings from 'public/icons/settings.svg';
 
 type Props = {
   collection: Collection;
