@@ -1,36 +1,27 @@
-import useGalleries from 'hooks/api/galleries/useGalleries';
-import useUser from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
+import useCollectionById from 'hooks/api/collections/useCollectionById';
 
-export default function OpenGraphUserPage() {
+export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
-  const user = useUser({ username: query.username as string });
-  const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
+  const collection = useCollectionById({ id: query.collectionId as string });
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
 
-  if (!user) {
-    // TODO: 404?
-    throw new Error('no username provided');
-  }
-
-  if (!gallery) {
+  if (!collection) {
     // TODO: render something nice?
-    throw new Error('no gallery found');
+    throw new Error('no collection found');
   }
-
-  const nfts = gallery.collections.flatMap((collection) => collection.nfts);
 
   return (
     <>
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
           <OpenGraphPreview
-            title={user.username}
-            description={user.bio}
-            imageUrls={nfts.slice(0, 4).map((nft) => nft.image_url)}
+            title={collection.name}
+            description={collection.collectors_note}
+            imageUrls={collection.nfts.slice(0, 4).map((nft) => nft.image_url)}
           />
         </div>
       </div>

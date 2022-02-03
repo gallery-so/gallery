@@ -12,11 +12,6 @@ const getBrowserInstance = async () => {
     return puppeteer.launch({
       args: chromium.args,
       headless: true,
-      defaultViewport: {
-        width: 1280,
-        height: 720,
-        deviceScaleFactor: 2,
-      },
       ignoreHTTPSErrors: true,
     });
   }
@@ -25,11 +20,6 @@ const getBrowserInstance = async () => {
     executablePath,
     args: chromium.args,
     headless: chromium.headless,
-    defaultViewport: {
-      width: 1280,
-      height: 720,
-      deviceScaleFactor: 2,
-    },
     ignoreHTTPSErrors: true,
   });
 };
@@ -49,6 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     browser = await getBrowserInstance();
     const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 2 });
     await page.goto(url);
 
     await page.waitForNetworkIdle();
