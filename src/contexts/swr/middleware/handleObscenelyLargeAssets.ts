@@ -33,13 +33,15 @@ const handleObscenelyLargeAssets: Middleware = (useSWRNext) => (key: Key, fetche
 
     for (const gallery of galleryData.galleries) {
       for (const collection of gallery.collections) {
-        for (const nft of collection.nfts) {
-          if (
-            nft.image_url in OBSCENELY_LARGE_ASSET_URLS ||
-            nft.image_preview_url in OBSCENELY_LARGE_ASSET_URLS ||
-            nft.image_thumbnail_url in OBSCENELY_LARGE_ASSET_URLS
-          ) {
-            foundObscenelyLargeImage = true;
+        if (collection.nfts) {
+          for (const nft of collection.nfts) {
+            if (
+              nft.image_url in OBSCENELY_LARGE_ASSET_URLS ||
+              nft.image_preview_url in OBSCENELY_LARGE_ASSET_URLS ||
+              nft.image_thumbnail_url in OBSCENELY_LARGE_ASSET_URLS
+            ) {
+              foundObscenelyLargeImage = true;
+            }
           }
         }
       }
