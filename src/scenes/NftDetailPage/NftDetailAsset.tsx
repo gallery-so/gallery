@@ -119,16 +119,16 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   align-items: center;
   justify-content: center;
   position: relative;
-  max-height: calc(85vh - 64px - ${({ footerHeight }) => footerHeight}px);
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
 
   @media only screen and ${breakpoints.desktop} {
-    // max-width: ${({ maxHeight }) => maxHeight}px;
-    width: 100%;
     min-width: ${({ maxHeight }) => maxHeight}px;
+    width: 100%;
+    // max-width: ${({ maxHeight }) => maxHeight}px;
     height: ${({ maxHeight }) => maxHeight}px;
+    max-height: calc(85vh - 64px - ${({ footerHeight }) => footerHeight}px);
   }
 `;
 
