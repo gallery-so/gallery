@@ -41,6 +41,19 @@ export function GalleryNavigationProvider({ children }: Props) {
         function handleScroll() {
           window.scrollTo({ top: scrollY });
 
+          // This exists to delay Next.JS built in scroll restoration.
+          //
+          // Without this bit, the scroll restoration happens as soon as the
+          // animation starts. This means the user will see a scroll event
+          // happen even though the previous page hasn't fully been covered
+          // by the white overlay.
+          //
+          // Once the animation kicks off, we want to have the user land
+          // at the top of the next page.
+          setTimeout(() => {
+            window.scrollTo({ top: 0 });
+          }, FADE_TIME_MS);
+
           scrollY = window.scrollY;
 
           window.removeEventListener('scroll', handleScroll);
