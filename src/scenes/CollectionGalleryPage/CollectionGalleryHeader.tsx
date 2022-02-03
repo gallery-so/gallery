@@ -70,8 +70,10 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
         <StyledUsernameWrapper>
-          <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
-          {collection.name && <StyledSeparator>/</StyledSeparator>}
+          <StyledUsernameAndSeparatorWrapper>
+            <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
+            {collection.name && <StyledSeparator>/</StyledSeparator>}
+          </StyledUsernameAndSeparatorWrapper>
           {isMobileScreen && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
@@ -142,7 +144,13 @@ const StyledUsernameWrapper = styled.div`
   align-items: flex-start;
 `;
 
-const StyledCollectionName = styled.div``;
+const StyledUsernameAndSeparatorWrapper = styled.div`
+  display: flex;
+`;
+
+const StyledCollectionName = styled.div`
+  word-break: break-word;
+`;
 
 const StyledSeparator = styled.div`
   margin: 0 10px;
