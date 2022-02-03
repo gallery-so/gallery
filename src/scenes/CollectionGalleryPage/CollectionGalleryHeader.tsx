@@ -42,6 +42,10 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     [collection.collectors_note]
   );
 
+  const handleShareClick = useCallback(() => {
+    Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username]);
+
   // const authenticatedUserIsOnTheirOwnPage = username.toLowerCase() === user?.username.toLowerCase();
   // TODO: enable edit collections actions once we have fixed navigation issues
   const showEditActions = false;
@@ -110,12 +114,12 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
             )}
             <Spacer height={8} />
             <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" underlineOnHover />
+              <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
             </CopyToClipboard>
           </SettingsDropdown>
         ) : (
           <CopyToClipboard textToCopy={collectionUrl}>
-            <TextButton text="Share" />
+            <TextButton text="Share" onClick={handleShareClick} />
           </CopyToClipboard>
         )}
       </StyledCollectionActions>

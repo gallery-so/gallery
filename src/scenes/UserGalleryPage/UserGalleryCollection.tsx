@@ -16,6 +16,7 @@ import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   collection: Collection;
@@ -59,6 +60,10 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     }, 200);
   }, []);
 
+  const handleShareClick = useCallback(() => {
+    Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username]);
+
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
@@ -78,7 +83,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
                 />
                 <Spacer height={12} />
                 <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" underlineOnHover />
+                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
                 </CopyToClipboard>
               </Dropdown>
             )}
