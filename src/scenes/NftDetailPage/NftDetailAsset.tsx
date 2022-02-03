@@ -119,6 +119,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   align-items: center;
   justify-content: center;
   position: relative;
+  z-index: 2; /* Above footer in event they overlap */
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};

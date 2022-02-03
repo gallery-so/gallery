@@ -67,6 +67,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
     ${({ isFixed }) =>
       isFixed &&
       css`
+        z-index: 1;
         position: fixed;
         bottom: 0;
         width: 100%;
