@@ -67,40 +67,40 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
         <StyledUsernameWrapper>
-          <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>{' '}
+          <StyledUsername onClick={handleBackClick}>
+            {username}
+            {collection.name && <StyledSeparator>/</StyledSeparator>}
+          </StyledUsername>
           {isMobileScreen && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledUsernameWrapper>
-        {collection.name && <StyledSeparator>/</StyledSeparator>}
         {unescapedCollectionName}
       </StyledHeaderWrapper>
       <Spacer height={8} />
-      <StyledCollectionDetails>
-        <StyledCollectionNote color={colors.gray50}>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
-        {isMobileScreen && <Spacer height={60} />}
-        <StyledCollectionActions>
-          {authenticatedUserIsOnTheirOwnPage && (
-            <>
-              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-              {!isMobileScreen && (
-                <>
-                  <Spacer width={12} />
-                  <NavElement>
-                    <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                  </NavElement>
-                </>
-              )}
-              <Spacer width={12} />
-            </>
-          )}
-          <CopyToClipboard textToCopy={collectionUrl}>
-            <TextButton text="Share" />
-          </CopyToClipboard>
-        </StyledCollectionActions>
-      </StyledCollectionDetails>
+      <StyledCollectionNote color={colors.gray50}>
+        <Markdown text={unescapedCollectorsNote} />
+      </StyledCollectionNote>
+      <Spacer height={60} />
+      <StyledCollectionActions>
+        {authenticatedUserIsOnTheirOwnPage && (
+          <>
+            <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+            {!isMobileScreen && (
+              <>
+                <Spacer width={12} />
+                <NavElement>
+                  <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                </NavElement>
+              </>
+            )}
+            <Spacer width={12} />
+          </>
+        )}
+        <CopyToClipboard textToCopy={collectionUrl}>
+          <TextButton text="Share" />
+        </CopyToClipboard>
+      </StyledCollectionActions>
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
@@ -138,24 +138,14 @@ const StyledSeparator = styled.div`
 const StyledUsername = styled.span`
   cursor: pointer;
   color: ${colors.gray40};
+  display: flex;
   &:hover {
     color: ${colors.gray80};
   }
 `;
 
-const StyledCollectionDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: start;
-  word-break: break-word;
-
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-  }
-`;
-
 const StyledCollectionNote = styled(BodyRegular)`
+  word-break: break-word;
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;

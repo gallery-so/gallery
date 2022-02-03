@@ -6,12 +6,16 @@ import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout, FeatureFlag } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
 import { isFeatureEnabled } from 'utils/featureFlag';
+import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
+import TextButton from 'components/core/Button/TextButton';
+import Settings from 'flows/shared/steps/OrganizeGallery/collection-settings.svg';
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 
 type Props = {
   collection: Collection;
@@ -23,16 +27,20 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
+  const [isSectionHover, setIsSectionHover] = useState(false);
+
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectors_note),
-    [collection.collectors_note]
-  );
+  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectors_note), [
+    collection.collectors_note,
+  ]);
 
   const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
   const username = window.location.pathname.split('/')[1];
+  // TODO: Replace with useRouter() once we have a way to get the current route
+  const collectionUrl = `${window.location.href}/${collection.id}`;
+
   const handleCollectionNameClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (!isSingleCollectionEnabled) return;
@@ -41,17 +49,38 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
   );
 
+  const toggleOptions = useCallback(() => {
+    setIsSectionHover((isSectionHover) => !isSectionHover);
+  }, []);
+
   return (
-    <StyledCollectionWrapper
-      onClick={handleCollectionNameClick}
-      enablePointer={isSingleCollectionEnabled}
-    >
+    <StyledCollectionWrapper onMouseEnter={toggleOptions} onMouseLeave={toggleOptions}>
       <StyledCollectionHeader>
-        <TitleSerif>
-          <StyledCollectorsTitle enableUnderline={isSingleCollectionEnabled}>
-            {unescapedCollectionName}
-          </StyledCollectorsTitle>
-        </TitleSerif>
+        <StyledCollectionTitleWrapper>
+          <TitleSerif onClick={handleCollectionNameClick}>
+            <StyledCollectorsTitle enableUnderline={isSingleCollectionEnabled}>
+              {unescapedCollectionName}
+            </StyledCollectorsTitle>
+          </TitleSerif>
+          <SettingWrapper isHover={isSectionHover}>
+            <Settings />
+            <DropdownWrapper>
+              {isSectionHover && (
+                <Dropdown>
+                  <TextButton
+                    text="View Collection"
+                    onClick={handleCollectionNameClick}
+                    underlineOnHover
+                  />
+                  <Spacer height={12} />
+                  <CopyToClipboard textToCopy={collectionUrl}>
+                    <TextButton text="Share" underlineOnHover />
+                  </CopyToClipboard>
+                </Dropdown>
+              )}
+            </DropdownWrapper>
+          </SettingWrapper>
+        </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
             <Spacer height={8} />
@@ -61,16 +90,23 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           </>
         )}
       </StyledCollectionHeader>
+
       <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }
 
-const StyledCollectionWrapper = styled.div<{ enablePointer: boolean }>`
+const SettingWrapper = styled.div<{ isHover: boolean }>`
+  position: relative;
+  opacity: ${({ isHover }) => (isHover ? '1' : '0')};
+  transition: opacity 200ms ease-in-out;
+`;
+
+const StyledCollectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  cursor: ${({ enablePointer }) => (enablePointer ? 'pointer' : 'initial')};
+  position: relative;
 `;
 
 const StyledCollectionHeader = styled.div`
@@ -81,14 +117,13 @@ const StyledCollectionHeader = styled.div`
   // to appear above content underneath
   z-index: 1;
   margin-bottom: 16px;
+`;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 70%;
-  }
-
-  @media only screen and ${breakpoints.tablet} {
-    width: 70%;
-  }
+const StyledCollectionTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const StyledCollectorsTitle = styled.span<{ enableUnderline: boolean }>`
@@ -101,6 +136,27 @@ const StyledCollectorsTitle = styled.span<{ enableUnderline: boolean }>`
 const StyledCollectorsNote = styled(BodyRegular)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
+
+  width: 100%;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: 70%;
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 70%;
+  }
+`;
+
+const DropdownWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  ${StyledDropdownButton} {
+    width: 32px;
+    height: 24px;
+  }
 `;
 
 export default UserGalleryCollection;
