@@ -63,6 +63,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const imageBuffer = await element.screenshot({ type: 'png' });
 
     res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', `s-maxage=1, stale-while-revalidate=${60 * 60 * 24}`);
     res.send(imageBuffer);
   } catch (error: any) {
     console.log(error);
