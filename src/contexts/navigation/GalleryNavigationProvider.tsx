@@ -47,6 +47,47 @@ export function GalleryNavigationProvider({ children }: Props) {
         let scrollY = window.scrollY;
 
         function handleScroll() {
+          /**
+           * !!! WARNING !!!
+           *
+           * This is quite possibly one of the worst crimes I've committed to date.
+           *
+           * THE LONG-TERM PLAN is to have a context that keeps track of the user's
+           * scroll position at various pages, and we can toss this file and its window
+           * location madness.
+           *
+           * Now for the explanation....
+           *
+           * We currently have a hack that overrides the browser's own attempt to
+           * place the user at their intended scroll position to prevent jank that
+           * coincides with our fade transition.
+           *
+           * Unfortunately, we end up shooting ourselves in the foot if the user
+           * hasn't scrolled at all. If the user doesn't scroll and they navigate
+           * to another page, the browser doesn't try to restore their scroll,
+           * and we end up overriding the subsequent *active* scroll made by the
+           * user themselves. More specifically:
+           *   1) User scroll at 0
+           *   2) User navigates to another page
+           *   3) User arrives at 0
+           *   4) User begins scrolling
+           *   5) Our hack rejects their scroll, restores scroll back to 0
+           *   6) User experiences jank and is thrown back to the top of the page
+           *   7) User possibly experiences motion sickness
+           *
+           * THE FIX: disable our hack if the user is sufficiently close to
+           * the top of the page.
+           *
+           * THE CAVEAT: we don't want to intervene if scrollY is exactly 0, because
+           * that signals that the browser is actively pushing the user to the next page,
+           * and we DO want to block that default behavior – otherwise the jump occurs
+           * before the transition begins. Thus the `window.scrollY > 0` condition.
+           */
+          if (window.scrollY > 0 && window.scrollY <= 25) {
+            window.removeEventListener('scroll', handleScroll);
+            return;
+          }
+
           window.scrollTo({ top: scrollY });
 
           // This exists to delay Next.JS built in scroll restoration.
