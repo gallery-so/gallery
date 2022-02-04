@@ -19,7 +19,7 @@ type Props = {
   onBioChange: (bio: string) => void;
 };
 
-export const BIO_MAX_CHAR_COUNT = 500;
+export const BIO_MAX_CHAR_COUNT = 600;
 
 function UserInfoForm({
   className,
