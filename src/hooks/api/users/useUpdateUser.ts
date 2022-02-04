@@ -16,6 +16,8 @@ export default function useUpdateUser() {
         bio,
       });
 
+      await mutate(['/users/get/current', 'get current user']);
+
       // Optimistically update both user caches by username, ID
       await mutate(
         getUserCacheKey({ username }),
