@@ -16,7 +16,7 @@ function UserGalleryPage({ username }: UserGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
 
   useEffect(() => {
-    Mixpanel.track('Page View: Gallery', { username });
+    Mixpanel.track('Page View: User Gallery', { username });
   }, [username]);
 
   return (
