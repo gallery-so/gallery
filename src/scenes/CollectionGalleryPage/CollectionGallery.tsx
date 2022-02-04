@@ -31,7 +31,7 @@ function CollectionGallery({ collectionId }: Props) {
       <NftGalleryWrapper>
         <NftGallery collection={collection} mobileLayout={mobileLayout} />
       </NftGalleryWrapper>
-      <Spacer height={64} />
+      <Spacer height={128} />
     </StyledCollectionGallery>
   );
 }

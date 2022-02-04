@@ -80,13 +80,13 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
         </StyledUsernameWrapper>
         <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
       </StyledHeaderWrapper>
-      <Spacer height={32} />
+      <Spacer height={16} />
       {unescapedCollectorsNote && (
         <StyledCollectionNote color={colors.gray50}>
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectionNote>
       )}
-      <Spacer height={60} />
+      <Spacer height={16} />
       <StyledCollectionActions>
         {authenticatedUserIsOnTheirOwnPage ? (
           <SettingsDropdown>
