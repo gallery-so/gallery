@@ -64,8 +64,8 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, onDismiss }) => (
-        <AnimatedToast key={message} message={message} onClose={onDismiss} />
+      {toasts.map(({ message }) => (
+        <AnimatedToast key={message} message={message} onClose={dismissToast} />
       ))}
       {children}
     </ToastActionsContext.Provider>
