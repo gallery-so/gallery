@@ -28,7 +28,7 @@ type Props = {
   layout?: CollectionLayout;
 };
 
-export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 300;
+export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
 
 function CollectionCreateOrEditForm({
   onNext,
@@ -41,9 +41,10 @@ function CollectionCreateOrEditForm({
   const { hideModal } = useModal();
 
   const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collectionCollectorsNote), [
-    collectionCollectorsNote,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collectionCollectorsNote),
+    [collectionCollectorsNote]
+  );
 
   const [title, setTitle] = useState(unescapedCollectionName ?? '');
   const [description, setDescription] = useState(unescapedCollectorsNote ?? '');
@@ -59,10 +60,10 @@ function CollectionCreateOrEditForm({
     setDescription(event.target?.value);
   }, []);
 
-  const hasEnteredValue = useMemo(() => title.length > 0 || description.length > 0, [
-    title,
-    description,
-  ]);
+  const hasEnteredValue = useMemo(
+    () => title.length > 0 || description.length > 0,
+    [title, description]
+  );
 
   const buttonText = useMemo(() => {
     // Collection is being created
