@@ -1,7 +1,8 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { FADE_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
+import { useRouter } from 'next/router';
 
-type GalleryNavigationContextType = { historyStackLength: number };
+type GalleryNavigationContextType = { historyStackLength: number; historyStack: string[] };
 
 const GalleryNavigationContext = createContext<GalleryNavigationContextType | undefined>(undefined);
 
@@ -21,6 +22,13 @@ type Props = {
 
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
+  const { asPath } = useRouter();
+  // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
+  const [historyStack, setHistoryStack] = useState<string[]>([]);
+
+  useEffect(() => {
+    setHistoryStack((stack) => [...stack, asPath]);
+  }, [asPath]);
 
   useEffect(() => {
     const originalPushState = window.history.pushState;
@@ -104,8 +112,9 @@ export function GalleryNavigationProvider({ children }: Props) {
   const value = useMemo<GalleryNavigationContextType>(
     () => ({
       historyStackLength,
+      historyStack,
     }),
-    [historyStackLength]
+    [historyStackLength, historyStack]
   );
 
   return (
@@ -117,4 +126,10 @@ export function useCanGoBack() {
   const { historyStackLength } = useGalleryNavigationContext();
 
   return historyStackLength > 0;
+}
+
+export function useHistoryStack() {
+  const { historyStack } = useGalleryNavigationContext();
+
+  return historyStack;
 }
