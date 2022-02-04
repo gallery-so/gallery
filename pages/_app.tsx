@@ -12,13 +12,24 @@ import { useRouter } from 'next/router';
 import Mixpanel from 'utils/mixpanel';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
+type NameOrProperty =
+  | { name: string; property?: undefined }
+  | { name?: undefined; property: string };
+type MetaTag = NameOrProperty & {
+  content: string;
+};
+
+export type MetaTagProps = {
+  metaTags?: MetaTag[] | null;
+};
+
 const SafeHydrate: FC = ({ children }) => (
   <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 );
 
 const App: FC<{
-  Component: ComponentType;
-  pageProps: Record<string, unknown>;
+  Component: ComponentType<MetaTagProps>;
+  pageProps: MetaTagProps & Record<string, unknown>;
 }> = ({ Component, pageProps }) => {
   const { asPath } = useRouter();
 
@@ -31,31 +42,35 @@ const App: FC<{
   return (
     <>
       <Head>
+        <title>Gallery</title>
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Show your collection to the world." />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
 
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Gallery" key="og:title" />
-        <meta property="og:description" content="Show your collection to the world." />
-        <meta
-          property="og:image"
-          content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+        {pageProps.metaTags?.length ? (
+          pageProps.metaTags.map((metaTag) => (
+            <meta key={metaTag.name ?? metaTag.property} {...metaTag} />
+          ))
+        ) : (
+          <>
+            <meta name="description" content="Show your collection to the world." />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@usegallery" />
-        <meta name="twitter:title" content="Gallery" key="twitter:title" />
-        <meta name="twitter:description" content="Show your collection to the world." />
-        <meta
-          name="twitter:image"
-          content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
-        />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content="Gallery" />
+            <meta property="og:description" content="Show your collection to the world." />
 
-        <title>Gallery</title>
+            <meta
+              property="og:image"
+              content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
+            />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:site" content="@usegallery" />
+          </>
+        )}
       </Head>
       <SafeHydrate>
         <AppProvider relayCache={relayCache}>

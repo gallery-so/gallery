@@ -20,7 +20,6 @@ import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
 import useBackButton from 'hooks/useBackButton';
-import { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 
 type Props = {
@@ -43,7 +42,11 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     [collection.collectors_note]
   );
 
-  const authenticatedUserIsOnTheirOwnPage = username.toLowerCase() === user?.username.toLowerCase();
+  const handleShareClick = useCallback(() => {
+    Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username]);
+
+  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
   const collectionUrl = window.location.href;
 
@@ -88,7 +91,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       )}
       <Spacer height={60} />
       <StyledCollectionActions>
-        {authenticatedUserIsOnTheirOwnPage ? (
+        {showEditActions ? (
           <SettingsDropdown>
             <TextButton
               onClick={handleEditNameClick}
@@ -109,12 +112,12 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
             )}
             <Spacer height={8} />
             <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" underlineOnHover />
+              <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
             </CopyToClipboard>
           </SettingsDropdown>
         ) : (
           <CopyToClipboard textToCopy={collectionUrl}>
-            <TextButton text="Share" />
+            <TextButton text="Share" onClick={handleShareClick} />
           </CopyToClipboard>
         )}
       </StyledCollectionActions>

@@ -19,6 +19,8 @@ export default function Markdown({ text }: Props) {
             <>{children}</>
           ),
       }}
+      allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']}
+      unwrapDisallowed
     >
       {text}
     </ReactMarkdown>

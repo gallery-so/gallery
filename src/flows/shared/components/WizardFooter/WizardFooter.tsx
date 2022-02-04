@@ -35,10 +35,10 @@ function WizardFooter({
 
   const isFirstStep = useMemo(() => history.index === 0, [history.index]);
 
-  const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [
-    footerButtonTextMap,
-    step.id,
-  ]);
+  const buttonText = useMemo(
+    () => footerButtonTextMap?.[step.id] ?? 'Next',
+    [footerButtonTextMap, step.id]
+  );
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
@@ -65,8 +65,9 @@ function WizardFooter({
 
       return;
     }
+
     next();
-  }, [next, onNext]);
+  }, [collectionId, next, onNext, push, username]);
 
   const handlePreviousClick = useCallback(() => {
     // If coming from single collection page, the user should be redirected to the collection page
@@ -79,7 +80,7 @@ function WizardFooter({
     } else {
       previous();
     }
-  }, [previous, onPrevious, username, collectionId]);
+  }, [collectionId, onPrevious, push, username, previous]);
 
   if (shouldHideFooter) {
     return null;

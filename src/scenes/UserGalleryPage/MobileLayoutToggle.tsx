@@ -16,17 +16,14 @@ function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
     setMobileLayout(DisplayLayout.GRID);
   }, [setMobileLayout]);
 
-  return (
-    // <StyledMobileLayoutToggle>
-    mobileLayout === DisplayLayout.GRID ? (
-      <StyledToggleButton onClick={handleGridClick} title="Grid view">
-        <Icon src="/icons/list_layout.svg" isSelected={mobileLayout === DisplayLayout.GRID} />
-      </StyledToggleButton>
-    ) : (
-      <StyledToggleButton onClick={handleListClick} title="List view">
-        <Icon src="/icons/grid_layout.svg" isSelected={mobileLayout === DisplayLayout.LIST} />
-      </StyledToggleButton>
-    )
+  return mobileLayout === DisplayLayout.GRID ? (
+    <StyledToggleButton onClick={handleGridClick} title="Grid view">
+      <Icon src="/icons/list_layout.svg" />
+    </StyledToggleButton>
+  ) : (
+    <StyledToggleButton onClick={handleListClick} title="List view">
+      <Icon src="/icons/grid_layout.svg" />
+    </StyledToggleButton>
   );
 }
 
@@ -36,10 +33,10 @@ const StyledToggleButton = styled.button`
   margin-top: 12px;
 `;
 
-const Icon = styled.img<{ isSelected: boolean }>`
+const Icon = styled.img`
   width: 20px;
   height: 20px;
-  opacity: ${({ isSelected }) => (isSelected ? 0.75 : 0.3)};
+  opacity: 0.25;
   pointer-events: none;
   // prevent "save image" popup when holding down on icon
   -webkit-touch-callout: none;

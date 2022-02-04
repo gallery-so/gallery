@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -14,6 +14,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
 import { baseUrl } from 'utils/baseUrl';
+import Mixpanel from 'utils/mixpanel';
 
 type Props = {
   nftId: string;
@@ -32,6 +33,10 @@ function NftDetailPage({ nftId }: Props) {
 
   const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
+
+  useEffect(() => {
+    Mixpanel.track('Page View: NFT Detail', { nftId });
+  }, [nftId]);
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
