@@ -32,6 +32,14 @@ export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({
               }).toString()}`,
             },
             { property: 'twitter:card', content: 'summary_large_image' },
+            {
+              property: 'twitter:image',
+              content: `${baseUrl}/api/opengraph/image?${new URLSearchParams({
+                path: `/opengraph/user/${username}`,
+                width: '600',
+                height: '314',
+              }).toString()}`,
+            },
           ]
         : null,
     },
