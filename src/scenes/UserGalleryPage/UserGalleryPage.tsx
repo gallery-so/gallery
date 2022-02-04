@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import UserGallery from './UserGallery';
 import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 import Head from 'next/head';
+import { useEffect } from 'react';
+import Mixpanel from 'utils/mixpanel';
 
 type UserGalleryPageProps = {
   username: string;
@@ -12,6 +14,10 @@ type UserGalleryPageProps = {
 
 function UserGalleryPage({ username }: UserGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
+
+  useEffect(() => {
+    Mixpanel.track('Page View: Gallery', { username });
+  }, [username]);
 
   return (
     <UserGalleryPageErrorBoundary>
