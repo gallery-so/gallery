@@ -73,21 +73,23 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               {unescapedCollectionName}
             </StyledCollectorsTitle>
           </TitleSerif>
-          <StyledSettingsDropdown>
-            {isHovering && (
-              <Dropdown>
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
-                <Spacer height={12} />
-                <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
-                </CopyToClipboard>
-              </Dropdown>
-            )}
-          </StyledSettingsDropdown>
+          {isSingleCollectionEnabled && (
+            <StyledSettingsDropdown>
+              {isHovering && (
+                <Dropdown>
+                  <TextButton
+                    text="View Collection"
+                    onClick={handleViewCollectionClick}
+                    underlineOnHover
+                  />
+                  <Spacer height={12} />
+                  <CopyToClipboard textToCopy={collectionUrl}>
+                    <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+                  </CopyToClipboard>
+                </Dropdown>
+              )}
+            </StyledSettingsDropdown>
+          )}
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
