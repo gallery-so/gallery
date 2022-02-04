@@ -24,7 +24,7 @@
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
     "bufferutil": "^4.0.5",
-    "chrome-aws-lambda": "^6.0.0",
+    "chrome-aws-lambda": "^5.5.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.unescape": "^4.0.1",
     "mixpanel-browser": "^2.41.0",
