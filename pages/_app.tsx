@@ -12,6 +12,15 @@ import { useRouter } from 'next/router';
 import Mixpanel from 'utils/mixpanel';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
+type MetaTag = {
+  property: string;
+  content: string;
+};
+
+export type MetaTagProps = {
+  metaTags?: MetaTag[];
+};
+
 const SafeHydrate: FC = ({ children }) => (
   <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 );
