@@ -3,7 +3,7 @@ import isProduction from './isProduction';
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
-  SINGLE_COLLECTION: false,
+  SINGLE_COLLECTION: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
