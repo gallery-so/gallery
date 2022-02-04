@@ -12,6 +12,10 @@ import { useRouter } from 'next/router';
 import Mixpanel from 'utils/mixpanel';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
+const SafeHydrate: FC = ({ children }) => (
+  <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
+);
+
 const App: FC<{
   Component: ComponentType;
   pageProps: Record<string, unknown>;
@@ -53,11 +57,13 @@ const App: FC<{
 
         <title>Gallery</title>
       </Head>
-      <AppProvider relayCache={relayCache}>
-        <FadeTransitioner locationKey={asPath}>
-          <Component {...pageProps} />
-        </FadeTransitioner>
-      </AppProvider>
+      <SafeHydrate>
+        <AppProvider relayCache={relayCache}>
+          <FadeTransitioner locationKey={asPath}>
+            <Component {...pageProps} />
+          </FadeTransitioner>
+        </AppProvider>
+      </SafeHydrate>
     </>
   );
 };
