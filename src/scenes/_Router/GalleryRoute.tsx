@@ -26,7 +26,7 @@ export type GalleryRouteProps = {
 // fills up the space where the navbar or footer would be
 export const Filler = () => <Spacer height={80} />;
 
-export default function GalleryRoute({
+function GalleryRouteInner({
   element,
   freshLayout = false,
   navbar = true,
@@ -85,5 +85,17 @@ export default function GalleryRoute({
       {element}
       {footerComponent}
     </>
+  );
+}
+
+const SafeHydrate: React.FC = ({ children }) => (
+  <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
+);
+
+export default function GalleryRoute(props: GalleryRouteProps) {
+  return (
+    <SafeHydrate>
+      <GalleryRouteInner {...props} />
+    </SafeHydrate>
   );
 }
