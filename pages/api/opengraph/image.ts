@@ -2,6 +2,7 @@ import chromium from 'chrome-aws-lambda';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Browser } from 'puppeteer';
 import type { Browser as BrowserCore } from 'puppeteer-core';
+import { baseUrl } from 'utils/baseUrl';
 
 const getBrowserInstance = async () => {
   const executablePath = await chromium.executablePath;
@@ -35,9 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const height = parseInt(req.query.height as string) || 300;
   const pixelDensity = parseInt(req.query.pixelDensity as string) || 2;
 
-  // TODO: figure out whether the request is http or https instead of via env
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const url = new URL(path, `${protocol}://${req.headers.host}`);
+  const url = new URL(path, baseUrl);
   url.searchParams.set('width', width.toString());
   url.searchParams.set('height', height.toString());
 
@@ -58,19 +57,30 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       throw new Error('No #opengraph-image element found');
     }
 
-    // await page.waitForNetworkIdle();
-
     const imageBuffer = await element.screenshot({ type: 'png' });
 
+    // s-maxage:
+    //   images are considered "fresh" for 8 hours
+    // stale-while-revalidate:
+    //   allow serving stale images for up to 24 hours, with cache refresh in background
+    //
+    // anything outside this window will cause the browser to wait to regenerate the image
+    // so we might consider increasing the stale-while-revalidate if we are okay with the
+    // first request serving a very stale image
+    res.setHeader(
+      'Cache-Control',
+      `s-maxage=${60 * 60 * 8}, stale-while-revalidate=${60 * 60 * 24}`
+    );
+
     res.setHeader('Content-Type', 'image/png');
-    res.setHeader('Cache-Control', `s-maxage=1, stale-while-revalidate=${60 * 60 * 24}`);
     res.send(imageBuffer);
-  } catch (error: any) {
-    console.log(error);
+  } catch (error: unknown) {
+    // TODO: log this to some error tracking service?
+    console.log('error while generating opengraph image', error);
     res.json({
       error: {
         code: 'UNEXPECTED_ERROR',
-        message: error.toString(),
+        message: (error as any).toString(),
       },
     });
   } finally {
