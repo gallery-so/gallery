@@ -26,7 +26,6 @@ export default function useBackButton({ username }: Props) {
       }
 
       // If the user has a different page in their history such as the Edit Collection Page, don't use back()
-      // const dontGoBack = historyStack[historyStack.length - 2]?.includes('/edit?collectionId=');
 
       if (!canGoBack || backDisabled) {
         // if the user arrived on the page via direct link, send them to the

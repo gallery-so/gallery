@@ -23,6 +23,7 @@ type Props = {
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
   const { asPath } = useRouter();
+  // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
   const [historyStack, setHistoryStack] = useState<string[]>([]);
 
   useEffect(() => {
