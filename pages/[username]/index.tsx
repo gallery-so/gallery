@@ -3,7 +3,7 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { baseUrl } from 'utils/baseUrl';
-import type { MetaTagProps } from 'pages/_app';
+import { MetaTagProps } from 'pages/_app';
 
 type UserGalleryProps = MetaTagProps & {
   username?: string;
@@ -25,6 +25,7 @@ export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({
       metaTags: username
         ? [
             { property: 'og:title', content: `${username} | Gallery` },
+            // TODO: add description
             {
               property: 'og:image',
               content: `${baseUrl}/api/opengraph/image?${new URLSearchParams({
