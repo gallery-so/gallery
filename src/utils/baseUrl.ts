@@ -16,7 +16,7 @@ const getBaseUrl = () => {
 
   // TODO: figure out if/what hostname needed for tests
 
-  return `https://localhost:3000`;
+  return `http://localhost:3000`;
 };
 
 export const baseUrl = getBaseUrl();
