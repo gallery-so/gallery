@@ -46,15 +46,6 @@ function NftDetailPage({ nftId }: Props) {
     <>
       <Head>
         <title>{headTitle}</title>
-        <meta property="og:title" content={headTitle} key="og:title" />
-        <meta name="twitter:title" content={headTitle} key="twitter:title" />
-        <meta
-          name="og:image"
-          content={`${baseUrl}/api/opengraph/image?${new URLSearchParams({
-            path: `/opengraph/nft/${nftId}`,
-          }).toString()}`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <StyledNftDetailPage centered fixedFullPageHeight>
         <StyledBackLink>
