@@ -57,7 +57,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
     // Then save, etc.
-    await pause(250);
+    await pause(500);
 
     setGeneralError('');
     setIsEditing(false);
