@@ -16,13 +16,13 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         ))}
       </div>
       <div className="byline">
-        <div className="username">{unescape(title)}</div>
+        <span className="username">{unescape(title)}</span>
         {description ? (
           <>
-            <div className="separator" />
-            <div className="bio truncate">
+            <span className="bio">⸺</span>
+            <span className="bio truncate">
               <Markdown text={unescape(description)} />
-            </div>
+            </span>
           </>
         ) : null}
       </div>
@@ -61,13 +61,6 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         font-weight: 400;
         font-size: 18px;
         color: black;
-        flex-shrink: 0;
-      }
-      .separator {
-        display: inline-block;
-        width: 1.5rem;
-        height: 1px;
-        background: currentColor;
         flex-shrink: 0;
       }
       .bio {
