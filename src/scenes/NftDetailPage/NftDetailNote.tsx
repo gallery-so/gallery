@@ -54,9 +54,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const handleSubmitCollectorsNote = useCallback(async () => {
     // Scroll back up
-    if (collectorsNoteRef.current) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
     // Then save, etc.
     await pause(250);
