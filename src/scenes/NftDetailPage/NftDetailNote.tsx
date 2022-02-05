@@ -2,7 +2,7 @@ import { BodyRegular } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'lodash.unescape';
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
+import { pause } from 'utils/time';
 import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 const MAX_CHAR_COUNT = 400;
@@ -32,13 +33,34 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const hasCollectorsNote = useMemo(() => collectorsNote.length > 0, [collectorsNote]);
 
+  const collectorsNoteRef = useRef<HTMLDivElement>(null);
+
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
+
+    // Scroll down - wait 50ms so that element exists before scrolling to bottom of it
+    setTimeout(() => {
+      if (collectorsNoteRef.current) {
+        collectorsNoteRef.current.scrollIntoView({
+          block: 'end',
+          inline: 'nearest',
+          behavior: 'smooth',
+        });
+      }
+    }, 50);
   }, []);
 
   const updateNft = useUpdateNft();
 
   const handleSubmitCollectorsNote = useCallback(async () => {
+    // Scroll back up
+    if (collectorsNoteRef.current) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
+    // Then save, etc.
+    await pause(250);
+
     setGeneralError('');
     setIsEditing(false);
 
@@ -56,14 +78,18 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   }, []);
 
   return (
-    <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+    <StyledContainer
+      footerHeight={GLOBAL_FOOTER_HEIGHT}
+      isEditing={isEditing}
+      ref={collectorsNoteRef}
+    >
       <Spacer height={18} />
 
       {userOwnsAsset ? (
         <TextButton
           text={
             isEditing
-              ? 'Submit'
+              ? "Save Collector's Note"
               : hasCollectorsNote
               ? "Edit Collector's Note"
               : `+ Add Collector's Note`
@@ -101,6 +127,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
 type ContainerProps = {
   footerHeight: number;
+  isEditing: boolean;
 };
 
 const StyledContainer = styled.div<ContainerProps>`
@@ -132,7 +159,7 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   border: none;
 
   textarea {
-    min-height: 44px;
+    min-height: 200px;
     height: 100%;
     margin: 0;
     padding: 0;
