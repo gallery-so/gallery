@@ -1,7 +1,6 @@
 import breakpoints, { size } from 'components/core/breakpoints';
 import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
-
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
 import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
@@ -10,9 +9,7 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
-
 import NftDetailNote from './NftDetailNote';
-
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';

@@ -49,8 +49,6 @@ const StyledPage = styled.div<Props>`
   ${({ fixedFullPageHeight }) => (fixedFullPageHeight ? 'height' : 'min-height')}: calc(
     100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px
   );
-
-  // min-height: calc(100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px);
 `;
 
 export default Page;
