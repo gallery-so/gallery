@@ -64,13 +64,13 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     setIsEditing(false);
 
     try {
-      await updateNft(nftId, unescapedCollectorsNote);
+      await updateNft(nftId, collectorsNote);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, unescapedCollectorsNote, collectorsNote]);
+  }, [updateNft, nftId, collectorsNote]);
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
