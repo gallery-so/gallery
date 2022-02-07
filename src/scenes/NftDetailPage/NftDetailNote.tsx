@@ -29,8 +29,8 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const [noteHeight, setNoteHeight] = useState(MIN_NOTE_HEIGHT);
   const [isEditing, setIsEditing] = useState(false);
 
-  const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
-  const [collectorsNote, setCollectorsNote] = useState(unescapedCollectorsNote ?? '');
+  const [collectorsNote, setCollectorsNote] = useState(nftCollectorsNote ?? '');
+  const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote), [collectorsNote]);
 
   const hasCollectorsNote = useMemo(() => collectorsNote.length > 0, [collectorsNote]);
 
@@ -64,13 +64,13 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     setIsEditing(false);
 
     try {
-      await updateNft(nftId, collectorsNote);
+      await updateNft(nftId, unescapedCollectorsNote);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, collectorsNote]);
+  }, [updateNft, nftId, unescapedCollectorsNote, collectorsNote]);
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
@@ -126,7 +126,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
       {hasCollectorsNote && !isEditing && (
         <StyledCollectorsNote onDoubleClick={handleEditCollectorsNote}>
-          <Markdown text={collectorsNote} />
+          <Markdown text={unescapedCollectorsNote} />
         </StyledCollectorsNote>
       )}
     </StyledContainer>
@@ -195,15 +195,15 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
-  min-height: 150px;
+  white-space: pre-line;
   height: 100%;
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
 
-  // p:not(:last-of-type) {
-  //   margin-bottom: 20px;
-  // }
+  @media only screen and ${breakpoints.tablet} {
+    min-height: 150px;
+  }
 `;
 
 export default NftDetailNote;
