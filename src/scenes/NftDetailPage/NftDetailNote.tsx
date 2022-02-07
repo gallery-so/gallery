@@ -11,10 +11,10 @@ import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
-import { pause } from 'utils/time';
 import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 const MAX_CHAR_COUNT = 400;
+const MIN_NOTE_HEIGHT = 100;
 
 type Props = {
   nftCollectorsNote?: string;
@@ -26,6 +26,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
+  const [noteHeight, setNoteHeight] = useState(MIN_NOTE_HEIGHT);
   const [isEditing, setIsEditing] = useState(false);
 
   const unescapedCollectorsNote = useMemo(() => unescape(nftCollectorsNote), [nftCollectorsNote]);
@@ -38,7 +39,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
 
-    // Scroll down - wait 50ms so that element exists before scrolling to bottom of it
+    // Scroll down - wait 100ms so that element exists before scrolling to bottom of it
     setTimeout(() => {
       if (collectorsNoteRef.current) {
         collectorsNoteRef.current.scrollIntoView({
@@ -47,19 +48,19 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
           behavior: 'smooth',
         });
       }
-    }, 50);
+    }, 100);
   }, []);
 
   const updateNft = useUpdateNft();
 
   const handleSubmitCollectorsNote = useCallback(async () => {
-    // Scroll back up
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-    // Then save, etc.
-    await pause(500);
-
     setGeneralError('');
+
+    if (collectorsNote.length > MAX_CHAR_COUNT) {
+      // No need to handle error here, since the form will mark the text as red
+      return;
+    }
+
     setIsEditing(false);
 
     try {
@@ -73,6 +74,13 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
+    setNoteHeight(event.target?.scrollHeight);
+
+    // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
+    // So we use this hard reset if the user deletes all content. Could have more elegant solution
+    if (event.target?.value === '') {
+      setNoteHeight(MIN_NOTE_HEIGHT);
+    }
   }, []);
 
   return (
@@ -85,6 +93,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
       {userOwnsAsset ? (
         <TextButton
+          disabled={collectorsNote.length > MAX_CHAR_COUNT}
           text={
             isEditing
               ? "Save Collector's Note"
@@ -111,6 +120,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
           defaultValue={collectorsNote}
           currentCharCount={collectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
+          noteHeight={noteHeight}
         />
       )}
 
@@ -152,13 +162,20 @@ const StyledNoteTitle = styled(BodyRegular)`
   font-size: 12px;
 `;
 
-// The two elements below are intentionally styled the same so that editing appears inline
-const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
+type TextAreaProps = {
+  noteHeight: number;
+};
+
+// These two are intentionally styled the same so that editing is seamless
+const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
   textarea {
-    min-height: 200px;
-    height: 100%;
+    min-height: 100px;
+    // height: 100%;
+
+    ${({ noteHeight }) => `height: ${noteHeight}px`};
+
     margin: 0;
     padding: 0;
     line-height: 20px;
@@ -178,11 +195,15 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
 `;
 
 const StyledCollectorsNote = styled(BodyRegular)`
-  min-height: 44px;
+  min-height: 150px;
   height: 100%;
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
+
+  // p:not(:last-of-type) {
+  //   margin-bottom: 20px;
+  // }
 `;
 
 export default NftDetailNote;
