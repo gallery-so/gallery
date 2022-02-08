@@ -48,7 +48,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
           behavior: 'smooth',
         });
       }
-    }, 100);
+    }, 200);
   }, []);
 
   const updateNft = useUpdateNft();
@@ -81,14 +81,12 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
     if (event.target?.value === '') {
       setNoteHeight(MIN_NOTE_HEIGHT);
     }
+
+    // TODO if user deleted some text, shrink textarea height
   }, []);
 
   return (
-    <StyledContainer
-      footerHeight={GLOBAL_FOOTER_HEIGHT}
-      isEditing={isEditing}
-      ref={collectorsNoteRef}
-    >
+    <StyledContainer isEditing={isEditing} ref={collectorsNoteRef}>
       <Spacer height={18} />
 
       {userOwnsAsset ? (
@@ -115,6 +113,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
       <Spacer height={4} />
       {isEditing && (
         <StyledTextAreaWithCharCount
+          footerHeight={GLOBAL_FOOTER_HEIGHT}
           onChange={handleNoteChange}
           placeholder="Tell us about your NFT..."
           defaultValue={collectorsNote}
@@ -125,7 +124,10 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
       )}
 
       {hasCollectorsNote && !isEditing && (
-        <StyledCollectorsNote onDoubleClick={handleEditCollectorsNote}>
+        <StyledCollectorsNote
+          footerHeight={GLOBAL_FOOTER_HEIGHT}
+          onDoubleClick={handleEditCollectorsNote}
+        >
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectorsNote>
       )}
@@ -133,12 +135,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   );
 }
 
-type ContainerProps = {
-  footerHeight: number;
-  isEditing: boolean;
-};
-
-const StyledContainer = styled.div<ContainerProps>`
+const StyledContainer = styled.div`
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;
   max-width: 296px;
@@ -153,7 +150,6 @@ const StyledContainer = styled.div<ContainerProps>`
     max-width: none;
 
     position: absolute; // So that it does not affect height of the flex container
-    padding-bottom: ${({ footerHeight }) => footerHeight}px;
   }
 `;
 
@@ -164,17 +160,20 @@ const StyledNoteTitle = styled(BodyRegular)`
 
 type TextAreaProps = {
   noteHeight: number;
+  footerHeight: number;
 };
 
 // These two are intentionally styled the same so that editing is seamless
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
+  padding-bottom: ${({ footerHeight }) => footerHeight}px;
+
   textarea {
     min-height: 100px;
     // height: 100%;
 
-    ${({ noteHeight }) => `height: ${noteHeight}px`};
+    ${({ noteHeight }) => `min-height: ${noteHeight}px`};
 
     margin: 0;
     padding: 0;
@@ -190,16 +189,22 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
 
   p {
     right: 8px;
-    bottom: 0;
+    bottom: ${({ footerHeight }) => footerHeight}px;
   }
 `;
 
-const StyledCollectorsNote = styled(BodyRegular)`
+const StyledCollectorsNote = styled(BodyRegular)<TextAreaProps>`
   white-space: pre-line;
   height: 100%;
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
+
+  padding-bottom: ${({ footerHeight }) => footerHeight / 2}px;
+
+  p:last-of-type {
+    margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
+  }
 
   @media only screen and ${breakpoints.tablet} {
     min-height: 150px;
