@@ -14,7 +14,6 @@ import { useNavigateToUrl } from 'utils/navigate';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import Mixpanel from 'utils/mixpanel';
 
