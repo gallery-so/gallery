@@ -193,7 +193,11 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
   }
 `;
 
-const StyledCollectorsNote = styled(BodyRegular)<TextAreaProps>`
+type CollectorsNoteProps = {
+  footerHeight: number;
+};
+
+const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   white-space: pre-line;
   height: 100%;
   line-height: 20px;
