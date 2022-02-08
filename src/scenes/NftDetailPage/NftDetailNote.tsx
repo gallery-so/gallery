@@ -86,7 +86,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   }, []);
 
   return (
-    <StyledContainer isEditing={isEditing} ref={collectorsNoteRef}>
+    <StyledContainer ref={collectorsNoteRef}>
       <Spacer height={18} />
 
       {userOwnsAsset ? (
