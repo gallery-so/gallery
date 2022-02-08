@@ -28,8 +28,6 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
     <>
       <Head>
         <title>{headTitle}</title>
-        <meta property="og:title" content={headTitle} key="og:title" />
-        <meta name="twitter:title" content={headTitle} key="twitter:title" />
       </Head>
       <Page>
         <StyledCollectionGalleryWrapper>
