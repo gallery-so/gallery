@@ -4,6 +4,8 @@ import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 
 type NftDetailPageProps = MetaTagProps & {
   nftId?: string;
@@ -24,12 +26,13 @@ export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async 
   return {
     props: {
       nftId,
-      metaTags: nftId
-        ? openGraphMetaTags({
-            title: `${username} | Gallery`,
-            previewPath: `/opengraph/nft/${nftId}`,
-          })
-        : null,
+      metaTags:
+        isFeatureEnabled(FeatureFlag.OPENGRAPH_IMAGES) && nftId
+          ? openGraphMetaTags({
+              title: `${username} | Gallery`,
+              previewPath: `/opengraph/nft/${nftId}`,
+            })
+          : null,
     },
   };
 };

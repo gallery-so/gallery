@@ -37,12 +37,13 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
     props: {
       username,
       collectionId,
-      metaTags: collectionId
-        ? openGraphMetaTags({
-            title: `${username} | Gallery`,
-            previewPath: `/opengraph/collection/${collectionId}`,
-          })
-        : null,
+      metaTags:
+        isFeatureEnabled(FeatureFlag.OPENGRAPH_IMAGES) && collectionId
+          ? openGraphMetaTags({
+              title: `${username} | Gallery`,
+              previewPath: `/opengraph/collection/${collectionId}`,
+            })
+          : null,
     },
   };
 };
