@@ -45,3 +45,4 @@ The app will be available on localhost:3000.
 - `yarn lint` for linting
 - `yarn typecheck` for checking type validity
 - `yarn cypress:run` to run e2e tests
+- `yarn cypress:open` to open cypress
