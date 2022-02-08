@@ -20,7 +20,15 @@ function localStorageProvider() {
     // ignore inflight requests (labeled with $req$) and errors (labeled with $err$) in the cache.
     // in fact, aggressively caching an error response can result in pain!
     const saneArrayMap = arrayMap.filter(
-      (arr) => !(arr[0].includes('$req$') || arr[0].includes('$err$'))
+      (arr) =>
+        !(
+          arr[0].includes('$req$') ||
+          arr[0].includes('$err$') ||
+          // ignore response for getting current user because the client could receive a 204 No Content
+          // if the cookie is invalid. SWR doesn't interpret the 204 as invalid, and instead caches it,
+          // which in turn breaks the hooks that immediately load the value.
+          arr[0].includes('/users/get/current')
+        )
     );
     const appCache = JSON.stringify(saneArrayMap);
     localStorage.setItem('app-cache', appCache);
