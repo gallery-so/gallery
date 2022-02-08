@@ -32,11 +32,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  const url = new URL(path, baseUrl);
+  if (!url.toString().startsWith(baseUrl)) {
+    res.status(400).json({ error: { code: 'INVALID_PATH' } });
+    return;
+  }
+
+  const fallback = typeof req.query.fallback === 'string' ? req.query.fallback : null;
+
   const width = parseInt(req.query.width as string) || 600;
   const height = parseInt(req.query.height as string) || 300;
   const pixelDensity = parseInt(req.query.pixelDensity as string) || 2;
 
-  const url = new URL(path, baseUrl);
   url.searchParams.set('width', width.toString());
   url.searchParams.set('height', height.toString());
 
@@ -46,15 +53,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     browser = await getBrowserInstance();
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: pixelDensity });
-    await page.goto(url.toString());
+    page.setDefaultNavigationTimeout(1000 * 10);
 
+    await page.goto(url.toString());
     await page.waitForNetworkIdle();
 
-    await page.waitForSelector('#opengraph-image');
+    await page.waitForSelector('#opengraph-image', { timeout: 500 });
     const element = await page.$('#opengraph-image');
 
     if (!element) {
-      throw new Error('No #opengraph-image element found');
+      throw new Error('No #opengraph-image element found at path');
     }
 
     const imageBuffer = await element.screenshot({ type: 'png' });
@@ -76,8 +84,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.send(imageBuffer);
   } catch (error: unknown) {
     // TODO: log this to some error tracking service?
-    console.log('error while generating opengraph image', error);
-    res.json({
+    console.error('error while generating opengraph image', error);
+
+    if (fallback) {
+      res.redirect(fallback);
+      return;
+    }
+
+    res.status(500).json({
       error: {
         code: 'UNEXPECTED_ERROR',
         message: (error as any).toString(),

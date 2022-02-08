@@ -13,7 +13,6 @@ import NftDetailText from './NftDetailText';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
-import { baseUrl } from 'utils/baseUrl';
 import Mixpanel from 'utils/mixpanel';
 
 type Props = {

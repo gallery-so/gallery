@@ -5,7 +5,6 @@ import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
 import useBackButton from 'hooks/useBackButton';
 import ActionText from 'components/core/ActionText/ActionText';
-import { baseUrl } from 'utils/baseUrl';
 import { useEffect } from 'react';
 import Mixpanel from 'utils/mixpanel';
 
