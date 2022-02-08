@@ -20,10 +20,10 @@ function Home() {
   return (
     <Page centered>
       <GalleryIntro />
-      <StyledButton text="Sign In" onClick={handleEnterGallery} />
+      <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
       <Spacer height={16} />
       <GalleryLink to="/members">
-        <TextButton text="explore galleries" />
+        <TextButton text="explore galleries" dataTestId="explore-button" />
       </GalleryLink>
     </Page>
   );
