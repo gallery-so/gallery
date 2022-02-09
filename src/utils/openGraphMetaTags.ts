@@ -16,8 +16,6 @@ export const openGraphMetaTags = ({
     property: 'og:image',
     content: `${baseUrl}/api/opengraph/image?${new URLSearchParams({
       path: previewPath,
-      fallback:
-        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png',
     }).toString()}`,
   },
   { property: 'twitter:card', content: 'summary_large_image' },
@@ -27,8 +25,11 @@ export const openGraphMetaTags = ({
       path: previewPath,
       width: '600',
       height: '314',
-      fallback:
-        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png',
     }).toString()}`,
+  },
+  {
+    key: 'og:image fallback',
+    property: 'og:image',
+    content: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png',
   },
 ];

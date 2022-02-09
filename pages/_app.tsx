@@ -16,6 +16,7 @@ type NameOrProperty =
   | { name: string; property?: undefined }
   | { name?: undefined; property: string };
 type MetaTag = NameOrProperty & {
+  key?: string;
   content: string;
 };
 
@@ -50,7 +51,7 @@ const App: FC<{
 
         {pageProps.metaTags?.length ? (
           pageProps.metaTags.map((metaTag) => (
-            <meta key={metaTag.name ?? metaTag.property} {...metaTag} />
+            <meta key={metaTag.key ?? metaTag.name ?? metaTag.property} {...metaTag} />
           ))
         ) : (
           <>
