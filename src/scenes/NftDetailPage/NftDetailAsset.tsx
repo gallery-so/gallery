@@ -1,5 +1,5 @@
 import breakpoints, { size } from 'components/core/breakpoints';
-import { NftMediaType } from 'components/core/enums';
+import { NftMediaType, FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
@@ -13,6 +13,7 @@ import NftDetailNote from './NftDetailNote';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
+import { isFeatureEnabled } from 'utils/featureFlag';
 
 type NftDetailAssetComponentProps = {
   nft: Nft;
@@ -77,6 +78,8 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
 
+  const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);
+
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = getMediaType(nft) === NftMediaType.ANIMATION;
   const shouldEnforceSquareAspectRatio =
@@ -90,10 +93,11 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
         footerHeight={GLOBAL_FOOTER_HEIGHT}
         maxHeight={maxHeight}
         shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
+        isCollectorsNoteEnabled={isCollectorsNoteEnabled}
       >
         <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
       </StyledAssetContainer>
-      {(userOwnsAsset || assetHasNote) && (
+      {isCollectorsNoteEnabled && (userOwnsAsset || assetHasNote) && (
         <NftDetailNote
           nftId={nft.id}
           userOwnsAsset={userOwnsAsset}
@@ -108,6 +112,7 @@ type AssetContainerProps = {
   footerHeight: number;
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
+  isCollectorsNoteEnabled: boolean;
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
@@ -121,12 +126,10 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
 
-  @media only screen and ${breakpoints.desktop} {
-    min-width: ${({ maxHeight }) => maxHeight}px;
+  @media only screen and ${breakpoints.tablet} {
     width: 100%;
-    // max-width: ${({ maxHeight }) => maxHeight}px;
-    height: ${({ maxHeight }) => maxHeight}px;
-    max-height: calc(85vh - 46px - ${({ footerHeight }) => footerHeight}px);
+    ${({ isCollectorsNoteEnabled, footerHeight }) =>
+      isCollectorsNoteEnabled ? `max-height: calc(85vh - 46px - ${footerHeight}px)` : ''};
   }
 `;
 
