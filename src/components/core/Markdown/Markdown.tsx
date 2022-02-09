@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import GalleryLink from '../GalleryLink/GalleryLink';
+import remarkTwemoji from 'remark-twemoji';
 
 type Props = {
   text: string;
@@ -21,6 +22,7 @@ export default function Markdown({ text }: Props) {
       }}
       allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']}
       unwrapDisallowed
+      remarkPlugins={[[remarkTwemoji, { isReact: true }]]}
     >
       {text}
     </ReactMarkdown>

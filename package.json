@@ -42,8 +42,10 @@
     "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.1",
     "relay-runtime": "^13.0.1",
+    "remark-twemoji": "^0.1.1",
     "styled-components": "^5.2.3",
     "swr": "^1.1.1",
+    "twemoji": "^13.1.0",
     "utf-8-validate": "^5.0.7",
     "web3": "^1.6.1"
   },
@@ -63,6 +65,7 @@
     "@types/react-transition-group": "^4.4.4",
     "@types/relay-runtime": "^13.0.0",
     "@types/styled-components": "5.1.9",
+    "@types/twemoji": "^12.1.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "babel-jest": "^27.3.1",
