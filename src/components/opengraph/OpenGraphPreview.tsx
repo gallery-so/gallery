@@ -12,7 +12,9 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
     <div className="container">
       <div className="gallery">
         {imageUrls.map((url) => (
-          <div key={url} className="image" style={{ backgroundImage: `url("${url}")` }} />
+          <div key={url} className="image">
+            <img src={url} />
+          </div>
         ))}
       </div>
       <div className="byline">
@@ -32,25 +34,30 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         width: 100%;
         height: 100%;
         min-height: 200px;
-        display: grid;
-        grid-template-rows: 1fr auto;
         background: white;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
       }
       .gallery {
-        display: flex;
-        items-align: center;
-        justify-content: center;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        padding: 40px;
+        gap: 20px;
       }
       .image {
-        width: 100%;
-        height: 100%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .gallery img {
+        max-width: 100%;
+        max-height: 170px;
+        width: auto;
+        height: auto;
       }
       .byline {
-        background: white;
-        padding: 1rem 1.25rem;
+        padding: 0 1.25rem 0.5rem;
         display: flex;
         align-items: center;
         gap: 1em;
@@ -71,17 +78,15 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         flex-shrink: 0;
       }
       .bio {
-        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-          'Segoe UI Symbol', 'Noto Color Emoji';
+        font-family: 'Helvetica Neue';
         font-size: 14px;
-        font-weight: 300;
+        font-weight: 400;
       }
       .truncate {
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
       }
     `}</style>
   </>

@@ -10,6 +10,7 @@ type Props = {
   underlineOnHover?: boolean;
   disableTextTransform?: boolean;
   disabled?: boolean;
+  dataTestId?: string;
 };
 
 function TextButton({
@@ -19,6 +20,7 @@ function TextButton({
   underlineOnHover = false,
   disableTextTransform = false,
   disabled,
+  dataTestId,
 }: Props) {
   return (
     <StyledButton
@@ -26,6 +28,7 @@ function TextButton({
       onClick={onClick}
       underlineOnHover={underlineOnHover}
       disabled={disabled}
+      data-testId={dataTestId}
     >
       <StyledButtonText disableTextTransform={disableTextTransform} disabled={disabled}>
         {text}

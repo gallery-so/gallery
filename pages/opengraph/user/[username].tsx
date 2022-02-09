@@ -30,7 +30,10 @@ export default function OpenGraphUserPage() {
           <OpenGraphPreview
             title={user.username}
             description={user.bio}
-            imageUrls={nfts.slice(0, 4).map((nft) => nft.image_url)}
+            imageUrls={nfts
+              .filter((nft) => nft.image_url)
+              .slice(0, 4)
+              .map((nft) => nft.image_url)}
           />
         </div>
       </div>
