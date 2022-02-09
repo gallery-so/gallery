@@ -1,3 +1,3 @@
 export default function isProduction() {
-  return typeof window !== 'undefined' && window.location.origin === 'https://gallery.so';
+  return process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 }

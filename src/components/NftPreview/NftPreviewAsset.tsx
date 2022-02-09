@@ -15,10 +15,13 @@ type Props = {
 function NftPreviewAsset({ nft, size }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
   const nftAssetComponent = useMemo(() => {
-    if (getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO) {
+    // certain assets don't have `image_url` fields populated, such as ones from Foundation
+    const assetUrl = (nft.image_url || nft.animation_url) ?? '';
+
+    if (getMediaTypeForAssetUrl(assetUrl) === NftMediaType.VIDEO) {
       return (
         <StyledVideo
-          src={`${nft.image_url}#t=0.5`}
+          src={`${assetUrl}#t=0.5`}
           onLoadStart={setContentIsLoaded}
           preload="metadata"
         />
