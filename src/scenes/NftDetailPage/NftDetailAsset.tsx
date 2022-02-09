@@ -54,7 +54,7 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
 
 type Props = {
   nft: Nft;
-  userOwnsAsset: boolean;
+  authenticatedUserOwnsAsset: boolean;
   assetHasNote: boolean;
 };
 
@@ -66,7 +66,7 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
+function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props) {
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -97,10 +97,10 @@ function NftDetailAsset({ nft, userOwnsAsset, assetHasNote }: Props) {
       >
         <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
       </StyledAssetContainer>
-      {isCollectorsNoteEnabled && (userOwnsAsset || assetHasNote) && (
+      {isCollectorsNoteEnabled && (authenticatedUserOwnsAsset || assetHasNote) && (
         <NftDetailNote
           nftId={nft.id}
-          userOwnsAsset={userOwnsAsset}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
           nftCollectorsNote={nft?.collectors_note}
         />
       )}

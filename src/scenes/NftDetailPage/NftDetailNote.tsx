@@ -18,10 +18,10 @@ const MIN_NOTE_HEIGHT = 150;
 type Props = {
   nftCollectorsNote?: string;
   nftId: string;
-  userOwnsAsset: boolean;
+  authenticatedUserOwnsAsset: boolean;
 };
 
-function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
+function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }: Props) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
@@ -113,10 +113,10 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
       <StyledTitleAndButtonContainer>
         {(hasCollectorsNote || isEditing) && <BodyRegular>Collector&rsquo;s Note</BodyRegular>}
-        {userOwnsAsset && !hasCollectorsNote && !isEditing && (
+        {authenticatedUserOwnsAsset && !hasCollectorsNote && !isEditing && (
           <TextButton text={`+ Add Collector's Note`} onClick={handleEditCollectorsNote} />
         )}
-        {userOwnsAsset && (isEditing || hasCollectorsNote) && (
+        {authenticatedUserOwnsAsset && (isEditing || hasCollectorsNote) && (
           <TextButton
             disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT && isEditing}
             text={isEditing ? `Save` : `Edit`}

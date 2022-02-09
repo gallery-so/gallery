@@ -14,7 +14,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
 import Mixpanel from 'utils/mixpanel';
-import { useAuthenticatedUsername } from 'src/hooks/api/users/useUser';
+import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 type Props = {
   nftId: string;
@@ -29,8 +29,8 @@ function NftDetailPage({ nftId }: Props) {
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
-  const authenticatedUsername = useAuthenticatedUsername();
-  const userOwnsAsset = authenticatedUsername === username;
+  const authenticatedUser = usePossiblyAuthenticatedUser();
+  const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
 
   const handleBackClick = useBackButton({ username });
 
@@ -67,7 +67,11 @@ function NftDetailPage({ nftId }: Props) {
         )} */}
           <StyledContentContainer>
             <ShimmerProvider>
-              <NftDetailAsset nft={nft} userOwnsAsset={userOwnsAsset} assetHasNote={assetHasNote} />
+              <NftDetailAsset
+                nft={nft}
+                authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+                assetHasNote={assetHasNote}
+              />
             </ShimmerProvider>
             <NftDetailText nft={nft} />
           </StyledContentContainer>
