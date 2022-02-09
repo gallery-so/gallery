@@ -1,5 +1,4 @@
 import { BodyRegular } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef } from 'react';
@@ -14,7 +13,7 @@ import formatError from 'errors/formatError';
 import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 const MAX_CHAR_COUNT = 400;
-const MIN_NOTE_HEIGHT = 100;
+const MIN_NOTE_HEIGHT = 150;
 
 type Props = {
   nftCollectorsNote?: string;
@@ -36,18 +35,25 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
   const collectorsNoteRef = useRef<HTMLDivElement>(null);
 
+  const scrollDown = () => {
+    if (collectorsNoteRef.current) {
+      collectorsNoteRef.current.scrollIntoView({
+        block: 'end',
+        inline: 'nearest',
+        behavior: 'smooth',
+      });
+    }
+  };
+
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
 
+    // TODO Expand note to full height first time it is opened
+    // Currently user has to type first to expand it fully
+
     // Scroll down - wait 100ms so that element exists before scrolling to bottom of it
     setTimeout(() => {
-      if (collectorsNoteRef.current) {
-        collectorsNoteRef.current.scrollIntoView({
-          block: 'end',
-          inline: 'nearest',
-          behavior: 'smooth',
-        });
-      }
+      scrollDown();
     }, 200);
   }, []);
 
@@ -56,7 +62,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
   const handleSubmitCollectorsNote = useCallback(async () => {
     setGeneralError('');
 
-    if (collectorsNote.length > MAX_CHAR_COUNT) {
+    if (unescapedCollectorsNote.length > MAX_CHAR_COUNT) {
       // No need to handle error here, since the form will mark the text as red
       return;
     }
@@ -70,7 +76,18 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, collectorsNote]);
+  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote]);
+
+  // If the user hits cmd + ctrl enter, submit the note
+  const handleKeyDown = useCallback(
+    async (event) => {
+      if (event.key === 'Enter' && event.metaKey) {
+        event.preventDefault();
+        await handleSubmitCollectorsNote();
+      }
+    },
+    [handleSubmitCollectorsNote]
+  );
 
   const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollectorsNote(event.target?.value);
@@ -78,46 +95,49 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
 
     // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
     // So we use this hard reset if the user deletes all content. Could have more elegant solution
+    // TODO Reduce size to text content on any delete
     if (event.target?.value === '') {
       setNoteHeight(MIN_NOTE_HEIGHT);
     }
 
-    // TODO if user deleted some text, shrink textarea height
+    // Scroll down as the user input goes off the screen
+    // Need setTimeout so that textarea height is updated
+    setTimeout(() => {
+      scrollDown();
+    }, 50);
   }, []);
 
   return (
-    <StyledContainer ref={collectorsNoteRef}>
+    <StyledContainer ref={collectorsNoteRef} tabIndex={0} onKeyDown={handleKeyDown}>
       <Spacer height={18} />
 
-      {userOwnsAsset ? (
-        <TextButton
-          disabled={collectorsNote.length > MAX_CHAR_COUNT}
-          text={
-            isEditing
-              ? "Save Collector's Note"
-              : hasCollectorsNote
-              ? "Edit Collector's Note"
-              : `+ Add Collector's Note`
-          }
-          onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
-        />
-      ) : (
-        <StyledNoteTitle color={colors.gray50}>Collector&rsquo;s Note</StyledNoteTitle>
-      )}
+      <StyledTitleAndButtonContainer>
+        {(hasCollectorsNote || isEditing) && <BodyRegular>Collector&rsquo;s Note</BodyRegular>}
+        {userOwnsAsset && !hasCollectorsNote && !isEditing && (
+          <TextButton text={`+ Add Collector's Note`} onClick={handleEditCollectorsNote} />
+        )}
+        {userOwnsAsset && (isEditing || hasCollectorsNote) && (
+          <TextButton
+            disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT && isEditing}
+            text={isEditing ? `Save` : `Edit`}
+            onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
+          />
+        )}
+      </StyledTitleAndButtonContainer>
       {generalError && (
         <>
           <Spacer height={8} />
           <ErrorText message={generalError} />
         </>
       )}
-      <Spacer height={4} />
+      <Spacer height={12} />
       {isEditing && (
         <StyledTextAreaWithCharCount
           footerHeight={GLOBAL_FOOTER_HEIGHT}
           onChange={handleNoteChange}
           placeholder="Tell us about your NFT..."
-          defaultValue={collectorsNote}
-          currentCharCount={collectorsNote.length}
+          defaultValue={unescapedCollectorsNote}
+          currentCharCount={unescapedCollectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
           noteHeight={noteHeight}
         />
@@ -126,6 +146,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, userOwnsAsset }: Props) {
       {hasCollectorsNote && !isEditing && (
         <StyledCollectorsNote
           footerHeight={GLOBAL_FOOTER_HEIGHT}
+          minNoteHeight={MIN_NOTE_HEIGHT}
           onDoubleClick={handleEditCollectorsNote}
         >
           <Markdown text={unescapedCollectorsNote} />
@@ -148,14 +169,14 @@ const StyledContainer = styled.div`
     width: 100%;
     min-width: 0;
     max-width: none;
-
     position: absolute; // So that it does not affect height of the flex container
   }
 `;
 
-const StyledNoteTitle = styled(BodyRegular)`
-  text-transform: uppercase;
-  font-size: 12px;
+const StyledTitleAndButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 type TextAreaProps = {
@@ -170,11 +191,9 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
   padding-bottom: ${({ footerHeight }) => footerHeight}px;
 
   textarea {
-    min-height: 100px;
-    // height: 100%;
-
     ${({ noteHeight }) => `min-height: ${noteHeight}px`};
 
+    color: #808080;
     margin: 0;
     padding: 0;
     line-height: 20px;
@@ -188,13 +207,14 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
   }
 
   p {
-    right: 8px;
+    right: 0;
     bottom: ${({ footerHeight }) => footerHeight}px;
   }
 `;
 
 type CollectorsNoteProps = {
   footerHeight: number;
+  minNoteHeight: number;
 };
 
 const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
@@ -203,6 +223,7 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   line-height: 20px;
   font-size: 14px;
   letter-spacing: 0.4px;
+  color: #808080;
 
   padding-bottom: ${({ footerHeight }) => footerHeight / 2}px;
 
@@ -211,7 +232,7 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   }
 
   @media only screen and ${breakpoints.tablet} {
-    min-height: 150px;
+    min-height: ${({ minNoteHeight }) => minNoteHeight}px;
   }
 `;
 
