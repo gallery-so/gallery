@@ -117,12 +117,12 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
       <StyledTitleAndButtonContainer>
         {(hasCollectorsNote || isEditing) && <BodyRegular>Collector&rsquo;s Note</BodyRegular>}
         {authenticatedUserOwnsAsset && !hasCollectorsNote && !isEditing && (
-          <TextButton text={`+ Add Collector's Note`} onClick={handleEditCollectorsNote} />
+          <TextButton text={"+ Add Collector's Note"} onClick={handleEditCollectorsNote} />
         )}
         {authenticatedUserOwnsAsset && (isEditing || hasCollectorsNote) && (
           <TextButton
             disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT && isEditing}
-            text={isEditing ? `Save` : `Edit`}
+            text={isEditing ? 'Save' : 'Edit'}
             onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
           />
         )}
