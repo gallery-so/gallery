@@ -76,3 +76,10 @@ code {
   box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 /* end custom scrollbar */
+
+img.emoji {
+  width: 1em;
+  height: 1em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
+}

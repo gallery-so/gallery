@@ -1,5 +1,18 @@
 import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
+import { parse } from 'twemoji-parser';
+
+const emojify = (input: string) => {
+  const entities = parse(input).reverse();
+  const output = entities.reduce(
+    (text, entity) =>
+      `${text.substring(0, entity.indices[0])}<Emoji url="${entity.url}" />${text.substring(
+        entity.indices[1]
+      )}`,
+    input
+  );
+  return output;
+};
 
 type Props = {
   title: string;
@@ -18,12 +31,12 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         ))}
       </div>
       <div className="byline">
-        <div className="username">{unescape(title)}</div>
+        <div className="username">{emojify(unescape(title))}</div>
         {description ? (
           <>
             <div className="separator" />
             <div className="bio truncate">
-              <Markdown text={unescape(description)} />
+              <Markdown text={emojify(unescape(description))} />
             </div>
           </>
         ) : null}
