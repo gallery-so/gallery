@@ -41,8 +41,7 @@ function NftDetailPage({ nftId }: Props) {
     Mixpanel.track('Page View: NFT Detail', { nftId });
   }, [nftId]);
 
-  const assetHasNote =
-    nft?.collectors_note !== '' || nft.id === '1zsXvHQ92Z3K6K7JId3IIds3Q0B'; /* DELETE ME */
+  const assetHasNote = nft?.collectors_note !== '';
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
