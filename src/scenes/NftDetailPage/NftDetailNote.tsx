@@ -177,6 +177,8 @@ const StyledTitleAndButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  z-index: 2; /* Above footer so user can click buttons on very small vertical screens */
+  position: relative;
 `;
 
 type TextAreaProps = {

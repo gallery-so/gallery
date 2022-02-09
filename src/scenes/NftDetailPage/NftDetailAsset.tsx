@@ -126,7 +126,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     width: 100%;
     // max-width: ${({ maxHeight }) => maxHeight}px;
     height: ${({ maxHeight }) => maxHeight}px;
-    max-height: calc(85vh - 64px - ${({ footerHeight }) => footerHeight}px);
+    max-height: calc(85vh - 46px - ${({ footerHeight }) => footerHeight}px);
   }
 `;
 
