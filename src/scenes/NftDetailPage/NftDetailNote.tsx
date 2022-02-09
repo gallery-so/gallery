@@ -35,7 +35,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
 
   const collectorsNoteRef = useRef<HTMLDivElement>(null);
 
-  const scrollDown = () => {
+  const scrollDown = useCallback(() => {
     if (collectorsNoteRef.current) {
       collectorsNoteRef.current.scrollIntoView({
         block: 'end',
@@ -43,7 +43,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
         behavior: 'smooth',
       });
     }
-  };
+  }, []);
 
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
@@ -55,7 +55,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
     setTimeout(() => {
       scrollDown();
     }, 200);
-  }, []);
+  }, [scrollDown]);
 
   const updateNft = useUpdateNft();
 
@@ -89,23 +89,26 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
     [handleSubmitCollectorsNote]
   );
 
-  const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCollectorsNote(event.target?.value);
-    setNoteHeight(event.target?.scrollHeight);
+  const handleNoteChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCollectorsNote(event.target?.value);
+      setNoteHeight(event.target?.scrollHeight);
 
-    // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
-    // So we use this hard reset if the user deletes all content. Could have more elegant solution
-    // TODO Reduce size to text content on any delete
-    if (event.target?.value === '') {
-      setNoteHeight(MIN_NOTE_HEIGHT);
-    }
+      // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
+      // So we use this hard reset if the user deletes all content. Could have more elegant solution
+      // TODO Reduce size to text content on any delete
+      if (event.target?.value === '') {
+        setNoteHeight(MIN_NOTE_HEIGHT);
+      }
 
-    // Scroll down as the user input goes off the screen
-    // Need setTimeout so that textarea height is updated
-    setTimeout(() => {
-      scrollDown();
-    }, 50);
-  }, []);
+      // Scroll down as the user input goes off the screen
+      // Need setTimeout so that textarea height is updated
+      setTimeout(() => {
+        scrollDown();
+      }, 50);
+    },
+    [scrollDown]
+  );
 
   return (
     <StyledContainer ref={collectorsNoteRef} tabIndex={0} onKeyDown={handleKeyDown}>
