@@ -21,7 +21,10 @@ export default function OpenGraphCollectionPage() {
           <OpenGraphPreview
             title={collection.name}
             description={collection.collectors_note}
-            imageUrls={collection.nfts.slice(0, 4).map((nft) => nft.image_url)}
+            imageUrls={collection.nfts
+              .filter((nft) => nft.image_url)
+              .slice(0, 4)
+              .map((nft) => nft.image_url)}
           />
         </div>
       </div>
