@@ -15,13 +15,12 @@ import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 const MAX_CHAR_COUNT = 400;
 const MIN_NOTE_HEIGHT = 150;
 
-type Props = {
-  nftCollectorsNote?: string;
+type EditorProps = {
+  nftCollectorsNote: string;
   nftId: string;
-  authenticatedUserOwnsAsset: boolean;
 };
 
-function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }: Props) {
+function NoteEditor({ nftCollectorsNote, nftId }: EditorProps) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
@@ -46,8 +45,6 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
   }, []);
 
   const handleEditCollectorsNote = useCallback(() => {
-    if (!authenticatedUserOwnsAsset) return;
-
     setIsEditing(true);
 
     // TODO Expand note to full height first time it is opened
@@ -57,7 +54,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
     setTimeout(() => {
       scrollDown();
     }, 200);
-  }, [scrollDown, authenticatedUserOwnsAsset]);
+  }, [scrollDown]);
 
   const updateNft = useUpdateNft();
 
@@ -96,7 +93,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
       setCollectorsNote(event.target?.value);
       setNoteHeight(event.target?.scrollHeight);
 
-      // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
+      // On clear, reset note height (textarea scrollHeight does not dec}rease on its own, it only increases)
       // So we use this hard reset if the user deletes all content. Could have more elegant solution
       // TODO Reduce size to text content on any delete
       if (event.target?.value === '') {
@@ -113,30 +110,35 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
   );
 
   return (
-    <StyledContainer ref={collectorsNoteRef} tabIndex={0} onKeyDown={handleKeyDown}>
-      <Spacer height={24} />
-
+    <div tabIndex={0} onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
       <StyledTitleAndButtonContainer>
-        {(hasCollectorsNote || isEditing) && <BodyRegular>Collector&rsquo;s Note</BodyRegular>}
-        {authenticatedUserOwnsAsset && !hasCollectorsNote && !isEditing && (
+        <BodyRegular>Collector&rsquo;s Note</BodyRegular>
+        {/* We also include isEditing as an option here so the user can click save with an empty note (e.g. delete their note) */}
+        {hasCollectorsNote || isEditing ? (
+          isEditing ? (
+            <TextButton
+              disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
+              text="Save"
+              onClick={handleSubmitCollectorsNote}
+            />
+          ) : (
+            <TextButton text="Edit" onClick={handleEditCollectorsNote} />
+          )
+        ) : (
           <TextButton text={"+ Add Collector's Note"} onClick={handleEditCollectorsNote} />
         )}
-        {authenticatedUserOwnsAsset && (isEditing || hasCollectorsNote) && (
-          <TextButton
-            disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT && isEditing}
-            text={isEditing ? 'Save' : 'Edit'}
-            onClick={isEditing ? handleSubmitCollectorsNote : handleEditCollectorsNote}
-          />
-        )}
       </StyledTitleAndButtonContainer>
+
       {generalError && (
         <>
           <Spacer height={8} />
           <ErrorText message={generalError} />
         </>
       )}
+
       <Spacer height={8} />
-      {isEditing && (
+
+      {isEditing ? (
         <StyledTextAreaWithCharCount
           footerHeight={GLOBAL_FOOTER_HEIGHT}
           onChange={handleNoteChange}
@@ -146,16 +148,50 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
           maxCharCount={MAX_CHAR_COUNT}
           noteHeight={noteHeight}
         />
-      )}
-
-      {hasCollectorsNote && !isEditing && (
+      ) : (
         <StyledCollectorsNote
           footerHeight={GLOBAL_FOOTER_HEIGHT}
           minNoteHeight={MIN_NOTE_HEIGHT}
           onDoubleClick={handleEditCollectorsNote}
         >
-          <Markdown text={unescapedCollectorsNote} />
+          <Markdown text={collectorsNote} />
         </StyledCollectorsNote>
+      )}
+    </div>
+  );
+}
+
+type ViewerProps = {
+  nftCollectorsNote: string;
+};
+
+function NoteViewer({ nftCollectorsNote }: ViewerProps) {
+  return (
+    <>
+      <BodyRegular>Collector&rsquo;s Note</BodyRegular>
+      <Spacer height={8} />
+      <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT} minNoteHeight={MIN_NOTE_HEIGHT}>
+        <Markdown text={nftCollectorsNote} />
+      </StyledCollectorsNote>
+    </>
+  );
+}
+
+type Props = {
+  nftCollectorsNote: string;
+  nftId: string;
+  authenticatedUserOwnsAsset: boolean;
+};
+
+function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }: Props) {
+  return (
+    <StyledContainer>
+      <Spacer height={24} />
+
+      {authenticatedUserOwnsAsset ? (
+        <NoteEditor nftCollectorsNote={nftCollectorsNote} nftId={nftId} />
+      ) : (
+        <NoteViewer nftCollectorsNote={nftCollectorsNote} />
       )}
     </StyledContainer>
   );
@@ -236,7 +272,7 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
 
   // We only apply padding to account for footer, which is not fixed on mobile
   @media only screen and ${breakpoints.tablet} {
-    padding-bottom: ${({ footerHeight }) => footerHeight / 2}px;
+    padding-bottom: ${({ footerHeight }) => footerHeight}px;
   }
 
   p:last-of-type {
