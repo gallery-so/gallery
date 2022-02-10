@@ -15,12 +15,12 @@ import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 const MAX_CHAR_COUNT = 400;
 const MIN_NOTE_HEIGHT = 150;
 
-type EditorProps = {
+type NoteEditorProps = {
   nftCollectorsNote: string;
   nftId: string;
 };
 
-function NoteEditor({ nftCollectorsNote, nftId }: EditorProps) {
+function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
@@ -93,7 +93,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: EditorProps) {
       setCollectorsNote(event.target?.value);
       setNoteHeight(event.target?.scrollHeight);
 
-      // On clear, reset note height (textarea scrollHeight does not dec}rease on its own, it only increases)
+      // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
       // So we use this hard reset if the user deletes all content. Could have more elegant solution
       // TODO Reduce size to text content on any delete
       if (event.target?.value === '') {
@@ -161,11 +161,11 @@ function NoteEditor({ nftCollectorsNote, nftId }: EditorProps) {
   );
 }
 
-type ViewerProps = {
+type NoteViewerProps = {
   nftCollectorsNote: string;
 };
 
-function NoteViewer({ nftCollectorsNote }: ViewerProps) {
+function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <>
       <BodyRegular>Collector&rsquo;s Note</BodyRegular>
@@ -187,7 +187,6 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
   return (
     <StyledContainer>
       <Spacer height={24} />
-
       {authenticatedUserOwnsAsset ? (
         <NoteEditor nftCollectorsNote={nftCollectorsNote} nftId={nftId} />
       ) : (
