@@ -51,7 +51,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
     // TODO Expand note to full height first time it is opened
     // Currently user has to type first to expand it fully
 
-    // Scroll down - wait 100ms so that element exists before scrolling to bottom of it
+    // Scroll down - wait so that element exists before scrolling to bottom of it
     setTimeout(() => {
       scrollDown();
     }, 200);
@@ -105,7 +105,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
       // Need setTimeout so that textarea height is updated
       setTimeout(() => {
         scrollDown();
-      }, 50);
+      }, 0);
     },
     [scrollDown]
   );
