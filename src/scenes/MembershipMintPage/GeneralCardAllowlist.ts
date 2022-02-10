@@ -1,6 +1,6 @@
 import isProduction from 'utils/isProduction';
 
-export const ALLOWLIST_DEV = [];
+const ALLOWLIST_DEV: string[] = [];
 
 const ALLOW_LIST_LEGENDA = [
   '0x76a678aa5021b1f894d531b561d3cdf93ebadaa2',
@@ -2836,12 +2836,18 @@ const ALLOW_LIST_CUSTOM = [
   '0x675EC246dbD022E403942f662084f633092293c5',
   '0x02feeb0AdE57b6adEEdE5A4EEea6Cf8c21BeB6B1',
   '0x1abD0091058B8D805205F3B878530e432eed4E2f',
+  '0x1964c1ad980b6d78136058bb050f4d2735f4ec46',
+  '0x12f2f905e659826ed9cf51fe95c10cd9048d7b8c',
+  '0x192df6ecd831da72c8c49e1c6cd0e3d16d33e25e',
+  '0xe4770401cbe2a9f63dca08a033bf479a50293296',
+  '0x3ac61447a75149ba67639100ecc92c76fb20941c',
+  '0x6456f20453a383004f17b921cd770d187fcd30ef',
+  '0x7df5ff64599f8472c350b8735c081a652da72fc1',
+  '0x347ea40c33c4e1ce8a01860f547e70e6d769da4e',
 ];
 
-export const ALLOWLIST_PROD = [
-  ...ALLOW_LIST_LEGENDA,
-  ...ALLOW_LIST_POOLSUITE,
-  ...ALLOW_LIST_CUSTOM,
-].map((s) => s.toLowerCase());
+const ALLOWLIST_PROD = [...ALLOW_LIST_LEGENDA, ...ALLOW_LIST_POOLSUITE, ...ALLOW_LIST_CUSTOM].map(
+  (s) => s.toLowerCase()
+);
 
-export const getAllowlist = () => (isProduction() ? ALLOWLIST_PROD : ALLOWLIST_DEV);
+export const getLocalAllowlist = () => new Set(isProduction() ? ALLOWLIST_PROD : ALLOWLIST_DEV);
