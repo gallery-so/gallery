@@ -112,18 +112,20 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
   return (
     <div tabIndex={0} onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
       <StyledTitleAndButtonContainer>
-        <BodyRegular>Collector&rsquo;s Note</BodyRegular>
         {/* We also include isEditing as an option here so the user can click save with an empty note (e.g. delete their note) */}
         {hasCollectorsNote || isEditing ? (
-          isEditing ? (
-            <TextButton
-              disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
-              text="Save"
-              onClick={handleSubmitCollectorsNote}
-            />
-          ) : (
-            <TextButton text="Edit" onClick={handleEditCollectorsNote} />
-          )
+          <>
+            <BodyRegular>Collector&rsquo;s Note</BodyRegular>
+            {isEditing ? (
+              <TextButton
+                disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
+                text="Save"
+                onClick={handleSubmitCollectorsNote}
+              />
+            ) : (
+              <TextButton text="Edit" onClick={handleEditCollectorsNote} />
+            )}
+          </>
         ) : (
           <TextButton text={"+ Add Collector's Note"} onClick={handleEditCollectorsNote} />
         )}
