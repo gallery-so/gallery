@@ -16,10 +16,9 @@ import MembershipMintPageProvider, {
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 import { getLocalAllowlist } from './GeneralCardAllowlist';
-// TODO: uncomment below once snapshot endpoint works with CORS
-// import isProduction from 'utils/isProduction';
-// import { vanillaFetcher } from 'contexts/swr/useFetcher';
-// import useSWR from 'swr';
+import isProduction from 'utils/isProduction';
+import { baseurl, vanillaFetcher } from 'contexts/swr/useFetcher';
+import useSWR from 'swr';
 
 export type AssetContract = {
   address: string;
@@ -47,15 +46,10 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
 }
 
 function useAllowlist() {
-  const data = null;
-
-  // TODO: uncomment below once snapshot endpoint works with CORS
-  // const { data } = useSWR(
-  //   isProduction()
-  //     ? 'https://xxxx/snapshot.json'
-  //     : null,
-  //   vanillaFetcher
-  // );
+  const { data } = useSWR(
+    isProduction() ? `${baseurl}/glry/v1/proxy/snapshot` : null,
+    vanillaFetcher
+  );
 
   const localData = getLocalAllowlist();
 
