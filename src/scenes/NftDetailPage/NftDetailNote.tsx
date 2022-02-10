@@ -112,7 +112,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
 
   return (
     <StyledContainer ref={collectorsNoteRef} tabIndex={0} onKeyDown={handleKeyDown}>
-      <Spacer height={18} />
+      <Spacer height={24} />
 
       <StyledTitleAndButtonContainer>
         {(hasCollectorsNote || isEditing) && <BodyRegular>Collector&rsquo;s Note</BodyRegular>}
@@ -133,7 +133,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
           <ErrorText message={generalError} />
         </>
       )}
-      <Spacer height={12} />
+      <Spacer height={8} />
       {isEditing && (
         <StyledTextAreaWithCharCount
           footerHeight={GLOBAL_FOOTER_HEIGHT}
