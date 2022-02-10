@@ -210,7 +210,6 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
     font-size: 14px;
     letter-spacing: 0.4px;
     display: block;
-    // border-bottom: 14px solid white;
 
     border-bottom: none;
     background: none;
