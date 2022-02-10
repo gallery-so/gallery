@@ -1,8 +1,6 @@
+import { vanillaFetcher } from 'contexts/swr/useFetcher';
 import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
-
-const fetcher = async (...args: Parameters<typeof fetch>) =>
-  fetch(...args).then(async (res) => res.json());
 
 type Props = {
   address?: string;
@@ -13,7 +11,7 @@ const EnsName = ({ address }: Props) => {
     address
       ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.toLowerCase())}`
       : null,
-    fetcher
+    vanillaFetcher
   );
 
   if (data?.address) {

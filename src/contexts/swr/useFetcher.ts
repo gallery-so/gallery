@@ -3,7 +3,7 @@ import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 
-const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
+export const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 
 const ERR_UNAUTHORIZED = 401;
 
@@ -93,3 +93,6 @@ export default function useFetcher(): FetcherType {
     [handleUnauthorized]
   );
 }
+
+export const vanillaFetcher = async (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then(async (res) => res.json());
