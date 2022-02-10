@@ -45,15 +45,20 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
-function useAllowlist() {
-  const { data } = useSWR(
+function useAllowlist(): Set<string> {
+  const { data, error } = useSWR(
     isProduction() ? `${baseurl}/glry/v1/proxy/snapshot` : null,
-    vanillaFetcher
+    vanillaFetcher,
+    { suspense: false }
   );
 
-  const localData = getLocalAllowlist();
+  // if API is down, fall back to hard-coded local data
+  if (!data || error) {
+    console.error('no data returned from the server. using backup.');
+    return getLocalAllowlist();
+  }
 
-  return data ?? localData;
+  return new Set(data);
 }
 
 function GeneralMembershipMintPageContent() {
@@ -66,6 +71,12 @@ function GeneralMembershipMintPageContent() {
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
 
   const allowlist = useAllowlist();
+
+  useEffect(() => {
+    // for debugging
+    console.log('allow list entries:', allowlist);
+  }, [allowlist]);
+
   const onAllowList = useMemo(
     () => typeof account === 'string' && allowlist.has(account),
     [account, allowlist]
