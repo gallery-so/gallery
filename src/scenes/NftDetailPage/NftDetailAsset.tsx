@@ -1,5 +1,5 @@
 import breakpoints, { size } from 'components/core/breakpoints';
-import { NftMediaType, FeatureFlag } from 'components/core/enums';
+import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
@@ -9,11 +9,9 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailModel from './NftDetailModel';
-import NftDetailNote from './NftDetailNote';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { isFeatureEnabled } from 'utils/featureFlag';
 
 type NftDetailAssetComponentProps = {
   nft: Nft;
@@ -54,8 +52,7 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
 
 type Props = {
   nft: Nft;
-  authenticatedUserOwnsAsset: boolean;
-  assetHasNote: boolean;
+  hasExtraPaddingForNote: boolean;
 };
 
 // number that determines a reasonable max height for the displayed NFT
@@ -66,7 +63,7 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props) {
+function NftDetailAsset({ nft, hasExtraPaddingForNote }: Props) {
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -78,8 +75,6 @@ function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
 
-  const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);
-
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = getMediaType(nft) === NftMediaType.ANIMATION;
   const shouldEnforceSquareAspectRatio =
@@ -87,24 +82,14 @@ function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
   return (
-    <>
-      <StyledAssetContainer
-        footerHeight={GLOBAL_FOOTER_HEIGHT}
-        maxHeight={maxHeight}
-        shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
-        isCollectorsNoteEnabled={isCollectorsNoteEnabled}
-        hasExtraPaddingForNote={assetHasNote || authenticatedUserOwnsAsset}
-      >
-        <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
-      </StyledAssetContainer>
-      {isCollectorsNoteEnabled && (authenticatedUserOwnsAsset || assetHasNote) && (
-        <NftDetailNote
-          nftId={nft.id}
-          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-          nftCollectorsNote={nft?.collectors_note}
-        />
-      )}
-    </>
+    <StyledAssetContainer
+      footerHeight={GLOBAL_FOOTER_HEIGHT}
+      maxHeight={maxHeight}
+      shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
+      hasExtraPaddingForNote={hasExtraPaddingForNote}
+    >
+      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+    </StyledAssetContainer>
   );
 }
 
@@ -112,7 +97,6 @@ type AssetContainerProps = {
   footerHeight: number;
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
-  isCollectorsNoteEnabled: boolean;
   hasExtraPaddingForNote: boolean;
 };
 
@@ -130,10 +114,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
 
-    ${({ isCollectorsNoteEnabled, hasExtraPaddingForNote, footerHeight }) =>
-      isCollectorsNoteEnabled && hasExtraPaddingForNote
-        ? `max-height: calc(85vh - 46px - ${footerHeight}px)`
-        : ''};
+    ${({ hasExtraPaddingForNote, footerHeight }) =>
+      hasExtraPaddingForNote ? `max-height: calc(85vh - 46px - ${footerHeight}px)` : ''};
   }
 
   @media only screen and ${breakpoints.desktop} {
