@@ -46,6 +46,8 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
   }, []);
 
   const handleEditCollectorsNote = useCallback(() => {
+    if (!authenticatedUserOwnsAsset) return;
+
     setIsEditing(true);
 
     // TODO Expand note to full height first time it is opened
@@ -55,7 +57,7 @@ function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }:
     setTimeout(() => {
       scrollDown();
     }, 200);
-  }, [scrollDown]);
+  }, [scrollDown, authenticatedUserOwnsAsset]);
 
   const updateNft = useUpdateNft();
 
@@ -193,7 +195,10 @@ type TextAreaProps = {
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
-  padding-bottom: ${({ footerHeight }) => footerHeight}px;
+  // We only apply padding to account for footer, which is not fixed on mobile
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: ${({ footerHeight }) => footerHeight}px;
+  }
 
   textarea {
     ${({ noteHeight }) => `min-height: ${noteHeight}px`};
@@ -230,7 +235,10 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   letter-spacing: 0.4px;
   color: #808080;
 
-  padding-bottom: ${({ footerHeight }) => footerHeight / 2}px;
+  // We only apply padding to account for footer, which is not fixed on mobile
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: ${({ footerHeight }) => footerHeight / 2}px;
+  }
 
   p:last-of-type {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
