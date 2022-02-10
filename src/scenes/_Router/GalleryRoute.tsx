@@ -54,13 +54,13 @@ export default function GalleryRoute({
       return (
         <>
           <Filler />
-          <GlobalFooter footerIsFixed={footerIsFixed} />
+          <GlobalFooter isFixed={footerIsFixed} />
         </>
       );
     }
 
     if (footerVisibleWithinView) {
-      return <GlobalFooter footerIsFixed={footerIsFixed} />;
+      return <GlobalFooter isFixed={footerIsFixed} />;
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed]);
 

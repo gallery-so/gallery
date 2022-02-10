@@ -13,11 +13,11 @@ import {
   GALLERY_BLOG,
 } from 'constants/urls';
 
-type GlobalFooterProps = { footerIsFixed?: boolean };
+type GlobalFooterProps = { isFixed?: boolean };
 
-function GlobalFooter({ footerIsFixed = false }: GlobalFooterProps) {
+function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
   return (
-    <StyledGlobalFooter isFixed={footerIsFixed}>
+    <StyledGlobalFooter isFixed={isFixed}>
       <StyledLogo>GALLERY</StyledLogo>
       <Spacer height={4} />
       <StyledBottomText>
