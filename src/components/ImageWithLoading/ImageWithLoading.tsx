@@ -46,5 +46,8 @@ const StyledImg = styled.img<StyledImgProps>`
   display: block;
   ${({ widthType }) => (widthType === 'fullWidth' ? 'width' : 'max-width')}: 100%;
   max-height: ${({ heightType }) => (heightType === 'maxHeightScreen' ? '80vh' : '100%')};
+
+  // The below has visual effects on image assets w/o notes as well, see https://gallery.so/mikey/20pejlO8YtjuR6X7efR7bCSrdzK/20peWZgskhYcCasuCk0z6P3VCN1
+  // It is needed to force images to fit in container and prevent overlap with note
   height: 100%;
 `;

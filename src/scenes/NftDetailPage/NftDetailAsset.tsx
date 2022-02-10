@@ -83,8 +83,9 @@ function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = getMediaType(nft) === NftMediaType.ANIMATION;
   const shouldEnforceSquareAspectRatio =
+    aspectRatioType !== 'wide' &&
     !isIframe &&
-    (breakpoint === size.desktop || breakpoint === size.tablet || aspectRatioType === 'square');
+    (breakpoint === size.desktop || breakpoint === size.tablet);
 
   return (
     <>
@@ -93,6 +94,7 @@ function NftDetailAsset({ nft, authenticatedUserOwnsAsset, assetHasNote }: Props
         maxHeight={maxHeight}
         shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
         isCollectorsNoteEnabled={isCollectorsNoteEnabled}
+        hasExtraPaddingForNote={assetHasNote || authenticatedUserOwnsAsset}
       >
         <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
       </StyledAssetContainer>
@@ -112,6 +114,7 @@ type AssetContainerProps = {
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
   isCollectorsNoteEnabled: boolean;
+  hasExtraPaddingForNote: boolean;
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
@@ -127,8 +130,16 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
 
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
-    ${({ isCollectorsNoteEnabled, footerHeight }) =>
-      isCollectorsNoteEnabled ? `max-height: calc(85vh - 46px - ${footerHeight}px)` : ''};
+
+    ${({ isCollectorsNoteEnabled, hasExtraPaddingForNote, footerHeight }) =>
+      isCollectorsNoteEnabled && hasExtraPaddingForNote
+        ? `max-height: calc(85vh - 46px - ${footerHeight}px)`
+        : ''};
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    width: ${({ maxHeight }) => maxHeight}px;
+    height: ${({ maxHeight }) => maxHeight}px;
   }
 `;
 
