@@ -15,7 +15,10 @@ import MembershipMintPageProvider, {
   useMembershipMintPageActions,
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
-import { getAllowlist } from './GeneralCardAllowlist';
+import { getLocalAllowlist } from './GeneralCardAllowlist';
+import isProduction from 'utils/isProduction';
+import { baseurl, vanillaFetcher } from 'contexts/swr/useFetcher';
+import useSWR from 'swr';
 
 export type AssetContract = {
   address: string;
@@ -42,17 +45,42 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
+function useAllowlist(): Set<string> {
+  const { data, error } = useSWR(
+    // TODO: this is hard-coding the dev backend URL until snapshots are available in prod.
+    // this will work in the near-future given the contract is the same for either environment.
+    isProduction() ? `https://api.dev.gallery.so/glry/v1/proxy/snapshot` : null,
+    vanillaFetcher,
+    { suspense: false }
+  );
+
+  // if API is down, fall back to hard-coded local data
+  if (!data || error) {
+    console.error('no data returned from the server. using backup.');
+    return getLocalAllowlist();
+  }
+
+  return new Set(data);
+}
+
 function GeneralMembershipMintPageContent() {
-  const { account } = useWeb3React<Web3Provider>();
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const account = rawAccount?.toLowerCase();
   const contract = useGeneralMembershipCardContract();
 
   const { getSupply } = useMembershipMintPageActions();
 
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
 
-  const allowlist = getAllowlist();
+  const allowlist = useAllowlist();
+
+  useEffect(() => {
+    // for debugging
+    console.log('allow list entries:', allowlist);
+  }, [allowlist]);
+
   const onAllowList = useMemo(
-    () => Boolean(account) && allowlist.includes(account!.toLowerCase()),
+    () => typeof account === 'string' && allowlist.has(account),
     [account, allowlist]
   );
 
@@ -75,7 +103,7 @@ function GeneralMembershipMintPageContent() {
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
       if (contract && account) {
-        const merkleProof = generateMerkleProof(account, allowlist);
+        const merkleProof = generateMerkleProof(account, Array.from(allowlist));
         return contract.mint(account, tokenId, merkleProof);
       }
     },

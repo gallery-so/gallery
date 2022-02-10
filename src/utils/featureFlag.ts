@@ -4,7 +4,7 @@ import isProduction from './isProduction';
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   SINGLE_COLLECTION: true,
-  OPENGRAPH_IMAGES: false,
+  OPENGRAPH_IMAGES: true,
   COLLECTORS_NOTE: false,
 };
 
