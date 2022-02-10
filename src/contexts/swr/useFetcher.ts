@@ -93,3 +93,6 @@ export default function useFetcher(): FetcherType {
     [handleUnauthorized]
   );
 }
+
+export const vanillaFetcher = async (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then(async (res) => res.json());

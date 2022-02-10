@@ -15,7 +15,11 @@ import MembershipMintPageProvider, {
   useMembershipMintPageActions,
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
-import { getAllowlist } from './GeneralCardAllowlist';
+import { getLocalAllowlist } from './GeneralCardAllowlist';
+// TODO: uncomment below once snapshot endpoint works with CORS
+// import isProduction from 'utils/isProduction';
+// import { vanillaFetcher } from 'contexts/swr/useFetcher';
+// import useSWR from 'swr';
 
 export type AssetContract = {
   address: string;
@@ -42,17 +46,34 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
+function useAllowlist() {
+  const data = null;
+
+  // TODO: uncomment below once snapshot endpoint works with CORS
+  // const { data } = useSWR(
+  //   isProduction()
+  //     ? 'https://xxxx/snapshot.json'
+  //     : null,
+  //   vanillaFetcher
+  // );
+
+  const localData = getLocalAllowlist();
+
+  return data ?? localData;
+}
+
 function GeneralMembershipMintPageContent() {
-  const { account } = useWeb3React<Web3Provider>();
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const account = rawAccount?.toLowerCase();
   const contract = useGeneralMembershipCardContract();
 
   const { getSupply } = useMembershipMintPageActions();
 
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
 
-  const allowlist = getAllowlist();
+  const allowlist = useAllowlist();
   const onAllowList = useMemo(
-    () => Boolean(account) && allowlist.includes(account!.toLowerCase()),
+    () => typeof account === 'string' && allowlist.has(account),
     [account, allowlist]
   );
 
@@ -75,7 +96,7 @@ function GeneralMembershipMintPageContent() {
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
       if (contract && account) {
-        const merkleProof = generateMerkleProof(account, allowlist);
+        const merkleProof = generateMerkleProof(account, Array.from(allowlist));
         return contract.mint(account, tokenId, merkleProof);
       }
     },
