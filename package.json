@@ -9,7 +9,9 @@
     "relay": "relay-compiler",
     "relay:watch": "relay-compiler --watch",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "synpress:open": "synpress open",
+    "cypress:run": "cypress run",
+    "synpress:run": "synpress run"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.1",
@@ -19,6 +21,7 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
+    "@synthetixio/synpress": "^1.1.1",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
