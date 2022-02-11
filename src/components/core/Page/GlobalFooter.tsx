@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { Caption, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -13,9 +13,11 @@ import {
   GALLERY_BLOG,
 } from 'constants/urls';
 
-function GlobalFooter() {
+type GlobalFooterProps = { isFixed?: boolean };
+
+function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
   return (
-    <StyledGlobalFooter>
+    <StyledGlobalFooter isFixed={isFixed}>
       <StyledLogo>GALLERY</StyledLogo>
       <Spacer height={4} />
       <StyledBottomText>
@@ -46,7 +48,11 @@ function GlobalFooter() {
   );
 }
 
-const StyledGlobalFooter = styled.div`
+type StyledFooterProps = {
+  isFixed: boolean;
+};
+
+const StyledGlobalFooter = styled.div<StyledFooterProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -57,6 +63,22 @@ const StyledGlobalFooter = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px 16px;
+
+    ${({ isFixed }) =>
+      isFixed &&
+      css`
+        z-index: 1;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+
+        background: white;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 1) 50%
+        );
+      `}
   }
 
   @media only screen and ${breakpoints.desktop} {

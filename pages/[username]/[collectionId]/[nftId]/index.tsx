@@ -17,7 +17,7 @@ export default function NftDetailPage({ nftId }: NftDetailPageProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<NftDetailPageScene nftId={nftId} />} />;
+  return <GalleryRoute element={<NftDetailPageScene nftId={nftId} />} footerIsFixed />;
 }
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {

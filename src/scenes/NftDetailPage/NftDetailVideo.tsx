@@ -29,6 +29,7 @@ function NftDetailVideo({ nft, maxHeight }: Props) {
 
 const StyledVideo = styled.video<{ maxHeight: number }>`
   width: 100%;
+  height: 100%;
   border: none;
 
   max-height: ${({ maxHeight }) => maxHeight}px;

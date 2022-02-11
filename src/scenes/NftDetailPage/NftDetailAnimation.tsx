@@ -23,7 +23,7 @@ const StyledIframe = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  min-height: 500px;
+  min-height: min(500px, 70vh);
 `;
 
 export default NftDetailAnimation;
