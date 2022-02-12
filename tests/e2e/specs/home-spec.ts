@@ -1,3 +1,7 @@
+import HomePage from '../pages/home/home-page';
+
+const home = new HomePage();
+
 describe('Homepage test', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -7,16 +11,19 @@ describe('Homepage test', () => {
     cy.contains('Gallery', { matchCase: false }).should('be.exist');
   });
 
-  it('should render a sign in button', () => {
-    cy.get('[data-testid="sign-in-button"]').should('be.exist');
-  });
-
-  it('should render an explorer button', () => {
-    cy.get('[data-testid="explore-button"]').should('be.exist');
-  });
-
   it('should redirect to members page when click the explore button', () => {
-    cy.get('[data-testid="explore-button"]').click();
+    home.getExploreButton().should('be.exist');
+    home.getExploreButton().click();
     cy.url().should('include', '/members');
+  });
+
+  it('should redirect to sign in page when click the sign in button', () => {
+    home.getSignInButton().should('be.exist');
+    home.getSignInButton().click();
+    home.getMetaMaskButton().click();
+    home.acceptMetamaskAccessRequest();
+    cy.confirmMetamaskSignatureRequest();
+    // TODO: Replace this with fixture
+    cy.url().should('include', `/Jakz`);
   });
 });
