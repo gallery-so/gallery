@@ -4,8 +4,6 @@ import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
 
 type UserGalleryProps = MetaTagProps & {
   username?: string;
@@ -24,13 +22,12 @@ export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({
   return {
     props: {
       username,
-      metaTags:
-        isFeatureEnabled(FeatureFlag.OPENGRAPH_IMAGES) && username
-          ? openGraphMetaTags({
-              title: `${username} | Gallery`,
-              previewPath: `/opengraph/user/${username}`,
-            })
-          : null,
+      metaTags: username
+        ? openGraphMetaTags({
+            title: `${username} | Gallery`,
+            previewPath: `/opengraph/user/${username}`,
+          })
+        : null,
     },
   };
 };
