@@ -17,7 +17,7 @@ describe('Homepage test', () => {
     cy.url().should('include', '/members');
   });
 
-  it('should redirect to sign in page when click the sign in button', () => {
+  it('should redirect to collection page when click the sign in button', () => {
     home.getSignInButton().should('be.exist');
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
@@ -25,5 +25,15 @@ describe('Homepage test', () => {
     cy.confirmMetamaskSignatureRequest();
     // TODO: Replace this with fixture
     cy.url().should('include', `/Jakz`);
+  });
+
+  it('should able to signout', () => {
+    home.getSignInButton().should('be.exist');
+    home.getSignInButton().click();
+
+    home.getAccountButton().click();
+    home.getSignOutButton().click();
+
+    home.getSignInButtonNav().should('be.exist');
   });
 });

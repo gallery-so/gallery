@@ -16,4 +16,16 @@ export default class HomePage extends Page {
   getMetaMaskButton() {
     return cy.get('[data-testid="wallet-button"]').contains('MetaMask');
   }
+
+  getAccountButton() {
+    return cy.get('button').contains('Account');
+  }
+
+  getSignOutButton() {
+    return cy.get('button').contains('Sign Out');
+  }
+
+  getSignInButtonNav() {
+    return cy.get('button').contains('Sign In');
+  }
 }
