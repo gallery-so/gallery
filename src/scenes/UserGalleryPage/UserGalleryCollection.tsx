@@ -8,10 +8,9 @@ import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
 import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
-import { DisplayLayout, FeatureFlag } from 'components/core/enums';
+import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import { useNavigateToUrl } from 'utils/navigate';
-import { isFeatureEnabled } from 'utils/featureFlag';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
@@ -35,7 +34,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 
   const [isHovering, setIsHovering] = useState(false);
-  const isSingleCollectionEnabled = isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION);
 
   const username = window.location.pathname.split('/')[1];
   // TODO: Replace with useRouter() once we have a way to get the current route
@@ -43,10 +41,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      if (!isSingleCollectionEnabled) return;
       navigateToUrl(`/${username}/${collection.id}`, event);
     },
-    [collection.id, navigateToUrl, username, isSingleCollectionEnabled]
+    [collection.id, navigateToUrl, username]
   );
 
   const handleMouseEnter = useCallback(() => {
@@ -68,27 +65,23 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <TitleSerif onClick={handleViewCollectionClick}>
-            <StyledCollectorsTitle enableUnderline={isSingleCollectionEnabled}>
-              {unescapedCollectionName}
-            </StyledCollectorsTitle>
+            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </TitleSerif>
-          {isSingleCollectionEnabled && (
-            <StyledSettingsDropdown>
-              {isHovering && (
-                <Dropdown>
-                  <TextButton
-                    text="View Collection"
-                    onClick={handleViewCollectionClick}
-                    underlineOnHover
-                  />
-                  <Spacer height={12} />
-                  <CopyToClipboard textToCopy={collectionUrl}>
-                    <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
-                  </CopyToClipboard>
-                </Dropdown>
-              )}
-            </StyledSettingsDropdown>
-          )}
+          <StyledSettingsDropdown>
+            {isHovering && (
+              <Dropdown>
+                <TextButton
+                  text="View Collection"
+                  onClick={handleViewCollectionClick}
+                  underlineOnHover
+                />
+                <Spacer height={12} />
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+                </CopyToClipboard>
+              </Dropdown>
+            )}
+          </StyledSettingsDropdown>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
@@ -146,10 +139,10 @@ const StyledCollectionTitleWrapper = styled.div`
   word-break: break-word;
 `;
 
-const StyledCollectorsTitle = styled.span<{ enableUnderline: boolean }>`
-  cursor: ${({ enableUnderline }) => (enableUnderline ? 'pointer' : 'initial')};
+const StyledCollectorsTitle = styled.span`
+  cursor: pointer;
   &:hover {
-    text-decoration: ${({ enableUnderline }) => (enableUnderline ? 'underline' : 'none')};
+    text-decoration: underline;
   }
 `;
 
