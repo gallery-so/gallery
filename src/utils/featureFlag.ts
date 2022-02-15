@@ -5,7 +5,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   SINGLE_COLLECTION: true,
   OPENGRAPH_IMAGES: true,
-  COLLECTORS_NOTE: false,
+  COLLECTORS_NOTE: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
