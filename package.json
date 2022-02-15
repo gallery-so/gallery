@@ -8,9 +8,7 @@
     "typecheck": "tsc --noEmit",
     "relay": "relay-compiler",
     "relay:watch": "relay-compiler --watch",
-    "cypress:open": "cypress open",
     "synpress:open": "synpress open",
-    "cypress:run": "cypress run",
     "synpress:run": "synpress run"
   },
   "dependencies": {
