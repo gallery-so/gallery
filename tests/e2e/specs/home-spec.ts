@@ -30,7 +30,7 @@ describe('Homepage test', () => {
   it('should able to signout', () => {
     home.getSignInButton().should('be.exist');
     home.getSignInButton().click();
-
+    cy.wait(1000);
     home.getAccountButton().click();
     home.getSignOutButton().click();
 
