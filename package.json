@@ -19,7 +19,6 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
-    "@synthetixio/synpress": "^1.1.1",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
@@ -50,6 +49,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
+    "@synthetixio/synpress": "^1.1.1",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.0.2",
