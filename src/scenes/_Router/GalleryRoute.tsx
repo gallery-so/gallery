@@ -10,6 +10,8 @@ export type LayoutProps = {
   // whether the footer should be rendered
   // if false, this will override both props below
   footer?: boolean;
+  // whether the footer should be fixed to bottom of page
+  footerIsFixed?: boolean;
   // whether the footer should be rendered within view
   footerVisibleWithinView?: boolean;
   // whether the footer should be rendered out of view
@@ -31,6 +33,7 @@ export default function GalleryRoute({
   freshLayout = false,
   navbar = true,
   footer = true,
+  footerIsFixed = false,
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
 }: GalleryRouteProps) {
@@ -51,15 +54,15 @@ export default function GalleryRoute({
       return (
         <>
           <Filler />
-          <GlobalFooter />
+          <GlobalFooter isFixed={footerIsFixed} />
         </>
       );
     }
 
     if (footerVisibleWithinView) {
-      return <GlobalFooter />;
+      return <GlobalFooter isFixed={footerIsFixed} />;
     }
-  }, [footer, footerVisibleOutOfView, footerVisibleWithinView]);
+  }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed]);
 
   const banner = useMemo(
     () =>

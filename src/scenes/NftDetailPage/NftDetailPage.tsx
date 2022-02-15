@@ -10,10 +10,15 @@ import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailText from './NftDetailText';
+import NftDetailNote from './NftDetailNote';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
 import Mixpanel from 'utils/mixpanel';
+import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
+
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 
 type Props = {
   nftId: string;
@@ -28,6 +33,9 @@ function NftDetailPage({ nftId }: Props) {
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
+  const authenticatedUser = usePossiblyAuthenticatedUser();
+  const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
+
   const handleBackClick = useBackButton({ username });
 
   const nft = useNft({ id: nftId ?? '' });
@@ -36,6 +44,11 @@ function NftDetailPage({ nftId }: Props) {
   useEffect(() => {
     Mixpanel.track('Page View: NFT Detail', { nftId });
   }, [nftId]);
+
+  const assetHasNote = nft?.collectors_note !== '';
+  const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);
+
+  const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
@@ -60,9 +73,22 @@ function NftDetailPage({ nftId }: Props) {
           ></NavigationHandle>
         )} */}
           <StyledContentContainer>
-            <ShimmerProvider>
-              <NftDetailAsset nft={nft} />
-            </ShimmerProvider>
+            <StyledAssetAndNoteContainer>
+              <ShimmerProvider>
+                <NftDetailAsset
+                  nft={nft}
+                  hasExtraPaddingForNote={isCollectorsNoteEnabled && assetHasExtraPaddingForNote}
+                />
+              </ShimmerProvider>
+              {isCollectorsNoteEnabled && (authenticatedUserOwnsAsset || assetHasNote) && (
+                <NftDetailNote
+                  nftId={nft.id}
+                  authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+                  nftCollectorsNote={nft?.collectors_note}
+                />
+              )}
+            </StyledAssetAndNoteContainer>
+
             <NftDetailText nft={nft} />
           </StyledContentContainer>
           {/* {nextNftId && (
@@ -120,6 +146,11 @@ const StyledContentContainer = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: initial;
   }
+`;
+
+const StyledAssetAndNoteContainer = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
 const StyledNftDetailPage = styled(Page)`
