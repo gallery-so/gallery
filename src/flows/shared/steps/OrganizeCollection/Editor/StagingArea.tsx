@@ -129,7 +129,7 @@ const StyledStagingArea = styled.div`
 
   padding: 100px 80px;
 
-  overflow: scroll;
+  overflow: auto;
 
   &::-webkit-scrollbar {
     display: none;

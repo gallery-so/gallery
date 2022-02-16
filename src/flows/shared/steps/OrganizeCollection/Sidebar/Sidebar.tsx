@@ -120,7 +120,7 @@ const StyledSidebar = styled.div`
 
   padding: 32px;
 
-  overflow: scroll;
+  overflow: auto;
 
   &::-webkit-scrollbar {
     display: none;

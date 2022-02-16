@@ -92,7 +92,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
     horizontalLayout
       ? `
     max-height: ${fullPageHeightWithoutNavbarAndFooter};
-    overflow: scroll;
+    overflow: auto;
     padding-right: 16px;
     `
       : `
