@@ -12,7 +12,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
 import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
-const MAX_CHAR_COUNT = 400;
+const MAX_CHAR_COUNT = 1200;
 const MIN_NOTE_HEIGHT = 150;
 
 type NoteEditorProps = {
