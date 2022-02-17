@@ -7,14 +7,14 @@ type Props = {
   text: string;
 };
 
-// Stricter Markdown component for rendering user-provided content because we want to limit the allowed elements
+// Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app
 export default function Markdown({ text }: Props) {
   return (
     <BaseMarkdown allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']} text={text} />
   );
 }
 
-// Markdown component for rendering Gallery-provided content that allow a wider range of allowed elements
+// Markdown component for rendering Gallery-provided content that allow a wider range of elements
 export function InternalMarkdown({ text }: Props) {
   return (
     <BaseMarkdown
