@@ -42,6 +42,14 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
           <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>Jobs</StyledLinkText>
           </StyledLink>
+          <Spacer width={8} />
+          <StyledLink href="/terms">
+            <StyledLinkText color={colors.gray40}>Terms</StyledLinkText>
+          </StyledLink>
+          <Spacer width={8} />
+          <StyledLink href="/privacy">
+            <StyledLinkText color={colors.gray40}>Privacy</StyledLinkText>
+          </StyledLink>
         </StyledLinkContainer>
       </StyledBottomText>
     </StyledGlobalFooter>
