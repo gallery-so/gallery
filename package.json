@@ -8,8 +8,8 @@
     "typecheck": "tsc --noEmit",
     "relay": "relay-compiler",
     "relay:watch": "relay-compiler --watch",
-    "synpress:open": "synpress open",
-    "synpress:run": "synpress run"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.1",
@@ -49,10 +49,8 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
-    "@synthetixio/synpress": "^1.1.1",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
-    "@types/ethereumjs-util": "^6.1.0",
     "@types/jest": "^27.0.2",
     "@types/lodash.clonedeep": "^4.5.6",
     "@types/lodash.unescape": "^4.0.6",
