@@ -2,8 +2,6 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGalleryPage';
-import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 
@@ -13,10 +11,6 @@ type CollectionGalleryProps = MetaTagProps & {
 };
 
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
-  if (!isFeatureEnabled(FeatureFlag.SINGLE_COLLECTION)) {
-    return <GalleryRedirect to={`/${username}`} />;
-  }
-
   if (!username || !collectionId) {
     return <GalleryRedirect to="/" />;
   }
@@ -37,13 +31,12 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
     props: {
       username,
       collectionId,
-      metaTags:
-        isFeatureEnabled(FeatureFlag.OPENGRAPH_IMAGES) && collectionId
-          ? openGraphMetaTags({
-              title: `${username} | Gallery`,
-              previewPath: `/opengraph/collection/${collectionId}`,
-            })
-          : null,
+      metaTags: collectionId
+        ? openGraphMetaTags({
+            title: `${username} | Gallery`,
+            previewPath: `/opengraph/collection/${collectionId}`,
+          })
+        : null,
     },
   };
 };
