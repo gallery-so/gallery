@@ -19,7 +19,7 @@ function LoggedInNav() {
 
   const truncatedUserAddress = useMemo(() => truncateAddress(userAddress), [userAddress]);
 
-  const username = user.username;
+  const username = user?.username;
 
   const handleManageWalletsClick = useCallback(() => {
     showModal(<ManageWalletsModal />);
