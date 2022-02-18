@@ -46,13 +46,9 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
 }
 
 function useAllowlist(): Set<string> {
-  const { data, error } = useSWR(
-    // TODO: this is hard-coding the dev backend URL until snapshots are available in prod.
-    // this will work in the near-future given the contract is the same for either environment.
-    isProduction() ? `https://api.dev.gallery.so/glry/v1/proxy/snapshot` : null,
-    vanillaFetcher,
-    { suspense: false }
-  );
+  const { data, error } = useSWR(`${baseurl}/glry/v1/proxy/snapshot`, vanillaFetcher, {
+    suspense: false,
+  });
 
   // if API is down, fall back to hard-coded local data
   if (!data || error) {
