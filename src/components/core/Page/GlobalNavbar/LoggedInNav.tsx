@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -13,7 +12,6 @@ import NavElement from './NavElement';
 import { useRouter } from 'next/router';
 
 function LoggedInNav() {
-  const { logOut } = useAuthActions();
   const user = useAuthenticatedUser();
   const userAddress = useAuthenticatedUserAddress();
   const { showModal } = useModal();
@@ -21,14 +19,7 @@ function LoggedInNav() {
 
   const truncatedUserAddress = useMemo(() => truncateAddress(userAddress), [userAddress]);
 
-  const handleGalleryRedirect = useCallback(() => {
-    const authenticatedUserIsOnTheirOwnPage = window.location.pathname.slice(1) === user.username;
-    if (authenticatedUserIsOnTheirOwnPage) {
-      return;
-    }
-
-    void push(`/${user.username}`);
-  }, [push, user.username]);
+  const username = user.username;
 
   const handleManageWalletsClick = useCallback(() => {
     showModal(<ManageWalletsModal />);
@@ -45,23 +36,19 @@ function LoggedInNav() {
   return (
     <>
       <NavElement>
-        <TextButton onClick={handleGalleryRedirect} text="My Gallery" />
-      </NavElement>
-      <Spacer width={24} />
-      <NavElement>
-        <Dropdown mainText="Account">
+        <Dropdown mainText="Edit Profile">
           <CopyToClipboard textToCopy={userAddress}>
             <TextButton text={truncatedUserAddress} disableTextTransform underlineOnHover />
           </CopyToClipboard>
           <Spacer height={12} />
-          <TextButton text="Manage Wallets" onClick={handleManageWalletsClick} underlineOnHover />
-          <Spacer height={12} />
-          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} underlineOnHover />
-          <Spacer height={12} />
           <TextButton text="Edit name & Bio" onClick={handleEditNameClick} underlineOnHover />
           <Spacer height={12} />
-          <TextButton text="Sign Out" onClick={logOut} underlineOnHover />
+          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} underlineOnHover />
         </Dropdown>
+      </NavElement>
+      <Spacer width={24} />
+      <NavElement>
+        <TextButton onClick={handleManageWalletsClick} text={username} />
       </NavElement>
     </>
   );
