@@ -39,28 +39,36 @@ export const StyledNftPreviewLabel = styled.div`
 `;
 
 const StyledBodyRegular = styled(BodyRegular)<{ lines: number }>`
+  word-wrap: break-word;
+  word-break: break-all;
+
   margin: 0;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  line-clamp: ${({ lines }) => lines};
   -webkit-line-clamp: ${({ lines }) => lines};
   overflow: hidden;
   font-size: 12px;
   line-height: 16px;
   text-overflow: ellipsis;
-  // word-break: break-word;
-  // word-break: break-all;
 
-    @media only screen and ${breakpoints.tablet} {
-      font-size: 14px;
-      line-height: 20px;
-      display: unset;
-      -webkit-box-orient: unset;
-      -webkit-line-clamp: unset;
-      overflow: visible;
-      text-overflow: unset;
-    }
+  @media only screen and ${breakpoints.mobileLarge} {
+    word-wrap: unset;
+    word-break: unset;
   }
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
+    line-height: 20px;
+    display: unset;
+    -webkit-box-orient: unset;
+    line-clamp: unset;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    text-overflow: unset;
+  }
+}
 `;
 
 export default NftPreviewLabel;
