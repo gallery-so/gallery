@@ -40,7 +40,7 @@ export const StyledNftPreviewLabel = styled.div`
 
 const StyledBodyRegular = styled(BodyRegular)<{ lines: number }>`
   margin: 0;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ lines }) => lines};
