@@ -101,11 +101,11 @@ const StyledNftPreview = styled.div<{ columns: number }>`
   height: fit-content;
   overflow: hidden;
 
-  ${StyledNftLabel} {
+  &:hover ${StyledNftLabel} {
     transform: translateY(0px);
   }
 
-  ${StyledNftFooter} {
+  &:hover ${StyledNftFooter} {
     opacity: 1;
   }
 `;
