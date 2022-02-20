@@ -38,11 +38,11 @@ const DND_WIDTHS: Record<number, number> = {
 // Width of draggable image for each Column # setting
 const IMAGE_SIZES: Record<number, number> = {
   1: 400,
-  2: 320,
-  3: 280,
-  4: 207,
-  5: 156,
-  6: 122,
+  2: 330,
+  3: 212,
+  4: 153,
+  5: 122,
+  6: 91,
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -157,7 +157,7 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   width: calc(100% + 48px);
 
   ${StyledSortableNft} {
-    margin: 24px;
+    margin: 24px 0 0 24px;
   }
   ${StyledSortableNft} * {
     outline: none;
