@@ -29,10 +29,10 @@ import { MENU_HEIGHT } from './EditorMenu';
 const DND_WIDTHS: Record<number, number> = {
   1: 600,
   2: 800,
-  3: 984,
-  4: 1020,
-  5: 1020,
-  6: 1020,
+  3: 720,
+  4: 708,
+  5: 705,
+  6: 690,
 };
 
 // Width of draggable image for each Column # setting
@@ -41,7 +41,7 @@ const IMAGE_SIZES: Record<number, number> = {
   2: 330,
   3: 212,
   4: 153,
-  5: 122,
+  5: 117,
   6: 91,
 };
 
