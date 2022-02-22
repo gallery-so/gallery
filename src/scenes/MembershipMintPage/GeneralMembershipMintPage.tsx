@@ -46,18 +46,17 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
 }
 
 function useAllowlist(): Set<string> {
-  // const { data, error } = useSWR(`${baseurl}/glry/v1/proxy/snapshot`, vanillaFetcher, {
-  //   suspense: false,
-  // });
+  const { data, error } = useSWR(`${baseurl}/glry/v1/proxy/snapshot`, vanillaFetcher, {
+    suspense: false,
+  });
 
-  // // if API is down, fall back to hard-coded local data
-  // if (!data || error) {
-  //   console.error('no data returned from the server. using backup.');
-  //   return getLocalAllowlist();
-  // }
-  return getLocalAllowlist();
+  // if API is down, fall back to hard-coded local data
+  if (!data || error) {
+    console.error('no data returned from the server. using backup.');
+    return getLocalAllowlist();
+  }
 
-  // return new Set(data);
+  return new Set(data);
 }
 
 function GeneralMembershipMintPageContent() {
