@@ -30,7 +30,7 @@ function ManageWallets({ newAddress }: Props) {
 
   return (
     <StyledManageWallets>
-      <BodyMedium>Manage Wallets</BodyMedium>
+      <BodyMedium>Manage Accounts</BodyMedium>
       <Spacer height={8} />
       <BodyRegular color={colors.gray50}>Add more wallets to access your other NFTs.</BodyRegular>
       <BodyRegular color={colors.gray50}>
