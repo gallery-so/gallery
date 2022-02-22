@@ -32,7 +32,6 @@ export const StyledNftPreviewLabel = styled.div`
   padding: 8px;
   z-index: 10;
   justify-content: end;
-  // height: 100%;
   // this helps position the label correctly in Safari
   // Safari differs from Chrome in how it renders height: 100% on position: absolute elements
   min-height: 56px;
@@ -52,6 +51,8 @@ const StyledBodyRegular = styled(BodyRegular)<{ lines: number }>`
   font-size: 12px;
   line-height: 16px;
   text-overflow: ellipsis;
+  padding-right: 16px;
+  margin-right: -16px;
 
   @media only screen and ${breakpoints.mobileLarge} {
     word-wrap: unset;
@@ -61,6 +62,8 @@ const StyledBodyRegular = styled(BodyRegular)<{ lines: number }>`
   @media only screen and ${breakpoints.tablet} {
     font-size: 14px;
     line-height: 20px;
+    padding-right: 0;
+    margin-right: 0;
     display: unset;
     -webkit-box-orient: unset;
     line-clamp: unset;
