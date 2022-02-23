@@ -8,6 +8,7 @@ type Props = {
   size: number;
 };
 
+// SortableStagedItem is used for any item in the DnD staging area. It can be a blankspace, or an NFT.
 function SortableStagedItem({ stagedItem, size }: Props) {
   return isEditModeNft(stagedItem) ? (
     <SortableStagedNft nft={stagedItem.nft} size={size} />

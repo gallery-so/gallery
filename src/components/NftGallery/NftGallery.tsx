@@ -28,7 +28,6 @@ function isNft(item: Nft | WhitespaceBlock): item is Nft {
 }
 
 function insertWhitespaceBlocks(nfts: Array<Nft | WhitespaceBlock>, whitespaceList: number[]) {
-  console.log('inserting');
   const result = [...nfts];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
@@ -54,21 +53,16 @@ function NftGallery({ collection, mobileLayout }: Props) {
     () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
     [collection.layout?.whitespace, collection.nfts]
   );
-  const displayItems = useMemo(
+  const itemsToDisplay = useMemo(
     () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
     [collection.nfts, collectionWithWhitespace, hideWhitespace]
   );
 
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
-      {displayItems.map((item) =>
+      {itemsToDisplay.map((item) =>
         isNft(item) ? (
-          <NftPreview
-            key={item.id}
-            nft={item} // can cast here because we know it's not a whitespace block
-            collectionId={collection.id}
-            columns={columns}
-          />
+          <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
         ) : (
           <StyledWhitespaceBlock key={item.id} />
         )

@@ -25,11 +25,7 @@ function Sidebar() {
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
   const sidebarNftsAsArray = useMemo(
-    () =>
-      convertObjectToArray(sidebarNfts)
-        // Filter out blank blocks, which are included in staged items but should not be in the sidebar
-        .filter((editModeNft) => Boolean(editModeNft.nft))
-        .reverse(),
+    () => convertObjectToArray(sidebarNfts).reverse(),
     [sidebarNfts]
   );
 
@@ -68,16 +64,13 @@ function Sidebar() {
   }, [nftsToDisplayInSidebar, stageNfts, setNftsIsSelected]);
 
   const handleDeselectAllClick = useCallback(() => {
-    // unselect all nfts in sidebar
+    // deselect all nfts in sidebar
     const nftIdsToUnstage = nftsToDisplayInSidebar.map((nft) => nft.id);
     if (nftIdsToUnstage.length === 0) {
       return;
     }
 
-    setNftsIsSelected(
-      nftsToDisplayInSidebar.map((nft) => nft.id),
-      false
-    );
+    setNftsIsSelected(nftIdsToUnstage, false);
 
     // Unstage all items from the DND
     unstageAllItems();
@@ -85,7 +78,8 @@ function Sidebar() {
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
-    stageNfts([{ id }]); // random 12 digit id for blank blocks
+    stageNfts([{ id }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging nfts
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
@@ -128,7 +122,7 @@ function Sidebar() {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft: EditModeNft) => (
+        {nftsToDisplayInSidebar.map((editModeNft: sidebarNfts) => (
           <SidebarNftIcon key={editModeNft.id} editModeNft={editModeNft} />
         ))}
       </Selection>

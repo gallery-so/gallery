@@ -12,6 +12,8 @@ type Props = {
   size: number;
 };
 
+const fadeinAnimationDuration = 1000;
+
 export default function SortableStagedBlankBlock({ id, size }: Props) {
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
     id,
@@ -26,14 +28,14 @@ export default function SortableStagedBlankBlock({ id, size }: Props) {
     [isDragging, transform, transition]
   );
 
-  // we don't want to show the fadein animation on re-renders, so use a ref to control it
+  // Ensure that the fadein animation is only shown once upon mount.
+  // After the animation completes (after fadeinAnimationDuration), disable future animations using a ref.
   const showFadeinAnimation = useRef(true);
-
   useEffect(() => {
     if (showFadeinAnimation.current) {
       setTimeout(() => {
         showFadeinAnimation.current = false;
-      }, 1000);
+      }, fadeinAnimationDuration);
     }
   }, []);
 
@@ -60,9 +62,9 @@ export default function SortableStagedBlankBlock({ id, size }: Props) {
 
 const fadeOutBlankBlock = keyframes`
   from {
-    opacity: initial;
+    opacity: 1;
   }
-  transparent {
+  to {
    opacity: 0;
   }
 `;
@@ -95,7 +97,7 @@ const StyledBlankBlock = styled.div<{ size: number; showAnimation: boolean }>`
   ${({ showAnimation }) =>
     showAnimation &&
     css`
-      animation: ${fadeOutBlankBlock} 1s linear;
+      animation: ${fadeOutBlankBlock} ${fadeinAnimationDuration}ms linear;
     `}
 `;
 

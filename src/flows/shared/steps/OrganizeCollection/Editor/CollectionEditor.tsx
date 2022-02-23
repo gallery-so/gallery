@@ -35,15 +35,14 @@ function insertWhitespaceBlocks(
   stagingItems: StagingItem[],
   whitespaceList: number[]
 ): StagingItem[] {
+  const result = [...stagingItems];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
-  whitespaceList?.forEach((index, offset) =>
-    stagingItems.splice(index + offset, 0, {
-      id: `blank-${generate12DigitId()}`,
-    })
+  whitespaceList.forEach((index, offset) =>
+    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
   );
 
-  return stagingItems;
+  return result;
 }
 
 function CollectionEditor() {
@@ -100,7 +99,7 @@ function CollectionEditor() {
     [allNfts]
   );
 
-  const whitespace = useMemo(
+  const whitespaceList = useMemo(
     () => collectionBeingEdited?.layout?.whitespace ?? [],
     [collectionBeingEdited]
   );
@@ -121,7 +120,7 @@ function CollectionEditor() {
     const initialRender = preRefreshNftsAsArray.length === 0;
     if (initialRender) {
       const nftsToStage = convertNftsToEditModeNfts(nftsInCollection, true);
-      const nftsToStageWithWhitespace = insertWhitespaceBlocks(nftsToStage, whitespace);
+      const nftsToStageWithWhitespace = insertWhitespaceBlocks(nftsToStage, whitespaceList);
       stageNfts(nftsToStageWithWhitespace);
     }
 
@@ -154,7 +153,7 @@ function CollectionEditor() {
     }
 
     setSidebarNfts(newSidebarNfts);
-  }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts, whitespace]);
+  }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts, whitespaceList]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
 
