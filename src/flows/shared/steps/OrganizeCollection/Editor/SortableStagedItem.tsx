@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { isEditModeNft, StagingItem } from '../types';
-import SortableStagedBlankBlock from './SortableStagedBlankBlock';
+import SortableStagedWhitespace from './SortableStagedWhitespace';
 import SortableStagedNft from './SortableStagedNft';
 
 type Props = {
@@ -13,7 +13,7 @@ function SortableStagedItem({ stagedItem, size }: Props) {
   return isEditModeNft(stagedItem) ? (
     <SortableStagedNft nft={stagedItem.nft} size={size} />
   ) : (
-    <SortableStagedBlankBlock id={stagedItem.id} size={size} />
+    <SortableStagedWhitespace id={stagedItem.id} size={size} />
   );
 }
 

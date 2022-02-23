@@ -14,7 +14,7 @@ type Props = {
 
 const fadeinAnimationDuration = 1000;
 
-export default function SortableStagedBlankBlock({ id, size }: Props) {
+export default function SortableStagedWhitespace({ id, size }: Props) {
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
     id,
   });
@@ -40,27 +40,27 @@ export default function SortableStagedBlankBlock({ id, size }: Props) {
   }, []);
 
   return (
-    <StyledSortableBlankBlock
+    <StyledSortableWhitespace
       id={id}
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
     >
-      <StyledBlankBlock
+      <StyledWhitespace
         ref={setNodeRef}
         size={size}
         showAnimation={showFadeinAnimation.current}
         {...attributes}
         {...listeners}
       >
-        <StyledBlankBlockLabel>Blank space</StyledBlankBlockLabel>
-      </StyledBlankBlock>
+        <StyledWhitespaceLabel>Blank space</StyledWhitespaceLabel>
+      </StyledWhitespace>
       <StyledUnstageButton id={id} />
-    </StyledSortableBlankBlock>
+    </StyledSortableWhitespace>
   );
 }
 
-const fadeOutBlankBlock = keyframes`
+const fadeOutWhitespace = keyframes`
   from {
     opacity: 1;
   }
@@ -75,14 +75,14 @@ const StyledUnstageButton = styled(UnstageButton)`
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledBlankBlockLabel = styled(Caption)`
+const StyledWhitespaceLabel = styled(Caption)`
   text-transform: uppercase;
   color: ${colors.gray50};
 
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledBlankBlock = styled.div<{ size: number; showAnimation: boolean }>`
+const StyledWhitespace = styled.div<{ size: number; showAnimation: boolean }>`
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
   position: relative;
@@ -97,11 +97,11 @@ const StyledBlankBlock = styled.div<{ size: number; showAnimation: boolean }>`
   ${({ showAnimation }) =>
     showAnimation &&
     css`
-      animation: ${fadeOutBlankBlock} ${fadeinAnimationDuration}ms linear;
+      animation: ${fadeOutWhitespace} ${fadeinAnimationDuration}ms linear;
     `}
 `;
 
-const StyledSortableBlankBlock = styled.div`
+const StyledSortableWhitespace = styled.div`
   position: relative;
   -webkit-backface-visibility: hidden;
   &:focus {
@@ -115,7 +115,7 @@ const StyledSortableBlankBlock = styled.div`
   }
 
   &:hover {
-    ${StyledBlankBlock} {
+    ${StyledWhitespace} {
       // border: 1px dashed ${colors.gray30};
       opacity: 1;
     }
