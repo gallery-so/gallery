@@ -18,6 +18,10 @@
 .env.test.local
 .env.production.local
 
+# e2e
+/tests/e2e/screenshots/*
+/tests/e2e/videos/*
+
 # misc
 .DS_Store
 
