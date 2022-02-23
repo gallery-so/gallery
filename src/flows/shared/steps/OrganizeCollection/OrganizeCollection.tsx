@@ -17,6 +17,7 @@ import Mixpanel from 'utils/mixpanel';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import { Nft } from 'types/Nft';
+import { getWhitespacePositionsFromStagedNfts } from 'utils/collectionLayout';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -28,9 +29,16 @@ function useWizardConfig({ push }: ConfigProps) {
   const wizardId = useWizardId();
 
   const stagedNfts = useStagedNftsState();
-  const stagedNftsRaw = useRef<Nft[]>([]);
+  const nftListToSave = useRef<Nft[]>([]);
   useEffect(() => {
-    stagedNftsRaw.current = stagedNfts.map(({ nft }) => nft);
+    // remove whiteblocks from stagedNfts to create a list of nfts to save
+    nftListToSave.current = stagedNfts.reduce((filtered: Nft[], { nft }) => {
+      if (nft) {
+        filtered.push(nft);
+      }
+
+      return filtered;
+    }, []);
   }, [stagedNfts]);
 
   const updateCollection = useUpdateCollectionNfts();
@@ -49,13 +57,14 @@ function useWizardConfig({ push }: ConfigProps) {
     // If collection is being edited, trigger update
     if (collectionIdBeingEdited) {
       setOnNext(async () => {
+        // TODO: compute whitespace list
+        const whitespaceList = getWhitespacePositionsFromStagedNfts(stagedNfts);
         // Errors will be handled in the catch block within `WizardFooter.tsx`
         try {
-          await updateCollection(
-            collectionIdBeingEdited,
-            stagedNftsRaw.current,
-            collectionMetadata.layout
-          );
+          await updateCollection(collectionIdBeingEdited, nftListToSave.current, {
+            ...collectionMetadata.layout,
+            whitespace: whitespaceList,
+          });
         } catch {
           // TODO: display error toast here
         }
@@ -73,7 +82,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
-          nfts={stagedNftsRaw.current}
+          nfts={nftListToSave.current}
           layout={collectionMetadata.layout}
         />
       );

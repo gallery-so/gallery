@@ -55,9 +55,10 @@ export const useCollectionMetadataState = (): CollectionMetadataState => {
 
 type CollectionEditorActions = {
   setSidebarNfts: (nfts: Record<string, EditModeNft>) => void;
-  setNftsIsSelected: (nfts: EditModeNft[], isSelected: boolean) => void;
+  setNftsIsSelected: (nfts: string[], isSelected: boolean) => void;
   stageNfts: (nfts: EditModeNft[]) => void;
   unstageNfts: (ids: string[]) => void;
+  unstageAllItems: () => void;
   handleSortNfts: (event: DragEndEvent) => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
@@ -99,12 +100,12 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setSidebarNftsState(nfts);
   }, []);
 
-  const setNftsIsSelected = useCallback((nfts: EditModeNft[], isSelected: boolean) => {
+  const setNftsIsSelected = useCallback((nftIds: string[], isSelected: boolean) => {
     setSidebarNftsState((previous) => {
       const next = { ...previous };
-      for (const nft of nfts) {
-        const selectedNft = next[nft.id];
-        next[nft.id] = { ...selectedNft, isSelected };
+      for (const nftId of nftIds) {
+        const selectedNft = next[nftId];
+        next[nftId] = { ...selectedNft, isSelected };
       }
 
       return next;
@@ -112,28 +113,25 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const stageNfts = useCallback((nfts: EditModeNft[]) => {
-    setStagedNftsState((previous) => {
-      const ids = previous.map(({ id }) => id);
-      const stagedNfts = Object.fromEntries(ids.map((key) => [key, true]));
-
-      const nftsNotYetStaged = nfts.filter(({ id }) => !stagedNfts[id]);
-
-      return [...previous, ...nftsNotYetStaged];
-    });
+    setStagedNftsState((previous) => [...previous, ...nfts]);
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
-    const idsMap = Object.fromEntries(ids.map((key) => [key, true]));
+    setStagedNftsState((previous) =>
+      previous.filter((editModeNft) => !ids.includes(editModeNft.id))
+    );
+  }, []);
 
-    setStagedNftsState((previous) => previous.filter((editModeNft) => !idsMap[editModeNft.id]));
+  const unstageAllItems = useCallback(() => {
+    setStagedNftsState([]);
   }, []);
 
   const handleSortNfts = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
       setStagedNftsState((previous) => {
-        const oldIndex = previous.findIndex(({ nft }) => nft.id === active.id);
-        const newIndex = previous.findIndex(({ nft }) => nft.id === over?.id);
+        const oldIndex = previous.findIndex(({ id }) => id === active.id);
+        const newIndex = previous.findIndex(({ id }) => id === over?.id);
         return arrayMove(previous, oldIndex, newIndex);
       });
     }
@@ -166,6 +164,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setNftsIsSelected,
       stageNfts,
       unstageNfts,
+      unstageAllItems,
       handleSortNfts,
       incrementColumns,
       decrementColumns,
@@ -176,6 +175,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setNftsIsSelected,
       stageNfts,
       unstageNfts,
+      unstageAllItems,
       handleSortNfts,
       incrementColumns,
       decrementColumns,

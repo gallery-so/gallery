@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium } from 'components/core/Text/Text';
+import { BodyMedium, ButtonText } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
@@ -14,16 +14,22 @@ import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 import { useRefreshNftConfig } from 'contexts/wizard/WizardDataProvider';
+import colors from 'components/core/colors';
+import { generate12DigitId } from 'utils/collectionLayout';
 
 function Sidebar() {
   const sidebarNfts = useSidebarNftsState();
-  const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
+  const { setNftsIsSelected, stageNfts, unstageAllItems } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
   const sidebarNftsAsArray = useMemo(
-    () => convertObjectToArray(sidebarNfts).reverse(),
+    () =>
+      convertObjectToArray(sidebarNfts)
+        // Filter out blank blocks, which are included in staged items but should not be in the sidebar
+        .filter((editModeNft) => Boolean(editModeNft.nft))
+        .reverse(),
     [sidebarNfts]
   );
 
@@ -55,19 +61,35 @@ function Sidebar() {
     }
 
     stageNfts(nftsToStage);
-    setNftsIsSelected(nftsToStage, true);
+    setNftsIsSelected(
+      nftsToStage.map((nft) => nft.id),
+      true
+    );
   }, [nftsToDisplayInSidebar, stageNfts, setNftsIsSelected]);
 
   const handleDeselectAllClick = useCallback(() => {
-    // Unstage all nfts
+    // unselect all nfts in sidebar
     const nftIdsToUnstage = nftsToDisplayInSidebar.map((nft) => nft.id);
     if (nftIdsToUnstage.length === 0) {
       return;
     }
 
-    unstageNfts(nftIdsToUnstage);
-    setNftsIsSelected(nftsToDisplayInSidebar, false);
-  }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageNfts]);
+    setNftsIsSelected(
+      nftsToDisplayInSidebar.map((nft) => nft.id),
+      false
+    );
+
+    // Unstage all items from the DND
+    unstageAllItems();
+  }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageAllItems]);
+
+  const handleAddBlankBlockClick = useCallback(() => {
+    const id = `blank-${generate12DigitId()}`;
+    stageNfts([{ id }]); // random 12 digit id for blank blocks
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [stageNfts]);
 
   const { isRefreshingNfts, handleRefreshNfts } = useRefreshNftConfig();
 
@@ -103,14 +125,42 @@ function Sidebar() {
       </StyledSelectButtonWrapper>
       <Spacer height={8} />
       <Selection>
+        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
+          <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
+        </StyledAddBlankBlock>
         {nftsToDisplayInSidebar.map((editModeNft: EditModeNft) => (
-          <SidebarNftIcon key={editModeNft.nft.id} editModeNft={editModeNft} />
+          <SidebarNftIcon key={editModeNft.id} editModeNft={editModeNft} />
         ))}
       </Selection>
       <Spacer height={12} />
     </StyledSidebar>
   );
 }
+
+const StyledAddBlankBlock = styled.div`
+  height: 64px;
+  width: 64px;
+  margin: 5px;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.gray30};
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:active {
+    background-color: ${colors.gray10};
+  }
+`;
+
+const StyledAddBlankBlockText = styled(ButtonText)`
+  color: ${colors.gray50};
+  text-align: center;
+`;
 
 const StyledSidebar = styled.div`
   width: 100%;

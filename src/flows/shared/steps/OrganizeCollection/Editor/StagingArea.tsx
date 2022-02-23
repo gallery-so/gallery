@@ -21,9 +21,10 @@ import {
   useCollectionMetadataState,
   useStagedNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import StagedNftImageDragging from './StagedNftImageDragging';
-import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
+import SortableStagedItem from './SortableStagedItem';
 import { MENU_HEIGHT } from './EditorMenu';
+import StagedItemDragging from './StagedItemDragging';
+import { StyledSortableNft } from './SortableStagedNft';
 
 // Width of DND area for each Column # setting
 const DND_WIDTHS: Record<number, number> = {
@@ -74,7 +75,7 @@ function StagingArea() {
   );
 
   const activeNft = useMemo(
-    () => stagedNfts.find(({ nft }) => nft.id === activeId),
+    () => stagedNfts.find(({ id }) => id === activeId),
     [stagedNfts, activeId]
   );
 
@@ -94,7 +95,7 @@ function StagingArea() {
           </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedNfts.map((editModeNft) => (
-              <SortableStagedNft
+              <SortableStagedItem
                 key={editModeNft.id}
                 editModeNft={editModeNft}
                 size={IMAGE_SIZES[columns]}
@@ -104,7 +105,7 @@ function StagingArea() {
         </SortableContext>
         <DragOverlay adjustScale dropAnimation={defaultDropAnimationConfig}>
           {activeNft ? (
-            <StagedNftImageDragging nft={activeNft.nft} size={IMAGE_SIZES[columns]} />
+            <StagedItemDragging editModeNft={activeNft} size={IMAGE_SIZES[columns]} />
           ) : null}
         </DragOverlay>
       </DndContext>
@@ -156,9 +157,6 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   // Temporary solution until Safari support
   width: calc(100% + 48px);
 
-  ${StyledSortableNft} {
-    margin: 24px;
-  }
   ${StyledSortableNft} * {
     outline: none;
   }

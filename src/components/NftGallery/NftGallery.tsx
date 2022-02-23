@@ -6,11 +6,22 @@ import { useMemo } from 'react';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
+import { Nft } from 'types/Nft';
+import { generate12DigitId } from 'utils/collectionLayout';
 
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
 };
+
+function insertWhitespaceBlocks(nfts: Array<Nft | null>, whitespaceList: number[]) {
+  const result = [...nfts];
+  // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
+  // Offset the index to insert at by the number of whitespaces already added
+  whitespaceList.forEach((index, offset) => result.splice(index + offset, 0, null));
+
+  return result;
+}
 
 function NftGallery({ collection, mobileLayout }: Props) {
   const columns = useMemo(() => {
@@ -21,11 +32,26 @@ function NftGallery({ collection, mobileLayout }: Props) {
     return DEFAULT_COLUMNS;
   }, [collection.layout]);
 
+  const collectionWithWhitespace = useMemo(
+    () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
+    [collection.layout?.whitespace, collection.nfts]
+  );
+
+  const hideWhitespace = mobileLayout === DisplayLayout.LIST;
+  const displayItems = useMemo(
+    () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
+    [collection.nfts, collectionWithWhitespace, hideWhitespace]
+  );
+
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
-      {collection.nfts.map((nft) => (
-        <NftPreview key={nft.id} nft={nft} collectionId={collection.id} columns={columns} />
-      ))}
+      {displayItems.map((item) =>
+        item === null ? (
+          <div key={`blank-${generate12DigitId()}`} />
+        ) : (
+          <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+        )
+      )}
     </StyledCollectionNfts>
   );
 }

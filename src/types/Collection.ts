@@ -15,4 +15,5 @@ export type Collection = {
 
 export type CollectionLayout = {
   columns: number;
+  whitespace?: number[];
 };
