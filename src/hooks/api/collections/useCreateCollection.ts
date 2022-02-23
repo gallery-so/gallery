@@ -65,7 +65,7 @@ export default function useCreateCollection() {
         (value: GetGalleriesResponse) => {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
-          const newCollections = [...gallery.collections, optimisticallyCreatedCollection];
+          const newCollections = [optimisticallyCreatedCollection, ...gallery.collections];
           gallery.collections = newCollections;
           gallery.last_updated = now;
           return newValue;
