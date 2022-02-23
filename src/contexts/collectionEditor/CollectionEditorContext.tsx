@@ -1,7 +1,7 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { EditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { CollectionLayout } from 'types/Collection';
 
 type CollectionMetadata = {
@@ -9,12 +9,12 @@ type CollectionMetadata = {
 };
 
 export type SidebarNftsState = Record<string, EditModeNft>;
-export type StagedNftsState = EditModeNft[];
+export type StagedItemsState = StagingItem[];
 export type CollectionMetadataState = CollectionMetadata;
 
 export type CollectionEditorState = {
   sidebarNfts: SidebarNftsState;
-  stagedNfts: StagedNftsState;
+  stagedItems: StagedItemsState;
   collectionMetadata: CollectionMetadataState;
 };
 
@@ -22,7 +22,7 @@ const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3 } };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarNfts: {},
-  stagedNfts: [],
+  stagedItems: [],
   collectionMetadata: DEFAULT_COLLECTION_METADATA,
 });
 
@@ -35,13 +35,13 @@ export const useSidebarNftsState = (): SidebarNftsState => {
   return context.sidebarNfts;
 };
 
-export const useStagedNftsState = (): StagedNftsState => {
+export const useStagedItemsState = (): StagedItemsState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
     throw new Error('Attempted to use CollectionEditorStateContext without a provider');
   }
 
-  return context.stagedNfts;
+  return context.stagedItems;
 };
 
 export const useCollectionMetadataState = (): CollectionMetadataState => {
@@ -56,7 +56,7 @@ export const useCollectionMetadataState = (): CollectionMetadataState => {
 type CollectionEditorActions = {
   setSidebarNfts: (nfts: Record<string, EditModeNft>) => void;
   setNftsIsSelected: (nfts: string[], isSelected: boolean) => void;
-  stageNfts: (nfts: EditModeNft[]) => void;
+  stageNfts: (nfts: StagingItem[]) => void;
   unstageNfts: (ids: string[]) => void;
   unstageAllItems: () => void;
   handleSortNfts: (event: DragEndEvent) => void;
@@ -82,7 +82,7 @@ type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
   const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>({});
-  const [stagedNftsState, setStagedNftsState] = useState<StagedNftsState>([]);
+  const [stagedItemsState, setStagedItemsState] = useState<StagedItemsState>([]);
   const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(
     DEFAULT_COLLECTION_METADATA
   );
@@ -90,10 +90,10 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   const collectionEditorState = useMemo(
     () => ({
       sidebarNfts: sidebarNftsState,
-      stagedNfts: stagedNftsState,
+      stagedItems: stagedItemsState,
       collectionMetadata: collectionMetadataState,
     }),
-    [sidebarNftsState, stagedNftsState, collectionMetadataState]
+    [sidebarNftsState, stagedItemsState, collectionMetadataState]
   );
 
   const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
@@ -112,24 +112,24 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
-  const stageNfts = useCallback((nfts: EditModeNft[]) => {
-    setStagedNftsState((previous) => [...previous, ...nfts]);
+  const stageNfts = useCallback((nfts: StagingItem[]) => {
+    setStagedItemsState((previous) => [...previous, ...nfts]);
   }, []);
 
   const unstageNfts = useCallback((ids: string[]) => {
-    setStagedNftsState((previous) =>
-      previous.filter((editModeNft) => !ids.includes(editModeNft.id))
+    setStagedItemsState((previous) =>
+      previous.filter((stagingItem) => !ids.includes(stagingItem.id))
     );
   }, []);
 
   const unstageAllItems = useCallback(() => {
-    setStagedNftsState([]);
+    setStagedItemsState([]);
   }, []);
 
   const handleSortNfts = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      setStagedNftsState((previous) => {
+      setStagedItemsState((previous) => {
         const oldIndex = previous.findIndex(({ id }) => id === active.id);
         const newIndex = previous.findIndex(({ id }) => id === over?.id);
         return arrayMove(previous, oldIndex, newIndex);

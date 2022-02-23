@@ -12,8 +12,6 @@ type Props = {
 };
 
 function StagedNftImage({ nft, size, setNodeRef, ...props }: Props) {
-  // const nft = editModeNft.nft;
-
   const srcUrl = getResizedNftImageUrlWithFallback(nft);
 
   const isVideo = getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO;

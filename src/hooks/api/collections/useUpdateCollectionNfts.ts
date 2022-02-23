@@ -8,10 +8,10 @@ import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { UpdateCollectionNftsRequest, UpdateCollectionNftsResponse } from './types';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getISODate } from 'utils/time';
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import {
-  getWhitespacePositionsFromStagedNfts,
-  removeWhitespacesFromStagedNfts,
+  getWhitespacePositionsFromStagedItems,
+  removeWhitespacesFromStagedItems,
 } from 'utils/collectionLayout';
 
 export default function useUpdateCollectionNfts() {
@@ -20,12 +20,12 @@ export default function useUpdateCollectionNfts() {
   const { mutate } = useSWRConfig();
 
   return useCallback(
-    async (collectionId: string, stagedNfts: EditModeNft[], collectionLayout: CollectionLayout) => {
+    async (collectionId: string, stagedNfts: StagingItem[], collectionLayout: CollectionLayout) => {
       const layout = {
         ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedNfts(stagedNfts),
+        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
-      const nfts = removeWhitespacesFromStagedNfts(stagedNfts);
+      const nfts = removeWhitespacesFromStagedItems(stagedNfts);
       const nftIds = nfts.map((nft) => nft.id);
       const result = await updateCollection<
         UpdateCollectionNftsResponse,

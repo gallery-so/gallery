@@ -4,7 +4,7 @@ import { WizardContext } from 'react-albus';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
-  useStagedNftsState,
+  useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
@@ -26,7 +26,7 @@ function useWizardConfig({ push }: ConfigProps) {
   const { showModal } = useModal();
   const wizardId = useWizardId();
 
-  const stagedNfts = useStagedNftsState();
+  const stagedItems = useStagedItemsState();
 
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
@@ -46,7 +46,7 @@ function useWizardConfig({ push }: ConfigProps) {
       setOnNext(async () => {
         // Errors will be handled in the catch block within `WizardFooter.tsx`
         try {
-          await updateCollection(collectionIdBeingEdited, stagedNfts, collectionMetadata.layout);
+          await updateCollection(collectionIdBeingEdited, stagedItems, collectionMetadata.layout);
         } catch {
           // TODO: display error toast here
         }
@@ -64,7 +64,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
-          nfts={stagedNfts}
+          stagedItems={stagedItems}
           layout={collectionMetadata.layout}
         />
       );
@@ -84,7 +84,7 @@ function useWizardConfig({ push }: ConfigProps) {
     updateCollection,
     wizardId,
     collectionMetadata,
-    stagedNfts,
+    stagedItems,
   ]);
 }
 

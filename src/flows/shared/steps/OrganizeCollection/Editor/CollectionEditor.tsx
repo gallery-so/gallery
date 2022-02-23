@@ -6,14 +6,14 @@ import {
   SidebarNftsState,
   useCollectionEditorActions,
   useSidebarNftsState,
-  useStagedNftsState,
+  useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 import { Nft } from 'types/Nft';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
-import { EditModeNft } from '../types';
+import { EditModeNft, StagingItem } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
@@ -31,20 +31,23 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
   }));
 }
 
-function insertWhitespaceBlocks(editModeNfts: EditModeNft[], whitespaceList: number[]) {
+function insertWhitespaceBlocks(
+  stagingItems: StagingItem[],
+  whitespaceList: number[]
+): StagingItem[] {
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
   whitespaceList?.forEach((index, offset) =>
-    editModeNfts.splice(index + offset, 0, {
+    stagingItems.splice(index + offset, 0, {
       id: `blank-${generate12DigitId()}`,
     })
   );
 
-  return editModeNfts;
+  return stagingItems;
 }
 
 function CollectionEditor() {
-  const stagedNfts = useStagedNftsState();
+  const stagedNfts = useStagedItemsState();
   const sidebarNfts = useSidebarNftsState();
   const { setNextEnabled } = useWizardValidationActions();
 

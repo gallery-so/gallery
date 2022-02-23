@@ -8,10 +8,10 @@ import { useAuthenticatedUser } from '../users/useUser';
 import { CreateCollectionRequest, CreateCollectionResponse } from './types';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getISODate } from 'utils/time';
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import {
-  getWhitespacePositionsFromStagedNfts,
-  removeWhitespacesFromStagedNfts,
+  getWhitespacePositionsFromStagedItems,
+  removeWhitespacesFromStagedItems,
 } from 'utils/collectionLayout';
 
 export default function useCreateCollection() {
@@ -24,14 +24,14 @@ export default function useCreateCollection() {
       galleryId: string,
       title: string,
       description: string,
-      stagedNfts: EditModeNft[],
+      stagedNfts: StagingItem[],
       collectionLayout: CollectionLayout
     ) => {
       const layout = {
         ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedNfts(stagedNfts),
+        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
-      const nfts = removeWhitespacesFromStagedNfts(stagedNfts);
+      const nfts = removeWhitespacesFromStagedItems(stagedNfts);
       const nftIds = nfts.map((nft) => nft.id);
       const result = await createCollection<CreateCollectionResponse, CreateCollectionRequest>(
         '/collections/create',

@@ -19,7 +19,7 @@ import { Heading } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
-  useStagedNftsState,
+  useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import SortableStagedItem from './SortableStagedItem';
 import { MENU_HEIGHT } from './EditorMenu';
@@ -54,7 +54,7 @@ const defaultDropAnimationConfig: DropAnimation = {
 const layoutMeasuring = { strategy: LayoutMeasuringStrategy.Always };
 
 function StagingArea() {
-  const stagedNfts = useStagedNftsState();
+  const stagedItems = useStagedItemsState();
   const { handleSortNfts } = useCollectionEditorActions();
 
   const collectionMetadata = useCollectionMetadataState();
@@ -74,9 +74,10 @@ function StagingArea() {
     [handleSortNfts]
   );
 
-  const activeNft = useMemo(
-    () => stagedNfts.find(({ id }) => id === activeId),
-    [stagedNfts, activeId]
+  // the item being dragged
+  const activeItem = useMemo(
+    () => stagedItems.find(({ id }) => id === activeId),
+    [stagedItems, activeId]
   );
 
   const columns = collectionMetadata.layout.columns;
@@ -89,23 +90,23 @@ function StagingArea() {
         collisionDetection={closestCenter}
         layoutMeasuring={layoutMeasuring}
       >
-        <SortableContext items={stagedNfts}>
+        <SortableContext items={stagedItems}>
           <StyledHeadingWrapper>
             <Heading>Your collection</Heading>
           </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
-            {stagedNfts.map((editModeNft) => (
+            {stagedItems.map((stagedItem) => (
               <SortableStagedItem
-                key={editModeNft.id}
-                editModeNft={editModeNft}
+                key={stagedItem.id}
+                stagedItem={stagedItem}
                 size={IMAGE_SIZES[columns]}
               />
             ))}
           </StyledStagedNftContainer>
         </SortableContext>
         <DragOverlay adjustScale dropAnimation={defaultDropAnimationConfig}>
-          {activeNft ? (
-            <StagedItemDragging editModeNft={activeNft} size={IMAGE_SIZES[columns]} />
+          {activeItem ? (
+            <StagedItemDragging stagedItem={activeItem} size={IMAGE_SIZES[columns]} />
           ) : null}
         </DragOverlay>
       </DndContext>

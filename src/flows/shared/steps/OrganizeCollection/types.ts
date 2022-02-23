@@ -2,12 +2,21 @@ import { Nft } from 'types/Nft';
 
 export type EditModeNft = {
   id: string;
-  nft?: Nft;
+  nft: Nft;
   isSelected?: boolean;
 };
 
-export type Whitespace = {
+export type WhitespaceBlock = {
   id: string;
 };
 
-export type EditModeItem = EditModeNft | Whitespace;
+// Accepted types for the Dnd Collection Editor
+export type StagingItem = EditModeNft | WhitespaceBlock;
+
+export function isEditModeNft(item: StagingItem): item is EditModeNft {
+  if ((item as EditModeNft).nft) {
+    return true;
+  }
+
+  return false;
+}

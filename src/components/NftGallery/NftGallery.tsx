@@ -16,10 +16,11 @@ type Props = {
 
 type WhitespaceBlock = {
   id: string;
+  isWhitespace: boolean;
 };
 
-function isWhitespaceBlock(item: Nft | WhitespaceBlock) {
-  if ((item as Nft).created_at) {
+function isNft(item: Nft | WhitespaceBlock): item is Nft {
+  if ((item as WhitespaceBlock).isWhitespace) {
     return false;
   }
 
@@ -27,11 +28,12 @@ function isWhitespaceBlock(item: Nft | WhitespaceBlock) {
 }
 
 function insertWhitespaceBlocks(nfts: Array<Nft | WhitespaceBlock>, whitespaceList: number[]) {
+  console.log('inserting');
   const result = [...nfts];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
   whitespaceList.forEach((index, offset) =>
-    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
+    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}`, isWhitespace: true })
   );
 
   return result;
@@ -46,12 +48,12 @@ function NftGallery({ collection, mobileLayout }: Props) {
     return DEFAULT_COLUMNS;
   }, [collection.layout]);
 
+  const hideWhitespace = mobileLayout === DisplayLayout.LIST;
+
   const collectionWithWhitespace = useMemo(
     () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
     [collection.layout?.whitespace, collection.nfts]
   );
-
-  const hideWhitespace = mobileLayout === DisplayLayout.LIST;
   const displayItems = useMemo(
     () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
     [collection.nfts, collectionWithWhitespace, hideWhitespace]
@@ -60,15 +62,15 @@ function NftGallery({ collection, mobileLayout }: Props) {
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
       {displayItems.map((item) =>
-        isWhitespaceBlock(item) ? (
-          <StyledWhitespaceBlock key={item.id} />
-        ) : (
+        isNft(item) ? (
           <NftPreview
             key={item.id}
-            nft={item as Nft} // can cast here because we know it's not a whitespace block
+            nft={item} // can cast here because we know it's not a whitespace block
             collectionId={collection.id}
             columns={columns}
           />
+        ) : (
+          <StyledWhitespaceBlock key={item.id} />
         )
       )}
     </StyledCollectionNfts>

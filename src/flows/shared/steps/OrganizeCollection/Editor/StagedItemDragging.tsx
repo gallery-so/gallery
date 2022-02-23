@@ -1,24 +1,24 @@
 import colors from 'components/core/colors';
 import { Caption } from 'components/core/Text/Text';
 import styled from 'styled-components';
-import { EditModeNft } from '../types';
+import { StagingItem, isEditModeNft } from '../types';
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  editModeNft: EditModeNft;
+  stagedItem: StagingItem;
   size: number;
 };
-// used for all dragged items, determines whehter to use block or nft
-function StagedItemDragging({ editModeNft, size }: Props) {
-  if (!editModeNft.nft) {
-    return (
-      <StyledBlankBlock size={size}>
-        <StyledLabel>Blank Space</StyledLabel>
-      </StyledBlankBlock>
-    );
+
+function StagedItemDragging({ stagedItem, size }: Props) {
+  if (isEditModeNft(stagedItem)) {
+    return <StagedNftImageDragging nft={stagedItem.nft} size={size} />;
   }
 
-  return <StagedNftImageDragging nft={editModeNft.nft} size={size} />;
+  return (
+    <StyledBlankBlock size={size}>
+      <StyledLabel>Blank Space</StyledLabel>
+    </StyledBlankBlock>
+  );
 }
 
 const StyledBlankBlock = styled.div<{ size: number }>`

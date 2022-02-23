@@ -1,22 +1,24 @@
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { isEditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { Nft } from 'types/Nft';
 
-// Each item in the resulting whitespace list represents a single whitespace, and the number is the index of the NFT that it appears before.
-// Example of how the whitespace positions are generated from a list of staged items:
-// staged items (x is whitespace): [x, A, x, B, C, D, x, E, x]
-// NFTs: [A, B, C, D, E]
-// whitespace: [0, 1, 4, 5]
+// Each value in the whitespace list represents the index of the NFT that a whitespace appears before.
+// For example, whitespace: [0] means that there is one whitespace before the first NFT in the collection.
+// Here is a more detailed example:
+// If Staged items looks like this: (x is whitespace) [x, x, A, x, B, C, D, x, E, x]
+// The list of NFTs would be: [A, B, C, D, E]
+// The whitespace list would be : [0, 0, 1, 4, 5]
 
-export function getWhitespacePositionsFromStagedNfts(stagedNfts: EditModeNft[]): number[] {
-  let index = 0;
+export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]): number[] {
+  // For every nft we encounter in stagedItems, increment a counter to track its position in the list of nfts.
+  // For every whitespace we encounter, add the counter's value to the list of whitespace positions.
+  let nftIndex = 0;
   const result: number[] = [];
-  stagedNfts.forEach((stagedNft) => {
-    if (stagedNft.nft) {
-      // is nft
-      index++;
+  stagedItems.forEach((stagedItem) => {
+    if (isEditModeNft(stagedItem)) {
+      nftIndex++;
     } else {
       // is whitespace
-      result.push(index);
+      result.push(nftIndex);
     }
   });
 
@@ -27,11 +29,11 @@ export function generate12DigitId() {
   return Math.round(Math.random() * 1000000000000);
 }
 
-// filter whitespaces from stagedNfts and map each EditModeNft -> Nft
-export function removeWhitespacesFromStagedNfts(stagedNfts: EditModeNft[]) {
-  return stagedNfts.reduce((filtered: Nft[], { nft }) => {
-    if (nft) {
-      filtered.push(nft);
+// filter whitespaces from stagedItems and map each EditModeNft -> Nft
+export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
+  return stagedItems.reduce((filtered: Nft[], item) => {
+    if (isEditModeNft(item)) {
+      filtered.push(item.nft);
     }
 
     return filtered;

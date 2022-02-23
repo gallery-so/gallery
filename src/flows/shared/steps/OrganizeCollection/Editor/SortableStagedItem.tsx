@@ -1,20 +1,19 @@
 import { memo } from 'react';
-import { EditModeNft } from '../types';
+import { isEditModeNft, StagingItem } from '../types';
 import SortableStagedBlankBlock from './SortableStagedBlankBlock';
 import SortableStagedNft from './SortableStagedNft';
 
 type Props = {
-  editModeNft: EditModeNft;
+  stagedItem: StagingItem;
   size: number;
 };
 
-function SortableStagedItem({ editModeNft, size }: Props) {
-  if (!editModeNft.nft) {
-    // Blank block
-    return <SortableStagedBlankBlock id={editModeNft.id} size={size} />;
-  }
-
-  return <SortableStagedNft nft={editModeNft.nft} size={size} />;
+function SortableStagedItem({ stagedItem, size }: Props) {
+  return isEditModeNft(stagedItem) ? (
+    <SortableStagedNft nft={stagedItem.nft} size={size} />
+  ) : (
+    <SortableStagedBlankBlock id={stagedItem.id} size={size} />
+  );
 }
 
 export default memo(SortableStagedItem);
