@@ -6,9 +6,13 @@ import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { UpdateCollectionNftsRequest, UpdateCollectionNftsResponse } from './types';
-import { Nft } from 'types/Nft';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getISODate } from 'utils/time';
+import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import {
+  getWhitespacePositionsFromStagedNfts,
+  removeWhitespacesFromStagedNfts,
+} from 'utils/collectionLayout';
 
 export default function useUpdateCollectionNfts() {
   const updateCollection = usePost();
@@ -16,7 +20,12 @@ export default function useUpdateCollectionNfts() {
   const { mutate } = useSWRConfig();
 
   return useCallback(
-    async (collectionId: string, nfts: Nft[], layout: CollectionLayout) => {
+    async (collectionId: string, stagedNfts: EditModeNft[], collectionLayout: CollectionLayout) => {
+      const layout = {
+        ...collectionLayout,
+        whitespace: getWhitespacePositionsFromStagedNfts(stagedNfts),
+      };
+      const nfts = removeWhitespacesFromStagedNfts(stagedNfts);
       const nftIds = nfts.map((nft) => nft.id);
       const result = await updateCollection<
         UpdateCollectionNftsResponse,

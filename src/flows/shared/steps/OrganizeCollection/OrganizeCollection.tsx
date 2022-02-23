@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { WizardContext } from 'react-albus';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -16,8 +16,6 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import Mixpanel from 'utils/mixpanel';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
-import { Nft } from 'types/Nft';
-import { getWhitespacePositionsFromStagedNfts } from 'utils/collectionLayout';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -29,17 +27,6 @@ function useWizardConfig({ push }: ConfigProps) {
   const wizardId = useWizardId();
 
   const stagedNfts = useStagedNftsState();
-  const nftListToSave = useRef<Nft[]>([]);
-  useEffect(() => {
-    // remove whiteblocks from stagedNfts to create a list of nfts to save
-    nftListToSave.current = stagedNfts.reduce((filtered: Nft[], { nft }) => {
-      if (nft) {
-        filtered.push(nft);
-      }
-
-      return filtered;
-    }, []);
-  }, [stagedNfts]);
 
   const updateCollection = useUpdateCollectionNfts();
   const { collectionIdBeingEdited } = useCollectionWizardState();
@@ -57,14 +44,9 @@ function useWizardConfig({ push }: ConfigProps) {
     // If collection is being edited, trigger update
     if (collectionIdBeingEdited) {
       setOnNext(async () => {
-        // TODO: compute whitespace list
-        const whitespaceList = getWhitespacePositionsFromStagedNfts(stagedNfts);
         // Errors will be handled in the catch block within `WizardFooter.tsx`
         try {
-          await updateCollection(collectionIdBeingEdited, nftListToSave.current, {
-            ...collectionMetadata.layout,
-            whitespace: whitespaceList,
-          });
+          await updateCollection(collectionIdBeingEdited, stagedNfts, collectionMetadata.layout);
         } catch {
           // TODO: display error toast here
         }
@@ -82,7 +64,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
-          nfts={nftListToSave.current}
+          nfts={stagedNfts}
           layout={collectionMetadata.layout}
         />
       );

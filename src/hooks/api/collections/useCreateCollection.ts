@@ -6,9 +6,13 @@ import usePost from '../_rest/usePost';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
 import { useAuthenticatedUser } from '../users/useUser';
 import { CreateCollectionRequest, CreateCollectionResponse } from './types';
-import { Nft } from 'types/Nft';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getISODate } from 'utils/time';
+import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import {
+  getWhitespacePositionsFromStagedNfts,
+  removeWhitespacesFromStagedNfts,
+} from 'utils/collectionLayout';
 
 export default function useCreateCollection() {
   const createCollection = usePost();
@@ -20,9 +24,14 @@ export default function useCreateCollection() {
       galleryId: string,
       title: string,
       description: string,
-      nfts: Nft[],
+      stagedNfts: EditModeNft[],
       collectionLayout: CollectionLayout
     ) => {
+      const layout = {
+        ...collectionLayout,
+        whitespace: getWhitespacePositionsFromStagedNfts(stagedNfts),
+      };
+      const nfts = removeWhitespacesFromStagedNfts(stagedNfts);
       const nftIds = nfts.map((nft) => nft.id);
       const result = await createCollection<CreateCollectionResponse, CreateCollectionRequest>(
         '/collections/create',
@@ -32,7 +41,7 @@ export default function useCreateCollection() {
           name: title,
           collectors_note: description,
           nfts: nftIds,
-          layout: collectionLayout,
+          layout,
         }
       );
 
@@ -48,7 +57,7 @@ export default function useCreateCollection() {
         hidden: false,
         owner_user_id: userId,
         nfts,
-        layout: collectionLayout,
+        layout,
       };
 
       await mutate(

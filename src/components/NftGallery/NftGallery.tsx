@@ -14,11 +14,25 @@ type Props = {
   mobileLayout: DisplayLayout;
 };
 
-function insertWhitespaceBlocks(nfts: Array<Nft | null>, whitespaceList: number[]) {
+type WhitespaceBlock = {
+  id: string;
+};
+
+function isWhitespaceBlock(item: Nft | WhitespaceBlock) {
+  if ((item as Nft).created_at) {
+    return false;
+  }
+
+  return true;
+}
+
+function insertWhitespaceBlocks(nfts: Array<Nft | WhitespaceBlock>, whitespaceList: number[]) {
   const result = [...nfts];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
-  whitespaceList.forEach((index, offset) => result.splice(index + offset, 0, null));
+  whitespaceList.forEach((index, offset) =>
+    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
+  );
 
   return result;
 }
@@ -46,10 +60,15 @@ function NftGallery({ collection, mobileLayout }: Props) {
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
       {displayItems.map((item) =>
-        item === null ? (
-          <div key={`blank-${generate12DigitId()}`} />
+        isWhitespaceBlock(item) ? (
+          <StyledWhitespaceBlock key={item.id} />
         ) : (
-          <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+          <NftPreview
+            key={item.id}
+            nft={item as Nft} // can cast here because we know it's not a whitespace block
+            collectionId={collection.id}
+            columns={columns}
+          />
         )
       )}
     </StyledCollectionNfts>
@@ -71,6 +90,12 @@ const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: Display
   @media only screen and ${breakpoints.desktop} {
     grid-gap: 40px 40px;
   }
+`;
+
+const StyledWhitespaceBlock = styled.div`
+  width: 100%;
+  display: flex;
+  padding-bottom: 100%;
 `;
 
 export default NftGallery;

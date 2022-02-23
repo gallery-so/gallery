@@ -18,13 +18,14 @@ import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import Mixpanel from 'utils/mixpanel';
 import { Nft } from 'types/Nft';
+import { EditModeNft } from './types';
 
 type Props = {
   onNext: WizardContext['next'];
   collectionId?: Collection['id'];
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
-  nfts?: Nft[];
+  nfts?: EditModeNft[];
   layout?: CollectionLayout;
 };
 
@@ -116,7 +117,7 @@ function CollectionCreateOrEditForm({
       }
 
       goToNextStep();
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
