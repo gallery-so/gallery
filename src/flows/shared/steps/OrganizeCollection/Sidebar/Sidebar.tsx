@@ -122,7 +122,7 @@ function Sidebar() {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft: sidebarNfts) => (
+        {nftsToDisplayInSidebar.map((editModeNft) => (
           <SidebarNftIcon key={editModeNft.id} editModeNft={editModeNft} />
         ))}
       </Selection>
