@@ -2,7 +2,7 @@ import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
 import mixpanel from 'mixpanel-browser';
 import { createContext, memo, ReactNode, useCallback, useContext } from 'react';
 
-type TrackFn = (eventName: string, eventProps: Record<string, unknown>) => void;
+type TrackFn = (eventName: string, eventProps?: Record<string, unknown>) => void;
 
 const AnalyticsContext = createContext<TrackFn | undefined>(undefined);
 
