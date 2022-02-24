@@ -105,7 +105,9 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       const next = { ...previous };
       for (const nftId of nftIds) {
         const selectedNft = next[nftId];
-        next[nftId] = { ...selectedNft, isSelected };
+        if (selectedNft) {
+          next[nftId] = { ...selectedNft, isSelected };
+        }
       }
 
       return next;
