@@ -7,6 +7,7 @@ import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
 import { Directions } from 'components/core/enums';
 import { useRouter } from 'next/router';
+import breakpoints from 'components/core/breakpoints';
 
 const ARROWS = new Map<number, string>([
   [Directions.LEFT, '←'],
@@ -39,7 +40,7 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   }, [nftId, collectionId, username, replace]);
 
   return (
-    <StyledNavigationHandle onClick={handleOnClick}>
+    <StyledNavigationHandle onClick={handleOnClick} direction={direction}>
       {/* <StyledGradient /> */}
       <StyledTextWrapper direction={direction}>
         {arrow}
@@ -56,6 +57,17 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
+
+  position: absolute;
+  top: min(75vh, 400px);
+  width: 10px;
+  z-index: 100;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    position: relative;
+    top: unset;
+    width: 100%;
+  }
 `;
 
 const StyledHoverText = styled(BodyRegular)`
@@ -68,17 +80,30 @@ const StyledGradient = styled(Gradient)`
   opacity: 0;
 `;
 
-const StyledNavigationHandle = styled.div`
+const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   display: flex;
-  position: relative;
-  width: 80px;
   cursor: pointer;
+
+  width: 10px;
+  position: absolute;
+
+  right: ${({ direction }) => (direction ? '10px' : 'unset')};
+  left: ${({ direction }) => (direction ? 'unset' : '10px')};
 
   &:hover ${StyledGradient} {
     opacity: 1;
   }
-  &:hover ${StyledHoverText} {
-    opacity: 1;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: 80px;
+    left: unset;
+    right: unset;
+    position: relative;
+
+    &:hover ${StyledHoverText} {
+      position: relative;
+      opacity: 1;
+    }
   }
 `;
 
