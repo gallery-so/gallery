@@ -17,14 +17,15 @@ import { Collection, CollectionLayout } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import Mixpanel from 'utils/mixpanel';
-import { Nft } from 'types/Nft';
+import { StagingItem } from './types';
+import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
 
 type Props = {
   onNext: WizardContext['next'];
   collectionId?: Collection['id'];
   collectionName?: Collection['name'];
   collectionCollectorsNote?: Collection['collectors_note'];
-  nfts?: Nft[];
+  stagedItems?: StagingItem[];
   layout?: CollectionLayout;
 };
 
@@ -35,7 +36,7 @@ function CollectionCreateOrEditForm({
   collectionId,
   collectionName,
   collectionCollectorsNote,
-  nfts,
+  stagedItems,
   layout,
 }: Props) {
   const { hideModal } = useModal();
@@ -67,12 +68,12 @@ function CollectionCreateOrEditForm({
 
   const buttonText = useMemo(() => {
     // Collection is being created
-    if (nfts) {
+    if (stagedItems) {
       return 'create';
     }
 
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue, nfts]);
+  }, [hasEnteredValue, stagedItems]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -106,17 +107,17 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && nfts && layout) {
+      if (!collectionId && stagedItems && layout) {
         Mixpanel.track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
-          nft_ids: nfts.map((nft) => nft.id),
+          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ id }) => id),
         });
-        await createCollection(galleryId, title, description, nfts, layout);
+        await createCollection(galleryId, title, description, stagedItems, layout);
       }
 
       goToNextStep();
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
@@ -126,7 +127,7 @@ function CollectionCreateOrEditForm({
   }, [
     description,
     collectionId,
-    nfts,
+    stagedItems,
     goToNextStep,
     updateCollection,
     title,

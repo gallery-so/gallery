@@ -6,7 +6,7 @@ import {
   SidebarNftsState,
   useCollectionEditorActions,
   useSidebarNftsState,
-  useStagedNftsState,
+  useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
@@ -20,6 +20,7 @@ import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
 import useAllNfts from 'hooks/api/nfts/useAllNfts';
+import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
@@ -31,7 +32,7 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
 }
 
 function CollectionEditor() {
-  const stagedNfts = useStagedNftsState();
+  const stagedNfts = useStagedItemsState();
   const sidebarNfts = useSidebarNftsState();
   const { setNextEnabled } = useWizardValidationActions();
 
@@ -84,6 +85,11 @@ function CollectionEditor() {
     [allNfts]
   );
 
+  const whitespaceList = useMemo(
+    () => collectionBeingEdited?.layout?.whitespace ?? [],
+    [collectionBeingEdited]
+  );
+
   // decorates NFTs returned from useAllNfts with additional fields for the purpose of editing / dnd
   const allEditModeNfts: SidebarNftsState = useMemo(() => {
     const editModeNfts = convertNftsToEditModeNfts(allNfts);
@@ -99,7 +105,9 @@ function CollectionEditor() {
     const preRefreshNftsAsArray = convertObjectToArray(sidebarNftsRef.current);
     const initialRender = preRefreshNftsAsArray.length === 0;
     if (initialRender) {
-      stageNfts(convertNftsToEditModeNfts(nftsInCollection, true));
+      const nftsToStage = convertNftsToEditModeNfts(nftsInCollection, true);
+      const nftsToStageWithWhitespace = insertWhitespaceBlocks(nftsToStage, whitespaceList);
+      stageNfts(nftsToStageWithWhitespace);
     }
 
     // Mark NFTs as selected if they're in the collection being edited
@@ -131,7 +139,7 @@ function CollectionEditor() {
     }
 
     setSidebarNfts(newSidebarNfts);
-  }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts]);
+  }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts, whitespaceList]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
 

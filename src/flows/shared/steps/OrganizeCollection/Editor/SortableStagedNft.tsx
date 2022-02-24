@@ -6,18 +6,20 @@ import styled from 'styled-components';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
-import { EditModeNft } from '../types';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
+import colors from 'components/core/colors';
+import { BodyRegular } from 'components/core/Text/Text';
+import { Nft } from 'types/Nft';
 
 type Props = {
-  editModeNft: EditModeNft;
+  nft: Nft;
   size: number;
 };
 
-function SortableStagedNft({ editModeNft, size }: Props) {
+function SortableStagedNft({ nft, size }: Props) {
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
-    id: editModeNft.id,
+    id: nft.id,
   });
 
   const style = useMemo(
@@ -31,19 +33,19 @@ function SortableStagedNft({ editModeNft, size }: Props) {
 
   return (
     <StyledSortableNft
-      id={editModeNft.id}
+      id={nft.id}
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
     >
       <StagedNftImage
-        editModeNft={editModeNft}
+        nft={nft}
         size={size}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
       />
-      <StyledUnstageButton editModeNft={editModeNft} />
+      <StyledUnstageButton id={nft.id} />
       <StyledGradient type="top" direction="up" />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
@@ -72,6 +74,7 @@ export const StyledSortableNft = styled.div`
     outline: none;
   }
   cursor: grab;
+  margin: 24px;
 
   &:hover ${StyledUnstageButton} {
     opacity: 1;
@@ -83,6 +86,27 @@ export const StyledSortableNft = styled.div`
 
   &:hover ${StyledGradient} {
     opacity: 1;
+  }
+`;
+
+export const StyledSortableBlankBlock = styled.div`
+  position: relative;
+  -webkit-backface-visibility: hidden;
+  &:focus {
+    // ok to remove focus here because there it is not functionally 'in focus' for the user
+    outline: none;
+  }
+  cursor: grab;
+
+  margin: 24px;
+  ${BodyRegular} {
+    color: ${colors.gray50};
+  }
+
+  &:hover {
+    ${StyledUnstageButton} {
+      opacity: 1;
+    }
   }
 `;
 

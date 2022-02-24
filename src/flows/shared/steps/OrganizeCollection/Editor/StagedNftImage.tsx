@@ -3,19 +3,18 @@ import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
 import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { NftMediaType } from 'components/core/enums';
-import { EditModeNft } from '../types';
+import { Nft } from 'types/Nft';
 
 type Props = {
-  editModeNft: EditModeNft;
+  nft: Nft;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function StagedNftImage({ editModeNft, size, setNodeRef, ...props }: Props) {
-  const nft = editModeNft.nft;
+function StagedNftImage({ nft, size, setNodeRef, ...props }: Props) {
   const srcUrl = getResizedNftImageUrlWithFallback(nft);
 
-  const isVideo = getMediaTypeForAssetUrl(editModeNft.nft.image_url) === NftMediaType.VIDEO;
+  const isVideo = getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO;
 
   // TODO:
   // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
