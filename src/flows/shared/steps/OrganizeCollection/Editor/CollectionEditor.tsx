@@ -13,14 +13,14 @@ import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContex
 import { Nft } from 'types/Nft';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
-import { EditModeNft, StagingItem } from '../types';
+import { EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
 import useAllNfts from 'hooks/api/nfts/useAllNfts';
-import { generate12DigitId } from 'utils/collectionLayout';
+import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
@@ -29,20 +29,6 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
     id: nft.id,
     isSelected,
   }));
-}
-
-function insertWhitespaceBlocks(
-  stagingItems: StagingItem[],
-  whitespaceList: number[]
-): StagingItem[] {
-  const result = [...stagingItems];
-  // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
-  // Offset the index to insert at by the number of whitespaces already added
-  whitespaceList.forEach((index, offset) =>
-    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
-  );
-
-  return result;
 }
 
 function CollectionEditor() {

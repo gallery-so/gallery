@@ -14,9 +14,5 @@ export type WhitespaceBlock = {
 export type StagingItem = EditModeNft | WhitespaceBlock;
 
 export function isEditModeNft(item: StagingItem): item is EditModeNft {
-  if ((item as EditModeNft).nft) {
-    return true;
-  }
-
-  return false;
+  return 'nft' in item;
 }

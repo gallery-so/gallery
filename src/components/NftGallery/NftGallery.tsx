@@ -7,35 +7,16 @@ import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import styled from 'styled-components';
 import { Collection } from 'types/Collection';
 import { Nft } from 'types/Nft';
-import { generate12DigitId } from 'utils/collectionLayout';
+import { insertWhitespaceBlocks } from 'utils/collectionLayout';
+import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
 
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
 };
 
-type WhitespaceBlock = {
-  id: string;
-  isWhitespace: boolean;
-};
-
 function isNft(item: Nft | WhitespaceBlock): item is Nft {
-  if ((item as WhitespaceBlock).isWhitespace) {
-    return false;
-  }
-
-  return true;
-}
-
-function insertWhitespaceBlocks(nfts: Array<Nft | WhitespaceBlock>, whitespaceList: number[]) {
-  const result = [...nfts];
-  // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
-  // Offset the index to insert at by the number of whitespaces already added
-  whitespaceList.forEach((index, offset) =>
-    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}`, isWhitespace: true })
-  );
-
-  return result;
+  return 'created_at' in item;
 }
 
 function NftGallery({ collection, mobileLayout }: Props) {

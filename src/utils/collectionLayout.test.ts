@@ -1,4 +1,4 @@
-import { getWhitespacePositionsFromStagedItems } from './collectionLayout';
+import { getWhitespacePositionsFromStagedItems, insertWhitespaceBlocks } from './collectionLayout';
 
 function generateTestNft() {
   return {
@@ -30,5 +30,21 @@ describe.skip('getWhitespacePositionsFromStagedItems', () => {
     ];
     const whitespaceList = getWhitespacePositionsFromStagedItems(stagedItems);
     expect(whitespaceList).toEqual([0, 0, 1, 4, 5]);
+  });
+});
+
+describe.skip('insertWhitespaceBlocks', () => {
+  it('inserts white spaces into a list of nfts accordingly', () => {
+    const nfts = [
+      generateTestNft(),
+      generateTestNft(),
+      generateTestNft(),
+      generateTestNft(),
+      generateTestNft(),
+    ];
+    const whitespaceList = [0, 0, 1, 4, 5];
+    const whitespacesAndNfts = insertWhitespaceBlocks(nfts, whitespaceList);
+    expect(whitespacesAndNfts.length).toEqual(10);
+    expect(whitespacesAndNfts[2].id).toEqual(nfts[0].id);
   });
 });

@@ -116,7 +116,6 @@ const StyledSortableWhitespace = styled.div`
 
   &:hover {
     ${StyledWhitespace} {
-      // border: 1px dashed ${colors.gray30};
       opacity: 1;
     }
 
