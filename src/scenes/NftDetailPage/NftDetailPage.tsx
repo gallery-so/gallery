@@ -34,7 +34,7 @@ function NftDetailPage({ nftId }: Props) {
   const { query } = useRouter();
 
   const screenWidth = useBreakpoint();
-  const isMobileScreen = screenWidth === size.mobile;
+  const isMobileScreen = screenWidth === size.mobileLarge || screenWidth === size.mobile;
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId as string;
