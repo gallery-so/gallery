@@ -107,6 +107,13 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
     bottom: unset;
     position: relative;
   }
+
+  // Prevent accidental selection rather than click
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
 `;
 
 export default NavigationHandle;
