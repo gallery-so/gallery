@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import breakpoints, { size, pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
 
 import useNft from 'hooks/api/nfts/useNft';
@@ -15,6 +15,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
 import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
 
@@ -31,6 +32,9 @@ type Props = {
 
 function NftDetailPage({ nftId }: Props) {
   const { query } = useRouter();
+
+  const screenWidth = useBreakpoint();
+  const isMobileScreen = screenWidth === size.mobile;
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId as string;
@@ -69,6 +73,24 @@ function NftDetailPage({ nftId }: Props) {
     return <GalleryRedirect to="/404" />;
   }
 
+  const leftArrow = prevNftId && (
+    <NavigationHandle
+      direction={Directions.LEFT}
+      username={username}
+      collectionId={collectionId}
+      nftId={prevNftId}
+    />
+  );
+
+  const rightArrow = nextNftId && (
+    <NavigationHandle
+      direction={Directions.RIGHT}
+      username={username}
+      collectionId={collectionId}
+      nftId={nextNftId}
+    />
+  );
+
   return (
     <>
       <Head>
@@ -85,20 +107,15 @@ function NftDetailPage({ nftId }: Props) {
           </ActionText>
         </StyledBackLink>
         <StyledBody>
-          {prevNftId && (
-            <NavigationHandle
-              direction={Directions.LEFT}
-              username={username}
-              collectionId={collectionId}
-              nftId={prevNftId}
-            />
-          )}
+          {!isMobileScreen && leftArrow}
           <StyledContentContainer>
             <StyledAssetAndNoteContainer>
               <ShimmerProvider>
                 <NftDetailAsset
                   nft={nft}
                   hasExtraPaddingForNote={isCollectorsNoteEnabled && assetHasExtraPaddingForNote}
+                  arrowLeft={isMobileScreen && leftArrow}
+                  arrowRight={isMobileScreen && rightArrow}
                 />
               </ShimmerProvider>
               {isCollectorsNoteEnabled && (authenticatedUserOwnsAsset || assetHasNote) && (
@@ -112,14 +129,7 @@ function NftDetailPage({ nftId }: Props) {
 
             <NftDetailText nft={nft} />
           </StyledContentContainer>
-          {nextNftId && (
-            <NavigationHandle
-              direction={Directions.RIGHT}
-              username={username}
-              collectionId={collectionId}
-              nftId={nextNftId}
-            />
-          )}
+          {!isMobileScreen && rightArrow}
         </StyledBody>
       </StyledNftDetailPage>
     </>

@@ -239,11 +239,6 @@ type TextAreaProps = {
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
   border: none;
 
-  // We only apply padding to account for footer, which is not fixed on mobile
-  @media only screen and ${breakpoints.tablet} {
-    padding-bottom: ${({ footerHeight }) => footerHeight}px;
-  }
-
   textarea {
     ${({ noteHeight }) => `min-height: ${noteHeight}px`};
 
@@ -261,7 +256,16 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
 
   p {
     right: 0;
-    bottom: ${({ footerHeight }) => footerHeight}px;
+    bottom: 0;
+  }
+
+  // We only apply padding to account for footer, which is not fixed on mobile
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: ${({ footerHeight }) => footerHeight}px;
+
+    p {
+      bottom: ${({ footerHeight }) => footerHeight}px;
+    }
   }
 `;
 

@@ -57,10 +57,9 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
+  width: 100%;
 
   position: absolute;
-  top: 50vh;
-  width: 10px;
   z-index: 100;
 
   @media only screen and ${breakpoints.mobileLarge} {
@@ -73,6 +72,18 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
 const StyledHoverText = styled(BodyRegular)`
   transition: opacity ${transitions.cubic};
   opacity: 0;
+
+  @media only screen and ${breakpoints.mobile} {
+    /* On small screens, the spacer of 8px is not applied because there is a fixed width of 55px (and this + text would exceed 50px)
+      Accordingly, we apply a margin to the text, and then remove it on tablet */
+    margin: auto 2px;
+    font-size: 12px;
+    line-height 14px;
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    margin: auto;
+  }
 `;
 
 const StyledGradient = styled(Gradient)`
@@ -84,26 +95,30 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   display: flex;
   cursor: pointer;
 
-  width: 10px;
   position: absolute;
+  bottom: 0;
 
-  right: ${({ direction }) => (direction ? '10px' : 'unset')};
-  left: ${({ direction }) => (direction ? 'unset' : '10px')};
+  right: ${({ direction }) => (direction ? '0' : 'unset')};
+  left: ${({ direction }) => (direction ? 'unset' : '0')};
 
   &:hover ${StyledGradient} {
     opacity: 1;
   }
 
   @media only screen and ${breakpoints.mobileLarge} {
-    width: 80px;
+    width: 55px;
     left: unset;
     right: unset;
+    bottom: unset;
     position: relative;
 
     &:hover ${StyledHoverText} {
-      position: relative;
       opacity: 1;
     }
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 80px;
   }
 `;
 
