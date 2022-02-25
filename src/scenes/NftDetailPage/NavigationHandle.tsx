@@ -59,7 +59,7 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
 
   position: absolute;
-  top: min(75vh, 400px);
+  top: 50vh;
   width: 10px;
   z-index: 100;
 
