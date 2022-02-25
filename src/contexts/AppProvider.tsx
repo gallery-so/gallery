@@ -3,6 +3,7 @@ import Boundary from './boundary/Boundary';
 import AuthProvider from './auth/AuthContext';
 import ModalProvider from './modal/ModalContext';
 import ToastProvider from './toast/ToastContext';
+import AnalyticsProvider from './analytics/AnalyticsContext';
 import { Web3ProviderNetwork } from './auth/Web3WalletContext';
 import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
 import { RelayProvider } from 'contexts/relay/RelayProvider';
@@ -18,15 +19,17 @@ export default function AppProvider({ children, relayCache }: Props) {
     <Boundary>
       <ToastProvider>
         <AuthProvider>
-          <Web3ProviderNetwork>
-            <SwrProvider>
-              <RelayProvider initialCache={relayCache}>
-                <GalleryNavigationProvider>
-                  <ModalProvider>{children}</ModalProvider>
-                </GalleryNavigationProvider>
-              </RelayProvider>
-            </SwrProvider>
-          </Web3ProviderNetwork>
+          <AnalyticsProvider>
+            <Web3ProviderNetwork>
+              <SwrProvider>
+                <RelayProvider initialCache={relayCache}>
+                  <GalleryNavigationProvider>
+                    <ModalProvider>{children}</ModalProvider>
+                  </GalleryNavigationProvider>
+                </RelayProvider>
+              </SwrProvider>
+            </Web3ProviderNetwork>
+          </AnalyticsProvider>
         </AuthProvider>
       </ToastProvider>
     </Boundary>
