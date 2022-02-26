@@ -45,8 +45,8 @@ function NftDetailPage({ nftId }: Props) {
   const collectionNfts = useCollectionById({ id: collectionId })?.nfts ?? [];
   const collectionIndexOfNft = collectionNfts?.findIndex((nft) => nft.id === nftId) ?? 0;
 
-  const prevNftId = collectionNfts[collectionIndexOfNft - 1]?.id ?? '';
-  const nextNftId = collectionNfts[collectionIndexOfNft + 1]?.id ?? '';
+  const prevNftId = collectionNfts[collectionIndexOfNft - 1]?.id ?? null;
+  const nextNftId = collectionNfts[collectionIndexOfNft + 1]?.id ?? null;
 
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
