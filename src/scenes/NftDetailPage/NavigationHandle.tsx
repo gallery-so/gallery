@@ -83,12 +83,11 @@ const StyledGradient = styled(Gradient)`
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   display: flex;
   cursor: pointer;
+  width: 100%;
+  color: ${colors.gray50};
 
   position: absolute;
   bottom: 0;
-
-  width: 100%;
-
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
