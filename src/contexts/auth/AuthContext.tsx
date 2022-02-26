@@ -18,8 +18,9 @@ import {
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
 } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
+import { User } from 'types/User';
 
-export type AuthState = typeof LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
 
 const EXPIRED_SESSION_MESSAGE = 'Your session has expired. Please sign in again.';
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
@@ -96,7 +97,11 @@ const AuthProvider = memo(({ children }: Props) => {
   const setLoggedIn = useCallback(
     async (address: string) => {
       try {
-        setAuthState(LOGGED_IN);
+        setAuthState({
+          type: 'LOGGED_IN',
+          // TODOOOOO: get user id from parent func
+          userId: '',
+        });
         setUserSigninAddress(address.toLowerCase());
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -118,10 +123,10 @@ const AuthProvider = memo(({ children }: Props) => {
   useEffect(() => {
     async function getAuthenticatedUser() {
       try {
-        const authenticatedUser = await _fetch('/users/get/current', 'get current user');
+        const authenticatedUser = await _fetch<User>('/users/get/current', 'get current user');
 
         if (authenticatedUser) {
-          setAuthState(LOGGED_IN);
+          setAuthState({ type: 'LOGGED_IN', userId: authenticatedUser.id });
           setIsLoggedInLocally(true);
           return;
         }
