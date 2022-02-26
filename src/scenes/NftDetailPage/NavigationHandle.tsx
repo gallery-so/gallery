@@ -57,15 +57,16 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
-  width: 100%;
 
   position: absolute;
   z-index: 100;
 
+  right: ${({ direction }) => (direction ? '0' : 'unset')};
+  left: ${({ direction }) => (direction ? 'unset' : '0')};
+
   @media only screen and ${breakpoints.tablet} {
     position: relative;
     top: unset;
-    width: 100%;
   }
 `;
 
@@ -86,6 +87,8 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   position: absolute;
   bottom: 0;
 
+  width: 100%;
+
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
@@ -94,18 +97,16 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   }
 
   @media only screen and ${breakpoints.mobileLarge} {
-    width: 80px;
-
     &:hover ${StyledHoverText} {
       opacity: 1;
     }
   }
 
   @media only screen and ${breakpoints.tablet} {
-    left: unset;
-    right: unset;
-    bottom: unset;
-    position: relative;
+    right: ${({ direction }) => (direction ? '10px' : 'unset')};
+    left: ${({ direction }) => (direction ? 'unset' : '10px')};
+    height: 100%;
+    width: unset;
   }
 
   // Prevent accidental selection rather than click

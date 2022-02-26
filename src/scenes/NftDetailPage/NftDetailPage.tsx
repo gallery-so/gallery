@@ -111,7 +111,12 @@ function NftDetailPage({ nftId }: Props) {
           </ActionText>
         </StyledBackLink>
         <StyledBody>
-          {!isMobileScreen && leftArrow}
+          {!isMobileScreen && (
+            <>
+              <StyledNavigationBuffer />
+              {leftArrow}
+            </>
+          )}
           <StyledContentContainer>
             <StyledAssetAndNoteContainer>
               <ShimmerProvider>
@@ -133,7 +138,12 @@ function NftDetailPage({ nftId }: Props) {
 
             <NftDetailText nft={nft} />
           </StyledContentContainer>
-          {!isMobileScreen && rightArrow}
+          {!isMobileScreen && (
+            <>
+              <StyledNavigationBuffer />
+              {rightArrow}
+            </>
+          )}
         </StyledBody>
       </StyledNftDetailPage>
     </>
@@ -206,6 +216,13 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.desktop} {
     margin: 0px;
   }
+`;
+
+// We position the arrows using position absolute (so they reach the page bounds)
+// But we still want there to be space taken up in the document flow, so that the arrows do not overlap with content
+// This container simply creates space for the arrows to be positioned
+const StyledNavigationBuffer = styled.div`
+  width: 80px;
 `;
 
 export default NftDetailPage;
