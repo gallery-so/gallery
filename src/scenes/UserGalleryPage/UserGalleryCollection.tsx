@@ -85,12 +85,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
                   underlineOnHover
                 />
                 <Spacer height={12} />
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
-                <Spacer height={12} />
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
                 </CopyToClipboard>
