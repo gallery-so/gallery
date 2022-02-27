@@ -44,13 +44,29 @@ function NftDetailPage({ nftId }: Props) {
 
   const collectionNfts = useCollectionById({ id: collectionId })?.nfts;
 
-  const collectionIndexOfNft = useMemo(
-    () => collectionNfts?.findIndex((nft) => nft.id === nftId) ?? 0,
-    [nftId, collectionNfts]
-  );
+  const { prevNftId, nextNftId } = useMemo(() => {
+    if (!collectionNfts) {
+      // TODO: send error to sentry. technically all NFTs should belong to a collection.
+      return {
+        prevNftId: null,
+        nextNftId: null,
+      };
+    }
 
-  const prevNftId = collectionNfts ? collectionNfts[collectionIndexOfNft - 1]?.id ?? null : null;
-  const nextNftId = collectionNfts ? collectionNfts[collectionIndexOfNft + 1]?.id ?? null : null;
+    const nftIndex = collectionNfts.findIndex((nft) => nft.id === nftId);
+    if (nftIndex === -1) {
+      // TODO: send error to sentry. technically the NFT should exist within the collection.
+      return {
+        prevNftId: null,
+        nextNftId: null,
+      };
+    }
+
+    return {
+      prevNftId: collectionNfts[nftIndex - 1]?.id ?? null,
+      nextNftId: collectionNfts[nftIndex + 1]?.id ?? null,
+    };
+  }, [collectionNfts, nftId]);
 
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
