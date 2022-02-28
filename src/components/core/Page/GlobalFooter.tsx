@@ -142,7 +142,7 @@ const StyledLink = styled.a`
 const StyledLinkText = styled(Caption)`
   transition: color ${transitions.cubic};
   &:hover {
-    color: ${colors.gray50};
+    color: ${colors.black};
   }
 `;
 
