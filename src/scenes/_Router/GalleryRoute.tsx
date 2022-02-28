@@ -1,4 +1,5 @@
-import Banner from 'components/Banner/Banner';
+// uncomment if we need this next time
+// import Banner from 'components/Banner/Banner';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';

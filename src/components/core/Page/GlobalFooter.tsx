@@ -4,7 +4,7 @@ import { Caption, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
-import { GLOBAL_FOOTER_HEIGHT } from './constants';
+import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
 import {
   GALLERY_JOBS,
   GALLERY_DISCORD,
@@ -24,7 +24,7 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
     <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
       <MainContent>
         <StyledLogo>GALLERY</StyledLogo>
-        <Spacer height={4} />
+        <Spacer height={isMobile ? 8 : 4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>Twitter</StyledLinkText>
@@ -78,7 +78,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
   text-align: ${({ isMobile }) => (isMobile ? 'center' : 'inherit')};
 
-  height: ${({ isMobile }) => (isMobile ? 'inherit' : `${GLOBAL_FOOTER_HEIGHT}px`)};
+  height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 16px;
 
   @media only screen and ${breakpoints.tablet} {

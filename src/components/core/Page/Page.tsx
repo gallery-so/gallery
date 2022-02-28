@@ -46,6 +46,7 @@ const StyledPage = styled.div<Props>`
   align-items: ${({ centered }) => (centered ? 'center' : undefined)};
   justify-content: ${({ centered }) => (centered ? 'center' : undefined)};
 
+  /* NOTE: don't need to handle mobile footer height here, since this logic only applies to desktop + tablet */
   ${({ fixedFullPageHeight }) => (fixedFullPageHeight ? 'height' : 'min-height')}: calc(
     100vh - ${GLOBAL_FOOTER_HEIGHT}px - ${GLOBAL_NAVBAR_HEIGHT}px
   );
