@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
-import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -44,8 +43,8 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
       <StyledTextWrapper direction={direction}>
         {arrow}
         <Spacer width={3} />
-        <StyledHoverText color={colors.gray50}>
-          <TextButton text={hoverText} changeColorOnHover={false} />
+        <StyledHoverText>
+          <ActionText>{hoverText}</ActionText>
         </StyledHoverText>
       </StyledTextWrapper>
     </StyledNavigationHandle>
@@ -56,19 +55,14 @@ const StyledTextWrapper = styled(ActionText)<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
-
   position: absolute;
   z-index: 100;
+  color: ${colors.gray50};
 
   // We want to set these to 0 rather than pageGutter.mobile because they are positioned absolutely
   // within the StyledPage, which already has padding equal to pageGutter.mobile
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
-
-  // We do not want to darken text color on hover; the appearance of the text is cue that action is possible
-  &:hover {
-    color: ${colors.gray50};
-  }
 
   @media only screen and ${breakpoints.tablet} {
     position: relative;
@@ -88,11 +82,14 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   cursor: pointer;
   width: 100%;
   color: ${colors.gray50};
-
   position: absolute;
   bottom: 0;
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
+
+  &:hover ${StyledHoverText} ${ActionText}, &:hover ${StyledTextWrapper} {
+    color: ${colors.black};
+  }
 
   @media only screen and ${breakpoints.mobileLarge} {
     &:hover ${StyledHoverText} {
