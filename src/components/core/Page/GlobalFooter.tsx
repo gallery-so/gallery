@@ -112,7 +112,7 @@ const MainContent = styled.div``;
 const StyledHr = styled.hr`
   border: 1px solid #f7f7f7;
   width: 100%;
-  margin: 16px;
+  margin: 16px 0px;
 `;
 
 const BoringLegalContent = styled.div`
