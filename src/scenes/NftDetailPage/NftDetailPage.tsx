@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
 
 import useNft from 'hooks/api/nfts/useNft';
@@ -19,6 +19,7 @@ import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type Props = {
   nftId: string;
@@ -50,6 +51,9 @@ function NftDetailPage({ nftId }: Props) {
 
   const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
 
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === size.mobile;
+
   if (!nft) {
     return <GalleryRedirect to="/404" />;
   }
@@ -59,10 +63,14 @@ function NftDetailPage({ nftId }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledNftDetailPage centered fixedFullPageHeight>
+      <StyledNftDetailPage centered={!isMobile} fixedFullPageHeight>
         <StyledBackLink>
           <ActionText onClick={handleBackClick}>
-            {isFromCollectionPage ? '← Back to collection' : '← Back to gallery'}
+            {isMobile
+              ? '← Back'
+              : isFromCollectionPage
+              ? '← Back to collection'
+              : '← Back to gallery'}
           </ActionText>
         </StyledBackLink>
         <StyledBody>
