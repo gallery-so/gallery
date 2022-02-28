@@ -6,6 +6,7 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
 import {
+  GALLERY_FAQ,
   GALLERY_JOBS,
   GALLERY_DISCORD,
   GALLERY_MEMBERSHIP_OPENSEA,
@@ -29,6 +30,10 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         </Link>
         <Spacer height={4} />
         <StyledLinkContainer>
+          <StyledLink href={GALLERY_FAQ} target="_blank" rel="noreferrer">
+            <StyledLinkText color={colors.gray30}>FAQ</StyledLinkText>
+          </StyledLink>
+          <Spacer width={8} />
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray30}>Twitter</StyledLinkText>
           </StyledLink>
