@@ -51,7 +51,7 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         </StyledLinkContainer>
       </MainContent>
       {isMobile && <StyledHr />}
-      <BoringLegalContent>
+      <BoringLegalContent isMobile={isMobile}>
         <Caption color={colors.black}>{new Date().getFullYear()} - All rights reserved</Caption>
         <Spacer height={4} />
         <StyledLinkContainer>
@@ -115,9 +115,10 @@ const StyledHr = styled.hr`
   margin: 16px 0px;
 `;
 
-const BoringLegalContent = styled.div`
+const BoringLegalContent = styled.div<{ isMobile: boolean }>`
   display: flex;
   flex-direction: column;
+  align-items: ${({ isMobile }) => (isMobile ? 'inherit' : 'flex-end')};
 `;
 
 const StyledLogo = styled(TitleSerif)`
