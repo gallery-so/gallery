@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
 import { Caption, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -12,16 +12,19 @@ import {
   GALLERY_TWITTER,
   GALLERY_BLOG,
 } from 'constants/urls';
+import { useBreakpoint } from 'hooks/useWindowSize';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
 function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
+  const screenWidth = useBreakpoint();
+  const isMobile = screenWidth === size.mobile;
+
   return (
-    <StyledGlobalFooter isFixed={isFixed}>
-      <StyledLogo>GALLERY</StyledLogo>
-      <Spacer height={4} />
-      <StyledBottomText>
-        <Caption color={colors.gray40}>{new Date().getFullYear()} - All rights reserved</Caption>
+    <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
+      <MainContent>
+        <StyledLogo>GALLERY</StyledLogo>
+        <Spacer height={4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray40}>Twitter</StyledLinkText>
@@ -43,30 +46,39 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
             <StyledLinkText color={colors.gray40}>Jobs</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
-          <StyledLink href="/terms">
-            <StyledLinkText color={colors.gray40}>Terms</StyledLinkText>
-          </StyledLink>
-          <Spacer width={8} />
+        </StyledLinkContainer>
+      </MainContent>
+      {isMobile && <StyledHr />}
+      <BoringLegalContent isMobile={isMobile}>
+        <Caption color={colors.black}>{new Date().getFullYear()} - All rights reserved</Caption>
+        <Spacer height={4} />
+        <StyledLinkContainer>
           <StyledLink href="/privacy">
             <StyledLinkText color={colors.gray40}>Privacy</StyledLinkText>
           </StyledLink>
+          <Spacer width={8} />
+          <StyledLink href="/terms">
+            <StyledLinkText color={colors.gray40}>Terms</StyledLinkText>
+          </StyledLink>
         </StyledLinkContainer>
-      </StyledBottomText>
+      </BoringLegalContent>
     </StyledGlobalFooter>
   );
 }
 
 type StyledFooterProps = {
   isFixed: boolean;
+  isMobile: boolean;
 };
 
 const StyledGlobalFooter = styled.div<StyledFooterProps>`
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: ${({ isMobile }) => (isMobile ? 'center' : 'flex-end')};
+  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  text-align: ${({ isMobile }) => (isMobile ? 'center' : 'inherit')};
 
-  height: ${GLOBAL_FOOTER_HEIGHT}px;
-
+  height: ${({ isMobile }) => (isMobile ? 'inherit' : `${GLOBAL_FOOTER_HEIGHT}px`)};
   padding: 0 ${pageGutter.mobile}px 16px;
 
   @media only screen and ${breakpoints.tablet} {
@@ -94,13 +106,22 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   }
 `;
 
-const StyledLogo = styled(TitleSerif)`
-  font-size: 24px;
+const MainContent = styled.div``;
+
+const StyledHr = styled.hr`
+  border: 1px solid #f7f7f7;
+  width: 100%;
+  margin: 16px;
 `;
 
-const StyledBottomText = styled.div`
+const BoringLegalContent = styled.div<{ isMobile: boolean }>`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: ${({ isMobile }) => (isMobile ? 'center' : 'flex-end')};
+`;
+
+const StyledLogo = styled(TitleSerif)`
+  font-size: 24px;
 `;
 
 const StyledLinkContainer = styled.div`
