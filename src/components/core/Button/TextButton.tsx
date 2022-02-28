@@ -7,6 +7,7 @@ type Props = {
   text: string;
   // TODO: Refactor to support more than MouseEvent
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  changeColorOnHover?: boolean;
   underlineOnHover?: boolean;
   disableTextTransform?: boolean;
   disabled?: boolean;
@@ -18,6 +19,7 @@ function TextButton({
   text,
   onClick,
   underlineOnHover = false,
+  changeColorOnHover = true,
   disableTextTransform = false,
   disabled,
   dataTestId,
@@ -27,6 +29,7 @@ function TextButton({
       className={className}
       onClick={onClick}
       underlineOnHover={underlineOnHover}
+      changeColorOnHover={changeColorOnHover}
       disabled={disabled}
       data-testid={dataTestId}
     >
@@ -41,7 +44,9 @@ export const StyledButtonText = styled(ActionText)<Pick<Props, 'disableTextTrans
   text-transform: ${({ disableTextTransform }) => (disableTextTransform ? 'none' : undefined)};
 `;
 
-const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>`
+const StyledButton = styled.button<
+  Pick<Props, 'underlineOnHover' | 'disabled' | 'changeColorOnHover'>
+>`
   padding: 0;
   border-style: none;
   cursor: pointer;
@@ -51,7 +56,7 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
   &:hover ${StyledButtonText} {
-    color: ${colors.black};
+    color: ${({ changeColorOnHover }) => (changeColorOnHover ? colors.black : colors.gray50)};
     text-decoration: ${({ underlineOnHover }) => (underlineOnHover ? 'underline' : undefined)};
   }
 `;
