@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { Caption, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -12,13 +12,12 @@ import {
   GALLERY_TWITTER,
   GALLERY_BLOG,
 } from 'constants/urls';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
 function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
-  const screenWidth = useBreakpoint();
-  const isMobile = screenWidth === size.mobile;
+  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>

@@ -1,4 +1,4 @@
-import { contentSize, size } from 'components/core/breakpoints';
+import { contentSize } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
@@ -7,7 +7,7 @@ import NotFound from 'scenes/NotFound/NotFound';
 import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
 
 type Props = {
@@ -18,7 +18,8 @@ function UserGallery({ username }: Props) {
   const user = useUser({ username });
   const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
   const authenticatedUser = usePossiblyAuthenticatedUser();
-  const screenWidth = useBreakpoint();
+  const isMobile = useIsMobileWindowWidth();
+  const showMobileLayoutToggle = isMobile && gallery?.collections?.length > 0;
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   if (!user) {
@@ -26,9 +27,6 @@ function UserGallery({ username }: Props) {
   }
 
   const isAuthenticatedUsersPage = user.username === authenticatedUser?.username;
-
-  const showMobileLayoutToggle =
-    screenWidth === size.mobile && gallery && gallery.collections?.length > 0;
 
   const collectionsView = gallery ? (
     <UserGalleryCollections

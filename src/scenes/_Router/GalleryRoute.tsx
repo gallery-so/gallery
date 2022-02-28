@@ -1,11 +1,10 @@
 // uncomment if we need this next time
 // import Banner from 'components/Banner/Banner';
-import { size } from 'components/core/breakpoints';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from 'components/core/Page/constants';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 
 export type LayoutProps = {
@@ -45,8 +44,7 @@ export default function GalleryRoute({
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
 }: GalleryRouteProps) {
-  const breakpoint = useBreakpoint();
-  const isMobile = breakpoint === size.mobile;
+  const isMobile = useIsMobileWindowWidth();
 
   const navbarComponent = useMemo(() => {
     if (navbar) {
