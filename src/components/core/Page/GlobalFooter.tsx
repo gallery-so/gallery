@@ -13,6 +13,7 @@ import {
   GALLERY_BLOG,
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import Link from 'next/link';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
@@ -22,7 +23,9 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
   return (
     <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
       <MainContent>
-        <StyledLogo>GALLERY</StyledLogo>
+        <Link href="/">
+          <StyledLogo>GALLERY</StyledLogo>
+        </Link>
         <Spacer height={isMobile ? 8 : 4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
@@ -121,6 +124,7 @@ const BoringLegalContent = styled.div<{ isMobile: boolean }>`
 
 const StyledLogo = styled(TitleSerif)`
   font-size: 24px;
+  cursor: pointer;
 `;
 
 const StyledLinkContainer = styled.div`
