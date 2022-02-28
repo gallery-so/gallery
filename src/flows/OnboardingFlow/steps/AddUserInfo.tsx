@@ -9,7 +9,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
-import Mixpanel from 'utils/mixpanel';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -42,10 +42,12 @@ function AddUserInfo({ next }: WizardContext) {
     existingBio: user.bio,
   });
 
+  const track = useTrack();
+
   const handleSubmit = useCallback(async () => {
-    Mixpanel.track('Save Name & Bio', { added_bio: bio.length > 0 });
+    track('Save Name & Bio', { added_bio: bio.length > 0 });
     return onEditUser();
-  }, [bio.length, onEditUser]);
+  }, [bio.length, onEditUser, track]);
 
   useWizardConfig({ onNext: handleSubmit });
 

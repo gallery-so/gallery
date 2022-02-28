@@ -13,9 +13,9 @@ import {
   useCollectionWizardState,
 } from 'contexts/wizard/CollectionWizardContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import Mixpanel from 'utils/mixpanel';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -40,6 +40,8 @@ function useWizardConfig({ push }: ConfigProps) {
     push('organizeGallery');
   }, [push, setCollectionIdBeingEdited]);
 
+  const track = useTrack();
+
   useEffect(() => {
     // If collection is being edited, trigger update
     if (collectionIdBeingEdited) {
@@ -60,7 +62,7 @@ function useWizardConfig({ push }: ConfigProps) {
 
     // If collection is being created, trigger creation
     setOnNext(async () => {
-      Mixpanel.track('Save new collection button clicked');
+      track('Save new collection button clicked');
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
@@ -85,6 +87,7 @@ function useWizardConfig({ push }: ConfigProps) {
     wizardId,
     collectionMetadata,
     stagedItems,
+    track,
   ]);
 }
 

@@ -9,8 +9,8 @@ import Head from 'next/head';
 import AppProvider from 'contexts/AppProvider';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
-import Mixpanel from 'utils/mixpanel';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -35,9 +35,11 @@ const App: FC<{
 
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
+  const track = useTrack();
+
   useEffect(() => {
-    Mixpanel.track('Page view', { path: asPath });
-  }, [asPath]);
+    track('Page view', { path: asPath });
+  }, [asPath, track]);
 
   return (
     <>
