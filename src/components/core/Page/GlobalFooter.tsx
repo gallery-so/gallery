@@ -22,45 +22,45 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
 
   return (
     <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
+      {isMobile && <StyledHr />}
       <MainContent>
         <Link href="/">
           <StyledLogo>GALLERY</StyledLogo>
         </Link>
-        <Spacer height={isMobile ? 8 : 4} />
+        <Spacer height={4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Twitter</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Twitter</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
           <StyledLink href={GALLERY_DISCORD} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Discord</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Discord</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
           <StyledLink href={GALLERY_BLOG} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Blog</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Blog</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
           <StyledLink href={GALLERY_MEMBERSHIP_OPENSEA} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>OpenSea</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>OpenSea</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
           <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray40}>Jobs</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Jobs</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
         </StyledLinkContainer>
       </MainContent>
-      {isMobile && <StyledHr />}
+      {isMobile && <Spacer height={16} />}
       <BoringLegalContent isMobile={isMobile}>
-        <Caption color={colors.black}>{new Date().getFullYear()} - All rights reserved</Caption>
-        <Spacer height={4} />
+        <Caption color={colors.gray50}>{new Date().getFullYear()} - All rights reserved</Caption>
         <StyledLinkContainer>
           <StyledLink href="/privacy">
-            <StyledLinkText color={colors.gray40}>Privacy</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
           </StyledLink>
           <Spacer width={8} />
           <StyledLink href="/terms">
-            <StyledLinkText color={colors.gray40}>Terms</StyledLinkText>
+            <StyledLinkText color={colors.gray30}>Terms</StyledLinkText>
           </StyledLink>
         </StyledLinkContainer>
       </BoringLegalContent>

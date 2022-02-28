@@ -164,6 +164,7 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
+    margin-bottom: 32px;
   }
 
   @media only screen and ${breakpoints.tablet} {
