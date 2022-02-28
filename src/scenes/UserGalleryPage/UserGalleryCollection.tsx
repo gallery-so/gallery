@@ -14,7 +14,7 @@ import { useNavigateToUrl } from 'utils/navigate';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
-import Mixpanel from 'utils/mixpanel';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   collection: Collection;
@@ -56,9 +56,11 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     }, 200);
   }, []);
 
+  const track = useTrack();
+
   const handleShareClick = useCallback(() => {
-    Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username]);
+    track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username, track]);
 
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
