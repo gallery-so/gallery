@@ -7,7 +7,7 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import NavElement from 'components/core/Page/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
-import breakpoints, { size } from 'components/core/breakpoints';
+import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { Collection } from 'types/Collection';
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ import noop from 'utils/noop';
 import Mixpanel from 'utils/mixpanel';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
 import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
@@ -31,7 +31,6 @@ type Props = {
 function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
-  const screenWidth = useBreakpoint();
   const user = usePossiblyAuthenticatedUser();
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
   const handleBackClick = useBackButton({ username });
@@ -50,7 +49,8 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
 
   const collectionUrl = window.location.href;
 
-  const isMobileScreen = screenWidth === size.mobile && collection && collection.nfts?.length > 0;
+  const isMobile = useIsMobileWindowWidth();
+  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length > 0;
 
   const handleEditCollectionClick = useCallback(() => {
     Mixpanel.track('Update existing collection');
@@ -77,7 +77,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
             <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
             {collection.name && <StyledSeparator>/</StyledSeparator>}
           </StyledUsernameAndSeparatorWrapper>
-          {isMobileScreen && (
+          {shouldDisplayMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledUsernameWrapper>
@@ -98,7 +98,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
               text="EDIT NAME & DESCRIPTION"
               underlineOnHover
             />
-            {!isMobileScreen && (
+            {!shouldDisplayMobileLayoutToggle && (
               <>
                 <Spacer height={8} />
                 <NavElement>

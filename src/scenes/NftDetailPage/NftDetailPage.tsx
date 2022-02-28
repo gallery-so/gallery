@@ -19,6 +19,7 @@ import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   nftId: string;
@@ -50,6 +51,8 @@ function NftDetailPage({ nftId }: Props) {
 
   const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
 
+  const isMobile = useIsMobileWindowWidth();
+
   if (!nft) {
     return <GalleryRedirect to="/404" />;
   }
@@ -59,10 +62,14 @@ function NftDetailPage({ nftId }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledNftDetailPage centered fixedFullPageHeight>
+      <StyledNftDetailPage centered={!isMobile} fixedFullPageHeight>
         <StyledBackLink>
           <ActionText onClick={handleBackClick}>
-            {isFromCollectionPage ? '← Back to collection' : '← Back to gallery'}
+            {isMobile
+              ? '← Back'
+              : isFromCollectionPage
+              ? '← Back to collection'
+              : '← Back to gallery'}
           </ActionText>
         </StyledBackLink>
         <StyledBody>
@@ -157,6 +164,7 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
+    margin-bottom: 32px;
   }
 
   @media only screen and ${breakpoints.tablet} {

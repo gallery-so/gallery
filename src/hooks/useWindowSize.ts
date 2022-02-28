@@ -46,3 +46,7 @@ export function useBreakpoint(): size {
 
   return breakpoint;
 }
+
+export function useIsMobileWindowWidth() {
+  return useBreakpoint() === size.mobile;
+}

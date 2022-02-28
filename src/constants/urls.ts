@@ -1,3 +1,5 @@
+export const GALLERY_FAQ =
+  'https://www.notion.so/gallery-so/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba';
 export const GALLERY_JOBS =
   'https://gallery-so.notion.site/Careers-e8d78dea54834630928f075f4a4ccdba';
 export const GALLERY_TWITTER = 'https://twitter.com/usegallery';
