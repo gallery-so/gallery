@@ -41,7 +41,7 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   return (
     <StyledNavigationHandle onClick={handleOnClick} direction={direction}>
       <StyledTextWrapper direction={direction}>
-        {arrow}
+        <ActionText>{arrow}</ActionText>
         <Spacer width={3} />
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
@@ -51,7 +51,7 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   );
 }
 
-const StyledTextWrapper = styled(ActionText)<{ direction: Directions }>`
+const StyledTextWrapper = styled.div<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
@@ -88,7 +88,7 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
-  &:hover ${StyledHoverText} ${ActionText}, &:hover ${StyledTextWrapper} {
+  &:hover ${StyledHoverText} ${ActionText}, &:hover ${ActionText} {
     color: ${colors.black};
   }
 
