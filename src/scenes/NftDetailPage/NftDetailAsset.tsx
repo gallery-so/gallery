@@ -3,7 +3,7 @@ import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
-import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { getMediaType } from 'utils/nft';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
@@ -25,7 +25,8 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
   const resizableImage = useMemo(
     () => (
       <ImageWithLoading
-        src={getResizedNftImageUrlWithFallback(nft, 1200)}
+        srcSet={nft.imageSrcSet.srcSet}
+        src={nft.imageSrcSet.src}
         alt={nft.name}
         widthType="maxWidth"
         heightType={breakpoint === size.desktop ? 'maxHeightScreen' : undefined}

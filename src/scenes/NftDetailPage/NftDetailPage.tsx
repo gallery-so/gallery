@@ -20,12 +20,13 @@ import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { Nft } from 'types/Nft';
 
 type Props = {
-  nftId: string;
+  nft: Nft;
 };
 
-function NftDetailPage({ nftId }: Props) {
+function NftDetailPage({ nft }: Props) {
   const { query } = useRouter();
 
   const username = window.location.pathname.split('/')[1];
@@ -39,12 +40,12 @@ function NftDetailPage({ nftId }: Props) {
 
   const handleBackClick = useBackButton({ username });
 
-  const nft = useNft({ id: nftId ?? '' });
+  // const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
 
   useEffect(() => {
-    Mixpanel.track('Page View: NFT Detail', { nftId });
-  }, [nftId]);
+    Mixpanel.track('Page View: NFT Detail', { nftId: nft.id });
+  }, [nft.id]);
 
   const assetHasNote = nft?.collectors_note !== '';
   const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);

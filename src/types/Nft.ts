@@ -1,3 +1,4 @@
+import { ImageSrcSet } from 'utils/imageSrcSet';
 import { User } from './User';
 
 export type Nft = {
@@ -36,6 +37,7 @@ export type Nft = {
   token_metadata_url: string;
   user_id: string;
   ownership_history: OwnershipHistory;
+  imageSrcSet: ImageSrcSet;
 };
 
 type OwnershipHistory = {

@@ -1,5 +1,6 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
+import { ImageSrcSet } from 'utils/imageSrcSet';
 
 type ContentWidthType =
   | 'fullWidth' // fill container
@@ -13,6 +14,7 @@ type Props = {
   alt: string;
   widthType?: ContentWidthType;
   heightType?: ContentHeightType;
+  srcSet: ImageSrcSet['srcSet'];
 };
 
 export default function ImageWithLoading({
@@ -21,8 +23,24 @@ export default function ImageWithLoading({
   heightType,
   src,
   alt,
+  srcSet,
 }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
+
+  if (srcSet) {
+    return (
+      <StyledImg
+        className={className}
+        widthType={widthType}
+        heightType={heightType}
+        src={src}
+        srcSet={srcSet}
+        alt={alt}
+        loading="lazy"
+        onLoad={setContentIsLoaded}
+      />
+    );
+  }
 
   return (
     <StyledImg
