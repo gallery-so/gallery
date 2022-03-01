@@ -9,10 +9,14 @@ import { useAuthActions } from 'contexts/auth/AuthContext';
 import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import Mixpanel from 'utils/mixpanel';
 import Spacer from 'components/core/Spacer/Spacer';
 import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
+import {
+  useTrackSignInAttempt,
+  useTrackSignInError,
+  useTrackSignInSuccess,
+} from 'contexts/analytics/authUtil';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -36,6 +40,10 @@ function AuthenticateWalletPendingDefault({
   const fetcher = useFetcher();
   const { setLoggedIn } = useAuthActions();
 
+  const trackSignInAttempt = useTrackSignInAttempt();
+  const trackSignInSuccess = useTrackSignInSuccess();
+  const trackSignInError = useTrackSignInError();
+
   /**
    * Auth Pipeline:
    * 1. Fetch nonce from server with provided wallet address
@@ -46,7 +54,7 @@ function AuthenticateWalletPendingDefault({
   const attemptAuthentication = useCallback(
     async (address: string, signer: JsonRpcSigner) => {
       setPendingState(PROMPT_SIGNATURE);
-      Mixpanel.trackSignInAttempt(userFriendlyWalletName);
+      trackSignInAttempt(userFriendlyWalletName);
 
       const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
@@ -60,10 +68,17 @@ function AuthenticateWalletPendingDefault({
       };
 
       await loginOrCreateUser(userExists, payload, fetcher);
-      Mixpanel.trackSignInSuccess(userFriendlyWalletName);
+      trackSignInSuccess(userFriendlyWalletName);
       setLoggedIn(address);
     },
-    [fetcher, setLoggedIn, pendingWallet, userFriendlyWalletName]
+    [
+      trackSignInAttempt,
+      userFriendlyWalletName,
+      fetcher,
+      pendingWallet,
+      trackSignInSuccess,
+      setLoggedIn,
+    ]
   );
 
   useEffect(() => {
@@ -72,7 +87,7 @@ function AuthenticateWalletPendingDefault({
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
-          Mixpanel.trackSignInError(userFriendlyWalletName, error);
+          trackSignInError(userFriendlyWalletName, error);
           if (isWeb3Error(error)) {
             setDetectedError(error);
           }
@@ -87,7 +102,14 @@ function AuthenticateWalletPendingDefault({
     }
 
     void authenticate();
-  }, [account, signer, setDetectedError, attemptAuthentication, userFriendlyWalletName]);
+  }, [
+    account,
+    signer,
+    setDetectedError,
+    attemptAuthentication,
+    userFriendlyWalletName,
+    trackSignInError,
+  ]);
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (

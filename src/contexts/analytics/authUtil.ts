@@ -20,38 +20,69 @@ const useTrackAuthEvent = () => {
 const AUTH_MODE_SIGN_IN = 'Sign In';
 const AUTH_MODE_ADD_WALLET = 'Add Wallet';
 
-export const useTrackSigninAttempt = (walletName: string) => {
+export const useTrackSignInAttempt = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent('Sign In - Attempt', walletName, AUTH_MODE_SIGN_IN);
+
+  return useCallback(
+    (walletName: string) => {
+      trackAuthEvent('Sign In - Attempt', walletName, AUTH_MODE_SIGN_IN);
+    },
+    [trackAuthEvent]
+  );
 };
 
-export const useTrackSignInSuccess = (walletName: string) => {
+export const useTrackSignInSuccess = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent('Sign In - Success', walletName, AUTH_MODE_SIGN_IN);
+  return useCallback(
+    (walletName: string) => {
+      trackAuthEvent('Sign In - Success', walletName, AUTH_MODE_SIGN_IN);
+    },
+    [trackAuthEvent]
+  );
 };
 
-export const useTrackSignInError = (walletName: string, error: unknown) => {
+export const useTrackSignInError = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent('Sign In - Error', walletName, AUTH_MODE_SIGN_IN, getAuthErrorMessage(error));
+  return useCallback(
+    (walletName: string, error: unknown) => {
+      trackAuthEvent('Sign In - Error', walletName, AUTH_MODE_SIGN_IN, getAuthErrorMessage(error));
+    },
+    [trackAuthEvent]
+  );
 };
 
-export const useTrackAddWalletAttempt = (walletName: string) => {
+export const useTrackAddWalletAttempt = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent('Add Wallet - Attempt', walletName, AUTH_MODE_ADD_WALLET);
+  return useCallback(
+    (walletName: string) => {
+      trackAuthEvent('Add Wallet - Attempt', walletName, AUTH_MODE_ADD_WALLET);
+    },
+    [trackAuthEvent]
+  );
 };
 
-export const useTrackAddWalletSuccess = (walletName: string) => {
+export const useTrackAddWalletSuccess = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent('Add Wallet - Success', walletName, AUTH_MODE_ADD_WALLET);
+  return useCallback(
+    (walletName: string) => {
+      trackAuthEvent('Add Wallet - Success', walletName, AUTH_MODE_ADD_WALLET);
+    },
+    [trackAuthEvent]
+  );
 };
 
-export const useTrackAddWalletError = (walletName: string, error: unknown) => {
+export const useTrackAddWalletError = () => {
   const trackAuthEvent = useTrackAuthEvent();
-  trackAuthEvent(
-    'Add Wallet - Error',
-    walletName,
-    AUTH_MODE_ADD_WALLET,
-    getAuthErrorMessage(error)
+  return useCallback(
+    (walletName: string, error: unknown) => {
+      trackAuthEvent(
+        'Add Wallet - Error',
+        walletName,
+        AUTH_MODE_ADD_WALLET,
+        getAuthErrorMessage(error)
+      );
+    },
+    [trackAuthEvent]
   );
 };
 
