@@ -58,7 +58,7 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <Caption color={colors.gray50}>{new Date().getFullYear()} - All rights reserved</Caption>
+        <Caption color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</Caption>
         <Spacer width={8} />
         <Caption color={colors.gray50}>·</Caption>
         <Spacer width={8} />
