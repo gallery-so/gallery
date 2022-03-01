@@ -69,9 +69,14 @@ function AuthenticateWalletPendingDefault({
         nonce,
       };
 
-      await loginOrCreateUser(userExists, payload, fetcher, trackCreateUserSuccess);
+      const { userId } = await loginOrCreateUser(
+        userExists,
+        payload,
+        fetcher,
+        trackCreateUserSuccess
+      );
       trackSignInSuccess(userFriendlyWalletName);
-      setLoggedIn(address);
+      setLoggedIn(userId, address);
     },
     [
       trackSignInAttempt,

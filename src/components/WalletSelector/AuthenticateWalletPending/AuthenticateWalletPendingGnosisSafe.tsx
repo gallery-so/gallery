@@ -58,11 +58,16 @@ function AuthenticateWalletPendingGnosisSafe({
         nonce,
       };
 
-      await loginOrCreateUser(userExists, payload, fetcher, trackCreateUserSuccess);
+      const { userId } = await loginOrCreateUser(
+        userExists,
+        payload,
+        fetcher,
+        trackCreateUserSuccess
+      );
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
-      setLoggedIn(address);
+      setLoggedIn(userId, address);
     },
     [fetcher, setLoggedIn, trackSignInSuccess, userExists, trackCreateUserSuccess]
   );

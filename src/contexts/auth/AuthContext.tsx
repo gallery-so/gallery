@@ -35,7 +35,7 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  setLoggedIn: (address: string) => void;
+  setLoggedIn: (userId: string, address: string) => void;
   logOut: () => void;
   setStateToLoading: () => void;
   handleUnauthorized: () => void;
@@ -95,13 +95,9 @@ const AuthProvider = memo(({ children }: Props) => {
   }, [setLoggedOut]);
 
   const setLoggedIn = useCallback(
-    async (address: string) => {
+    async (userId: string, address: string) => {
       try {
-        setAuthState({
-          type: 'LOGGED_IN',
-          // TODOOOOO: get user id from parent func
-          userId: '',
-        });
+        setAuthState({ type: 'LOGGED_IN', userId });
         setUserSigninAddress(address.toLowerCase());
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
