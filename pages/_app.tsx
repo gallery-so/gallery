@@ -10,7 +10,7 @@ import AppProvider from 'contexts/AppProvider';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { _track } from 'contexts/analytics/AnalyticsContext';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -35,11 +35,9 @@ const App: FC<{
 
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
-  const track = useTrack();
-
   useEffect(() => {
-    track('Page view', { path: asPath });
-  }, [asPath, track]);
+    _track('Page view', { path: asPath });
+  }, [asPath]);
 
   return (
     <>
