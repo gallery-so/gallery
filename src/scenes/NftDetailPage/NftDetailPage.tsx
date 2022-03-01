@@ -40,7 +40,6 @@ function NftDetailPage({ nft }: Props) {
 
   const handleBackClick = useBackButton({ username });
 
-  // const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
 
   useEffect(() => {
