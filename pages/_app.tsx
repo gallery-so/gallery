@@ -68,7 +68,7 @@ const App: FC<{
             <meta property="og:image:height" content="630" />
 
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:site" content="@usegallery" />
+            <meta name="twitter:site" content="@gallery" />
           </>
         )}
       </Head>
