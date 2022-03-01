@@ -13,6 +13,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
 import {
+  useTrackCreateUserSuccess,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
@@ -43,6 +44,7 @@ function AuthenticateWalletPendingDefault({
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
+  const trackCreateUserSuccess = useTrackCreateUserSuccess(userFriendlyWalletName);
 
   /**
    * Auth Pipeline:
@@ -67,7 +69,7 @@ function AuthenticateWalletPendingDefault({
         nonce,
       };
 
-      await loginOrCreateUser(userExists, payload, fetcher);
+      await loginOrCreateUser(userExists, payload, fetcher, trackCreateUserSuccess);
       trackSignInSuccess(userFriendlyWalletName);
       setLoggedIn(address);
     },
@@ -78,6 +80,7 @@ function AuthenticateWalletPendingDefault({
       pendingWallet,
       trackSignInSuccess,
       setLoggedIn,
+      trackCreateUserSuccess,
     ]
   );
 

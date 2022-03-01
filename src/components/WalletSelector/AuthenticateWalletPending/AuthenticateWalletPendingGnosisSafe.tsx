@@ -20,6 +20,7 @@ import {
   useTrackSignInAttempt,
   useTrackSignInSuccess,
   useTrackSignInError,
+  useTrackCreateUserSuccess,
 } from 'contexts/analytics/authUtil';
 
 type Props = {
@@ -47,6 +48,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
+  const trackCreateUserSuccess = useTrackCreateUserSuccess('Gnosis Safe');
 
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
@@ -56,13 +58,13 @@ function AuthenticateWalletPendingGnosisSafe({
         nonce,
       };
 
-      await loginOrCreateUser(userExists, payload, fetcher);
+      await loginOrCreateUser(userExists, payload, fetcher, trackCreateUserSuccess);
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
       setLoggedIn(address);
     },
-    [fetcher, setLoggedIn, trackSignInSuccess, userExists]
+    [fetcher, setLoggedIn, trackSignInSuccess, userExists, trackCreateUserSuccess]
   );
 
   const handleError = useCallback(
