@@ -28,7 +28,7 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         <Link href="/">
           <StyledLogo>GALLERY</StyledLogo>
         </Link>
-        <Spacer height={4} />
+        <Spacer height={isMobile ? 16 : 4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_FAQ} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray30}>FAQ</StyledLinkText>
@@ -56,18 +56,19 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
           <Spacer width={8} />
         </StyledLinkContainer>
       </MainContent>
-      {isMobile && <Spacer height={16} />}
-      <BoringLegalContent isMobile={isMobile}>
+      {isMobile && <Spacer height={4} />}
+      <BoringLegalContent>
         <Caption color={colors.gray50}>{new Date().getFullYear()} - All rights reserved</Caption>
-        <StyledLinkContainer>
-          <StyledLink href="/privacy">
-            <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
-          </StyledLink>
-          <Spacer width={8} />
-          <StyledLink href="/terms">
-            <StyledLinkText color={colors.gray30}>Terms</StyledLinkText>
-          </StyledLink>
-        </StyledLinkContainer>
+        <Spacer width={8} />
+        <Caption color={colors.gray50}>·</Caption>
+        <Spacer width={8} />
+        <StyledLink href="/privacy">
+          <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
+        </StyledLink>
+        <Spacer width={8} />
+        <StyledLink href="/terms">
+          <StyledLinkText color={colors.gray30}>Terms</StyledLinkText>
+        </StyledLink>
       </BoringLegalContent>
     </StyledGlobalFooter>
   );
@@ -85,10 +86,10 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
 
   height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
-  padding: 0 ${pageGutter.mobile}px 16px;
+  padding: 0 ${pageGutter.mobile}px 24px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px 16px;
+    padding: 0 ${pageGutter.tablet}px 24px;
 
     ${({ isFixed }) =>
       isFixed &&
@@ -108,7 +109,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 0 32px 16px;
+    padding: 0 32px 24px;
   }
 `;
 
@@ -120,10 +121,8 @@ const StyledHr = styled.hr`
   margin: 16px 0px;
 `;
 
-const BoringLegalContent = styled.div<{ isMobile: boolean }>`
+const BoringLegalContent = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: ${({ isMobile }) => (isMobile ? 'inherit' : 'flex-end')};
 `;
 
 const StyledLogo = styled(TitleSerif)`
