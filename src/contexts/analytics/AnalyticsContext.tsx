@@ -8,8 +8,19 @@ type TrackFn = (eventName: string, eventProps?: EventProps) => void;
 
 const AnalyticsContext = createContext<TrackFn | undefined>(undefined);
 
+let mixpanelEnabled = false;
+
+if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_API_URL) {
+  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {
+    api_host: process.env.NEXT_PUBLIC_ANALYTICS_API_URL,
+  });
+  mixpanelEnabled = true;
+}
+
 // raw tracking. use this sparingly if you can't use hooks, or are outside the analytics context.
 export const _track = (eventName: string, eventProps: EventProps, userId?: string) => {
+  if (!mixpanelEnabled) return;
+
   try {
     mixpanel.track(eventName, {
       userId, // field will be `null` if no user ID exists
@@ -33,17 +44,12 @@ export const useTrack = () => {
 
 type Props = { children: ReactNode };
 
-const mixpanelEnabled =
-  process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_API_URL;
-
 const AnalyticsProvider = memo(({ children }: Props) => {
   const userId = useAuthenticatedUserId();
 
   const handleTrack: TrackFn = useCallback(
     (eventName, eventProps = {}) => {
-      if (mixpanelEnabled) {
-        _track(eventName, eventProps, userId);
-      }
+      _track(eventName, eventProps, userId);
     },
     [userId]
   );
