@@ -1,4 +1,4 @@
-import { FC, ComponentType, useEffect } from 'react';
+import { FC, ComponentType } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -10,7 +10,6 @@ import AppProvider from 'contexts/AppProvider';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
-import { _track } from 'contexts/analytics/AnalyticsContext';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -31,13 +30,9 @@ const App: FC<{
   Component: ComponentType<MetaTagProps>;
   pageProps: MetaTagProps & Record<string, unknown>;
 }> = ({ Component, pageProps }) => {
-  const { asPath } = useRouter();
-
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
-  useEffect(() => {
-    _track('Page view', { path: asPath });
-  }, [asPath]);
+  const { asPath } = useRouter();
 
   return (
     <>
