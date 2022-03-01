@@ -36,7 +36,7 @@ function UserGalleryPage({ username }: UserGalleryPageProps) {
 const StyledUserGalleryWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0 ${pageGutter.mobile}px;
+  margin: 0 ${pageGutter.mobile}px 24px;
 
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
