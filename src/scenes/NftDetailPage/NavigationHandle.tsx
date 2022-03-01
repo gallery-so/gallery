@@ -78,6 +78,7 @@ const StyledHoverText = styled.div`
 `;
 
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
+  z-index: 1;
   display: flex;
   cursor: pointer;
   width: 100%;
