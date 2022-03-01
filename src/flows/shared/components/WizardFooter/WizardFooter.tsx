@@ -13,7 +13,6 @@ import { GalleryWizardProps } from 'flows/shared/types';
 import isPromise from 'utils/isPromise';
 import { useRouter } from 'next/router';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
-import { useHistoryStack } from 'contexts/navigation/GalleryNavigationProvider';
 
 function WizardFooter({
   step,
@@ -34,10 +33,6 @@ function WizardFooter({
   const collectionId = query.collectionId;
 
   const isFirstStep = useMemo(() => history.index === 0, [history.index]);
-
-  const historyStack = useHistoryStack();
-  const previousRoute = historyStack[historyStack.length - 1];
-  const isFromGalleryPage = previousRoute === `/${username}`;
 
   const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [
     footerButtonTextMap,
@@ -62,14 +57,9 @@ function WizardFooter({
         setIsLoading(false);
       }
 
-      if (isFromGalleryPage) {
-        back();
-        return;
-      }
-
-      // If coming from single collection page, the user should be redirected to the collection page
+      // If there is collectionId, redirect to previous page
       if (collectionId) {
-        void push(`/${username}/${collectionId}`);
+        back();
       }
 
       return;
@@ -79,14 +69,9 @@ function WizardFooter({
   }, [collectionId, next, onNext, push, username]);
 
   const handlePreviousClick = useCallback(() => {
-    if (isFromGalleryPage) {
-      back();
-      return;
-    }
-
-    // If coming from single collection page, the user should be redirected to the collection page
+    // If there is collectionId, redirect to previous page
     if (collectionId) {
-      void push(`/${username}/${collectionId}`);
+      back();
     }
 
     if (onPrevious?.current) {
