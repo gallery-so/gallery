@@ -17,6 +17,7 @@ import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdow
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import { baseUrl } from 'utils/baseUrl';
 
 type Props = {
   collection: Collection;
@@ -28,7 +29,7 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
-  const { push } = useRouter();
+  const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
@@ -38,9 +39,8 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
 
   const [isHovering, setIsHovering] = useState(false);
   const user = usePossiblyAuthenticatedUser();
-  const username = window.location.pathname.split('/')[1];
-  // TODO: Replace with useRouter() once we have a way to get the current route
-  const collectionUrl = `${window.location.href}/${collection.id}`;
+  const username = asPath.split('/')[1];
+  const collectionUrl = `${baseUrl}/${collection.id}`;
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
