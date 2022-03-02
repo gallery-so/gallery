@@ -53,8 +53,6 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
 type Props = {
   nft: Nft;
   hasExtraPaddingForNote: boolean;
-  arrowLeft?: React.ReactNode;
-  arrowRight?: React.ReactNode;
 };
 
 // number that determines a reasonable max height for the displayed NFT
@@ -66,7 +64,7 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft, hasExtraPaddingForNote, arrowLeft, arrowRight }: Props) {
+function NftDetailAsset({ nft, hasExtraPaddingForNote }: Props) {
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -91,9 +89,7 @@ function NftDetailAsset({ nft, hasExtraPaddingForNote, arrowLeft, arrowRight }: 
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
     >
-      {arrowLeft}
       <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
-      {arrowRight}
     </StyledAssetContainer>
   );
 }

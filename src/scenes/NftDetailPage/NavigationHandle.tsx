@@ -7,10 +7,18 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { Directions } from 'components/core/enums';
 import { useRouter } from 'next/router';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import ArrowLeft from 'public/icons/arrow_left.svg';
+import ArrowRight from 'public/icons/arrow_right.svg';
 
 const ARROWS = new Map<number, string>([
   [Directions.LEFT, '←'],
   [Directions.RIGHT, '→'],
+]);
+
+const MOBILE_ARROWS = new Map<number, any>([
+  [Directions.LEFT, <ArrowLeft />],
+  [Directions.RIGHT, <ArrowRight />],
 ]);
 
 const HOVER_TEXT = new Map<number, string>([
@@ -26,7 +34,12 @@ type Props = {
 };
 
 function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
-  const arrow = useMemo(() => ARROWS.get(direction) ?? '', [direction]);
+  const isMobile = useIsMobileWindowWidth();
+
+  const arrow = useMemo(
+    () => (isMobile ? MOBILE_ARROWS.get(direction) : ARROWS.get(direction) ?? ''),
+    [isMobile, direction]
+  );
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
@@ -61,8 +74,8 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
 
   // We want to set these to 0 rather than pageGutter.mobile because they are positioned absolutely
   // within the StyledPage, which already has padding equal to pageGutter.mobile
-  right: ${({ direction }) => (direction ? '0' : 'unset')};
-  left: ${({ direction }) => (direction ? 'unset' : '0')};
+  right: ${({ direction }) => (direction ? '16px' : 'unset')};
+  left: ${({ direction }) => (direction ? 'unset' : '16px')};
 
   @media only screen and ${breakpoints.tablet} {
     position: relative;
@@ -78,13 +91,21 @@ const StyledHoverText = styled.div`
 `;
 
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
+  // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
+  position: fixed;
+  bottom: 16px;
+  height: auto;
+  display: flex;
+  place-items: flex-end;
+
+  // ELSE
   z-index: 1;
   display: flex;
   cursor: pointer;
-  width: 100%;
+  // width: 100%;
+  // position: absolute;
+  // bottom: 0;
   color: ${colors.gray50};
-  position: absolute;
-  bottom: 0;
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
