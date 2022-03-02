@@ -88,6 +88,11 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
+  background-color: white;
+  z-index: 1;
+  position: relative;
+}
+
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px 24px;
 
