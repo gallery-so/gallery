@@ -3,7 +3,7 @@
     "pages/api/opengraph/image.ts": {
       "memory": 3008,
       "maxDuration": 15,
-      "excludeFiles": "**/node_modules/@sentry/cli/**"
+      "excludeFiles": "{+(.now|.next|_next|node_modules|public|assets|components|pages)/**,yarn.lock,README.md}"
     }
   }
 }
