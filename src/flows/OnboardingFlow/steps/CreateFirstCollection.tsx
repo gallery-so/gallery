@@ -6,8 +6,8 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback, useEffect } from 'react';
-import Mixpanel from 'utils/mixpanel';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type ConfigProps = {
   onNext: () => void;
@@ -22,10 +22,12 @@ function useWizardConfig({ onNext }: ConfigProps) {
 }
 
 function CreateFirstCollection({ next }: WizardContext) {
+  const track = useTrack();
+
   const handleNextClick = useCallback(() => {
-    Mixpanel.track('Start new collection');
+    track('Start new collection');
     next();
-  }, [next]);
+  }, [next, track]);
 
   useWizardConfig({ onNext: handleNextClick });
 

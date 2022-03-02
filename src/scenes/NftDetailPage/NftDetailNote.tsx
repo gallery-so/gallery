@@ -11,7 +11,7 @@ import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
 import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
-import Mixpanel from 'utils/mixpanel';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 const MAX_CHAR_COUNT = 1200;
 const MIN_NOTE_HEIGHT = 150;
@@ -59,6 +59,8 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
   const updateNft = useUpdateNft();
 
+  const track = useTrack();
+
   const handleSubmitCollectorsNote = useCallback(async () => {
     setGeneralError('');
 
@@ -71,7 +73,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
     try {
       await updateNft(nftId, collectorsNote);
-      Mixpanel.track('Save NFT collectors note', {
+      track('Save NFT collectors note', {
         added_note: unescapedCollectorsNote.length > 0,
         num_chars: unescapedCollectorsNote.length,
       });
@@ -80,7 +82,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote]);
+  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote, track]);
 
   // If the user hits cmd + ctrl enter, submit the note
   const handleKeyDown = useCallback(

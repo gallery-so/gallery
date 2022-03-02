@@ -14,13 +14,13 @@ import { useRouter } from 'next/router';
 import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
-import Mixpanel from 'utils/mixpanel';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
 import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   collection: Collection;
@@ -41,9 +41,11 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
     [collection.collectors_note]
   );
 
+  const track = useTrack();
+
   const handleShareClick = useCallback(() => {
-    Mixpanel.track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username]);
+    track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username, track]);
 
   const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
@@ -53,9 +55,9 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length > 0;
 
   const handleEditCollectionClick = useCallback(() => {
-    Mixpanel.track('Update existing collection');
+    track('Update existing collection');
     void push(`/edit?collectionId=${collection.id}`);
-  }, [collection.id, push]);
+  }, [collection.id, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(

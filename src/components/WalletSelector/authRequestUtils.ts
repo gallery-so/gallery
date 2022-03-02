@@ -1,7 +1,6 @@
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { Web3Error } from 'types/Error';
 import capitalize from 'utils/capitalize';
-import Mixpanel from 'utils/mixpanel';
 
 export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
   const response = await addUserAddress(payload, fetcher);
@@ -12,14 +11,15 @@ export async function addWallet(payload: AddUserAddressRequest, fetcher: Fetcher
 export async function loginOrCreateUser(
   userExists: boolean,
   payload: LoginUserRequest | CreateUserRequest,
-  fetcher: FetcherType
+  fetcher: FetcherType,
+  trackCreateUserSuccess: () => void
 ) {
   if (userExists) {
     const response = await loginUser(payload as LoginUserRequest, fetcher);
     return { userId: response.user_id };
   }
 
-  const response = await createUser(payload as CreateUserRequest, fetcher);
+  const response = await createUser(payload as CreateUserRequest, fetcher, trackCreateUserSuccess);
 
   return { userId: response.user_id };
 }
@@ -170,13 +170,14 @@ type CreateUserResponse = {
 
 async function createUser(
   body: CreateUserRequest,
-  fetcher: FetcherType
+  fetcher: FetcherType,
+  trackCreateUserSuccess: () => void
 ): Promise<CreateUserResponse> {
   try {
     const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
       body,
     });
-    Mixpanel.track('Create user', { address: body.address });
+    trackCreateUserSuccess();
     return result;
   } catch (error: unknown) {
     if (error instanceof Error) {

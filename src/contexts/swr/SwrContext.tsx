@@ -2,9 +2,9 @@ import { memo, useCallback, useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import { MINUTE, SECOND } from 'utils/time';
 import useFetcher from './useFetcher';
-import Mixpanel from 'utils/mixpanel';
 import ensureLatestGallery from './middleware/ensureLatestGallery';
 import handleObscenelyLargeAssets from './middleware/handleObscenelyLargeAssets';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 function localStorageProvider() {
   // When initializing, we restore the data from `localStorage` into a map.
@@ -43,11 +43,14 @@ const middleware = [ensureLatestGallery, handleObscenelyLargeAssets];
 export const SwrProvider = memo(({ children }) => {
   const fetcher = useFetcher();
 
-  const handleLoadingSlow = useCallback((key) => {
-    Mixpanel.track('Slow request', {
-      endpoint: key,
-    });
-  }, []);
+  const track = useTrack();
+
+  const handleLoadingSlow = useCallback(
+    (key) => {
+      track('Slow request', { endpoint: key });
+    },
+    [track]
+  );
 
   const value = useMemo(
     () => ({

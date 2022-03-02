@@ -21,9 +21,13 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import Mixpanel from 'utils/mixpanel';
 import { addWallet, fetchNonce } from '../authRequestUtils';
 import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
+import {
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from 'contexts/analytics/authUtil';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -60,6 +64,10 @@ function AddWalletPendingDefault({
     [showModal]
   );
 
+  const trackAddWalletAttempt = useTrackAddWalletAttempt();
+  const trackAddWalletSuccess = useTrackAddWalletSuccess();
+  const trackAddWalletError = useTrackAddWalletError();
+
   /**
    * Add Wallet Pipeline:
    * 1. Fetch nonce from server with provided wallet address
@@ -71,7 +79,8 @@ function AddWalletPendingDefault({
       try {
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
-        Mixpanel.trackAddWalletAttempt(userFriendlyWalletName);
+
+        trackAddWalletAttempt(userFriendlyWalletName);
         const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
 
         if (userExists) {
@@ -86,14 +95,14 @@ function AddWalletPendingDefault({
         };
         const { signatureValid } = await addWallet(payload, fetcher);
 
-        Mixpanel.trackAddWalletSuccess(userFriendlyWalletName);
+        trackAddWalletSuccess(userFriendlyWalletName);
         openManageWalletsModal(address);
         setIsConnecting(false);
 
         return signatureValid;
       } catch (error: unknown) {
         setIsConnecting(false);
-        Mixpanel.trackAddWalletError(userFriendlyWalletName, error);
+        trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
           setDetectedError(error);
         }
@@ -105,7 +114,16 @@ function AddWalletPendingDefault({
         }
       }
     },
-    [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError]
+    [
+      trackAddWalletAttempt,
+      userFriendlyWalletName,
+      fetcher,
+      pendingWallet,
+      trackAddWalletSuccess,
+      openManageWalletsModal,
+      trackAddWalletError,
+      setDetectedError,
+    ]
   );
 
   const isMetamask = useMemo(() => walletName === METAMASK, [walletName]);

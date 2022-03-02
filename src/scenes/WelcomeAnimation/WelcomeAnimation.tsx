@@ -9,10 +9,10 @@ import { AnimatedImage, animatedImages } from './Images';
 
 import styled, { css, keyframes } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
-import Mixpanel from 'utils/mixpanel';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
 import useWindowSize from 'src/hooks/useWindowSize';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -80,8 +80,10 @@ export default function WelcomeAnimation({ next }: Props) {
     }, FADE_DURATION);
   }, [setShouldExplode, setImagesFaded]);
 
+  const track = useTrack();
+
   const handleClick = useCallback(() => {
-    Mixpanel.track('Click through welcome page');
+    track('Click through welcome page');
     if (username) {
       void push(`/${username}`);
       return;
@@ -92,7 +94,7 @@ export default function WelcomeAnimation({ next }: Props) {
     setTimeout(() => {
       next();
     }, FADE_DURATION);
-  }, [next, username, push]);
+  }, [track, username, push, next]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
