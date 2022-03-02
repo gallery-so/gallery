@@ -15,6 +15,7 @@ import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useRouter } from 'next/router';
 
 type Props = {
   collection: Collection;
@@ -26,6 +27,7 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
+  const { push } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
@@ -46,6 +48,17 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     [collection.id, navigateToUrl, username]
   );
 
+  const track = useTrack();
+
+  const handleEditCollectionClick = useCallback(() => {
+    track('Update existing collection button clicked');
+    void push(`/edit?collectionId=${collection.id}`);
+  }, [collection.id, track, push]);
+
+  const handleShareClick = useCallback(() => {
+    track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username, track]);
+
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);
   }, []);
@@ -55,12 +68,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
       setIsHovering(false);
     }, 200);
   }, []);
-
-  const track = useTrack();
-
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
 
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
@@ -72,6 +79,12 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           <StyledSettingsDropdown>
             {isHovering && (
               <Dropdown>
+                <TextButton
+                  text="Edit Collection"
+                  onClick={handleEditCollectionClick}
+                  underlineOnHover
+                />
+                <Spacer height={12} />
                 <TextButton
                   text="View Collection"
                   onClick={handleViewCollectionClick}

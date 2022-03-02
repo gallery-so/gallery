@@ -12,7 +12,8 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { GalleryWizardProps } from 'flows/shared/types';
 import isPromise from 'utils/isPromise';
 import { useRouter } from 'next/router';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
+import { useHistoryStack } from 'contexts/navigation/GalleryNavigationProvider';
 
 function WizardFooter({
   step,
@@ -25,20 +26,23 @@ function WizardFooter({
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext, onPrevious } = useWizardCallback();
-  const { push, query } = useRouter();
+  const { back, push, query } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = usePossiblyAuthenticatedUser();
-  const username = user?.username;
+  const username = useAuthenticatedUsername();
 
   const collectionId = query.collectionId;
 
   const isFirstStep = useMemo(() => history.index === 0, [history.index]);
 
-  const buttonText = useMemo(
-    () => footerButtonTextMap?.[step.id] ?? 'Next',
-    [footerButtonTextMap, step.id]
-  );
+  const historyStack = useHistoryStack();
+  const previousRoute = historyStack[historyStack.length - 1];
+  const isFromGalleryPage = previousRoute === `/${username}`;
+
+  const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [
+    footerButtonTextMap,
+    step.id,
+  ]);
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
@@ -58,6 +62,11 @@ function WizardFooter({
         setIsLoading(false);
       }
 
+      if (isFromGalleryPage) {
+        back();
+        return;
+      }
+
       // If coming from single collection page, the user should be redirected to the collection page
       if (collectionId) {
         void push(`/${username}/${collectionId}`);
@@ -70,6 +79,11 @@ function WizardFooter({
   }, [collectionId, next, onNext, push, username]);
 
   const handlePreviousClick = useCallback(() => {
+    if (isFromGalleryPage) {
+      back();
+      return;
+    }
+
     // If coming from single collection page, the user should be redirected to the collection page
     if (collectionId) {
       void push(`/${username}/${collectionId}`);
