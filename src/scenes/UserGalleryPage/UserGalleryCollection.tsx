@@ -15,6 +15,9 @@ import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useRouter } from 'next/router';
+import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
+import { baseUrl } from 'utils/baseUrl';
 
 type Props = {
   collection: Collection;
@@ -26,6 +29,7 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
+  const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
@@ -34,10 +38,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   );
 
   const [isHovering, setIsHovering] = useState(false);
-
-  const username = window.location.pathname.split('/')[1];
-  // TODO: Replace with useRouter() once we have a way to get the current route
-  const collectionUrl = `${window.location.href}/${collection.id}`;
+  const user = usePossiblyAuthenticatedUser();
+  const username = asPath.split('/')[1];
+  const collectionUrl = `${baseUrl}/${collection.id}`;
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
@@ -45,6 +48,19 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     },
     [collection.id, navigateToUrl, username]
   );
+
+  const track = useTrack();
+
+  const handleEditCollectionClick = useCallback(() => {
+    track('Update existing collection button clicked');
+    void push(`/edit?collectionId=${collection.id}`);
+  }, [collection.id, track, push]);
+
+  const handleShareClick = useCallback(() => {
+    track('Share Collection', { path: `/${username}/${collection.id}` });
+  }, [collection.id, username, track]);
+
+  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);
@@ -56,12 +72,6 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     }, 200);
   }, []);
 
-  const track = useTrack();
-
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
-
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
@@ -72,6 +82,16 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           <StyledSettingsDropdown>
             {isHovering && (
               <Dropdown>
+                {showEditActions && (
+                  <>
+                    <TextButton
+                      text="Edit Collection"
+                      onClick={handleEditCollectionClick}
+                      underlineOnHover
+                    />
+                    <Spacer height={12} />
+                  </>
+                )}
                 <TextButton
                   text="View Collection"
                   onClick={handleViewCollectionClick}
