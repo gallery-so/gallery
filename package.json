@@ -6,8 +6,8 @@
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "tsc --noEmit",
-    "relay": "relay-compiler",
-    "relay:watch": "relay-compiler --watch",
+    "relay": "mkdir __generated__; relay-compiler",
+    "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open",
     "synpress:run": "synpress run"
   },
