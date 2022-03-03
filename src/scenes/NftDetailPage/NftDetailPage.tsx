@@ -155,7 +155,6 @@ function NftDetailPage({ nftId }: Props) {
           {!isMobileScreen && <StyledNavigationBuffer />}
           {rightArrow}
         </StyledBody>
-        {isMobileScreen && <StyledMobileNavigationBuffer />}
       </StyledNftDetailPage>
     </>
   );
@@ -235,16 +234,6 @@ const StyledNftDetailPage = styled(Page)`
 // This container simply creates space for the arrows to be positioned
 const StyledNavigationBuffer = styled.div`
   width: 80px;
-`;
-
-// Same thing but gradient on bottom of screen
-const StyledMobileNavigationBuffer = styled.div`
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  height: 48px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 `;
 
 export default NftDetailPage;
