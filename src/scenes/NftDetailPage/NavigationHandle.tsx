@@ -71,6 +71,8 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   position: absolute;
   z-index: 100;
   color: ${colors.gray50};
+  padding: 16px;
+  margin: 0 -16px -16px -16px;
 
   // We want to set these to 0 rather than pageGutter.mobile because they are positioned absolutely
   // within the StyledPage, which already has padding equal to pageGutter.mobile
@@ -82,6 +84,8 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
     top: unset;
     right: ${({ direction }) => (direction ? `${pageGutter.tablet}px` : 'unset')};
     left: ${({ direction }) => (direction ? 'unset' : `${pageGutter.tablet}px`)};
+    padding: 0;
+    margin: auto;
   }
 `;
 
