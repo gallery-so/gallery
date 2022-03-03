@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently -n Next,Relay-Compiler \"next\" \"relay-compiler --watch\"",
-    "build": "next build",
+    "dev": "concurrently -n Next,Relay-Compiler \"next\" \"yarn relay:watch\"",
+    "build": "yarn relay && next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "tsc --noEmit",
