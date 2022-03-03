@@ -14,11 +14,12 @@ import NftDetailNote from './NftDetailNote';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
-import Mixpanel from 'utils/mixpanel';
 import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   nftId: string;
@@ -41,14 +42,18 @@ function NftDetailPage({ nftId }: Props) {
   const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
 
+  const track = useTrack();
+
   useEffect(() => {
-    Mixpanel.track('Page View: NFT Detail', { nftId });
-  }, [nftId]);
+    track('Page View: NFT Detail', { nftId });
+  }, [nftId, track]);
 
   const assetHasNote = nft?.collectors_note !== '';
   const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);
 
   const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
+
+  const isMobile = useIsMobileWindowWidth();
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
@@ -59,10 +64,14 @@ function NftDetailPage({ nftId }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledNftDetailPage centered fixedFullPageHeight>
+      <StyledNftDetailPage centered={!isMobile} fixedFullPageHeight>
         <StyledBackLink>
           <ActionText onClick={handleBackClick}>
-            {isFromCollectionPage ? '← Back to collection' : '← Back to gallery'}
+            {isMobile
+              ? '← Back'
+              : isFromCollectionPage
+              ? '← Back to collection'
+              : '← Back to gallery'}
           </ActionText>
         </StyledBackLink>
         <StyledBody>
@@ -157,6 +166,7 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
+    margin-bottom: 32px;
   }
 
   @media only screen and ${breakpoints.tablet} {

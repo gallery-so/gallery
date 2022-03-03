@@ -21,9 +21,13 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import Mixpanel from 'utils/mixpanel';
 import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
 import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
+import {
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from 'contexts/analytics/authUtil';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -61,6 +65,9 @@ function AddWalletPendingDefault({
   );
 
   const createNonce = useCreateNonceMutation();
+  const trackAddWalletAttempt = useTrackAddWalletAttempt();
+  const trackAddWalletSuccess = useTrackAddWalletSuccess();
+  const trackAddWalletError = useTrackAddWalletError();
 
   /**
    * Add Wallet Pipeline:
@@ -73,7 +80,8 @@ function AddWalletPendingDefault({
       try {
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
-        Mixpanel.trackAddWalletAttempt(userFriendlyWalletName);
+
+        trackAddWalletAttempt(userFriendlyWalletName);
         const { nonce, user_exists: userExists } = await createNonce(address);
 
         if (userExists) {
@@ -88,14 +96,14 @@ function AddWalletPendingDefault({
         };
         const { signatureValid } = await addWallet(payload, fetcher);
 
-        Mixpanel.trackAddWalletSuccess(userFriendlyWalletName);
+        trackAddWalletSuccess(userFriendlyWalletName);
         openManageWalletsModal(address);
         setIsConnecting(false);
 
         return signatureValid;
       } catch (error: unknown) {
         setIsConnecting(false);
-        Mixpanel.trackAddWalletError(userFriendlyWalletName, error);
+        trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
           setDetectedError(error);
         }
@@ -108,11 +116,14 @@ function AddWalletPendingDefault({
       }
     },
     [
-      fetcher,
-      createNonce,
-      openManageWalletsModal,
-      pendingWallet,
+      trackAddWalletAttempt,
       userFriendlyWalletName,
+      createNonce,
+      pendingWallet,
+      fetcher,
+      trackAddWalletSuccess,
+      openManageWalletsModal,
+      trackAddWalletError,
       setDetectedError,
     ]
   );

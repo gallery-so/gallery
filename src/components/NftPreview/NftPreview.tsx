@@ -1,12 +1,11 @@
 import styled from 'styled-components';
-import { size } from 'components/core/breakpoints';
 import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { Nft } from 'types/Nft';
 import { useNavigateToUrl } from 'utils/navigate';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
 
@@ -43,13 +42,10 @@ function NftPreview({ nft, collectionId, columns }: Props) {
     },
     [collectionId, navigateToUrl, nft.id, storage, username]
   );
-  const screenWidth = useBreakpoint();
+  const isMobile = useIsMobileWindowWidth();
 
   // width for rendering so that we request the apprpriate size image.
-  const previewSize = useMemo(
-    () => (screenWidth === size.mobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns]),
-    [columns, screenWidth]
-  );
+  const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
   return (
     <StyledNftPreview key={nft.id} columns={columns}>

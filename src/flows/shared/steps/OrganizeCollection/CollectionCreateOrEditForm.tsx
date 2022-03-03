@@ -16,9 +16,9 @@ import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionIn
 import { Collection, CollectionLayout } from 'types/Collection';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
-import Mixpanel from 'utils/mixpanel';
 import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -86,6 +86,8 @@ function CollectionCreateOrEditForm({
   const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
 
+  const track = useTrack();
+
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
@@ -98,7 +100,7 @@ function CollectionCreateOrEditForm({
     try {
       // Collection is being updated
       if (collectionId) {
-        Mixpanel.track('Update collection', {
+        track('Update collection', {
           id: collectionId,
           title,
           description,
@@ -108,7 +110,7 @@ function CollectionCreateOrEditForm({
 
       // Collection is being created
       if (!collectionId && stagedItems && layout) {
-        Mixpanel.track('Create collection', {
+        track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
           nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ id }) => id),
@@ -134,6 +136,7 @@ function CollectionCreateOrEditForm({
     createCollection,
     galleryId,
     layout,
+    track,
   ]);
 
   return (

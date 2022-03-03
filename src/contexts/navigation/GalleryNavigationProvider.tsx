@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { FADE_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type GalleryNavigationContextType = { historyStackLength: number; historyStack: string[] };
 
@@ -26,9 +27,15 @@ export function GalleryNavigationProvider({ children }: Props) {
   // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
   const [historyStack, setHistoryStack] = useState<string[]>([]);
 
+  const track = useTrack();
+
   useEffect(() => {
+    // history
     setHistoryStack((stack) => [...stack, asPath]);
-  }, [asPath]);
+
+    // analytics
+    track('Page view', { path: asPath });
+  }, [asPath, track]);
 
   useEffect(() => {
     const originalPushState = window.history.pushState;

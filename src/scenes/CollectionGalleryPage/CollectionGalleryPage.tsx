@@ -6,7 +6,7 @@ import CollectionGallery from './CollectionGallery';
 import useBackButton from 'hooks/useBackButton';
 import ActionText from 'components/core/ActionText/ActionText';
 import { useEffect } from 'react';
-import Mixpanel from 'utils/mixpanel';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -17,12 +17,14 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
   const headTitle = `${username} | Gallery`;
   const handleBackClick = useBackButton({ username });
 
+  const track = useTrack();
+
   useEffect(() => {
-    Mixpanel.track('Page View: Collection', {
+    track('Page View: Collection', {
       username,
       collectionId,
     });
-  }, [username, collectionId]);
+  }, [username, collectionId, track]);
 
   return (
     <>

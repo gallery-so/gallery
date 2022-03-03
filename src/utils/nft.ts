@@ -48,10 +48,14 @@ export function getMediaTypeForAssetUrl(assetUrl: string) {
     case 'mp4':
       return NftMediaType.VIDEO;
     case 'mp3':
+    case 'wav':
       return NftMediaType.AUDIO;
     case 'glb':
       return NftMediaType.MODEL;
     case 'gif':
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
       return NftMediaType.IMAGE;
     default:
       return NftMediaType.ANIMATION;

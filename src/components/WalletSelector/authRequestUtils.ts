@@ -1,7 +1,5 @@
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { Web3Error } from 'types/Error';
-import capitalize from 'utils/capitalize';
-import Mixpanel from 'utils/mixpanel';
 import { graphql } from 'relay-runtime';
 import { authRequestUtilsCreateNonceMutation } from '../../../__generated__/authRequestUtilsCreateNonceMutation.graphql';
 import { useCallback } from 'react';
@@ -98,7 +96,6 @@ export function useLoginOrCreateUserMutation() {
 
         throw new Error(`Unexpected type returned from login mutation: ${result?.__typename}`);
       } else {
-        Mixpanel.track('Create user');
         const { createUser: result } = await createUser({ variables });
 
         if (!result) {

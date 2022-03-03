@@ -59,6 +59,7 @@ type Props = {
 let heightWithoutNavAndFooterGutters: number;
 
 if (typeof window !== 'undefined') {
+  // NOTE: don't need to handle MOBILE footer height here, since this logic only applies to desktop + tablet
   heightWithoutNavAndFooterGutters =
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }

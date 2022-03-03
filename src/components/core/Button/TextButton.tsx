@@ -28,7 +28,7 @@ function TextButton({
       onClick={onClick}
       underlineOnHover={underlineOnHover}
       disabled={disabled}
-      data-testId={dataTestId}
+      data-testid={dataTestId}
     >
       <StyledButtonText disableTextTransform={disableTextTransform} disabled={disabled}>
         {text}

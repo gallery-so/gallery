@@ -5,8 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
-import { INITIAL, LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
-import Mixpanel from 'utils/mixpanel';
+import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import {
@@ -16,6 +15,12 @@ import {
 } from '../walletUtils';
 import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
 import { getLocalStorageItem } from 'utils/localStorage';
+import {
+  useTrackSignInAttempt,
+  useTrackSignInSuccess,
+  useTrackSignInError,
+  useTrackCreateUserSuccess,
+} from 'contexts/analytics/authUtil';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -40,25 +45,33 @@ function AuthenticateWalletPendingGnosisSafe({
   const [userExists, setUserExists] = useState(false);
 
   const loginOrCreateUser = useLoginOrCreateUserMutation();
+  const trackSignInAttempt = useTrackSignInAttempt();
+  const trackSignInSuccess = useTrackSignInSuccess();
+  const trackSignInError = useTrackSignInError();
+  const trackCreateUserSuccess = useTrackCreateUserSuccess('Gnosis Safe');
 
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
-      await loginOrCreateUser({
+      const { user_id } = await loginOrCreateUser({
         userExists,
         variables: { mechanism: { gnosisSafe: { address, nonce } } },
       });
 
+      if (userExists) {
+        trackCreateUserSuccess();
+      }
+
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
-      Mixpanel.trackSignInSuccess('Gnosis Safe');
-      setLoggedIn(address);
+      trackSignInSuccess('Gnosis Safe');
+      setLoggedIn(user_id, address);
     },
-    [loginOrCreateUser, setLoggedIn, userExists]
+    [loginOrCreateUser, setLoggedIn, trackCreateUserSuccess, trackSignInSuccess, userExists]
   );
 
   const handleError = useCallback(
     (error: unknown) => {
-      Mixpanel.trackSignInError('Gnosis Safe', error);
+      trackSignInError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
       }
@@ -69,7 +82,7 @@ function AuthenticateWalletPendingGnosisSafe({
         setDetectedError(web3Error);
       }
     },
-    [setDetectedError]
+    [setDetectedError, trackSignInError]
   );
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
 
@@ -142,7 +155,7 @@ function AuthenticateWalletPendingGnosisSafe({
       if (account) {
         setAuthenticationFlowStarted(true);
         try {
-          Mixpanel.trackSignInAttempt('Gnosis Safe');
+          trackSignInAttempt('Gnosis Safe');
           const { nonce, user_exists: userExists } = await createNonce(account);
           setNonce(nonce);
           setUserExists(userExists);
@@ -167,6 +180,7 @@ function AuthenticateWalletPendingGnosisSafe({
     fetcher,
     handleError,
     previousAttemptNonce,
+    trackSignInAttempt,
   ]);
 
   return (

@@ -2,11 +2,10 @@ import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import { Display } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
-import breakpoints, { pageGutter, size } from 'components/core/breakpoints';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import MemberListFilter from './MemberListFilter';
-import { useMemo } from 'react';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -30,8 +29,7 @@ function MemberListPage({ queryRef }: Props) {
     queryRef
   );
 
-  const breakpoint = useBreakpoint();
-  const isMobileScreenSize = useMemo(() => breakpoint === size.mobile, [breakpoint]);
+  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledPage centered>
@@ -42,7 +40,7 @@ function MemberListPage({ queryRef }: Props) {
             <i>Thank you,</i> for being a patron of Gallery.
           </StyledBannerText>
         </StyledBanner>
-        <Spacer height={isMobileScreenSize ? 65 : 96} />
+        <Spacer height={isMobile ? 65 : 96} />
         <MemberListFilter />
         <Spacer height={56} />
         <StyledTierWrapper>

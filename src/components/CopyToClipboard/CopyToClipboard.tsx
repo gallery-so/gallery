@@ -32,7 +32,7 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
     <Container onClick={handleCopyToClipboard}>
       {isToastMounted && (
         <Toast isActive={isActive}>
-          <Caption color={colors.white}>Copied</Caption>
+          <Caption color={colors.white}>Link Copied</Caption>
         </Toast>
       )}
       {children}
@@ -59,6 +59,7 @@ const Toast = styled.div<{ isActive: boolean }>`
   position: absolute;
   background: black;
   padding: 4px 8px;
+  width: fit-content;
   pointer-events: none;
 
   animation: ${({ isActive }) => css`
