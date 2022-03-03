@@ -70,8 +70,6 @@ const ErrorReportingProvider = memo(({ children }: Props) => {
       // that users who log out will no longer be tracked by their ID.
       setUser({ id: userId });
 
-      console.log('capturing...', errorOrMessage);
-
       if (typeof errorOrMessage === 'string') {
         captureMessage(errorOrMessage, additionalContext);
         return;
