@@ -97,14 +97,9 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   height: auto;
   display: flex;
   place-items: flex-end;
-
-  // ELSE
   z-index: 1;
-  display: flex;
   cursor: pointer;
-  // width: 100%;
-  // position: absolute;
-  // bottom: 0;
+
   color: ${colors.gray50};
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};

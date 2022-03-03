@@ -89,7 +89,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   padding: 0 ${pageGutter.mobile}px 24px;
 
   background-color: white;
-  z-index: 1;
+  z-index: 2;
   position: relative;
 }
 
@@ -99,7 +99,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
     ${({ isFixed }) =>
       isFixed &&
       css`
-        z-index: 1;
+        z-index: 2;
         position: fixed;
         bottom: 0;
         width: 100%;
