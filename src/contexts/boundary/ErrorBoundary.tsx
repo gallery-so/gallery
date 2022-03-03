@@ -6,6 +6,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { formatDetailedError } from 'errors/formatError';
 import colors from 'components/core/colors';
+import { captureException } from '@sentry/nextjs';
 
 class ErrorBoundary extends Component {
   static getDerivedStateFromError(error: Error) {
@@ -13,6 +14,14 @@ class ErrorBoundary extends Component {
   }
 
   state: { error: null | Error } = { error: null };
+
+  componentDidCatch(error: Error) {
+    captureException(error, {
+      tags: {
+        context: 'AppErrorBoundary',
+      },
+    });
+  }
 
   render() {
     if (this.state.error !== null) {

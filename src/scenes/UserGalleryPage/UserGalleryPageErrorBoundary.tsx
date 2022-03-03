@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { ApiError } from 'errors/types';
 import { Component } from 'react';
 import NotFound from 'scenes/NotFound/NotFound';
@@ -8,6 +9,14 @@ class UserGalleryPageErrorBoundary extends Component {
   }
 
   state: { error: null | Error | ApiError } = { error: null };
+
+  componentDidCatch(error: Error) {
+    captureException(error, {
+      tags: {
+        context: 'UserGalleryPageErrorBoundary',
+      },
+    });
+  }
 
   render() {
     if (
