@@ -1,5 +1,4 @@
 import { MetaTagProps } from 'pages/_app';
-import { baseUrl } from './baseUrl';
 
 type Params = {
   title: string;
@@ -14,7 +13,7 @@ export const openGraphMetaTags = ({
   // TODO: add description
   {
     property: 'og:image',
-    content: `${baseUrl}/api/opengraph/image?${new URLSearchParams({
+    content: `https://gallery-opengraph.vercel.app/api/opengraph/image?${new URLSearchParams({
       path: previewPath,
       fallback:
         'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png',
@@ -23,7 +22,7 @@ export const openGraphMetaTags = ({
   { property: 'twitter:card', content: 'summary_large_image' },
   {
     property: 'twitter:image',
-    content: `${baseUrl}/api/opengraph/image?${new URLSearchParams({
+    content: `https://gallery-opengraph.vercel.app/api/opengraph/image?${new URLSearchParams({
       path: previewPath,
       width: '600',
       height: '314',
