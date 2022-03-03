@@ -7,7 +7,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { Directions } from 'components/core/enums';
 import { useRouter } from 'next/router';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import ArrowLeft from 'public/icons/arrow_left.svg';
 import ArrowRight from 'public/icons/arrow_right.svg';
 
@@ -34,11 +34,11 @@ type Props = {
 };
 
 function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
-  const isMobile = useIsMobileWindowWidth();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const arrow = useMemo(
-    () => (isMobile ? MOBILE_ARROWS.get(direction) : ARROWS.get(direction) ?? ''),
-    [isMobile, direction]
+    () => (isMobileOrMobileLarge ? MOBILE_ARROWS.get(direction) : ARROWS.get(direction) ?? ''),
+    [isMobileOrMobileLarge, direction]
   );
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
@@ -112,7 +112,7 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
     color: ${colors.black};
   }
 
-  @media only screen and ${breakpoints.mobileLarge} {
+  @media only screen and ${breakpoints.tablet} {
     &:hover ${StyledHoverText} {
       opacity: 1;
     }

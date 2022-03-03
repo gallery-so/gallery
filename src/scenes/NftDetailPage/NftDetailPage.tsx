@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
-import breakpoints, { size, pageGutter } from 'components/core/breakpoints';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
 
 import useNft from 'hooks/api/nfts/useNft';
@@ -15,16 +15,15 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
 import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
-import { useBreakpoint } from 'hooks/useWindowSize';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
 
 import { FeatureFlag, Directions } from 'components/core/enums';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 import NavigationHandle from './NavigationHandle';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
+import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   nftId: string;
@@ -32,9 +31,6 @@ type Props = {
 
 function NftDetailPage({ nftId }: Props) {
   const { query } = useRouter();
-
-  const screenWidth = useBreakpoint();
-  const isMobileScreen = screenWidth === size.mobileLarge || screenWidth === size.mobile;
 
   const username = window.location.pathname.split('/')[1];
   const collectionId = query.collectionId as string;
@@ -88,6 +84,7 @@ function NftDetailPage({ nftId }: Props) {
   const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
 
   const isMobile = useIsMobileWindowWidth();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
@@ -127,11 +124,7 @@ function NftDetailPage({ nftId }: Props) {
           </ActionText>
         </StyledBackLink>
         <StyledBody>
-          {!isMobileScreen && (
-            // <>
-            <StyledNavigationBuffer />
-            // </>
-          )}
+          {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
           {leftArrow}
           <StyledContentContainer>
             <StyledAssetAndNoteContainer>
@@ -152,7 +145,7 @@ function NftDetailPage({ nftId }: Props) {
 
             <NftDetailText nft={nft} />
           </StyledContentContainer>
-          {!isMobileScreen && <StyledNavigationBuffer />}
+          {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
           {rightArrow}
         </StyledBody>
       </StyledNftDetailPage>
