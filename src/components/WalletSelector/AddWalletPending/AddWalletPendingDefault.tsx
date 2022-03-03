@@ -12,17 +12,17 @@ import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
-  INITIAL,
   CONFIRM_ADDRESS,
-  PROMPT_SIGNATURE,
-  PendingState,
-  WalletName,
+  INITIAL,
   METAMASK,
+  PendingState,
+  PROMPT_SIGNATURE,
+  WalletName,
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import Mixpanel from 'utils/mixpanel';
-import { addWallet, fetchNonce } from '../authRequestUtils';
+import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
 import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
 
 type Props = {
@@ -60,6 +60,8 @@ function AddWalletPendingDefault({
     [showModal]
   );
 
+  const createNonce = useCreateNonceMutation();
+
   /**
    * Add Wallet Pipeline:
    * 1. Fetch nonce from server with provided wallet address
@@ -72,7 +74,7 @@ function AddWalletPendingDefault({
         setIsConnecting(true);
         setPendingState(PROMPT_SIGNATURE);
         Mixpanel.trackAddWalletAttempt(userFriendlyWalletName);
-        const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+        const { nonce, user_exists: userExists } = await createNonce(address);
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -105,7 +107,14 @@ function AddWalletPendingDefault({
         }
       }
     },
-    [fetcher, openManageWalletsModal, pendingWallet, userFriendlyWalletName, setDetectedError]
+    [
+      fetcher,
+      createNonce,
+      openManageWalletsModal,
+      pendingWallet,
+      userFriendlyWalletName,
+      setDetectedError,
+    ]
   );
 
   const isMetamask = useMemo(() => walletName === METAMASK, [walletName]);

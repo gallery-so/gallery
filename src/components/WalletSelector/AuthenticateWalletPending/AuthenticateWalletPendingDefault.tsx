@@ -6,12 +6,11 @@ import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
-import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
+import { INITIAL, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import Mixpanel from 'utils/mixpanel';
 import Spacer from 'components/core/Spacer/Spacer';
-import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
+import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
 
 type Props = {
@@ -33,8 +32,10 @@ function AuthenticateWalletPendingDefault({
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const fetcher = useFetcher();
   const { setLoggedIn } = useAuthActions();
+
+  const createNonce = useCreateNonceMutation();
+  const loginOrCreateUser = useLoginOrCreateUserMutation();
 
   /**
    * Auth Pipeline:
@@ -48,22 +49,19 @@ function AuthenticateWalletPendingDefault({
       setPendingState(PROMPT_SIGNATURE);
       Mixpanel.trackSignInAttempt(userFriendlyWalletName);
 
-      const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+      const { nonce, user_exists: userExists } = await createNonce(address);
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 
-      const payload = {
-        signature,
-        address,
-        wallet_type: 0,
-        nonce,
-      };
+      await loginOrCreateUser({
+        userExists,
+        variables: { mechanism: { ethereumEoa: { address, nonce, signature } } },
+      });
 
-      await loginOrCreateUser(userExists, payload, fetcher);
       Mixpanel.trackSignInSuccess(userFriendlyWalletName);
       setLoggedIn(address);
     },
-    [fetcher, setLoggedIn, pendingWallet, userFriendlyWalletName]
+    [userFriendlyWalletName, createNonce, pendingWallet, loginOrCreateUser, setLoggedIn]
   );
 
   useEffect(() => {
@@ -72,14 +70,17 @@ function AuthenticateWalletPendingDefault({
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
+          console.log('Failure');
           Mixpanel.trackSignInError(userFriendlyWalletName, error);
           if (isWeb3Error(error)) {
+            console.log('WEB 3', error);
             setDetectedError(error);
           }
 
           // Fall back to generic error message
           if (error instanceof Error) {
             const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
+            console.log('SPREADING IT UP', error, web3Error);
             setDetectedError(web3Error);
           }
         }
