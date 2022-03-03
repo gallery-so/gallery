@@ -2,8 +2,7 @@
   "functions": {
     "pages/api/opengraph/image.ts": {
       "memory": 3008,
-      "maxDuration": 15,
-      "excludeFiles": "node_modules/@sentry/**"
+      "maxDuration": 15
     }
   }
 }
