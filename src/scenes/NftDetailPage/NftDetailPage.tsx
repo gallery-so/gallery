@@ -17,9 +17,13 @@ import useBackButton from 'hooks/useBackButton';
 import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
+
+import { FeatureFlag, Directions } from 'components/core/enums';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+
+import NavigationHandle from './NavigationHandle';
+import useCollectionById from 'hooks/api/collections/useCollectionById';
 
 type Props = {
   nftId: string;
@@ -29,10 +33,16 @@ function NftDetailPage({ nftId }: Props) {
   const { query } = useRouter();
 
   const username = window.location.pathname.split('/')[1];
-  const collectionId = query.collectionId;
+  const collectionId = query.collectionId as string;
   // TODO: Should refactor to utilize navigation context instead of session storage
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
+
+  const collectionNfts = useCollectionById({ id: collectionId })?.nfts ?? [];
+  const collectionIndexOfNft = collectionNfts?.findIndex((nft) => nft.id === nftId) ?? 0;
+
+  const prevNftId = collectionNfts[collectionIndexOfNft - 1]?.id ?? '';
+  const nextNftId = collectionNfts[collectionIndexOfNft + 1]?.id ?? '';
 
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
@@ -75,12 +85,14 @@ function NftDetailPage({ nftId }: Props) {
           </ActionText>
         </StyledBackLink>
         <StyledBody>
-          {/* {prevNftId && (
-          <NavigationHandle
-            direction={Directions.LEFT}
-            nftId={prevNftId}
-          ></NavigationHandle>
-        )} */}
+          {prevNftId && (
+            <NavigationHandle
+              direction={Directions.LEFT}
+              username={username}
+              collectionId={collectionId}
+              nftId={prevNftId}
+            />
+          )}
           <StyledContentContainer>
             <StyledAssetAndNoteContainer>
               <ShimmerProvider>
@@ -100,12 +112,14 @@ function NftDetailPage({ nftId }: Props) {
 
             <NftDetailText nft={nft} />
           </StyledContentContainer>
-          {/* {nextNftId && (
-          <NavigationHandle
-            direction={Directions.RIGHT}
-            nftId={nextNftId}
-          ></NavigationHandle>
-        )} */}
+          {nextNftId && (
+            <NavigationHandle
+              direction={Directions.RIGHT}
+              username={username}
+              collectionId={collectionId}
+              nftId={nextNftId}
+            />
+          )}
         </StyledBody>
       </StyledNftDetailPage>
     </>

@@ -20,20 +20,23 @@ const HOVER_TEXT = new Map<number, string>([
 
 type Props = {
   direction: Directions;
+  username: string;
+  collectionId: string;
   nftId: string;
 };
 
-function NavigationHandle({ direction, nftId }: Props) {
+function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   const arrow = useMemo(() => ARROWS.get(direction) ?? '', [direction]);
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
-  const { push } = useRouter();
+  const { replace } = useRouter();
   const handleOnClick = useCallback(() => {
     // TODO(Terence): Figure out how to get this state across since Next doesn't support navigation state
     // void push(nftId, { state: { collection: [] } });
-    void push({ pathname: nftId });
-  }, [nftId, push]);
+    // void push({ pathname: nftId });
+    void replace(`/${username}/${collectionId}/${nftId}`);
+  }, [nftId, collectionId, username, replace]);
 
   return (
     <StyledNavigationHandle onClick={handleOnClick}>
