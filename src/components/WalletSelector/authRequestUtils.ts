@@ -156,11 +156,15 @@ export function useCreateNonceMutation() {
         variables: { address },
       });
 
+      if (!getAuthNonce) {
+        throw new Error('getAuthNonce failed to execute. response data missing');
+      }
+
       if (getAuthNonce?.__typename === 'ErrDoesNotOwnRequiredNFT') {
         const errorWithCode: Web3Error = {
           name: getAuthNonce.__typename,
           code: 'GALLERY_SERVER_ERROR',
-          message: capitalize(getAuthNonce.message),
+          message: getAuthNonce.message,
         };
 
         throw errorWithCode;
@@ -171,7 +175,9 @@ export function useCreateNonceMutation() {
       }
 
       // We didn't handle a type
-      throw new Error('Unexpected type returned from createNonceMutation');
+      throw new Error(
+        `Unexpected type returned from createNonceMutation: ${getAuthNonce.__typename}`
+      );
     },
     [createNonce]
   );
