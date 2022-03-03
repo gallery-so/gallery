@@ -17,9 +17,13 @@ import useBackButton from 'hooks/useBackButton';
 import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
 
 import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+
+import { FeatureFlag, Directions } from 'components/core/enums';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+
+import NavigationHandle from './NavigationHandle';
+import useCollectionById from 'hooks/api/collections/useCollectionById';
+import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   nftId: string;
@@ -29,10 +33,36 @@ function NftDetailPage({ nftId }: Props) {
   const { query } = useRouter();
 
   const username = window.location.pathname.split('/')[1];
-  const collectionId = query.collectionId;
+  const collectionId = query.collectionId as string;
   // TODO: Should refactor to utilize navigation context instead of session storage
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
+
+  const collectionNfts = useCollectionById({ id: collectionId })?.nfts;
+
+  const { prevNftId, nextNftId } = useMemo(() => {
+    if (!collectionNfts) {
+      // TODO: send error to sentry. technically all NFTs should belong to a collection.
+      return {
+        prevNftId: null,
+        nextNftId: null,
+      };
+    }
+
+    const nftIndex = collectionNfts.findIndex((nft) => nft.id === nftId);
+    if (nftIndex === -1) {
+      // TODO: send error to sentry. technically the NFT should exist within the collection.
+      return {
+        prevNftId: null,
+        nextNftId: null,
+      };
+    }
+
+    return {
+      prevNftId: collectionNfts[nftIndex - 1]?.id ?? null,
+      nextNftId: collectionNfts[nftIndex + 1]?.id ?? null,
+    };
+  }, [collectionNfts, nftId]);
 
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
@@ -54,10 +84,29 @@ function NftDetailPage({ nftId }: Props) {
   const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
 
   const isMobile = useIsMobileWindowWidth();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   if (!nft) {
     return <GalleryRedirect to="/404" />;
   }
+
+  const leftArrow = prevNftId && (
+    <NavigationHandle
+      direction={Directions.LEFT}
+      username={username}
+      collectionId={collectionId}
+      nftId={prevNftId}
+    />
+  );
+
+  const rightArrow = nextNftId && (
+    <NavigationHandle
+      direction={Directions.RIGHT}
+      username={username}
+      collectionId={collectionId}
+      nftId={nextNftId}
+    />
+  );
 
   return (
     <>
@@ -75,12 +124,8 @@ function NftDetailPage({ nftId }: Props) {
           </ActionText>
         </StyledBackLink>
         <StyledBody>
-          {/* {prevNftId && (
-          <NavigationHandle
-            direction={Directions.LEFT}
-            nftId={prevNftId}
-          ></NavigationHandle>
-        )} */}
+          {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
+          {leftArrow}
           <StyledContentContainer>
             <StyledAssetAndNoteContainer>
               <ShimmerProvider>
@@ -100,12 +145,8 @@ function NftDetailPage({ nftId }: Props) {
 
             <NftDetailText nft={nft} />
           </StyledContentContainer>
-          {/* {nextNftId && (
-          <NavigationHandle
-            direction={Directions.RIGHT}
-            nftId={nextNftId}
-          ></NavigationHandle>
-        )} */}
+          {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+          {rightArrow}
         </StyledBody>
       </StyledNftDetailPage>
     </>
@@ -133,6 +174,7 @@ const StyledBackLink = styled.div`
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 2;
 
   padding: 0 ${pageGutter.mobile}px;
 
@@ -178,6 +220,13 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.desktop} {
     margin: 0px;
   }
+`;
+
+// We position the arrows using position absolute (so they reach the page bounds)
+// But we still want there to be space taken up in the document flow, so that the arrows do not overlap with content
+// This container simply creates space for the arrows to be positioned
+const StyledNavigationBuffer = styled.div`
+  width: 80px;
 `;
 
 export default NftDetailPage;

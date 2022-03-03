@@ -19,6 +19,7 @@ const timeoutConfig = {
 
 const childNodeStyles = {
   width: '100%',
+  height: '100%',
 };
 
 const transitionGroupStyles = {

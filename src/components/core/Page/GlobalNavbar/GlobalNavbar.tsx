@@ -22,6 +22,7 @@ const StyledGlobalNavbar = styled.div`
   display: flex;
   justify-content: flex-end;
 
+  position: relative;
   z-index: 1;
 
   padding: 0 ${pageGutter.mobile}px;
