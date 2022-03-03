@@ -1,5 +1,5 @@
-import { FetchFunction } from 'relay-runtime';
-import { _fetch } from 'contexts/swr/useFetcher';
+import { FetchFunction, GraphQLResponse } from 'relay-runtime';
+import { _fetch, baseurl } from 'contexts/swr/useFetcher';
 import { MembershipTier } from 'types/MembershipTier';
 
 /**
@@ -7,7 +7,7 @@ import { MembershipTier } from 'types/MembershipTier';
  * Since we don't currently have a GraphQL server, we're shimming a response as
  * an example.
  */
-export const relayFetchFunction: FetchFunction = async (request) => {
+export const relayFetchFunction: FetchFunction = async (request, variables) => {
   if (request.name === 'membersQuery') {
     const response = await _fetch<{ tiers: MembershipTier[] }>('/users/membership', 'some action');
 
@@ -33,5 +33,13 @@ export const relayFetchFunction: FetchFunction = async (request) => {
     };
   }
 
-  throw new Error(`Relay fetch function not yet implemented for: ${request.name}`);
+  return _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, 'graphql request', {
+    body: {
+      query: request.text,
+      variables,
+    },
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
