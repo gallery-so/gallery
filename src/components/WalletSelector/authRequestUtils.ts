@@ -65,16 +65,18 @@ export function useLoginOrCreateUserMutation() {
     `
   );
 
+  type LoginOrCrateUserInput =
+    | {
+        variables: authRequestUtilsCreateUserMutation$variables;
+        userExists: false;
+      }
+    | { variables: authRequestUtilsLoginMutation$variables; userExists: true };
+
   return useCallback(
     async ({
       variables,
       userExists,
-    }:
-      | {
-          variables: authRequestUtilsCreateUserMutation$variables;
-          userExists: false;
-        }
-      | { variables: authRequestUtilsLoginMutation$variables; userExists: true }): Promise<{
+    }: LoginOrCrateUserInput): Promise<{
       userId: string;
     }> => {
       if (userExists) {
