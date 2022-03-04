@@ -97,14 +97,12 @@ function AuthenticateWalletPendingDefault({
           trackSignInError(userFriendlyWalletName, error);
 
           if (isWeb3Error(error)) {
-            console.log('WEB 3', error);
             setDetectedError(error);
           }
 
           // Fall back to generic error message
           if (error instanceof Error) {
             const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-            console.log('SPREADING IT UP', error, web3Error);
             setDetectedError(web3Error);
           }
         }
