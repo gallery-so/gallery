@@ -1,6 +1,6 @@
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
 import mixpanel from 'mixpanel-browser';
-import { createContext, memo, ReactNode, useCallback, useContext } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
 
 type EventProps = Record<string, unknown>;
 
@@ -47,12 +47,19 @@ type Props = { children: ReactNode };
 const AnalyticsProvider = memo(({ children }: Props) => {
   const userId = useAuthenticatedUserId();
 
-  const handleTrack: TrackFn = useCallback(
-    (eventName, eventProps = {}) => {
-      _track(eventName, eventProps, userId);
-    },
-    [userId]
-  );
+  // Put the userId in a ref so we have something we can
+  // reach into for the current user id without needing
+  // to add a state dep to our useCallback.
+  //
+  // Without this, all of our downstream effects
+  // which rely on useTrack fire twice when
+  // the user logs in / logs out
+  const userIdRef = useRef(userId);
+  userIdRef.current = userId;
+
+  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}) => {
+    _track(eventName, eventProps, userIdRef.current);
+  }, []);
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;
 });
