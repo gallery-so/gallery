@@ -9,9 +9,13 @@ import { Collection } from 'types/Collection';
 import { Nft } from 'types/Nft';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { NftGalleryFragment$key } from '../../../__generated__/NftGalleryFragment.graphql';
+import { useCollectionColumns } from 'hooks/useCollectionColumns';
 
 type Props = {
-  collection: Collection;
+  collectionRef: NftGalleryFragment$key;
   mobileLayout: DisplayLayout;
 };
 
@@ -19,34 +23,56 @@ function isNft(item: Nft | WhitespaceBlock): item is Nft {
   return 'created_at' in item;
 }
 
-function NftGallery({ collection, mobileLayout }: Props) {
-  const columns = useMemo(() => {
-    if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
-      return collection.layout.columns;
-    }
+function NftGallery({ collectionRef, mobileLayout }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment NftGalleryFragment on GalleryCollection {
+        id
+        layout {
+          columns
+        }
+        nfts {
+          id
+          ...NftPreviewFragment
+        }
 
-    return DEFAULT_COLUMNS;
-  }, [collection.layout]);
+        ...useCollectionColumnsFragment
+      }
+    `,
+    collectionRef
+  );
+
+  const columns = useCollectionColumns(collection);
 
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
 
-  const collectionWithWhitespace = useMemo(
-    () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
-    [collection.layout?.whitespace, collection.nfts]
-  );
-  const itemsToDisplay = useMemo(
-    () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
-    [collection.nfts, collectionWithWhitespace, hideWhitespace]
-  );
+  // const collectionWithWhitespace = useMemo(
+  //   () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
+  //   [collection.layout?.whitespace, collection.nfts]
+  // );
+  // const itemsToDisplay = useMemo(
+  //   () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
+  //   [collection.nfts, collectionWithWhitespace, hideWhitespace]
+  // );
+
+  const itemsToDisplay = collection.nfts;
 
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
-      {itemsToDisplay.map((item) =>
-        isNft(item) ? (
-          <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
-        ) : (
-          <StyledWhitespaceBlock key={item.id} />
-        )
+      {itemsToDisplay?.map(
+        (galleryNft) => {
+          if (!galleryNft) {
+            return;
+          }
+
+          return (
+            // isNft(galleryNft) ? (
+            <NftPreview key={galleryNft.id} galleryNftRef={galleryNft} />
+          );
+        }
+        // ) : (
+        //   <StyledWhitespaceBlock key={item.id} />
+        // )
       )}
     </StyledCollectionNfts>
   );

@@ -7,12 +7,25 @@ import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { UserGalleryPageFragment$key } from '../../../__generated__/UserGalleryPageFragment.graphql';
 
 type UserGalleryPageProps = {
+  queryRef: UserGalleryPageFragment$key;
   username: string;
 };
 
-function UserGalleryPage({ username }: UserGalleryPageProps) {
+function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryPageFragment on Query {
+        ...UserGalleryFragment
+      }
+    `,
+    queryRef
+  );
+
   const headTitle = `${username} | Gallery`;
 
   const track = useTrack();
@@ -28,7 +41,7 @@ function UserGalleryPage({ username }: UserGalleryPageProps) {
       </Head>
       <Page>
         <StyledUserGalleryWrapper>
-          <UserGallery username={username} />
+          <UserGallery queryRef={query} />
         </StyledUserGalleryWrapper>
       </Page>
     </UserGalleryPageErrorBoundary>

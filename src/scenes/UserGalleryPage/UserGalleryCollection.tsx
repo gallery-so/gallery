@@ -18,9 +18,12 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { baseUrl } from 'utils/baseUrl';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { UserGalleryCollectionFragment$key } from '../../../__generated__/UserGalleryCollectionFragment.graphql';
 
 type Props = {
-  collection: Collection;
+  collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
 };
 
@@ -28,13 +31,26 @@ export function isValidColumns(columns: number) {
   return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
-function UserGalleryCollection({ collection, mobileLayout }: Props) {
+function UserGalleryCollection({ collectionRef, mobileLayout }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment UserGalleryCollectionFragment on GalleryCollection {
+        id
+        name @required(action: THROW)
+        collectorsNote
+
+        ...NftGalleryFragment
+      }
+    `,
+    collectionRef
+  );
+
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectors_note),
-    [collection.collectors_note]
+    () => unescape(collection.collectorsNote ?? ''),
+    [collection.collectorsNote]
   );
 
   const [isHovering, setIsHovering] = useState(false);
@@ -114,7 +130,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           </>
         )}
       </StyledCollectionHeader>
-      <NftGallery collection={collection} mobileLayout={mobileLayout} />
+      <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }

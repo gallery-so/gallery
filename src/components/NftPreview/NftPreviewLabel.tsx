@@ -3,21 +3,44 @@ import styled from 'styled-components';
 import { BodyRegular } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
 
 type Props = {
-  nft: Nft;
+  nftRef: NftPreviewLabelFragment$key;
   className?: string;
 };
 
-function NftPreviewLabel({ nft, className }: Props) {
+function NftPreviewLabel({ nftRef, className }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment NftPreviewLabelFragment on Nft {
+        ... on GenericNft {
+          name
+          tokenCollectionName
+        }
+      }
+    `,
+    nftRef
+  );
+
+  if (!nft.tokenCollectionName && !nft.name) {
+    return null;
+  }
+
   return (
     <StyledNftPreviewLabel className={className}>
-      <StyledBodyRegular color={colors.white} lines={1}>
-        {nft.name}
-      </StyledBodyRegular>
-      <StyledBodyRegular color={colors.white} lines={2}>
-        {nft.token_collection_name}
-      </StyledBodyRegular>
+      {nft.name && (
+        <StyledBodyRegular color={colors.white} lines={1}>
+          {nft.name}
+        </StyledBodyRegular>
+      )}
+      {nft.tokenCollectionName && (
+        <StyledBodyRegular color={colors.white} lines={2}>
+          {nft.tokenCollectionName}
+        </StyledBodyRegular>
+      )}
     </StyledNftPreviewLabel>
   );
 }
