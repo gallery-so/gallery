@@ -63,7 +63,7 @@ function AuthenticateWalletPendingDefault({
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 
-      const { user_id } = await loginOrCreateUser({
+      const { userId } = await loginOrCreateUser({
         userExists,
         variables: { mechanism: { ethereumEoa: { address, nonce, signature } } },
       });
@@ -74,7 +74,7 @@ function AuthenticateWalletPendingDefault({
         trackCreateUserSuccess();
       }
 
-      setLoggedIn(user_id, address);
+      setLoggedIn(userId, address);
     },
     [
       trackSignInAttempt,

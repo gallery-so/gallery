@@ -52,7 +52,7 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
-      const { user_id } = await loginOrCreateUser({
+      const { userId } = await loginOrCreateUser({
         userExists,
         variables: { mechanism: { gnosisSafe: { address, nonce } } },
       });
@@ -64,7 +64,7 @@ function AuthenticateWalletPendingGnosisSafe({
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
-      setLoggedIn(user_id, address);
+      setLoggedIn(userId, address);
     },
     [loginOrCreateUser, setLoggedIn, trackCreateUserSuccess, trackSignInSuccess, userExists]
   );

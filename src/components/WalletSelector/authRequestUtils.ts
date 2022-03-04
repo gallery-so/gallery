@@ -75,7 +75,7 @@ export function useLoginOrCreateUserMutation() {
           userExists: false;
         }
       | { variables: authRequestUtilsLoginMutation$variables; userExists: true }): Promise<{
-      user_id: string;
+      userId: string;
     }> => {
       if (userExists) {
         const { login: result } = await login({
@@ -87,7 +87,7 @@ export function useLoginOrCreateUserMutation() {
         }
 
         if (result.__typename === 'LoginPayload') {
-          return { user_id: result.userId };
+          return { userId: result.userId };
         }
 
         if (result && 'message' in result) {
@@ -103,7 +103,7 @@ export function useLoginOrCreateUserMutation() {
         }
 
         if (result.__typename === 'CreateUserPayload') {
-          return { user_id: result.userId };
+          return { userId: result.userId };
         }
 
         if ('message' in result) {
