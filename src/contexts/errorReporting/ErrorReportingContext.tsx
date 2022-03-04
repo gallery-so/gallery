@@ -1,4 +1,4 @@
-import { createContext, memo, ReactNode, useCallback, useContext } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
 import { captureException, captureMessage, setUser } from '@sentry/nextjs';
 import { ScopeContext } from '@sentry/types';
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
@@ -64,11 +64,21 @@ type Props = { children: ReactNode };
 const ErrorReportingProvider = memo(({ children }: Props) => {
   const userId = useAuthenticatedUserId();
 
+  // Put the userId in a ref so we have something we can
+  // reach into for the current user id without needing
+  // to add a state dep to our useCallback.
+  //
+  // Without this, all of our downstream effects
+  // which rely on useReportError fire twice when
+  // the user logs in / logs out
+  const userIdRef = useRef(userId);
+  userIdRef.current = userId;
+
   const handleReportError: ReportFn = useCallback(
     (errorOrMessage: Error | string, additionalContext?: AdditionalContext) => {
       // always set the user ID. if it's not defined, it will be unset. this ensures
       // that users who log out will no longer be tracked by their ID.
-      setUser({ id: userId });
+      setUser({ id: userIdRef.current });
 
       if (typeof errorOrMessage === 'string') {
         captureMessage(errorOrMessage, additionalContext);
@@ -77,7 +87,7 @@ const ErrorReportingProvider = memo(({ children }: Props) => {
 
       captureException(errorOrMessage, additionalContext);
     },
-    [userId]
+    []
   );
 
   return (
