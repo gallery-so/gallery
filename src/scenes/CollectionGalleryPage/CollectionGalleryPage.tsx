@@ -7,6 +7,7 @@ import useBackButton from 'hooks/useBackButton';
 import ActionText from 'components/core/ActionText/ActionText';
 import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -50,24 +51,6 @@ const StyledCollectionGalleryWrapper = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
-  }
-`;
-
-// mimics a navbar element on the top left corner
-const StyledBackLink = styled.div`
-  height: 80px;
-  display: flex;
-  align-items: center;
-
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 3;
-
-  padding: 0 ${pageGutter.mobile}px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px;
   }
 `;
 

@@ -24,6 +24,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import NavigationHandle from './NavigationHandle';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
 import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
 type Props = {
   nftId: string;
@@ -162,24 +163,6 @@ const StyledBody = styled.div`
 
   @media only screen and ${breakpoints.desktop} {
     width: auto;
-  }
-`;
-
-// mimics a navbar element on the top left corner
-const StyledBackLink = styled.div`
-  height: 80px;
-  display: flex;
-  align-items: center;
-
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
-
-  padding: 0 ${pageGutter.mobile}px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px;
   }
 `;
 

@@ -16,7 +16,6 @@ import MembershipMintPageProvider, {
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 import { getLocalAllowlist } from './GeneralCardAllowlist';
-import isProduction from 'utils/isProduction';
 import { baseurl, vanillaFetcher } from 'contexts/swr/useFetcher';
 import useSWR from 'swr';
 

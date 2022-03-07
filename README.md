@@ -35,12 +35,22 @@ Start app:
 $ yarn dev
 ```
 
-The app will be available on localhost:3000.
+The app will be available on http://localhost:3000
+
+### Advanced
+
+If you need access to any of the following:
+
+- Test wallet
+- Analytics keys
+- Sentry keys
+
+Hit up a member of the core team!
 
 ### Other commands
 
 - `yarn test` for tests
-- `yarn relay` to run relay compiler 
+- `yarn relay` to run relay compiler
 - `yarn relay:watch` to run relay compiler in watch mode
 - `yarn lint` for linting
 - `yarn typecheck` for checking type validity
