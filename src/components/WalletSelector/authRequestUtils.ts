@@ -65,7 +65,7 @@ export function useLoginOrCreateUserMutation() {
     `
   );
 
-  type LoginOrCrateUserInput =
+  type LoginOrCreateUserInput =
     | {
         variables: authRequestUtilsCreateUserMutation$variables;
         userExists: false;
@@ -76,7 +76,7 @@ export function useLoginOrCreateUserMutation() {
     async ({
       variables,
       userExists,
-    }: LoginOrCrateUserInput): Promise<{
+    }: LoginOrCreateUserInput): Promise<{
       userId: string;
     }> => {
       if (userExists) {
