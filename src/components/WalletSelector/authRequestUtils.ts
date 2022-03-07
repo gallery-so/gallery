@@ -132,7 +132,7 @@ type NonceResponse = {
 export function useCreateNonceMutation() {
   const [createNonce] = usePromisifiedMutation<authRequestUtilsCreateNonceMutation>(
     graphql`
-      mutation authRequestUtilsCreateNonceMutation($address: String!) {
+      mutation authRequestUtilsCreateNonceMutation($address: Address!) {
         getAuthNonce(address: $address) {
           __typename
 
