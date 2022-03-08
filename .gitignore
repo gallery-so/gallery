@@ -34,5 +34,7 @@ tsconfig.tsbuildinfo
 
 # SECRITS
 _internal*
+**/*.graphql.ts
+
 # Sentry
 .sentryclirc

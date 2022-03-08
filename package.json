@@ -1,13 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next",
-    "build": "next build",
+    "dev": "concurrently -n Next,Relay-Compiler \"next\" \"yarn relay:watch\"",
+    "build": "yarn relay && next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "tsc --noEmit",
-    "relay": "relay-compiler",
-    "relay:watch": "relay-compiler --watch",
+    "relay": "mkdir __generated__; relay-compiler",
+    "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open",
     "synpress:run": "synpress run"
   },
@@ -67,6 +67,7 @@
     "@typescript-eslint/parser": "^5.4.0",
     "babel-jest": "^27.3.1",
     "babel-plugin-relay": "^13.0.1",
+    "concurrently": "^7.0.0",
     "cypress": "^9.4.1",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^8.3.0",

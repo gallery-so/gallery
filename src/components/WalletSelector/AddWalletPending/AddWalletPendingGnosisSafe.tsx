@@ -19,7 +19,7 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { addWallet, fetchNonce } from '../authRequestUtils';
+import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
 import {
   GNOSIS_SAFE_WALLET_TYPE_ID,
   listenForGnosisSignature,
@@ -165,6 +165,8 @@ function AddWalletPendingGnosisSafe({
     }
   }, [account, attemptAddWallet, nonce, userExists]);
 
+  const createNonce = useCreateNonceMutation();
+
   // This runs once to auto-initiate the authentication flow, when wallet is first connected (ie when 'account' is defined)
   useEffect(() => {
     if (authenticationFlowStarted) {
@@ -181,7 +183,7 @@ function AddWalletPendingGnosisSafe({
             return;
           }
 
-          const { nonce, user_exists: userExists } = await fetchNonce(account, fetcher);
+          const { nonce, user_exists: userExists } = await createNonce(account);
           setNonce(nonce);
           setUserExists(userExists);
 
@@ -205,6 +207,7 @@ function AddWalletPendingGnosisSafe({
     fetcher,
     handleError,
     previousAttemptNonce,
+    createNonce,
   ]);
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {

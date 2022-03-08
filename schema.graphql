@@ -1,7 +1,26 @@
+# Use @goField(forceResolver: true) to lazily handle recursive or expensive fields that shouldn't be
+# resolved unless the caller asks for them
+directive @goField(
+  forceResolver: Boolean
+  name: String
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+# Add @authRequired to any field that requires a user to be logged in. NOTE: Any field tagged with
+# @authRequired MUST return a union type that includes ErrNotAuthorized.
+#
+# If we need more control over auth in the future, this directive can be updated to take
+# arguments that specify the level of access required.
+directive @authRequired on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
 scalar DateTime
+scalar Address
 
 interface Node {
   id: ID!
+}
+
+interface Error {
+  message: String!
 }
 
 type GalleryUser implements Node {
@@ -9,31 +28,31 @@ type GalleryUser implements Node {
   username: String
   bio: String
   wallets: [Wallet]
-  gallery: Gallery
+  galleries: [Gallery] @goField(forceResolver: true)
   isAuthenticatedUser: Boolean
 }
 
 type Wallet implements Node {
   id: ID!
-  address: String
+  address: Address
   # TODO: Do we paginate these currently?
-  nfts: [Nft]
+  nfts: [Nft] @goField(forceResolver: true)
 }
 
-union AddressOrGalleryUser = GalleryUser | Wallet
+union GalleryUserOrWallet = GalleryUser | Wallet
 
-interface NftInterface implements Node {
+interface NftInterface {
   id: ID!
   name: String
   tokenCollectionName: String
-  owner: AddressOrGalleryUser
+  owner: GalleryUserOrWallet
 }
 
 type ImageNft implements NftInterface & Node {
   id: ID!
   name: String
   tokenCollectionName: String
-  owner: AddressOrGalleryUser
+  owner: GalleryUserOrWallet @goField(forceResolver: true)
   imageUrl: String
 }
 
@@ -41,10 +60,18 @@ type VideoNft implements NftInterface & Node {
   id: ID!
   name: String
   tokenCollectionName: String
-  owner: AddressOrGalleryUser
+  owner: GalleryUserOrWallet @goField(forceResolver: true)
 }
 
-union Nft = ImageNft | VideoNft
+# Temporary NFT type until we support media types via indexer
+type GenericNft implements NftInterface & Node {
+  id: ID!
+  name: String
+  tokenCollectionName: String
+  owner: GalleryUserOrWallet @goField(forceResolver: true)
+}
+
+union Nft = ImageNft | VideoNft | GenericNft
 
 type GalleryNft {
   id: ID!
@@ -54,6 +81,7 @@ type GalleryNft {
 
 type GalleryCollectionLayout {
   columns: Int
+  whitespace: [Int]
 }
 
 type GalleryCollection implements Node {
@@ -61,28 +89,22 @@ type GalleryCollection implements Node {
   version: Int
   name: String
   collectorsNote: String
-  gallery: Gallery
+  gallery: Gallery @goField(forceResolver: true)
   layout: GalleryCollectionLayout
   hidden: Boolean
-  nfts: [GalleryNft]
+  nfts: [GalleryNft] @goField(forceResolver: true)
 }
 
 type Gallery implements Node {
   id: ID!
-  owner: GalleryUser
-  collections: [GalleryCollection]
+  owner: GalleryUser @goField(forceResolver: true)
+  collections: [GalleryCollection] @goField(forceResolver: true)
 }
 
-type NotFound {
-  message: String!
-}
-
-union GalleryByUsernamePayload = Gallery | NotFound
-
-type MembershipTierOwner implements Node {
+type MembershipOwner implements Node {
   id: ID!
-
-  user: GalleryUser
+  address: Address
+  user: GalleryUser @goField(forceResolver: true)
   previewNfts: [String]
 }
 
@@ -91,15 +113,7 @@ type MembershipTier implements Node {
   name: String
   assetUrl: String
   tokenId: String
-  owners: [MembershipTierOwner]
-}
-
-type SessionExpired {
-  message: String!
-}
-
-type MissingCookie {
-  message: String!
+  owners: [MembershipOwner]
 }
 
 # We have this extra type in case we need to stick authed data
@@ -109,36 +123,39 @@ type ViewerGallery {
 }
 
 type Viewer {
-  user: GalleryUser
-  wallets: [Wallet]
-  viewerGallery: ViewerGallery
+  user: GalleryUser @goField(forceResolver: true)
+  viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
 }
+union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
 
-union ViewerPayload = Viewer | MissingCookie | SessionExpired
-
-union GalleryByUserPayload = GalleryUser | NotFound
+union ViewerOrError = Viewer | ErrNotAuthorized
 
 type Query {
-  viewer: ViewerPayload
-  userByUsername(username: String): GalleryByUserPayload
-  membershipTiers: [MembershipTier]
+  viewer: ViewerOrError @authRequired
+  userByUsername(username: String!): UserByUsernameOrError
+  membershipTiers(forceRefresh: Boolean): [MembershipTier]
 }
 
 input GalleryCollectionLayoutInput {
-  columns: Int
+  columns: Int!
+  whitespace: [Int!]!
 }
 
 input CreateCollectionInput {
   galleryId: ID!
-  name: String
-  collectorsNote: String
+  name: String!
+  collectorsNote: String!
   nfts: [ID!]!
   layout: GalleryCollectionLayoutInput!
 }
 
+union CreateCollectionPayloadOrError = CreateCollectionPayload | ErrNotAuthorized | ErrInvalidInput
+
 type CreateCollectionPayload {
-  gallery: Gallery
+  collection: GalleryCollection
 }
+
+union DeleteCollectionPayloadOrError = DeleteCollectionPayload | ErrNotAuthorized | ErrInvalidInput
 
 type DeleteCollectionPayload {
   gallery: Gallery
@@ -146,9 +163,14 @@ type DeleteCollectionPayload {
 
 input UpdateCollectionInfoInput {
   collectionId: ID!
-  name: String
-  collectorsNote: String
+  name: String!
+  collectorsNote: String!
 }
+
+union UpdateCollectionInfoPayloadOrError =
+    UpdateCollectionInfoPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 type UpdateCollectionInfoPayload {
   collection: GalleryCollection
@@ -157,7 +179,13 @@ type UpdateCollectionInfoPayload {
 input UpdateCollectionNftsInput {
   collectionId: ID!
   nfts: [ID!]!
+  layout: GalleryCollectionLayoutInput!
 }
+
+union UpdateCollectionNftsPayloadOrError =
+    UpdateCollectionNftsPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 type UpdateCollectionNftsPayload {
   collection: GalleryCollection
@@ -168,43 +196,157 @@ input UpdateGalleryCollectionsInput {
   collections: [ID!]!
 }
 
+union UpdateGalleryCollectionsPayloadOrError =
+    UpdateGalleryCollectionsPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
+
 type UpdateGalleryCollectionsPayload {
   gallery: Gallery
 }
 
-type RemoveUserAddressPayload {
+union AddUserAddressPayloadOrError =
+    AddUserAddressPayload
+  | ErrAuthenticationFailed
+  | ErrNotAuthorized
+  | ErrInvalidInput
+
+type AddUserAddressPayload {
+  viewer: Viewer
+}
+
+union RemoveUserAddressesPayloadOrError =
+    RemoveUserAddressesPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
+
+type RemoveUserAddressesPayload {
   viewer: Viewer
 }
 
 input UpdateUserInfoInput {
-  username: String
-  bio: String
+  username: String!
+  bio: String!
 }
+
+union UpdateUserInfoPayloadOrError = UpdateUserInfoPayload | ErrNotAuthorized | ErrInvalidInput
 
 type UpdateUserInfoPayload {
   viewer: Viewer
 }
 
+union RefreshOpenSeaNftsPayloadOrError = RefreshOpenSeaNftsPayload | ErrNotAuthorized
+
 type RefreshOpenSeaNftsPayload {
-  wallet: Wallet
+  viewer: Viewer
+}
+
+type AuthNonce {
+  nonce: String
+  userExists: Boolean
+}
+
+union GetAuthNoncePayloadOrError = AuthNonce | ErrDoesNotOwnRequiredNFT
+
+type ErrAuthenticationFailed implements Error {
+  message: String!
+}
+
+type ErrUserAlreadyExists implements Error {
+  message: String!
+}
+
+type ErrUserNotFound implements Error {
+  message: String!
+}
+
+union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrDoesNotOwnRequiredNFT
+
+type ErrNotAuthorized implements Error {
+  message: String!
+  cause: AuthorizationError!
+}
+
+type ErrInvalidInput implements Error {
+  message: String!
+  parameter: String!
+  reason: String!
+}
+
+type ErrNoCookie implements Error {
+  message: String!
+}
+
+type ErrInvalidToken implements Error {
+  message: String!
+}
+
+type ErrDoesNotOwnRequiredNFT implements Error {
+  message: String!
+}
+
+input AuthMechanism {
+  ethereumEoa: EthereumEoaAuth
+  gnosisSafe: GnosisSafeAuth
+}
+
+input EthereumEoaAuth {
+  address: Address!
+  nonce: String!
+  signature: String!
+}
+
+input GnosisSafeAuth {
+  address: Address!
+  nonce: String!
+}
+
+union LoginPayloadOrError =
+    LoginPayload
+  | ErrUserNotFound
+  | ErrAuthenticationFailed
+  | ErrDoesNotOwnRequiredNFT
+
+type LoginPayload {
+  userId: ID
+}
+
+union CreateUserPayloadOrError =
+    CreateUserPayload
+  | ErrUserAlreadyExists
+  | ErrAuthenticationFailed
+  | ErrDoesNotOwnRequiredNFT
+
+type CreateUserPayload {
+  userId: ID
+  galleryId: ID
 }
 
 type Mutation {
   # Collection Mutations
-  createCollection(input: CreateCollectionInput!): CreateCollectionPayload
-  deleteCollection(collectionId: Int): DeleteCollectionPayload
-  updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayload
-  updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayload
-  updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayload
+  createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError @authRequired
+  deleteCollection(collectionId: ID!): DeleteCollectionPayloadOrError @authRequired
+  updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayloadOrError
+    @authRequired
+  updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayloadOrError
+    @authRequired
 
   # Gallery Mutations
-  updateGalleryCollections(input: UpdateGalleryCollectionsInput): UpdateGalleryCollectionsPayload
+  updateGalleryCollections(
+    input: UpdateGalleryCollectionsInput!
+  ): UpdateGalleryCollectionsPayloadOrError @authRequired
 
   # User Mutations
-  removeUserAddress(address: String!): RemoveUserAddressPayload
-  updateUserInfo(input: UpdateUserInfoInput): UpdateUserInfoPayload
-  # We don't know the auth situation until we speak to Kaito
-  # addUserAddress()
+  addUserAddress(address: Address!, authMechanism: AuthMechanism!): AddUserAddressPayloadOrError
+    @authRequired
+  removeUserAddresses(addresses: [Address!]!): RemoveUserAddressesPayloadOrError @authRequired
+  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError @authRequired
 
-  refreshOpenSeaNfts: RefreshOpenSeaNftsPayload
+  # Mirroring the existing input (comma-separated list of addresses) because we expect to drop this functionality soon
+  refreshOpenSeaNfts(addresses: String!): RefreshOpenSeaNftsPayloadOrError @authRequired
+
+  getAuthNonce(address: Address!): GetAuthNoncePayloadOrError
+
+  createUser(authMechanism: AuthMechanism!): CreateUserPayloadOrError
+  login(authMechanism: AuthMechanism!): LoginPayloadOrError
 }

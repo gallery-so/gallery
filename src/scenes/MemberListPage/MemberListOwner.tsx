@@ -25,7 +25,7 @@ function MemberListOwner({ ownerRef, direction }: Props) {
 
   const owner = useFragment(
     graphql`
-      fragment MemberListOwnerFragment on MembershipTierOwner {
+      fragment MemberListOwnerFragment on MembershipOwner {
         user @required(action: THROW) {
           username @required(action: THROW)
         }

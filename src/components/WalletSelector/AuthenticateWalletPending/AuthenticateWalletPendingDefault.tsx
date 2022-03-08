@@ -6,11 +6,10 @@ import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import Spacer from 'components/core/Spacer/Spacer';
-import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
+import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   useTrackCreateUserSuccess,
@@ -38,8 +37,10 @@ function AuthenticateWalletPendingDefault({
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const fetcher = useFetcher();
   const { setLoggedIn } = useAuthActions();
+
+  const createNonce = useCreateNonceMutation();
+  const loginOrCreateUser = useLoginOrCreateUserMutation();
 
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
@@ -58,33 +59,31 @@ function AuthenticateWalletPendingDefault({
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt(userFriendlyWalletName);
 
-      const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+      const { nonce, user_exists: userExists } = await createNonce(address);
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 
-      const payload = {
-        signature,
-        address,
-        wallet_type: 0,
-        nonce,
-      };
-
-      const { userId } = await loginOrCreateUser(
+      const { userId } = await loginOrCreateUser({
         userExists,
-        payload,
-        fetcher,
-        trackCreateUserSuccess
-      );
-      trackSignInSuccess(userFriendlyWalletName);
+        variables: { mechanism: { ethereumEoa: { address, nonce, signature } } },
+      });
+
+      if (userExists) {
+        trackSignInSuccess(userFriendlyWalletName);
+      } else {
+        trackCreateUserSuccess();
+      }
+
       setLoggedIn(userId, address);
     },
     [
       trackSignInAttempt,
       userFriendlyWalletName,
-      fetcher,
+      createNonce,
       pendingWallet,
-      trackSignInSuccess,
+      loginOrCreateUser,
       setLoggedIn,
+      trackSignInSuccess,
       trackCreateUserSuccess,
     ]
   );
@@ -96,6 +95,7 @@ function AuthenticateWalletPendingDefault({
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
           trackSignInError(userFriendlyWalletName, error);
+
           if (isWeb3Error(error)) {
             setDetectedError(error);
           }

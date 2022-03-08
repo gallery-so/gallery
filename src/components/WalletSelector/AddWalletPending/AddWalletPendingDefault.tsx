@@ -12,16 +12,16 @@ import { isWeb3Error, Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
-  INITIAL,
   CONFIRM_ADDRESS,
-  PROMPT_SIGNATURE,
-  PendingState,
-  WalletName,
+  INITIAL,
   METAMASK,
+  PendingState,
+  PROMPT_SIGNATURE,
+  WalletName,
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { addWallet, fetchNonce } from '../authRequestUtils';
+import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
 import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
 import {
   useTrackAddWalletAttempt,
@@ -64,6 +64,7 @@ function AddWalletPendingDefault({
     [showModal]
   );
 
+  const createNonce = useCreateNonceMutation();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
   const trackAddWalletSuccess = useTrackAddWalletSuccess();
   const trackAddWalletError = useTrackAddWalletError();
@@ -81,7 +82,7 @@ function AddWalletPendingDefault({
         setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt(userFriendlyWalletName);
-        const { nonce, user_exists: userExists } = await fetchNonce(address, fetcher);
+        const { nonce, user_exists: userExists } = await createNonce(address);
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -117,8 +118,9 @@ function AddWalletPendingDefault({
     [
       trackAddWalletAttempt,
       userFriendlyWalletName,
-      fetcher,
+      createNonce,
       pendingWallet,
+      fetcher,
       trackAddWalletSuccess,
       openManageWalletsModal,
       trackAddWalletError,

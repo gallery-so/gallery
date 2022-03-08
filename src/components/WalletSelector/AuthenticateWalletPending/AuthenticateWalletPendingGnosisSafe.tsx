@@ -7,12 +7,11 @@ import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
-import { fetchNonce, loginOrCreateUser } from '../authRequestUtils';
+import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import {
-  GNOSIS_SAFE_WALLET_TYPE_ID,
   listenForGnosisSignature,
-  validateNonceSignedByGnosis,
   signMessageWithContractAccount,
+  validateNonceSignedByGnosis,
 } from '../walletUtils';
 import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
 import { getLocalStorageItem } from 'utils/localStorage';
@@ -45,6 +44,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const [nonce, setNonce] = useState('');
   const [userExists, setUserExists] = useState(false);
 
+  const loginOrCreateUser = useLoginOrCreateUserMutation();
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
@@ -52,24 +52,21 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
-      const payload = {
-        address,
-        wallet_type: GNOSIS_SAFE_WALLET_TYPE_ID,
-        nonce,
-      };
-
-      const { userId } = await loginOrCreateUser(
+      const { userId } = await loginOrCreateUser({
         userExists,
-        payload,
-        fetcher,
-        trackCreateUserSuccess
-      );
+        variables: { mechanism: { gnosisSafe: { address, nonce } } },
+      });
+
+      if (userExists) {
+        trackCreateUserSuccess();
+      }
+
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
       setLoggedIn(userId, address);
     },
-    [fetcher, setLoggedIn, trackSignInSuccess, userExists, trackCreateUserSuccess]
+    [loginOrCreateUser, setLoggedIn, trackCreateUserSuccess, trackSignInSuccess, userExists]
   );
 
   const handleError = useCallback(
@@ -146,6 +143,8 @@ function AuthenticateWalletPendingGnosisSafe({
     }
   }, [account, attemptAuthentication, nonce]);
 
+  const createNonce = useCreateNonceMutation();
+
   // This runs once to auto-initiate the authentication flow, when wallet is first connected (ie when 'account' is defined)
   useEffect(() => {
     if (authenticationFlowStarted) {
@@ -157,7 +156,7 @@ function AuthenticateWalletPendingGnosisSafe({
         setAuthenticationFlowStarted(true);
         try {
           trackSignInAttempt('Gnosis Safe');
-          const { nonce, user_exists: userExists } = await fetchNonce(account, fetcher);
+          const { nonce, user_exists: userExists } = await createNonce(account);
           setNonce(nonce);
           setUserExists(userExists);
 
@@ -177,6 +176,7 @@ function AuthenticateWalletPendingGnosisSafe({
     account,
     attemptAuthentication,
     authenticationFlowStarted,
+    createNonce,
     fetcher,
     handleError,
     previousAttemptNonce,

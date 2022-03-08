@@ -43,7 +43,12 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
     requestOptions.body = JSON.stringify(body);
   }
 
-  const response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
+  let response: Response;
+  if (path.includes('http')) {
+    response = await fetch(path, requestOptions);
+  } else {
+    response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const responseBody = await response.json().catch((error: unknown) => {

@@ -29,6 +29,12 @@ Install dependencies:
 $ yarn
 ```
 
+Generate relay files
+
+```bash
+yarn relay
+```
+
 Start app:
 
 ```bash

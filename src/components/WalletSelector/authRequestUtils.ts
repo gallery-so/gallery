@@ -1,6 +1,17 @@
 import { FetcherType } from 'contexts/swr/useFetcher';
 import { Web3Error } from 'types/Error';
-import capitalize from 'utils/capitalize';
+import { graphql } from 'relay-runtime';
+import { authRequestUtilsCreateNonceMutation } from '../../../__generated__/authRequestUtilsCreateNonceMutation.graphql';
+import { useCallback } from 'react';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import {
+  authRequestUtilsLoginMutation,
+  authRequestUtilsLoginMutation$variables,
+} from '../../../__generated__/authRequestUtilsLoginMutation.graphql';
+import {
+  authRequestUtilsCreateUserMutation,
+  authRequestUtilsCreateUserMutation$variables,
+} from '../../../__generated__/authRequestUtilsCreateUserMutation.graphql';
 
 export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
   const response = await addUserAddress(payload, fetcher);
@@ -8,20 +19,104 @@ export async function addWallet(payload: AddUserAddressRequest, fetcher: Fetcher
   return { signatureValid: response.signature_valid };
 }
 
-export async function loginOrCreateUser(
-  userExists: boolean,
-  payload: LoginUserRequest | CreateUserRequest,
-  fetcher: FetcherType,
-  trackCreateUserSuccess: () => void
-) {
-  if (userExists) {
-    const response = await loginUser(payload as LoginUserRequest, fetcher);
-    return { userId: response.user_id };
-  }
+export function useLoginOrCreateUserMutation() {
+  const [login] = usePromisifiedMutation<authRequestUtilsLoginMutation>(
+    graphql`
+      mutation authRequestUtilsLoginMutation($mechanism: AuthMechanism!) {
+        login(authMechanism: $mechanism) {
+          __typename
 
-  const response = await createUser(payload as CreateUserRequest, fetcher, trackCreateUserSuccess);
+          ... on LoginPayload {
+            userId @required(action: THROW)
+          }
+          ... on ErrUserNotFound {
+            message
+          }
+          ... on ErrAuthenticationFailed {
+            message
+          }
+          ... on ErrDoesNotOwnRequiredNFT {
+            message
+          }
+        }
+      }
+    `
+  );
 
-  return { userId: response.user_id };
+  const [createUser] = usePromisifiedMutation<authRequestUtilsCreateUserMutation>(
+    graphql`
+      mutation authRequestUtilsCreateUserMutation($mechanism: AuthMechanism!) {
+        createUser(authMechanism: $mechanism) {
+          __typename
+          ... on CreateUserPayload {
+            userId @required(action: THROW)
+          }
+          ... on ErrUserAlreadyExists {
+            message
+          }
+          ... on ErrAuthenticationFailed {
+            message
+          }
+          ... on ErrDoesNotOwnRequiredNFT {
+            message
+          }
+        }
+      }
+    `
+  );
+
+  type LoginOrCreateUserInput =
+    | {
+        variables: authRequestUtilsCreateUserMutation$variables;
+        userExists: false;
+      }
+    | { variables: authRequestUtilsLoginMutation$variables; userExists: true };
+
+  return useCallback(
+    async ({
+      variables,
+      userExists,
+    }: LoginOrCreateUserInput): Promise<{
+      userId: string;
+    }> => {
+      if (userExists) {
+        const { login: result } = await login({
+          variables,
+        });
+
+        if (!result) {
+          throw new Error('login failed to execute. response data missing');
+        }
+
+        if (result.__typename === 'LoginPayload') {
+          return { userId: result.userId };
+        }
+
+        if (result && 'message' in result) {
+          throw new Error(result.message);
+        }
+
+        throw new Error(`Unexpected type returned from login mutation: ${result?.__typename}`);
+      } else {
+        const { createUser: result } = await createUser({ variables });
+
+        if (!result) {
+          throw new Error('createUser failed to execute. response data missing');
+        }
+
+        if (result.__typename === 'CreateUserPayload') {
+          return { userId: result.userId };
+        }
+
+        if ('message' in result) {
+          throw new Error(result.message);
+        }
+
+        throw new Error(`Unexpected type returned from createUser mutation: ${result?.__typename}`);
+      }
+    },
+    [createUser, login]
+  );
 }
 
 /**
@@ -34,55 +129,74 @@ type NonceResponse = {
   user_exists: boolean;
 };
 
-export async function fetchNonce(address: string, fetcher: FetcherType): Promise<NonceResponse> {
-  try {
-    return await fetcher<NonceResponse>(`/auth/get_preflight?address=${address}`, 'fetch nonce');
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('error while retrieving nonce', error);
-      const errorWithCode: Web3Error = {
-        ...error,
-        code: 'GALLERY_SERVER_ERROR',
-        message: capitalize(error.message),
-      };
-      throw errorWithCode;
-    }
+export function useCreateNonceMutation() {
+  const [createNonce] = usePromisifiedMutation<authRequestUtilsCreateNonceMutation>(
+    graphql`
+      mutation authRequestUtilsCreateNonceMutation($address: Address!) {
+        getAuthNonce(address: $address) {
+          __typename
 
-    throw new Error('Unknown error');
-  }
-}
+          ... on AuthNonce {
+            userExists @required(action: THROW)
+            nonce @required(action: THROW)
+          }
 
-/**
- * Log in user with signature if user already exists
- */
-type LoginUserRequest = {
-  signature?: string;
-  address: string;
-  wallet_type: number;
-};
+          ... on ErrDoesNotOwnRequiredNFT {
+            message
+          }
+        }
+      }
+    `
+  );
 
-type LoginUserResponse = {
-  sig_valid: boolean;
-  user_id: string;
-};
+  return useCallback(
+    async (address: string): Promise<NonceResponse> => {
+      // Kick off the mutation network request
+      //
+      // This call can throw an error. This error is the equivalent
+      // of either a 500, or a network error (the user didn't have connection)
+      //
+      // If this throws, we'll just let the UI handle that appropriately
+      // with it's try catch
+      const { getAuthNonce } = await createNonce({
+        variables: { address },
+      });
 
-async function loginUser(body: LoginUserRequest, fetcher: FetcherType): Promise<LoginUserResponse> {
-  try {
-    return await fetcher<LoginUserResponse>('/users/login', 'log in user', {
-      body,
-    });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('error while attempting user login', error);
-      const errorWithCode: Web3Error = {
-        code: 'GALLERY_SERVER_ERROR',
-        ...error,
-      };
-      throw errorWithCode;
-    }
+      // If the server didn't give us a payload for the mutation we just committed,
+      // we'll throw an error with a somewhat helpful message. This usually means
+      // the server panicked at some point in the stack and was unable to commit
+      // the mutation.
+      if (!getAuthNonce) {
+        throw new Error('getAuthNonce failed to execute. response data missing');
+      }
 
-    throw new Error('Unknown error');
-  }
+      // The types generated by Relay let us do some great TypeScript
+      // union checks here. Inside of this if, we'll have narrowed the
+      // the type down to be the ErrDoesNotOwnRequiredNFT type so we
+      // can access the relevant fields.
+      if (getAuthNonce?.__typename === 'ErrDoesNotOwnRequiredNFT') {
+        const errorWithCode: Web3Error = {
+          name: getAuthNonce.__typename,
+          code: 'GALLERY_SERVER_ERROR',
+          message: getAuthNonce.message,
+        };
+
+        throw errorWithCode;
+      }
+
+      // Same thing here. If the response's typename is AuthNonce
+      // that means the type has a nonce, and userExists field
+      if (getAuthNonce?.__typename === 'AuthNonce') {
+        return { nonce: getAuthNonce.nonce, user_exists: getAuthNonce.userExists };
+      }
+
+      // The server added some new type to the union and we don't know what to do.
+      throw new Error(
+        `Unexpected type returned from createNonceMutation: ${getAuthNonce.__typename}`
+      );
+    },
+    [createNonce]
+  );
 }
 
 /**
@@ -150,45 +264,5 @@ export async function removeUserAddress(
     }
 
     throw new Error('unknown error');
-  }
-}
-
-/**
- * Create user with signature if user doesn't exist yet
- */
-type CreateUserRequest = {
-  signature?: string;
-  address: string;
-  nonce: string;
-  wallet_type: number;
-};
-
-type CreateUserResponse = {
-  sig_valid: boolean;
-  user_id: string;
-};
-
-async function createUser(
-  body: CreateUserRequest,
-  fetcher: FetcherType,
-  trackCreateUserSuccess: () => void
-): Promise<CreateUserResponse> {
-  try {
-    const result = await fetcher<CreateUserResponse>('/users/create', 'create user', {
-      body,
-    });
-    trackCreateUserSuccess();
-    return result;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('error while attempting user creation', error);
-      const errorWithCode: Web3Error = {
-        code: 'GALLERY_SERVER_ERROR',
-        ...error,
-      };
-      throw errorWithCode;
-    }
-
-    throw new Error('Unknown error');
   }
 }
