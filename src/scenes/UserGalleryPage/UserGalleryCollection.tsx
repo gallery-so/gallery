@@ -40,7 +40,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
   const [isHovering, setIsHovering] = useState(false);
   const user = usePossiblyAuthenticatedUser();
   const username = asPath.split('/')[1];
-  const collectionUrl = `${baseUrl}/${collection.id}`;
+  const collectionUrl = `${baseUrl}/${username}/${collection.id}`;
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
