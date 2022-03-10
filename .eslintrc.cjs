@@ -45,7 +45,7 @@ const rules = {
 module.exports = {
   ignorePatterns: ['next-env.d.ts', 'node_modules', 'build'],
 
-  extends: ['xo', 'xo-react', 'prettier'],
+  extends: ['prettier', 'react-hooks'],
   plugins: ['node'],
   rules,
   overrides: [
@@ -56,10 +56,8 @@ module.exports = {
         ecmaVersion: '2020',
       },
     },
-
-    // Typescript fields get the additional `xo-typescript` extends.
     {
-      extends: ['xo', 'xo-react', 'xo-typescript', 'prettier'],
+      extends: ['prettier'],
       files: ['**/*.ts*'],
       rules,
     },
