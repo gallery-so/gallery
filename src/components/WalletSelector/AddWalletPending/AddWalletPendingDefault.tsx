@@ -28,6 +28,7 @@ import {
   useTrackAddWalletError,
   useTrackAddWalletSuccess,
 } from 'contexts/analytics/authUtil';
+import { captureException } from '@sentry/nextjs';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -103,6 +104,7 @@ function AddWalletPendingDefault({
         return signatureValid;
       } catch (error: unknown) {
         setIsConnecting(false);
+        captureException(error);
         trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
           setDetectedError(error);

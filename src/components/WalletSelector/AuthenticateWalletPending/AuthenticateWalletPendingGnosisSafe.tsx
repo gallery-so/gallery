@@ -21,6 +21,7 @@ import {
   useTrackSignInError,
   useTrackCreateUserSuccess,
 } from 'contexts/analytics/authUtil';
+import { captureException } from '@sentry/nextjs';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -71,6 +72,7 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const handleError = useCallback(
     (error: unknown) => {
+      captureException(error);
       trackSignInError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
         setDetectedError(error);
