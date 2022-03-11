@@ -25,7 +25,7 @@ jobs:
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       - name: "Install unzip"
-        run: apt-get -y install unzip
+        run: sudo apt-get -y install unzip
       - name: "Unzip"
         run: echo "A" | unzip _internal.zip -d _internal
       - name: "Check file"
