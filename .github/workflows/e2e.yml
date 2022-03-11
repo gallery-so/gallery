@@ -8,6 +8,10 @@ jobs:
         uses: Borales/actions-yarn@v2.3.0
       # - name: Install dependencies
       #   run: yarn install
+      - name: "Set ENV variable"
+        run: export KEYBASE_USERNAME=${{ secrets.KEYBASE_USERNAME }}
+      - name: "Set ENV Paperkey variable"
+        run: export KEYBASE_PAPERKEY=${{ secrets.KEYBASE_PAPER_KEY }}
       - name: "Update apt"
         run: sudo apt-get update
       - name: "Download Keybase"
@@ -16,6 +20,8 @@ jobs:
         run: sudo apt-get install ./keybase_amd64.deb --no-install-recommends
       - name: "Run keybase globally"
         run: run_keybase -g
+      - name: "Oneshot Keybase"
+        run: "keybase oneshot"
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       # - run:
