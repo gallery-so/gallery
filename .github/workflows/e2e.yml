@@ -22,8 +22,10 @@ jobs:
         run: sudo apt-get install ./keybase_amd64.deb --no-install-recommends
       - name: "Run keybase globally"
         run: run_keybase -g
-      - name: "Oneshot Keybase --username= ${{ secrets.KEYBASE_USERNAME }}"
-        run: "keybase oneshot"
+      - name: "Oneshot Keybase"
+        env:
+          KEYBASE_USERNAME: ${{ secrets.KEYBASE_USERNAME }}
+        run: "keybase oneshot --username=$KEYBASE_USERNAME"
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       # - run:
