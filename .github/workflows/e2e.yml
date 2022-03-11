@@ -1,13 +1,16 @@
 name: GitHub Actions Demo
 on: [push]
+env:
+  KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
+  KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - name: GitHub Action for Yarn
         uses: Borales/actions-yarn@v2.3.0
-      - name: "Display username"
-        run: echo ${{secrets.KEYBASE_USERNAME}} | sed 's/./& /g'
+      # - name: "Display username"
+      #   run: echo ${{secrets.KEYBASE_USERNAME}} | sed 's/./& /g'
       # - name: Install dependencies
       #   run: yarn install
       - name: "Update apt"
@@ -19,7 +22,10 @@ jobs:
       - name: "Run keybase globally"
         run: run_keybase -g
       - name: "Oneshot Keybase"
-        run: keybase oneshot --username=${{secrets.KEYBASE_USERNAME}}
+        run: keybase oneshot
+        env:
+          KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
+          KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       # - run:
