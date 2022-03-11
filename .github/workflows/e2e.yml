@@ -1,8 +1,5 @@
 name: GitHub Actions Demo
 on: [push]
-# env:
-#   KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
-#   KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -25,10 +22,14 @@ jobs:
         env:
           KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
-      - name: "Check file"
-        run: ls
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
+      - name: "Install unzip"
+        run: apt-get -y install unzip
+      - name: "Unzip"
+        run: echo "A" | unzip _internal.zip -d _internal
+      - name: "Check file"
+        run: ls
       # - run:
       #     name: "Install cli dependencies"
       #     command: sudo apt-get -y install unzip
