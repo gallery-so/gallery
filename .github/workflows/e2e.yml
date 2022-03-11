@@ -7,6 +7,8 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout branch"
+        uses: actions/checkout@v1
       - name: GitHub Action for Yarn
         uses: Borales/actions-yarn@v2.3.0
       # - name: "Display username"
@@ -27,7 +29,7 @@ jobs:
           KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
       - name: "Check file"
-        uses: actions/checkout@v1
+        uses: ls
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       # - run:
