@@ -21,9 +21,13 @@ function Home() {
     <Page centered>
       <GalleryIntro />
       <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
-      <Spacer height={16} />
+      <Spacer height={24} />
       <GalleryLink to="/members">
         <TextButton text="explore galleries" dataTestId="explore-button" />
+      </GalleryLink>
+      <Spacer height={16} />
+      <GalleryLink to="/hamsun">
+        <TextButton text="gallery of the week" />
       </GalleryLink>
     </Page>
   );
