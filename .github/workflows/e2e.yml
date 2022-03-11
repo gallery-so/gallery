@@ -14,7 +14,7 @@ jobs:
       - name: "Download Keybase"
         run: curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
       - name: "Install Keybase"
-        run: sudo apt-get install ./keybase_amd64.deb --no-install-recommends
+        run: sudo apt-get install ./keybase_amd64.deb unzip
       - name: "Run keybase globally"
         run: run_keybase -g
       - name: "Oneshot Keybase"
@@ -24,8 +24,6 @@ jobs:
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
-      - name: "Install unzip"
-        run: sudo apt-get -y install unzip
       - name: "Unzip"
         run: echo "A" | unzip _internal.zip -d _internal
       - name: "Check file"
