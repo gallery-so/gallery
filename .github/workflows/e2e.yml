@@ -25,7 +25,7 @@ jobs:
       - name: "Oneshot Keybase"
         env:
           KEYBASE_USERNAME: ${{ secrets.KEYBASE_USERNAME }}
-        run: "keybase oneshot --username=$KEYBASE_USERNAME"
+        run: keybase oneshot --username=$KEYBASE_USERNAME
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
       # - run:
