@@ -1,8 +1,8 @@
 name: GitHub Actions Demo
 on: [push]
-env:
-  KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
-  KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
+# env:
+#   KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
+#   KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -27,6 +27,7 @@ jobs:
           KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
       - name: "Check file"
+        uses: actions/checkout@v1
         run: ls
       - name: "Decrypt secrets"
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
