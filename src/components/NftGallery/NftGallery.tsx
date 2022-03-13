@@ -13,15 +13,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '../../../__generated__/NftGalleryFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
   mobileLayout: DisplayLayout;
 };
-
-function isNft(item: Nft | WhitespaceBlock): item is Nft {
-  return 'created_at' in item;
-}
 
 function NftGallery({ collectionRef, mobileLayout }: Props) {
   const collection = useFragment(
@@ -30,6 +27,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
         id
         layout {
           columns
+          whitespace
         }
         nfts {
           id
@@ -45,35 +43,31 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const columns = useCollectionColumns(collection);
 
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
+  const nonNullWhitespace = removeNullValues(collection.layout?.whitespace);
 
-  // const collectionWithWhitespace = useMemo(
-  //   () => insertWhitespaceBlocks(collection.nfts, collection.layout?.whitespace ?? []),
-  //   [collection.layout?.whitespace, collection.nfts]
-  // );
-  // const itemsToDisplay = useMemo(
-  //   () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
-  //   [collection.nfts, collectionWithWhitespace, hideWhitespace]
-  // );
+  const collectionWithWhitespace = useMemo(
+    () => insertWhitespaceBlocks(collection.nfts ?? [], nonNullWhitespace),
+    [collection.layout?.whitespace, collection.nfts]
+  );
 
-  const itemsToDisplay = collection.nfts;
+  const itemsToDisplay = useMemo(
+    () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
+    [collection.nfts, collectionWithWhitespace, hideWhitespace]
+  );
 
   return (
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
-      {itemsToDisplay?.map(
-        (galleryNft) => {
-          if (!galleryNft) {
-            return;
-          }
-
-          return (
-            // isNft(galleryNft) ? (
-            <NftPreview key={galleryNft.id} galleryNftRef={galleryNft} />
-          );
+      {itemsToDisplay?.map((galleryNft) => {
+        if (!galleryNft) {
+          return;
         }
-        // ) : (
-        //   <StyledWhitespaceBlock key={item.id} />
-        // )
-      )}
+
+        if ('whitespace' in galleryNft) {
+          return <StyledWhitespaceBlock key={galleryNft.id} />;
+        }
+
+        return <NftPreview key={galleryNft.id} galleryNftRef={galleryNft} />;
+      })}
     </StyledCollectionNfts>
   );
 }
