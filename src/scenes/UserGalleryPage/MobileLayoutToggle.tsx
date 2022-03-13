@@ -1,5 +1,5 @@
 import { DisplayLayout } from 'components/core/enums';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 type Props = {
@@ -7,30 +7,27 @@ type Props = {
   setMobileLayout: (layout: DisplayLayout) => void;
 };
 
-const ListLayout = ({ stroke }: { stroke: string }) => (
+const ListLayout = () => (
   // Although the svg has a height and width of 24, it is actually 18px (per Figma)
   // Notice how the path elements begin at 21; there is simply padding around the icon
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
-      <path stroke={stroke} d="M21 3H3V21H21V3Z" />
-      <path stroke={stroke} d="M21 15H3" strokeMiterlimit="10" />
-      <path stroke={stroke} d="M21 9H3" strokeMiterlimit="10" />
+      <path d="M21 3H3V21H21V3Z" />
+      <path d="M21 15H3" strokeMiterlimit="10" />
+      <path d="M21 9H3" strokeMiterlimit="10" />
     </g>
   </svg>
 );
 
-const GridLayout = ({ stroke }: { stroke: string }) => (
+const GridLayout = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 3V21" stroke={stroke} strokeMiterlimit="10" />
-    <path d="M9 3V21" stroke={stroke} strokeMiterlimit="10" />
-    <path d="M21 3H3V21H21V3Z" stroke={stroke} />
-    <path d="M21 15H3" stroke={stroke} strokeMiterlimit="10" />
-    <path d="M21 9H3" stroke={stroke} strokeMiterlimit="10" />
+    <path d="M15 3V21" strokeMiterlimit="10" />
+    <path d="M9 3V21" strokeMiterlimit="10" />
+    <path d="M21 3H3V21H21V3Z" />
+    <path d="M21 15H3" strokeMiterlimit="10" />
+    <path d="M21 9H3" strokeMiterlimit="10" />
   </svg>
 );
-
-const HOVERED_COLOR = '#000000';
-const UNHOVERED_COLOR = '#808080';
 
 function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
   const handleGridClick = useCallback(() => {
@@ -41,34 +38,13 @@ function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
     setMobileLayout(DisplayLayout.GRID);
   }, [setMobileLayout]);
 
-  const [stroke, setStroke] = useState(UNHOVERED_COLOR);
-
-  const handleMouseOver = useCallback(() => {
-    setStroke(HOVERED_COLOR);
-  }, [setStroke]);
-  const handleMouseOut = useCallback(() => {
-    setStroke(UNHOVERED_COLOR);
-  }, [setStroke]);
-
   return mobileLayout === DisplayLayout.GRID ? (
-    <StyledToggleButton
-      onClick={handleGridClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      title="Grid view"
-    >
-      {/* <Icon src="/icons/list_layout.svg" /> */}
-      <ListLayout stroke={stroke} />
+    <StyledToggleButton onClick={handleGridClick} title="Grid view">
+      <ListLayout />
     </StyledToggleButton>
   ) : (
-    <StyledToggleButton
-      onClick={handleListClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      title="List view"
-    >
-      {/* <Icon src="/icons/grid_layout.svg" /> */}
-      <GridLayout stroke={stroke} />
+    <StyledToggleButton onClick={handleListClick} title="List view">
+      <GridLayout />
     </StyledToggleButton>
   );
 }
@@ -82,6 +58,10 @@ const StyledToggleButton = styled.button`
 
   & svg path {
     transition: stroke 300ms ease;
+    stroke: #808080;
+  }
+  & svg:hover path {
+    stroke: #000000;
   }
 `;
 

@@ -1,7 +1,7 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g>
-    <path id="Vector" d="M21 3H3V21H21V3Z" />
-    <path id="Vector_2" d="M21 15H3" stroke-miterlimit="10"/>
-    <path id="Vector_3" d="M21 9H3" stroke-miterlimit="10"/>
-</g>
+    <g>
+        <path stroke='black' d="M21 3H3V21H21V3Z" />
+        <path stroke='black' d="M21 15H3" strokeMiterlimit="10" />
+        <path stroke='black' d="M21 9H3" strokeMiterlimit="10" />
+    </g>
 </svg>
