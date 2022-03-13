@@ -16,16 +16,14 @@ function NftPreviewLabel({ nftRef, className }: Props) {
   const nft = useFragment(
     graphql`
       fragment NftPreviewLabelFragment on Nft {
-        ... on GenericNft {
-          name
-          tokenCollectionName
-        }
+        name
+        description
       }
     `,
     nftRef
   );
 
-  if (!nft.tokenCollectionName && !nft.name) {
+  if (!nft.description && !nft.name) {
     return null;
   }
 
@@ -36,9 +34,9 @@ function NftPreviewLabel({ nftRef, className }: Props) {
           {nft.name}
         </StyledBodyRegular>
       )}
-      {nft.tokenCollectionName && (
+      {nft.description && (
         <StyledBodyRegular color={colors.white} lines={2}>
-          {nft.tokenCollectionName}
+          {nft.description}
         </StyledBodyRegular>
       )}
     </StyledNftPreviewLabel>

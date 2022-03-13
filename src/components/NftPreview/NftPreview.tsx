@@ -34,18 +34,10 @@ function NftPreview({ galleryNftRef }: Props) {
     graphql`
       fragment NftPreviewFragment on GalleryNft {
         nft @required(action: THROW) {
-          __typename
-          ... on GenericNft {
-            id
-          }
-          ... on ImageNft {
-            id
-          }
-          ... on VideoNft {
-            id
-          }
+          id
 
           ...NftPreviewLabelFragment
+          ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
           id
@@ -55,12 +47,6 @@ function NftPreview({ galleryNftRef }: Props) {
     `,
     galleryNftRef
   );
-
-  if (!('id' in nft)) {
-    throw new Error(
-      `Unexpected type from NftPreviewFragment.nft. Expected NftInterface, received: ${nft.__typename}`
-    );
-  }
 
   const columns = useCollectionColumns(collection);
 
@@ -88,7 +74,7 @@ function NftPreview({ galleryNftRef }: Props) {
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
-          {/*<NftPreviewAsset nftRef={nft} size={previewSize * 2} />*/}
+          <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
           <StyledNftFooter>
             <StyledNftLabel nftRef={nft} />
             <StyledGradient type="bottom" direction="down" />

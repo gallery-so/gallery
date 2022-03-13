@@ -19,14 +19,25 @@ type Props = {
 };
 
 export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryLayoutQueryFragment on Query {
+        ...UserGalleryCollectionsQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const user = useFragment(
     graphql`
       fragment UserGalleryLayoutFragment on GalleryUser {
         username
         galleries {
           collections {
-            ...UserGalleryCollectionsFragment
+            __typename
           }
+
+          ...UserGalleryCollectionsFragment
         }
 
         ...UserGalleryHeaderFragment
@@ -35,37 +46,14 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     userRef
   );
 
-  const { viewer } = useFragment(
-    graphql`
-      fragment UserGalleryLayoutQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              username
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
   const isMobile = useIsMobileWindowWidth();
   const showMobileLayoutToggle = Boolean(isMobile && user.galleries?.[0]?.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   const [gallery] = user.galleries ?? [];
 
-  const isAuthenticatedUsersPage = user.username === viewer?.user?.username;
-
-  const nonNullCollections = removeNullValues(gallery?.collections);
-
   const collectionsView = gallery?.collections ? (
-    <UserGalleryCollections
-      collectionRefs={nonNullCollections}
-      isAuthenticatedUsersPage={isAuthenticatedUsersPage}
-      mobileLayout={mobileLayout}
-    />
+    <UserGalleryCollections queryRef={query} galleryRef={gallery} mobileLayout={mobileLayout} />
   ) : (
     <EmptyGallery message="This user has not set up their gallery yet." />
   );

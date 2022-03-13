@@ -4,13 +4,14 @@ import styled from 'styled-components';
 
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { Nft } from 'types/Nft';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import { getMediaTypeForAssetUrl, graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { NftPreviewAssetFragment$key } from '../../../__generated__/NftPreviewAssetFragment.graphql';
 
 type Props = {
-  nftRef: Nft;
+  nftRef: NftPreviewAssetFragment$key;
   size: number;
 };
 
@@ -18,8 +19,20 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   const nft = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Nft {
-        ... on ImageNft {
-          imageUrl
+        name
+        media {
+          __typename
+
+          ... on VideoMedia {
+            contentRenderURLs @required(action: NONE) {
+              medium @required(action: NONE)
+            }
+          }
+          ... on ImageMedia {
+            contentRenderURLs @required(action: NONE) {
+              medium @required(action: NONE)
+            }
+          }
         }
       }
     `,
@@ -27,24 +40,25 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   );
 
   const setContentIsLoaded = useSetContentIsLoaded();
-  const nftAssetComponent = useMemo(() => {
-    // certain assets don't have `image_url` fields populated, such as ones from Foundation
-    const assetUrl = (nft.image_url || nft.animation_url) ?? '';
 
-    if (getMediaTypeForAssetUrl(assetUrl) === NftMediaType.VIDEO) {
-      return (
-        <StyledVideo
-          src={`${assetUrl}#t=0.5`}
-          onLoadStart={setContentIsLoaded}
-          preload="metadata"
-        />
-      );
-    }
+  if (nft.media?.__typename === 'VideoMedia') {
+    return (
+      <StyledVideo
+        src={`${nft.media.contentRenderURLs.medium}#t=0.5`}
+        onLoadStart={setContentIsLoaded}
+        preload="metadata"
+      />
+    );
+  } else if (nft.media?.__typename === 'ImageMedia') {
+    return (
+      <ImageWithLoading
+        src={graphqlGetResizedNftImageUrlWithFallback(nft.media.contentRenderURLs.medium, size)}
+        alt={nft.name ?? ''}
+      />
+    );
+  }
 
-    return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft, size)} alt={nft.name} />;
-  }, [nft, setContentIsLoaded, size]);
-
-  return nftAssetComponent;
+  return null;
 }
 
 const StyledVideo = styled.video`

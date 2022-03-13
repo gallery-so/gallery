@@ -2,10 +2,9 @@ import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'lodash.unescape';
 import colors from 'components/core/colors';
-import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
+import { BodyRegular, TitleSerif } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { Collection } from 'types/Collection';
 import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
@@ -16,13 +15,14 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { baseUrl } from 'utils/baseUrl';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryCollectionFragment$key } from '../../../__generated__/UserGalleryCollectionFragment.graphql';
+import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 
 type Props = {
+  queryRef: UserGalleryCollectionFragment$key;
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
 };
@@ -31,7 +31,16 @@ export function isValidColumns(columns: number) {
   return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
-function UserGalleryCollection({ collectionRef, mobileLayout }: Props) {
+function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryCollectionQueryFragment on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
   const collection = useFragment(
     graphql`
       fragment UserGalleryCollectionFragment on GalleryCollection {
@@ -39,11 +48,20 @@ function UserGalleryCollection({ collectionRef, mobileLayout }: Props) {
         name @required(action: THROW)
         collectorsNote
 
+        gallery {
+          owner {
+            id
+          }
+        }
+
         ...NftGalleryFragment
       }
     `,
     collectionRef
   );
+
+  const loggedInUserId = useLoggedInUserId(query);
+  const showEditActions = loggedInUserId === collection.gallery?.owner?.id;
 
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
@@ -54,7 +72,6 @@ function UserGalleryCollection({ collectionRef, mobileLayout }: Props) {
   );
 
   const [isHovering, setIsHovering] = useState(false);
-  const user = usePossiblyAuthenticatedUser();
   const username = asPath.split('/')[1];
   const collectionUrl = `${baseUrl}/${username}/${collection.id}`;
 
@@ -75,8 +92,6 @@ function UserGalleryCollection({ collectionRef, mobileLayout }: Props) {
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: `/${username}/${collection.id}` });
   }, [collection.id, username, track]);
-
-  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);
