@@ -17,16 +17,16 @@ function generateTestNft() {
 describe.skip('getWhitespacePositionsFromStagedItems', () => {
   it('computes the correct whitespace list given a list of staged items', () => {
     const stagedItems = [
-      { id: 'blank-1' },
-      { id: 'blank-2' },
+      { id: 'blank-1', whitespace: 'whitespace' },
+      { id: 'blank-2', whitespace: 'whitespace' },
       generateTestNft(),
-      { id: 'blank-3' },
+      { id: 'blank-3', whitespace: 'whitespace' },
       generateTestNft(),
       generateTestNft(),
       generateTestNft(),
-      { id: 'blank-4' },
+      { id: 'blank-4', whitespace: 'whitespace' },
       generateTestNft(),
-      { id: 'blank-5' },
+      { id: 'blank-5', whitespace: 'whitespace' },
     ];
     const whitespaceList = getWhitespacePositionsFromStagedItems(stagedItems);
     expect(whitespaceList).toEqual([0, 0, 1, 4, 5]);
