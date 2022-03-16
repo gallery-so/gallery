@@ -1,6 +1,7 @@
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
 import mixpanel from 'mixpanel-browser';
 import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
+import { captureException } from '@sentry/nextjs';
 
 type EventProps = Record<string, unknown>;
 
@@ -28,8 +29,18 @@ export const _track = (eventName: string, eventProps: EventProps, userId?: strin
     });
   } catch (error: unknown) {
     // mixpanel errors shouldn't disrupt app
-    // TODO: send reporting errror to Sentry
-    console.error(error);
+    captureException(error);
+  }
+};
+
+export const _identify = (userId: string) => {
+  if (!mixpanelEnabled) return;
+
+  try {
+    mixpanel.identify(userId);
+  } catch (error: unknown) {
+    // mixpanel errors shouldn't disrupt app
+    captureException(error);
   }
 };
 
