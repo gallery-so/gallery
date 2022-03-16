@@ -1,6 +1,7 @@
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
 import mixpanel from 'mixpanel-browser';
 import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
+import noop from 'utils/noop';
 
 type EventProps = Record<string, unknown>;
 
@@ -36,7 +37,8 @@ export const _track = (eventName: string, eventProps: EventProps, userId?: strin
 export const useTrack = () => {
   const track = useContext(AnalyticsContext);
   if (!track) {
-    throw new Error('Attempted to use AnalyticsContext without a provider!');
+    console.error('Attempted to use AnalyticsContext without a provider!');
+    return noop;
   }
 
   return track;
