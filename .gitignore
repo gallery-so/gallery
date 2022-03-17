@@ -21,6 +21,7 @@
 # e2e
 /tests/e2e/screenshots/*
 /tests/e2e/videos/*
+/cypress/videos
 
 # misc
 .DS_Store
