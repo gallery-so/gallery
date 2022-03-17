@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   to?: string;
@@ -17,15 +18,23 @@ export default function GalleryLink({
   underlined = true,
   underlineOnHover = false,
 }: Props) {
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    track('Link Click', {
+      to: to || href,
+    });
+  }, []);
+
   if (!to && !href) {
     console.error('no link provided for GalleryLink');
   }
 
   if (to) {
     return (
-      <StyledLink href={to} $underlined={underlined} $underlineOnHover={underlineOnHover}>
-        {children}
-      </StyledLink>
+      <Link href={to} passHref>
+        <StyledAnchor onClick={handleClick}>{children}</StyledAnchor>
+      </Link>
     );
   }
 
@@ -36,6 +45,7 @@ export default function GalleryLink({
         target="_blank"
         $underlined={underlined}
         $underlineOnHover={underlineOnHover}
+        onClick={handleClick}
       >
         {children}
       </StyledAnchor>
@@ -46,8 +56,8 @@ export default function GalleryLink({
 }
 
 type StyledProps = {
-  $underlineOnHover: boolean;
-  $underlined: boolean;
+  $underlineOnHover?: boolean;
+  $underlined?: boolean;
 };
 
 const StyledLink = styled(Link)<StyledProps>`
