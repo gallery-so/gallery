@@ -17,6 +17,7 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from 'contexts/analytics/authUtil';
+import { captureException } from '@sentry/nextjs';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -94,6 +95,7 @@ function AuthenticateWalletPendingDefault({
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
+          captureException(error);
           trackSignInError(userFriendlyWalletName, error);
 
           if (isWeb3Error(error)) {
