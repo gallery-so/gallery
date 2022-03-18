@@ -1,5 +1,5 @@
 name: ci
-on: [push, deployment, deployment_status]
+on: [deployment_status]
 jobs:
   e2e:
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
