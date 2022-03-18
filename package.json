@@ -10,7 +10,7 @@
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open",
     "synpress:run": "synpress run",
-    "cypress:gh": "synpress run --config baseUrl=https://gallery.so --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js' --group Desktop -b chromium"
+    "cypress:gh": "synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js' --group Desktop -b chromium"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.1",
