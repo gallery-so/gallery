@@ -1,9 +1,15 @@
-name: GitHub Actions Demo
-on: [push]
+name: ci
+on: [push, deployment, deployment_status]
 jobs:
-  Explore-GitHub-Actions:
+  e2e:
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT
       - uses: actions/checkout@v2
       - name: Setup node
         uses: actions/setup-node@v2
@@ -41,7 +47,7 @@ jobs:
           echo "::set-output name=packageJson::$content"
       - run: yarn run cypress:gh
         env:
-          CYPRESS_BASE_URL: https://gallery.so
+          CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
           PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_automated_test_wallet}}
           NETWORK_NAME: main
       # - run:
