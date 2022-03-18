@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { BodyRegular, Display } from 'components/core/Text/Text';
+import { BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
-import Logo from 'public/icons/logo-large.svg';
 
 function GalleryTitleIntro() {
   return (

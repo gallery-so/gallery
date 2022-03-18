@@ -26,9 +26,9 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
       {isMobile && <StyledHr />}
       <MainContent>
         <Link href="/">
-          <StyledLogo>GALLERY</StyledLogo>
+          <StyledLogo src="/icons/logo-large.svg" />
         </Link>
-        <Spacer height={isMobile ? 16 : 4} />
+        <Spacer height={4} />
         <StyledLinkContainer>
           <StyledLink href={GALLERY_FAQ} target="_blank" rel="noreferrer">
             <StyledLinkText color={colors.gray30}>FAQ</StyledLinkText>
@@ -130,9 +130,8 @@ const BoringLegalContent = styled.div`
   display: flex;
 `;
 
-const StyledLogo = styled(TitleSerif)`
-  font-size: 24px;
-  cursor: pointer;
+const StyledLogo = styled.img`
+  height: 16px;
 `;
 
 const StyledLinkContainer = styled.div`
