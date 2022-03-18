@@ -1,21 +1,20 @@
 import styled from 'styled-components';
 import { BodyRegular, Display } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
+import Logo from 'public/icons/logo-large.svg';
 
 function GalleryTitleIntro() {
   return (
     <>
-      <StyledLogo caps>Gallery</StyledLogo>
+      <StyledLogo src="/icons/logo-large.svg" />
       <Spacer height={8} />
       <BodyRegular>Show your collection to the world.</BodyRegular>
-      <Spacer height={32} />
     </>
   );
 }
 
-const StyledLogo = styled(Display)`
-  font-size: 64px;
-  letter-spacing: 0.05em;
+const StyledLogo = styled.img`
+  height: 32px;
 `;
 
 export default GalleryTitleIntro;
