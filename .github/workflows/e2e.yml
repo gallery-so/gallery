@@ -47,7 +47,7 @@ jobs:
       - run: yarn run cypress:gh
         env:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_automated_test_wallet}}
+          PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
           NETWORK_NAME: main
       # - run:
       #     name: "Install cli dependencies"

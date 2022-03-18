@@ -23,9 +23,9 @@ describe('Homepage test', () => {
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
     cy.confirmMetamaskSignatureRequest();
-    cy.url().should('include', `/galleryso`);
+    cy.url().should('include', `/gentlemanbeggar`);
     cy.wait(1000);
-    home.getAccountButton('galleryso').click();
+    home.getAccountButton('gentlemanbeggar').click();
     home.getSignOutButton().click();
 
     home.getSignInButtonNav().should('be.exist');
