@@ -49,9 +49,3 @@ jobs:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
           PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
           NETWORK_NAME: main
-      # - run:
-      #     name: "Install cli dependencies"
-      #     command: sudo apt-get -y install unzip
-      # - run:
-      #     name: "Unzip secrets file"
-      #     command: echo "A" | unzip _internal.zip -d _internal
