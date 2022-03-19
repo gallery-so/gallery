@@ -13,16 +13,9 @@ type TextAreaProps = {
   textAreaHeight?: string;
 };
 
-export const TextArea = forwardRef(
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
-    {
-      className,
-      onChange = noop,
-      placeholder,
-      defaultValue,
-      autoFocus = false,
-      textAreaHeight,
-    }: TextAreaProps,
+    { className, onChange = noop, placeholder, defaultValue, autoFocus = false, textAreaHeight },
     ref
   ) => (
     <StyledTextArea
