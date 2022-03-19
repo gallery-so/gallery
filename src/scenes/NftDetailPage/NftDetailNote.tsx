@@ -26,7 +26,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [collectorsNoteHeight, setCollectorsNoteHeight] = useState(0);
+  const [noteHeight, setNoteHeight] = useState(0);
 
   const [collectorsNote, setCollectorsNote] = useState(nftCollectorsNote ?? '');
   const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote), [collectorsNote]);
@@ -35,16 +35,17 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
   const collectorsNoteRef = useRef<HTMLDivElement>(null);
 
+  // We need to record the note height to prevent brief flashes between edit/save states, via StyledHeightBuffer
   useEffect(() => {
     if (collectorsNoteRef.current) {
-      setCollectorsNoteHeight(collectorsNoteRef.current.scrollHeight);
+      setNoteHeight(collectorsNoteRef.current.scrollHeight);
     }
   }, [collectorsNote]);
 
   const scrollDown = useCallback(() => {
     if (collectorsNoteRef.current) {
       collectorsNoteRef.current.scrollIntoView({
-        block: 'end',
+        block: 'start',
         inline: 'nearest',
         behavior: 'smooth',
       });
@@ -133,10 +134,8 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
         )}
       </StyledTitleAndButtonContainer>
 
-      {/* Need this to be equal to note height to prevent jitter while typing */}
-      <div
-        style={{ height: collectorsNoteHeight, width: '100%', position: 'absolute', zIndex: -1 }}
-      ></div>
+      {/* Without StyledHeightBuffer, when the page switches between StyledTextAreaWithCharCount and StyledCollectorsNote, there would be a brief flash when there is no element on the page*/}
+      <StyledHeightBuffer noteHeight={noteHeight} />
       {generalError && (
         <>
           <Spacer height={8} />
@@ -289,6 +288,13 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   p:last-of-type {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
   }
+`;
+
+const StyledHeightBuffer = styled.div<{ noteHeight: number }>`
+  height: ${({ noteHeight }) => noteHeight}px;
+  width: 100%;
+  position: absolute;
+  z-index: -1;
 `;
 
 export default NftDetailNote;

@@ -78,7 +78,6 @@ export function AutoResizingTextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  // const [text, setText] = useState(textAreaProps.defaultValue);
 
   const DEFAULT_TEXTAREA_HEIGHT = 'auto';
 
@@ -98,8 +97,6 @@ export function AutoResizingTextAreaWithCharCount({
       setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     }
-
-    // setText(event.target.value);
 
     if (textAreaProps.onChange) {
       textAreaProps.onChange(event);
