@@ -17,21 +17,26 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     { className, onChange = noop, placeholder, defaultValue, autoFocus = false, textAreaHeight },
     ref
-  ) => (
-    <StyledTextArea
-      className={className}
-      placeholder={placeholder}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      autoFocus={autoFocus}
-      autoComplete="off"
-      autoCorrect="off"
-      autoCapitalize="off"
-      spellCheck="false"
-      textAreaHeight={textAreaHeight}
-      ref={ref}
-    />
-  )
+  ) => {
+    const _ref = useRef<HTMLTextAreaElement>(null);
+    const textAreaRef = ref || _ref;
+
+    return (
+      <StyledTextArea
+        className={className}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        autoFocus={autoFocus}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
+        textAreaHeight={textAreaHeight}
+        ref={textAreaRef}
+      />
+    );
+  }
 );
 
 const StyledTextArea = styled.textarea<TextAreaProps>`
