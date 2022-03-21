@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useRef, useEffect, useState, forwardRef } from 'react';
+import { ChangeEventHandler, useRef, useEffect, useState, forwardRef, useCallback } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
@@ -96,7 +96,7 @@ export function AutoResizingTextAreaWithCharCount({
     }
   }, [textAreaProps.defaultValue]);
 
-  const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     // This is needed to reduce height of textarea on text delete
     if (textAreaRef.current) {
       setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
@@ -106,7 +106,7 @@ export function AutoResizingTextAreaWithCharCount({
     if (textAreaProps.onChange) {
       textAreaProps.onChange(event);
     }
-  };
+  }, []);
 
   return (
     <StyledTextAreaWithCharCount className={className}>
@@ -119,7 +119,7 @@ export function AutoResizingTextAreaWithCharCount({
           {...textAreaProps}
           ref={textAreaRef}
           textAreaHeight={textAreaHeight}
-          onChange={onChangeHandler}
+          onChange={handleChange}
         />
         <StyledCharacterCounter error={currentCharCount > maxCharCount}>
           {currentCharCount}/{maxCharCount}
