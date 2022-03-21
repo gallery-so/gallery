@@ -149,7 +149,7 @@ function CollectionCreateOrEditForm({
       <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}
-        defaultValue={title}
+        defaultValue={unescapedCollectionName}
         placeholder="Collection name"
         autoFocus
       />
@@ -157,7 +157,7 @@ function CollectionCreateOrEditForm({
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
-        defaultValue={description}
+        defaultValue={unescapedCollectorsNote}
         currentCharCount={description.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
       />
