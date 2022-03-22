@@ -45,7 +45,6 @@ function WalletButton({ walletName, activate, connector, setToPendingState }: Wa
       }
 
       setToPendingState(connector, walletSymbol);
-      console.log('connector', connector);
 
       void activate(connector);
     }
