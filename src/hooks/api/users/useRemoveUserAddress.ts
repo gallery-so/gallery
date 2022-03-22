@@ -37,7 +37,7 @@ export default function useRemoveUserAddress() {
       await mutate(
         getUserCacheKey({ id: user.id }),
         (user: User) => {
-          const addresses = user.addresses.filter((address) => address !== addressToRemove);
+          const addresses = user?.addresses.filter((address) => address !== addressToRemove);
           return { ...user, addresses };
         },
         false
