@@ -3,7 +3,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef } from 'react';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import unescape from 'lodash.unescape';
+import unescape from 'src/utils/unescape';
 import styled from 'styled-components';
 import useUpdateNft from 'hooks/api/nfts/useUpdateNft';
 import Markdown from 'components/core/Markdown/Markdown';
