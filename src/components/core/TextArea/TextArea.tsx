@@ -77,9 +77,6 @@ export function TextAreaWithCharCount({
 }
 
 export function AutoResizingTextAreaWithCharCount({
-  className,
-  currentCharCount,
-  maxCharCount,
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -91,13 +88,12 @@ export function AutoResizingTextAreaWithCharCount({
 
   useEffect(() => {
     if (textAreaRef.current) {
-      setParentHeight(`${textAreaRef.current.scrollHeight}px`);
       setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
+      setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     }
   }, [textAreaProps.defaultValue]);
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // This is needed to reduce height of textarea on text delete
     if (textAreaRef.current) {
       setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
@@ -109,7 +105,7 @@ export function AutoResizingTextAreaWithCharCount({
   }, []);
 
   return (
-    <StyledTextAreaWithCharCount className={className}>
+    <StyledTextAreaWithCharCount className={textAreaProps.className}>
       <StyledParentContainer
         style={{
           minHeight: parentHeight,
@@ -121,8 +117,8 @@ export function AutoResizingTextAreaWithCharCount({
           textAreaHeight={textAreaHeight}
           onChange={handleChange}
         />
-        <StyledCharacterCounter error={currentCharCount > maxCharCount}>
-          {currentCharCount}/{maxCharCount}
+        <StyledCharacterCounter error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}>
+          {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
         </StyledCharacterCounter>
       </StyledParentContainer>
     </StyledTextAreaWithCharCount>
