@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import unescape from 'src/utils/unescape';
+import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import { BodyRegular, BodyMedium } from 'components/core/Text/Text';

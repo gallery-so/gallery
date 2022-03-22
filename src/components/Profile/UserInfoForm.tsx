@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import unescape from 'src/utils/unescape';
+import unescape from 'utils/unescape';
 
 import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
