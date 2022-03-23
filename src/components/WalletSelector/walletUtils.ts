@@ -199,22 +199,6 @@ function checkIfContractAccount(connector: WalletConnectConnector): ContractAcco
   return contractAccount;
 }
 
-// Gets the Wallet Type ID for a given wallet connection
-// Wallet Type ID is a Gallery-specific ID that the backend uses to differentiate between contract accounts such as Gnosis vs Argent
-export function getWalletTypeId(connector: AbstractConnector) {
-  if (!(connector instanceof WalletConnectConnector)) {
-    return DEFAULT_WALLET_TYPE_ID;
-  }
-
-  const contractAccount = checkIfContractAccount(connector);
-
-  if (!contractAccount) {
-    return DEFAULT_WALLET_TYPE_ID;
-  }
-
-  return contractAccount.id;
-}
-
 function isRpcSignatureError(error: Record<string, any>) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
 }
