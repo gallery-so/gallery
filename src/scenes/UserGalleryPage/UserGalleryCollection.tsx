@@ -1,6 +1,6 @@
 import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
-import unescape from 'lodash.unescape';
+import unescape from 'utils/unescape';
 import colors from 'components/core/colors';
 import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';

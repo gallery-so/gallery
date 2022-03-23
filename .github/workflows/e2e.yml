@@ -1,0 +1,51 @@
+name: ci
+on: [deployment_status]
+jobs:
+  e2e:
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        run: echo "$GITHUB_CONTEXT"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: yarn install
+      - run: yarn add @synthetixio/synpress
+      - name: "Update apt"
+        run: sudo apt-get update
+      - name: "Download Keybase"
+        run: curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
+      - name: "Install Keybase"
+        run: sudo apt-get install ./keybase_amd64.deb unzip
+      - name: "Run keybase globally"
+        run: run_keybase -g
+      - name: "Oneshot Keybase"
+        run: keybase oneshot
+        env:
+          KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
+          KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
+      - name: "Decrypt secrets"
+        run: keybase decrypt -i _encrypted_internal -o _internal.zip
+      - name: "Unzip"
+        run: echo "A" | unzip _internal.zip -d _internal
+      - name: "Check file"
+        run: ls
+      - id: set_var
+        name: "Read JSON file"
+        run: |
+          content=`cat _internal/test-wallet.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+      - run: yarn run cypress:gh
+        env:
+          CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
+          NETWORK_NAME: main

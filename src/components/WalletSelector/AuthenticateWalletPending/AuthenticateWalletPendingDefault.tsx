@@ -95,15 +95,16 @@ function AuthenticateWalletPendingDefault({
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
         } catch (error: unknown) {
-          captureException(error);
           trackSignInError(userFriendlyWalletName, error);
 
           if (isWeb3Error(error)) {
+            captureException(error.message);
             setDetectedError(error);
           }
 
           // Fall back to generic error message
           if (error instanceof Error) {
+            captureException(error);
             const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
             setDetectedError(web3Error);
           }

@@ -23,15 +23,9 @@ describe('Homepage test', () => {
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
     cy.confirmMetamaskSignatureRequest();
-    // TODO: Replace this with fixture
-    cy.url().should('include', `/Jakz`);
-  });
-
-  it('should able to signout', () => {
-    home.getSignInButton().should('be.exist');
-    home.getSignInButton().click();
+    cy.url().should('include', `/gentlemanbeggar`);
     cy.wait(1000);
-    home.getAccountButton().click();
+    home.getAccountButton('gentlemanbeggar').click();
     home.getSignOutButton().click();
 
     home.getSignInButtonNav().should('be.exist');

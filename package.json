@@ -9,7 +9,9 @@
     "relay": "mkdir __generated__; relay-compiler",
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open",
-    "synpress:run": "synpress run"
+    "synpress:run": "synpress run  --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js'",
+    "cypress:gh": "synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js' --group Desktop -b chromium",
+    "find-unused-modules": "ts-prune -s .graphql.ts -i pages/"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.1",
@@ -82,6 +84,7 @@
     "prettier": "^2.5.1",
     "relay-compiler": "^13.0.1",
     "ts-jest": "^27.0.7",
+    "ts-prune": "^0.10.3",
     "typescript": "^4.4.4"
   }
 }
