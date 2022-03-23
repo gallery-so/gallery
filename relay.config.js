@@ -6,5 +6,6 @@ module.exports = {
   artifactDirectory: './__generated__',
   customScalars: {
     Address: 'string',
+    DBID: 'string',
   },
 };
