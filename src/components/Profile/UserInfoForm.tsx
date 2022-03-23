@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import unescape from 'lodash.unescape';
+import unescape from 'utils/unescape';
 
 import { BodyMedium } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
@@ -34,7 +34,7 @@ function UserInfoForm({
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const unescapedBio = useMemo(() => unescape(bio), [bio]);
+  const unescapedBio = useMemo(() => unescape(bio), []);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {

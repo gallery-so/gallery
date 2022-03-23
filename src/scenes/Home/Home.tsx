@@ -20,12 +20,13 @@ function Home() {
   return (
     <Page centered>
       <GalleryIntro />
+      <Spacer height={24} />
       <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
       <Spacer height={24} />
       <GalleryLink to="/members">
         <TextButton text="explore galleries" dataTestId="explore-button" />
       </GalleryLink>
-      <Spacer height={16} />
+      <Spacer height={8} />
       <GalleryLink to="/hamsun">
         <TextButton text="gallery of the week" />
       </GalleryLink>
@@ -34,7 +35,7 @@ function Home() {
 }
 
 const StyledButton = styled(Button)`
-  width: 200px;
+  width: 150px;
 `;
 
 export default memo(Home);

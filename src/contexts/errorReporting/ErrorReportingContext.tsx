@@ -2,6 +2,7 @@ import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 
 import { captureException, captureMessage, setUser } from '@sentry/nextjs';
 import { ScopeContext } from '@sentry/types';
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
+import noop from 'utils/noop';
 
 type AdditionalContext = Partial<Pick<ScopeContext, 'tags' | 'level'>>;
 
@@ -53,7 +54,8 @@ const ErrorReportingContext = createContext<ReportFn | undefined>(undefined);
 export const useReportError = () => {
   const reportError = useContext(ErrorReportingContext);
   if (!reportError) {
-    throw new Error('Attempted to use ErrorReportingContext without a provider!');
+    console.error('Attempted to use ErrorReportingContext without a provider!');
+    return noop;
   }
 
   return reportError;

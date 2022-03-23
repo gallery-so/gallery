@@ -19,6 +19,7 @@ import {
 } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { User } from 'types/User';
+import { _identify } from 'contexts/analytics/AnalyticsContext';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
 
@@ -99,6 +100,7 @@ const AuthProvider = memo(({ children }: Props) => {
       try {
         setAuthState({ type: 'LOGGED_IN', userId });
         setUserSigninAddress(address.toLowerCase());
+        _identify(userId);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setLoggedOut();
@@ -124,6 +126,7 @@ const AuthProvider = memo(({ children }: Props) => {
         if (authenticatedUser) {
           setAuthState({ type: 'LOGGED_IN', userId: authenticatedUser.id });
           setIsLoggedInLocally(true);
+          _identify(authenticatedUser.id);
           return;
         }
 
