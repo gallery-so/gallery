@@ -86,6 +86,7 @@ export function AutoResizingTextAreaWithCharCount({
   const [textAreaHeight, setTextAreaHeight] = useState(DEFAULT_TEXTAREA_HEIGHT);
   const [parentHeight, setParentHeight] = useState(DEFAULT_TEXTAREA_HEIGHT);
 
+  // Update textArea height when text changes
   useEffect(() => {
     if (textAreaRef.current) {
       setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
@@ -94,6 +95,9 @@ export function AutoResizingTextAreaWithCharCount({
   }, [textAreaProps.defaultValue]);
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // scrollHeight does not decrease when we delete rows of text, so we reset the height to 'auto' on change
+    // The useEffect above triggers immediately after, therefore resetting scrollHeight to the height of the content
+    // See https://medium.com/@lucasalgus/creating-a-custom-auto-resize-textarea-component-for-your-react-web-application-6959c0ad68bc
     if (textAreaRef.current) {
       setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
