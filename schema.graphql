@@ -12,8 +12,28 @@ directive @goField(
 # arguments that specify the level of access required.
 directive @authRequired on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
+# Use @scrub on any input field that should be omitted from request logging (e.g. passwords or
+# other sensitive data)
+directive @scrub on INPUT_FIELD_DEFINITION
+
+# All types that implement Node must have a unique GqlID set in their "id" field. For types with
+# a "dbid" field, it's assumed that we can synthesize a unique ID from the type name and the dbid,
+# so those types will automatically have an ID function generated for them (which gqlgen will find
+# and bind to). Types without a dbid field, or types that need multiple inputs to create a unique ID
+# that can be used to refetch the node in the future, must use the @goGqlId directive to explicitly
+# state the fields that will be used to generate the ID. If a named field exists on the object and is
+# a string-based type, that field will be used as part of the ID automatically. Otherwise, a manual
+# getter method will need to be implemented to retrieve that component of the GqlID.
+directive @goGqlId(fields: [String!]!) on OBJECT
+
+# Injects a "Helper<TypeName>Data" struct embed into a generated type. Useful for adding backend-only
+# helper data necessary to resolve queries, while keeping that data out of the schema and invisible
+# to clients.
+directive @goEmbedHelper on OBJECT
+
 scalar Time
 scalar Address
+scalar DBID
 
 interface Node {
   id: ID!
@@ -25,6 +45,7 @@ interface Error {
 
 type GalleryUser implements Node {
   id: ID!
+  dbid: DBID!
   username: String
   bio: String
   wallets: [Wallet]
@@ -32,7 +53,7 @@ type GalleryUser implements Node {
   isAuthenticatedUser: Boolean
 }
 
-type Wallet implements Node {
+type Wallet implements Node @goGqlId(fields: ["address"]) {
   id: ID!
   address: Address
   # TODO: Do we paginate these currently?
@@ -166,6 +187,7 @@ enum Chain {
 
 type Nft implements Node {
   id: ID!
+  dbid: DBID!
   creationTime: Time
   lastUpdated: Time
   collectorsNote: String
@@ -191,7 +213,7 @@ type OwnerAtBlock {
   blockNumber: String # source is uint64
 }
 
-type GalleryNft {
+type GalleryNft implements Node @goEmbedHelper @goGqlId(fields: ["nftId", "collectionId"]) {
   id: ID!
   nft: Nft
   collection: GalleryCollection
@@ -204,6 +226,7 @@ type GalleryCollectionLayout {
 
 type GalleryCollection implements Node {
   id: ID!
+  dbid: DBID!
   version: Int
   name: String
   collectorsNote: String
@@ -215,12 +238,14 @@ type GalleryCollection implements Node {
 
 type Gallery implements Node {
   id: ID!
+  dbid: DBID!
   owner: GalleryUser @goField(forceResolver: true)
   collections: [GalleryCollection] @goField(forceResolver: true)
 }
 
 type MembershipOwner implements Node {
   id: ID!
+  dbid: DBID!
   address: Address
   user: GalleryUser @goField(forceResolver: true)
   previewNfts: [String]
@@ -228,6 +253,7 @@ type MembershipOwner implements Node {
 
 type MembershipTier implements Node {
   id: ID!
+  dbid: DBID!
   name: String
   assetUrl: String
   tokenId: String
@@ -258,7 +284,7 @@ type Query {
   viewer: ViewerOrError @authRequired
   userByUsername(username: String!): UserByUsernameOrError
   membershipTiers(forceRefresh: Boolean): [MembershipTier]
-  collectionById(id: ID!): CollectionByIdOrError
+  collectionById(id: DBID!): CollectionByIdOrError
 }
 
 input GalleryCollectionLayoutInput {
@@ -267,10 +293,10 @@ input GalleryCollectionLayoutInput {
 }
 
 input CreateCollectionInput {
-  galleryId: ID!
+  galleryId: DBID!
   name: String!
   collectorsNote: String!
-  nfts: [ID!]!
+  nfts: [DBID!]!
   layout: GalleryCollectionLayoutInput!
 }
 
@@ -287,7 +313,7 @@ type DeleteCollectionPayload {
 }
 
 input UpdateCollectionInfoInput {
-  collectionId: ID!
+  collectionId: DBID!
   name: String!
   collectorsNote: String!
 }
@@ -302,8 +328,8 @@ type UpdateCollectionInfoPayload {
 }
 
 input UpdateCollectionNftsInput {
-  collectionId: ID!
-  nfts: [ID!]!
+  collectionId: DBID!
+  nfts: [DBID!]!
   layout: GalleryCollectionLayoutInput!
 }
 
@@ -317,8 +343,8 @@ type UpdateCollectionNftsPayload {
 }
 
 input UpdateGalleryCollectionsInput {
-  galleryId: ID!
-  collections: [ID!]!
+  galleryId: DBID!
+  collections: [DBID!]!
 }
 
 union UpdateGalleryCollectionsPayloadOrError =
@@ -418,7 +444,7 @@ input AuthMechanism {
 input EthereumEoaAuth {
   address: Address!
   nonce: String!
-  signature: String!
+  signature: String! @scrub
 }
 
 input GnosisSafeAuth {
@@ -433,7 +459,7 @@ union LoginPayloadOrError =
   | ErrDoesNotOwnRequiredNFT
 
 type LoginPayload {
-  userId: ID
+  userId: DBID
 }
 
 union CreateUserPayloadOrError =
@@ -443,14 +469,14 @@ union CreateUserPayloadOrError =
   | ErrDoesNotOwnRequiredNFT
 
 type CreateUserPayload {
-  userId: ID
-  galleryId: ID
+  userId: DBID
+  galleryId: DBID
 }
 
 type Mutation {
   # Collection Mutations
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError @authRequired
-  deleteCollection(collectionId: ID!): DeleteCollectionPayloadOrError @authRequired
+  deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError @authRequired
   updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayloadOrError
     @authRequired
   updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayloadOrError
