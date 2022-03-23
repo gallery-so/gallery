@@ -24,7 +24,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const collection = useFragment(
     graphql`
       fragment NftGalleryFragment on GalleryCollection {
-        id
+        dbid
         layout {
           columns
           whitespace

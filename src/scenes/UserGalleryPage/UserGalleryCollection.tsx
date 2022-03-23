@@ -45,7 +45,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const collection = useFragment(
     graphql`
       fragment UserGalleryCollectionFragment on GalleryCollection {
-        id
+        dbid
         name @required(action: THROW)
         collectorsNote
 
@@ -74,25 +74,25 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
 
   const [isHovering, setIsHovering] = useState(false);
   const username = asPath.split('/')[1];
-  const collectionUrl = `${baseUrl}/${username}/${collection.id}`;
+  const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      navigateToUrl(`/${username}/${collection.id}`, event);
+      navigateToUrl(`/${username}/${collection.dbid}`, event);
     },
-    [collection.id, navigateToUrl, username]
+    [collection.dbid, navigateToUrl, username]
   );
 
   const track = useTrack();
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection button clicked');
-    void push(`/edit?collectionId=${collection.id}`);
-  }, [collection.id, track, push]);
+    void push(`/edit?collectionId=${collection.dbid}`);
+  }, [collection.dbid, track, push]);
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
+    track('Share Collection', { path: `/${username}/${collection.dbid}` });
+  }, [collection.dbid, username, track]);
 
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);

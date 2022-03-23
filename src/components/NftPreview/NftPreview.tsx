@@ -35,6 +35,7 @@ function NftPreview({ galleryNftRef }: Props) {
       fragment NftPreviewFragment on GalleryNft {
         nft @required(action: THROW) {
           id
+          dbid
 
           name
 
@@ -61,7 +62,7 @@ function NftPreview({ galleryNftRef }: Props) {
       event.stopPropagation();
       // TODO: Should refactor to utilize navigation context instead of session storage
       if (storage) storage.setItem('prevPage', window.location.pathname);
-      navigateToUrl(`/${username}/${collection.id}/${nft.id}`, event);
+      navigateToUrl(`/${username}/${collection.dbid}/${nft.id}`, event);
     },
     [collection.id, navigateToUrl, nft.id, storage, username]
   );

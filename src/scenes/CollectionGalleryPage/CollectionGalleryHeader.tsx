@@ -41,7 +41,7 @@ function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout 
   const collection = useFragment(
     graphql`
       fragment CollectionGalleryHeaderFragment on GalleryCollection {
-        id
+        dbid
         name
         collectorsNote
 
@@ -65,8 +65,8 @@ function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout 
   const track = useTrack();
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
+    track('Share Collection', { path: `/${username}/${collection.dbid}` });
+  }, [collection.dbid, username, track]);
 
   const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
@@ -77,20 +77,20 @@ function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout 
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');
-    void push(`/edit?collectionId=${collection.id}`);
-  }, [collection.id, push, track]);
+    void push(`/edit?collectionId=${collection.dbid}`);
+  }, [collection.dbid, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
-        collectionId={collection.id}
+        collectionId={collection.dbid}
         collectionName={collection.name ?? undefined}
         collectionCollectorsNote={collection.collectorsNote ?? undefined}
       />
     );
-  }, [collection.collectorsNote, collection.id, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
 
   return (
     <StyledCollectionGalleryHeaderWrapper>
