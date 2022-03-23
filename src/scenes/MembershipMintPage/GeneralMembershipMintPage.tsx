@@ -23,10 +23,6 @@ export type AssetContract = {
   address: string;
 };
 
-export type OpenseaAsset = {
-  asset_contract: AssetContract;
-};
-
 const OPENSEA_API_BASEURL = process.env.NEXT_PUBLIC_OPENSEA_API_BASEURL ?? 'https://api.opensea.io';
 
 function generateMerkleProof(address: string, allowlist: string[]) {
