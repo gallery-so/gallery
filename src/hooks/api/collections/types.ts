@@ -20,8 +20,6 @@ export type DeleteCollectionResponse = Record<string, unknown>;
 
 export type GetCollectionResponse = { collection: Collection };
 
-export type GetCollectionsResponse = { collections: Collection[] };
-
 export type UpdateCollectionInfoRequest = {
   id: string;
   name: string;
