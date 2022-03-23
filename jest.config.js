@@ -1,16 +1,18 @@
+const nextJest = require('next/jest');
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const {
   compilerOptions: { paths },
 } = require('./tsconfig.json');
 
-module.exports = {
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: './',
+});
+
+module.exports = createJestConfig({
   testEnvironment: 'jsdom',
 
   modulePaths: ['<rootDir>'],
-
-  transform: {
-    '^.+\\.(ts|tsx|js|jsx)?$': ['babel-jest'],
-  },
 
   moduleNameMapper: {
     // Ensure all ouf our aliases from tsconfig work in jext
@@ -25,4 +27,4 @@ module.exports = {
     // React Markdown is an ESM Module which makes jest very angry
     'react-markdown': '<rootDir>/test/__mocks__/react-markdown.js',
   },
-};
+});
