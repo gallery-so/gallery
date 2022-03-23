@@ -15,7 +15,7 @@ type CollectionGalleryProps = MetaTagProps & {
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
-      query CollectionIdQuery($collectionId: ID!) {
+      query CollectionIdQuery($collectionId: DBID!) {
         ...CollectionGalleryPageFragment
       }
     `,
