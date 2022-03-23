@@ -248,10 +248,17 @@ union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
 
 union ViewerOrError = Viewer | ErrNotAuthorized
 
+type ErrCollectionNotFound {
+  message: String
+}
+
+union CollectionByIdOrError = ErrCollectionNotFound | GalleryCollection
+
 type Query {
   viewer: ViewerOrError @authRequired
   userByUsername(username: String!): UserByUsernameOrError
   membershipTiers(forceRefresh: Boolean): [MembershipTier]
+  collectionById(id: ID!): CollectionByIdOrError
 }
 
 input GalleryCollectionLayoutInput {
