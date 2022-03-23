@@ -6,14 +6,27 @@ import CollectionGalleryHeader from './CollectionGalleryHeader';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
 import NftGallery from 'components/NftGallery/NftGallery';
 import useMobileLayout from 'hooks/useMobileLayout';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionGalleryFragment$key } from '../../../__generated__/CollectionGalleryFragment.graphql';
 
 type Props = {
-  collectionId?: string;
+  queryRef: CollectionGalleryFragment$key;
 };
 
-function CollectionGallery({ collectionId }: Props) {
-  const collection = useCollectionById({ id: collectionId ?? '' });
+function CollectionGallery({ queryRef }: Props) {
   const { mobileLayout, setMobileLayout } = useMobileLayout();
+
+  const { collection } = useFragment(
+    graphql`
+      fragment CollectionGalleryFragment on Query {
+        collection: collectionById(id: $collectionId) {
+          ...NftGalleryFragment
+          ...CollectionGalleryHeaderFragment
+        }
+      }
+    `,
+    queryRef
+  );
 
   if (!collection) {
     return <NotFound />;
@@ -23,13 +36,13 @@ function CollectionGallery({ collectionId }: Props) {
     <StyledCollectionGallery>
       <Spacer height={32} />
       <CollectionGalleryHeader
-        collection={collection}
+        collectionRef={collection}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
       <Spacer height={32} />
       <NftGalleryWrapper>
-        <NftGallery collection={collection} mobileLayout={mobileLayout} />
+        <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
       </NftGalleryWrapper>
       <Spacer height={64} />
     </StyledCollectionGallery>

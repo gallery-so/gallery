@@ -4,20 +4,33 @@ import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGalleryPage';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { CollectionIdQuery } from '../../../__generated__/CollectionIdQuery.graphql';
 
 type CollectionGalleryProps = MetaTagProps & {
-  username?: string;
-  collectionId?: string;
+  username: string;
+  collectionId: string;
 };
 
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
+  const query = useLazyLoadQuery<CollectionIdQuery>(
+    graphql`
+      query CollectionIdQuery($collectionId: ID!) {
+        ...CollectionGalleryPageFragment
+      }
+    `,
+    { collectionId }
+  );
+
   if (!username || !collectionId) {
     return <GalleryRedirect to="/" />;
   }
 
   return (
     <GalleryRoute
-      element={<CollectionGalleryPage collectionId={collectionId} username={username} />}
+      element={
+        <CollectionGalleryPage queryRef={query} collectionId={collectionId} username={username} />
+      }
     />
   );
 }
@@ -27,6 +40,12 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
 }) => {
   const username = params?.username ? (params.username as string) : undefined;
   const collectionId = params?.collectionId ? (params.collectionId as string) : undefined;
+
+  if (!username || !collectionId) {
+    // How could they have possibly gotten to this route without those params
+    return { redirect: { permanent: false, destination: '/' } };
+  }
+
   return {
     props: {
       username,
