@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import NotFound from 'scenes/NotFound/NotFound';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryFragment$key } from '../../../__generated__/UserGalleryFragment.graphql';
+import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 
 type Props = {

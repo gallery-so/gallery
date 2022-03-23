@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { baseUrl } from 'utils/baseUrl';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryCollectionFragment$key } from '../../../__generated__/UserGalleryCollectionFragment.graphql';
+import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
 

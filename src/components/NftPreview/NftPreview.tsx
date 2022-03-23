@@ -10,7 +10,7 @@ import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftPreviewFragment$key } from '../../../__generated__/NftPreviewFragment.graphql';
+import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 
 type Props = {

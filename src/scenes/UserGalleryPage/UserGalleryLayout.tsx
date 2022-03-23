@@ -8,8 +8,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryLayoutFragment$key } from '../../../__generated__/UserGalleryLayoutFragment.graphql';
-import { UserGalleryLayoutQueryFragment$key } from '../../../__generated__/UserGalleryLayoutQueryFragment.graphql';
+import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFragment.graphql';
+import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
 import { contentSize } from 'components/core/breakpoints';
 

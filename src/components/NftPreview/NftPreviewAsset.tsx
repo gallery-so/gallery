@@ -8,7 +8,7 @@ import { getMediaTypeForAssetUrl, graphqlGetResizedNftImageUrlWithFallback } fro
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftPreviewAssetFragment$key } from '../../../__generated__/NftPreviewAssetFragment.graphql';
+import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
 
 type Props = {
   nftRef: NftPreviewAssetFragment$key;

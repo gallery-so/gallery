@@ -7,9 +7,9 @@ import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryCollectionsFragment$key } from '../../../__generated__/UserGalleryCollectionsFragment.graphql';
+import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCollectionsFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { UserGalleryCollectionsQueryFragment$key } from '../../../__generated__/UserGalleryCollectionsQueryFragment.graphql';
+import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {

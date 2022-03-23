@@ -5,7 +5,7 @@ import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import { UsernameQuery } from '../../__generated__/UsernameQuery.graphql';
+import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
 
 type UserGalleryProps = MetaTagProps & {
   username: string;

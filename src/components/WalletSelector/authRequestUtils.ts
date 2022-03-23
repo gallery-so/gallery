@@ -7,11 +7,11 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import {
   authRequestUtilsLoginMutation,
   authRequestUtilsLoginMutation$variables,
-} from '../../../__generated__/authRequestUtilsLoginMutation.graphql';
+} from '__generated__/authRequestUtilsLoginMutation.graphql';
 import {
   authRequestUtilsCreateUserMutation,
   authRequestUtilsCreateUserMutation$variables,
-} from '../../../__generated__/authRequestUtilsCreateUserMutation.graphql';
+} from '__generated__/authRequestUtilsCreateUserMutation.graphql';
 
 export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
   const response = await addUserAddress(payload, fetcher);

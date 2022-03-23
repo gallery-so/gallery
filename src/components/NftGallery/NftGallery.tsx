@@ -11,7 +11,7 @@ import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftGalleryFragment$key } from '../../../__generated__/NftGalleryFragment.graphql';
+import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { removeNullValues } from 'utils/removeNullValues';
 

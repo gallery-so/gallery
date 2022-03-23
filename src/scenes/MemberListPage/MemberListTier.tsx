@@ -7,7 +7,7 @@ import MemberListOwner from './MemberListOwner';
 import { Directions } from 'src/components/core/enums';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListTierFragment$key } from '../../../__generated__/MemberListTierFragment.graphql';
+import { MemberListTierFragment$key } from '__generated__/MemberListTierFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 

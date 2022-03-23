@@ -5,7 +5,7 @@ import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGaller
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { CollectionIdQuery } from '../../../__generated__/CollectionIdQuery.graphql';
+import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;

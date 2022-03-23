@@ -3,7 +3,7 @@ import { graphql } from 'relay-runtime';
 import { useMemo } from 'react';
 import { DEFAULT_COLUMNS } from 'constants/layout';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
-import { useCollectionColumnsFragment$key } from '../../__generated__/useCollectionColumnsFragment.graphql';
+import { useCollectionColumnsFragment$key } from '__generated__/useCollectionColumnsFragment.graphql';
 
 export const useCollectionColumns = (collectionRef: useCollectionColumnsFragment$key | null) => {
   const collection = useFragment(

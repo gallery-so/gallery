@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryPageFragment$key } from '../../../__generated__/UserGalleryPageFragment.graphql';
+import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;

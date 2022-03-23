@@ -11,7 +11,7 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
 import { graphql, useFragment } from 'react-relay';
 
-import { CollectionGalleryPageFragment$key } from '../../../__generated__/CollectionGalleryPageFragment.graphql';
+import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
 
 type CollectionGalleryPageProps = {
   username: string;

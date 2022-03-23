@@ -11,7 +11,7 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListOwnerFragment$key } from '../../../__generated__/MemberListOwnerFragment.graphql';
+import { MemberListOwnerFragment$key } from '__generated__/MemberListOwnerFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 

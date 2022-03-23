@@ -10,7 +10,7 @@ import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryHeaderFragment$key } from '../../../__generated__/UserGalleryHeaderFragment.graphql';
+import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;

@@ -23,7 +23,7 @@ import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 
-import { CollectionGalleryHeaderFragment$key } from '../../../__generated__/CollectionGalleryHeaderFragment.graphql';
+import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 
 type Props = {
   collectionRef: CollectionGalleryHeaderFragment$key;
