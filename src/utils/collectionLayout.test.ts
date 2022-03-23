@@ -1,18 +1,11 @@
 import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { Nft } from 'types/Nft';
 import { getWhitespacePositionsFromStagedItems, insertWhitespaceBlocks } from './collectionLayout';
 
 function generateTestNft(): EditModeNft {
   return {
     id: '123',
-    name: 'test',
-    nft: {},
-    description: 'test',
-    image: {
-      url: 'https://example.com/test.jpg',
-    },
-    metadata: {
-      type: 'nft',
-    },
+    nft: {} as Nft, // This is wrong but our test doesn't actually need the data inside the NFT,
   };
 }
 
