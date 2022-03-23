@@ -89,25 +89,4 @@ export const StyledSortableNft = styled.div`
   }
 `;
 
-export const StyledSortableBlankBlock = styled.div`
-  position: relative;
-  -webkit-backface-visibility: hidden;
-  &:focus {
-    // ok to remove focus here because there it is not functionally 'in focus' for the user
-    outline: none;
-  }
-  cursor: grab;
-
-  margin: 24px;
-  ${BodyRegular} {
-    color: ${colors.gray50};
-  }
-
-  &:hover {
-    ${StyledUnstageButton} {
-      opacity: 1;
-    }
-  }
-`;
-
 export default memo(SortableStagedNft);

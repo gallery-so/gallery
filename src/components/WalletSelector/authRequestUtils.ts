@@ -234,35 +234,3 @@ async function addUserAddress(
     throw new Error('unknown error');
   }
 }
-
-/**
- * Remove address from user
- */
-type RemoveUserAddressRequest = {
-  addresses: string[];
-};
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type RemoveUserAddressResponse = {};
-
-export async function removeUserAddress(
-  body: RemoveUserAddressRequest,
-  fetcher: FetcherType
-): Promise<RemoveUserAddressResponse> {
-  try {
-    return await fetcher<RemoveUserAddressRequest>(
-      '/users/update/addresses/remove',
-      'remove user address',
-      {
-        body,
-      }
-    );
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('error while attempting remove user address', error);
-      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
-    }
-
-    throw new Error('unknown error');
-  }
-}

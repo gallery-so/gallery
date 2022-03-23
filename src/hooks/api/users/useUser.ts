@@ -74,17 +74,6 @@ export function useAuthenticatedUser() {
   return user;
 }
 
-export function useAuthenticatedUserAddress() {
-  const user = useAuthenticatedUser();
-
-  const address = user.addresses?.[0];
-  if (!address) {
-    throw new Error('No address found on user');
-  }
-
-  return address;
-}
-
 export function useAuthenticatedUserAddresses() {
   const user = useAuthenticatedUser();
 
