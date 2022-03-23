@@ -34,15 +34,14 @@ function NftPreview({ galleryNftRef }: Props) {
     graphql`
       fragment NftPreviewFragment on GalleryNft {
         nft @required(action: THROW) {
-          id
           dbid
-
           name
 
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
           id
+          dbid
           ...useCollectionColumnsFragment
         }
       }
@@ -62,9 +61,9 @@ function NftPreview({ galleryNftRef }: Props) {
       event.stopPropagation();
       // TODO: Should refactor to utilize navigation context instead of session storage
       if (storage) storage.setItem('prevPage', window.location.pathname);
-      navigateToUrl(`/${username}/${collection.dbid}/${nft.id}`, event);
+      navigateToUrl(`/${username}/${collection.dbid}/${nft.dbid}`, event);
     },
-    [collection.id, navigateToUrl, nft.id, storage, username]
+    [collection.id, navigateToUrl, nft.dbid, storage, username]
   );
   const isMobile = useIsMobileWindowWidth();
 
@@ -72,7 +71,7 @@ function NftPreview({ galleryNftRef }: Props) {
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
   return (
-    <StyledNftPreview key={nft.id} columns={columns}>
+    <StyledNftPreview key={nft.dbid} columns={columns}>
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
