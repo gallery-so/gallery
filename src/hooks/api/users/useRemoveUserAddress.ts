@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import { User } from 'types/User';
 import usePost from '../_rest/usePost';
-import { getUserCacheKey, useAuthenticatedUser } from './useUser';
+import { useAuthenticatedUser } from './useUser';
 
 type RemoveUserAddressRequest = {
   addresses: string[];
@@ -24,18 +24,8 @@ export default function useRemoveUserAddress() {
         { addresses: [addressToRemove] }
       );
 
-      // Optimistically update both user caches by username, ID
       await mutate(
-        getUserCacheKey({ username: user.username }),
-        (user: User) => {
-          const addresses = user.addresses.filter((address) => address !== addressToRemove);
-          return { ...user, addresses };
-        },
-        false
-      );
-
-      await mutate(
-        getUserCacheKey({ id: user.id }),
+        ['/users/get/current', 'get current user'],
         (user: User) => {
           const addresses = user?.addresses.filter((address) => address !== addressToRemove);
           return { ...user, addresses };
