@@ -27,7 +27,7 @@ function Home() {
         <TextButton text="explore galleries" dataTestId="explore-button" />
       </GalleryLink>
       <Spacer height={8} />
-      <GalleryLink to="/hamsun">
+      <GalleryLink to="/aboutblank">
         <TextButton text="gallery of the week" />
       </GalleryLink>
     </Page>
