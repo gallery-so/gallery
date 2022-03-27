@@ -43,6 +43,9 @@ $ yarn dev
 
 The app will be available on http://localhost:3000
 
+### E2E Test
+Cypress CI is configured as a github workflow in `.github/workflows`
+
 ### Advanced
 
 If you need access to any of the following:
@@ -50,6 +53,7 @@ If you need access to any of the following:
 - Test wallet
 - Analytics keys
 - Sentry keys
+- Cypress dashboard
 
 Hit up a member of the core team!
 
