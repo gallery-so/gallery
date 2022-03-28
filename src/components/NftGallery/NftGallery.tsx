@@ -43,7 +43,11 @@ function NftGallery({ collection, mobileLayout }: Props) {
     <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
       {itemsToDisplay.map((item) =>
         isNft(item) ? (
-          <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+          // temporarily fix bugged NFTs from not appearing within a collection.
+          // in the future, the backend will simply not return them.
+          Boolean(item.id) && (
+            <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+          )
         ) : (
           <StyledWhitespaceBlock key={item.id} />
         )
