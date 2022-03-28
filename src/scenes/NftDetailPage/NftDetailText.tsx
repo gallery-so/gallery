@@ -14,14 +14,10 @@ import { EnsOrAddress } from 'components/EnsOrAddress';
 
 type Props = {
   nft: Nft;
+  ownerUsername: string;
 };
 
-function NftDetailText({ nft }: Props) {
-  const currentOwner = useMemo((): Owner => {
-    const owners = nft.ownership_history?.owners;
-    return owners?.length > 0 ? owners[0] : {};
-  }, [nft]);
-
+function NftDetailText({ nft, ownerUsername }: Props) {
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
@@ -38,7 +34,9 @@ function NftDetailText({ nft }: Props) {
       </StyledNftDescription>
       <Spacer height={32} />
       <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
-      <NftOwnerLink owner={currentOwner} ownerAddress={nft.owner_address} />
+      <StyledLink href={`/${ownerUsername}`}>
+        <BodyRegular>{ownerUsername}</BodyRegular>
+      </StyledLink>
       <Spacer height={16} />
       {creatorExists && (
         <>
@@ -53,32 +51,6 @@ function NftDetailText({ nft }: Props) {
       <Spacer height={16} />
       <NftAdditionalDetails nft={nft} />
     </StyledDetailLabel>
-  );
-}
-
-type NftOwnerProps = {
-  owner: Owner;
-  ownerAddress: string;
-};
-
-function NftOwnerLink({ owner, ownerAddress }: NftOwnerProps) {
-  if (owner.username) {
-    return (
-      <StyledLink href={`/${owner.username}`}>
-        <BodyRegular>{owner.username}</BodyRegular>
-      </StyledLink>
-    );
-  }
-
-  // use the ownership_history owner's address, fallback to the nft owner address
-  const address = owner?.address ?? ownerAddress;
-
-  return (
-    <StyledLink href={`https://etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
-      <BodyRegular>
-        <EnsOrAddress address={address} />
-      </BodyRegular>
-    </StyledLink>
   );
 }
 

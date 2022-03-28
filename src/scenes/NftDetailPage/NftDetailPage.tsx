@@ -144,7 +144,7 @@ function NftDetailPage({ nftId }: Props) {
               )}
             </StyledAssetAndNoteContainer>
 
-            <NftDetailText nft={nft} />
+            <NftDetailText nft={nft} ownerUsername={username} />
           </StyledContentContainer>
           {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
           {rightArrow}
