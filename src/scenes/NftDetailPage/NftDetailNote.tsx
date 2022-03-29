@@ -1,9 +1,9 @@
 import { BodyRegular } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo, useRef } from 'react';
-import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import unescape from 'utils/unescape';
+import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
+import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
+import unescape from 'lodash.unescape';
 import styled from 'styled-components';
 import useUpdateNft from 'hooks/api/nfts/useUpdateNft';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -14,7 +14,6 @@ import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 const MAX_CHAR_COUNT = 1200;
-const MIN_NOTE_HEIGHT = 150;
 
 type NoteEditorProps = {
   nftCollectorsNote: string;
@@ -25,8 +24,9 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
-  const [noteHeight, setNoteHeight] = useState(MIN_NOTE_HEIGHT);
   const [isEditing, setIsEditing] = useState(false);
+
+  const [noteHeight, setNoteHeight] = useState(0);
 
   const [collectorsNote, setCollectorsNote] = useState(nftCollectorsNote ?? '');
   const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote), [collectorsNote]);
@@ -35,10 +35,17 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
   const collectorsNoteRef = useRef<HTMLDivElement>(null);
 
+  // We need to record the note height to prevent brief flashes between edit/save states, via StyledHeightBuffer
+  useEffect(() => {
+    if (collectorsNoteRef.current) {
+      setNoteHeight(collectorsNoteRef.current.scrollHeight);
+    }
+  }, [collectorsNote]);
+
   const scrollDown = useCallback(() => {
     if (collectorsNoteRef.current) {
       collectorsNoteRef.current.scrollIntoView({
-        block: 'end',
+        block: 'start',
         inline: 'nearest',
         behavior: 'smooth',
       });
@@ -47,9 +54,6 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
   const handleEditCollectorsNote = useCallback(() => {
     setIsEditing(true);
-
-    // TODO Expand note to full height first time it is opened
-    // Currently user has to type first to expand it fully
 
     // Scroll down - wait so that element exists before scrolling to bottom of it
     setTimeout(() => {
@@ -98,14 +102,6 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
   const handleNoteChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setCollectorsNote(event.target?.value);
-      setNoteHeight(event.target?.scrollHeight);
-
-      // On clear, reset note height (textarea scrollHeight does not decrease on its own, it only increases)
-      // So we use this hard reset if the user deletes all content. Could have more elegant solution
-      // TODO Reduce size to text content on any delete
-      if (event.target?.value === '') {
-        setNoteHeight(MIN_NOTE_HEIGHT);
-      }
 
       // Scroll down as the user input goes off the screen
       // Need setTimeout so that textarea height is updated
@@ -117,7 +113,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
   );
 
   return (
-    <div tabIndex={0} onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
+    <div onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
       <StyledTitleAndButtonContainer>
         {/* We also include isEditing as an option here so the user can click save with an empty note (e.g. delete their note) */}
         {hasCollectorsNote || isEditing ? (
@@ -138,6 +134,8 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
         )}
       </StyledTitleAndButtonContainer>
 
+      {/* Without StyledHeightBuffer, when the page switches between StyledTextAreaWithCharCount and StyledCollectorsNote, there would be a brief flash when there is no element on the page*/}
+      <StyledHeightBuffer noteHeight={noteHeight} />
       {generalError && (
         <>
           <Spacer height={8} />
@@ -147,6 +145,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
 
       <Spacer height={8} />
 
+      {/* Create a dummy textbox of the same height so that, when the element switches from the above to this one, there is not a jump to the top of the screen before scrollDown applies */}
       {isEditing ? (
         <StyledTextAreaWithCharCount
           footerHeight={GLOBAL_FOOTER_HEIGHT}
@@ -155,12 +154,10 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
           defaultValue={unescapedCollectorsNote}
           currentCharCount={unescapedCollectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
-          noteHeight={noteHeight}
         />
       ) : (
         <StyledCollectorsNote
           footerHeight={GLOBAL_FOOTER_HEIGHT}
-          minNoteHeight={MIN_NOTE_HEIGHT}
           onDoubleClick={handleEditCollectorsNote}
         >
           <Markdown text={collectorsNote} />
@@ -179,7 +176,7 @@ function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
     <>
       <BodyRegular>Collector&rsquo;s Note</BodyRegular>
       <Spacer height={8} />
-      <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT} minNoteHeight={MIN_NOTE_HEIGHT}>
+      <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
         <Markdown text={nftCollectorsNote} />
       </StyledCollectorsNote>
     </>
@@ -231,17 +228,16 @@ const StyledTitleAndButtonContainer = styled.div`
 `;
 
 type TextAreaProps = {
-  noteHeight: number;
   footerHeight: number;
 };
 
 // These two are intentionally styled the same so that editing is seamless
-const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>`
+const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<TextAreaProps>`
   border: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   textarea {
-    ${({ noteHeight }) => `min-height: ${noteHeight}px`};
-
     color: #808080;
     margin: 0;
     padding: 0;
@@ -252,6 +248,8 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
 
     border-bottom: none;
     background: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   p {
@@ -271,7 +269,7 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)<TextAreaProps>
 
 type CollectorsNoteProps = {
   footerHeight: number;
-  minNoteHeight: number;
+  isHidden?: boolean;
 };
 
 const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
@@ -290,10 +288,13 @@ const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
   p:last-of-type {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
   }
+`;
 
-  @media only screen and ${breakpoints.tablet} {
-    min-height: ${({ minNoteHeight }) => minNoteHeight}px;
-  }
+const StyledHeightBuffer = styled.div<{ noteHeight: number }>`
+  height: ${({ noteHeight }) => noteHeight}px;
+  width: 100%;
+  position: absolute;
+  z-index: -1;
 `;
 
 export default NftDetailNote;
