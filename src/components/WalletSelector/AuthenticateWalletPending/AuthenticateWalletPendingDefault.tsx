@@ -4,7 +4,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import { BaseM, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
@@ -125,7 +125,7 @@ function AuthenticateWalletPendingDefault({
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <StyledAuthenticateWalletPending>
-        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
         <BaseM color={colors.gray50}>Sign the message with your wallet.</BaseM>
       </StyledAuthenticateWalletPending>
@@ -134,7 +134,7 @@ function AuthenticateWalletPendingDefault({
 
   return (
     <StyledAuthenticateWalletPending>
-      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={8} />
       <BaseM color={colors.gray50}>Approve your wallet to connect to Gallery.</BaseM>
     </StyledAuthenticateWalletPending>

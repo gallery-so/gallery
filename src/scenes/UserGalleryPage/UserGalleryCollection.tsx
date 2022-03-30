@@ -76,9 +76,9 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <TitleSerif onClick={handleViewCollectionClick}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
-          </TitleSerif>
+          <StyledCollectorsTitle onClick={handleViewCollectionClick}>
+            {unescapedCollectionName}
+          </StyledCollectorsTitle>
           <StyledSettingsDropdown>
             {isHovering && (
               <Dropdown>

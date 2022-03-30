@@ -19,7 +19,7 @@ function CollectionRowDragging({ collection }: Props) {
 
 const StyledCollectionRowDragging = styled.div`
   display: flex;
-  background-color: ${colors.white};
+  background-color: ${colors.offWhite};
 `;
 
 const StyledCollectionRow = styled(CollectionRow)<{ isMouseUp: boolean }>`

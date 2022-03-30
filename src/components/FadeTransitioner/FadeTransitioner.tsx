@@ -41,7 +41,8 @@ function FadeTransitioner({ locationKey, children }: Props) {
         {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
             to remain uninterrupted upon navigation */}
         <div style={childNodeStyles as CSSProperties}>
-          <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
+          <FullPageLoader />
+          {/* <Suspense fallback={<FullPageLoader />}>{children}</Suspense> */}
         </div>
       </CSSTransition>
     </TransitionGroup>

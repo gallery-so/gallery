@@ -135,7 +135,7 @@ const StyledAddBlankBlock = styled.div`
   height: 64px;
   width: 64px;
   margin: 5px;
-  background-color: ${colors.white};
+  background-color: ${colors.offWhite};
   border: 1px solid ${colors.gray30};
   text-transform: uppercase;
   display: flex;

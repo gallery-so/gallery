@@ -45,7 +45,7 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   padding: 16px;
   font-family: Helvetica Neue;
   border: none;
-  border-bottom: 28px solid ${colors.white};
+  border-bottom: 28px solid ${colors.offWhite};
   resize: none;
   font-size: 14px;
   line-height: 20px;

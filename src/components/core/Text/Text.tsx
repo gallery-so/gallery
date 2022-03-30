@@ -91,15 +91,6 @@ export const TitleSerif = styled(_TitleBase)`
   font-family: ${TITLE_FONT_FAMILY};
 `;
 
-export const TitleRegular = styled(_TitleBase)`
-  font-family: ${BODY_FONT_FAMILY};
-`;
-
-export const TitleMedium = styled(TitleRegular)`
-  font-weight: 500;
-  font-size: 18px;
-`;
-
 export const BaseXL = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-weight: 400;

@@ -1,5 +1,5 @@
 import Button from 'components/core/Button/Button';
-import { BaseM, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
@@ -37,7 +37,7 @@ function GnosisSafeListeningOnChainScreen({
 
   return (
     <StyledContentWrapper>
-      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
       <BaseM color={colors.gray50}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
       <Spacer height={8} />
@@ -67,7 +67,7 @@ function GnosisSafePendingMessage({
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={24} />
         <BaseM color={colors.gray50}>
           Connecting with Gnosis requires an on-chain transaction.
@@ -93,7 +93,7 @@ function GnosisSafePendingMessage({
 
   return (
     <StyledContentWrapper>
-      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
       {previousAttemptNonce && account ? (
         <>
