@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, Caption } from 'components/core/Text/Text';
+import { BaseM, BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
@@ -53,9 +53,9 @@ function CollectionRow({ collection, className }: Props) {
         <TextContainer>
           <BaseM>{unescapedCollectionName}</BaseM>
           <Spacer height={4} />
-          <StyledCaption color={colors.gray50}>
+          <StyledBaseM color={colors.gray50}>
             <Markdown text={truncatedCollectorsNote} />
-          </StyledCaption>
+          </StyledBaseM>
         </TextContainer>
         <Settings />
       </Header>
@@ -103,7 +103,7 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const StyledCaption = styled(Caption)`
+const StyledBaseM = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;

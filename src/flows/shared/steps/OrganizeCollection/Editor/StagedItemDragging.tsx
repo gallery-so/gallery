@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import { StagingItem, isEditModeNft } from '../types';
 import StagedNftImageDragging from './StagedNftImageDragging';
@@ -36,7 +36,7 @@ const StyledBlankBlock = styled.div<{ size: number }>`
   box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
 `;
 
-const StyledLabel = styled(Caption)`
+const StyledLabel = styled(BaseM)`
   text-transform: uppercase;
   color: ${colors.gray50};
 `;

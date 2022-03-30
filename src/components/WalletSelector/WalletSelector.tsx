@@ -4,7 +4,7 @@ import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
-import { BaseM, Caption, TitleS } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
@@ -217,7 +217,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         />
       ))}
       <Spacer height={8} />
-      <Caption color={colors.gray50}>More wallets coming soon™</Caption>
+      <BaseM color={colors.gray50}>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }

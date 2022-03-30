@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
-import { Caption, Heading } from 'components/core/Text/Text';
+import { BaseM, Heading } from 'components/core/Text/Text';
 // Import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
@@ -21,7 +21,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
       <TitleContainer>
         <Heading>Organize your Gallery</Heading>
         <Spacer height={4} />
-        <Caption color={colors.gray50}>Drag and drop to reorder your collection</Caption>
+        <BaseM color={colors.gray50}>Drag and drop to reorder your collection</BaseM>
       </TitleContainer>
       <OptionsContainer>
         {/* TODO: support gallery preview

@@ -1,7 +1,7 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, Caption } from 'components/core/Text/Text';
+import { BaseM, BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
@@ -20,7 +20,7 @@ function ColumnAdjuster() {
 
   return (
     <StyledColumnAdjuster>
-      <Caption>COLUMNS</Caption>
+      <BaseM>COLUMNS</BaseM>
       <Spacer width={24} />
       <StyledButtonContainer>
         <StyledColumnButton text="−" onClick={decrementColumns} disabled={columns <= 1} />

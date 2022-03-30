@@ -1,6 +1,6 @@
 import { ReactNode, useState, useCallback } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { pause } from 'utils/time';
 
@@ -32,7 +32,7 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
     <Container onClick={handleCopyToClipboard}>
       {isToastMounted && (
         <Toast isActive={isActive}>
-          <Caption color={colors.white}>Link Copied</Caption>
+          <BaseM color={colors.white}>Link Copied</BaseM>
         </Toast>
       )}
       {children}

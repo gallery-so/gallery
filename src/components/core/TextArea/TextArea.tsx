@@ -2,7 +2,7 @@ import { ChangeEventHandler, useRef, useEffect, useState, forwardRef, useCallbac
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
-import { Caption } from '../Text/Text';
+import { BaseM } from '../Text/Text';
 
 type TextAreaProps = {
   className?: string;
@@ -148,7 +148,7 @@ const StyledParentContainer = styled.div`
   padding-bottom: 20px;
 `;
 
-const StyledCharacterCounter = styled(Caption)<{ error: boolean }>`
+const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
   position: absolute;
   bottom: 8px;
   right: 8px;

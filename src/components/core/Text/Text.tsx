@@ -95,5 +95,3 @@ export const BaseM = styled(Paragraph)`
   font-size: 14px;
   line-height: 20px;
 `;
-
-export const Caption = BaseM;

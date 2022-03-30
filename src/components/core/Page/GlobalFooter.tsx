@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
@@ -58,9 +58,9 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <Caption color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</Caption>
+        <BaseM color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</BaseM>
         <Spacer width={8} />
-        <Caption color={colors.gray50}>·</Caption>
+        <BaseM color={colors.gray50}>·</BaseM>
         <Spacer width={8} />
         <StyledLink href="/privacy">
           <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
@@ -142,7 +142,7 @@ const StyledLink = styled.a`
   text-decoration: none;
 `;
 
-const StyledLinkText = styled(Caption)`
+const StyledLinkText = styled(BaseM)`
   transition: color ${transitions.cubic};
   &:hover {
     color: ${colors.black};

@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import colors from 'components/core/colors';
-import { BaseM, Caption } from 'components/core/Text/Text';
+import { BaseM, BaseM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -75,7 +75,7 @@ const StyledUnstageButton = styled(UnstageButton)`
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledWhitespaceLabel = styled(Caption)`
+const StyledWhitespaceLabel = styled(BaseM)`
   text-transform: uppercase;
   color: ${colors.gray50};
 
