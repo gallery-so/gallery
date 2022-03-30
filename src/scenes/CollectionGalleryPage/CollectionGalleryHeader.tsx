@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
+import { Subdisplay, BodyRegular, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -134,7 +134,7 @@ const StyledCollectionGalleryHeaderWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledHeaderWrapper = styled(Subdisplay)`
+const StyledHeaderWrapper = styled(TitleL)`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;

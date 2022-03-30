@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BodyRegular, Heading } from 'components/core/Text/Text';
+import { BodyRegular, Heading, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import Button from 'components/core/Button/Button';
@@ -135,7 +135,7 @@ export function MembershipMintPage({
       <StyledContent>
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
-          <Heading>{membershipNft.title}</Heading>
+          <TitleM>{membershipNft.title}</TitleM>
           <Spacer height={16} />
           <StyledNftDescription color={colors.gray50}>
             <Markdown text={membershipNft.description} />

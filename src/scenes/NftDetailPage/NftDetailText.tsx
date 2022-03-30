@@ -1,4 +1,4 @@
-import { Heading, BodyRegular } from 'components/core/Text/Text';
+import { Heading, BodyRegular, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
@@ -25,22 +25,22 @@ function NftDetailText({ nft, ownerUsername }: Props) {
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      <Heading>{nft.name}</Heading>
-      <Spacer height={16} />
+      <TitleM>{nft.name}</TitleM>
+      <Spacer height={4} />
       <BodyRegular>{nft.token_collection_name}</BodyRegular>
-      <Spacer height={16} />
+      <Spacer height={32} />
       <StyledNftDescription color={colors.gray50}>
         <Markdown text={nft.description} />
       </StyledNftDescription>
       <Spacer height={32} />
-      <BodyRegular color={colors.gray50}>Owned By</BodyRegular>
+      <TitleXS >Owner</TitleXS>
       <StyledLink href={`/${ownerUsername}`}>
         <BodyRegular>{ownerUsername}</BodyRegular>
       </StyledLink>
       <Spacer height={16} />
       {creatorExists && (
         <>
-          <BodyRegular color={colors.gray50}>Created By</BodyRegular>
+          <TitleXS>Created By</TitleXS>
           <BodyRegular>
             {nft.creator_name || (
               <EnsOrAddress address={nft.creator_address || nft.asset_contract?.address} />
@@ -48,7 +48,7 @@ function NftDetailText({ nft, ownerUsername }: Props) {
           </BodyRegular>
         </>
       )}
-      <Spacer height={16} />
+      <Spacer height={32} />
       <NftAdditionalDetails nft={nft} />
     </StyledDetailLabel>
   );

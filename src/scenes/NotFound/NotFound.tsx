@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Display, BodyRegular } from 'components/core/Text/Text';
+import { TitleL, BodyRegular } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
@@ -8,7 +8,7 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 function NotFound() {
   return (
     <Page centered>
-      <Display>404</Display>
+      <TitleL>404</TitleL>
       <Spacer height={16} />
       <StyledBody>
         This user doesn&apos;t exist yet. If you think they should,

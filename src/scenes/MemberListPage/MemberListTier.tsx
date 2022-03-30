@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { BodyMedium } from 'components/core/Text/Text';
+import { BodyMedium, TitleS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
@@ -88,7 +88,7 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
   transition: color 0.15s ease-in-out;
 `;
 
-const StyledTierHeading = styled(BodyMedium)`
+const StyledTierHeading = styled(TitleS)`
   color: ${colors.gray50};
 `;
 

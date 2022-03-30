@@ -2,7 +2,7 @@ import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import colors from 'components/core/colors';
-import { TitleSerif, BodyRegular } from 'components/core/Text/Text';
+import { TitleSerif, BodyRegular, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
@@ -161,7 +161,7 @@ const StyledCollectionTitleWrapper = styled.div`
   word-break: break-word;
 `;
 
-const StyledCollectorsTitle = styled.span`
+const StyledCollectorsTitle = styled(TitleS)`
   cursor: pointer;
   &:hover {
     text-decoration: underline;

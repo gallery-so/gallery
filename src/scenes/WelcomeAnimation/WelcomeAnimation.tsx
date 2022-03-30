@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BodyRegular, Display } from 'components/core/Text/Text';
+import { BodyRegular, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -105,7 +105,7 @@ export default function WelcomeAnimation({ next }: Props) {
         }}
       >
         <StyledTextContainer shouldFadeOut={shouldFadeOut}>
-          <Display>Welcome to Gallery</Display>
+          <TitleL>Welcome to Gallery</TitleL>
           <Spacer height={8} />
           <StyledBodyText color={colors.gray50}>
             This is your space to share your pieces and the stories that surround them. Curate,

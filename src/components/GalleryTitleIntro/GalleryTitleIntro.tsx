@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BodyRegular, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 function GalleryTitleIntro() {
@@ -7,7 +7,7 @@ function GalleryTitleIntro() {
     <>
       <StyledLogo src="/icons/logo-large.svg" />
       <Spacer height={8} />
-      <BodyRegular>Show your collection to the world.</BodyRegular>
+      <TitleM><strong>Share your </strong>collection <strong>with the world.</strong></TitleM>
     </>
   );
 }
