@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
-import { BodyRegular, BodyMedium } from 'components/core/Text/Text';
+import { BaseM, BodyMedium } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
@@ -143,9 +143,9 @@ function CollectionCreateOrEditForm({
     <StyledCollectionEditInfoForm>
       <BodyMedium>Give your collection a name and description</BodyMedium>
       <Spacer height={4} />
-      <BodyRegular color={colors.gray50}>
+      <BaseM color={colors.gray50}>
         You can always add a collection name and description later.
-      </BodyRegular>
+      </BaseM>
       <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}

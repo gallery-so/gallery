@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import colors from 'components/core/colors';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BaseM, Caption } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -110,7 +110,7 @@ const StyledSortableWhitespace = styled.div`
   cursor: grab;
 
   margin: 24px;
-  ${BodyRegular} {
+  ${BaseM} {
     color: ${colors.gray50};
   }
 

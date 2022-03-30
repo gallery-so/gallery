@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium, ButtonText } from 'components/core/Text/Text';
+import { BodyMedium, ButtonText, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
@@ -90,7 +90,7 @@ function Sidebar() {
   return (
     <StyledSidebar>
       <Header>
-        <BodyMedium>Your NFTs</BodyMedium>
+        <TitleS>Your NFTs</TitleS>
         <TextButton
           text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
           onClick={handleRefreshNfts}

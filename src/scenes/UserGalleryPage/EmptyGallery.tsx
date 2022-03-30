@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 function EmptyGallery({ message }: Props) {
   return (
     <StyledEmptyGallery>
-      <BodyRegular color={colors.gray50}>{message}</BodyRegular>
+      <BaseM color={colors.gray50}>{message}</BaseM>
     </StyledEmptyGallery>
   );
 }

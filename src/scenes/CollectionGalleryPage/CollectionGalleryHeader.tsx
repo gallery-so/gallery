@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { Subdisplay, BodyRegular, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -176,7 +176,7 @@ const StyledUsername = styled.span`
   }
 `;
 
-const StyledCollectionNote = styled(BodyRegular)`
+const StyledCollectionNote = styled(BaseM)`
   width: 100%;
   word-break: break-word;
   /* ensures linebreaks are reflected in UI */

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { BodyRegular, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -29,7 +29,7 @@ function Congratulations() {
   );
 }
 
-const StyledBodyText = styled(BodyRegular)`
+const StyledBodyText = styled(BaseM)`
   max-width: 400px;
   text-align: center;
 `;

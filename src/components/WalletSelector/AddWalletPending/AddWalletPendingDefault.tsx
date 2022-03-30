@@ -3,7 +3,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleMedium } from 'components/core/Text/Text';
 import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -158,18 +158,18 @@ function AddWalletPendingDefault({
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
+        <BaseM color={colors.gray50}>
           The following address is already connected to this account:
-        </BodyRegular>
+        </BaseM>
         <Spacer height={8} />
-        <BodyRegular color={colors.black}>{account.toLowerCase()}</BodyRegular>
+        <BaseM color={colors.black}>{account.toLowerCase()}</BaseM>
         {isMetamask && (
           <>
             <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
+            <BaseM color={colors.gray50}>
               If you want to connect a different address via Metamask, please switch accounts in the
               extension and try again.
-            </BodyRegular>
+            </BaseM>
           </>
         )}
       </div>
@@ -182,14 +182,14 @@ function AddWalletPendingDefault({
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>Confirm the following wallet address:</BodyRegular>
+        <BaseM color={colors.gray50}>Confirm the following wallet address:</BaseM>
         <Spacer height={8} />
-        <BodyRegular color={colors.black}>{account?.toLowerCase()}</BodyRegular>
+        <BaseM color={colors.black}>{account?.toLowerCase()}</BaseM>
         <Spacer height={16} />
-        <BodyRegular color={colors.gray50}>
+        <BaseM color={colors.gray50}>
           If you want to connect a different address via Metamask, please switch accounts in the
           extension and try again.
-        </BodyRegular>
+        </BaseM>
         <Spacer height={24} />
         <StyledButton
           text={isConnecting ? 'Connecting...' : 'Confirm'}
@@ -205,7 +205,7 @@ function AddWalletPendingDefault({
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>Sign the message with your wallet.</BodyRegular>
+        <BaseM color={colors.gray50}>Sign the message with your wallet.</BaseM>
       </div>
     );
   }
@@ -215,7 +215,7 @@ function AddWalletPendingDefault({
     <div>
       <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
       <Spacer height={8} />
-      <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
+      <BaseM color={colors.gray50}>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );
 }

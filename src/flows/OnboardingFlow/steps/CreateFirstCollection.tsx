@@ -1,6 +1,6 @@
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
-import { Heading, BodyRegular } from 'components/core/Text/Text';
+import { Heading, BaseM } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -45,7 +45,7 @@ function CreateFirstCollection({ next }: WizardContext) {
   );
 }
 
-const StyledBodyText = styled(BodyRegular)`
+const StyledBodyText = styled(BaseM)`
   max-width: 390px;
   text-align: center;
 `;

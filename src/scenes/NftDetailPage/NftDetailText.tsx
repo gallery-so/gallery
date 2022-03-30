@@ -1,4 +1,4 @@
-import { Heading, BodyRegular, TitleM, TitleXS } from 'components/core/Text/Text';
+import { Heading, BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
@@ -27,25 +27,25 @@ function NftDetailText({ nft, ownerUsername }: Props) {
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       <TitleM>{nft.name}</TitleM>
       <Spacer height={4} />
-      <BodyRegular>{nft.token_collection_name}</BodyRegular>
+      <BaseM>{nft.token_collection_name}</BaseM>
       <Spacer height={32} />
       <StyledNftDescription color={colors.gray50}>
         <Markdown text={nft.description} />
       </StyledNftDescription>
       <Spacer height={32} />
-      <TitleXS >Owner</TitleXS>
+      <TitleXS>Owner</TitleXS>
       <StyledLink href={`/${ownerUsername}`}>
-        <BodyRegular>{ownerUsername}</BodyRegular>
+        <BaseM>{ownerUsername}</BaseM>
       </StyledLink>
       <Spacer height={16} />
       {creatorExists && (
         <>
           <TitleXS>Created By</TitleXS>
-          <BodyRegular>
+          <BaseM>
             {nft.creator_name || (
               <EnsOrAddress address={nft.creator_address || nft.asset_contract?.address} />
             )}
-          </BodyRegular>
+          </BaseM>
         </>
       )}
       <Spacer height={32} />
@@ -85,7 +85,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const StyledNftDescription = styled(BodyRegular)`
+const StyledNftDescription = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;

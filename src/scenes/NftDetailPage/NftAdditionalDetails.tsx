@@ -2,7 +2,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
@@ -55,19 +55,19 @@ function NftAdditionalDetails({ nft }: Props) {
         <div>
           {hasContractAddress && (
             <>
-              <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
+              <BaseM color={colors.gray50}>Contract address</BaseM>
               <StyledLink
                 href={`https://etherscan.io/address/${nft.asset_contract.address}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                <BodyRegular>{nft.asset_contract.address}</BodyRegular>
+                <BaseM>{nft.asset_contract.address}</BaseM>
               </StyledLink>
             </>
           )}
           <Spacer height={16} />
-          <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-          <BodyRegular>{hexHandler(nft.opensea_token_id)}</BodyRegular>
+          <BaseM color={colors.gray50}>Token ID</BaseM>
+          <BaseM>{hexHandler(nft.opensea_token_id)}</BaseM>
           <Spacer height={16} />
           <StyledLinkContainer>
             {hasContractAddress && (

@@ -74,19 +74,6 @@ export const TitleXS = styled(H3)`
   text-transform: uppercase;
 `;
 
-export const Subdisplay = styled(H2)`
-  font-family: ${TITLE_FONT_FAMILY};
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 44px;
-  letter-spacing: 0px;
-
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 48px;
-    line-height: 48px;
-  }
-`;
-
 export const Heading = styled(H3)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 20px;
@@ -120,15 +107,13 @@ export const BaseXL = styled(Paragraph)`
   line-height: 24px;
 `;
 
-// Base M
-export const BodyRegular = styled(Paragraph)`
+export const BaseM = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 20px;
-  // letter-spacing: 0.4px;
 `;
 
-export const BodyMedium = styled(BodyRegular)`
+export const BodyMedium = styled(BaseM)`
   font-weight: 500;
 `;
 

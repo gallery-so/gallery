@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
@@ -49,7 +49,7 @@ function ManageWalletsRow({
 
   return (
     <StyledWalletRow>
-      <BodyRegular>{truncateAddress(address)}</BodyRegular>
+      <BaseM>{truncateAddress(address)}</BaseM>
       {showDisconnectButton && (
         <>
           <div

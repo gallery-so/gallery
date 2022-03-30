@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BodyRegular, Heading, TitleM } from 'components/core/Text/Text';
+import { BaseM, Heading, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import Button from 'components/core/Button/Button';
@@ -143,25 +143,25 @@ export function MembershipMintPage({
           <Spacer height={32} />
           {Number(price) > 0 && (
             <>
-              <BodyRegular color={colors.gray50}>Price</BodyRegular>
-              <BodyRegular>{Number(price / 1000000000000000000)} ETH</BodyRegular>
+              <BaseM color={colors.gray50}>Price</BaseM>
+              <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
             </>
           )}
           <Spacer height={16} />
           {Boolean(totalSupply) && (
             <>
-              <BodyRegular color={colors.gray50}>Available</BodyRegular>
-              <BodyRegular>
+              <BaseM color={colors.gray50}>Available</BaseM>
+              <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
-              </BodyRegular>
+              </BaseM>
             </>
           )}
           {children}
           {account && (
             <>
               <Spacer height={16} />
-              <BodyRegular color={colors.gray50}>Connected wallet</BodyRegular>
-              <BodyRegular>{account}</BodyRegular>
+              <BaseM color={colors.gray50}>Connected wallet</BaseM>
+              <BaseM>{account}</BaseM>
             </>
           )}
           <Spacer height={32} />
@@ -178,13 +178,13 @@ export function MembershipMintPage({
             <>
               <Spacer height={16} />
               <div>
-                <BodyRegular>
+                <BaseM>
                   {transactionStatus === TransactionStatus.SUCCESS
                     ? 'Transaction successful!'
                     : 'Transaction submitted. This may take several minutes.'}
-                </BodyRegular>
+                </BaseM>
                 <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
-                  <BodyRegular>View on Etherscan</BodyRegular>
+                  <BaseM>View on Etherscan</BaseM>
                 </GalleryLink>
               </div>
             </>
@@ -192,9 +192,9 @@ export function MembershipMintPage({
           {transactionStatus === TransactionStatus.SUCCESS && (
             <>
               <Spacer height={16} />
-              <BodyRegular>You can now sign up for Gallery.</BodyRegular>
+              <BaseM>You can now sign up for Gallery.</BaseM>
               <GalleryLink href="/auth">
-                <BodyRegular>Proceed to Onboarding</BodyRegular>
+                <BaseM>Proceed to Onboarding</BaseM>
               </GalleryLink>
             </>
           )}
@@ -223,7 +223,7 @@ const StyledDetailText = styled.div`
   }
 `;
 
-const StyledNftDescription = styled(BodyRegular)`
+const StyledNftDescription = styled(BaseM)`
   white-space: pre-line;
 `;
 

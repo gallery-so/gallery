@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import colors from 'components/core/colors';
-import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleMedium } from 'components/core/Text/Text';
 import useFetcher from 'contexts/swr/useFetcher';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -218,11 +218,11 @@ function AddWalletPendingGnosisSafe({
       <div>
         <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
+        <BaseM color={colors.gray50}>
           The following address is already connected to this account:
-        </BodyRegular>
+        </BaseM>
         <Spacer height={8} />
-        <BodyRegular color={colors.black}>{account.toLowerCase()}</BodyRegular>
+        <BaseM color={colors.black}>{account.toLowerCase()}</BaseM>
       </div>
     );
   }

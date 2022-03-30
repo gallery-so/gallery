@@ -1,7 +1,7 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BaseM, Caption } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
@@ -50,7 +50,7 @@ const StyledColumnButton = styled(TextButton)<{ disabled: boolean }>`
     font-size: 20px;
   }
 `;
-const StyledNumberOfColumns = styled(BodyRegular)`
+const StyledNumberOfColumns = styled(BaseM)`
   padding: 0 8px;
 `;
 

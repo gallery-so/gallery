@@ -4,7 +4,7 @@ import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
-import { BodyRegular, Caption, BodyMedium, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, Caption, BodyMedium, TitleMedium } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
@@ -182,9 +182,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           <div>
             <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
             <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
-              Approve your wallet to connect to Gallery.
-            </BodyRegular>
+            <BaseM color={colors.gray50}>Approve your wallet to connect to Gallery.</BaseM>
           </div>
         </StyledWalletSelector>
       );
@@ -241,7 +239,7 @@ const StyledBodyMedium = styled(BodyMedium)`
   text-align: left;
 `;
 
-const StyledBody = styled(BodyRegular)`
+const StyledBody = styled(BaseM)`
   margin-bottom: 30px;
   white-space: pre-wrap;
 `;

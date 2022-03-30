@@ -1,4 +1,4 @@
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
@@ -118,7 +118,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
         {/* We also include isEditing as an option here so the user can click save with an empty note (e.g. delete their note) */}
         {hasCollectorsNote || isEditing ? (
           <>
-            <BodyRegular>Collector&rsquo;s Note</BodyRegular>
+            <BaseM>Collector&rsquo;s Note</BaseM>
             {isEditing ? (
               <TextButton
                 disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
@@ -174,7 +174,7 @@ type NoteViewerProps = {
 function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <>
-      <BodyRegular>Collector&rsquo;s Note</BodyRegular>
+      <BaseM>Collector&rsquo;s Note</BaseM>
       <Spacer height={8} />
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
         <Markdown text={nftCollectorsNote} />
@@ -272,7 +272,7 @@ type CollectorsNoteProps = {
   isHidden?: boolean;
 };
 
-const StyledCollectorsNote = styled(BodyRegular)<CollectorsNoteProps>`
+const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
   white-space: pre-line;
   height: 100%;
   line-height: 20px;

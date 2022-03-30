@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Heading } from 'components/core/Text/Text';
+import { BaseXL } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import {
@@ -65,7 +65,7 @@ const StyledFilterButton = styled.button<TextProps>`
   }
 `;
 
-const StyledFilterButtonText = styled(Heading)`
+const StyledFilterButtonText = styled(BaseXL)`
   color: inherit;
 `;
 

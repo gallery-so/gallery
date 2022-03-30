@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import styled from 'styled-components';
-import { Heading, BodyRegular } from 'components/core/Text/Text';
+import { Heading, BaseM } from 'components/core/Text/Text';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
@@ -31,7 +31,7 @@ class ErrorBoundary extends Component {
         <Page centered topPadding>
           <Heading>{header}</Heading>
           <Spacer height={8} />
-          <BodyRegular>{description}</BodyRegular>
+          <BaseM>{description}</BaseM>
           <Spacer height={48} />
           <StyledReachOut color={colors.gray50}>
             If you&apos;re continuing to see this error, reach out to us on{' '}
@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
   }
 }
 
-const StyledReachOut = styled(BodyRegular)`
+const StyledReachOut = styled(BaseM)`
   font-style: italic;
 `;
 

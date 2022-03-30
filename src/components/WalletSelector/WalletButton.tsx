@@ -7,7 +7,7 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
 
@@ -58,7 +58,7 @@ function WalletButton({ walletName, activate, connector, setToPendingState }: Wa
   const iconView = useMemo(
     () => (
       <>
-        <BodyRegular>{userFriendlyWalletName}</BodyRegular>
+        <BaseM>{userFriendlyWalletName}</BaseM>
         <Icon src={walletIconMap[(walletSymbol?.description ?? '').toLowerCase()]} />
       </>
     ),
@@ -74,7 +74,7 @@ function WalletButton({ walletName, activate, connector, setToPendingState }: Wa
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
-          <BodyRegular>Install Metamask</BodyRegular>
+          <BaseM>Install Metamask</BaseM>
           <Icon src="/icons/metamask.svg" />
         </StyledButton>
       </StyledExternalLink>

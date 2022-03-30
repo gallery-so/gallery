@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TitleL, BodyRegular } from 'components/core/Text/Text';
+import { TitleL, BaseM } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
@@ -24,7 +24,7 @@ function NotFound() {
   );
 }
 
-const StyledBody = styled(BodyRegular)`
+const StyledBody = styled(BaseM)`
   white-space: pre-wrap;
   text-align: center;
 `;

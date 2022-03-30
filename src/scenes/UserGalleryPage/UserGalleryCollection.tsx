@@ -2,7 +2,7 @@ import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import colors from 'components/core/colors';
-import { TitleSerif, BodyRegular, TitleS } from 'components/core/Text/Text';
+import { TitleSerif, BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { Collection } from 'types/Collection';
@@ -168,7 +168,7 @@ const StyledCollectorsTitle = styled(TitleS)`
   }
 `;
 
-const StyledCollectorsNote = styled(BodyRegular)`
+const StyledCollectorsNote = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 

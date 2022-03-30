@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BaseM, Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
@@ -51,7 +51,7 @@ function CollectionRow({ collection, className }: Props) {
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <BodyRegular>{unescapedCollectionName}</BodyRegular>
+          <BaseM>{unescapedCollectionName}</BaseM>
           <Spacer height={4} />
           <StyledCaption color={colors.gray50}>
             <Markdown text={truncatedCollectorsNote} />
@@ -113,7 +113,7 @@ const TextContainer = styled.div`
   flex-direction: column;
 `;
 
-const StyledHiddenLabel = styled(BodyRegular)`
+const StyledHiddenLabel = styled(BaseM)`
   text-align: right;
 `;
 
@@ -185,7 +185,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
               );
             })}
             <Spacer width={2} />
-            <BodyRegular>+{overflowCountText} more</BodyRegular>
+            <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) => {

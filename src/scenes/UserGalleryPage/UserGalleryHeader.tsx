@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { Subdisplay, BodyRegular, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -74,7 +74,7 @@ const StyledUserDetails = styled.div`
   }
 `;
 
-const StyledBio = styled(BodyRegular)`
+const StyledBio = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;
