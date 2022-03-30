@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
 import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
@@ -57,7 +58,8 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     try {
       await refreshOpenseaSync();
       void mutateAllNftsCache();
-    } catch {
+    } catch (error: unknown) {
+      captureException(error);
       pushToast(
         'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
       );
