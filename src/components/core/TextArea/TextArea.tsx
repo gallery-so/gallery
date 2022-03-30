@@ -49,6 +49,7 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   resize: none;
   font-size: 14px;
   line-height: 20px;
+  background: none;
   ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
 `;
 

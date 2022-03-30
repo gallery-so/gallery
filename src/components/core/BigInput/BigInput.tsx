@@ -50,6 +50,7 @@ const StyledBigInput = styled.input`
   ::placeholder {
     opacity: 0.5;
   }
+  background: none;
 `;
 
 export default BigInput;
