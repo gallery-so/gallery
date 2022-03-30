@@ -110,10 +110,10 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
     if (detectedError) {
       // Handle error from server
       if (detectedError.code === 'GALLERY_SERVER_ERROR') {
-        if (detectedError.message.includes('Required tokens not owned')) {
+        if (detectedError.message.toLowerCase().includes('required tokens not owned')) {
           return {
             heading: 'Authorization Error',
-            body: `${detectedError.message}\n\n ${MISSING_NFT_ERROR_MESSAGE}`,
+            body: "We weren't able to locate a Membership Card in your wallet. Gallery is in closed beta and requires one for access. You can buy one on the [secondary market](https://opensea.io/collection/gallerygeneralmembershipcards) or visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba) for more info.",
           };
         }
 
