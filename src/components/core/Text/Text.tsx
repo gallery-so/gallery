@@ -74,21 +74,13 @@ export const TitleXS = styled(H3)`
   text-transform: uppercase;
 `;
 
+// this is not in our type rules but keeping this for now until we have replacements for usage
 export const Heading = styled(H3)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 20px;
   font-weight: 400;
   line-height: 28px;
   letter-spacing: 0px;
-`;
-
-const _TitleBase = styled(Paragraph)`
-  font-size: 18px;
-  line-height: 24px;
-`;
-
-export const TitleSerif = styled(_TitleBase)`
-  font-family: ${TITLE_FONT_FAMILY};
 `;
 
 export const BaseXL = styled(Paragraph)`
@@ -104,20 +96,4 @@ export const BaseM = styled(Paragraph)`
   line-height: 20px;
 `;
 
-export const BodyMedium = styled(BaseM)`
-  font-weight: 500;
-`;
-
-export const ButtonText = styled(Paragraph)`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0px;
-`;
-
-export const Caption = styled(Paragraph)`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.4px;
-`;
+export const Caption = BaseM;

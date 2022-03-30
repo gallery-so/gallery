@@ -1,29 +1,4 @@
 @font-face {
-  font-family: 'Gallery Display';
-  src: url('/fonts/gallery-display.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Gallery Display';
-  src: url('/fonts/gallery-display-italics.woff2') format('woff2');
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeue.otf') format('opentype'),
-    url('/fonts/HelveticaNeue.ttf') format('truetype');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeue-Medium.otf') format('opentype'),
-    url('/fonts/HelveticaNeue-Medium.ttf') format('truetype');
-  font-weight: 500;
-}
-
-@font-face {
   font-family: 'GT Alpina';
   src: url('/fonts/GT-Alpina-Standard-Light.otf') format('opentype'),
     url('/fonts/GT-Alpina-Standard-Light.ttf') format('truetype');
@@ -74,7 +49,7 @@ html {
 body {
   margin: 0;
   font-family: 'Times New Roman', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'ABC Diatype', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f9f9f9;
@@ -94,7 +69,7 @@ code {
 }
 
 .tooltip {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.4px;

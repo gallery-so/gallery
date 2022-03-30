@@ -2,6 +2,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { Directions } from 'src/components/core/enums';
 import { useCallback, useMemo, useState } from 'react';
 import { GOOGLE_CONTENT_IMG_URL } from 'utils/regex';
+import colors from 'components/core/colors';
 
 const verticalOffset = [0, 130, 260];
 const horizontalOffset = [0, 90, 180];
@@ -169,7 +170,7 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
   position: absolute;
   top: ${({ top }) => top}px;
   left: ${({ left }) => left}px;
-  background-color: white;
+  background-color: ${colors.offWhite};
   width: 250px;
   opacity: 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;

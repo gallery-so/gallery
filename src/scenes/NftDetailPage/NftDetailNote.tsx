@@ -243,7 +243,6 @@ const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<Te
     padding: 0;
     line-height: 20px;
     font-size: 14px;
-    letter-spacing: 0.4px;
     display: block;
 
     border-bottom: none;
@@ -275,9 +274,6 @@ type CollectorsNoteProps = {
 const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
   white-space: pre-line;
   height: 100%;
-  line-height: 20px;
-  font-size: 14px;
-  letter-spacing: 0.4px;
   color: #808080;
 
   // We only apply padding to account for footer, which is not fixed on mobile

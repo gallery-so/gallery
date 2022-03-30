@@ -34,10 +34,10 @@ function WizardFooter({
 
   const isFirstStep = useMemo(() => history.index === 0, [history.index]);
 
-  const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [
-    footerButtonTextMap,
-    step.id,
-  ]);
+  const buttonText = useMemo(
+    () => footerButtonTextMap?.[step.id] ?? 'Next',
+    [footerButtonTextMap, step.id]
+  );
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
@@ -121,7 +121,7 @@ const StyledWizardFooter = styled.div`
   width: 100%;
 
   border-top: 1px solid ${colors.gray40};
-  background: white;
+  background: ${colors.offWhite};
 `;
 
 const StyledButton = styled(Button)`

@@ -1,3 +1,4 @@
+import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -85,7 +86,7 @@ const StyledToast = styled.div`
   border: 1px solid black;
   padding: 16px 32px 16px 24px;
   width: 288px;
-  background: white;
+  background: ${colors.offWhite};
 `;
 
 const StyledClose = styled.span`

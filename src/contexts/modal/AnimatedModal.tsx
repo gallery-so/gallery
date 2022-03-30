@@ -114,7 +114,7 @@ const StyledContentContainer = styled.div`
 const StyledContent = styled.div`
   position: relative;
   padding: 40px;
-  background: white;
+  background: ${colors.offWhite};
 `;
 
 const StyledClose = styled.span`

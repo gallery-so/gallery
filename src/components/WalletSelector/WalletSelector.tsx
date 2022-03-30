@@ -4,7 +4,7 @@ import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
-import { BaseM, Caption, BodyMedium, TitleS } from 'components/core/Text/Text';
+import { BaseM, Caption, TitleS } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
@@ -152,7 +152,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   if (displayedError) {
     return (
       <StyledWalletSelector>
-        <BodyMedium>{displayedError.heading}</BodyMedium>
+        <TitleS>{displayedError.heading}</TitleS>
         <Spacer height={16} />
         <StyledBody color={colors.gray50}>
           <Markdown text={displayedError.body} />
@@ -205,7 +205,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
+      <StyledTitleS>Connect your wallet</StyledTitleS>
       <Spacer height={16} />
       {availableWalletOptions.map((walletName) => (
         <WalletButton
@@ -235,7 +235,7 @@ const StyledWalletSelector = styled.div`
   }
 `;
 
-const StyledBodyMedium = styled(BodyMedium)`
+const StyledTitleS = styled(TitleS)`
   text-align: left;
 `;
 

@@ -2,7 +2,7 @@ import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
-import { BodyMedium, BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import useAddWalletModal from 'hooks/useAddWalletModal';
@@ -44,7 +44,7 @@ function ManageWallets({ newAddress }: Props) {
 
   return (
     <StyledManageWallets>
-      <BodyMedium>Manage Accounts</BodyMedium>
+      <TitleS>Manage Accounts</TitleS>
       <Spacer height={8} />
       <BaseM color={colors.gray50}>Add more wallets to access your other NFTs.</BaseM>
       <BaseM color={colors.gray50}>

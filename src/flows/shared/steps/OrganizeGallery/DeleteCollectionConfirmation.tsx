@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BodyMedium } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
@@ -31,7 +31,7 @@ function DeleteCollectionConfirmation({ collectionId }: Props) {
 
   return (
     <StyledConfirmation>
-      <BodyMedium>Are you sure you want to delete your collection?</BodyMedium>
+      <TitleS>Are you sure you want to delete your collection?</TitleS>
       <Spacer height={48} />
       <ButtonContainer>
         <StyledCancelButton mini text="Nevermind" type="secondary" onClick={hideModal} />

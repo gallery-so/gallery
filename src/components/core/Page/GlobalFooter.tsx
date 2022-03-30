@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { Caption, TitleSerif } from 'components/core/Text/Text';
+import { Caption } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
@@ -88,7 +88,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
-  background-color: white;
+  background-color: ${colors.offWhite};
   z-index: 2;
   position: relative;
 }
@@ -104,7 +104,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
         bottom: 0;
         width: 100%;
 
-        background: white;
+        background: ${colors.offWhite};
         background: linear-gradient(
           to bottom,
           rgba(255, 255, 255, 0) 0%,

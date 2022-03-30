@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium, ButtonText, TitleS } from 'components/core/Text/Text';
+import { TitleS, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
@@ -151,7 +151,7 @@ const StyledAddBlankBlock = styled.div`
   }
 `;
 
-const StyledAddBlankBlockText = styled(ButtonText)`
+const StyledAddBlankBlockText = styled(TitleXS)`
   color: ${colors.gray50};
   text-align: center;
 `;

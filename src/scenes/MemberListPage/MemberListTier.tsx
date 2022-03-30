@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { BodyMedium, TitleS } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';

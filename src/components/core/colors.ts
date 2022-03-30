@@ -1,7 +1,6 @@
 enum colors {
-  black='#141414',
-  offWhite='#F9F9F9',
-  // black = '#000000',
+  black = '#141414',
+  offWhite = '#F9F9F9',
   gray80 = '#333333',
   gray70 = '#4D4D4D',
   gray50 = '#808080',
