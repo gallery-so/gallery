@@ -1,7 +1,7 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, BaseM } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,

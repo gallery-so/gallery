@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, BaseM } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
