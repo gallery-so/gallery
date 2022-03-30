@@ -16,7 +16,7 @@ export const openGraphMetaTags = ({
     content: `https://gallery-opengraph.vercel.app/api/opengraph/image?${new URLSearchParams({
       path: previewPath,
       fallback:
-        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.png',
+        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
     }).toString()}`,
   },
   { property: 'twitter:card', content: 'summary_large_image' },
@@ -27,7 +27,7 @@ export const openGraphMetaTags = ({
       width: '600',
       height: '314',
       fallback:
-        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.png',
+        'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
     }).toString()}`,
   },
 ];
