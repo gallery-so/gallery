@@ -34,7 +34,7 @@ function UserInfoForm({
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const unescapedBio = useMemo(() => unescape(bio), []);
+  const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -63,10 +63,13 @@ function UserInfoForm({
 
   const handleBioChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      console.log('on bio change', event.target.value);
       onBioChange(event.target.value);
     },
     [onBioChange]
   );
+
+  console.log(unescapedBio, unescapedBio.length);
 
   // If username isn't filled in, autofocus on field
   const shouldAutofocusUsername = !username;
