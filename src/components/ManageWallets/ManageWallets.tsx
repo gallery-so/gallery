@@ -31,11 +31,15 @@ function ManageWallets({ newAddress }: Props) {
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   useEffect(() => {
-    setNotification(`Wallet ${removedAddress} has been removed.`);
+    if (removedAddress) {
+      setNotification(`Wallet ${removedAddress} has been removed.`);
+    }
   }, [removedAddress]);
 
   useEffect(() => {
-    setNotification(`Wallet ${newAddress} has been added.`);
+    if (newAddress) {
+      setNotification(`Wallet ${newAddress} has been added.`);
+    }
   }, [newAddress]);
 
   return (
