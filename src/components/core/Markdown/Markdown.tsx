@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
-import GalleryLink from '../GalleryLink/GalleryLink';
+import InteractiveLink from '../InteractiveLink/InteractiveLink';
 import { Heading } from '../Text/Text';
 
 type Props = {
@@ -35,7 +35,7 @@ function BaseMarkdown({ text, allowedElements }: BaseProps) {
       components={{
         a: ({ href, children }) =>
           href ? (
-            <GalleryLink href={href}>{children}</GalleryLink>
+            <InteractiveLink href={href}>{children}</InteractiveLink>
           ) : (
             // if href is blank, we must render the empty string this way;
             // simply rendering `children` causes the markdown library to crash

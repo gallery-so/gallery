@@ -45,7 +45,7 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   padding: 16px;
   font-family: ABC Diatype;
   border: none;
-  border-bottom: 28px solid ${colors.offWhite};
+  border-bottom: 28px solid ${colors.white};
   resize: none;
   font-size: 14px;
   line-height: 20px;

@@ -64,7 +64,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         color: rgba(115, 115, 115, 1);
       }
       .username {
-        font-family: 'Gallery Display';
+        font-family: 'GT Alpina';
         font-weight: 400;
         font-size: 18px;
         color: black;

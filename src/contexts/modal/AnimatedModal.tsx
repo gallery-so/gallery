@@ -84,7 +84,7 @@ const Overlay = styled.div`
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: ${colors.offWhite};
+  background: ${colors.white};
   opacity: 0.95;
 
   // should appear above rest of site
@@ -114,7 +114,7 @@ const StyledContentContainer = styled.div`
 const StyledContent = styled.div`
   position: relative;
   padding: 40px;
-  background: ${colors.offWhite};
+  background: ${colors.white};
 `;
 
 const StyledClose = styled.span`

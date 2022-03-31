@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
@@ -15,6 +15,7 @@ import {
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
+import NavLink from '../NavLink/NavLink';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
@@ -30,45 +31,29 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         </Link>
         <Spacer height={4} />
         <StyledLinkContainer>
-          <StyledLink href={GALLERY_FAQ} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>FAQ</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_FAQ}>FAQ</NavLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Twitter</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_TWITTER}>Twitter</NavLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_DISCORD} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Discord</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_DISCORD}>Discord</NavLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_BLOG} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Blog</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_BLOG}>Blog</NavLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_MEMBERSHIP_OPENSEA} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>OpenSea</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</NavLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Jobs</StyledLinkText>
-          </StyledLink>
+          <NavLink href={GALLERY_JOBS}>Jobs</NavLink>
           <Spacer width={8} />
         </StyledLinkContainer>
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <BaseM color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</BaseM>
+        <BaseS color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</BaseS>
         <Spacer width={8} />
-        <BaseM color={colors.gray50}>·</BaseM>
+        <BaseS color={colors.gray50}>·</BaseS>
         <Spacer width={8} />
-        <StyledLink href="/privacy">
-          <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
-        </StyledLink>
+        <NavLink href="/privacy">Privacy</NavLink>
         <Spacer width={8} />
-        <StyledLink href="/terms">
-          <StyledLinkText color={colors.gray30}>Terms</StyledLinkText>
-        </StyledLink>
+        <NavLink href="/terms">Terms</NavLink>
       </BoringLegalContent>
     </StyledGlobalFooter>
   );
@@ -88,7 +73,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
-  background-color: ${colors.offWhite};
+  background-color: ${colors.white};
   z-index: 2;
   position: relative;
 }
@@ -104,7 +89,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
         bottom: 0;
         width: 100%;
 
-        background: ${colors.offWhite};
+        background: ${colors.white};
         background: linear-gradient(
           to bottom,
           rgba(255, 255, 255, 0) 0%,

@@ -44,9 +44,11 @@ function BigInput({
 const StyledBigInput = styled.input`
   padding: 0 2px;
   border: 0;
-  font-size: 40px;
-  font-family: 'Gallery Display';
-  line-height: 48px;
+  font-size: 32px;
+  font-family: 'GT Alpina';
+  line-height: 36px;
+  letter-spacing: -0.03em;
+
   ::placeholder {
     opacity: 0.5;
   }

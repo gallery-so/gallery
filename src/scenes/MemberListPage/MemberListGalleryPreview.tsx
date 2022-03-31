@@ -170,7 +170,7 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
   position: absolute;
   top: ${({ top }) => top}px;
   left: ${({ left }) => left}px;
-  background-color: ${colors.offWhite};
+  background-color: ${colors.white};
   width: 250px;
   opacity: 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;

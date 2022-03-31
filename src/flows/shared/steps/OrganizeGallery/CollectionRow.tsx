@@ -93,7 +93,7 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   padding: 32px;
 
   border: 1px solid ${colors.gray50};
-  background-color: ${colors.offWhite};
+  background-color: ${colors.white};
 
   opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};
 `;

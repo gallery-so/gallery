@@ -121,7 +121,7 @@ const StyledWizardFooter = styled.div`
   width: 100%;
 
   border-top: 1px solid ${colors.gray40};
-  background: ${colors.offWhite};
+  background: ${colors.white};
 `;
 
 const StyledButton = styled(Button)`

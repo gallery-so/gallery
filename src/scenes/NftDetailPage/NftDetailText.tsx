@@ -11,6 +11,7 @@ import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 type Props = {
   nft: Nft;
@@ -29,14 +30,12 @@ function NftDetailText({ nft, ownerUsername }: Props) {
       <Spacer height={4} />
       <BaseM>{nft.token_collection_name}</BaseM>
       <Spacer height={32} />
-      <StyledNftDescription color={colors.gray50}>
+      <StyledNftDescription>
         <Markdown text={nft.description} />
       </StyledNftDescription>
       <Spacer height={32} />
       <TitleXS>Owner</TitleXS>
-      <StyledLink href={`/${ownerUsername}`}>
-        <BaseM>{ownerUsername}</BaseM>
-      </StyledLink>
+      <InteractiveLink to={`/${ownerUsername}`}>{ownerUsername}</InteractiveLink>
       <Spacer height={16} />
       {creatorExists && (
         <>

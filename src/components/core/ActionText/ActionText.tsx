@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TitleXS } from '../Text/Text';
+import { BaseS } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
 
@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const ActionText = styled(TitleXS)<Props>`
+const ActionText = styled(BaseS)<Props>`
   text-transform: uppercase;
   transition: color ${transitions.cubic};
 

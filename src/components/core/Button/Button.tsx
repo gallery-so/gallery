@@ -64,7 +64,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   height: ${({ mini }) => (mini ? 32 : 40)}px;
 
-  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.black : colors.offWhite)};
+  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.black : colors.white)};
 
   cursor: pointer;
 

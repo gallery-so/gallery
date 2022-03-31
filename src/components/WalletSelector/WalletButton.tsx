@@ -102,7 +102,7 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: space-between;
 
-  background: ${colors.offWhite};
+  background: ${colors.white};
   border: 1px solid ${colors.gray50};
   padding: 8px 16px;
   margin-bottom: 8px;

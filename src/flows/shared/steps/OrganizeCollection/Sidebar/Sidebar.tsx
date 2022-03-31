@@ -160,7 +160,7 @@ const StyledSidebar = styled.div`
   width: 100%;
   height: calc(100vh - ${FOOTER_HEIGHT}px);
 
-  background: #f7f7f7;
+  background: ${colors.offWhite};
 
   padding: 32px;
 

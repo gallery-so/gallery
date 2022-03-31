@@ -86,7 +86,7 @@ const StyledToast = styled.div`
   border: 1px solid black;
   padding: 16px 32px 16px 24px;
   width: 288px;
-  background: ${colors.offWhite};
+  background: ${colors.white};
 `;
 
 const StyledClose = styled.span`

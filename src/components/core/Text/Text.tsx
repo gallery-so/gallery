@@ -3,7 +3,7 @@ import breakpoints from '../breakpoints';
 import colors from '../colors';
 
 const TITLE_FONT_FAMILY = 'GT Alpina';
-const BODY_FONT_FAMILY = 'ABC Diatype';
+export const BODY_FONT_FAMILY = 'ABC Diatype';
 
 type TextProps = {
   color?: colors;
@@ -12,25 +12,25 @@ type TextProps = {
 
 const H1 = styled.h1<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.black)};
+  color: ${({ color }) => (color ? color : colors.offBlack)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H2 = styled.h2<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.black)};
+  color: ${({ color }) => (color ? color : colors.offBlack)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H3 = styled.h3<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.black)};
+  color: ${({ color }) => (color ? color : colors.offBlack)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const Paragraph = styled.p<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.black)};
+  color: ${({ color }) => (color ? color : colors.offBlack)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
@@ -94,4 +94,10 @@ export const BaseM = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 20px;
+`;
+
+export const BaseS = styled(Paragraph)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  line-height: 16px;
 `;
