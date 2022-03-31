@@ -136,7 +136,7 @@ const StyledAddBlankBlock = styled.div`
   width: 64px;
   margin: 5px;
   background-color: ${colors.offWhite};
-  border: 1px solid ${colors.gray30};
+  border: 1px solid ${colors.porcelain};
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -147,12 +147,12 @@ const StyledAddBlankBlock = styled.div`
   }
 
   &:active {
-    background-color: ${colors.gray10};
+    background-color: ${colors.metal};
   }
 `;
 
 const StyledAddBlankBlockText = styled(TitleXS)`
-  color: ${colors.gray50};
+  color: ${colors.metal};
   text-align: center;
 `;
 

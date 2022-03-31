@@ -53,10 +53,10 @@ const StyledFilterButton = styled.button<TextProps>`
   width: 48px;
   height: 48px;
 
-  color: ${(props) => (props.selected ? colors.black : colors.gray20)};
+  color: ${(props) => (props.selected ? colors.offBlack : colors.porcelain)};
 
   &:hover {
-    color: ${colors.black} !important;
+    color: ${colors.offBlack} !important;
   }
 
   @media only screen and ${breakpoints.tablet} {
@@ -114,7 +114,7 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
     !hasSearchQuery &&
     `&:hover {
     ${StyledFilterButton} {
-      color: ${colors.gray30};
+      color: ${colors.porcelain};
     }
   }`}
 `;

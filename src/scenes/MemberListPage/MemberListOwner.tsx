@@ -118,7 +118,7 @@ const StyledOwner = styled.div`
   }
 
   &:hover {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 `;
 

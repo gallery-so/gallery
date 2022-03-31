@@ -51,7 +51,7 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
   &:hover ${StyledButtonText} {
-    color: ${colors.black};
+    color: ${colors.offBlack};
     text-decoration: ${({ underlineOnHover }) => (underlineOnHover ? 'underline' : undefined)};
   }
 `;

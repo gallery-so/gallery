@@ -38,7 +38,7 @@ const StyledBlankBlock = styled.div<{ size: number }>`
 
 const StyledLabel = styled(BaseM)`
   text-transform: uppercase;
-  color: ${colors.gray50};
+  color: ${colors.metal};
 `;
 
 export default StagedItemDragging;

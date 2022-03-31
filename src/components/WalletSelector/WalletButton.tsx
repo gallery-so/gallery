@@ -103,17 +103,17 @@ const StyledButton = styled.button`
   justify-content: space-between;
 
   background: ${colors.white};
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
   padding: 8px 16px;
   margin-bottom: 8px;
   font-size: 16px;
 
   cursor: pointer;
   :disabled {
-    border-color: ${colors.gray50};
+    border-color: ${colors.metal};
   }
   &:hover {
-    border-color: ${colors.black};
+    border-color: ${colors.offBlack};
 
     ${Icon} {
       transform: scale(1.15);
@@ -128,7 +128,7 @@ const StyledExternalLink = styled.a`
   text-decoration: none;
   &:hover {
     text-decoration: underline;
-    text-decoration-color: ${colors.gray50};
+    text-decoration-color: ${colors.metal};
   }
 `;
 

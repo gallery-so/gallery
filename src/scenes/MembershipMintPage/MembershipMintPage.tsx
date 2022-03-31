@@ -137,20 +137,20 @@ export function MembershipMintPage({
         <StyledDetailText>
           <TitleM>{membershipNft.title}</TitleM>
           <Spacer height={16} />
-          <StyledNftDescription color={colors.gray50}>
+          <StyledNftDescription color={colors.metal}>
             <Markdown text={membershipNft.description} />
           </StyledNftDescription>
           <Spacer height={32} />
           {Number(price) > 0 && (
             <>
-              <BaseM color={colors.gray50}>Price</BaseM>
+              <BaseM color={colors.metal}>Price</BaseM>
               <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
             </>
           )}
           <Spacer height={16} />
           {Boolean(totalSupply) && (
             <>
-              <BaseM color={colors.gray50}>Available</BaseM>
+              <BaseM color={colors.metal}>Available</BaseM>
               <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
               </BaseM>
@@ -160,7 +160,7 @@ export function MembershipMintPage({
           {account && (
             <>
               <Spacer height={16} />
-              <BaseM color={colors.gray50}>Connected wallet</BaseM>
+              <BaseM color={colors.metal}>Connected wallet</BaseM>
               <BaseM>{account}</BaseM>
             </>
           )}

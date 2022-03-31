@@ -20,7 +20,7 @@ function Congratulations() {
     <FullPageCenteredStep>
       <TitleL>Welcome to your Gallery</TitleL>
       <Spacer height={8} />
-      <StyledBodyText color={colors.gray50}>
+      <StyledBodyText color={colors.metal}>
         Let&apos;s show your collection to the world.
       </StyledBodyText>
       <Spacer height={24} />

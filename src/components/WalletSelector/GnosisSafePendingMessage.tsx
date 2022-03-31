@@ -39,9 +39,9 @@ function GnosisSafeListeningOnChainScreen({
     <StyledContentWrapper>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
-      <BaseM color={colors.gray50}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+      <BaseM color={colors.metal}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
       <Spacer height={8} />
-      <BaseM color={colors.gray50}>
+      <BaseM color={colors.metal}>
         Awaiting confirmation and execution by remaining Gnosis Safe owners.
       </BaseM>
       <Spacer height={24} />
@@ -49,7 +49,7 @@ function GnosisSafeListeningOnChainScreen({
         <StyledLoader />
       </StyledLoaderWrapper>
       <Spacer height={24} />
-      <BaseM color={colors.gray50}>Do not close this window.</BaseM>
+      <BaseM color={colors.metal}>Do not close this window.</BaseM>
     </StyledContentWrapper>
   );
 }
@@ -69,15 +69,13 @@ function GnosisSafePendingMessage({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={24} />
-        <BaseM color={colors.gray50}>
-          Connecting with Gnosis requires an on-chain transaction.
-        </BaseM>
+        <BaseM color={colors.metal}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
         <Spacer height={8} />
-        <BaseM color={colors.gray50}>
+        <BaseM color={colors.metal}>
           Follow the prompts in the Gnosis app to sign the message.
         </BaseM>
         <Spacer height={24} />
-        <BaseM color={colors.gray50}>Do not close this window.</BaseM>
+        <BaseM color={colors.metal}>Do not close this window.</BaseM>
       </div>
     );
   }
@@ -97,7 +95,7 @@ function GnosisSafePendingMessage({
       <Spacer height={24} />
       {previousAttemptNonce && account ? (
         <>
-          <BaseM color={colors.gray50}>
+          <BaseM color={colors.metal}>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
           </BaseM>
@@ -113,7 +111,7 @@ function GnosisSafePendingMessage({
           </StyledButtonWrapper>
         </>
       ) : (
-        <BaseM color={colors.gray50}>Approve your wallet to connect to Gallery.</BaseM>
+        <BaseM color={colors.metal}>Approve your wallet to connect to Gallery.</BaseM>
       )}
     </StyledContentWrapper>
   );
@@ -132,7 +130,7 @@ const StyledButtonWrapper = styled.div`
 
 const StyledRestartButton = styled(Button)`
   border: none;
-  color: ${colors.gray50};
+  color: ${colors.metal};
 `;
 
 const StyledLoaderWrapper = styled.div`
@@ -151,7 +149,7 @@ const loading = keyframes`
 `;
 
 const StyledLoader = styled.div`
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
   border-radius: 50%;
   border-right-color: transparent;
   border-bottom-color: transparent;

@@ -88,7 +88,7 @@ function WizardFooter({
   return (
     <StyledWizardFooter>
       {shouldHideSecondaryButton ? null : (
-        <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+        <ActionText color={colors.metal} onClick={handlePreviousClick}>
           {isFirstStep ? 'Cancel' : 'Back'}
         </ActionText>
       )}
@@ -120,7 +120,7 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid ${colors.gray40};
+  border-top: 1px solid ${colors.metal};
   background: ${colors.white};
 `;
 

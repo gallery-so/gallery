@@ -77,7 +77,7 @@ const StyledUnstageButton = styled(UnstageButton)`
 
 const StyledWhitespaceLabel = styled(BaseM)`
   text-transform: uppercase;
-  color: ${colors.gray50};
+  color: ${colors.metal};
 
   transition: opacity ${transitions.cubic};
 `;
@@ -86,7 +86,7 @@ const StyledWhitespace = styled.div<{ size: number; showAnimation: boolean }>`
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
   position: relative;
-  border: 1px dashed ${colors.gray30};
+  border: 1px dashed ${colors.porcelain};
   transition: opacity ${transitions.cubic};
   display: flex;
   flex-direction: column;
@@ -111,7 +111,7 @@ const StyledSortableWhitespace = styled.div`
 
   margin: 24px;
   ${BaseM} {
-    color: ${colors.gray50};
+    color: ${colors.metal};
   }
 
   &:hover {

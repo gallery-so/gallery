@@ -17,11 +17,11 @@ const ActionText = styled(BaseS)<Props>`
 
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
-  color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
+  color: ${({ focused }) => (focused ? colors.offBlack : colors.metal)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : undefined)};
 
   &:hover {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 `;
 

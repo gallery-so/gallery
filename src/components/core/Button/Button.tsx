@@ -42,7 +42,7 @@ function Button({
       {loading ? (
         <Loader inverted size={mini ? 'mini' : 'small'} />
       ) : (
-        <TitleXS color={type === 'primary' ? colors.white : colors.gray80}>{text}</TitleXS>
+        <TitleXS color={type === 'primary' ? colors.white : colors.shadow}>{text}</TitleXS>
       )}
     </StyledButton>
   );
@@ -60,11 +60,11 @@ const StyledButton = styled.button<StyledButtonProps>`
   align-items: center;
 
   border-style: none;
-  border: 1px solid ${colors.black};
+  border: 1px solid ${colors.offBlack};
 
   height: ${({ mini }) => (mini ? 32 : 40)}px;
 
-  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.black : colors.white)};
+  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.offBlack : colors.white)};
 
   cursor: pointer;
 

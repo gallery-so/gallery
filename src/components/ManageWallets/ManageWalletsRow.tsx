@@ -73,7 +73,7 @@ export default ManageWalletsRow;
 
 const StyledWalletRow = styled.div`
   display: flex;
-  border: 1px solid ${colors.black};
+  border: 1px solid ${colors.offBlack};
   padding: 16px;
   margin-bottom: 8px;
   justify-content: space-between;

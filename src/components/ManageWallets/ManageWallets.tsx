@@ -46,8 +46,8 @@ function ManageWallets({ newAddress }: Props) {
     <StyledManageWallets>
       <TitleS>Manage Accounts</TitleS>
       <Spacer height={8} />
-      <BaseM color={colors.gray50}>Add more wallets to access your other NFTs.</BaseM>
-      <BaseM color={colors.gray50}>
+      <BaseM color={colors.metal}>Add more wallets to access your other NFTs.</BaseM>
+      <BaseM color={colors.metal}>
         You&apos;ll also be able to sign in using any connected wallet.
       </BaseM>
       {notification && (

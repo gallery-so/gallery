@@ -83,13 +83,13 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
   display: flex;
   flex-wrap: wrap;
 
-  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.gray30 : colors.black)};
+  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
 
   transition: color 0.15s ease-in-out;
 `;
 
 const StyledTierHeading = styled(TitleS)`
-  color: ${colors.gray50};
+  color: ${colors.metal};
 `;
 
 export default MemberListTier;

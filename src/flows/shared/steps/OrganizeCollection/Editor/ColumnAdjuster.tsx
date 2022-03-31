@@ -46,7 +46,7 @@ const StyledColumnButton = styled(TextButton)<{ disabled: boolean }>`
 
   // Override default TextButton font size
   ${StyledButtonText} {
-    color: ${({ disabled }) => (disabled ? colors.gray20 : colors.gray70)};
+    color: ${({ disabled }) => (disabled ? colors.porcelain : colors.metal)};
     font-size: 20px;
   }
 `;

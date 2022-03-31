@@ -12,7 +12,7 @@ function Directions() {
       <StyledDirections>
         <Heading>Add NFTs to your collection</Heading>
         <Spacer height={8} />
-        <BaseM color={colors.gray50}>
+        <BaseM color={colors.metal}>
           Select NFTs to include in your collection. Drag and drop to rearrange.
         </BaseM>
       </StyledDirections>

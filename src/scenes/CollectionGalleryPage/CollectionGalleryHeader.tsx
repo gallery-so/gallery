@@ -87,7 +87,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       </StyledHeaderWrapper>
       <Spacer height={32} />
       {unescapedCollectorsNote && (
-        <StyledCollectionNote color={colors.gray50}>
+        <StyledCollectionNote color={colors.metal}>
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectionNote>
       )}
@@ -160,7 +160,7 @@ const StyledCollectionName = styled.div`
 const StyledSeparator = styled.div`
   margin: 0 10px;
   display: none;
-  color: ${colors.gray40};
+  color: ${colors.metal};
 
   @media only screen and ${breakpoints.mobileLarge} {
     display: block;
@@ -169,10 +169,10 @@ const StyledSeparator = styled.div`
 
 const StyledUsername = styled.span`
   cursor: pointer;
-  color: ${colors.gray40};
+  color: ${colors.metal};
   display: flex;
   &:hover {
-    color: ${colors.gray80};
+    color: ${colors.shadow};
   }
 `;
 

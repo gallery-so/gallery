@@ -63,15 +63,15 @@ function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: P
 const StyledSearchBar = styled.div``;
 
 const StyledSearchInput = styled.input`
-  border: 1px solid ${colors.gray30};
+  border: 1px solid ${colors.porcelain};
   width: 100%;
   padding: 8px;
   padding-left: 30px;
-  color: ${colors.gray50};
+  color: ${colors.metal};
   background: url(/icons/search.svg) no-repeat scroll 10px 9px;
 
   ::placeholder {
-    color: ${colors.gray30};
+    color: ${colors.porcelain};
   }
 `;
 

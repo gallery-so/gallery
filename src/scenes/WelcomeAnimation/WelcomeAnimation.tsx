@@ -107,7 +107,7 @@ export default function WelcomeAnimation({ next }: Props) {
         <StyledTextContainer shouldFadeOut={shouldFadeOut}>
           <TitleL>Welcome to Gallery</TitleL>
           <Spacer height={8} />
-          <StyledBodyText color={colors.gray50}>
+          <StyledBodyText color={colors.metal}>
             This is your space to share your pieces and the stories that surround them. Curate,
             arrange, and display your collection exactly how it was meant to be.
           </StyledBodyText>

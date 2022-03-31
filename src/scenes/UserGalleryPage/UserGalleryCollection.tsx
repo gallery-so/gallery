@@ -108,7 +108,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
         {unescapedCollectorsNote && (
           <>
             <Spacer height={8} />
-            <StyledCollectorsNote color={colors.gray50}>
+            <StyledCollectorsNote color={colors.metal}>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>

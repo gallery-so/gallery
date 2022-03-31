@@ -142,7 +142,7 @@ export function AutoResizingTextAreaWithCharCount({
 
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
 `;
 
 const StyledParentContainer = styled.div`
@@ -154,5 +154,5 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
   bottom: 8px;
   right: 8px;
 
-  color: ${({ error }) => (error ? colors.error : colors.gray50)};
+  color: ${({ error }) => (error ? colors.error : colors.metal)};
 `;

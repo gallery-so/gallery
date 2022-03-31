@@ -21,7 +21,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
       <TitleContainer>
         <Heading>Organize your Gallery</Heading>
         <Spacer height={4} />
-        <BaseM color={colors.gray50}>Drag and drop to reorder your collection</BaseM>
+        <BaseM color={colors.metal}>Drag and drop to reorder your collection</BaseM>
       </TitleContainer>
       <OptionsContainer>
         {/* TODO: support gallery preview

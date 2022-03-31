@@ -53,7 +53,7 @@ function CollectionRow({ collection, className }: Props) {
         <TextContainer>
           <BaseM>{unescapedCollectionName}</BaseM>
           <Spacer height={4} />
-          <StyledBaseM color={colors.gray50}>
+          <StyledBaseM color={colors.metal}>
             <Markdown text={truncatedCollectorsNote} />
           </StyledBaseM>
         </TextContainer>
@@ -92,7 +92,7 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   width: 100%;
   padding: 32px;
 
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
   background-color: ${colors.white};
 
   opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};

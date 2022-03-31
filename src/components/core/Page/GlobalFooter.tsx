@@ -47,9 +47,9 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <BaseS color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</BaseS>
+        <BaseS color={colors.metal}>© {new Date().getFullYear()} All rights reserved</BaseS>
         <Spacer width={8} />
-        <BaseS color={colors.gray50}>·</BaseS>
+        <BaseS color={colors.metal}>·</BaseS>
         <Spacer width={8} />
         <NavLink href="/privacy">Privacy</NavLink>
         <Spacer width={8} />
@@ -130,7 +130,7 @@ const StyledLink = styled.a`
 const StyledLinkText = styled(BaseM)`
   transition: color ${transitions.cubic};
   &:hover {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 `;
 
