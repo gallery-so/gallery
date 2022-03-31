@@ -48,7 +48,7 @@ export const TitleM = styled(H2)`
   line-height: 28px;
   font-weight: 400;
   font-style: italic;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
 
   // wrap text with strong to stylize as non-italic
   strong {
