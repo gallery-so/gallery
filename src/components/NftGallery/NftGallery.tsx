@@ -80,7 +80,7 @@ const __APRIL_FOOLS__hex__ = styled.div`
 
 const __APRIL_FOOLS__hex_background__ = styled.div`
   position: absolute;
-  background-color: grey;
+  background-color: #eee;
   // width: 137px;
   // height: 118.642px;
   width: 100%;
