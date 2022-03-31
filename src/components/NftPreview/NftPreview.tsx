@@ -63,9 +63,15 @@ function NftPreview({
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
           <NftPreviewAsset nft={nft} size={previewSize * 2} />
-          <StyledNftFooter>
+          <StyledNftFooter
+            __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+          >
             {__APRIL__FOOLS__isAprilFoolsEdition__ ? null : <StyledNftLabel nft={nft} />}
-            <StyledGradient type="bottom" direction="down" />
+            <StyledGradient
+              type="bottom"
+              direction="down"
+              __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+            />
           </StyledNftFooter>
         </ShimmerProvider>
       </StyledLinkWrapper>
@@ -79,9 +85,19 @@ const StyledLinkWrapper = styled.a`
   width: 100%;
 `;
 
-const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
+const StyledGradient = styled(Gradient)<{
+  type: 'top' | 'bottom';
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
+}>`
   position: absolute;
   ${({ type }) => type}: 0;
+
+  ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ &&
+    `
+    height: 100%;
+    background-image: linear-gradient(to bottom, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 10%) 100%);
+  `}
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
@@ -89,10 +105,13 @@ const StyledNftLabel = styled(NftPreviewLabel)`
   transform: translateY(5px);
 `;
 
-const StyledNftFooter = styled.div`
+const StyledNftFooter = styled.div<{ __APRIL__FOOLS__isAprilFoolsEdition__?: boolean }>`
   position: absolute;
   bottom: 0;
   width: 100%;
+
+  ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ && 'height: 100%;'}
 
   transition: opacity ${transitions.cubic};
 
