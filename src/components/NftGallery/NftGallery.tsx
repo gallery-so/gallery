@@ -46,7 +46,16 @@ function NftGallery({ collection, mobileLayout }: Props) {
           // temporarily fix bugged NFTs from not appearing within a collection.
           // in the future, the backend will simply not return them.
           Boolean(item.id) && (
-            <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+            <__APRIL_FOOLS__hex__>
+              <__APRIL_FOOLS__hex_background__>
+                <NftPreview
+                  key={item.id}
+                  nft={item}
+                  collectionId={collection.id}
+                  columns={columns}
+                />
+              </__APRIL_FOOLS__hex_background__>
+            </__APRIL_FOOLS__hex__>
           )
         ) : (
           <StyledWhitespaceBlock key={item.id} />
@@ -55,6 +64,26 @@ function NftGallery({ collection, mobileLayout }: Props) {
     </StyledCollectionNfts>
   );
 }
+
+const __APRIL_FOOLS__hex__ = styled.div`
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  width: 137px;
+  height: 118.642px; /* width * 0.866 */
+  box-sizing: border-box;
+  -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+  -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+`;
+
+const __APRIL_FOOLS__hex_background__ = styled.div`
+  position: absolute;
+  background-color: grey; /* color of the main-background */
+  width: 137px; /* container height - (border thickness * 2) */
+  height: 118.642px; /* container height - (border thickness * 2) */
+  -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+  -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+`;
 
 const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
   display: grid;
