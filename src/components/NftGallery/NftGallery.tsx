@@ -73,7 +73,7 @@ const __APRIL_FOOLS__hex__ = styled.div`
   // width: 137px;
   // height: 118.642px; /* width * 0.866 */
   width: 100%;
-  height: 86.6%;
+  padding-bottom: 86.6%; // hack to enforce aspect ratio
   box-sizing: border-box;
   -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
   -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
