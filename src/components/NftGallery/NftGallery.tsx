@@ -69,8 +69,10 @@ const __APRIL_FOOLS__hex__ = styled.div`
   display: block;
   margin: 0 auto;
   position: relative;
-  width: 137px;
-  height: 118.642px; /* width * 0.866 */
+  // width: 137px;
+  // height: 118.642px; /* width * 0.866 */
+  width: 100%;
+  height: 86.6%;
   box-sizing: border-box;
   -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
   -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
@@ -78,9 +80,11 @@ const __APRIL_FOOLS__hex__ = styled.div`
 
 const __APRIL_FOOLS__hex_background__ = styled.div`
   position: absolute;
-  background-color: grey; /* color of the main-background */
-  width: 137px; /* container height - (border thickness * 2) */
-  height: 118.642px; /* container height - (border thickness * 2) */
+  background-color: grey;
+  // width: 137px;
+  // height: 118.642px;
+  width: 100%;
+  height: 100%;
   -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
   -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
 `;
