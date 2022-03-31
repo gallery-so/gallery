@@ -53,6 +53,7 @@ function NftGallery({ collection, mobileLayout }: Props) {
                   nft={item}
                   collectionId={collection.id}
                   columns={columns}
+                  __APRIL__FOOLS__isAprilFoolsEdition__
                 />
               </__APRIL_FOOLS__hex_background__>
             </__APRIL_FOOLS__hex__>

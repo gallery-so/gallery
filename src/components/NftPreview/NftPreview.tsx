@@ -13,6 +13,7 @@ type Props = {
   nft: Nft;
   collectionId: string;
   columns: number;
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
 };
 
 const SINGLE_COLUMN_NFT_WIDTH = 600;
@@ -27,7 +28,12 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
   6: 134,
 };
 
-function NftPreview({ nft, collectionId, columns }: Props) {
+function NftPreview({
+  nft,
+  collectionId,
+  columns,
+  __APRIL__FOOLS__isAprilFoolsEdition__ = false,
+}: Props) {
   const navigateToUrl = useNavigateToUrl();
 
   const username = window.location.pathname.split('/')[1];
@@ -48,13 +54,17 @@ function NftPreview({ nft, collectionId, columns }: Props) {
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
   return (
-    <StyledNftPreview key={nft.id} columns={columns}>
+    <StyledNftPreview
+      key={nft.id}
+      columns={columns}
+      __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+    >
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
           <NftPreviewAsset nft={nft} size={previewSize * 2} />
           <StyledNftFooter>
-            <StyledNftLabel nft={nft} />
+            {__APRIL__FOOLS__isAprilFoolsEdition__ ? null : <StyledNftLabel nft={nft} />}
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>
         </ShimmerProvider>
@@ -89,12 +99,16 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ columns: number }>`
+const StyledNftPreview = styled.div<{
+  columns: number;
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  height: fit-content;
+  height: ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ ? 'inherit' : 'object-fit'};
   overflow: hidden;
 
   &:hover ${StyledNftLabel} {
