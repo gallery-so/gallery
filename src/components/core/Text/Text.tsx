@@ -74,15 +74,6 @@ export const TitleXS = styled(H3)`
   text-transform: uppercase;
 `;
 
-// this is not in our type rules but keeping this for now until we have replacements for usage
-export const Heading = styled(H3)`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 28px;
-  letter-spacing: 0px;
-`;
-
 export const BaseXL = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-weight: 400;

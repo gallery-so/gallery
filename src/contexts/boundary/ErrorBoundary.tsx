@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import styled from 'styled-components';
-import { Heading, BaseM } from 'components/core/Text/Text';
+import { BaseXL, BaseM } from 'components/core/Text/Text';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
@@ -29,7 +29,7 @@ class ErrorBoundary extends Component {
 
       return (
         <Page centered topPadding>
-          <Heading>{header}</Heading>
+          <BaseXL>{header}</BaseXL>
           <Spacer height={8} />
           <BaseM>{description}</BaseM>
           <Spacer height={48} />

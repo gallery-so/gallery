@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react';
 import styled from 'styled-components';
-import { Heading } from 'components/core/Text/Text';
+import { BaseXL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
@@ -21,7 +21,7 @@ function Nuke() {
 
   return (
     <Page centered>
-      <Heading>Your local cache has been nuked</Heading>
+      <BaseXL>Your local cache has been nuked</BaseXL>
       <Spacer height={32} />
       <GalleryLink to="/">
         <StyledButton text="Take me home" />

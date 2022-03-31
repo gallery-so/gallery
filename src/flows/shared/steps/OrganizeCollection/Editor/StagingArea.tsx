@@ -14,7 +14,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import { Heading } from 'components/core/Text/Text';
+import { BaseXL } from 'components/core/Text/Text';
 
 import {
   useCollectionEditorActions,
@@ -92,7 +92,7 @@ function StagingArea() {
       >
         <SortableContext items={stagedItems}>
           <StyledHeadingWrapper>
-            <Heading>Your collection</Heading>
+            <BaseXL>Your collection</BaseXL>
           </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedItems.map((stagedItem) => (

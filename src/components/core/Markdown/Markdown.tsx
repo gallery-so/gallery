@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import InteractiveLink from '../InteractiveLink/InteractiveLink';
-import { Heading } from '../Text/Text';
+import { BaseXL } from '../Text/Text';
 
 type Props = {
   text: string;
@@ -52,6 +52,6 @@ function BaseMarkdown({ text, allowedElements }: BaseProps) {
   );
 }
 
-const StyledBodyHeading = styled(Heading)`
+const StyledBodyHeading = styled(BaseXL)`
   margin: 32px 0 16px;
 `;

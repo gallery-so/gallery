@@ -1,4 +1,4 @@
-import { Heading, BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
+import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import colors from 'components/core/colors';
