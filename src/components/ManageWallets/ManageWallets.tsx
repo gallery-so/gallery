@@ -7,7 +7,7 @@ import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import useAddWalletModal from 'hooks/useAddWalletModal';
 import usePersistedState from 'hooks/usePersistedState';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import ManageWalletsRow from './ManageWalletsRow';
 
@@ -17,7 +17,9 @@ type Props = {
 
 function ManageWallets({ newAddress }: Props) {
   const addresses = useAuthenticatedUserAddresses();
+  const [removedAddress, setRemovedAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [notification, setNotification] = useState('');
 
   const showAddWalletModal = useAddWalletModal();
 
@@ -28,6 +30,18 @@ function ManageWallets({ newAddress }: Props) {
   const addWalletDisabled = useMemo(() => addresses.length >= 5, [addresses]);
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
+  useEffect(() => {
+    if (removedAddress) {
+      setNotification(`Wallet ${removedAddress} has been removed.`);
+    }
+  }, [removedAddress]);
+
+  useEffect(() => {
+    if (newAddress) {
+      setNotification(`Wallet ${newAddress} has been added.`);
+    }
+  }, [newAddress]);
+
   return (
     <StyledManageWallets>
       <BodyMedium>Manage Accounts</BodyMedium>
@@ -36,10 +50,10 @@ function ManageWallets({ newAddress }: Props) {
       <BodyRegular color={colors.gray50}>
         You&apos;ll also be able to sign in using any connected wallet.
       </BodyRegular>
-      {newAddress && (
+      {notification && (
         <>
           <Spacer height={16} />
-          <BodyRegular>Wallet {newAddress} was added.</BodyRegular>
+          <BodyRegular>{notification}</BodyRegular>
         </>
       )}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
@@ -49,6 +63,7 @@ function ManageWallets({ newAddress }: Props) {
           address={address}
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
+          setRemovedAddress={setRemovedAddress}
         />
       ))}
       <StyledButton text="+ Add new wallet" onClick={handleSubmit} disabled={addWalletDisabled} />

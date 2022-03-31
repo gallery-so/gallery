@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, useRef, useEffect, useState, forwardRef, useCallback } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
@@ -10,31 +10,36 @@ type TextAreaProps = {
   placeholder: string;
   defaultValue?: string;
   autoFocus?: boolean;
+  textAreaHeight?: string;
 };
 
-export function TextArea({
-  className,
-  onChange = noop,
-  placeholder,
-  defaultValue,
-  autoFocus = false,
-}: TextAreaProps) {
-  return (
-    <StyledTextArea
-      className={className}
-      placeholder={placeholder}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      autoFocus={autoFocus}
-      autoComplete="off"
-      autoCorrect="off"
-      autoCapitalize="off"
-      spellCheck="false"
-    />
-  );
-}
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  (
+    { className, onChange = noop, placeholder, defaultValue, autoFocus = false, textAreaHeight },
+    ref
+  ) => {
+    const _ref = useRef<HTMLTextAreaElement>(null);
+    const textAreaRef = ref || _ref;
 
-const StyledTextArea = styled.textarea`
+    return (
+      <StyledTextArea
+        className={className}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        autoFocus={autoFocus}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
+        textAreaHeight={textAreaHeight}
+        ref={textAreaRef}
+      />
+    );
+  }
+);
+
+const StyledTextArea = styled.textarea<TextAreaProps>`
   width: 100%;
   height: 100%;
   padding: 16px;
@@ -44,6 +49,7 @@ const StyledTextArea = styled.textarea`
   resize: none;
   font-size: 14px;
   line-height: 20px;
+  ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
 `;
 
 export default TextArea;
@@ -70,9 +76,76 @@ export function TextAreaWithCharCount({
   );
 }
 
+export function AutoResizingTextAreaWithCharCount({
+  ...textAreaProps
+}: TextAreaWithCharCountProps) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const DEFAULT_TEXTAREA_HEIGHT = 'auto';
+
+  const [textAreaHeight, setTextAreaHeight] = useState(DEFAULT_TEXTAREA_HEIGHT);
+  const [parentHeight, setParentHeight] = useState(DEFAULT_TEXTAREA_HEIGHT);
+
+  // Update textArea height when text changes
+  useEffect(() => {
+    if (textAreaRef.current) {
+      setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
+      setParentHeight(`${textAreaRef.current.scrollHeight}px`);
+    }
+  }, [textAreaProps.defaultValue]);
+
+  const oldText = useRef(textAreaProps.defaultValue);
+
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (textAreaRef.current) {
+      const textWasDeleted = oldText.current // If oldText.current is null/undefined, we do not need to reduce because textarea height will be 0
+        ? oldText.current.length > event.target.value.length
+        : false;
+
+      // scrollHeight does not decrease when we delete rows of text, so we reset the height to 'auto' whenever text is deleted
+      // The useEffect above triggers immediately after, therefore resetting scrollHeight to the height of the content
+      // See https://medium.com/@lucasalgus/creating-a-custom-auto-resize-textarea-component-for-your-react-web-application-6959c0ad68bc
+      if (textWasDeleted) {
+        setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
+        setParentHeight(`${textAreaRef.current.scrollHeight}px`);
+      }
+    }
+
+    oldText.current = event.target.value;
+
+    if (textAreaProps.onChange) {
+      textAreaProps.onChange(event);
+    }
+  }, []);
+
+  return (
+    <StyledTextAreaWithCharCount className={textAreaProps.className}>
+      <StyledParentContainer
+        style={{
+          minHeight: parentHeight,
+        }}
+      >
+        <TextArea
+          {...textAreaProps}
+          ref={textAreaRef}
+          textAreaHeight={textAreaHeight}
+          onChange={handleChange}
+        />
+        <StyledCharacterCounter error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}>
+          {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
+        </StyledCharacterCounter>
+      </StyledParentContainer>
+    </StyledTextAreaWithCharCount>
+  );
+}
+
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
   border: 1px solid ${colors.gray50};
+`;
+
+const StyledParentContainer = styled.div`
+  padding-bottom: 20px;
 `;
 
 const StyledCharacterCounter = styled(Caption)<{ error: boolean }>`

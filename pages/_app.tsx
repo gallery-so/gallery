@@ -57,7 +57,7 @@ const App: FC<{
 
             <meta
               property="og:image"
-              content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo.png"
+              content="https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png"
             />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />

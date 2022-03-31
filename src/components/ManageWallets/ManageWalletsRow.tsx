@@ -13,9 +13,15 @@ type Props = {
   address: string;
   userSigninAddress: string;
   setErrorMessage: (message: string) => void;
+  setRemovedAddress: (address: string) => void;
 };
 
-function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props) {
+function ManageWalletsRow({
+  address,
+  userSigninAddress,
+  setErrorMessage,
+  setRemovedAddress,
+}: Props) {
   const removeUserAddress = useRemoveUserAddress();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
@@ -25,7 +31,7 @@ function ManageWalletsRow({ address, userSigninAddress, setErrorMessage }: Props
       setErrorMessage('');
       setIsDisconnecting(true);
       await removeUserAddress(address);
-      setIsDisconnecting(false);
+      setRemovedAddress(address);
     } catch (error: unknown) {
       setIsDisconnecting(false);
       if (isWeb3Error(error)) {
