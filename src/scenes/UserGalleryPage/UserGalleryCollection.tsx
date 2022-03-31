@@ -84,22 +84,14 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               <Dropdown>
                 {showEditActions && (
                   <>
-                    <TextButton
-                      text="Edit Collection"
-                      onClick={handleEditCollectionClick}
-                      underlineOnHover
-                    />
+                    <TextButton text="Edit Collection" onClick={handleEditCollectionClick} />
                     <Spacer height={12} />
                   </>
                 )}
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
+                <TextButton text="View Collection" onClick={handleViewCollectionClick} />
                 <Spacer height={12} />
                 <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+                  <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
               </Dropdown>
             )}

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import breakpoints from '../breakpoints';
 import colors from '../colors';
 
 const TITLE_FONT_FAMILY = 'GT Alpina';

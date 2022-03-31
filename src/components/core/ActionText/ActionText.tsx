@@ -17,7 +17,7 @@ const ActionText = styled(BaseS)<Props>`
 
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
-  color: ${({ focused }) => (focused ? colors.offBlack : colors.metal)};
+  color: ${({ focused }) => (focused ? colors.offBlack : colors.shadow)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : undefined)};
 
   &:hover {

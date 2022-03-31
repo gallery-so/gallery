@@ -108,7 +108,7 @@ const StyledContentContainer = styled.div`
   // should appear above the overlay
   z-index: 2;
 
-  border: 1px solid ${colors.porcelain};
+  border: 1px solid ${colors.shadow};
 `;
 
 const StyledContent = styled.div`

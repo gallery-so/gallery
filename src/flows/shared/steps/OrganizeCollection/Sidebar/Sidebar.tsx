@@ -136,7 +136,7 @@ const StyledAddBlankBlock = styled.div`
   width: 64px;
   margin: 5px;
   background-color: ${colors.offWhite};
-  border: 1px solid ${colors.porcelain};
+  border: 1px solid ${colors.metal};
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -152,7 +152,7 @@ const StyledAddBlankBlock = styled.div`
 `;
 
 const StyledAddBlankBlockText = styled(TitleXS)`
-  color: ${colors.metal};
+  color: ${colors.shadow};
   text-align: center;
 `;
 
