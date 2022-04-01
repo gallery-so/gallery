@@ -127,7 +127,7 @@ const StyledNftPreview = styled.div<{
   align-items: center;
   position: relative;
   height: ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
-    __APRIL__FOOLS__isAprilFoolsEdition__ ? 'inherit' : 'object-fit'};
+    __APRIL__FOOLS__isAprilFoolsEdition__ ? 'inherit' : 'fit-content'};
   overflow: hidden;
 
   &:hover ${StyledNftLabel} {
