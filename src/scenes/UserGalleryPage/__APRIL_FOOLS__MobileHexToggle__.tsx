@@ -42,7 +42,7 @@ export const __APRIL_FOOLS__MobileHexToggle__ = ({
 
 const StyledAprilFoolsMobileHexToggle = styled.div<{ __APRIL_FOOLS__hexEnabled__: boolean }>`
   margin-top: ${({ __APRIL_FOOLS__hexEnabled__ }) =>
-    __APRIL_FOOLS__hexEnabled__ ? '10px' : '12px'};
+    __APRIL_FOOLS__hexEnabled__ ? '8px' : '10px'};
   cursor: pointer;
 
   &:hover {

@@ -40,7 +40,7 @@ function UserGalleryHeader({
         {showMobileLayoutToggle ? (
           <ToggleGroup>
             <div>
-              <Spacer height={4} />
+              <Spacer height={5} />
               <__APRIL_FOOLS__MobileHexToggle__
                 __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
                 __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
