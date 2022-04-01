@@ -87,7 +87,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       </StyledHeaderWrapper>
       <Spacer height={32} />
       {unescapedCollectorsNote && (
-        <StyledCollectionNote color={colors.metal}>
+        <StyledCollectionNote>
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectionNote>
       )}

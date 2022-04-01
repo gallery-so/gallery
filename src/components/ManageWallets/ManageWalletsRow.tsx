@@ -59,7 +59,6 @@ function ManageWalletsRow({
             <TextButton
               text={isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
               onClick={handleDisconnectClick}
-              underlineOnHover
             />
           </div>
           <ReactTooltip place="left" effect="solid" />

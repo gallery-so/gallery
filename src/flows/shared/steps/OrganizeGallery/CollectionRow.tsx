@@ -53,7 +53,7 @@ function CollectionRow({ collection, className }: Props) {
         <TextContainer>
           <BaseM>{unescapedCollectionName}</BaseM>
           <Spacer height={4} />
-          <StyledBaseM color={colors.metal}>
+          <StyledBaseM>
             <Markdown text={truncatedCollectorsNote} />
           </StyledBaseM>
         </TextContainer>

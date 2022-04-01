@@ -48,7 +48,7 @@ function Auth() {
         <WalletSelector />
       </StyledWalletSelectorWrapper>
       <Spacer height={32} />
-      <StyledBaseM color={colors.metal}>
+      <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledBaseM>
     </StyledAuthPage>

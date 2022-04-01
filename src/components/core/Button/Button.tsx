@@ -42,7 +42,7 @@ function Button({
       {loading ? (
         <Loader inverted size={mini ? 'mini' : 'small'} />
       ) : (
-        <TitleXS color={type === 'primary' ? colors.white : colors.shadow}>{text}</TitleXS>
+        <TitleXS color={type === 'primary' ? colors.white : colors.offBlack}>{text}</TitleXS>
       )}
     </StyledButton>
   );

@@ -36,7 +36,6 @@ const StyledContent = styled.div`
   font-family: 'ABC Diatype';
   font-size: 14px;
   line-height: 24px;
-  letter-spacing: 0.4px;
 
   ul {
     display: flex;

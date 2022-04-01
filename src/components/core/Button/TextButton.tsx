@@ -17,7 +17,6 @@ function TextButton({
   className,
   text,
   onClick,
-  underlineOnHover = false,
   disableTextTransform = false,
   disabled,
   dataTestId,
@@ -26,7 +25,6 @@ function TextButton({
     <StyledButton
       className={className}
       onClick={onClick}
-      underlineOnHover={underlineOnHover}
       disabled={disabled}
       data-testid={dataTestId}
     >
@@ -52,7 +50,6 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>
 
   &:hover ${StyledButtonText} {
     color: ${colors.offBlack};
-    text-decoration: ${({ underlineOnHover }) => (underlineOnHover ? 'underline' : undefined)};
   }
 `;
 

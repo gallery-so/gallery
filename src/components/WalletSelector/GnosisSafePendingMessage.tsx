@@ -39,17 +39,15 @@ function GnosisSafeListeningOnChainScreen({
     <StyledContentWrapper>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
-      <BaseM color={colors.metal}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+      <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
       <Spacer height={8} />
-      <BaseM color={colors.metal}>
-        Awaiting confirmation and execution by remaining Gnosis Safe owners.
-      </BaseM>
+      <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
       <Spacer height={24} />
       <StyledLoaderWrapper>
         <StyledLoader />
       </StyledLoaderWrapper>
       <Spacer height={24} />
-      <BaseM color={colors.metal}>Do not close this window.</BaseM>
+      <BaseM>Do not close this window.</BaseM>
     </StyledContentWrapper>
   );
 }
@@ -69,13 +67,11 @@ function GnosisSafePendingMessage({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={24} />
-        <BaseM color={colors.metal}>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>
-          Follow the prompts in the Gnosis app to sign the message.
-        </BaseM>
+        <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
         <Spacer height={24} />
-        <BaseM color={colors.metal}>Do not close this window.</BaseM>
+        <BaseM>Do not close this window.</BaseM>
       </div>
     );
   }
@@ -95,7 +91,7 @@ function GnosisSafePendingMessage({
       <Spacer height={24} />
       {previousAttemptNonce && account ? (
         <>
-          <BaseM color={colors.metal}>
+          <BaseM>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
           </BaseM>
@@ -111,7 +107,7 @@ function GnosisSafePendingMessage({
           </StyledButtonWrapper>
         </>
       ) : (
-        <BaseM color={colors.metal}>Approve your wallet to connect to Gallery.</BaseM>
+        <BaseM>Approve your wallet to connect to Gallery.</BaseM>
       )}
     </StyledContentWrapper>
   );

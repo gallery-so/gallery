@@ -9,7 +9,7 @@ type Props = {
 function EmptyGallery({ message }: Props) {
   return (
     <StyledEmptyGallery>
-      <BaseM color={colors.metal}>{message}</BaseM>
+      <BaseM>{message}</BaseM>
     </StyledEmptyGallery>
   );
 }

@@ -143,9 +143,7 @@ function CollectionCreateOrEditForm({
     <StyledCollectionEditInfoForm>
       <TitleS>Give your collection a name and description</TitleS>
       <Spacer height={4} />
-      <BaseM color={colors.metal}>
-        You can always add a collection name and description later.
-      </BaseM>
+      <BaseM>You can always add a collection name and description later.</BaseM>
       <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}

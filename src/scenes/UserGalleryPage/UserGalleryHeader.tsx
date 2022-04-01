@@ -36,7 +36,7 @@ function UserGalleryHeader({
       </StyledUsernameWrapper>
       <Spacer height={8} />
       <StyledUserDetails>
-        <StyledBio color={colors.metal}>
+        <StyledBio>
           <Markdown text={unescapedBio} />
         </StyledBio>
       </StyledUserDetails>

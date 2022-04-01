@@ -158,15 +158,13 @@ function AddWalletPendingDefault({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>
-          The following address is already connected to this account:
-        </BaseM>
+        <BaseM>The following address is already connected to this account:</BaseM>
         <Spacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
         {isMetamask && (
           <>
             <Spacer height={8} />
-            <BaseM color={colors.metal}>
+            <BaseM>
               If you want to connect a different address via Metamask, please switch accounts in the
               extension and try again.
             </BaseM>
@@ -182,11 +180,11 @@ function AddWalletPendingDefault({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>Confirm the following wallet address:</BaseM>
+        <BaseM>Confirm the following wallet address:</BaseM>
         <Spacer height={8} />
         <BaseM color={colors.offBlack}>{account?.toLowerCase()}</BaseM>
         <Spacer height={16} />
-        <BaseM color={colors.metal}>
+        <BaseM>
           If you want to connect a different address via Metamask, please switch accounts in the
           extension and try again.
         </BaseM>
@@ -205,7 +203,7 @@ function AddWalletPendingDefault({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>Sign the message with your wallet.</BaseM>
+        <BaseM>Sign the message with your wallet.</BaseM>
       </div>
     );
   }
@@ -215,7 +213,7 @@ function AddWalletPendingDefault({
     <div>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={8} />
-      <BaseM color={colors.metal}>Approve your wallet to connect to Gallery.</BaseM>
+      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );
 }

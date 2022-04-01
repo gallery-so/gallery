@@ -33,7 +33,7 @@ class ErrorBoundary extends Component {
           <Spacer height={8} />
           <BaseM>{description}</BaseM>
           <Spacer height={48} />
-          <StyledReachOut color={colors.metal}>
+          <StyledReachOut>
             If you&apos;re continuing to see this error, reach out to us on{' '}
             <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
           </StyledReachOut>

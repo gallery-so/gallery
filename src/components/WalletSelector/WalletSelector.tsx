@@ -154,7 +154,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       <StyledWalletSelector>
         <TitleS>{displayedError.heading}</TitleS>
         <Spacer height={16} />
-        <StyledBody color={colors.metal}>
+        <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
@@ -182,7 +182,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
           <div>
             <TitleS>Connect with {userFriendlyWalletName}</TitleS>
             <Spacer height={8} />
-            <BaseM color={colors.metal}>Approve your wallet to connect to Gallery.</BaseM>
+            <BaseM>Approve your wallet to connect to Gallery.</BaseM>
           </div>
         </StyledWalletSelector>
       );
@@ -217,7 +217,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         />
       ))}
       <Spacer height={8} />
-      <BaseM color={colors.metal}>More wallets coming soon™</BaseM>
+      <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }

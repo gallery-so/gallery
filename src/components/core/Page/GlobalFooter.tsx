@@ -47,7 +47,7 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <BaseS color={colors.metal}>© {new Date().getFullYear()} All rights reserved</BaseS>
+        <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
         <Spacer width={8} />
         <BaseS color={colors.metal}>·</BaseS>
         <Spacer width={8} />

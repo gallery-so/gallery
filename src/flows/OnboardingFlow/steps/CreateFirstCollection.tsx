@@ -35,7 +35,7 @@ function CreateFirstCollection({ next }: WizardContext) {
     <FullPageCenteredStep withFooter>
       <BaseXL>Create your first collection</BaseXL>
       <Spacer height={8} />
-      <StyledBodyText color={colors.metal}>
+      <StyledBodyText>
         Organize your gallery with collections. Use them to group NFTs by creator, theme, or
         anything that feels right.
       </StyledBodyText>

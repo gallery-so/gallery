@@ -218,9 +218,7 @@ function AddWalletPendingGnosisSafe({
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>
-          The following address is already connected to this account:
-        </BaseM>
+        <BaseM>The following address is already connected to this account:</BaseM>
         <Spacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
       </div>

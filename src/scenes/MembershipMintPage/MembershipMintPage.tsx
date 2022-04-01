@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import Button from 'components/core/Button/Button';
@@ -137,20 +137,20 @@ export function MembershipMintPage({
         <StyledDetailText>
           <TitleM>{membershipNft.title}</TitleM>
           <Spacer height={16} />
-          <StyledNftDescription color={colors.metal}>
+          <StyledNftDescription>
             <Markdown text={membershipNft.description} />
           </StyledNftDescription>
           <Spacer height={32} />
           {Number(price) > 0 && (
             <>
-              <BaseM color={colors.metal}>Price</BaseM>
+              <TitleXS>Price</TitleXS>
               <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
             </>
           )}
           <Spacer height={16} />
           {Boolean(totalSupply) && (
             <>
-              <BaseM color={colors.metal}>Available</BaseM>
+              <TitleXS>Available</TitleXS>
               <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
               </BaseM>
@@ -160,7 +160,7 @@ export function MembershipMintPage({
           {account && (
             <>
               <Spacer height={16} />
-              <BaseM color={colors.metal}>Connected wallet</BaseM>
+              <TitleXS>Connected wallet</TitleXS>
               <BaseM>{account}</BaseM>
             </>
           )}

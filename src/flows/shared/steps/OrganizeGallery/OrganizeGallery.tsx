@@ -126,7 +126,7 @@ function OrganizeGallery({ next, push }: WizardContext) {
           <StyledEmptyGalleryMessage>
             <BaseXL>Create your first collection</BaseXL>
             <Spacer height={8} />
-            <BaseM color={colors.metal}>
+            <BaseM>
               Organize your gallery with collections. Use them to group NFTs by creator, theme, or
               anything that feels right.
             </BaseM>

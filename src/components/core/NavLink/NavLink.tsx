@@ -10,9 +10,10 @@ type Props = {
   to?: string;
   href?: string;
   children: ReactNode;
+  dataTestId?: string;
 };
 
-export default function NavLink({ to, href, children }: Props) {
+export default function NavLink({ to, href, children, dataTestId }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
@@ -28,14 +29,22 @@ export default function NavLink({ to, href, children }: Props) {
   if (to) {
     return (
       <Link href={to} passHref>
-        <StyledAnchor onClick={handleClick}>{children}</StyledAnchor>
+        <StyledAnchor onClick={handleClick} data-testid={dataTestId}>
+          {children}{' '}
+        </StyledAnchor>
       </Link>
     );
   }
 
   if (href) {
     return (
-      <StyledAnchor href={href} target="_blank" rel="noreferrer" onClick={handleClick}>
+      <StyledAnchor
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={handleClick}
+        data-testid={dataTestId}
+      >
         {children}
       </StyledAnchor>
     );
@@ -50,8 +59,9 @@ const StyledAnchor = styled.a`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
   line-height: 16px;
-  color: ${colors.metal};
+  color: ${colors.shadow};
   transition: color ${transitions.cubic};
+  text-transform: uppercase;
 
   &:hover {
     color: ${colors.offBlack};

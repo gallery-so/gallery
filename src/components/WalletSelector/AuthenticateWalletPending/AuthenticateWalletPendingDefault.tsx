@@ -127,7 +127,7 @@ function AuthenticateWalletPendingDefault({
       <StyledAuthenticateWalletPending>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={8} />
-        <BaseM color={colors.metal}>Sign the message with your wallet.</BaseM>
+        <BaseM>Sign the message with your wallet.</BaseM>
       </StyledAuthenticateWalletPending>
     );
   }
@@ -136,7 +136,7 @@ function AuthenticateWalletPendingDefault({
     <StyledAuthenticateWalletPending>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={8} />
-      <BaseM color={colors.metal}>Approve your wallet to connect to Gallery.</BaseM>
+      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </StyledAuthenticateWalletPending>
   );
 }
