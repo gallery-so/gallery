@@ -13,6 +13,7 @@ type Props = {
   nft: Nft;
   collectionId: string;
   columns: number;
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
 };
 
 const SINGLE_COLUMN_NFT_WIDTH = 600;
@@ -27,7 +28,12 @@ const LAYOUT_DIMENSIONS: Record<number, number> = {
   6: 134,
 };
 
-function NftPreview({ nft, collectionId, columns }: Props) {
+function NftPreview({
+  nft,
+  collectionId,
+  columns,
+  __APRIL__FOOLS__isAprilFoolsEdition__ = false,
+}: Props) {
   const navigateToUrl = useNavigateToUrl();
 
   const username = window.location.pathname.split('/')[1];
@@ -48,14 +54,24 @@ function NftPreview({ nft, collectionId, columns }: Props) {
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
   return (
-    <StyledNftPreview key={nft.id} columns={columns}>
+    <StyledNftPreview
+      key={nft.id}
+      columns={columns}
+      __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+    >
       <StyledLinkWrapper onClick={handleNftClick}>
         <ShimmerProvider>
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
           <NftPreviewAsset nft={nft} size={previewSize * 2} />
-          <StyledNftFooter>
-            <StyledNftLabel nft={nft} />
-            <StyledGradient type="bottom" direction="down" />
+          <StyledNftFooter
+            __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+          >
+            {__APRIL__FOOLS__isAprilFoolsEdition__ ? null : <StyledNftLabel nft={nft} />}
+            <StyledGradient
+              type="bottom"
+              direction="down"
+              __APRIL__FOOLS__isAprilFoolsEdition__={__APRIL__FOOLS__isAprilFoolsEdition__}
+            />
           </StyledNftFooter>
         </ShimmerProvider>
       </StyledLinkWrapper>
@@ -69,9 +85,19 @@ const StyledLinkWrapper = styled.a`
   width: 100%;
 `;
 
-const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
+const StyledGradient = styled(Gradient)<{
+  type: 'top' | 'bottom';
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
+}>`
   position: absolute;
   ${({ type }) => type}: 0;
+
+  ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ &&
+    `
+    height: 100%;
+    background-image: linear-gradient(to bottom, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 10%) 100%);
+  `}
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
@@ -79,22 +105,29 @@ const StyledNftLabel = styled(NftPreviewLabel)`
   transform: translateY(5px);
 `;
 
-const StyledNftFooter = styled.div`
+const StyledNftFooter = styled.div<{ __APRIL__FOOLS__isAprilFoolsEdition__?: boolean }>`
   position: absolute;
   bottom: 0;
   width: 100%;
+
+  ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ && 'height: 100%;'}
 
   transition: opacity ${transitions.cubic};
 
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ columns: number }>`
+const StyledNftPreview = styled.div<{
+  columns: number;
+  __APRIL__FOOLS__isAprilFoolsEdition__?: boolean;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  height: fit-content;
+  height: ${({ __APRIL__FOOLS__isAprilFoolsEdition__ }) =>
+    __APRIL__FOOLS__isAprilFoolsEdition__ ? 'inherit' : 'fit-content'};
   overflow: hidden;
 
   &:hover ${StyledNftLabel} {
