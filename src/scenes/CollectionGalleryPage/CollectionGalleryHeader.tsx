@@ -21,14 +21,24 @@ import { DisplayLayout } from 'components/core/enums';
 import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import {
+  __APRIL_FOOLS_HexToggleProps__,
+  __APRIL_FOOLS__DesktopHexToggle__,
+} from 'scenes/UserGalleryPage/__APRIL_FOOLS__DesktopHexToggle__';
 
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-};
+} & __APRIL_FOOLS_HexToggleProps__;
 
-function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: Props) {
+function CollectionGalleryHeader({
+  collection,
+  mobileLayout,
+  setMobileLayout,
+  __APRIL_FOOLS__hexEnabled__,
+  __APRIL_FOOLS__setHexEnabled__,
+}: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
   const user = usePossiblyAuthenticatedUser();
@@ -79,8 +89,13 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
             <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
             {collection.name && <StyledSeparator>/</StyledSeparator>}
           </StyledUsernameAndSeparatorWrapper>
-          {shouldDisplayMobileLayoutToggle && (
+          {shouldDisplayMobileLayoutToggle ? (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+          ) : (
+            <__STYLED__APRIL_FOOLS__DesktopHexToggle__
+              __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
+              __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
+            />
           )}
         </StyledUsernameWrapper>
         <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
@@ -127,6 +142,11 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
   );
 }
 
+const __STYLED__APRIL_FOOLS__DesktopHexToggle__ = styled(__APRIL_FOOLS__DesktopHexToggle__)`
+  position: absolute;
+  right: 0;
+`;
+
 const StyledCollectionGalleryHeaderWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -141,6 +161,8 @@ const StyledHeaderWrapper = styled(Subdisplay)`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+
+  position: relative;
 `;
 
 const StyledUsernameWrapper = styled.div`

@@ -34,9 +34,10 @@ const StyledAprilFoolsIconContainer = styled.div<{ active: boolean }>`
 `;
 
 export const __APRIL_FOOLS__DesktopHexToggle__ = ({
+  className,
   __APRIL_FOOLS__hexEnabled__,
   __APRIL_FOOLS__setHexEnabled__,
-}: __APRIL_FOOLS_HexToggleProps__) => {
+}: { className?: string } & __APRIL_FOOLS_HexToggleProps__) => {
   const handleHexClick = useCallback(() => {
     __APRIL_FOOLS__setHexEnabled__(true);
   }, []);
@@ -46,7 +47,7 @@ export const __APRIL_FOOLS__DesktopHexToggle__ = ({
   }, []);
 
   return (
-    <__APRIL_FOOLS_CONTAINER__>
+    <__APRIL_FOOLS_CONTAINER__ className={className}>
       <__APRIL_FOOLS_ICON_CONTAINER__ onClick={handleHexClick} active={__APRIL_FOOLS__hexEnabled__}>
         <svg
           width="14"

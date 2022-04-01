@@ -9,23 +9,11 @@ import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
-import usePersistedState from 'hooks/usePersistedState';
+import useAprilFoolsDesktopHexToggle from './useAprilFoolsDesktopHexToggle';
 
 type Props = {
   username?: string;
 };
-
-function useAprilFoolsDesktopHexToggle() {
-  const [__APRIL_FOOLS__hexEnabled__, __APRIL_FOOLS__setHexEnabled__] = usePersistedState(
-    'gallery_april_fools_hex_toggle',
-    true
-  );
-
-  return {
-    __APRIL_FOOLS__hexEnabled__,
-    __APRIL_FOOLS__setHexEnabled__,
-  };
-}
 
 function UserGallery({ username }: Props) {
   const user = useUser({ username });
