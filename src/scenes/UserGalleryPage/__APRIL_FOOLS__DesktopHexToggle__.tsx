@@ -86,7 +86,9 @@ export const __APRIL_FOOLS__DesktopHexToggle__ = ({
 const __APRIL_FOOLS_CONTAINER__ = styled.div`
   display: flex;
   cursor: pointer;
-  & svg:hover path {
-    stroke: #141414;
+  &:hover {
+    path {
+      stroke: #141414;
+    }
   }
 `;

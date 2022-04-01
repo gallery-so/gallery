@@ -25,6 +25,7 @@ import {
   __APRIL_FOOLS_HexToggleProps__,
   __APRIL_FOOLS__DesktopHexToggle__,
 } from 'scenes/UserGalleryPage/__APRIL_FOOLS__DesktopHexToggle__';
+import { __APRIL_FOOLS__MobileHexToggle__ } from 'scenes/UserGalleryPage/__APRIL_FOOLS__MobileHexToggle__';
 
 type Props = {
   collection: Collection;
@@ -90,7 +91,14 @@ function CollectionGalleryHeader({
             {collection.name && <StyledSeparator>/</StyledSeparator>}
           </StyledUsernameAndSeparatorWrapper>
           {shouldDisplayMobileLayoutToggle ? (
-            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+            <ToggleGroup>
+              <__APRIL_FOOLS__MobileHexToggle__
+                __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
+                __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
+              />
+              <Spacer width={16} />
+              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+            </ToggleGroup>
           ) : (
             <__STYLED__APRIL_FOOLS__DesktopHexToggle__
               __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
@@ -141,6 +149,12 @@ function CollectionGalleryHeader({
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
+
+const ToggleGroup = styled.div`
+  display: flex;
+  align-items: center;
+  height: 36px;
+`;
 
 const __STYLED__APRIL_FOOLS__DesktopHexToggle__ = styled(__APRIL_FOOLS__DesktopHexToggle__)`
   position: absolute;
