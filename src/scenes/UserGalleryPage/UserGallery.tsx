@@ -55,6 +55,7 @@ function UserGallery({ username }: Props) {
         __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
       />
       {collectionsView}
+      <Spacer height={32} />
     </StyledUserGallery>
   );
 }
