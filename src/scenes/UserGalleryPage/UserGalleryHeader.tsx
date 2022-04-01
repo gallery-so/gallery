@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
@@ -8,6 +8,10 @@ import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
+import {
+  __APRIL_FOOLS_HexToggleProps__,
+  __APRIL_FOOLS__DesktopHexToggle__,
+} from './__APRIL_FOOLS__DesktopHexToggle__';
 
 type Props = {
   username: string;
@@ -15,7 +19,7 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-};
+} & __APRIL_FOOLS_HexToggleProps__;
 
 function UserGalleryHeader({
   username,
@@ -23,6 +27,8 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
+  __APRIL_FOOLS__hexEnabled__,
+  __APRIL_FOOLS__setHexEnabled__,
 }: Props) {
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
@@ -30,8 +36,13 @@ function UserGalleryHeader({
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
         <StyledUsername>{username}</StyledUsername>
-        {showMobileLayoutToggle && (
+        {showMobileLayoutToggle ? (
           <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+        ) : (
+          <__APRIL_FOOLS__DesktopHexToggle__
+            __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
+            __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
+          />
         )}
       </StyledUsernameWrapper>
       <Spacer height={8} />

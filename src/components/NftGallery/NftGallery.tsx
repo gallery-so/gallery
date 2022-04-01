@@ -13,13 +13,14 @@ import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
+  __APRIL_FOOLS__hexEnabled__: boolean;
 };
 
 function isNft(item: Nft | WhitespaceBlock): item is Nft {
   return 'created_at' in item;
 }
 
-function NftGallery({ collection, mobileLayout }: Props) {
+function NftGallery({ collection, mobileLayout, __APRIL_FOOLS__hexEnabled__ }: Props) {
   const columns = useMemo(() => {
     if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
       return collection.layout.columns;
@@ -45,7 +46,8 @@ function NftGallery({ collection, mobileLayout }: Props) {
         isNft(item) ? (
           // temporarily fix bugged NFTs from not appearing within a collection.
           // in the future, the backend will simply not return them.
-          Boolean(item.id) && (
+          Boolean(item.id) &&
+          (__APRIL_FOOLS__hexEnabled__ ? (
             <__APRIL_FOOLS__hex__>
               <__APRIL_FOOLS__hex_background__>
                 <NftPreview
@@ -57,7 +59,15 @@ function NftGallery({ collection, mobileLayout }: Props) {
                 />
               </__APRIL_FOOLS__hex_background__>
             </__APRIL_FOOLS__hex__>
-          )
+          ) : (
+            <NftPreview
+              key={item.id}
+              nft={item}
+              collectionId={collection.id}
+              columns={columns}
+              __APRIL__FOOLS__isAprilFoolsEdition__={false}
+            />
+          ))
         ) : (
           <StyledWhitespaceBlock key={item.id} />
         )

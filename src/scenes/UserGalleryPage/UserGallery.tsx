@@ -9,10 +9,23 @@ import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
+import usePersistedState from 'hooks/usePersistedState';
 
 type Props = {
   username?: string;
 };
+
+function useAprilFoolsDesktopHexToggle() {
+  const [__APRIL_FOOLS__hexEnabled__, __APRIL_FOOLS__setHexEnabled__] = usePersistedState(
+    'gallery_april_fools_hex_toggle',
+    true
+  );
+
+  return {
+    __APRIL_FOOLS__hexEnabled__,
+    __APRIL_FOOLS__setHexEnabled__,
+  };
+}
 
 function UserGallery({ username }: Props) {
   const user = useUser({ username });
@@ -21,6 +34,8 @@ function UserGallery({ username }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const showMobileLayoutToggle = isMobile && gallery?.collections?.length > 0;
   const { mobileLayout, setMobileLayout } = useMobileLayout();
+  const { __APRIL_FOOLS__hexEnabled__, __APRIL_FOOLS__setHexEnabled__ } =
+    useAprilFoolsDesktopHexToggle();
 
   if (!user) {
     return <NotFound />;
@@ -33,6 +48,7 @@ function UserGallery({ username }: Props) {
       collections={gallery.collections}
       isAuthenticatedUsersPage={isAuthenticatedUsersPage}
       mobileLayout={mobileLayout}
+      __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
     />
   ) : (
     <EmptyGallery message="This user has not set up their gallery yet." />
@@ -47,6 +63,8 @@ function UserGallery({ username }: Props) {
         showMobileLayoutToggle={showMobileLayoutToggle}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
+        __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
+        __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
       />
       {collectionsView}
     </StyledUserGallery>
