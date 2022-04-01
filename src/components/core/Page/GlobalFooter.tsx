@@ -1,9 +1,8 @@
 import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { BaseM, BaseS } from 'components/core/Text/Text';
+import { BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
 import {
   GALLERY_FAQ,
@@ -31,17 +30,17 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         </Link>
         <Spacer height={4} />
         <StyledLinkContainer>
-          <NavLink href={GALLERY_FAQ}>FAQ</NavLink>
+          <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
           <Spacer width={8} />
-          <NavLink href={GALLERY_TWITTER}>Twitter</NavLink>
+          <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
           <Spacer width={8} />
-          <NavLink href={GALLERY_DISCORD}>Discord</NavLink>
+          <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
           <Spacer width={8} />
-          <NavLink href={GALLERY_BLOG}>Blog</NavLink>
+          <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
           <Spacer width={8} />
-          <NavLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</NavLink>
+          <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
           <Spacer width={8} />
-          <NavLink href={GALLERY_JOBS}>Jobs</NavLink>
+          <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
           <Spacer width={8} />
         </StyledLinkContainer>
       </MainContent>
@@ -51,9 +50,9 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         <Spacer width={8} />
         <BaseS color={colors.metal}>·</BaseS>
         <Spacer width={8} />
-        <NavLink href="/privacy">Privacy</NavLink>
+        <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
         <Spacer width={8} />
-        <NavLink href="/terms">Terms</NavLink>
+        <StyledFooterLink href="/terms">Terms</StyledFooterLink>
       </BoringLegalContent>
     </StyledGlobalFooter>
   );
@@ -123,15 +122,8 @@ const StyledLinkContainer = styled.div`
   display: flex;
 `;
 
-const StyledLink = styled.a`
-  text-decoration: none;
-`;
-
-const StyledLinkText = styled(BaseM)`
-  transition: color ${transitions.cubic};
-  &:hover {
-    color: ${colors.offBlack};
-  }
+const StyledFooterLink = styled(NavLink)`
+  text-transform: capitalize;
 `;
 
 export default GlobalFooter;

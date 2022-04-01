@@ -11,9 +11,10 @@ type Props = {
   href?: string;
   children: ReactNode;
   dataTestId?: string;
+  className?: string;
 };
 
-export default function NavLink({ to, href, children, dataTestId }: Props) {
+export default function NavLink({ to, href, children, dataTestId, className }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
@@ -29,7 +30,7 @@ export default function NavLink({ to, href, children, dataTestId }: Props) {
   if (to) {
     return (
       <Link href={to} passHref>
-        <StyledAnchor onClick={handleClick} data-testid={dataTestId}>
+        <StyledAnchor onClick={handleClick} data-testid={dataTestId} className={className}>
           {children}{' '}
         </StyledAnchor>
       </Link>
@@ -44,6 +45,7 @@ export default function NavLink({ to, href, children, dataTestId }: Props) {
         rel="noreferrer"
         onClick={handleClick}
         data-testid={dataTestId}
+        className={className}
       >
         {children}
       </StyledAnchor>
