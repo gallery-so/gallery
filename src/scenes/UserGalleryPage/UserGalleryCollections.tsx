@@ -11,17 +11,11 @@ type Props = {
   collections: Collection[];
   isAuthenticatedUsersPage: boolean;
   mobileLayout: DisplayLayout;
-  __APRIL_FOOLS__hexEnabled__: boolean;
 };
 
 const COLLECTION_SPACING = 48;
 
-function UserGalleryCollections({
-  collections,
-  isAuthenticatedUsersPage,
-  mobileLayout,
-  __APRIL_FOOLS__hexEnabled__,
-}: Props) {
+function UserGalleryCollections({ collections, isAuthenticatedUsersPage, mobileLayout }: Props) {
   const visibleCollections = useMemo(
     () => collections.filter((collection) => !collection.hidden && collection.nfts?.length > 0),
     [collections]
@@ -41,11 +35,7 @@ function UserGalleryCollections({
       {visibleCollections.map((collection, index) => (
         <Fragment key={collection.id}>
           <Spacer height={index === 0 ? 16 : COLLECTION_SPACING} />
-          <UserGalleryCollection
-            collection={collection}
-            mobileLayout={mobileLayout}
-            __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
-          />
+          <UserGalleryCollection collection={collection} mobileLayout={mobileLayout} />
           <Spacer height={index === collections.length - 1 ? COLLECTION_SPACING : 0} />
         </Fragment>
       ))}

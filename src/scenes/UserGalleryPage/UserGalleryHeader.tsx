@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
@@ -8,11 +8,6 @@ import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
-import {
-  __APRIL_FOOLS_HexToggleProps__,
-  __APRIL_FOOLS__DesktopHexToggle__,
-} from './__APRIL_FOOLS__DesktopHexToggle__';
-import { __APRIL_FOOLS__MobileHexToggle__ } from './__APRIL_FOOLS__MobileHexToggle__';
 
 type Props = {
   username: string;
@@ -20,7 +15,7 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-} & __APRIL_FOOLS_HexToggleProps__;
+};
 
 function UserGalleryHeader({
   username,
@@ -28,8 +23,6 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
-  __APRIL_FOOLS__hexEnabled__,
-  __APRIL_FOOLS__setHexEnabled__,
 }: Props) {
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
@@ -37,23 +30,8 @@ function UserGalleryHeader({
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
         <StyledUsername>{username}</StyledUsername>
-        {showMobileLayoutToggle ? (
-          <ToggleGroup>
-            <div>
-              <Spacer height={5} />
-              <__APRIL_FOOLS__MobileHexToggle__
-                __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
-                __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
-              />
-            </div>
-            <Spacer width={16} />
-            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-          </ToggleGroup>
-        ) : (
-          <__APRIL_FOOLS__DesktopHexToggle__
-            __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
-            __APRIL_FOOLS__setHexEnabled__={__APRIL_FOOLS__setHexEnabled__}
-          />
+        {showMobileLayoutToggle && (
+          <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
         )}
       </StyledUsernameWrapper>
       <Spacer height={8} />
@@ -65,12 +43,6 @@ function UserGalleryHeader({
     </StyledUserGalleryHeader>
   );
 }
-
-const ToggleGroup = styled.div`
-  display: flex;
-  align-items: center;
-  height: 36px;
-`;
 
 const StyledUserGalleryHeader = styled.div`
   display: flex;

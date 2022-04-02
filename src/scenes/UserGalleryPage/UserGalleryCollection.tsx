@@ -22,14 +22,13 @@ import { baseUrl } from 'utils/baseUrl';
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
-  __APRIL_FOOLS__hexEnabled__: boolean;
 };
 
 export function isValidColumns(columns: number) {
   return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
-function UserGalleryCollection({ collection, mobileLayout, __APRIL_FOOLS__hexEnabled__ }: Props) {
+function UserGalleryCollection({ collection, mobileLayout }: Props) {
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
@@ -115,11 +114,7 @@ function UserGalleryCollection({ collection, mobileLayout, __APRIL_FOOLS__hexEna
           </>
         )}
       </StyledCollectionHeader>
-      <NftGallery
-        collection={collection}
-        mobileLayout={mobileLayout}
-        __APRIL_FOOLS__hexEnabled__={__APRIL_FOOLS__hexEnabled__}
-      />
+      <NftGallery collection={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }
