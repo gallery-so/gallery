@@ -49,6 +49,7 @@ function UserGallery({ username }: Props) {
         setMobileLayout={setMobileLayout}
       />
       {collectionsView}
+      <Spacer height={32} />
     </StyledUserGallery>
   );
 }
