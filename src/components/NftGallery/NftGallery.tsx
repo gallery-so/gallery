@@ -13,14 +13,13 @@ import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
 type Props = {
   collection: Collection;
   mobileLayout: DisplayLayout;
-  __APRIL_FOOLS__hexEnabled__: boolean;
 };
 
 function isNft(item: Nft | WhitespaceBlock): item is Nft {
   return 'created_at' in item;
 }
 
-function NftGallery({ collection, mobileLayout, __APRIL_FOOLS__hexEnabled__ }: Props) {
+function NftGallery({ collection, mobileLayout }: Props) {
   const columns = useMemo(() => {
     if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
       return collection.layout.columns;
@@ -46,28 +45,9 @@ function NftGallery({ collection, mobileLayout, __APRIL_FOOLS__hexEnabled__ }: P
         isNft(item) ? (
           // temporarily fix bugged NFTs from not appearing within a collection.
           // in the future, the backend will simply not return them.
-          Boolean(item.id) &&
-          (__APRIL_FOOLS__hexEnabled__ ? (
-            <__APRIL_FOOLS__hex__>
-              <__APRIL_FOOLS__hex_background__>
-                <NftPreview
-                  key={item.id}
-                  nft={item}
-                  collectionId={collection.id}
-                  columns={columns}
-                  __APRIL__FOOLS__isAprilFoolsEdition__
-                />
-              </__APRIL_FOOLS__hex_background__>
-            </__APRIL_FOOLS__hex__>
-          ) : (
-            <NftPreview
-              key={item.id}
-              nft={item}
-              collectionId={collection.id}
-              columns={columns}
-              __APRIL__FOOLS__isAprilFoolsEdition__={false}
-            />
-          ))
+          Boolean(item.id) && (
+            <NftPreview key={item.id} nft={item} collectionId={collection.id} columns={columns} />
+          )
         ) : (
           <StyledWhitespaceBlock key={item.id} />
         )
@@ -75,30 +55,6 @@ function NftGallery({ collection, mobileLayout, __APRIL_FOOLS__hexEnabled__ }: P
     </StyledCollectionNfts>
   );
 }
-
-const __APRIL_FOOLS__hex__ = styled.div`
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  // width: 137px;
-  // height: 118.642px; /* width * 0.866 */
-  width: 100%;
-  padding-bottom: 86.6%; // hack to enforce aspect ratio
-  box-sizing: border-box;
-  -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-  -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-`;
-
-const __APRIL_FOOLS__hex_background__ = styled.div`
-  position: absolute;
-  background-color: transparent;
-  // width: 137px;
-  // height: 118.642px;
-  width: 100%;
-  height: 100%;
-  -webkit-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-  -moz-clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-`;
 
 const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
   display: grid;
