@@ -116,7 +116,6 @@ const BoringLegalContent = styled.div`
 
 const StyledLogo = styled.img`
   height: 24px;
-
   cursor: pointer;
 `;
 
