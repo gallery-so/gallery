@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -87,7 +87,7 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       </StyledHeaderWrapper>
       <Spacer height={32} />
       {unescapedCollectorsNote && (
-        <StyledCollectionNote color={colors.gray50}>
+        <StyledCollectionNote>
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectionNote>
       )}
@@ -95,26 +95,18 @@ function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: 
       <StyledCollectionActions>
         {showEditActions ? (
           <SettingsDropdown>
-            <TextButton
-              onClick={handleEditNameClick}
-              text="EDIT NAME & DESCRIPTION"
-              underlineOnHover
-            />
+            <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
             {!shouldDisplayMobileLayoutToggle && (
               <>
                 <Spacer height={8} />
                 <NavElement>
-                  <TextButton
-                    onClick={handleEditCollectionClick}
-                    text="Edit Collection"
-                    underlineOnHover
-                  />
+                  <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
                 </NavElement>
               </>
             )}
             <Spacer height={8} />
             <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+              <TextButton text="Share" onClick={handleShareClick} />
             </CopyToClipboard>
           </SettingsDropdown>
         ) : (
@@ -134,7 +126,7 @@ const StyledCollectionGalleryHeaderWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledHeaderWrapper = styled(Subdisplay)`
+const StyledHeaderWrapper = styled(TitleL)`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -160,7 +152,7 @@ const StyledCollectionName = styled.div`
 const StyledSeparator = styled.div`
   margin: 0 10px;
   display: none;
-  color: ${colors.gray40};
+  color: ${colors.metal};
 
   @media only screen and ${breakpoints.mobileLarge} {
     display: block;
@@ -169,14 +161,14 @@ const StyledSeparator = styled.div`
 
 const StyledUsername = styled.span`
   cursor: pointer;
-  color: ${colors.gray40};
+  color: ${colors.metal};
   display: flex;
   &:hover {
-    color: ${colors.gray80};
+    color: ${colors.shadow};
   }
 `;
 
-const StyledCollectionNote = styled(BodyRegular)`
+const StyledCollectionNote = styled(BaseM)`
   width: 100%;
   word-break: break-word;
   /* ensures linebreaks are reflected in UI */

@@ -32,9 +32,9 @@ function LoggedInNav() {
     <>
       <NavElement>
         <Dropdown mainText="Edit Profile">
-          <TextButton text="Edit name & Bio" onClick={handleEditNameClick} underlineOnHover />
+          <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
           <Spacer height={12} />
-          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} underlineOnHover />
+          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} />
         </Dropdown>
       </NavElement>
       <Spacer width={24} />

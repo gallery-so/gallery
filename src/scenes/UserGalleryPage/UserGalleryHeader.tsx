@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { Subdisplay, BodyRegular } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -36,7 +36,7 @@ function UserGalleryHeader({
       </StyledUsernameWrapper>
       <Spacer height={8} />
       <StyledUserDetails>
-        <StyledBio color={colors.gray50}>
+        <StyledBio>
           <Markdown text={unescapedBio} />
         </StyledBio>
       </StyledUserDetails>
@@ -57,7 +57,7 @@ const StyledUsernameWrapper = styled.div`
   align-items: flex-start;
 `;
 
-const StyledUsername = styled(Subdisplay)`
+const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);
 `;
@@ -74,7 +74,7 @@ const StyledUserDetails = styled.div`
   }
 `;
 
-const StyledBio = styled(BodyRegular)`
+const StyledBio = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;

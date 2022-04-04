@@ -4,7 +4,7 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
-import { Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
@@ -48,9 +48,9 @@ function Auth() {
         <WalletSelector />
       </StyledWalletSelectorWrapper>
       <Spacer height={32} />
-      <StyledCaption color={colors.gray50}>
+      <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
-      </StyledCaption>
+      </StyledBaseM>
     </StyledAuthPage>
   );
 }
@@ -65,7 +65,7 @@ const StyledWalletSelectorWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledCaption = styled(Caption)`
+const StyledBaseM = styled(BaseM)`
   text-align: center;
   white-space: pre-line;
 

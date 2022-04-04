@@ -70,7 +70,7 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
   position: absolute;
   z-index: 100;
-  color: ${colors.gray50};
+  color: ${colors.metal};
   padding: 16px;
   margin: 0 -16px -16px -16px;
 
@@ -104,12 +104,12 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   z-index: 1;
   cursor: pointer;
 
-  color: ${colors.gray50};
+  color: ${colors.metal};
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
   &:hover ${StyledHoverText} ${ActionText}, &:hover ${ActionText} {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 
   @media only screen and ${breakpoints.tablet} {
