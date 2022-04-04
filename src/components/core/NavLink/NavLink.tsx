@@ -31,7 +31,7 @@ export default function NavLink({ to, href, children, dataTestId, className }: P
     return (
       <Link href={to} passHref>
         <StyledAnchor onClick={handleClick} data-testid={dataTestId} className={className}>
-          {children}{' '}
+          {children}
         </StyledAnchor>
       </Link>
     );
