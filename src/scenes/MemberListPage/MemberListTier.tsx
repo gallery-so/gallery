@@ -67,7 +67,7 @@ function MemberListTier({ tierRef }: Props) {
 
   return (
     <div>
-      <StyledTierHeading>{tier.name}</StyledTierHeading>
+      <TitleS>{tier.name}</TitleS>
       <Spacer height={24} />
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
@@ -86,10 +86,6 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
   color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
 
   transition: color 0.15s ease-in-out;
-`;
-
-const StyledTierHeading = styled(TitleS)`
-  color: ${colors.metal};
 `;
 
 export default MemberListTier;
