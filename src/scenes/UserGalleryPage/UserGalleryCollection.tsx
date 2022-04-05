@@ -20,6 +20,9 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
+import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import noop from 'utils/noop';
+import { useModal } from 'contexts/modal/ModalContext';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -63,6 +66,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const loggedInUserId = useLoggedInUserId(query);
   const showEditActions = loggedInUserId === collection.gallery?.owner?.id;
 
+  const { showModal } = useModal();
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
@@ -103,6 +107,18 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     }, 200);
   }, []);
 
+  const handleEditNameClick = useCallback(() => {
+    showModal(
+      <CollectionCreateOrEditForm
+        // No need for onNext because this isn't part of a wizard
+        onNext={noop}
+        collectionId={collection.dbid}
+        collectionName={collection.name}
+        collectionCollectorsNote={collection.collectorsNote ?? ''}
+      />
+    );
+  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
+
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
@@ -115,12 +131,26 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
               <Dropdown>
                 {showEditActions && (
                   <>
-                    <TextButton text="Edit Collection" onClick={handleEditCollectionClick} />
-                    <Spacer height={12} />
+                    <TextButton
+                      onClick={handleEditNameClick}
+                      text="EDIT NAME & DESCRIPTION"
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
+                    <TextButton
+                      text="Edit Collection"
+                      onClick={handleEditCollectionClick}
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
                   </>
                 )}
-                <TextButton text="View Collection" onClick={handleViewCollectionClick} />
-                <Spacer height={12} />
+                <TextButton
+                  text="View Collection"
+                  onClick={handleViewCollectionClick}
+                  underlineOnHover
+                />
+                <Spacer height={8} />
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
