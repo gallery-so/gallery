@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { BodyMedium } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
@@ -67,7 +67,7 @@ function MemberListTier({ tierRef }: Props) {
 
   return (
     <div>
-      <StyledTierHeading>{tier.name}</StyledTierHeading>
+      <TitleS>{tier.name}</TitleS>
       <Spacer height={24} />
       <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
         {filteredOwners.map((owner, index) => (
@@ -83,13 +83,9 @@ const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
   display: flex;
   flex-wrap: wrap;
 
-  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.gray30 : colors.black)};
+  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
 
   transition: color 0.15s ease-in-out;
-`;
-
-const StyledTierHeading = styled(BodyMedium)`
-  color: ${colors.gray50};
 `;
 
 export default MemberListTier;

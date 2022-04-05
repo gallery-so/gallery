@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { Nft } from 'types/Nft';
@@ -51,11 +51,11 @@ function CollectionRow({ collection, className }: Props) {
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <BodyRegular>{unescapedCollectionName}</BodyRegular>
+          <BaseM>{unescapedCollectionName}</BaseM>
           <Spacer height={4} />
-          <StyledCaption color={colors.gray50}>
+          <StyledBaseM>
             <Markdown text={truncatedCollectorsNote} />
-          </StyledCaption>
+          </StyledBaseM>
         </TextContainer>
         <Settings />
       </Header>
@@ -92,7 +92,7 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   width: 100%;
   padding: 32px;
 
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
   background-color: ${colors.white};
 
   opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};
@@ -103,7 +103,7 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const StyledCaption = styled(Caption)`
+const StyledBaseM = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 `;
@@ -113,7 +113,7 @@ const TextContainer = styled.div`
   flex-direction: column;
 `;
 
-const StyledHiddenLabel = styled(BodyRegular)`
+const StyledHiddenLabel = styled(BaseM)`
   text-align: right;
 `;
 
@@ -185,7 +185,7 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
               );
             })}
             <Spacer width={2} />
-            <BodyRegular>+{overflowCountText} more</BodyRegular>
+            <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) => {

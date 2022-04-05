@@ -34,7 +34,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         width: 100%;
         height: 100%;
         min-height: 200px;
-        background: white;
+        background: #f9f9f9;
         display: grid;
         grid-template-rows: minmax(0, 1fr) auto;
       }
@@ -64,7 +64,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         color: rgba(115, 115, 115, 1);
       }
       .username {
-        font-family: 'Gallery Display';
+        font-family: 'GT Alpina';
         font-weight: 400;
         font-size: 18px;
         color: black;
@@ -78,7 +78,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         flex-shrink: 0;
       }
       .bio {
-        font-family: 'Helvetica Neue';
+        font-family: 'ABC Diatype';
         font-size: 14px;
         font-weight: 400;
       }

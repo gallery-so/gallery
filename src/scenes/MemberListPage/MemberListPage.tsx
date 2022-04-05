@@ -1,6 +1,6 @@
 import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
-import { Display } from 'components/core/Text/Text';
+import { TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
@@ -76,7 +76,7 @@ const StyledBanner = styled.div`
   margin-right: auto;
 `;
 
-const StyledBannerText = styled(Display)`
+const StyledBannerText = styled(TitleL)`
   font-size: 40px;
   line-height: 48px;
   white-space: pre-wrap;

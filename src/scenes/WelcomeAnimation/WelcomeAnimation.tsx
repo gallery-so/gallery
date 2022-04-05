@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BodyRegular, Display } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -105,9 +105,9 @@ export default function WelcomeAnimation({ next }: Props) {
         }}
       >
         <StyledTextContainer shouldFadeOut={shouldFadeOut}>
-          <Display>Welcome to Gallery</Display>
+          <TitleL>Welcome to Gallery</TitleL>
           <Spacer height={8} />
-          <StyledBodyText color={colors.gray50}>
+          <StyledBodyText>
             This is your space to share your pieces and the stories that surround them. Curate,
             arrange, and display your collection exactly how it was meant to be.
           </StyledBodyText>
@@ -210,7 +210,7 @@ const StyledContainer = styled.div`
   overflow: hidden;
 `;
 
-const StyledBodyText = styled(BodyRegular)`
+const StyledBodyText = styled(BaseM)`
   max-width: 400px;
   text-align: center;
 `;

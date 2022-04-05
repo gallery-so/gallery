@@ -1,4 +1,5 @@
-import { BodyRegular } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
+import { BaseM } from 'components/core/Text/Text';
 import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -60,7 +61,7 @@ function Toast({ message, onClose, cornerPositioned }: Props) {
     () => (
       <StyledToast>
         <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
-        <BodyRegular>{message}</BodyRegular>
+        <BaseM>{message}</BaseM>
       </StyledToast>
     ),
     [handleClose, message]
@@ -85,7 +86,7 @@ const StyledToast = styled.div`
   border: 1px solid black;
   padding: 16px 32px 16px 24px;
   width: 288px;
-  background: white;
+  background: ${colors.white};
 `;
 
 const StyledClose = styled.span`

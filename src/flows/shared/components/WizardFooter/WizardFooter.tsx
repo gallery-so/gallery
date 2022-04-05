@@ -34,10 +34,10 @@ function WizardFooter({
 
   const isFirstStep = useMemo(() => history.index === 0, [history.index]);
 
-  const buttonText = useMemo(() => footerButtonTextMap?.[step.id] ?? 'Next', [
-    footerButtonTextMap,
-    step.id,
-  ]);
+  const buttonText = useMemo(
+    () => footerButtonTextMap?.[step.id] ?? 'Next',
+    [footerButtonTextMap, step.id]
+  );
 
   const handleNextClick = useCallback(async () => {
     if (onNext?.current) {
@@ -88,7 +88,7 @@ function WizardFooter({
   return (
     <StyledWizardFooter>
       {shouldHideSecondaryButton ? null : (
-        <ActionText color={colors.gray10} onClick={handlePreviousClick}>
+        <ActionText color={colors.metal} onClick={handlePreviousClick}>
           {isFirstStep ? 'Cancel' : 'Back'}
         </ActionText>
       )}
@@ -120,8 +120,8 @@ const StyledWizardFooter = styled.div`
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
 
-  border-top: 1px solid ${colors.gray40};
-  background: white;
+  border-top: 1px solid ${colors.metal};
+  background: ${colors.white};
 `;
 
 const StyledButton = styled(Button)`

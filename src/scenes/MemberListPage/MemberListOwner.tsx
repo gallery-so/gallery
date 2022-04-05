@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Heading } from 'components/core/Text/Text';
+import { BaseXL } from 'components/core/Text/Text';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
@@ -118,7 +118,7 @@ const StyledOwner = styled.div`
   }
 
   &:hover {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 `;
 
@@ -126,7 +126,7 @@ const StyledUsernameWrapper = styled.div`
   max-width: 100%;
 `;
 
-const StyledUsername = styled(Heading)`
+const StyledUsername = styled(BaseXL)`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 16px;

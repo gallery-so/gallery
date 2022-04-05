@@ -23,7 +23,7 @@ const StyledCollectionRowDragging = styled.div`
 `;
 
 const StyledCollectionRow = styled(CollectionRow)<{ isMouseUp: boolean }>`
-  border-color: ${colors.green};
+  border-color: ${colors.activeBlue};
   transform: scale(1.025);
   box-shadow: 0px 0px 16px 8px rgb(0 0 0 / 14%);
 

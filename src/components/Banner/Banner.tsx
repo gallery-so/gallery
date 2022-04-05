@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
@@ -27,7 +27,7 @@ export default function Banner({ text, requireAuth = false }: Props) {
   return dismissed || (requireAuth && !isAuthenticated) ? null : (
     <StyledBanner>
       <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
-      <BodyRegular color={colors.white}>{text}</BodyRegular>
+      <BaseM color={colors.white}>{text}</BaseM>
     </StyledBanner>
   );
 }

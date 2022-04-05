@@ -7,7 +7,7 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
 
@@ -58,7 +58,7 @@ function WalletButton({ walletName, activate, connector, setToPendingState }: Wa
   const iconView = useMemo(
     () => (
       <>
-        <BodyRegular>{userFriendlyWalletName}</BodyRegular>
+        <BaseM>{userFriendlyWalletName}</BaseM>
         <Icon src={walletIconMap[(walletSymbol?.description ?? '').toLowerCase()]} />
       </>
     ),
@@ -74,7 +74,7 @@ function WalletButton({ walletName, activate, connector, setToPendingState }: Wa
     return (
       <StyledExternalLink href="https://metamask.io/" target="_blank">
         <StyledButton data-testid="wallet-button">
-          <BodyRegular>Install Metamask</BodyRegular>
+          <BaseM>Install Metamask</BaseM>
           <Icon src="/icons/metamask.svg" />
         </StyledButton>
       </StyledExternalLink>
@@ -102,18 +102,18 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: space-between;
 
-  background: white;
-  border: 1px solid ${colors.gray50};
+  background: ${colors.white};
+  border: 1px solid ${colors.metal};
   padding: 8px 16px;
   margin-bottom: 8px;
   font-size: 16px;
 
   cursor: pointer;
   :disabled {
-    border-color: ${colors.gray50};
+    border-color: ${colors.metal};
   }
   &:hover {
-    border-color: ${colors.black};
+    border-color: ${colors.offBlack};
 
     ${Icon} {
       transform: scale(1.15);
@@ -128,7 +128,7 @@ const StyledExternalLink = styled.a`
   text-decoration: none;
   &:hover {
     text-decoration: underline;
-    text-decoration-color: ${colors.gray50};
+    text-decoration-color: ${colors.metal};
   }
 `;
 

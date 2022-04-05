@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Heading } from 'components/core/Text/Text';
+import { BaseXL } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 import {
@@ -53,10 +53,10 @@ const StyledFilterButton = styled.button<TextProps>`
   width: 48px;
   height: 48px;
 
-  color: ${(props) => (props.selected ? colors.black : colors.gray20)};
+  color: ${(props) => (props.selected ? colors.offBlack : colors.porcelain)};
 
   &:hover {
-    color: ${colors.black} !important;
+    color: ${colors.offBlack} !important;
   }
 
   @media only screen and ${breakpoints.tablet} {
@@ -65,7 +65,7 @@ const StyledFilterButton = styled.button<TextProps>`
   }
 `;
 
-const StyledFilterButtonText = styled(Heading)`
+const StyledFilterButtonText = styled(BaseXL)`
   color: inherit;
 `;
 
@@ -114,7 +114,7 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
     !hasSearchQuery &&
     `&:hover {
     ${StyledFilterButton} {
-      color: ${colors.gray30};
+      color: ${colors.porcelain};
     }
   }`}
 `;

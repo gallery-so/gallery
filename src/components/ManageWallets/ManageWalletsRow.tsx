@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
@@ -49,7 +49,7 @@ function ManageWalletsRow({
 
   return (
     <StyledWalletRow>
-      <BodyRegular>{truncateAddress(address)}</BodyRegular>
+      <BaseM>{truncateAddress(address)}</BaseM>
       {showDisconnectButton && (
         <>
           <div
@@ -59,7 +59,6 @@ function ManageWalletsRow({
             <TextButton
               text={isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
               onClick={handleDisconnectClick}
-              underlineOnHover
             />
           </div>
           <ReactTooltip place="left" effect="solid" />
@@ -73,7 +72,7 @@ export default ManageWalletsRow;
 
 const StyledWalletRow = styled.div`
   display: flex;
-  border: 1px solid ${colors.black};
+  border: 1px solid ${colors.offBlack};
   padding: 16px;
   margin-bottom: 8px;
   justify-content: space-between;

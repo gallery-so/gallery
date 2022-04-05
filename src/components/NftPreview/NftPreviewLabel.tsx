@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 
@@ -12,12 +12,12 @@ type Props = {
 function NftPreviewLabel({ nft, className }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
-      <StyledBodyRegular color={colors.white} lines={1}>
+      <StyledBaseM color={colors.white} lines={1}>
         {nft.name}
-      </StyledBodyRegular>
-      <StyledBodyRegular color={colors.white} lines={2}>
+      </StyledBaseM>
+      <StyledBaseM color={colors.white} lines={2}>
         {nft.token_collection_name}
-      </StyledBodyRegular>
+      </StyledBaseM>
     </StyledNftPreviewLabel>
   );
 }
@@ -37,7 +37,7 @@ export const StyledNftPreviewLabel = styled.div`
   min-height: 56px;
 `;
 
-const StyledBodyRegular = styled(BodyRegular)<{ lines: number }>`
+const StyledBaseM = styled(BaseM)<{ lines: number }>`
   word-wrap: break-word;
   word-break: break-all;
 

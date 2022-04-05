@@ -1,8 +1,7 @@
-import ActionText from 'components/core/ActionText/ActionText';
 import TextButton from 'components/core/Button/TextButton';
-import colors from 'components/core/colors';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Nft } from 'types/Nft';
@@ -55,33 +54,25 @@ function NftAdditionalDetails({ nft }: Props) {
         <div>
           {hasContractAddress && (
             <>
-              <BodyRegular color={colors.gray50}>Contract address</BodyRegular>
-              <StyledLink
-                href={`https://etherscan.io/address/${nft.asset_contract.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <BodyRegular>{nft.asset_contract.address}</BodyRegular>
-              </StyledLink>
+              <TitleXS>Contract address</TitleXS>
+              <InteractiveLink href={`https://etherscan.io/address/${nft.asset_contract.address}`}>
+                {nft.asset_contract.address}
+              </InteractiveLink>
             </>
           )}
           <Spacer height={16} />
-          <BodyRegular color={colors.gray50}>Token ID</BodyRegular>
-          <BodyRegular>{hexHandler(nft.opensea_token_id)}</BodyRegular>
+          <TitleXS>Token ID</TitleXS>
+          <BaseM>{hexHandler(nft.opensea_token_id)}</BaseM>
           <Spacer height={16} />
           <StyledLinkContainer>
             {hasContractAddress && (
               <>
-                <StyledLink href={getOpenseaExternalUrl(nft)} target="_blank" rel="noreferrer">
-                  <ActionText color={colors.gray50}>View on OpenSea</ActionText>
-                </StyledLink>
+                <InteractiveLink href={getOpenseaExternalUrl(nft)}>View on OpenSea</InteractiveLink>
                 <Spacer width={16} />
               </>
             )}
             {nft?.external_url !== '' && (
-              <StyledLink href={nft.external_url} target="_blank" rel="noreferrer">
-                <ActionText color={colors.gray50}>More Info</ActionText>
-              </StyledLink>
+              <InteractiveLink href={nft.external_url}>More Info</InteractiveLink>
             )}
           </StyledLinkContainer>
         </div>
@@ -91,14 +82,6 @@ function NftAdditionalDetails({ nft }: Props) {
 }
 
 const StyledNftAdditionalDetails = styled.div``;
-
-const StyledLink = styled.a`
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 const StyledLinkContainer = styled.div`
   display: flex;
