@@ -216,6 +216,8 @@ type OwnerAtBlock {
 type GalleryNft implements Node @goEmbedHelper @goGqlId(fields: ["nftId", "collectionId"]) {
   id: ID!
   nft: Nft
+  # next: GalleryNft
+  # prev: GalleryNft
   collection: GalleryCollection
 }
 

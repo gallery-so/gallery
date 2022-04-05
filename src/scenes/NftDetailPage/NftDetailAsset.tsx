@@ -12,16 +12,42 @@ import NftDetailModel from './NftDetailModel';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
+import { graphql, useFragment } from 'react-relay';
+import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
+import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 
 type NftDetailAssetComponentProps = {
-  nft: Nft;
+  nftRef: NftDetailAssetComponentFragment$key;
   maxHeight: number;
 };
 
-function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentProps) {
+  const nft = useFragment(
+    graphql`
+      fragment NftDetailAssetComponentFragment on GalleryNft {
+        nft @required(action: THROW) {
+          media @required(action: THROW) {
+            ... on HtmlMedia {
+              __typename
+            }
+            ... on AudioMedia {
+              __typename
+            }
+            ... on etc
+          }
+          name
+          ...NftDetailAudioFragment
+          ...etc
+        }
+      }
+    `,
+    nftRef
+  );
+
   const assetType = getMediaType(nft);
   const breakpoint = useBreakpoint();
 
+  // make this another component
   const resizableImage = useMemo(
     () => (
       <ImageWithLoading
@@ -34,11 +60,16 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
     [breakpoint, nft]
   );
 
+  switch (nft.nft.media.__typename) {
+    case 'HtmlMedia':
+      return <NftDetailAnimation nftRef={nft} />;
+  }
+
   switch (assetType) {
     case NftMediaType.IMAGE:
       return resizableImage;
     case NftMediaType.AUDIO:
-      return <NftDetailAudio nft={nft} />;
+      return <NftDetailAudio nftRef={nft.nft} />;
     case NftMediaType.VIDEO:
       return <NftDetailVideo nft={nft} maxHeight={maxHeight} />;
     case NftMediaType.ANIMATION:
@@ -51,7 +82,7 @@ function NftDetailAssetComponent({ nft, maxHeight }: NftDetailAssetComponentProp
 }
 
 type Props = {
-  nft: Nft;
+  nftRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
 };
 
@@ -64,7 +95,22 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nft, hasExtraPaddingForNote }: Props) {
+function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment NftDetailAssetFragment on GalleryNft {
+        nft @required(action: THROW) {
+          media @required(action: THROW) {
+            ... on HtmlMedia {
+              __typename
+            }
+          }
+        }
+      }
+    `,
+    nftRef
+  );
+
   const maxHeight = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
@@ -77,7 +123,7 @@ function NftDetailAsset({ nft, hasExtraPaddingForNote }: Props) {
   const breakpoint = useBreakpoint();
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = getMediaType(nft) === NftMediaType.ANIMATION;
+  const isIframe = nft.nft.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
@@ -89,7 +135,7 @@ function NftDetailAsset({ nft, hasExtraPaddingForNote }: Props) {
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
     >
-      <NftDetailAssetComponent nft={nft} maxHeight={maxHeight} />
+      <NftDetailAssetComponent nftRef={nft} maxHeight={maxHeight} />
     </StyledAssetContainer>
   );
 }
