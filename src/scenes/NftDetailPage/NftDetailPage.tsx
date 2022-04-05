@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
@@ -108,6 +108,37 @@ function NftDetailPage({ nftId }: Props) {
       nftId={nextNftId}
     />
   );
+
+  const { replace } = useRouter();
+  const navigateToId = function (nftId: string) {
+    void replace(`/${username}/${collectionId}/${nftId}`);
+  };
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Only listen for keyboard events if the document body is focused
+      if (document.activeElement?.tagName !== 'BODY') return;
+
+      if (e.key === 'ArrowLeft') {
+        if (prevNftId) {
+          navigateToId(prevNftId);
+          // track('NFT Detail: Navigate to Previous NFT', { nftId, direction: 'left' });
+        }
+      } else if (e.key === 'ArrowRight') {
+        if (nextNftId) {
+          navigateToId(nextNftId);
+          // track('NFT Detail: Navigate to Next NFT', { nftId, direction: 'right' });
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Don't forget to clean up
+    return function cleanup() {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
