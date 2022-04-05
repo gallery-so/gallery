@@ -2,7 +2,7 @@ import { ChangeEventHandler, useRef, useEffect, useState, forwardRef, useCallbac
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
-import { Caption } from '../Text/Text';
+import { BaseM } from '../Text/Text';
 
 type TextAreaProps = {
   className?: string;
@@ -43,12 +43,13 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   width: 100%;
   height: 100%;
   padding: 16px;
-  font-family: Helvetica Neue;
+  font-family: ABC Diatype;
   border: none;
   border-bottom: 28px solid ${colors.white};
   resize: none;
   font-size: 14px;
   line-height: 20px;
+  background: none;
   ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
 `;
 
@@ -141,17 +142,17 @@ export function AutoResizingTextAreaWithCharCount({
 
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
 `;
 
 const StyledParentContainer = styled.div`
   padding-bottom: 20px;
 `;
 
-const StyledCharacterCounter = styled(Caption)<{ error: boolean }>`
+const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
   position: absolute;
   bottom: 8px;
   right: 8px;
 
-  color: ${({ error }) => (error ? colors.error : colors.gray50)};
+  color: ${({ error }) => (error ? colors.error : colors.metal)};
 `;

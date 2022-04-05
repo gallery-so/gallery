@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 
-import { Heading, BodyRegular } from 'components/core/Text/Text';
+import { BaseXL, BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
@@ -10,11 +10,9 @@ function Directions() {
   return (
     <DirectionsContainer>
       <StyledDirections>
-        <Heading>Add NFTs to your collection</Heading>
+        <BaseXL>Add NFTs to your collection</BaseXL>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
-          Select NFTs to include in your collection. Drag and drop to rearrange.
-        </BodyRegular>
+        <BaseM>Select NFTs to include in your collection. Drag and drop to rearrange.</BaseM>
       </StyledDirections>
     </DirectionsContainer>
   );

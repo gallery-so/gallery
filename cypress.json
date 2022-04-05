@@ -3,7 +3,7 @@
   "baseUrl": "http://localhost:3000",
   "userAgent": "synpress",
   "retries": {
-    "runMode": 0,
+    "runMode": 2,
     "openMode": 0
   },
   "integrationFolder": "cypress/integration/specs",

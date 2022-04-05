@@ -1,5 +1,5 @@
 import Button from 'components/core/Button/Button';
-import { BodyRegular, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
@@ -37,21 +37,17 @@ function GnosisSafeListeningOnChainScreen({
 
   return (
     <StyledContentWrapper>
-      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
-      <BodyRegular color={colors.gray50}>
-        Connecting with Gnosis requires an on-chain transaction.
-      </BodyRegular>
+      <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
       <Spacer height={8} />
-      <BodyRegular color={colors.gray50}>
-        Awaiting confirmation and execution by remaining Gnosis Safe owners.
-      </BodyRegular>
+      <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
       <Spacer height={24} />
       <StyledLoaderWrapper>
         <StyledLoader />
       </StyledLoaderWrapper>
       <Spacer height={24} />
-      <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
+      <BaseM>Do not close this window.</BaseM>
     </StyledContentWrapper>
   );
 }
@@ -69,17 +65,13 @@ function GnosisSafePendingMessage({
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
         <Spacer height={24} />
-        <BodyRegular color={colors.gray50}>
-          Connecting with Gnosis requires an on-chain transaction.
-        </BodyRegular>
+        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
         <Spacer height={8} />
-        <BodyRegular color={colors.gray50}>
-          Follow the prompts in the Gnosis app to sign the message.
-        </BodyRegular>
+        <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
         <Spacer height={24} />
-        <BodyRegular color={colors.gray50}>Do not close this window.</BodyRegular>
+        <BaseM>Do not close this window.</BaseM>
       </div>
     );
   }
@@ -95,14 +87,14 @@ function GnosisSafePendingMessage({
 
   return (
     <StyledContentWrapper>
-      <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
       <Spacer height={24} />
       {previousAttemptNonce && account ? (
         <>
-          <BodyRegular color={colors.gray50}>
+          <BaseM>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
-          </BodyRegular>
+          </BaseM>
           <Spacer height={48} />
           <StyledButtonWrapper>
             <Button text="Yes, retry" onClick={manuallyValidateSignature} />
@@ -115,7 +107,7 @@ function GnosisSafePendingMessage({
           </StyledButtonWrapper>
         </>
       ) : (
-        <BodyRegular color={colors.gray50}>Approve your wallet to connect to Gallery.</BodyRegular>
+        <BaseM>Approve your wallet to connect to Gallery.</BaseM>
       )}
     </StyledContentWrapper>
   );
@@ -134,7 +126,7 @@ const StyledButtonWrapper = styled.div`
 
 const StyledRestartButton = styled(Button)`
   border: none;
-  color: ${colors.gray50};
+  color: ${colors.metal};
 `;
 
 const StyledLoaderWrapper = styled.div`
@@ -153,7 +145,7 @@ const loading = keyframes`
 `;
 
 const StyledLoader = styled.div`
-  border: 1px solid ${colors.gray50};
+  border: 1px solid ${colors.metal};
   border-radius: 50%;
   border-right-color: transparent;
   border-bottom-color: transparent;

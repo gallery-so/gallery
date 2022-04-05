@@ -1,7 +1,7 @@
 import { InternalMarkdown } from 'components/core/Markdown/Markdown';
 import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
-import { Display } from 'components/core/Text/Text';
+import { TitleL } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
 type Props = {
@@ -14,7 +14,7 @@ export default function BasicTextPage({ title, body }: Props) {
   return (
     <StyledPage>
       <StyledContent>
-        <Display>{title}</Display>
+        <TitleL>{title}</TitleL>
         <Spacer height={64} />
         <StyledBody>
           <InternalMarkdown text={body} />
@@ -33,10 +33,9 @@ const StyledPage = styled(Page)`
 // Apply a generalized version of Gallery's style to the body text
 const StyledContent = styled.div`
   max-width: 800px;
-  font-family: 'Helvetica Neue';
+  font-family: 'ABC Diatype';
   font-size: 14px;
   line-height: 24px;
-  letter-spacing: 0.4px;
 
   ul {
     display: flex;

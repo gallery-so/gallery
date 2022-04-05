@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import colors from 'components/core/colors';
-import { BodyRegular, Caption } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -75,9 +75,9 @@ const StyledUnstageButton = styled(UnstageButton)`
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledWhitespaceLabel = styled(Caption)`
+const StyledWhitespaceLabel = styled(BaseM)`
   text-transform: uppercase;
-  color: ${colors.gray50};
+  color: ${colors.metal};
 
   transition: opacity ${transitions.cubic};
 `;
@@ -86,7 +86,7 @@ const StyledWhitespace = styled.div<{ size: number; showAnimation: boolean }>`
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
   position: relative;
-  border: 1px dashed ${colors.gray30};
+  border: 1px dashed ${colors.porcelain};
   transition: opacity ${transitions.cubic};
   display: flex;
   flex-direction: column;
@@ -110,8 +110,8 @@ const StyledSortableWhitespace = styled.div`
   cursor: grab;
 
   margin: 24px;
-  ${BodyRegular} {
-    color: ${colors.gray50};
+  ${BaseM} {
+    color: ${colors.metal};
   }
 
   &:hover {

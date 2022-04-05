@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 
@@ -18,7 +18,7 @@ function UnstageButton({ id, className }: Props) {
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
-      <BodyRegular color={colors.white}>REMOVE</BodyRegular>
+      <BaseM color={colors.white}>REMOVE</BaseM>
     </StyledUnstageButton>
   );
 }

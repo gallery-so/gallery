@@ -1,8 +1,7 @@
 import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import colors from 'components/core/colors';
-import { BodyRegular, TitleSerif } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { useCallback, useMemo, useState } from 'react';
@@ -108,30 +107,22 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <TitleSerif onClick={handleViewCollectionClick}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
-          </TitleSerif>
+          <StyledCollectorsTitle onClick={handleViewCollectionClick}>
+            {unescapedCollectionName}
+          </StyledCollectorsTitle>
           <StyledSettingsDropdown>
             {isHovering && (
               <Dropdown>
                 {showEditActions && (
                   <>
-                    <TextButton
-                      text="Edit Collection"
-                      onClick={handleEditCollectionClick}
-                      underlineOnHover
-                    />
+                    <TextButton text="Edit Collection" onClick={handleEditCollectionClick} />
                     <Spacer height={12} />
                   </>
                 )}
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
+                <TextButton text="View Collection" onClick={handleViewCollectionClick} />
                 <Spacer height={12} />
                 <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+                  <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
               </Dropdown>
             )}
@@ -140,7 +131,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
         {unescapedCollectorsNote && (
           <>
             <Spacer height={8} />
-            <StyledCollectorsNote color={colors.gray50}>
+            <StyledCollectorsNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
@@ -193,14 +184,14 @@ const StyledCollectionTitleWrapper = styled.div`
   word-break: break-word;
 `;
 
-const StyledCollectorsTitle = styled.span`
+const StyledCollectorsTitle = styled(TitleS)`
   cursor: pointer;
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const StyledCollectorsNote = styled(BodyRegular)`
+const StyledCollectorsNote = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 
