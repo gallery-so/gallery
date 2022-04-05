@@ -18,6 +18,9 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { baseUrl } from 'utils/baseUrl';
+import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import noop from 'utils/noop';
+import { useModal } from 'contexts/modal/ModalContext';
 
 type Props = {
   collection: Collection;
@@ -29,6 +32,7 @@ export function isValidColumns(columns: number) {
 }
 
 function UserGalleryCollection({ collection, mobileLayout }: Props) {
+  const { showModal } = useModal();
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
@@ -72,6 +76,18 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
     }, 200);
   }, []);
 
+  const handleEditNameClick = useCallback(() => {
+    showModal(
+      <CollectionCreateOrEditForm
+        // No need for onNext because this isn't part of a wizard
+        onNext={noop}
+        collectionId={collection.id}
+        collectionName={collection.name}
+        collectionCollectorsNote={collection.collectors_note}
+      />
+    );
+  }, [collection.collectors_note, collection.id, collection.name, showModal]);
+
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
@@ -84,12 +100,26 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
               <Dropdown>
                 {showEditActions && (
                   <>
-                    <TextButton text="Edit Collection" onClick={handleEditCollectionClick} />
-                    <Spacer height={12} />
+                    <TextButton
+                      onClick={handleEditNameClick}
+                      text="EDIT NAME & DESCRIPTION"
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
+                    <TextButton
+                      text="Edit Collection"
+                      onClick={handleEditCollectionClick}
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
                   </>
                 )}
-                <TextButton text="View Collection" onClick={handleViewCollectionClick} />
-                <Spacer height={12} />
+                <TextButton
+                  text="View Collection"
+                  onClick={handleViewCollectionClick}
+                  underlineOnHover
+                />
+                <Spacer height={8} />
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
