@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
+import { BaseS } from 'components/core/Text/Text';
+import NavLink from 'components/core/NavLink/NavLink';
 
 function Home() {
   const { push } = useRouter();
@@ -23,19 +25,25 @@ function Home() {
       <Spacer height={24} />
       <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
       <Spacer height={24} />
-      <GalleryLink to="/members">
-        <TextButton text="explore galleries" dataTestId="explore-button" />
-      </GalleryLink>
-      <Spacer height={8} />
-      <GalleryLink to="/aboutblank">
-        <TextButton text="gallery of the week" />
-      </GalleryLink>
+      <StyledLinkContainer>
+        <NavLink to="/members" dataTestId="explore-button">
+          Explore
+        </NavLink>
+        <Spacer width={8} />
+        <BaseS>·</BaseS>
+        <Spacer width={8} />
+        <NavLink to="/aboutblank">Gallery of the Week</NavLink>
+      </StyledLinkContainer>
     </Page>
   );
 }
 
 const StyledButton = styled(Button)`
   width: 150px;
+`;
+
+const StyledLinkContainer = styled.div`
+  display: flex;
 `;
 
 export default memo(Home);

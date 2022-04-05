@@ -1,8 +1,7 @@
 import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import colors from 'components/core/colors';
-import { BodyRegular, TitleSerif } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
 import { useCallback, useMemo, useState } from 'react';
@@ -21,6 +20,9 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
+import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import noop from 'utils/noop';
+import { useModal } from 'contexts/modal/ModalContext';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -64,6 +66,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const loggedInUserId = useLoggedInUserId(query);
   const showEditActions = loggedInUserId === collection.gallery?.owner?.id;
 
+  const { showModal } = useModal();
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
@@ -104,24 +107,42 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     }, 200);
   }, []);
 
+  const handleEditNameClick = useCallback(() => {
+    showModal(
+      <CollectionCreateOrEditForm
+        // No need for onNext because this isn't part of a wizard
+        onNext={noop}
+        collectionId={collection.dbid}
+        collectionName={collection.name}
+        collectionCollectorsNote={collection.collectorsNote ?? ''}
+      />
+    );
+  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
+
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <TitleSerif onClick={handleViewCollectionClick}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
-          </TitleSerif>
+          <StyledCollectorsTitle onClick={handleViewCollectionClick}>
+            {unescapedCollectionName}
+          </StyledCollectorsTitle>
           <StyledSettingsDropdown>
             {isHovering && (
               <Dropdown>
                 {showEditActions && (
                   <>
                     <TextButton
+                      onClick={handleEditNameClick}
+                      text="EDIT NAME & DESCRIPTION"
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
+                    <TextButton
                       text="Edit Collection"
                       onClick={handleEditCollectionClick}
                       underlineOnHover
                     />
-                    <Spacer height={12} />
+                    <Spacer height={8} />
                   </>
                 )}
                 <TextButton
@@ -129,9 +150,9 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                   onClick={handleViewCollectionClick}
                   underlineOnHover
                 />
-                <Spacer height={12} />
+                <Spacer height={8} />
                 <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" underlineOnHover onClick={handleShareClick} />
+                  <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
               </Dropdown>
             )}
@@ -140,7 +161,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
         {unescapedCollectorsNote && (
           <>
             <Spacer height={8} />
-            <StyledCollectorsNote color={colors.gray50}>
+            <StyledCollectorsNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
@@ -193,14 +214,14 @@ const StyledCollectionTitleWrapper = styled.div`
   word-break: break-word;
 `;
 
-const StyledCollectorsTitle = styled.span`
+const StyledCollectorsTitle = styled(TitleS)`
   cursor: pointer;
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const StyledCollectorsNote = styled(BodyRegular)`
+const StyledCollectorsNote = styled(BaseM)`
   /* ensures linebreaks are reflected in UI */
   white-space: pre-line;
 

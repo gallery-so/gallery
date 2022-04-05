@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { BodyMedium, ButtonText } from 'components/core/Text/Text';
+import { TitleS, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
@@ -90,7 +90,7 @@ function Sidebar() {
   return (
     <StyledSidebar>
       <Header>
-        <BodyMedium>Your NFTs</BodyMedium>
+        <TitleS>Your NFTs</TitleS>
         <TextButton
           text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
           onClick={handleRefreshNfts}
@@ -135,8 +135,8 @@ const StyledAddBlankBlock = styled.div`
   height: 64px;
   width: 64px;
   margin: 5px;
-  background-color: ${colors.white};
-  border: 1px solid ${colors.gray30};
+  background-color: ${colors.offWhite};
+  border: 1px solid ${colors.metal};
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -147,12 +147,12 @@ const StyledAddBlankBlock = styled.div`
   }
 
   &:active {
-    background-color: ${colors.gray10};
+    background-color: ${colors.metal};
   }
 `;
 
-const StyledAddBlankBlockText = styled(ButtonText)`
-  color: ${colors.gray50};
+const StyledAddBlankBlockText = styled(TitleXS)`
+  color: ${colors.shadow};
   text-align: center;
 `;
 
@@ -160,7 +160,7 @@ const StyledSidebar = styled.div`
   width: 100%;
   height: calc(100vh - ${FOOTER_HEIGHT}px);
 
-  background: #f7f7f7;
+  background: ${colors.offWhite};
 
   padding: 32px;
 

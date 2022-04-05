@@ -66,21 +66,17 @@ function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardC
   return (
     <StyledCollectionRowSettings>
       <Dropdown>
-        <TextButton onClick={handleEditCollectionClick} text="Edit collection" underlineOnHover />
+        <TextButton onClick={handleEditCollectionClick} text="Edit collection" />
         <Spacer height={12} />
-        <TextButton onClick={handleEditNameClick} text="Edit name & description" underlineOnHover />
+        <TextButton onClick={handleEditNameClick} text="Edit name & description" />
         <Spacer height={12} />
-        <TextButton
-          onClick={handleToggleHiddenClick}
-          text={hidden ? 'Show' : 'Hide'}
-          underlineOnHover
-        />
+        <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
         <Spacer height={12} />
         <CopyToClipboard textToCopy={collectionUrl}>
-          <TextButton text="Share" underlineOnHover />
+          <TextButton text="Share" />
         </CopyToClipboard>
         <Spacer height={12} />
-        <TextButton onClick={handleDeleteClick} text="Delete" underlineOnHover />
+        <TextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>
     </StyledCollectionRowSettings>
   );

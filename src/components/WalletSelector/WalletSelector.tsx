@@ -4,7 +4,7 @@ import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import colors from 'components/core/colors';
-import { BodyRegular, Caption, BodyMedium, TitleMedium } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
@@ -152,9 +152,9 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   if (displayedError) {
     return (
       <StyledWalletSelector>
-        <BodyMedium>{displayedError.heading}</BodyMedium>
+        <TitleS>{displayedError.heading}</TitleS>
         <Spacer height={16} />
-        <StyledBody color={colors.gray50}>
+        <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
         <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
@@ -180,11 +180,9 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       return (
         <StyledWalletSelector>
           <div>
-            <TitleMedium>Connect with {userFriendlyWalletName}</TitleMedium>
+            <TitleS>Connect with {userFriendlyWalletName}</TitleS>
             <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
-              Approve your wallet to connect to Gallery.
-            </BodyRegular>
+            <BaseM>Approve your wallet to connect to Gallery.</BaseM>
           </div>
         </StyledWalletSelector>
       );
@@ -207,7 +205,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      <StyledBodyMedium>Connect your wallet</StyledBodyMedium>
+      <StyledTitleS>Connect your wallet</StyledTitleS>
       <Spacer height={16} />
       {availableWalletOptions.map((walletName) => (
         <WalletButton
@@ -219,7 +217,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
         />
       ))}
       <Spacer height={8} />
-      <Caption color={colors.gray50}>More wallets coming soon™</Caption>
+      <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
@@ -237,11 +235,11 @@ const StyledWalletSelector = styled.div`
   }
 `;
 
-const StyledBodyMedium = styled(BodyMedium)`
+const StyledTitleS = styled(TitleS)`
   text-align: left;
 `;
 
-const StyledBody = styled(BodyRegular)`
+const StyledBody = styled(BaseM)`
   margin-bottom: 30px;
   white-space: pre-wrap;
 `;

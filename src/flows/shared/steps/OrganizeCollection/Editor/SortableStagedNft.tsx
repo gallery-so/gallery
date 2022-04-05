@@ -9,7 +9,7 @@ import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 import colors from 'components/core/colors';
-import { BodyRegular } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 
 type Props = {

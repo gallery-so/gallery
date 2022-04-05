@@ -1,9 +1,8 @@
 import styled, { css } from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { Caption, TitleSerif } from 'components/core/Text/Text';
+import { BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
 import {
   GALLERY_FAQ,
@@ -15,6 +14,7 @@ import {
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
+import NavLink from '../NavLink/NavLink';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
@@ -30,45 +30,29 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
         </Link>
         <Spacer height={4} />
         <StyledLinkContainer>
-          <StyledLink href={GALLERY_FAQ} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>FAQ</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_TWITTER} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Twitter</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_DISCORD} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Discord</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_BLOG} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Blog</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_MEMBERSHIP_OPENSEA} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>OpenSea</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
           <Spacer width={8} />
-          <StyledLink href={GALLERY_JOBS} target="_blank" rel="noreferrer">
-            <StyledLinkText color={colors.gray30}>Jobs</StyledLinkText>
-          </StyledLink>
+          <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
           <Spacer width={8} />
         </StyledLinkContainer>
       </MainContent>
       {isMobile && <Spacer height={4} />}
       <BoringLegalContent>
-        <Caption color={colors.gray50}>© {new Date().getFullYear()} All rights reserved</Caption>
+        <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
         <Spacer width={8} />
-        <Caption color={colors.gray50}>·</Caption>
+        <BaseS color={colors.metal}>·</BaseS>
         <Spacer width={8} />
-        <StyledLink href="/privacy">
-          <StyledLinkText color={colors.gray30}>Privacy</StyledLinkText>
-        </StyledLink>
+        <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
         <Spacer width={8} />
-        <StyledLink href="/terms">
-          <StyledLinkText color={colors.gray30}>Terms</StyledLinkText>
-        </StyledLink>
+        <StyledFooterLink href="/terms">Terms</StyledFooterLink>
       </BoringLegalContent>
     </StyledGlobalFooter>
   );
@@ -88,7 +72,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
-  background-color: white;
+  background-color: ${colors.white};
   z-index: 2;
   position: relative;
 }
@@ -104,7 +88,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
         bottom: 0;
         width: 100%;
 
-        background: white;
+        background: ${colors.white};
         background: linear-gradient(
           to bottom,
           rgba(255, 255, 255, 0) 0%,
@@ -131,22 +115,16 @@ const BoringLegalContent = styled.div`
 `;
 
 const StyledLogo = styled.img`
-  height: 16px;
+  height: 24px;
+  cursor: pointer;
 `;
 
 const StyledLinkContainer = styled.div`
   display: flex;
 `;
 
-const StyledLink = styled.a`
-  text-decoration: none;
-`;
-
-const StyledLinkText = styled(Caption)`
-  transition: color ${transitions.cubic};
-  &:hover {
-    color: ${colors.black};
-  }
+const StyledFooterLink = styled(NavLink)`
+  text-transform: capitalize;
 `;
 
 export default GlobalFooter;

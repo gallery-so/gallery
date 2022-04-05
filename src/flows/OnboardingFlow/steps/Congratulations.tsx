@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { BodyRegular, Display } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -18,18 +18,16 @@ function Congratulations() {
 
   return (
     <FullPageCenteredStep>
-      <Display>Welcome to your Gallery</Display>
+      <TitleL>Welcome to your Gallery</TitleL>
       <Spacer height={8} />
-      <StyledBodyText color={colors.gray50}>
-        Let&apos;s show your collection to the world.
-      </StyledBodyText>
+      <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
       <Spacer height={24} />
       <StyledButton text="Enter" onClick={handleClick} />
     </FullPageCenteredStep>
   );
 }
 
-const StyledBodyText = styled(BodyRegular)`
+const StyledBodyText = styled(BaseM)`
   max-width: 400px;
   text-align: center;
 `;

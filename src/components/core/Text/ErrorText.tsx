@@ -1,5 +1,5 @@
 import colors from '../colors';
-import { Caption } from './Text';
+import { BaseM } from './Text';
 
 type Props = {
   message: string;
@@ -8,8 +8,8 @@ type Props = {
 
 export default function ErrorText({ message, className }: Props) {
   return (
-    <Caption className={className} color={colors.error}>
+    <BaseM className={className} color={colors.error}>
       {message}
-    </Caption>
+    </BaseM>
   );
 }

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 import Loader from '../Loader/Loader';
-import { ButtonText } from '../Text/Text';
+import { TitleXS } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
 
@@ -42,7 +42,7 @@ function Button({
       {loading ? (
         <Loader inverted size={mini ? 'mini' : 'small'} />
       ) : (
-        <ButtonText color={type === 'primary' ? colors.white : colors.gray80}>{text}</ButtonText>
+        <TitleXS color={type === 'primary' ? colors.white : colors.offBlack}>{text}</TitleXS>
       )}
     </StyledButton>
   );
@@ -60,11 +60,11 @@ const StyledButton = styled.button<StyledButtonProps>`
   align-items: center;
 
   border-style: none;
-  border: 1px solid ${colors.black};
+  border: 1px solid ${colors.offBlack};
 
   height: ${({ mini }) => (mini ? 32 : 40)}px;
 
-  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.black : colors.white)};
+  background: ${({ buttonStyle }) => (buttonStyle === 'primary' ? colors.offBlack : colors.white)};
 
   cursor: pointer;
 

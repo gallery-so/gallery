@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ButtonText } from '../Text/Text';
+import { BaseS } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
 
@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const ActionText = styled(ButtonText)<Props>`
+const ActionText = styled(BaseS)<Props>`
   text-transform: uppercase;
   transition: color ${transitions.cubic};
 
@@ -17,11 +17,11 @@ const ActionText = styled(ButtonText)<Props>`
 
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
-  color: ${({ focused }) => (focused ? colors.black : colors.gray50)};
+  color: ${({ focused }) => (focused ? colors.offBlack : colors.shadow)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : undefined)};
 
   &:hover {
-    color: ${colors.black};
+    color: ${colors.offBlack};
   }
 `;
 

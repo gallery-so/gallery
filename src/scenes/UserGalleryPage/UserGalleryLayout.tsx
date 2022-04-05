@@ -1,8 +1,6 @@
 import UserGalleryCollections from 'scenes/UserGalleryPage/UserGalleryCollections';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
-import NotFound from 'scenes/NotFound/NotFound';
-import { removeNullValues } from 'utils/removeNullValues';
 import EmptyGallery from 'scenes/UserGalleryPage/EmptyGallery';
 import Spacer from 'components/core/Spacer/Spacer';
 import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
@@ -68,6 +66,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
         setMobileLayout={setMobileLayout}
       />
       {collectionsView}
+      <Spacer height={32} />
     </StyledUserGalleryLayout>
   );
 };

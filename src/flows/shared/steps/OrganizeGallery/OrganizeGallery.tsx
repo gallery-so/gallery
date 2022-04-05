@@ -10,7 +10,7 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { Collection } from 'types/Collection';
 import { Filler } from 'scenes/_Router/GalleryRoute';
-import { BodyRegular, Heading } from 'components/core/Text/Text';
+import { BaseM, BaseXL } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
@@ -124,12 +124,12 @@ function OrganizeGallery({ next, push }: WizardContext) {
         <Spacer height={24} />
         {isEmptyGallery ? (
           <StyledEmptyGalleryMessage>
-            <Heading>Create your first collection</Heading>
+            <BaseXL>Create your first collection</BaseXL>
             <Spacer height={8} />
-            <BodyRegular color={colors.gray50}>
+            <BaseM>
               Organize your gallery with collections. Use them to group NFTs by creator, theme, or
               anything that feels right.
-            </BodyRegular>
+            </BaseM>
           </StyledEmptyGalleryMessage>
         ) : (
           <CollectionDnd
