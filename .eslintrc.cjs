@@ -45,8 +45,9 @@ const rules = {
 module.exports = {
   ignorePatterns: ['next-env.d.ts', 'node_modules', 'build'],
 
-  extends: ['prettier', 'react-hooks'],
-  plugins: ['node'],
+  extends: ['prettier'],
+  plugins: ['node', 'react-hooks', '@typescript-eslint', 'react'],
+  parser: '@typescript-eslint/parser',
   rules,
   overrides: [
     // Ensure we enable an ecmaVersion for all Javascript files
