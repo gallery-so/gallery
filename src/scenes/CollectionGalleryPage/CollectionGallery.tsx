@@ -20,33 +20,44 @@ function CollectionGallery({ queryRef }: Props) {
     graphql`
       fragment CollectionGalleryFragment on Query {
         collection: collectionById(id: $collectionId) {
-          ...NftGalleryFragment
-          ...CollectionGalleryHeaderFragment
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on GalleryCollection {
+            __typename
+
+            ...NftGalleryFragment
+            ...CollectionGalleryHeaderFragment
+          }
         }
       }
     `,
     queryRef
   );
 
-  if (!collection) {
-    return <NotFound />;
+  if (collection?.__typename === 'GalleryCollection') {
+    return (
+      <StyledCollectionGallery>
+        <Spacer height={32} />
+        <CollectionGalleryHeader
+          collectionRef={collection}
+          mobileLayout={mobileLayout}
+          setMobileLayout={setMobileLayout}
+        />
+        <Spacer height={32} />
+        <NftGalleryWrapper>
+          <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+        </NftGalleryWrapper>
+        <Spacer height={64} />
+      </StyledCollectionGallery>
+    );
+  } else if (collection?.__typename === 'ErrCollectionNotFound') {
+    return <NotFound resource="collection" />;
   }
 
-  return (
-    <StyledCollectionGallery>
-      <Spacer height={32} />
-      <CollectionGalleryHeader
-        collectionRef={collection}
-        mobileLayout={mobileLayout}
-        setMobileLayout={setMobileLayout}
-      />
-      <Spacer height={32} />
-      <NftGalleryWrapper>
-        <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
-      </NftGalleryWrapper>
-      <Spacer height={64} />
-    </StyledCollectionGallery>
-  );
+  // TODO: just throw to an error boundary and have that report to sentry
+  return null;
 }
 
 const StyledCollectionGallery = styled.div`

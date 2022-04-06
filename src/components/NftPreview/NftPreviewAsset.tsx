@@ -88,12 +88,8 @@ function NftPreviewAsset({ nftRef, size }: Props) {
     );
   }
 
+  // TODO: instead of rendering this, just throw to an error boundary and have that report to sentry
   return <UnrenderedPreviewAsset id={nft.dbid} assetType={nft.media?.__typename ?? ''} />;
 }
-
-const StyledVideo = styled.video`
-  display: flex;
-  width: 100%;
-`;
 
 export default NftPreviewAsset;
