@@ -5,7 +5,6 @@ import Page from 'components/core/Page/Page';
 import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { BaseM } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import breakpoints from 'components/core/breakpoints';

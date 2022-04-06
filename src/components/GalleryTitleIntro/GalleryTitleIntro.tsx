@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import { TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
 function GalleryTitleIntro() {

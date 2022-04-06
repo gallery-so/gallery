@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';

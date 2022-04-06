@@ -5,7 +5,6 @@ import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';

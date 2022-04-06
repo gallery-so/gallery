@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { BaseXL, BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 
 function Directions() {

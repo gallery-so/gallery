@@ -11,7 +11,6 @@ import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery
 import { Collection } from 'types/Collection';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import Header from './Header';

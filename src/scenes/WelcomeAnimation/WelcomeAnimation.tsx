@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import Image from './Image';
