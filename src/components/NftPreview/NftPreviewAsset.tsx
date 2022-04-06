@@ -5,6 +5,28 @@ import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
+import { useEffect } from 'react';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+
+type UnrenderedPreviewAssetProps = {
+  id: string;
+  assetType: string;
+};
+
+function UnrenderedPreviewAsset({ id, assetType }: UnrenderedPreviewAssetProps) {
+  const reportError = useReportError();
+
+  useEffect(() => {
+    reportError(new Error('unable to render NftPreviewAsset'), {
+      tags: {
+        id,
+        assetType,
+      },
+    });
+  }, []);
+
+  return null;
+}
 
 type Props = {
   nftRef: NftPreviewAssetFragment$key;
@@ -15,6 +37,7 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   const nft = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Nft {
+        dbid
         name
         media {
           __typename
@@ -25,6 +48,16 @@ function NftPreviewAsset({ nftRef, size }: Props) {
             }
           }
           ... on ImageMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on HtmlMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on AudioMedia {
             previewURLs @required(action: NONE) {
               large @required(action: NONE)
             }
@@ -43,6 +76,8 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   if (
     nft.media?.__typename === 'VideoMedia' ||
     nft.media?.__typename === 'ImageMedia' ||
+    nft.media?.__typename === 'HtmlMedia' ||
+    nft.media?.__typename === 'AudioMedia' ||
     nft.media?.__typename === 'UnknownMedia'
   ) {
     return (
@@ -53,7 +88,7 @@ function NftPreviewAsset({ nftRef, size }: Props) {
     );
   }
 
-  return null;
+  return <UnrenderedPreviewAsset id={nft.dbid} assetType={nft.media?.__typename ?? ''} />;
 }
 
 const StyledVideo = styled.video`
