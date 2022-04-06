@@ -5,27 +5,27 @@ import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 
 type Props = {
-  nft: {
-    name?: string | null;
-    token_collection_name?: string | null;
-  };
-
   className?: string;
+  title?: string | null;
+  collectionName?: string | null;
 };
 
-function NftPreviewLabel({ nft, className }: Props) {
+function NftPreviewLabel({ className, title, collectionName }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
-      {nft.name && (
+      {title && (
         <StyledBaseM color={colors.white} lines={1}>
-          {nft.name}
+          {title}
         </StyledBaseM>
       )}
-      {nft.token_collection_name && (
-        <StyledBaseM color={colors.white} lines={2}>
-          {nft.token_collection_name}
-        </StyledBaseM>
-      )}
+      {
+        // TODO: need graphql to provide collection name
+        // collectionName && (
+        //   <StyledBaseM color={colors.white} lines={2}>
+        //     {collectionName}
+        //   </StyledBaseM>
+        // )
+      }
     </StyledNftPreviewLabel>
   );
 }

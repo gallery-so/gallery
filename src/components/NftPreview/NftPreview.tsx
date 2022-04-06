@@ -76,7 +76,7 @@ function NftPreview({ galleryNftRef }: Props) {
           {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
           <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
           <StyledNftFooter>
-            <StyledNftLabel nft={{ name: nft.name, token_collection_name: 'FILL THIS OUT' }} />
+            <StyledNftLabel title={nft.name} collectionName={'THIS IS BUSTED'} />
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>
         </ShimmerProvider>
