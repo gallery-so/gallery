@@ -24,7 +24,7 @@ export default function GalleryLink({
     track('Link Click', {
       to: to || href,
     });
-  }, []);
+  }, [href, to, track]);
 
   if (!to && !href) {
     console.error('no link provided for GalleryLink');
@@ -59,15 +59,6 @@ type StyledProps = {
   $underlineOnHover?: boolean;
   $underlined?: boolean;
 };
-
-const StyledLink = styled(Link)<StyledProps>`
-  color: inherit;
-  ${(props) => !props.$underlined && 'text-decoration: none'};
-
-  &:hover {
-    ${(prop) => prop.$underlineOnHover && 'text-decoration: underline'};
-  }
-`;
 
 const StyledAnchor = styled.a<StyledProps>`
   color: inherit;

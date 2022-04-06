@@ -11,7 +11,6 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 
 import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import ErrorText from 'components/core/Text/ErrorText';
-import colors from 'components/core/colors';
 import { useWeb3React } from '@web3-react/core';
 import useWalletModal from 'hooks/useWalletModal';
 import { useModal } from 'contexts/modal/ModalContext';
