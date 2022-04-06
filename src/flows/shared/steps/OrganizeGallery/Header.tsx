@@ -4,7 +4,6 @@ import Button from 'components/core/Button/Button';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
-import colors from 'components/core/colors';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
   // Const handleGalleryPreview = useCallback(() => {

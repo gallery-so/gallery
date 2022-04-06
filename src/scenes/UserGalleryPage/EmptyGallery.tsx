@@ -1,4 +1,3 @@
-import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 

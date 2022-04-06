@@ -3,7 +3,6 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
-import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { isWeb3Error, Web3Error } from 'types/Error';

@@ -3,7 +3,6 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
-import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -15,7 +14,6 @@ import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
-import { GALLERY_DISCORD, GALLERY_MEMBERSHIP_OPENSEA } from 'constants/urls';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -56,8 +54,6 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'Please try again.',
   },
 };
-
-const MISSING_NFT_ERROR_MESSAGE = `You must have a [Membership Card](${GALLERY_MEMBERSHIP_OPENSEA}) to use Gallery.\n\nJoin our [Discord](${GALLERY_DISCORD}) to learn more.`;
 
 function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;

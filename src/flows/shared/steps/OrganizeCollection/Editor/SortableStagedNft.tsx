@@ -8,8 +8,6 @@ import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
 import { Nft } from 'types/Nft';
 
 type Props = {

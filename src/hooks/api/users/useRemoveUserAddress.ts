@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import { User } from 'types/User';
 import usePost from '../_rest/usePost';
-import { useAuthenticatedUser } from './useUser';
 
 type RemoveUserAddressRequest = {
   addresses: string[];
@@ -12,7 +11,6 @@ type RemoveUserAddressResponse = {
   success: boolean;
 };
 export default function useRemoveUserAddress() {
-  const user = useAuthenticatedUser();
   const removeUserAddress = usePost();
   const { mutate } = useSWRConfig();
 
@@ -33,6 +31,6 @@ export default function useRemoveUserAddress() {
         false
       );
     },
-    [mutate, removeUserAddress, user.id, user.username]
+    [mutate, removeUserAddress]
   );
 }

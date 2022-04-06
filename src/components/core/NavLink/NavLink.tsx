@@ -21,7 +21,7 @@ export default function NavLink({ to, href, children, dataTestId, className }: P
     track('Link Click', {
       to: to || href,
     });
-  }, []);
+  }, [href, to, track]);
 
   if (!to && !href) {
     console.error('no link provided for NavLink');

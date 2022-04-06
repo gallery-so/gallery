@@ -1,12 +1,10 @@
 import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import colors from 'components/core/colors';
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
-import { Nft, Owner } from 'types/Nft';
+import { Nft } from 'types/Nft';
 import Markdown from 'components/core/Markdown/Markdown';
-import { useMemo } from 'react';
 import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import { useBreakpoint } from 'hooks/useWindowSize';
@@ -73,14 +71,6 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
   @media only screen and ${breakpoints.tablet} {
     margin-left: 72px;
     margin-top: 0;
-  }
-`;
-
-const StyledLink = styled.a`
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
   }
 `;
 

@@ -5,7 +5,6 @@ import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { formatDetailedError } from 'errors/formatError';
-import colors from 'components/core/colors';
 import { captureException } from '@sentry/nextjs';
 
 class ErrorBoundary extends Component {

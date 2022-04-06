@@ -17,8 +17,8 @@ const ARROWS = new Map<number, string>([
 ]);
 
 const MOBILE_ARROWS = new Map<number, any>([
-  [Directions.LEFT, <ArrowLeft />],
-  [Directions.RIGHT, <ArrowRight />],
+  [Directions.LEFT, <ArrowLeft key={1} />],
+  [Directions.RIGHT, <ArrowRight key={2} />],
 ]);
 
 const HOVER_TEXT = new Map<number, string>([

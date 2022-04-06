@@ -16,7 +16,7 @@ function DropdownMenu({ mainText, options }: Props) {
   return (
     <Dropdown mainText={mainText}>
       {options.map((option: DropdownOption) => (
-        <StyledLink href={option.value}>
+        <StyledLink key={option.value} href={option.value}>
           <StyledLinkText>{option.label}</StyledLinkText>
         </StyledLink>
       ))}
