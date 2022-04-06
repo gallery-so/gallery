@@ -2,13 +2,11 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import cloneDeep from 'lodash.clonedeep';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { fetchQuery } from 'relay-runtime/lib/query/fetchQueryInternal';
 import { useSWRConfig } from 'swr';
 import { Collection } from 'types/Collection';
 import { getISODate } from 'utils/time';
 import { useAuthenticatedUser } from '../users/useUser';
-import usePost from '../_rest/usePost';
-import { GetGalleriesResponse, UpdateGalleryRequest, UpdateGalleryResponse } from './types';
+import { GetGalleriesResponse } from './types';
 import { getGalleriesCacheKey } from './useGalleries';
 import {
   useUpdateGalleryMutation,

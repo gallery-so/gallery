@@ -1,7 +1,6 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { BaseM } from 'components/core/Text/Text';
-import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 
 type Props = {
@@ -10,6 +9,7 @@ type Props = {
   collectionName?: string | null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function NftPreviewLabel({ className, title, collectionName }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>

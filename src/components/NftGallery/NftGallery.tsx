@@ -42,7 +42,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
 
   const collectionWithWhitespace = useMemo(
     () => insertWhitespaceBlocks(collection.nfts ?? [], nonNullWhitespace),
-    [collection.layout?.whitespace, collection.nfts]
+    [collection.nfts, nonNullWhitespace]
   );
 
   const itemsToDisplay = useMemo(

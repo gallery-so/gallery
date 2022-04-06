@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import NotFound from 'scenes/NotFound/NotFound';
 import CollectionGalleryHeader from './CollectionGalleryHeader';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
 import NftGallery from 'components/NftGallery/NftGallery';
 import useMobileLayout from 'hooks/useMobileLayout';
 import { graphql, useFragment } from 'react-relay';

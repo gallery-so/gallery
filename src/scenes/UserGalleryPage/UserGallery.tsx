@@ -1,5 +1,3 @@
-import { contentSize } from 'components/core/breakpoints';
-import styled from 'styled-components';
 import NotFound from 'scenes/NotFound/NotFound';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';

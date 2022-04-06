@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
 import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import { useFragment } from 'react-relay';
@@ -23,7 +21,7 @@ function UnrenderedPreviewAsset({ id, assetType }: UnrenderedPreviewAssetProps) 
         assetType,
       },
     });
-  }, []);
+  }, [assetType, id, reportError]);
 
   return null;
 }

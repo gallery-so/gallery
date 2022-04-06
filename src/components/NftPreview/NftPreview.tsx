@@ -3,7 +3,6 @@ import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { useCallback } from 'react';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { Nft } from 'types/Nft';
 import { useNavigateToUrl } from 'utils/navigate';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import NftPreviewLabel from './NftPreviewLabel';
@@ -62,7 +61,7 @@ function NftPreview({ galleryNftRef }: Props) {
       if (storage) storage.setItem('prevPage', window.location.pathname);
       navigateToUrl(`/${username}/${collection.dbid}/${nft.dbid}`, event);
     },
-    [collection.id, navigateToUrl, nft.dbid, storage, username]
+    [collection.dbid, navigateToUrl, nft.dbid, storage, username]
   );
   const isMobile = useIsMobileWindowWidth();
 
