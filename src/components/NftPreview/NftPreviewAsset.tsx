@@ -33,6 +33,11 @@ function NftPreviewAsset({ nftRef, size }: Props) {
               medium @required(action: NONE)
             }
           }
+          ... on UnknownMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
         }
       }
     `,
@@ -53,6 +58,13 @@ function NftPreviewAsset({ nftRef, size }: Props) {
     return (
       <ImageWithLoading
         src={graphqlGetResizedNftImageUrlWithFallback(nft.media.contentRenderURLs.medium, size)}
+        alt={nft.name ?? ''}
+      />
+    );
+  } else if (nft.media?.__typename === 'UnknownMedia') {
+    return (
+      <ImageWithLoading
+        src={graphqlGetResizedNftImageUrlWithFallback(nft.media.previewURLs.large, size)}
         alt={nft.name ?? ''}
       />
     );

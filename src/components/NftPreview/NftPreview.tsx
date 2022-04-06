@@ -36,7 +36,6 @@ function NftPreview({ galleryNftRef }: Props) {
         nft @required(action: THROW) {
           dbid
           name
-
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {

@@ -1,14 +1,9 @@
-import { DEFAULT_COLUMNS } from 'constants/layout';
 import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
 import NftPreview from 'components/NftPreview/NftPreview';
 import { useMemo } from 'react';
-import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
-import { Nft } from 'types/Nft';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
-import { WhitespaceBlock } from 'flows/shared/steps/OrganizeCollection/types';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
