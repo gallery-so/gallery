@@ -117,33 +117,16 @@ function NftDetailPage({ nftId }: Props) {
   };
 
   const nextPress = useKeyDown('ArrowRight');
-  console.log(nextPress);
+  const prevPress = useKeyDown('ArrowLeft');
 
-  // useEffect(() => {
-  //   function handleKeyDown(e: KeyboardEvent) {
-  //     // Only listen for keyboard events if the document body is focused
-  //     if (document.activeElement?.tagName !== 'BODY') return;
-
-  //     if (e.key === 'ArrowLeft') {
-  //       if (prevNftId) {
-  //         navigateToId(prevNftId);
-  //         // track('NFT Detail: Navigate to Previous NFT', { nftId, direction: 'left' });
-  //       }
-  //     } else if (e.key === 'ArrowRight') {
-  //       if (nextNftId) {
-  //         navigateToId(nextNftId);
-  //         // track('NFT Detail: Navigate to Next NFT', { nftId, direction: 'right' });
-  //       }
-  //     }
-  //   }
-
-  //   document.addEventListener('keydown', handleKeyDown);
-
-  //   // Don't forget to clean up
-  //   return function cleanup() {
-  //     document.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (nextPress && nextNftId) {
+      navigateToId(nextNftId);
+    }
+    if (prevPress && prevNftId) {
+      navigateToId(prevNftId);
+    }
+  }, [nextPress, nextNftId, prevPress, prevNftId, navigateToId]);
 
   return (
     <>
