@@ -26,6 +26,8 @@ import useCollectionById from 'hooks/api/collections/useCollectionById';
 import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
+import useKeyDown from 'hooks/useKeyDown';
+
 type Props = {
   nftId: string;
 };
@@ -114,31 +116,34 @@ function NftDetailPage({ nftId }: Props) {
     void replace(`/${username}/${collectionId}/${nftId}`);
   };
 
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      // Only listen for keyboard events if the document body is focused
-      if (document.activeElement?.tagName !== 'BODY') return;
+  const nextPress = useKeyDown('ArrowRight');
+  console.log(nextPress);
 
-      if (e.key === 'ArrowLeft') {
-        if (prevNftId) {
-          navigateToId(prevNftId);
-          // track('NFT Detail: Navigate to Previous NFT', { nftId, direction: 'left' });
-        }
-      } else if (e.key === 'ArrowRight') {
-        if (nextNftId) {
-          navigateToId(nextNftId);
-          // track('NFT Detail: Navigate to Next NFT', { nftId, direction: 'right' });
-        }
-      }
-    }
+  // useEffect(() => {
+  //   function handleKeyDown(e: KeyboardEvent) {
+  //     // Only listen for keyboard events if the document body is focused
+  //     if (document.activeElement?.tagName !== 'BODY') return;
 
-    document.addEventListener('keydown', handleKeyDown);
+  //     if (e.key === 'ArrowLeft') {
+  //       if (prevNftId) {
+  //         navigateToId(prevNftId);
+  //         // track('NFT Detail: Navigate to Previous NFT', { nftId, direction: 'left' });
+  //       }
+  //     } else if (e.key === 'ArrowRight') {
+  //       if (nextNftId) {
+  //         navigateToId(nextNftId);
+  //         // track('NFT Detail: Navigate to Next NFT', { nftId, direction: 'right' });
+  //       }
+  //     }
+  //   }
 
-    // Don't forget to clean up
-    return function cleanup() {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  //   document.addEventListener('keydown', handleKeyDown);
+
+  //   // Don't forget to clean up
+  //   return function cleanup() {
+  //     document.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, []);
 
   return (
     <>
