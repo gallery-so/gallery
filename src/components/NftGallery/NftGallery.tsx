@@ -70,7 +70,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
 const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
   display: grid;
   grid-template-columns: ${({ columns, mobileLayout }) =>
-    mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 50%))`};
+    mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 100%))`};
   grid-gap: 10px 10px;
   align-items: center;
   justify-content: center;
