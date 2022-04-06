@@ -288,7 +288,6 @@ const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
 
 const StyledHeightBuffer = styled.div<{ noteHeight: number }>`
   height: ${({ noteHeight }) => noteHeight}px;
-  width: 100%;
   position: absolute;
   z-index: -1;
 `;
