@@ -7,8 +7,7 @@ export function removeNullValues<T>(values: ReadonlyArray<T | null> | null | und
 
   const nonNullValues: T[] = [];
   for (const value of values) {
-    // loose equality check filters out both `null` and `undefined`, while keeping in '', 0, and false
-    if (value != null) {
+    if (value !== null && value !== undefined) {
       nonNullValues.push(value);
     }
   }
