@@ -1,10 +1,13 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import colors from 'components/core/colors';
+import useKeyDown from 'hooks/useKeyDown';
+import ConfirmLeaveModal from './ConfirmLeaveModal';
+import { useModal } from 'contexts/modal/ModalContext';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
   // Const handleGalleryPreview = useCallback(() => {
@@ -14,6 +17,17 @@ function Header({ wizard: { push } }: WizardComponentProps) {
   const handleAddCollection = useCallback(() => {
     push('organizeCollection');
   }, [push]);
+
+  const escape = useKeyDown('Escape');
+  const { showModal } = useModal();
+
+  // Whenever user clicks escape, go back to the previous route
+  useEffect(() => {
+    console.log(escape);
+    if (escape) {
+      showModal(<ConfirmLeaveModal />);
+    }
+  }, [escape]);
 
   return (
     <StyledHeader>
