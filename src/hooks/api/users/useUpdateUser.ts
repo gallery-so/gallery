@@ -20,6 +20,7 @@ export default function useUpdateUser() {
           ... on UpdateUserInfoPayload {
             viewer {
               user {
+                id
                 username
                 bio
               }
@@ -35,9 +36,12 @@ export default function useUpdateUser() {
       const optimisticResponse: useUpdateUserMutation$data = {
         updateUserInfo: {
           __typename: 'UpdateUserInfoPayload',
-          user: {
-            username,
-            bio,
+          viewer: {
+            user: {
+              id: `GalleryUser:${userId}`,
+              username,
+              bio,
+            },
           },
         },
       };
