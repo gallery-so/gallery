@@ -3,7 +3,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
 import Markdown from 'components/core/Markdown/Markdown';
 import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
@@ -12,24 +11,37 @@ import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 type Props = {
-  nft: Nft;
+  name: string;
+  description: string;
   ownerUsername: string;
+  contractAddress: string;
+  tokenId: string;
+  externalUrl: string;
+  creatorAddress: string; // this might not be on schema
 };
 
-function NftDetailText({ nft, ownerUsername }: Props) {
+function NftDetailText({
+  name,
+  description,
+  ownerUsername,
+  contractAddress,
+  tokenId,
+  externalUrl,
+  creatorAddress,
+}: Props) {
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const creatorExists = nft.creator_name || nft.creator_address || nft.asset_contract?.address;
+  const creatorExists = creatorAddress || contractAddress;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      <TitleM>{nft.name}</TitleM>
+      <TitleM>{name}</TitleM>
       <Spacer height={4} />
-      <BaseM>{nft.token_collection_name}</BaseM>
+      {/* <BaseM>{token_collection_name}</BaseM> */}
       <Spacer height={32} />
       <StyledNftDescription>
-        <Markdown text={nft.description} />
+        <Markdown text={description} />
       </StyledNftDescription>
       <Spacer height={32} />
       <TitleXS>Owner</TitleXS>
@@ -38,15 +50,15 @@ function NftDetailText({ nft, ownerUsername }: Props) {
       {creatorExists && (
         <>
           <TitleXS>Created By</TitleXS>
-          <BaseM>
-            {nft.creator_name || (
-              <EnsOrAddress address={nft.creator_address || nft.asset_contract?.address} />
-            )}
-          </BaseM>
+          <BaseM>{<EnsOrAddress address={creatorAddress || contractAddress} />}</BaseM>
         </>
       )}
       <Spacer height={32} />
-      <NftAdditionalDetails nft={nft} />
+      <NftAdditionalDetails
+        contractAddress={contractAddress}
+        tokenId={tokenId}
+        externalUrl={externalUrl}
+      />
     </StyledDetailLabel>
   );
 }

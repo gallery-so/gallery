@@ -25,21 +25,63 @@ import NavigationHandle from './NavigationHandle';
 import useCollectionById from 'hooks/api/collections/useCollectionById';
 import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
+import { graphql, useFragment } from 'react-relay';
+import NotFound from 'scenes/NotFound/NotFound';
 
 type Props = {
   nftId: string;
+  queryRef: any;
 };
 
-function NftDetailPage({ nftId }: Props) {
-  const { query } = useRouter();
+function NftDetailPage({ nftId, queryRef }: Props) {
+  const {
+    query: { collectionId },
+  } = useRouter();
+
+  const { nft } = useFragment(
+    graphql`
+      fragment NftDetailPageFragment on Query {
+        nft: nftById(id: $nftId) {
+          ... on ErrNftNotFound {
+            __typename
+          }
+
+          ... on GalleryNft {
+            nft {
+              dbid
+              name
+              description
+              ownerUsername
+              contractAddress
+              tokenId
+              externalUrl
+              creatorAddress
+            }
+          }
+        }
+        ...NftDetailAssetFragment
+      }
+    `,
+    queryRef
+  );
+
+  const {
+    name,
+    description,
+    ownerUsername,
+    contractAddress,
+    tokenId,
+    externalUrl,
+    creatorAddress,
+  } = nft;
 
   const username = window.location.pathname.split('/')[1];
-  const collectionId = query.collectionId as string;
+  // const collectionId = collectionId as string;
   // TODO: Should refactor to utilize navigation context instead of session storage
   const isFromCollectionPage =
     globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
-  const collectionNfts = useCollectionById({ id: collectionId })?.nfts;
+  const collectionNfts = useCollectionById({ id: collectionId as string })?.nfts;
 
   const { prevNftId, nextNftId } = useMemo(() => {
     if (!collectionNfts) {
@@ -70,7 +112,6 @@ function NftDetailPage({ nftId }: Props) {
 
   const handleBackClick = useBackButton({ username });
 
-  const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
 
   const track = useTrack();
@@ -87,8 +128,8 @@ function NftDetailPage({ nftId }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  if (!nft) {
-    return <GalleryRedirect to="/404" />;
+  if (nft?.__typename === 'ErrNftNotFound') {
+    return <NotFound resource="nft" />;
   }
 
   const leftArrow = prevNftId && (
@@ -131,7 +172,7 @@ function NftDetailPage({ nftId }: Props) {
             <StyledAssetAndNoteContainer>
               <ShimmerProvider>
                 <NftDetailAsset
-                  nft={nft}
+                  nftRef={nft}
                   hasExtraPaddingForNote={isCollectorsNoteEnabled && assetHasExtraPaddingForNote}
                 />
               </ShimmerProvider>
@@ -144,7 +185,15 @@ function NftDetailPage({ nftId }: Props) {
               )}
             </StyledAssetAndNoteContainer>
 
-            <NftDetailText nft={nft} ownerUsername={username} />
+            <NftDetailText
+              name={name}
+              description={description}
+              ownerUsername={username}
+              contractAddress={contractAddress}
+              tokenId={tokenId}
+              externalUrl={externalUrl}
+              creatorAddress={creatorAddress}
+            />
           </StyledContentContainer>
           {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
           {rightArrow}

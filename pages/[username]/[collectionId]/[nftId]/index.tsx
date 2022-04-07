@@ -4,18 +4,30 @@ import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 type NftDetailPageProps = MetaTagProps & {
   nftId?: string;
 };
 
 export default function NftDetailPage({ nftId }: NftDetailPageProps) {
+  const query = useLazyLoadQuery<NftIdQuery>(
+    graphql`
+      query NftIdQuery($nftId: DBID!) {
+        ...NftDetailPageFragment
+      }
+    `,
+    { nftId }
+  );
+
   if (!nftId) {
     // Something went horribly wrong
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<NftDetailPageScene nftId={nftId} />} footerIsFixed />;
+  return (
+    <GalleryRoute element={<NftDetailPageScene queryRef={query} nftId={nftId} />} footerIsFixed />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {

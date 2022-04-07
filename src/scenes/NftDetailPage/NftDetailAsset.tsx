@@ -1,19 +1,15 @@
 import breakpoints, { size } from 'components/core/breakpoints';
-import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
-import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
-import NftDetailModel from './NftDetailModel';
 import { useBreakpoint } from 'hooks/useWindowSize';
-import { useMemo } from 'react';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
+import NftDetailImage from './NftDetailImage';
 
 type NftDetailAssetComponentProps = {
   nftRef: NftDetailAssetComponentFragment$key;
@@ -28,12 +24,14 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
           media @required(action: THROW) {
             ... on VideoMedia {
               __typename
+              ...NftDetailVideoFragment
             }
             ... on ImageMedia {
               __typename
             }
             ... on HtmlMedia {
               __typename
+              ...NftDetailAnimationFragment
             }
             ... on AudioMedia {
               __typename
@@ -42,51 +40,27 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
               __typename
             }
           }
-          ...NftDetailImageFragment
-          ...NftDetailVideoFragment
-          ...NftDetailAnimationFragment
           ...NftDetailAudioFragment
+          ...NftDetailImageFragment
         }
       }
     `,
     nftRef
   );
 
-  const assetType = getMediaType(nft);
-  const breakpoint = useBreakpoint();
-
-  // make this another component
-  const resizableImage = useMemo(
-    () => (
-      <ImageWithLoading
-        src={getResizedNftImageUrlWithFallback(nft, 1200)}
-        alt={nft.name}
-        widthType="maxWidth"
-        heightType={breakpoint === size.desktop ? 'maxHeightScreen' : undefined}
-      />
-    ),
-    [breakpoint, nft]
-  );
-
   switch (nft.nft.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation nftRef={nft} />;
-    case ''
-  }
-
-  switch (assetType) {
-    case NftMediaType.IMAGE:
-      return resizableImage;
-    case NftMediaType.AUDIO:
+      return <NftDetailAnimation mediaRef={nft.nft.media} />;
+    case 'VideoMedia':
+      return <NftDetailVideo mediaRef={nft.nft.media} maxHeight={maxHeight} />;
+    case 'AudioMedia':
       return <NftDetailAudio nftRef={nft.nft} />;
-    case NftMediaType.VIDEO:
-      return <NftDetailVideo nft={nft} maxHeight={maxHeight} />;
-    case NftMediaType.ANIMATION:
-      return <NftDetailAnimation nft={nft} />;
-    case NftMediaType.MODEL:
-      return <NftDetailModel nft={nft} />;
+    case 'ImageMedia':
+      return <NftDetailImage nftRef={nft.nft} />;
+    // case 'ModelMedia': TODO
+    //   return <NftDetailModel nftRef={nft.nft} />;
     default:
-      return resizableImage;
+      return <NftDetailImage nftRef={nft.nft} />;
   }
 }
 
@@ -115,6 +89,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
             }
           }
         }
+        ...NftDetailAssetComponentFragment
       }
     `,
     nftRef
@@ -130,6 +105,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
 
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
+  console.log('nft', nft, nftRef);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = nft.nft.media.__typename === 'HtmlMedia';

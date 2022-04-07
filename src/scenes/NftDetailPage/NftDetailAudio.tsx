@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { Nft } from 'types/Nft';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
 
