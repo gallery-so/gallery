@@ -72,10 +72,6 @@ function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardC
         <Spacer height={12} />
         <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
         <Spacer height={12} />
-        <CopyToClipboard textToCopy={collectionUrl}>
-          <TextButton text="Share" />
-        </CopyToClipboard>
-        <Spacer height={12} />
         <TextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>
     </StyledCollectionRowSettings>
