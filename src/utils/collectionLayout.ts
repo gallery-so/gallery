@@ -44,15 +44,18 @@ export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
   }, []);
 }
 
-export function insertWhitespaceBlocks(
-  items: Array<Nft | WhitespaceBlock | StagingItem>,
+export function insertWhitespaceBlocks<T>(
+  items: ReadonlyArray<T>,
   whitespaceList: number[]
-) {
-  const result = [...items];
+): Array<T | WhitespaceBlock> {
+  const result: Array<T | WhitespaceBlock> = [...items];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
   whitespaceList.forEach((index, offset) =>
-    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
+    result.splice(index + offset, 0, {
+      id: `blank-${generate12DigitId()}`,
+      whitespace: 'whitespace',
+    })
   );
 
   return result;

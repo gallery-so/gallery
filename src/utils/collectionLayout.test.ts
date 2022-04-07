@@ -1,32 +1,27 @@
+import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
+import { Nft } from 'types/Nft';
 import { getWhitespacePositionsFromStagedItems, insertWhitespaceBlocks } from './collectionLayout';
 
-function generateTestNft() {
+function generateTestNft(): EditModeNft {
   return {
     id: '123',
-    name: 'test',
-    description: 'test',
-    image: {
-      url: 'https://example.com/test.jpg',
-    },
-    metadata: {
-      type: 'nft',
-    },
+    nft: {} as Nft, // This is wrong but our test doesn't actually need the data inside the NFT,
   };
 }
 
 describe.skip('getWhitespacePositionsFromStagedItems', () => {
   it('computes the correct whitespace list given a list of staged items', () => {
     const stagedItems = [
-      { id: 'blank-1' },
-      { id: 'blank-2' },
+      { id: 'blank-1', whitespace: 'whitespace' } as const,
+      { id: 'blank-2', whitespace: 'whitespace' } as const,
       generateTestNft(),
-      { id: 'blank-3' },
+      { id: 'blank-3', whitespace: 'whitespace' } as const,
       generateTestNft(),
       generateTestNft(),
       generateTestNft(),
-      { id: 'blank-4' },
+      { id: 'blank-4', whitespace: 'whitespace' } as const,
       generateTestNft(),
-      { id: 'blank-5' },
+      { id: 'blank-5', whitespace: 'whitespace' } as const,
     ];
     const whitespaceList = getWhitespacePositionsFromStagedItems(stagedItems);
     expect(whitespaceList).toEqual([0, 0, 1, 4, 5]);

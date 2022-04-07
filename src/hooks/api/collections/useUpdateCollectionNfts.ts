@@ -13,8 +13,12 @@ import {
   getWhitespacePositionsFromStagedItems,
   removeWhitespacesFromStagedItems,
 } from 'utils/collectionLayout';
+import { fetchQuery, graphql } from 'relay-runtime';
+import { useRelayEnvironment } from 'react-relay';
+import { useUpdateCollectionNftsRefreshserQuery } from '__generated__/useUpdateCollectionNftsRefreshserQuery.graphql';
 
 export default function useUpdateCollectionNfts() {
+  const relayEnvironment = useRelayEnvironment();
   const updateCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
   const { mutate } = useSWRConfig();
@@ -35,6 +39,42 @@ export default function useUpdateCollectionNfts() {
         nfts: nftIds,
         layout,
       });
+
+      // Until everything is routed through GraphQL, we need
+      // a mechanism to ensure that other pages using this data
+      // get the updated data.
+      //
+      // This fetchQuery asks the server for a collection.
+      // We're also ensuring that any other pages that need data
+      // off of a collection are getting their data requirements
+      // refreshed. These four fragments are the only fragmeents
+      // on this type, so we should be good.
+      //
+      // If you want to ensure this list of fragments is up to date
+      // you can global search for `on GalleryCollection` to find
+      // all of the fragments on this type.
+      //
+      // In other places, we can do an optimistic update since
+      // there's not much data to update (hidden, collectorsNote, etc).
+      // Here, we'd have to optimistically update a bunch of nfts which
+      // is more risky since that mapping logic might get out of hand.
+      // The safer approach here is to just refetch the data.
+      await fetchQuery<useUpdateCollectionNftsRefreshserQuery>(
+        relayEnvironment,
+        graphql`
+          query useUpdateCollectionNftsRefreshserQuery($id: DBID!) {
+            collectionById(id: $id) {
+              ...UserGalleryCollectionFragment
+              ...NftGalleryFragment
+              ...useCollectionColumnsFragment
+              ...CollectionGalleryHeaderFragment
+            }
+          }
+        `,
+        {
+          id: collectionId,
+        }
+      ).toPromise();
 
       await mutate(
         getGalleriesCacheKey({ userId }),
@@ -59,6 +99,6 @@ export default function useUpdateCollectionNfts() {
 
       return result;
     },
-    [updateCollection, mutate, userId]
+    [updateCollection, mutate, userId, relayEnvironment]
   );
 }

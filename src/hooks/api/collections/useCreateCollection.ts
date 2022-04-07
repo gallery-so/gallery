@@ -13,11 +13,15 @@ import {
   getWhitespacePositionsFromStagedItems,
   removeWhitespacesFromStagedItems,
 } from 'utils/collectionLayout';
+import { fetchQuery, graphql } from 'relay-runtime';
+import { useRelayEnvironment } from 'react-relay';
+import { useCreateCollectionQuery } from '__generated__/useCreateCollectionQuery.graphql';
 
 export default function useCreateCollection() {
   const createCollection = usePost();
   const { id: userId } = useAuthenticatedUser();
   const { mutate } = useSWRConfig();
+  const relayEnvironment = useRelayEnvironment();
 
   return useCallback(
     async (
@@ -44,6 +48,41 @@ export default function useCreateCollection() {
           layout,
         }
       );
+
+      // Until everything is routed through GraphQL, we need
+      // a mechanism to ensure that other pages using this data
+      // get the updated data.
+      //
+      // This fetchQuery asks the server for a collection.
+      // We're also ensuring that any other pages that need data
+      // off of a collection are getting their data requirements
+      // refreshed. These four fragments are the only fragmeents
+      // on this type, so we should be good.
+      //
+      // If you want to ensure this list of fragments is up to date
+      // you can global search for `on Gallery ` to find
+      // all of the fragments on this type.
+      //
+      // In other places, we can do an optimistic update since
+      // there's not much data to update (hidden, collectorsNote, etc).
+      // Here, we'd have to optimistically update a bunch of nfts which
+      // is more risky since that mapping logic might get out of hand.
+      // The safer approach here is to just refetch the data.
+      await fetchQuery<useCreateCollectionQuery>(
+        relayEnvironment,
+        graphql`
+          query useCreateCollectionQuery($id: DBID!) {
+            collectionById(id: $id) {
+              ... on GalleryCollection {
+                gallery {
+                  ...UserGalleryCollectionsFragment
+                }
+              }
+            }
+          }
+        `,
+        { id: result.collection_id }
+      ).toPromise();
 
       const now = getISODate();
 
@@ -75,6 +114,6 @@ export default function useCreateCollection() {
 
       return result;
     },
-    [createCollection, mutate, userId]
+    [createCollection, mutate, relayEnvironment, userId]
   );
 }

@@ -1,18 +1,19 @@
-import styled from 'styled-components';
-import Gradient from 'components/core/Gradient/Gradient';
 import transitions from 'components/core/transitions';
 import { useCallback, useMemo } from 'react';
 import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { Nft } from 'types/Nft';
 import { useNavigateToUrl } from 'utils/navigate';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import NftPreviewLabel from './NftPreviewLabel';
 import NftPreviewAsset from './NftPreviewAsset';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
+import { useCollectionColumns } from 'hooks/useCollectionColumns';
+import Gradient from 'components/core/Gradient/Gradient';
+import styled from 'styled-components';
+import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
-  nft: Nft;
-  collectionId: string;
-  columns: number;
+  galleryNftRef: NftPreviewFragment$key;
 };
 
 const SINGLE_COLUMN_NFT_WIDTH = 600;
@@ -36,7 +37,27 @@ function NftPreviewWithShimmer(props: Props) {
   );
 }
 
-function NftPreview({ nft, collectionId, columns }: Props) {
+function NftPreview({ galleryNftRef }: Props) {
+  const { nft, collection } = useFragment(
+    graphql`
+      fragment NftPreviewFragment on GalleryNft {
+        nft @required(action: THROW) {
+          dbid
+          name
+          ...NftPreviewAssetFragment
+        }
+        collection @required(action: THROW) {
+          id
+          dbid
+          ...useCollectionColumnsFragment
+        }
+      }
+    `,
+    galleryNftRef
+  );
+
+  const columns = useCollectionColumns(collection);
+
   const navigateToUrl = useNavigateToUrl();
 
   const username = window.location.pathname.split('/')[1];
@@ -47,9 +68,9 @@ function NftPreview({ nft, collectionId, columns }: Props) {
       event.stopPropagation();
       // TODO: Should refactor to utilize navigation context instead of session storage
       if (storage) storage.setItem('prevPage', window.location.pathname);
-      navigateToUrl(`/${username}/${collectionId}/${nft.id}`, event);
+      navigateToUrl(`/${username}/${collection.dbid}/${nft.dbid}`, event);
     },
-    [collectionId, navigateToUrl, nft.id, storage, username]
+    [collection.dbid, navigateToUrl, nft.dbid, storage, username]
   );
   const isMobile = useIsMobileWindowWidth();
 
@@ -76,9 +97,9 @@ function NftPreview({ nft, collectionId, columns }: Props) {
     <StyledNftPreview width={nftPreviewWidth}>
       <StyledLinkWrapper onClick={handleNftClick}>
         {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
-        <NftPreviewAsset nft={nft} size={previewSize * 2} />
+        <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
         <StyledNftFooter>
-          <StyledNftLabel nft={nft} />
+          <StyledNftLabel title={nft.name} collectionName={'THIS IS BUSTED'} />
           <StyledGradient type="bottom" direction="down" />
         </StyledNftFooter>
       </StyledLinkWrapper>

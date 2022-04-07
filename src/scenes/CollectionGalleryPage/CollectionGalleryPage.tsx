@@ -9,12 +9,17 @@ import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
+import { graphql, useFragment } from 'react-relay';
+
+import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
+
 type CollectionGalleryPageProps = {
   username: string;
   collectionId: string;
+  queryRef: CollectionGalleryPageFragment$key;
 };
 
-function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPageProps) {
+function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
   const handleBackClick = useBackButton({ username });
 
@@ -27,6 +32,15 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
     });
   }, [username, collectionId, track]);
 
+  const query = useFragment(
+    graphql`
+      fragment CollectionGalleryPageFragment on Query {
+        ...CollectionGalleryFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <>
       <Head>
@@ -37,7 +51,7 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
           <StyledBackLink>
             <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
           </StyledBackLink>
-          <CollectionGallery collectionId={collectionId} />
+          <CollectionGallery queryRef={query} />
         </StyledCollectionGalleryWrapper>
       </Page>
     </>

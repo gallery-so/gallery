@@ -1,4 +1,4 @@
 module.exports = {
-  schema: 'schema.graphql',
+  schema: ['schema.graphql', './relay-extensions.graphql'],
   documents: '{src,pages}/**/*.{ts,tsx}',
 };

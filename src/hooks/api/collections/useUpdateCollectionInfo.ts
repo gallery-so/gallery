@@ -1,34 +1,63 @@
 import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import cloneDeep from 'lodash.clonedeep';
-import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';
+import { GetCollectionResponse } from './types';
 import {
-  GetCollectionResponse,
-  UpdateCollectionInfoRequest,
-  UpdateCollectionInfoResponse,
-} from './types';
+  useUpdateCollectionInfoMutation,
+  useUpdateCollectionInfoMutation$data,
+} from '__generated__/useUpdateCollectionInfoMutation.graphql';
 import { getISODate } from 'utils/time';
 import { getCollectionByIdCacheKey } from './useCollectionById';
+import { graphql } from 'react-relay';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 
 export default function useUpdateCollectionInfo() {
-  const updateCollection = usePost();
-  const authenticatedUser = useAuthenticatedUser();
   const { mutate } = useSWRConfig();
+  const authenticatedUser = useAuthenticatedUser();
+
+  const [updateCollection] = usePromisifiedMutation<useUpdateCollectionInfoMutation>(graphql`
+    mutation useUpdateCollectionInfoMutation($input: UpdateCollectionInfoInput!) {
+      updateCollectionInfo(input: $input) {
+        __typename
+        ... on UpdateCollectionInfoPayload {
+          collection {
+            id
+            name
+            collectorsNote
+          }
+        }
+      }
+    }
+  `);
 
   return useCallback(
-    async (collectionId: string, name: string, collectors_note: string) => {
-      await updateCollection<UpdateCollectionInfoResponse, UpdateCollectionInfoRequest>(
-        '/collections/update/info',
-        'update collection info',
-        {
-          id: collectionId,
-          name,
-          collectors_note,
-        }
-      );
+    async (collectionDbid: string, name: string, collectorsNote: string) => {
+      const optimisticResponse: useUpdateCollectionInfoMutation$data = {
+        updateCollectionInfo: {
+          __typename: 'UpdateCollectionInfoPayload',
+          collection: {
+            // We don't have the GraphQL / Relay ID here. So we'll generate it
+            // the same way the backend does {TypeName}:{DBID} here so relay
+            // can find the right item in the cache to update.
+            id: `GalleryCollection:${collectionDbid}`,
+            name,
+            collectorsNote,
+          },
+        },
+      };
+
+      await updateCollection({
+        // As soon as the mutation starts, immediately respond with this optmistic response
+        // until the server tells us what the new information is.
+        optimisticResponse,
+        variables: { input: { name, collectorsNote, collectionId: collectionDbid } },
+      });
+
+      /* The following two SWR optimistic updates are here until we fully */
+      /* remove collections / galleries from SWR                          */
 
       // Optimistically update the collection within gallery cache.
       // it should be less messy in the future when we have a dedicated
@@ -39,8 +68,8 @@ export default function useUpdateCollectionInfo() {
           const newValue = cloneDeep<GetGalleriesResponse>(value);
           const gallery = newValue.galleries[0];
           const newCollections = gallery.collections.map((collection) => {
-            if (collection.id === collectionId) {
-              return { ...collection, name, collectors_note };
+            if (collection.id === collectionDbid) {
+              return { ...collection, name, collectors_note: collectorsNote };
             }
 
             return collection;
@@ -54,14 +83,14 @@ export default function useUpdateCollectionInfo() {
 
       // Update single collection cache
       await mutate(
-        getCollectionByIdCacheKey({ id: collectionId }),
+        getCollectionByIdCacheKey({ id: collectionDbid }),
         (value: GetCollectionResponse) => {
           const newValue = cloneDeep<GetCollectionResponse | undefined>(value);
 
           // only mutate if collection resource exists in cache
           if (newValue) {
             newValue.collection.name = name;
-            newValue.collection.collectors_note = collectors_note;
+            newValue.collection.collectors_note = collectorsNote;
           }
 
           return newValue;

@@ -7,6 +7,8 @@ export type EditModeNft = {
 };
 
 export type WhitespaceBlock = {
+  // This is here to help with union discrimination in typescript
+  whitespace: 'whitespace';
   id: string;
 };
 

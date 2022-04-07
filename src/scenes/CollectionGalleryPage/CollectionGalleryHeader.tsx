@@ -9,7 +9,6 @@ import NavElement from 'components/core/Page/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { Collection } from 'types/Collection';
 import { useRouter } from 'next/router';
 import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
@@ -21,55 +20,76 @@ import { DisplayLayout } from 'components/core/enums';
 import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment } from 'react-relay';
+
+import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 
 type Props = {
-  collection: Collection;
+  collectionRef: CollectionGalleryHeaderFragment$key;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
 
-function CollectionGalleryHeader({ collection, mobileLayout, setMobileLayout }: Props) {
+function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
   const user = usePossiblyAuthenticatedUser();
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
   const handleBackClick = useBackButton({ username });
 
-  const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
+  const collection = useFragment(
+    graphql`
+      fragment CollectionGalleryHeaderFragment on GalleryCollection {
+        dbid
+        name
+        collectorsNote
+
+        nfts {
+          __typename
+        }
+      }
+    `,
+    collectionRef
+  );
+
+  const unescapedCollectionName = useMemo(
+    () => (collection.name ? unescape(collection.name) : null),
+    [collection.name]
+  );
   const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectors_note || ''),
-    [collection.collectors_note]
+    () => (collection.collectorsNote ? unescape(collection.collectorsNote || '') : null),
+    [collection.collectorsNote]
   );
 
   const track = useTrack();
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
+    track('Share Collection', { path: `/${username}/${collection.dbid}` });
+  }, [collection.dbid, username, track]);
 
   const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
 
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
-  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length > 0;
+  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length;
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');
-    void push(`/edit?collectionId=${collection.id}`);
-  }, [collection.id, push, track]);
+    void push(`/edit?collectionId=${collection.dbid}`);
+  }, [collection.dbid, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
-        collectionId={collection.id}
-        collectionName={collection.name}
-        collectionCollectorsNote={collection.collectors_note}
+        collectionId={collection.dbid}
+        collectionName={collection.name ?? undefined}
+        collectionCollectorsNote={collection.collectorsNote ?? undefined}
       />
     );
-  }, [collection.collectors_note, collection.id, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
 
   return (
     <StyledCollectionGalleryHeaderWrapper>

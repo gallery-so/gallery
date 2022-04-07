@@ -4,7 +4,6 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { Collection } from 'types/Collection';
 import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
@@ -15,14 +14,19 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { baseUrl } from 'utils/baseUrl';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
+import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
+import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModal } from 'contexts/modal/ModalContext';
 
 type Props = {
-  collection: Collection;
+  queryRef: UserGalleryCollectionQueryFragment$key;
+  collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
 };
 
@@ -30,40 +34,68 @@ export function isValidColumns(columns: number) {
   return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
 }
 
-function UserGalleryCollection({ collection, mobileLayout }: Props) {
+function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryCollectionQueryFragment on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
+  const collection = useFragment(
+    graphql`
+      fragment UserGalleryCollectionFragment on GalleryCollection {
+        dbid
+        name @required(action: THROW)
+        collectorsNote
+
+        gallery {
+          owner {
+            id
+          }
+        }
+
+        ...NftGalleryFragment
+      }
+    `,
+    collectionRef
+  );
+
+  const loggedInUserId = useLoggedInUserId(query);
+  const showEditActions = loggedInUserId === collection.gallery?.owner?.id;
+
   const { showModal } = useModal();
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectors_note),
-    [collection.collectors_note]
+    () => unescape(collection.collectorsNote ?? ''),
+    [collection.collectorsNote]
   );
 
   const [isHovering, setIsHovering] = useState(false);
-  const user = usePossiblyAuthenticatedUser();
   const username = asPath.split('/')[1];
-  const collectionUrl = `${baseUrl}/${username}/${collection.id}`;
+  const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
 
   const handleViewCollectionClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      navigateToUrl(`/${username}/${collection.id}`, event);
+      navigateToUrl(`/${username}/${collection.dbid}`, event);
     },
-    [collection.id, navigateToUrl, username]
+    [collection.dbid, navigateToUrl, username]
   );
 
   const track = useTrack();
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection button clicked');
-    void push(`/edit?collectionId=${collection.id}`);
-  }, [collection.id, track, push]);
+    void push(`/edit?collectionId=${collection.dbid}`);
+  }, [collection.dbid, track, push]);
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.id}` });
-  }, [collection.id, username, track]);
-
-  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
+    track('Share Collection', { path: `/${username}/${collection.dbid}` });
+  }, [collection.dbid, username, track]);
 
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);
@@ -78,12 +110,12 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
-        collectionId={collection.id}
+        collectionId={collection.dbid}
         collectionName={collection.name}
-        collectionCollectorsNote={collection.collectors_note}
+        collectionCollectorsNote={collection.collectorsNote ?? ''}
       />
     );
-  }, [collection.collectors_note, collection.id, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
 
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
@@ -133,7 +165,7 @@ function UserGalleryCollection({ collection, mobileLayout }: Props) {
           </>
         )}
       </StyledCollectionHeader>
-      <NftGallery collection={collection} mobileLayout={mobileLayout} />
+      <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }

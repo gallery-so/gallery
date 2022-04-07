@@ -78,7 +78,7 @@ function Sidebar() {
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
-    stageNfts([{ id }]);
+    stageNfts([{ id, whitespace: 'whitespace' }]);
     // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging nfts
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
