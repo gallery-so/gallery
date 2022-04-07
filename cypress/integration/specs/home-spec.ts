@@ -22,7 +22,6 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
-    cy.confirmMetamaskSignatureRequest();
     cy.url().should('include', `/gentlemanbeggar`);
     cy.wait(1000);
     home.getAccountButton('gentlemanbeggar').click();
