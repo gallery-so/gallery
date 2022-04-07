@@ -12,8 +12,6 @@ import { Collection } from 'types/Collection';
 import noop from 'utils/noop';
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
@@ -23,11 +21,8 @@ type Props = {
 function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardComponentProps) {
   const { showModal } = useModal();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
-  const username = useAuthenticatedUsername();
 
   const { id, name, collectors_note, hidden } = collection;
-
-  const collectionUrl = `${window.location.origin}/${username}/${id}`;
 
   const track = useTrack();
 
