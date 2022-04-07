@@ -2,7 +2,6 @@ import breakpoints, { size } from 'components/core/breakpoints';
 import { NftMediaType } from 'components/core/enums';
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { Nft } from 'types/Nft';
 import { getMediaType, getResizedNftImageUrlWithFallback } from 'utils/nft';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import NftDetailAnimation from './NftDetailAnimation';
@@ -27,17 +26,26 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
       fragment NftDetailAssetComponentFragment on GalleryNft {
         nft @required(action: THROW) {
           media @required(action: THROW) {
+            ... on VideoMedia {
+              __typename
+            }
+            ... on ImageMedia {
+              __typename
+            }
             ... on HtmlMedia {
               __typename
             }
             ... on AudioMedia {
               __typename
             }
-            ... on etc
+            ... on UnknownMedia {
+              __typename
+            }
           }
-          name
+          ...NftDetailImageFragment
+          ...NftDetailVideoFragment
+          ...NftDetailAnimationFragment
           ...NftDetailAudioFragment
-          ...etc
         }
       }
     `,
@@ -63,6 +71,7 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
   switch (nft.nft.media.__typename) {
     case 'HtmlMedia':
       return <NftDetailAnimation nftRef={nft} />;
+    case ''
   }
 
   switch (assetType) {
