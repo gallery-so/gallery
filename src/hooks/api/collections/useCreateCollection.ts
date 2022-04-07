@@ -114,6 +114,6 @@ export default function useCreateCollection() {
 
       return result;
     },
-    [createCollection, mutate, userId]
+    [createCollection, mutate, relayEnvironment, userId]
   );
 }

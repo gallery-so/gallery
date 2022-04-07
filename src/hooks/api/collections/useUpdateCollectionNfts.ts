@@ -99,6 +99,6 @@ export default function useUpdateCollectionNfts() {
 
       return result;
     },
-    [updateCollection, mutate, userId]
+    [updateCollection, mutate, userId, relayEnvironment]
   );
 }

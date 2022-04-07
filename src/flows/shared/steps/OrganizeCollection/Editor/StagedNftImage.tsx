@@ -22,11 +22,11 @@ function StagedNftImage({ nft, size, setNodeRef, ...props }: Props) {
   return isVideo ? (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo src={srcUrl} />
-      <StyledNftPreviewLabel nft={nft} />
+      <StyledNftPreviewLabel title={nft.name} collectionName={'THIS IS BUSTED'} />
     </VideoContainer>
   ) : (
     <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} size={size} {...props}>
-      <StyledNftPreviewLabel nft={nft} />
+      <StyledNftPreviewLabel title={nft.name} collectionName={'THIS IS BUSTED'} />
     </StyledGridImage>
   );
 }

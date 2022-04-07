@@ -7,7 +7,7 @@ export function removeNullValues<T>(values: ReadonlyArray<T | null> | null | und
 
   const nonNullValues: T[] = [];
   for (const value of values) {
-    if (value) {
+    if (value !== null && value !== undefined) {
       nonNullValues.push(value);
     }
   }

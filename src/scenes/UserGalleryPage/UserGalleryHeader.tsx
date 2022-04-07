@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';

@@ -102,9 +102,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, []);
 
   const handleMouseExit = useCallback(() => {
-    setTimeout(() => {
-      setIsHovering(false);
-    }, 200);
+    setIsHovering(false);
   }, []);
 
   const handleEditNameClick = useCallback(() => {

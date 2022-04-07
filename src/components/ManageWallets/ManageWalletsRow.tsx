@@ -40,7 +40,7 @@ function ManageWalletsRow({
 
       throw error;
     }
-  }, [address, setErrorMessage, removeUserAddress]);
+  }, [setErrorMessage, removeUserAddress, address, setRemovedAddress]);
 
   const showDisconnectButton = useMemo(
     () => address !== userSigninAddress,

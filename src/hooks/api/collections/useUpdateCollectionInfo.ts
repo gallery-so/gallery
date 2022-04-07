@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import cloneDeep from 'lodash.clonedeep';
-import usePost from '../_rest/usePost';
 import { useAuthenticatedUser } from '../users/useUser';
 import { GetGalleriesResponse } from '../galleries/types';
 import { getGalleriesCacheKey } from '../galleries/useGalleries';

@@ -20,7 +20,7 @@ export default function InteractiveLink({ to, href, children }: Props) {
     track('Link Click', {
       to: to || href,
     });
-  }, []);
+  }, [href, to, track]);
 
   if (!to && !href) {
     console.error('no link provided for InteractiveLink');
@@ -44,11 +44,6 @@ export default function InteractiveLink({ to, href, children }: Props) {
 
   return null;
 }
-
-const StyledLink = styled(Link)`
-  color: inherit;
-  text-decoration: underline;
-`;
 
 const StyledAnchor = styled.a`
   color: inherit;

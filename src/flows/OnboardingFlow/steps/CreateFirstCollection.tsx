@@ -2,7 +2,6 @@ import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback, useEffect } from 'react';

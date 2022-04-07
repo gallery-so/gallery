@@ -1,5 +1,4 @@
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM, TitleS } from 'components/core/Text/Text';

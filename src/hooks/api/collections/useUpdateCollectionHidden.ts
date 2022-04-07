@@ -56,6 +56,6 @@ export default function useUpdateCollectionHidden() {
         false
       );
     },
-    [updateCollection, mutate, authenticatedUser.id]
+    [updateCollection, mutate, authenticatedUser.id, relayEnvironment]
   );
 }

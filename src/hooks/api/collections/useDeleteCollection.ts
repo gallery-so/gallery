@@ -47,6 +47,6 @@ export default function useDeleteCollection() {
         false
       );
     },
-    [mutate, userId]
+    [deleteCollectionMutate, mutate, userId]
   );
 }
