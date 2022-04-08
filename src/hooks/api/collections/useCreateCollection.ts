@@ -73,7 +73,7 @@ export default function useCreateCollection() {
         graphql`
           query useCreateCollectionQuery($id: DBID!) {
             collectionById(id: $id) {
-              ... on GalleryCollection {
+              ... on Collection {
                 gallery {
                   ...UserGalleryCollectionsFragment
                 }

@@ -8,7 +8,7 @@ import { useCollectionColumnsFragment$key } from '__generated__/useCollectionCol
 export const useCollectionColumns = (collectionRef: useCollectionColumnsFragment$key | null) => {
   const collection = useFragment(
     graphql`
-      fragment useCollectionColumnsFragment on GalleryCollection {
+      fragment useCollectionColumnsFragment on Collection {
         layout {
           columns
         }

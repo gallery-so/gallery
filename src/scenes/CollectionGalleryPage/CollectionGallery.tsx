@@ -23,7 +23,7 @@ function CollectionGallery({ queryRef }: Props) {
             __typename
           }
 
-          ... on GalleryCollection {
+          ... on Collection {
             __typename
 
             ...NftGalleryFragment
@@ -35,7 +35,7 @@ function CollectionGallery({ queryRef }: Props) {
     queryRef
   );
 
-  if (collection?.__typename === 'GalleryCollection') {
+  if (collection?.__typename === 'Collection') {
     return (
       <StyledCollectionGallery>
         <Spacer height={32} />

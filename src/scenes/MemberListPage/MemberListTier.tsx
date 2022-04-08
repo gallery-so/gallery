@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { TitleS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import MemberListOwner from './MemberListOwner';
 import { Directions } from 'src/components/core/enums';
@@ -27,7 +26,7 @@ function MemberListTier({ tierRef }: Props) {
       fragment MemberListTierFragment on MembershipTier {
         name
         owners {
-          id
+          dbid
           user @required(action: NONE) {
             username @required(action: NONE)
           }
@@ -66,26 +65,27 @@ function MemberListTier({ tierRef }: Props) {
   }, [searchQuery, sortedOwners]);
 
   return (
-    <div>
+    <>
       <TitleS>{tier.name}</TitleS>
       <Spacer height={24} />
-      <StyledOwnersWrapper fadeUsernames={fadeUsernames}>
+      <StyledOwnersWrapper>
         {filteredOwners.map((owner, index) => (
-          <MemberListOwner key={owner.id} ownerRef={owner} direction={getPreviewDirection(index)} />
+          <MemberListOwner
+            key={owner.dbid}
+            ownerRef={owner}
+            direction={getPreviewDirection(index)}
+            fadeUsernames={fadeUsernames}
+          />
         ))}
       </StyledOwnersWrapper>
       <Spacer height={56} />
-    </div>
+    </>
   );
 }
 
-const StyledOwnersWrapper = styled.div<{ fadeUsernames: boolean }>`
+const StyledOwnersWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-
-  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
-
-  transition: color 0.15s ease-in-out;
 `;
 
 export default MemberListTier;
