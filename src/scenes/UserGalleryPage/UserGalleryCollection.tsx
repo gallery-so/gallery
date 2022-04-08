@@ -46,7 +46,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
 
   const collection = useFragment(
     graphql`
-      fragment UserGalleryCollectionFragment on GalleryCollection {
+      fragment UserGalleryCollectionFragment on Collection {
         dbid
         name @required(action: THROW)
         collectorsNote

@@ -40,7 +40,7 @@ function NftPreviewWithShimmer(props: Props) {
 function NftPreview({ galleryNftRef }: Props) {
   const { nft, collection } = useFragment(
     graphql`
-      fragment NftPreviewFragment on GalleryNft {
+      fragment NftPreviewFragment on CollectionNft {
         nft @required(action: THROW) {
           dbid
           name

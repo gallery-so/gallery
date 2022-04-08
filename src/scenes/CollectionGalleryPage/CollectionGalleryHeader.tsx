@@ -39,7 +39,7 @@ function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout 
 
   const collection = useFragment(
     graphql`
-      fragment CollectionGalleryHeaderFragment on GalleryCollection {
+      fragment CollectionGalleryHeaderFragment on Collection {
         dbid
         name
         collectorsNote

@@ -18,7 +18,7 @@ type Props = {
 function NftGallery({ collectionRef, mobileLayout }: Props) {
   const collection = useFragment(
     graphql`
-      fragment NftGalleryFragment on GalleryCollection {
+      fragment NftGalleryFragment on Collection {
         dbid
         layout {
           columns

@@ -29,7 +29,7 @@ export default function useUpdateCollectionHidden() {
       );
 
       commitLocalUpdate(relayEnvironment, (store) => {
-        const collection = store.get(`GalleryCollection:${collectionId}`);
+        const collection = store.get(`Collection:${collectionId}`);
 
         collection?.setValue(hidden, 'hidden');
       });
