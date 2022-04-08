@@ -108,7 +108,6 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
 
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
-  console.log('nft', nft, nftRef);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = nft.nft.media.__typename === 'HtmlMedia';

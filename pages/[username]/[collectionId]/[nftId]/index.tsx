@@ -13,7 +13,6 @@ type NftDetailPageProps = MetaTagProps & {
 };
 
 export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProps) {
-  console.log(collectionId);
   const query = useLazyLoadQuery<NftIdQuery>(
     graphql`
       query NftIdQuery($nftId: DBID!, $collectionId: DBID!) {
