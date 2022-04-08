@@ -46,7 +46,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
 
   const collection = useFragment(
     graphql`
-      fragment UserGalleryCollectionFragment on GalleryCollection {
+      fragment UserGalleryCollectionFragment on Collection {
         dbid
         name @required(action: THROW)
         collectorsNote
@@ -174,7 +174,7 @@ const StyledSettingsDropdown = styled.div`
   opacity: 0;
   transition: opacity 200ms ease-in-out;
 
-  background: url(/icons/settings.svg) no-repeat scroll 10px 9px;
+  background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
   height: 24px;
 
   ${StyledDropdownButton} {

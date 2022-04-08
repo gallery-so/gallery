@@ -40,7 +40,7 @@ function NftPreviewWithShimmer(props: Props) {
 function NftPreview({ galleryNftRef }: Props) {
   const { nft, collection } = useFragment(
     graphql`
-      fragment NftPreviewFragment on GalleryNft {
+      fragment NftPreviewFragment on CollectionNft {
         nft @required(action: THROW) {
           dbid
           name
@@ -84,6 +84,9 @@ function NftPreview({ galleryNftRef }: Props) {
 
     // this could be a 1-liner but wanted to make it explicit
     if (columns === 1) {
+      if (isMobile) {
+        return '100%';
+      }
       if (aspectRatioType === 'wide') {
         return '100%';
       }
@@ -91,7 +94,7 @@ function NftPreview({ galleryNftRef }: Props) {
         return '60%';
       }
     }
-  }, [columns, aspectRatioType]);
+  }, [columns, aspectRatioType, isMobile]);
 
   return (
     <StyledNftPreview width={nftPreviewWidth}>

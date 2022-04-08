@@ -42,7 +42,7 @@ export default function useUpdateCollectionInfo() {
             // We don't have the GraphQL / Relay ID here. So we'll generate it
             // the same way the backend does {TypeName}:{DBID} here so relay
             // can find the right item in the cache to update.
-            id: `GalleryCollection:${collectionDbid}`,
+            id: `Collection:${collectionDbid}`,
             name,
             collectorsNote,
           },

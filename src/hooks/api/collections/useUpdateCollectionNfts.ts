@@ -51,7 +51,7 @@ export default function useUpdateCollectionNfts() {
       // on this type, so we should be good.
       //
       // If you want to ensure this list of fragments is up to date
-      // you can global search for `on GalleryCollection` to find
+      // you can global search for `on Collection` to find
       // all of the fragments on this type.
       //
       // In other places, we can do an optimistic update since
