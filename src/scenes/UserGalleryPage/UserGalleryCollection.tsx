@@ -174,7 +174,7 @@ const StyledSettingsDropdown = styled.div`
   opacity: 0;
   transition: opacity 200ms ease-in-out;
 
-  background: url(/icons/settings.svg) no-repeat scroll 10px 9px;
+  background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
   height: 24px;
 
   ${StyledDropdownButton} {
