@@ -10,6 +10,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 import NftDetailImage from './NftDetailImage';
+import NftDetailModel from './NftDetailModel';
 
 type NftDetailAssetComponentProps = {
   nftRef: NftDetailAssetComponentFragment$key;
@@ -19,7 +20,8 @@ type NftDetailAssetComponentProps = {
 function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentProps) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAssetComponentFragment on GalleryNft {
+      fragment NftDetailAssetComponentFragment on CollectionNft {
+        id
         nft @required(action: THROW) {
           media @required(action: THROW) {
             ... on VideoMedia {
@@ -31,7 +33,6 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
             }
             ... on HtmlMedia {
               __typename
-              ...NftDetailAnimationFragment
             }
             ... on AudioMedia {
               __typename
@@ -40,6 +41,7 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
               __typename
             }
           }
+          ...NftDetailAnimationFragment
           ...NftDetailAudioFragment
           ...NftDetailImageFragment
         }
@@ -50,17 +52,17 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
 
   switch (nft.nft.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation mediaRef={nft.nft.media} />;
+      return <NftDetailAnimation mediaRef={nft.nft} />;
     case 'VideoMedia':
       return <NftDetailVideo mediaRef={nft.nft.media} maxHeight={maxHeight} />;
     case 'AudioMedia':
       return <NftDetailAudio nftRef={nft.nft} />;
     case 'ImageMedia':
       return <NftDetailImage nftRef={nft.nft} />;
-    // case 'ModelMedia': TODO
-    //   return <NftDetailModel nftRef={nft.nft} />;
+    case 'GltfMedia':
+      return <NftDetailModel mediaRef={nft.nft.media} />;
     default:
-      return <NftDetailImage nftRef={nft.nft} />;
+      return <NftDetailAnimation mediaRef={nft.nft} />;
   }
 }
 
@@ -81,7 +83,8 @@ if (typeof window !== 'undefined') {
 function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAssetFragment on GalleryNft {
+      fragment NftDetailAssetFragment on CollectionNft {
+        id
         nft @required(action: THROW) {
           media @required(action: THROW) {
             ... on HtmlMedia {

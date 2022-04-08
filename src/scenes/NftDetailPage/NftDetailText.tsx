@@ -17,7 +17,7 @@ type Props = {
   contractAddress: string;
   tokenId: string;
   externalUrl: string;
-  creatorAddress: string; // this might not be on schema
+  creatorAddress?: string; // this might not be on schema
 };
 
 function NftDetailText({

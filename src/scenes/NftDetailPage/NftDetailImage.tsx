@@ -23,10 +23,6 @@ function NftDetailImage({ nftRef }: Props) {
               raw @required(action: THROW)
             }
           }
-          ... on UnknownMedia {
-            __typename
-            contentRenderURL @required(action: THROW)
-          }
         }
       }
     `,
@@ -37,10 +33,6 @@ function NftDetailImage({ nftRef }: Props) {
   const contentRenderURL = useMemo(() => {
     if (nft.media.__typename === 'ImageMedia') {
       return nft.media.contentRenderURLs.raw;
-    }
-
-    if (nft.media.__typename === 'UnknownMedia') {
-      return nft.media.contentRenderURL;
     }
 
     return '';

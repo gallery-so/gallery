@@ -5,19 +5,22 @@ import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { NftIdQuery } from '__generated__/NftIdQuery.graphql';
 
 type NftDetailPageProps = MetaTagProps & {
-  nftId?: string;
+  nftId: string;
+  collectionId: string;
 };
 
-export default function NftDetailPage({ nftId }: NftDetailPageProps) {
+export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProps) {
+  console.log(collectionId);
   const query = useLazyLoadQuery<NftIdQuery>(
     graphql`
-      query NftIdQuery($nftId: DBID!) {
+      query NftIdQuery($nftId: DBID!, $collectionId: DBID!) {
         ...NftDetailPageFragment
       }
     `,
-    { nftId }
+    { nftId, collectionId }
   );
 
   if (!nftId) {
@@ -33,9 +36,11 @@ export default function NftDetailPage({ nftId }: NftDetailPageProps) {
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;
   const nftId = params?.nftId ? (params.nftId as string) : undefined;
+  const collectionId = params?.collectionId ? (params.collectionId as string) : undefined;
   return {
     props: {
       nftId,
+      collectionId,
       metaTags: nftId
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
