@@ -10,6 +10,8 @@ import { Key, Middleware } from 'swr';
 const OBSCENELY_LARGE_ASSET_URLS: Record<string, string> = {
   'https://storage.opensea.io/files/33ab86c2a565430af5e7fb8399876960.png':
     'https://lh3.googleusercontent.com/pw/AM-JKLVsudnwN97ULF-DgJC1J_AZ8i-1pMjLCVUqswF1_WShId30uP_p_jSRkmVx-XNgKNIGFSglgRojZQrsLOoCM2pVNJwgx5_E4yeYRsMvDQALFKbJk0_6wj64tjLhSIINwGpdNw0MhtWNehKCipDKNeE',
+  'https://openseauserdata.com/files/33ab86c2a565430af5e7fb8399876960.png':
+    'https://lh3.googleusercontent.com/pw/AM-JKLVsudnwN97ULF-DgJC1J_AZ8i-1pMjLCVUqswF1_WShId30uP_p_jSRkmVx-XNgKNIGFSglgRojZQrsLOoCM2pVNJwgx5_E4yeYRsMvDQALFKbJk0_6wj64tjLhSIINwGpdNw0MhtWNehKCipDKNeE',
 };
 
 // @ts-expect-error: TODO this is erroring because of `data` type returned by this func
