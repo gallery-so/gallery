@@ -21,6 +21,7 @@ function NftDetailImage({ nftRef }: Props) {
             __typename
             contentRenderURLs @required(action: THROW) {
               raw @required(action: THROW)
+              large
             }
           }
         }
@@ -32,7 +33,7 @@ function NftDetailImage({ nftRef }: Props) {
 
   const contentRenderURL = useMemo(() => {
     if (nft.media.__typename === 'ImageMedia') {
-      return nft.media.contentRenderURLs.raw;
+      return nft.media.contentRenderURLs.large || nft.media.contentRenderURLs.raw;
     }
 
     return '';
