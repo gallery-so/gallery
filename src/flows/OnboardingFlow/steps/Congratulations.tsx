@@ -4,12 +4,33 @@ import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
-import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
+import { graphql, useFragment } from 'react-relay';
+import { CongratulationsFragment$key } from '__generated__/CongratulationsFragment.graphql';
 
-function Congratulations() {
-  const username = useAuthenticatedUsername();
+type Props = {
+  queryRef: CongratulationsFragment$key;
+};
+
+function Congratulations({ queryRef }: Props) {
   const { push } = useRouter();
+
+  const { viewer } = useFragment(
+    graphql`
+      fragment CongratulationsFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const username = viewer?.user?.username;
 
   const handleClick = useCallback(() => {
     void push(`/${username}`);
