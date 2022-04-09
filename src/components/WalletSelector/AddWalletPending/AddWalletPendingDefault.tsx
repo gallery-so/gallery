@@ -4,8 +4,6 @@ import { useWeb3React } from '@web3-react/core';
 import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import useFetcher from 'contexts/swr/useFetcher';
-import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { isWeb3Error, Web3Error } from 'types/Error';
@@ -21,20 +19,25 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
-import { DEFAULT_WALLET_TYPE_ID, signMessageWithEOA } from '../walletUtils';
+import { useAddWalletMutation, useCreateNonceMutation } from '../authRequestUtils';
+import { signMessageWithEOA } from '../walletUtils';
 import {
   useTrackAddWalletAttempt,
   useTrackAddWalletError,
   useTrackAddWalletSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
+import { AddWalletPendingDefaultFragment$key } from '__generated__/AddWalletPendingDefaultFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
   setDetectedError: (error: Web3Error) => void;
   walletName: WalletName;
+  queryRef: AddWalletPendingDefaultFragment$key;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
@@ -43,6 +46,7 @@ function AddWalletPendingDefault({
   userFriendlyWalletName,
   setDetectedError,
   walletName,
+  queryRef,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
   const signer = useMemo(
@@ -53,8 +57,27 @@ function AddWalletPendingDefault({
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const fetcher = useFetcher();
-  const authenticatedUserAddresses = useAuthenticatedUserAddresses();
+  const { viewer } = useFragment(
+    graphql`
+      fragment AddWalletPendingDefaultFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              wallets {
+                address
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const authenticatedUserAddresses = useMemo(
+    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
+    [viewer?.user?.wallets]
+  );
 
   const { showModal } = useModal();
 
@@ -76,6 +99,7 @@ function AddWalletPendingDefault({
    * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
    * 3. Add wallet address to user's account
    */
+  const addWallet = useAddWalletMutation();
   const attemptAddWallet = useCallback(
     async (address: string, signer: JsonRpcSigner) => {
       try {
@@ -90,12 +114,16 @@ function AddWalletPendingDefault({
         }
 
         const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
-        const payload = {
-          signature,
+        const { signatureValid } = await addWallet({
           address,
-          wallet_type: DEFAULT_WALLET_TYPE_ID,
-        };
-        const { signatureValid } = await addWallet(payload, fetcher);
+          authMechanism: {
+            ethereumEoa: {
+              signature,
+              address,
+              nonce,
+            },
+          },
+        });
 
         trackAddWalletSuccess(userFriendlyWalletName);
         openManageWalletsModal(address);
@@ -123,7 +151,7 @@ function AddWalletPendingDefault({
       userFriendlyWalletName,
       createNonce,
       pendingWallet,
-      fetcher,
+      addWallet,
       trackAddWalletSuccess,
       openManageWalletsModal,
       trackAddWalletError,
