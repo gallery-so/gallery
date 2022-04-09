@@ -8,16 +8,16 @@ import { useModal } from 'contexts/modal/ModalContext';
 import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
-import { DeleteCollectionConfirmation$key } from '__generated__/DeleteCollectionConfirmation.graphql';
+import { DeleteCollectionConfirmationFragment$key } from '__generated__/DeleteCollectionConfirmationFragment.graphql';
 
 type Props = {
-  collectionRef: DeleteCollectionConfirmation$key;
+  collectionRef: DeleteCollectionConfirmationFragment$key;
 };
 
 function DeleteCollectionConfirmation({ collectionRef }: Props) {
   const { dbid: collectionId } = useFragment(
     graphql`
-      fragment DeleteCollectionConfirmation on Collection {
+      fragment DeleteCollectionConfirmationFragment on Collection {
         dbid
       }
     `,
