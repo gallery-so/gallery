@@ -18,14 +18,11 @@ function NftPreviewLabel({ className, title, collectionName }: Props) {
           {title}
         </StyledBaseM>
       )}
-      {
-        // TODO: need graphql to provide collection name
-        // collectionName && (
-        //   <StyledBaseM color={colors.white} lines={2}>
-        //     {collectionName}
-        //   </StyledBaseM>
-        // )
-      }
+      {collectionName && (
+        <StyledBaseM color={colors.white} lines={2}>
+          {collectionName}
+        </StyledBaseM>
+      )}
     </StyledNftPreviewLabel>
   );
 }

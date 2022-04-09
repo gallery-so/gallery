@@ -214,6 +214,10 @@ type Nft implements Node {
   contractAddress: Address
   externalUrl: String
   blockNumber: String # source is uint64
+  # These are subject to change; unlike the other fields, they aren't present on the current persist.Token
+  # struct and may ultimately end up elsewhere
+  creatorAddress: Address
+  openseaCollectionName: String
 }
 
 type OwnerAtBlock {
@@ -379,6 +383,17 @@ type UpdateGalleryCollectionsPayload {
   gallery: Gallery
 }
 
+input UpdateNftInfoInput {
+  nftId: DBID!
+  collectorsNote: String!
+}
+
+union UpdateNftInfoPayloadOrError = UpdateNftInfoPayload | ErrNotAuthorized | ErrInvalidInput
+
+type UpdateNftInfoPayload {
+  nft: Nft
+}
+
 union AddUserAddressPayloadOrError =
     AddUserAddressPayload
   | ErrAuthenticationFailed
@@ -497,6 +512,17 @@ type CreateUserPayload {
 }
 
 type Mutation {
+  # User Mutations
+  addUserAddress(address: Address!, authMechanism: AuthMechanism!): AddUserAddressPayloadOrError
+    @authRequired
+  removeUserAddresses(addresses: [Address!]!): RemoveUserAddressesPayloadOrError @authRequired
+  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError @authRequired
+
+  # Gallery Mutations
+  updateGalleryCollections(
+    input: UpdateGalleryCollectionsInput!
+  ): UpdateGalleryCollectionsPayloadOrError @authRequired
+
   # Collection Mutations
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError @authRequired
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError @authRequired
@@ -505,16 +531,8 @@ type Mutation {
   updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayloadOrError
     @authRequired
 
-  # Gallery Mutations
-  updateGalleryCollections(
-    input: UpdateGalleryCollectionsInput!
-  ): UpdateGalleryCollectionsPayloadOrError @authRequired
-
-  # User Mutations
-  addUserAddress(address: Address!, authMechanism: AuthMechanism!): AddUserAddressPayloadOrError
-    @authRequired
-  removeUserAddresses(addresses: [Address!]!): RemoveUserAddressesPayloadOrError @authRequired
-  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError @authRequired
+  # Nft Mutations
+  updateNftInfo(input: UpdateNftInfoInput!): UpdateNftInfoPayloadOrError @authRequired
 
   # Mirroring the existing input (comma-separated list of addresses) because we expect to drop this functionality soon
   refreshOpenSeaNfts(addresses: String!): RefreshOpenSeaNftsPayloadOrError @authRequired
