@@ -15,7 +15,9 @@ function NftDetailAudio({ nftRef }: Props) {
         media @required(action: THROW) {
           ... on AudioMedia {
             __typename
-            mediaURL @required(action: THROW)
+            previewURLs @required(action: THROW) {
+              large @required(action: THROW)
+            }
             contentRenderURL @required(action: THROW)
           }
         }
@@ -30,7 +32,7 @@ function NftDetailAudio({ nftRef }: Props) {
 
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={nft.media.mediaURL} alt={nft.name ?? ''} />
+      <ImageWithLoading src={nft.media.previewURLs.large} alt={nft.name ?? ''} />
       <StyledAudio
         controls
         loop
