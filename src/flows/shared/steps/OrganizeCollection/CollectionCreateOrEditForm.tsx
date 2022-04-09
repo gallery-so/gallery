@@ -12,32 +12,60 @@ import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
-import { Collection, CollectionLayout } from 'types/Collection';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionCreateOrEditFormFragment$key } from '__generated__/CollectionCreateOrEditFormFragment.graphql';
 
 type Props = {
   onNext: WizardContext['next'];
-  collectionId?: Collection['id'];
-  collectionName?: Collection['name'];
-  collectionCollectorsNote?: Collection['collectors_note'];
+  queryRef: CollectionCreateOrEditFormFragment$key;
+  collectionId?: string;
+  collectionName?: string;
+  collectionCollectorsNote?: string;
   stagedItems?: StagingItem[];
-  layout?: CollectionLayout;
+  layout?: {
+    columns: number;
+    whitespace?: number[];
+  };
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
 
 function CollectionCreateOrEditForm({
   onNext,
+  queryRef,
   collectionId,
   collectionName,
   collectionCollectorsNote,
   stagedItems,
   layout,
 }: Props) {
+  const { viewer } = useFragment(
+    graphql`
+      fragment CollectionCreateOrEditFormFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              galleries {
+                dbid
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const galleryId = viewer?.user?.galleries?.[0]?.dbid;
+
+  if (!galleryId) {
+    throw new Error('Tried to edit / create a collection without an existing gallery.');
+  }
+
   const { hideModal } = useModal();
 
   const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);
@@ -81,7 +109,6 @@ function CollectionCreateOrEditForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { id: galleryId } = useAuthenticatedGallery();
   const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
 
