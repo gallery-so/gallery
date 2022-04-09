@@ -1,18 +1,28 @@
 import colors from 'components/core/colors';
 import useMouseUp from 'hooks/useMouseUp';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
+import { CollectionRowDraggingFragment$key } from '__generated__/CollectionRowDraggingFragment.graphql';
 import CollectionRow from './CollectionRow';
 
 type Props = {
-  collection: Collection;
+  collectionRef: CollectionRowDraggingFragment$key;
 };
 
-function CollectionRowDragging({ collection }: Props) {
+function CollectionRowDragging({ collectionRef }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment CollectionRowDraggingFragment on Collection {
+        ...CollectionRowFragment
+      }
+    `,
+    collectionRef
+  );
+
   const isMouseUp = useMouseUp();
   return (
     <StyledCollectionRowDragging>
-      <StyledCollectionRow collection={collection} isMouseUp={isMouseUp} />
+      <StyledCollectionRow collectionRef={collection} isMouseUp={isMouseUp} />
     </StyledCollectionRowDragging>
   );
 }

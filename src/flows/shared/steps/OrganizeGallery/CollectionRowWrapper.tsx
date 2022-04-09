@@ -1,19 +1,30 @@
 import styled from 'styled-components';
 
 import Spacer from 'components/core/Spacer/Spacer';
-import { Collection } from 'types/Collection';
 import SortableCollectionRow from './SortableCollectionRow';
 import CollectionRowSettings from './CollectionRowSettings';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionRowWrapperFragment$key } from '__generated__/CollectionRowWrapperFragment.graphql';
 
 type Props = {
-  collection: Collection;
+  collectionRef: CollectionRowWrapperFragment$key;
 };
 
-function CollectionRowWrapper({ collection }: Props) {
+function CollectionRowWrapper({ collectionRef }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment CollectionRowWrapperFragment on Collection {
+        ...CollectionRowSettingsFragment
+        ...SortableCollectionRowFragment
+      }
+    `,
+    collectionRef
+  );
+
   return (
     <StyledCollectionRowWrapper>
-      <CollectionRowSettings collection={collection} />
-      <SortableCollectionRow collection={collection} />
+      <CollectionRowSettings collectionRef={collection} />
+      <SortableCollectionRow collectionRef={collection} />
       <Spacer height={32} />
     </StyledCollectionRowWrapper>
   );

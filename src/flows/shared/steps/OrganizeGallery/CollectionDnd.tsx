@@ -11,11 +11,12 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import { Collection } from 'types/Collection';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -25,13 +26,30 @@ const defaultDropAnimationConfig: DropAnimation = {
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
-  galleryId: string;
-  sortedCollections: Collection[];
-  setSortedCollections: (sorter: (previous: Collection[]) => Collection[]) => void;
+  galleryRef: CollectionDndFragment$key;
+  // TODO(Terence): Deal with this. Can we just have all of this in the relay cache?
+  sortedCollections: Array<{ id: string }>;
+  setSortedCollections: (
+    sorter: (previous: Array<{ id: string }>) => Array<{ id: string }>
+  ) => void;
 };
 
-function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: Props) {
-  const { collections } = useAuthenticatedGallery();
+function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: Props) {
+  const gallery = useFragment(
+    graphql`
+      fragment CollectionDndFragment on Gallery {
+        dbid
+        collections {
+          id
+          dbid
+          ...CollectionRowDraggingFragment
+          ...CollectionRowWrapperFragment
+        }
+      }
+    `,
+    galleryRef
+  );
+
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const updateGallery = useUpdateGallery();
 
@@ -47,10 +65,10 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
           updatedCollections = arrayMove(previous, oldIndex, newIndex);
           return updatedCollections;
         });
-        void updateGallery(galleryId, updatedCollections);
+        void updateGallery(gallery.dbid, updatedCollections);
       }
     },
-    [galleryId, setSortedCollections, sortedCollections, updateGallery]
+    [gallery.dbid, setSortedCollections, sortedCollections, updateGallery]
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -63,8 +81,8 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
   }, []);
 
   const activeCollection = useMemo(
-    () => collections.find(({ id }) => id === activeId),
-    [activeId, collections]
+    () => removeNullValues(gallery.collections).find(({ dbid }) => dbid === activeId),
+    [activeId, gallery.collections]
   );
 
   const handleDragEnd = useCallback(
@@ -74,6 +92,8 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
     [handleSortCollections]
   );
 
+  const nonNullCollections = removeNullValues(gallery.collections);
+
   return (
     <DndContext
       onDragEnd={handleDragEnd}
@@ -81,13 +101,13 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
       collisionDetection={closestCenter}
       modifiers={modifiers}
     >
-      <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
-        {sortedCollections.map((collection) => (
-          <CollectionRowWrapper key={collection.id} collection={collection} />
+      <SortableContext items={nonNullCollections} strategy={verticalListSortingStrategy}>
+        {nonNullCollections.map((collection) => (
+          <CollectionRowWrapper key={collection.id} collectionRef={collection} />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={defaultDropAnimationConfig}>
-        {activeCollection ? <CollectionRowDragging collection={activeCollection} /> : null}
+        {activeCollection ? <CollectionRowDragging collectionRef={activeCollection} /> : null}
       </DragOverlay>
     </DndContext>
   );
