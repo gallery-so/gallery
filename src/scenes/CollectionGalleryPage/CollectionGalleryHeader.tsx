@@ -13,7 +13,6 @@ import { useRouter } from 'next/router';
 import { useModal } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
@@ -23,19 +22,41 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
+import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
 
 type Props = {
+  queryRef: CollectionGalleryHeaderQueryFragment$key;
   collectionRef: CollectionGalleryHeaderFragment$key;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
 
-function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout }: Props) {
-  const { showModal } = useModal();
-  const { push } = useRouter();
-  const user = usePossiblyAuthenticatedUser();
+function CollectionGalleryHeader({
+  queryRef,
+  collectionRef,
+  mobileLayout,
+  setMobileLayout,
+}: Props) {
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
+
+  const { push } = useRouter();
+  const { showModal } = useModal();
   const handleBackClick = useBackButton({ username });
+
+  const { viewer } = useFragment(
+    graphql`
+      fragment CollectionGalleryHeaderQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
 
   const collection = useFragment(
     graphql`
@@ -67,7 +88,7 @@ function CollectionGalleryHeader({ collectionRef, mobileLayout, setMobileLayout 
     track('Share Collection', { path: `/${username}/${collection.dbid}` });
   }, [collection.dbid, username, track]);
 
-  const showEditActions = username.toLowerCase() === user?.username.toLowerCase();
+  const showEditActions = username.toLowerCase() === viewer?.user?.username?.toLowerCase();
 
   const collectionUrl = window.location.href;
 
