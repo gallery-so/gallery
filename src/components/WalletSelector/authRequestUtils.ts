@@ -12,11 +12,42 @@ import {
   authRequestUtilsCreateUserMutation,
   authRequestUtilsCreateUserMutation$variables,
 } from '__generated__/authRequestUtilsCreateUserMutation.graphql';
+import {
+  authRequestUtilsAddWalletMutation,
+  authRequestUtilsAddWalletMutation$variables,
+} from '__generated__/authRequestUtilsAddWalletMutation.graphql';
 
-export async function addWallet(payload: AddUserAddressRequest, fetcher: FetcherType) {
-  const response = await addUserAddress(payload, fetcher);
+// TODO(Terence): Was there ever any optimistic update here?
+export function useAddWalletMutation() {
+  const [addWallet] = usePromisifiedMutation<authRequestUtilsAddWalletMutation>(graphql`
+    mutation authRequestUtilsAddWalletMutation($address: Address!, $authMechanism: AuthMechanism!) {
+      addUserAddress(address: $address, authMechanism: $authMechanism) {
+        ... on AddUserAddressPayload {
+          __typename
+        }
+      }
+    }
+  `);
 
-  return { signatureValid: response.signature_valid };
+  return useCallback(
+    async ({ authMechanism, address }: authRequestUtilsAddWalletMutation$variables) => {
+      const { addUserAddress } = await addWallet({
+        variables: {
+          address,
+          authMechanism,
+        },
+      });
+
+      if (addUserAddress?.__typename === 'AddUserAddressPayload') {
+        return { signatureValid: true };
+      } else {
+        // TODO(Terence): We can probably have better error handling here.
+
+        return { signatureValid: false };
+      }
+    },
+    [addWallet]
+  );
 }
 
 export function useLoginOrCreateUserMutation() {

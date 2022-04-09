@@ -3,8 +3,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import useFetcher from 'contexts/swr/useFetcher';
-import { useAuthenticatedUserAddresses } from 'hooks/api/users/useUser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 
@@ -19,9 +17,8 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { addWallet, useCreateNonceMutation } from '../authRequestUtils';
+import { useAddWalletMutation, useCreateNonceMutation } from '../authRequestUtils';
 import {
-  GNOSIS_SAFE_WALLET_TYPE_ID,
   listenForGnosisSignature,
   signMessageWithContractAccount,
   validateNonceSignedByGnosis,
@@ -34,11 +31,15 @@ import {
   useTrackAddWalletError,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
+import { graphql, useFragment } from 'react-relay';
+import { AddWalletPendingGnosisSafeFragment$key } from '__generated__/AddWalletPendingGnosisSafeFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
   pendingWallet: AbstractConnector;
   userFriendlyWalletName: string;
   setDetectedError: (error: Web3Error) => void;
+  queryRef: AddWalletPendingGnosisSafeFragment$key;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
@@ -46,6 +47,7 @@ function AddWalletPendingGnosisSafe({
   pendingWallet,
   userFriendlyWalletName,
   setDetectedError,
+  queryRef,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
@@ -55,8 +57,27 @@ function AddWalletPendingGnosisSafe({
   const [userExists, setUserExists] = useState(false);
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
 
-  const fetcher = useFetcher();
-  const authenticatedUserAddresses = useAuthenticatedUserAddresses();
+  const { viewer } = useFragment(
+    graphql`
+      fragment AddWalletPendingGnosisSafeFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              wallets {
+                address
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const authenticatedUserAddresses = useMemo(
+    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
+    [viewer?.user?.wallets]
+  );
 
   const { showModal } = useModal();
 
@@ -89,15 +110,18 @@ function AddWalletPendingGnosisSafe({
     [setDetectedError, trackAddWalletError]
   );
 
+  const addWallet = useAddWalletMutation();
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
-      const payload = {
+      const { signatureValid } = await addWallet({
         address,
-        nonce,
-        wallet_type: GNOSIS_SAFE_WALLET_TYPE_ID,
-      };
-
-      const { signatureValid } = await addWallet(payload, fetcher);
+        authMechanism: {
+          gnosisSafe: {
+            address,
+            nonce,
+          },
+        },
+      });
 
       if (!signatureValid) {
         throw new Error('Signature is not valid');
@@ -106,7 +130,7 @@ function AddWalletPendingGnosisSafe({
       trackAddWalletSuccess('Gnosis Safe');
       openManageWalletsModal(address);
     },
-    [fetcher, openManageWalletsModal, trackAddWalletSuccess]
+    [addWallet, openManageWalletsModal, trackAddWalletSuccess]
   );
 
   // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
@@ -207,7 +231,6 @@ function AddWalletPendingGnosisSafe({
     authenticatedUserAddresses,
     attemptAddWallet,
     authenticationFlowStarted,
-    fetcher,
     handleError,
     previousAttemptNonce,
     createNonce,
