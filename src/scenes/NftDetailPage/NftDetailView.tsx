@@ -36,8 +36,9 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
           contractAddress
           tokenId
           externalUrl
-          # creatorAddress
           collectorsNote
+          creatorAddress
+          openseaCollectionName
         }
         collection @required(action: THROW) {
           dbid
@@ -121,7 +122,7 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
             <NftDetailNote
               nftId={nft.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              nftCollectorsNote={nft.collectorsNote}
+              nftCollectorsNote={nft.collectorsNote ?? ''}
             />
           )}
         </StyledAssetAndNoteContainer>
@@ -133,7 +134,8 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
           contractAddress={nft.contractAddress}
           tokenId={nft.tokenId}
           externalUrl={nft.externalUrl}
-          // creatorAddress={creatorAddress}
+          creatorAddress={nft.creatorAddress}
+          openseaCollectionName={nft.openseaCollectionName}
         />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}

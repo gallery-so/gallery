@@ -11,13 +11,14 @@ import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 type Props = {
-  name: string;
-  description: string;
+  name: string | null;
+  description: string | null;
   ownerUsername: string;
-  contractAddress: string;
-  tokenId: string;
-  externalUrl: string;
-  creatorAddress?: string; // this might not be on schema
+  contractAddress: string | null;
+  tokenId: string | null;
+  externalUrl: string | null;
+  creatorAddress: string | null;
+  openseaCollectionName: string | null;
 };
 
 function NftDetailText({
@@ -28,29 +29,37 @@ function NftDetailText({
   tokenId,
   externalUrl,
   creatorAddress,
+  openseaCollectionName,
 }: Props) {
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-
-  const creatorExists = creatorAddress || contractAddress;
+  const addressToUse = creatorAddress || contractAddress || '';
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      <TitleM>{name}</TitleM>
-      <Spacer height={4} />
-      {/* <BaseM>{token_collection_name}</BaseM> */}
+      {name && (
+        <>
+          <TitleM>{name}</TitleM>
+          <Spacer height={4} />
+        </>
+      )}
+      {openseaCollectionName && <BaseM>{openseaCollectionName}</BaseM>}
       <Spacer height={32} />
-      <StyledNftDescription>
-        <Markdown text={description} />
-      </StyledNftDescription>
-      <Spacer height={32} />
+      {description && (
+        <>
+          <StyledNftDescription>
+            <Markdown text={description} />
+          </StyledNftDescription>
+          <Spacer height={32} />
+        </>
+      )}
       <TitleXS>Owner</TitleXS>
       <InteractiveLink to={`/${ownerUsername}`}>{ownerUsername}</InteractiveLink>
       <Spacer height={16} />
-      {creatorExists && (
+      {addressToUse && (
         <>
           <TitleXS>Created By</TitleXS>
-          <BaseM>{<EnsOrAddress address={creatorAddress || contractAddress} />}</BaseM>
+          <BaseM>{<EnsOrAddress address={addressToUse} />}</BaseM>
         </>
       )}
       <Spacer height={32} />

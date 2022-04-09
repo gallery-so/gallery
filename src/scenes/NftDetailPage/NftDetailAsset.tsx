@@ -37,6 +37,10 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
             ... on AudioMedia {
               __typename
             }
+            ... on GltfMedia {
+              __typename
+              ...NftDetailModelFragment
+            }
             ... on UnknownMedia {
               __typename
             }

@@ -34,8 +34,8 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;
-  const nftId = params?.nftId ? (params.nftId as string) : undefined;
-  const collectionId = params?.collectionId ? (params.collectionId as string) : undefined;
+  const nftId = params?.nftId ? (params.nftId as string) : '';
+  const collectionId = params?.collectionId ? (params.collectionId as string) : '';
   return {
     props: {
       nftId,

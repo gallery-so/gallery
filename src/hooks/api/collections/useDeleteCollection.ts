@@ -14,6 +14,7 @@ export default function useDeleteCollection() {
   const { id: userId } = useAuthenticatedUser();
   const { mutate } = useSWRConfig();
 
+  // TODO: handle error cases
   const [deleteCollectionMutate] = usePromisifiedMutation<useDeleteCollectionMutation>(graphql`
     mutation useDeleteCollectionMutation($id: DBID!) {
       deleteCollection(collectionId: $id) {

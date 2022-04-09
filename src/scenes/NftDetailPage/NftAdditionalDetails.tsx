@@ -6,9 +6,9 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  contractAddress: string;
-  tokenId: string;
-  externalUrl: string;
+  contractAddress: string | null;
+  tokenId: string | null;
+  externalUrl: string | null;
 };
 
 // The backend converts all token IDs to hexadecimals; here, we convert back
@@ -41,7 +41,7 @@ function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) 
   }, []);
 
   // Check for contract address befor rendering additional details
-  const hasContractAddress = contractAddress !== '';
+  const hasContractAddress = contractAddress !== null && contractAddress !== '' && tokenId;
 
   return (
     <StyledNftAdditionalDetails>
@@ -62,7 +62,7 @@ function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) 
           )}
           <Spacer height={16} />
           <TitleXS>Token ID</TitleXS>
-          <BaseM>{hexHandler(tokenId)}</BaseM>
+          {tokenId && <BaseM>{hexHandler(tokenId)}</BaseM>}
           <Spacer height={16} />
           <StyledLinkContainer>
             {hasContractAddress && (
