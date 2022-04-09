@@ -1,3 +1,4 @@
+import { Collection } from './Collection';
 import { User } from './User';
 
 export type Nft = {
@@ -50,4 +51,10 @@ export type Owner = {
   user_id?: string;
   username?: string;
   time_obtained?: string;
+};
+
+export type CollectionNft = {
+  id?: string;
+  nft?: Nft;
+  collection?: Collection;
 };
