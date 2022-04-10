@@ -16,6 +16,7 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
   const query = useLazyLoadQuery<NftIdQuery>(
     graphql`
       query NftIdQuery($nftId: DBID!, $collectionId: DBID!) {
+        ...GalleryRouteFragment
         ...NftDetailPageFragment
       }
     `,
@@ -28,7 +29,11 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
   }
 
   return (
-    <GalleryRoute element={<NftDetailPageScene queryRef={query} nftId={nftId} />} footerIsFixed />
+    <GalleryRoute
+      queryRef={query}
+      element={<NftDetailPageScene queryRef={query} nftId={nftId} />}
+      footerIsFixed
+    />
   );
 }
 

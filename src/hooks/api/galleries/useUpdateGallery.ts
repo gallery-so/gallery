@@ -6,10 +6,6 @@ import {
   useUpdateGalleryMutation$data,
 } from '__generated__/useUpdateGalleryMutation.graphql';
 
-function mapCollectionsToCollectionIds(collections: Array<{ id: string }>) {
-  return collections.map((collection) => collection.id);
-}
-
 export default function useUpdateGallery() {
   const [updateGallery] = usePromisifiedMutation<useUpdateGalleryMutation>(graphql`
     mutation useUpdateGalleryMutation($input: UpdateGalleryCollectionsInput!) {
@@ -27,12 +23,12 @@ export default function useUpdateGallery() {
   `);
 
   return useCallback(
-    async (galleryId: string, collections: Array<{ id: string }>) => {
+    async (galleryId: string, collections: string[]) => {
       const optimisticResponse: useUpdateGalleryMutation$data = {
         updateGalleryCollections: {
           __typename: 'UpdateGalleryCollectionsPayload',
           gallery: {
-            collections,
+            collections: collections.map((id) => ({ id })),
           },
         },
       };
@@ -42,7 +38,7 @@ export default function useUpdateGallery() {
         variables: {
           input: {
             galleryId,
-            collections: mapCollectionsToCollectionIds(collections),
+            collections: collections,
           },
         },
       });

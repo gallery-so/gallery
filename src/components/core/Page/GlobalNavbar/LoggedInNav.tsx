@@ -18,9 +18,12 @@ function LoggedInNav({ queryRef }: Props) {
   const { showModal } = useModal();
   const { push } = useRouter();
 
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment LoggedInNavFragment on Query {
+        ...EditUserInfoModalFragment
+        ...ManageWalletsModalFragment
+
         viewer @required(action: THROW) {
           ... on Viewer {
             __typename
@@ -34,19 +37,19 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
-  if (viewer.__typename !== 'Viewer') {
+  if (query.viewer.__typename !== 'Viewer') {
     throw new Error(
-      `LoggedInNav expected Viewer to be type 'Viewer' but got: ${viewer.__typename}`
+      `LoggedInNav expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
     );
   }
 
   const handleManageWalletsClick = useCallback(() => {
-    showModal(<ManageWalletsModal />);
-  }, [showModal]);
+    showModal(<ManageWalletsModal queryRef={query} />);
+  }, [query, showModal]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(<EditUserInfoModal />);
-  }, [showModal]);
+    showModal(<EditUserInfoModal queryRef={query} />);
+  }, [query, showModal]);
 
   const handleEditGalleryClick = useCallback(() => {
     void push('/edit');
@@ -63,7 +66,7 @@ function LoggedInNav({ queryRef }: Props) {
       </NavElement>
       <Spacer width={24} />
       <NavElement>
-        <TextButton onClick={handleManageWalletsClick} text={viewer.user.username} />
+        <TextButton onClick={handleManageWalletsClick} text={query.viewer.user.username} />
       </NavElement>
     </>
   );

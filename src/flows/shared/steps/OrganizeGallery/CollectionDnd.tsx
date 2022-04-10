@@ -25,23 +25,27 @@ const defaultDropAnimationConfig: DropAnimation = {
 
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
+function keyById<T extends { id: string }>(list: T[]): { [id: string]: T } {
+  const keyedById: { [id: string]: T } = {};
+
+  for (const item of list) {
+    keyedById[item.id] = item;
+  }
+
+  return keyedById;
+}
+
 type Props = {
   galleryRef: CollectionDndFragment$key;
-  // TODO(Terence): Deal with this. Can we just have all of this in the relay cache?
-  sortedCollections: Array<{ id: string }>;
-  setSortedCollections: (
-    sorter: (previous: Array<{ id: string }>) => Array<{ id: string }>
-  ) => void;
 };
 
-function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: Props) {
+function CollectionDnd({ galleryRef }: Props) {
   const gallery = useFragment(
     graphql`
       fragment CollectionDndFragment on Gallery {
         dbid
         collections {
           id
-          dbid
           ...CollectionRowDraggingFragment
           ...CollectionRowWrapperFragment
         }
@@ -49,6 +53,19 @@ function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: 
     `,
     galleryRef
   );
+
+  const nonNullCollections = removeNullValues(gallery.collections);
+
+  console.log({ nonNullCollections });
+  const [sortedCollectionIds, setSortedCollectionIds] = useState(() => {
+    return nonNullCollections.map((collection) => collection.id);
+  });
+
+  const sortedCollections = useMemo(() => {
+    const collectionsKeyedById = keyById(nonNullCollections);
+
+    return sortedCollectionIds.map((collectionId) => collectionsKeyedById[collectionId]);
+  }, [nonNullCollections, sortedCollectionIds]);
 
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const updateGallery = useUpdateGallery();
@@ -58,21 +75,24 @@ function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: 
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-        let updatedCollections = sortedCollections;
-        setSortedCollections((previous) => {
-          const oldIndex = previous.findIndex(({ id }) => id === active.id);
-          const newIndex = previous.findIndex(({ id }) => id === over?.id);
+        let updatedCollections = sortedCollectionIds;
+
+        setSortedCollectionIds((previous) => {
+          const oldIndex = previous.findIndex((id) => id === active.id);
+          const newIndex = previous.findIndex((id) => id === over?.id);
           updatedCollections = arrayMove(previous, oldIndex, newIndex);
           return updatedCollections;
         });
+
         void updateGallery(gallery.dbid, updatedCollections);
       }
     },
-    [gallery.dbid, setSortedCollections, sortedCollections, updateGallery]
+    [gallery.dbid, sortedCollectionIds, updateGallery]
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
+
     if (!active) {
       return;
     }
@@ -81,8 +101,8 @@ function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: 
   }, []);
 
   const activeCollection = useMemo(
-    () => removeNullValues(gallery.collections).find(({ dbid }) => dbid === activeId),
-    [activeId, gallery.collections]
+    () => nonNullCollections.find(({ id }) => id === activeId),
+    [activeId, nonNullCollections]
   );
 
   const handleDragEnd = useCallback(
@@ -92,8 +112,6 @@ function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: 
     [handleSortCollections]
   );
 
-  const nonNullCollections = removeNullValues(gallery.collections);
-
   return (
     <DndContext
       onDragEnd={handleDragEnd}
@@ -101,8 +119,8 @@ function CollectionDnd({ galleryRef, sortedCollections, setSortedCollections }: 
       collisionDetection={closestCenter}
       modifiers={modifiers}
     >
-      <SortableContext items={nonNullCollections} strategy={verticalListSortingStrategy}>
-        {nonNullCollections.map((collection) => (
+      <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
+        {sortedCollections.map((collection) => (
           <CollectionRowWrapper key={collection.id} collectionRef={collection} />
         ))}
       </SortableContext>

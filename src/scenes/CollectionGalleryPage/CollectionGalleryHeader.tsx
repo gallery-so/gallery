@@ -43,9 +43,11 @@ function CollectionGalleryHeader({
   const { showModal } = useModal();
   const handleBackClick = useBackButton({ username });
 
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment CollectionGalleryHeaderQueryFragment on Query {
+        ...CollectionCreateOrEditFormFragment
+
         viewer {
           ... on Viewer {
             user {
@@ -88,7 +90,7 @@ function CollectionGalleryHeader({
     track('Share Collection', { path: `/${username}/${collection.dbid}` });
   }, [collection.dbid, username, track]);
 
-  const showEditActions = username.toLowerCase() === viewer?.user?.username?.toLowerCase();
+  const showEditActions = username.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
   const collectionUrl = window.location.href;
 
@@ -105,12 +107,13 @@ function CollectionGalleryHeader({
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
+        queryRef={query}
         collectionId={collection.dbid}
         collectionName={collection.name ?? undefined}
         collectionCollectorsNote={collection.collectorsNote ?? undefined}
       />
     );
-  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.dbid, collection.name, query, showModal]);
 
   return (
     <StyledCollectionGalleryHeaderWrapper>

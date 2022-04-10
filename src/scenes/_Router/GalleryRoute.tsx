@@ -6,6 +6,8 @@ import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
 export type LayoutProps = {
   // whether the navbar should be rendered
@@ -26,6 +28,7 @@ export type LayoutProps = {
 
 export type GalleryRouteProps = {
   element: JSX.Element;
+  queryRef: GalleryRouteFragment$key;
 } & LayoutProps;
 
 // fills up the space where the navbar or footer would be
@@ -36,6 +39,7 @@ export const Filler = ({ tallVariant = false }: FillerProps) => (
 );
 
 export default function GalleryRoute({
+  queryRef,
   element,
   freshLayout = false,
   navbar = true,
@@ -44,15 +48,24 @@ export default function GalleryRoute({
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
 }: GalleryRouteProps) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryRouteFragment on Query {
+        ...GlobalNavbarFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
 
   const navbarComponent = useMemo(() => {
     if (navbar) {
-      return <GlobalNavbar />;
+      return <GlobalNavbar queryRef={query} />;
     }
 
     return <Filler tallVariant={isMobile} />;
-  }, [navbar, isMobile]);
+  }, [navbar, isMobile, query]);
 
   const footerComponent = useMemo(() => {
     if (!footer) {

@@ -8,7 +8,6 @@ import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import { Collection } from 'types/Collection';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import detectMobileDevice from 'utils/detectMobileDevice';
@@ -19,12 +18,14 @@ import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type ConfigProps = {
   wizardId: string;
   username: string;
   galleryId: string;
-  sortedCollections: Collection[];
   next: WizardContext['next'];
 };
 
@@ -81,11 +82,39 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
 }
 
 function OrganizeGallery({ next, push }: WizardContext) {
+  // TODO(Terence): Can we preload this query? We've introduced a network
+  // waterfall here.
+  const query = useLazyLoadQuery<OrganizeGalleryQuery>(
+    graphql`
+      query OrganizeGalleryQuery {
+        viewer @required(action: THROW) {
+          ... on Viewer {
+            viewerGalleries @required(action: THROW) {
+              gallery @required(action: THROW) {
+                dbid
+
+                ...CollectionDndFragment
+
+                collections @required(action: THROW) {
+                  __typename
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const gallery = query.viewer.viewerGalleries?.[0]?.gallery;
+
+  if (!gallery) {
+    throw new Error('User did not have a gallery.');
+  }
+
   const wizardId = useWizardId();
   const user = useAuthenticatedUser();
-
-  const { id, collections } = useAuthenticatedGallery();
-  const [sortedCollections, setSortedCollections] = useState(collections);
 
   useNotOptimizedForMobileWarning();
 
@@ -100,20 +129,17 @@ function OrganizeGallery({ next, push }: WizardContext) {
     }
   }, [collectionId, push, setCollectionIdBeingEdited]);
 
-  useEffect(() => {
-    // When the server sends down its source of truth, sync the local state
-    setSortedCollections(collections);
-  }, [collections]);
-
   useWizardConfig({
     wizardId,
     username: user.username,
-    galleryId: id,
-    sortedCollections,
+    galleryId: gallery.dbid,
     next,
   });
 
-  const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
+  const isEmptyGallery = useMemo(
+    () => gallery.collections.length === 0,
+    [gallery.collections.length]
+  );
 
   return (
     <StyledOrganizeGallery>
@@ -131,11 +157,7 @@ function OrganizeGallery({ next, push }: WizardContext) {
             </BaseM>
           </StyledEmptyGalleryMessage>
         ) : (
-          <CollectionDnd
-            galleryId={id}
-            sortedCollections={sortedCollections}
-            setSortedCollections={setSortedCollections}
-          />
+          <CollectionDnd galleryRef={gallery} />
         )}
         <Spacer height={120} />
       </Content>

@@ -13,7 +13,7 @@ function SortableCollectionRow({ collectionRef }: Props) {
   const collection = useFragment(
     graphql`
       fragment SortableCollectionRowFragment on Collection {
-        dbid
+        id
         ...CollectionRowFragment
       }
     `,
@@ -21,7 +21,7 @@ function SortableCollectionRow({ collectionRef }: Props) {
   );
 
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
-    id: collection.dbid,
+    id: collection.id,
   });
 
   const style = useMemo(
@@ -36,7 +36,7 @@ function SortableCollectionRow({ collectionRef }: Props) {
   return (
     <StyledSortableCollectionRow
       ref={setNodeRef}
-      id={collection.dbid}
+      id={collection.id}
       active={isDragging}
       // @ts-expect-error force overload
       style={style}

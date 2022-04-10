@@ -5,13 +5,25 @@ import ManageWallets from 'components/ManageWallets/ManageWallets';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { ManageWalletsModalFragment$key } from '__generated__/ManageWalletsModalFragment.graphql';
 
 type Props = {
+  queryRef: ManageWalletsModalFragment$key;
   newAddress?: string;
 };
 
-function ManageWalletsModal({ newAddress }: Props) {
+function ManageWalletsModal({ newAddress, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment ManageWalletsModalFragment on Query {
+        ...ManageWalletsFragment
+      }
+    `,
+    queryRef
+  );
+
   const { hideModal } = useModal();
   const { logOut } = useAuthActions();
 
@@ -22,7 +34,7 @@ function ManageWalletsModal({ newAddress }: Props) {
 
   return (
     <StyledManageWalletsModal>
-      <ManageWallets newAddress={newAddress} />
+      <ManageWallets queryRef={query} newAddress={newAddress} />
       <Spacer height={24}></Spacer>
       <SignOutWrapper>
         <ActionText onClick={handleLogOut}>Sign out</ActionText>
