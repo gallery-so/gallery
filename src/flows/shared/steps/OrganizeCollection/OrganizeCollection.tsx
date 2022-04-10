@@ -16,12 +16,15 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
 
 type ConfigProps = {
   push: WizardContext['push'];
+  galleryId: string;
 };
 
-function useWizardConfig({ push }: ConfigProps) {
+function useWizardConfig({ push, galleryId }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
   const wizardId = useWizardId();
@@ -66,6 +69,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
+          galleryId={galleryId}
           stagedItems={stagedItems}
           layout={collectionMetadata.layout}
         />
@@ -88,6 +92,7 @@ function useWizardConfig({ push }: ConfigProps) {
     collectionMetadata,
     stagedItems,
     track,
+    galleryId,
   ]);
 }
 
@@ -97,7 +102,37 @@ type DecoratedCollectionEditorProps = {
 };
 
 function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
-  useWizardConfig({ push });
+  const query = useLazyLoadQuery<OrganizeCollectionQuery>(
+    graphql`
+      query OrganizeCollectionQuery {
+        viewer @required(action: THROW) {
+          ... on Viewer {
+            __typename
+            viewerGalleries @required(action: THROW) {
+              gallery @required(action: THROW) {
+                dbid
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  if (query.viewer.__typename !== 'Viewer') {
+    throw new Error(
+      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
+    );
+  }
+
+  const galleryId = query.viewer.viewerGalleries[0]?.gallery.dbid;
+
+  if (!galleryId) {
+    throw new Error(`OrganizeCollection expected galleryId`);
+  }
+
+  useWizardConfig({ push, galleryId });
 
   return <CollectionEditor />;
 }
