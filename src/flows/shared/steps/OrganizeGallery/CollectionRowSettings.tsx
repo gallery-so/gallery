@@ -27,6 +27,9 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
         name
         collectorsNote
         hidden
+        gallery @required(action: THROW) {
+          dbid @required(action: THROW)
+        }
         ...DeleteCollectionConfirmationFragment
       }
     `,
@@ -36,7 +39,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
   const { showModal } = useModal();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
-  const { dbid, name, collectorsNote, hidden } = collection;
+  const { dbid, name, collectorsNote, hidden, gallery } = collection;
 
   const track = useTrack();
 
@@ -51,12 +54,13 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
+        galleryId={gallery.dbid}
         collectionId={dbid}
         collectionName={name ?? ''}
         collectionCollectorsNote={collectorsNote ?? ''}
       />
     );
-  }, [collectorsNote, dbid, name, showModal]);
+  }, [collectorsNote, dbid, gallery.dbid, name, showModal]);
 
   const toggleHideCollection = useUpdateCollectionHidden();
 

@@ -16,12 +16,10 @@ import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionCreateOrEditFormFragment$key } from '__generated__/CollectionCreateOrEditFormFragment.graphql';
 
 type Props = {
   onNext: WizardContext['next'];
-  queryRef: CollectionCreateOrEditFormFragment$key;
+  galleryId: string;
   collectionId?: string;
   collectionName?: string;
   collectionCollectorsNote?: string;
@@ -36,36 +34,13 @@ export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
 
 function CollectionCreateOrEditForm({
   onNext,
-  queryRef,
+  galleryId,
   collectionId,
   collectionName,
   collectionCollectorsNote,
   stagedItems,
   layout,
 }: Props) {
-  const { viewer } = useFragment(
-    graphql`
-      fragment CollectionCreateOrEditFormFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              galleries {
-                dbid
-              }
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
-  const galleryId = viewer?.user?.galleries?.[0]?.dbid;
-
-  if (!galleryId) {
-    throw new Error('Tried to edit / create a collection without an existing gallery.');
-  }
-
   const { hideModal } = useModal();
 
   const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);

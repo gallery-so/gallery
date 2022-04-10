@@ -46,8 +46,6 @@ function CollectionGalleryHeader({
   const query = useFragment(
     graphql`
       fragment CollectionGalleryHeaderQueryFragment on Query {
-        ...CollectionCreateOrEditFormFragment
-
         viewer {
           ... on Viewer {
             user {
@@ -66,6 +64,9 @@ function CollectionGalleryHeader({
         dbid
         name
         collectorsNote
+        gallery @required(action: THROW) {
+          dbid @required(action: THROW)
+        }
 
         nfts {
           __typename
@@ -107,13 +108,19 @@ function CollectionGalleryHeader({
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
-        queryRef={query}
+        galleryId={collection.gallery.dbid}
         collectionId={collection.dbid}
         collectionName={collection.name ?? undefined}
         collectionCollectorsNote={collection.collectorsNote ?? undefined}
       />
     );
-  }, [collection.collectorsNote, collection.dbid, collection.name, query, showModal]);
+  }, [
+    collection.collectorsNote,
+    collection.dbid,
+    collection.gallery.dbid,
+    collection.name,
+    showModal,
+  ]);
 
   return (
     <StyledCollectionGalleryHeaderWrapper>
