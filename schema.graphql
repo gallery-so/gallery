@@ -511,17 +511,6 @@ type CreateUserPayload {
   galleryId: DBID
 }
 
-input UpdateCollectionHiddenInput {
-  collectionId: DBID!
-  hidden: Boolean!
-}
-
-type UpdateCollectionHiddenPayload {
-  collection: Collection
-}
-
-union UpdateCollectionHiddenPayloadOrError = UpdateCollectionHiddenPayload | ErrCollectionNotFound
-
 type Mutation {
   # User Mutations
   addUserAddress(address: Address!, authMechanism: AuthMechanism!): AddUserAddressPayloadOrError
@@ -538,8 +527,6 @@ type Mutation {
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError @authRequired
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError @authRequired
   updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayloadOrError
-    @authRequired
-  updateCollectionHidden(input: UpdateCollectionHiddenInput!): UpdateCollectionHiddenPayloadOrError
     @authRequired
   updateCollectionNfts(input: UpdateCollectionNftsInput!): UpdateCollectionNftsPayloadOrError
     @authRequired
