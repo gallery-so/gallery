@@ -28,9 +28,6 @@ export default function useUpdateCollectionInfo() {
         updateCollectionInfo: {
           __typename: 'UpdateCollectionInfoPayload',
           collection: {
-            // We don't have the GraphQL / Relay ID here. So we'll generate it
-            // the same way the backend does {TypeName}:{DBID} here so relay
-            // can find the right item in the cache to update.
             id: `Collection:${collectionDbid}`,
             name,
             collectorsNote,
@@ -39,8 +36,6 @@ export default function useUpdateCollectionInfo() {
       };
 
       await updateCollection({
-        // As soon as the mutation starts, immediately respond with this optmistic response
-        // until the server tells us what the new information is.
         optimisticResponse,
         variables: { input: { name, collectorsNote, collectionId: collectionDbid } },
       });

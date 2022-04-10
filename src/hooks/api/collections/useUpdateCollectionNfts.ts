@@ -1,13 +1,5 @@
 import { useCallback } from 'react';
-import cloneDeep from 'lodash.clonedeep';
-import { useSWRConfig } from 'swr';
 import { CollectionLayout } from 'types/Collection';
-import usePost from '../_rest/usePost';
-import { useAuthenticatedUser } from '../users/useUser';
-import { getGalleriesCacheKey } from '../galleries/useGalleries';
-import { UpdateCollectionNftsRequest, UpdateCollectionNftsResponse } from './types';
-import { GetGalleriesResponse } from '../galleries/types';
-import { getISODate } from 'utils/time';
 import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import {
   getWhitespacePositionsFromStagedItems,
@@ -15,13 +7,21 @@ import {
 } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
-import { useUpdateCollectionNftsRefreshserQuery } from '__generated__/useUpdateCollectionNftsRefreshserQuery.graphql';
+import { useUpdateCollectionNftsRefresherQuery } from '__generated__/useUpdateCollectionNftsRefresherQuery.graphql';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { useUpdateCollectionNftsMutation } from '__generated__/useUpdateCollectionNftsMutation.graphql';
 
 export default function useUpdateCollectionNfts() {
   const relayEnvironment = useRelayEnvironment();
-  const updateCollection = usePost();
-  const { id: userId } = useAuthenticatedUser();
-  const { mutate } = useSWRConfig();
+  const [updateCollectionNfts] = usePromisifiedMutation<useUpdateCollectionNftsMutation>(
+    graphql`
+      mutation useUpdateCollectionNftsMutation($input: UpdateCollectionNftsInput!) {
+        updateCollectionNfts(input: $input) {
+          __typename
+        }
+      }
+    `
+  );
 
   return useCallback(
     async (collectionId: string, stagedNfts: StagingItem[], collectionLayout: CollectionLayout) => {
@@ -31,13 +31,15 @@ export default function useUpdateCollectionNfts() {
       };
       const nfts = removeWhitespacesFromStagedItems(stagedNfts);
       const nftIds = nfts.map((nft) => nft.id);
-      const result = await updateCollection<
-        UpdateCollectionNftsResponse,
-        UpdateCollectionNftsRequest
-      >('/collections/update/nfts', 'update collection nfts', {
-        id: collectionId,
-        nfts: nftIds,
-        layout,
+
+      await updateCollectionNfts({
+        variables: {
+          input: {
+            collectionId,
+            nfts: nftIds,
+            layout,
+          },
+        },
       });
 
       // Until everything is routed through GraphQL, we need
@@ -59,13 +61,20 @@ export default function useUpdateCollectionNfts() {
       // Here, we'd have to optimistically update a bunch of nfts which
       // is more risky since that mapping logic might get out of hand.
       // The safer approach here is to just refetch the data.
-      await fetchQuery<useUpdateCollectionNftsRefreshserQuery>(
+      await fetchQuery<useUpdateCollectionNftsRefresherQuery>(
         relayEnvironment,
         graphql`
-          query useUpdateCollectionNftsRefreshserQuery($id: DBID!) {
+          query useUpdateCollectionNftsRefresherQuery($id: DBID!) {
             collectionById(id: $id) {
-              ...UserGalleryCollectionFragment
               ...NftGalleryFragment
+              ...CollectionRowFragment
+              ...CollectionRowDraggingFragment
+              ...CollectionRowSettingsFragment
+              ...CollectionRowWrapperFragment
+              ...DeleteCollectionConfirmationFragment
+              ...SortableCollectionRowFragment
+              ...useCollectionColumnsFragment
+              ...UserGalleryCollectionFragment
               ...useCollectionColumnsFragment
               ...CollectionGalleryHeaderFragment
             }
@@ -75,30 +84,7 @@ export default function useUpdateCollectionNfts() {
           id: collectionId,
         }
       ).toPromise();
-
-      await mutate(
-        getGalleriesCacheKey({ userId }),
-        (value: GetGalleriesResponse) => {
-          const newValue = cloneDeep<GetGalleriesResponse>(value);
-          const gallery = newValue.galleries[0];
-
-          const now = getISODate();
-          const newCollections = gallery.collections.map((collection) => {
-            if (collection.id === collectionId) {
-              return { ...collection, last_updated: now, nfts, layout };
-            }
-
-            return collection;
-          });
-          gallery.collections = newCollections;
-          gallery.last_updated = now;
-          return newValue;
-        },
-        false
-      );
-
-      return result;
     },
-    [updateCollection, mutate, userId, relayEnvironment]
+    [relayEnvironment, updateCollectionNfts]
   );
 }
