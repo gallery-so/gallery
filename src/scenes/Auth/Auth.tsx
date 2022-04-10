@@ -44,9 +44,9 @@ function Auth({ queryRef }: Props) {
   // Before the welcome screen, we should preload images so that the animation is smooth
   useEffect(preloadImages, []);
 
-  if (viewer) {
+  if (viewer?.__typename === 'Viewer') {
     // If user exists in DB, send them to their profile
-    if (viewer.__typename === 'Viewer' && viewer.user?.username) {
+    if (viewer.user?.username) {
       return <GalleryRedirect to={`/${viewer.user.username}`} />;
     }
 
