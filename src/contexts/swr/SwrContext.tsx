@@ -3,7 +3,6 @@ import { SWRConfig } from 'swr';
 import { MINUTE, SECOND } from 'utils/time';
 import useFetcher from './useFetcher';
 import ensureLatestGallery from './middleware/ensureLatestGallery';
-import handleObscenelyLargeAssets from './middleware/handleObscenelyLargeAssets';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 function localStorageProvider() {
@@ -38,7 +37,7 @@ function localStorageProvider() {
   return map;
 }
 
-const middleware = [ensureLatestGallery, handleObscenelyLargeAssets];
+const middleware = [ensureLatestGallery];
 
 export const SwrProvider = memo(({ children }) => {
   const fetcher = useFetcher();
