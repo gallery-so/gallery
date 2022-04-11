@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import { Filler } from 'scenes/_Router/GalleryRoute';
@@ -87,6 +86,9 @@ function OrganizeGallery({ next, push }: WizardContext) {
       query OrganizeGalleryQuery {
         viewer @required(action: THROW) {
           ... on Viewer {
+            user @required(action: THROW) {
+              username @required(action: THROW)
+            }
             viewerGalleries @required(action: THROW) {
               gallery @required(action: THROW) {
                 dbid
@@ -106,13 +108,13 @@ function OrganizeGallery({ next, push }: WizardContext) {
   );
 
   const gallery = query.viewer.viewerGalleries?.[0]?.gallery;
+  const username = query.viewer.user?.username ?? '';
 
   if (!gallery) {
     throw new Error('User did not have a gallery.');
   }
 
   const wizardId = useWizardId();
-  const user = useAuthenticatedUser();
 
   useNotOptimizedForMobileWarning();
 
@@ -129,7 +131,7 @@ function OrganizeGallery({ next, push }: WizardContext) {
 
   useWizardConfig({
     wizardId,
-    username: user.username,
+    username,
     galleryId: gallery.dbid,
     next,
   });
