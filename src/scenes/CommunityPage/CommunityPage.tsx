@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { Community } from 'types/Community';
 import CommunityPageView from './CommunityPageView';
 
-// type HookProps =
 type Props = {
   contractAddress: string;
 };
@@ -36,7 +35,6 @@ export default function CommunityPage({ contractAddress }: Props) {
     <>
       <Head>{headTitle}</Head>
       <StyledPage centered>
-        {/* add backlink? */}
         <CommunityPageView community={community} />
       </StyledPage>
     </>

@@ -21,9 +21,9 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  //   if (!ENABLED_CONTRACTS.includes(contractAddress)) {
-  //     return <GalleryRedirect to="/" />;
-  //   }
+  if (!ENABLED_CONTRACTS.includes(contractAddress)) {
+    return <GalleryRedirect to="/" />;
+  }
 
   return (
     <GalleryRoute
