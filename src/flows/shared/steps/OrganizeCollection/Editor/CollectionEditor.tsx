@@ -62,6 +62,7 @@ function CollectionEditor({ viewerRef }: Props) {
               name @required(action: THROW)
               lastUpdated @required(action: THROW)
               ...SidebarFragment
+              ...StagingAreaFragment
             }
           }
         }
@@ -203,7 +204,7 @@ function CollectionEditor({ viewerRef }: Props) {
         {shouldDisplayEditor ? (
           <>
             <EditorMenu />
-            <StagingArea />
+            <StagingArea stagedItems={stagedNfts} nftsRef={allNfts} />
           </>
         ) : (
           <Directions />

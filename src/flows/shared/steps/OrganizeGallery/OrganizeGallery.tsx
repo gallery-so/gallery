@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -7,7 +7,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import detectMobileDevice from 'utils/detectMobileDevice';
@@ -18,9 +17,8 @@ import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
 
 type ConfigProps = {
   wizardId: string;

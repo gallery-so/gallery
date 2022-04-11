@@ -17,6 +17,7 @@ import CollectionRowDragging from './CollectionRowDragging';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -24,16 +25,6 @@ const defaultDropAnimationConfig: DropAnimation = {
 };
 
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
-
-function keyById<T extends { id: string }>(list: T[]): { [id: string]: T } {
-  const keyedById: { [id: string]: T } = {};
-
-  for (const item of list) {
-    keyedById[item.id] = item;
-  }
-
-  return keyedById;
-}
 
 type Props = {
   galleryRef: CollectionDndFragment$key;
@@ -56,13 +47,12 @@ function CollectionDnd({ galleryRef }: Props) {
 
   const nonNullCollections = removeNullValues(gallery.collections);
 
-  console.log({ nonNullCollections });
   const [sortedCollectionIds, setSortedCollectionIds] = useState(() => {
     return nonNullCollections.map((collection) => collection.id);
   });
 
   const sortedCollections = useMemo(() => {
-    const collectionsKeyedById = keyById(nonNullCollections);
+    const collectionsKeyedById = arrayToObjectKeyedById('id', nonNullCollections);
 
     return sortedCollectionIds.map((collectionId) => collectionsKeyedById[collectionId]);
   }, [nonNullCollections, sortedCollectionIds]);

@@ -1,17 +1,29 @@
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { StagingItem, isEditModeNft } from '../types';
+import { StagedItemDraggingFragment$key } from '__generated__/StagedItemDraggingFragment.graphql';
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  stagedItem: StagingItem;
+  nftRef: StagedItemDraggingFragment$key;
+  isEditModeNft: boolean;
   size: number;
 };
 
-function StagedItemDragging({ stagedItem, size }: Props) {
-  if (isEditModeNft(stagedItem)) {
-    return <StagedNftImageDragging nft={stagedItem.nft} size={size} />;
+function StagedItemDragging({ nftRef, isEditModeNft, size }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment StagedItemDraggingFragment on Nft {
+        ...StagedNftImageDraggingFragment
+      }
+    `,
+    nftRef
+  );
+
+  if (isEditModeNft) {
+    return <StagedNftImageDragging nftRef={nft} size={size} />;
   }
 
   return (

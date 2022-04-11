@@ -18,6 +18,7 @@ import colors from 'components/core/colors';
 import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
+import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
 type Props = {
   sidebarNfts: SidebarNftsState;
@@ -28,6 +29,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
   const nfts = useFragment(
     graphql`
       fragment SidebarFragment on Nft @relay(plural: true) {
+        dbid
         ...SidebarNftIconFragment
       }
     `,
@@ -102,6 +104,8 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
 
   const { isRefreshingNfts, handleRefreshNfts } = useRefreshNftConfig();
 
+  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', nfts), [nfts]);
+
   return (
     <StyledSidebar>
       <Header>
@@ -137,8 +141,12 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft, index) => (
-          <SidebarNftIcon key={editModeNft.id} nftRef={nfts[index]} editModeNft={editModeNft} />
+        {nftsToDisplayInSidebar.map((editModeNft) => (
+          <SidebarNftIcon
+            key={editModeNft.id}
+            nftRef={nftFragmentsKeyedByID[editModeNft.id]}
+            editModeNft={editModeNft}
+          />
         ))}
       </Selection>
       <Spacer height={12} />
