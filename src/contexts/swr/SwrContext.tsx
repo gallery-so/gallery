@@ -2,7 +2,6 @@ import { memo, useCallback, useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import { MINUTE, SECOND } from 'utils/time';
 import useFetcher from './useFetcher';
-import ensureLatestGallery from './middleware/ensureLatestGallery';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 function localStorageProvider() {
@@ -37,8 +36,6 @@ function localStorageProvider() {
   return map;
 }
 
-const middleware = [ensureLatestGallery];
-
 export const SwrProvider = memo(({ children }) => {
   const fetcher = useFetcher();
 
@@ -58,8 +55,6 @@ export const SwrProvider = memo(({ children }) => {
       fetcher,
       // sync store with localStorage
       provider: localStorageProvider,
-      // middleware: https://swr.vercel.app/docs/middleware
-      use: middleware,
       // revalidate data every 5 mins. only impacts hooks/data that's on screen
       refreshInterval: 5 * MINUTE,
       // prevent auto-revalidation on window focus
