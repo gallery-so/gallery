@@ -3,5 +3,11 @@
   // formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // source-fixer
-  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"]
+  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
+  "files.associations": {
+    "*.graphql": "graphql"
+  },
+  "[graphql]": {
+    "editor.formatOnSave": false
+  }
 }
