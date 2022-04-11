@@ -30,7 +30,7 @@ export default function useUpdateCollectionNfts() {
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
       const nfts = removeWhitespacesFromStagedItems(stagedNfts);
-      const nftIds = nfts.map((nft) => nft.id);
+      const nftIds = nfts.map((nft) => nft.dbid);
 
       await updateCollectionNfts({
         variables: {

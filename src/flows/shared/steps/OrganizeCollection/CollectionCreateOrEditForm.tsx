@@ -114,7 +114,7 @@ function CollectionCreateOrEditForm({
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
-          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ id }) => id),
+          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ dbid: id }) => id),
         });
         await createCollection(galleryId, title, description, stagedItems, layout);
       }

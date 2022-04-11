@@ -31,6 +31,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
       fragment SidebarFragment on Nft @relay(plural: true) {
         dbid
         ...SidebarNftIconFragment
+        ...SearchBarFragment
       }
     `,
     nftsRef
@@ -118,9 +119,9 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
       </Header>
       <Spacer height={16} />
       <SearchBar
+        nftsRef={nfts}
         setSearchResults={setSearchResults}
         setDebouncedSearchQuery={setDebouncedSearchQuery}
-        sidebarNfts={sidebarNftsAsArray}
       />
       <Spacer height={24} />
       <StyledSelectButtonWrapper>

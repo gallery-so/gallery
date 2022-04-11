@@ -64,7 +64,7 @@ export default function useCreateCollection() {
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
       const nfts = removeWhitespacesFromStagedItems(stagedNfts);
-      const nftIds = nfts.map((nft) => nft.id);
+      const nftIds = nfts.map((nft) => nft.dbid);
       const response = await createCollection({
         variables: {
           input: {
