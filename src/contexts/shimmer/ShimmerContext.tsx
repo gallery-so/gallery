@@ -84,7 +84,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
   return (
     <ShimmerStateContext.Provider value={state}>
       <ShimmerActionContext.Provider value={actions}>
-        <Container>
+        <Container overflowHidden={!isLoaded}>
           <StyledShimmerComponent visible={!isLoaded}>
             <Shimmer />
           </StyledShimmerComponent>
@@ -95,7 +95,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
   );
 });
 
-const Container = styled.div`
+const Container = styled.div<{ overflowHidden: boolean }>`
   position: relative;
   width: 100%;
 
@@ -103,7 +103,8 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  overflow: hidden;
+  // remove overflow after underlying NFT has loaded; otherwise the NFT will appear cut-off
+  overflow: ${({ overflowHidden }) => (overflowHidden ? 'hidden' : 'visible')};
 `;
 
 type VisibleProps = { visible: boolean };

@@ -3,7 +3,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
 import Markdown from 'components/core/Markdown/Markdown';
 import NftAdditionalDetails from './NftAdditionalDetails';
 import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
@@ -14,55 +13,85 @@ import { useMemo, useRef } from 'react';
 import { ENABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 
 type Props = {
-  nft: Nft;
+  name: string | null;
+  description: string | null;
   ownerUsername: string;
+  contractAddress: string | null;
+  tokenId: string | null;
+  externalUrl: string | null;
+  creatorAddress: string | null;
+  openseaCollectionName: string | null;
 };
 
-function NftDetailText({ nft, ownerUsername }: Props) {
+function NftDetailText({
+  name,
+  description,
+  ownerUsername,
+  contractAddress,
+  tokenId,
+  externalUrl,
+  creatorAddress,
+  openseaCollectionName,
+}: Props) {
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-
-  const creatorExists = nft.creator_name || nft.creator_address || nft.asset_contract?.address;
+  const addressToUse = creatorAddress || contractAddress || '';
 
   // useRef to prevent rendered username from briefly changing before fade transition upon route change
   const username = useRef(ownerUsername);
 
   const showCommunityLink = useMemo(
-    () => ENABLED_CONTRACTS.includes(nft.asset_contract?.address),
-    [nft.asset_contract?.address]
+    () => !!contractAddress && ENABLED_CONTRACTS.includes(contractAddress),
+    [contractAddress]
   );
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      <TitleM>{nft.name}</TitleM>
-      <Spacer height={4} />
-      {showCommunityLink ? (
-        <InteractiveLink to={`/community/${nft.asset_contract.address}`}>
-          {nft.token_collection_name}
+      {name && (
+        <>
+          <TitleM>{name}</TitleM>
+          <Spacer height={4} />
+        </>
+      )}
+      {openseaCollectionName && showCommunityLink ? (
+        <InteractiveLink to={`/community/${contractAddress}`}>
+          {openseaCollectionName}
         </InteractiveLink>
       ) : (
-        <BaseM>{nft.token_collection_name}</BaseM>
+        <BaseM>{openseaCollectionName}</BaseM>
       )}
       <Spacer height={32} />
-      <StyledNftDescription>
-        <Markdown text={nft.description} />
-      </StyledNftDescription>
-      <Spacer height={32} />
+      {description && (
+        <>
+          <StyledNftDescription>
+            <Markdown text={description} />
+          </StyledNftDescription>
+          <Spacer height={32} />
+        </>
+      )}
+      {description && (
+        <>
+          <StyledNftDescription>
+            <Markdown text={description} />
+          </StyledNftDescription>
+          <Spacer height={32} />
+        </>
+      )}
       <TitleXS>Owner</TitleXS>
       <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
       <Spacer height={16} />
-      {creatorExists && (
+      {addressToUse && (
         <>
           <TitleXS>Created By</TitleXS>
-          <BaseM>
-            {nft.creator_name || (
-              <EnsOrAddress address={nft.creator_address || nft.asset_contract?.address} />
-            )}
-          </BaseM>
+          <BaseM>{<EnsOrAddress address={addressToUse} />}</BaseM>
         </>
       )}
       <Spacer height={32} />
-      <NftAdditionalDetails nft={nft} />
+      <NftAdditionalDetails
+        contractAddress={contractAddress}
+        tokenId={tokenId}
+        externalUrl={externalUrl}
+      />
     </StyledDetailLabel>
   );
 }

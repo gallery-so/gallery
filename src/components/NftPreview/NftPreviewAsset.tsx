@@ -60,6 +60,11 @@ function NftPreviewAsset({ nftRef, size }: Props) {
               large @required(action: NONE)
             }
           }
+          ... on GltfMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
           ... on UnknownMedia {
             previewURLs @required(action: NONE) {
               large @required(action: NONE)
@@ -76,6 +81,7 @@ function NftPreviewAsset({ nftRef, size }: Props) {
     nft.media?.__typename === 'ImageMedia' ||
     nft.media?.__typename === 'HtmlMedia' ||
     nft.media?.__typename === 'AudioMedia' ||
+    nft.media?.__typename === 'GltfMedia' ||
     nft.media?.__typename === 'UnknownMedia'
   ) {
     return (

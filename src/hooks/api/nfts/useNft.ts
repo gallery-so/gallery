@@ -25,11 +25,3 @@ export default function useNft({ id }: Props): Nft | undefined {
 
   return data.nft;
 }
-
-export function getNftCacheKey({ id }: Props) {
-  if (!id) {
-    return '';
-  }
-
-  return [getNftsBaseUrlWithQuery({ id }), getNftsAction];
-}

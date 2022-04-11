@@ -1,21 +1,30 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
-import { useMemo } from 'react';
+import { useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { Nft } from 'types/Nft';
-import { getVideoUrl } from 'utils/nft';
+import { graphql } from 'relay-runtime';
+import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
 
 type Props = {
-  nft: Nft;
+  mediaRef: NftDetailVideoFragment$key;
   maxHeight: number;
 };
 
-function NftDetailVideo({ nft, maxHeight }: Props) {
+function NftDetailVideo({ mediaRef, maxHeight }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment NftDetailVideoFragment on VideoMedia {
+        contentRenderURLs @required(action: THROW) {
+          raw @required(action: THROW)
+        }
+      }
+    `,
+    mediaRef
+  );
   const setContentIsLoaded = useSetContentIsLoaded();
-  const assetUrl = useMemo(() => getVideoUrl(nft), [nft]);
 
   return (
     <StyledVideo
-      src={assetUrl}
+      src={nft.contentRenderURLs.raw}
       muted
       autoPlay
       loop
