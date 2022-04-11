@@ -10,6 +10,8 @@ import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/const
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { useMemo, useRef } from 'react';
+import { ENABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 
 type Props = {
   nft: Nft;
@@ -22,18 +24,32 @@ function NftDetailText({ nft, ownerUsername }: Props) {
 
   const creatorExists = nft.creator_name || nft.creator_address || nft.asset_contract?.address;
 
+  // useRef to prevent rendered username from briefly changing before fade transition upon route change
+  const username = useRef(ownerUsername);
+
+  const showCommunityLink = useMemo(
+    () => ENABLED_CONTRACTS.includes(nft.asset_contract?.address),
+    [nft.asset_contract?.address]
+  );
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       <TitleM>{nft.name}</TitleM>
       <Spacer height={4} />
-      <BaseM>{nft.token_collection_name}</BaseM>
+      {showCommunityLink ? (
+        <InteractiveLink to={`/community/${nft.asset_contract.address}`}>
+          {nft.token_collection_name}
+        </InteractiveLink>
+      ) : (
+        <BaseM>{nft.token_collection_name}</BaseM>
+      )}
       <Spacer height={32} />
       <StyledNftDescription>
         <Markdown text={nft.description} />
       </StyledNftDescription>
       <Spacer height={32} />
       <TitleXS>Owner</TitleXS>
-      <InteractiveLink to={`/${ownerUsername}`}>{ownerUsername}</InteractiveLink>
+      <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
       <Spacer height={16} />
       {creatorExists && (
         <>
