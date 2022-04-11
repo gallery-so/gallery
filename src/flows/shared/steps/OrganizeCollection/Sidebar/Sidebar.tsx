@@ -6,8 +6,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
 import {
-  useSidebarNftsState,
   useCollectionEditorActions,
+  SidebarNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
@@ -16,9 +16,24 @@ import SearchBar from './SearchBar';
 import { useRefreshNftConfig } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { generate12DigitId } from 'utils/collectionLayout';
+import { graphql, useFragment } from 'react-relay';
+import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 
-function Sidebar() {
-  const sidebarNfts = useSidebarNftsState();
+type Props = {
+  sidebarNfts: SidebarNftsState;
+  nftsRef: SidebarFragment$key;
+};
+
+function Sidebar({ nftsRef, sidebarNfts }: Props) {
+  const nfts = useFragment(
+    graphql`
+      fragment SidebarFragment on Nft @relay(plural: true) {
+        ...SidebarNftIconFragment
+      }
+    `,
+    nftsRef
+  );
+
   const { setNftsIsSelected, stageNfts, unstageAllItems } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -122,8 +137,8 @@ function Sidebar() {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft) => (
-          <SidebarNftIcon key={editModeNft.id} editModeNft={editModeNft} />
+        {nftsToDisplayInSidebar.map((editModeNft, index) => (
+          <SidebarNftIcon key={editModeNft.id} nftRef={nfts[index]} editModeNft={editModeNft} />
         ))}
       </Selection>
       <Spacer height={12} />

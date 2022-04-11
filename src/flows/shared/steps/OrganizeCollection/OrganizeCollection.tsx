@@ -108,11 +108,13 @@ function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
         viewer @required(action: THROW) {
           ... on Viewer {
             __typename
-            viewerGalleries @required(action: THROW) {
-              gallery @required(action: THROW) {
-                dbid
+            user @required(action: THROW) {
+              galleries @required(action: THROW) {
+                dbid @required(action: THROW)
               }
             }
+
+            ...CollectionEditorFragment
           }
         }
       }
@@ -126,7 +128,7 @@ function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
     );
   }
 
-  const galleryId = query.viewer.viewerGalleries[0]?.gallery.dbid;
+  const galleryId = query.viewer.user.galleries[0]?.dbid;
 
   if (!galleryId) {
     throw new Error(`OrganizeCollection expected galleryId`);
@@ -134,7 +136,7 @@ function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
 
   useWizardConfig({ push, galleryId });
 
-  return <CollectionEditor />;
+  return <CollectionEditor viewerRef={query.viewer} />;
 }
 
 function OrganizeCollectionWithProvider({ push }: WizardContext) {

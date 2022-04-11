@@ -7,11 +7,11 @@ import colors from 'components/core/colors';
 import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import Markdown from 'components/core/Markdown/Markdown';
 import Settings from 'public/icons/ellipses.svg';
-import { graphql, readInlineData, useFragment } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
-import { CollectionRowGetVideoOrImageUrlFragment$key } from '__generated__/CollectionRowGetVideoOrImageUrlFragment.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
   collectionRef: CollectionRowFragment$key;
@@ -20,84 +20,6 @@ type Props = {
 
 const BIG_NFT_SIZE_PX = 160;
 const SMOL_NFT_SIZE_PX = 25;
-
-function getVideoOrImageUrlForNft(
-  nftRef: CollectionRowGetVideoOrImageUrlFragment$key
-): { type: 'video'; url: string } | { type: 'image'; url: string } | undefined {
-  const { media } = readInlineData(
-    graphql`
-      fragment CollectionRowGetVideoOrImageUrlFragment on Nft @inline {
-        media {
-          ... on VideoMedia {
-            __typename
-            contentRenderURLs {
-              medium
-            }
-          }
-
-          ... on AudioMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on GltfMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on HtmlMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on ImageMedia {
-            __typename
-            contentRenderURLs {
-              medium
-            }
-          }
-
-          ... on InvalidMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on JsonMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on TextMedia {
-            __typename
-            contentRenderURL
-          }
-
-          ... on UnknownMedia {
-            __typename
-            contentRenderURL
-          }
-        }
-      }
-    `,
-    nftRef
-  );
-
-  if (!media) {
-    return undefined;
-  }
-
-  if (media.__typename === 'VideoMedia') {
-    if (media.contentRenderURLs?.medium) {
-      return { type: 'video', url: media.contentRenderURLs.medium };
-    }
-  } else if ('contentRenderURLs' in media && media.contentRenderURLs?.medium) {
-    return { type: 'image', url: media?.contentRenderURLs?.medium };
-  } else if ('contentRenderURL' in media && media.contentRenderURL) {
-    return { type: 'image', url: media.contentRenderURL };
-  }
-
-  return undefined;
-}
 
 /**
  * Displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
@@ -113,7 +35,7 @@ function CollectionRow({ collectionRef, className }: Props) {
         nfts {
           id
           nft @required(action: NONE) {
-            ...CollectionRowGetVideoOrImageUrlFragment
+            ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
           }
         }
@@ -161,13 +83,16 @@ function CollectionRow({ collectionRef, className }: Props) {
       <Spacer height={12} />
       <Body>
         {firstThreeNfts.map((nft) => {
-          const result = getVideoOrImageUrlForNft(nft.nft);
+          const result = getVideoOrImageUrlForNftPreview(nft.nft);
 
           if (!result) {
             return null;
           }
 
-          const imageUrl = graphqlGetResizedNftImageUrlWithFallback(result.url, SMOL_NFT_SIZE_PX);
+          const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+            result.urls.large,
+            BIG_NFT_SIZE_PX
+          );
 
           return (
             <BigNftContainer key={nft.id}>
@@ -267,7 +192,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
     graphql`
       fragment CollectionRowCompactNftsFragment on Nft @relay(plural: true) {
         id
-        ...CollectionRowGetVideoOrImageUrlFragment
+        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     nftRefs
@@ -291,14 +216,14 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
             {firstThreeNfts.map((nft) => {
-              const result = getVideoOrImageUrlForNft(nft);
+              const result = getVideoOrImageUrlForNftPreview(nft);
 
               if (!result) {
                 return null;
               }
 
               const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
-                result.url,
+                result.urls.small,
                 SMOL_NFT_SIZE_PX
               );
 
@@ -317,13 +242,16 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) => {
-            const result = getVideoOrImageUrlForNft(nft);
+            const result = getVideoOrImageUrlForNftPreview(nft);
 
             if (!result) {
               return null;
             }
 
-            const imageUrl = graphqlGetResizedNftImageUrlWithFallback(result.url, SMOL_NFT_SIZE_PX);
+            const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+              result.urls.small,
+              SMOL_NFT_SIZE_PX
+            );
 
             return (
               <SmolNftContainer key={nft.id}>

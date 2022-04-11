@@ -1,11 +1,10 @@
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
-import { Nft } from 'types/Nft';
+import { EditModeNft, EditModeNftChild } from 'flows/shared/steps/OrganizeCollection/types';
 import { getWhitespacePositionsFromStagedItems, insertWhitespaceBlocks } from './collectionLayout';
 
 function generateTestNft(): EditModeNft {
   return {
     id: '123',
-    nft: {} as Nft, // This is wrong but our test doesn't actually need the data inside the NFT,
+    nft: {} as EditModeNftChild, // This is wrong but our test doesn't actually need the data inside the NFT,
   };
 }
 
