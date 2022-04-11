@@ -6,19 +6,11 @@ type Props = {
   id: string;
 };
 
-export const getCollectionByIdAction = 'fetch collection by id';
+const getCollectionByIdAction = 'fetch collection by id';
 const getCollectionByIdBaseUrl = '/collections/get';
 
 function getCollectionByIdBaseUrlWithQuery({ id }: Props) {
   return `${getCollectionByIdBaseUrl}?id=${id}`;
-}
-
-export function getCollectionByIdCacheKey({ id }: Props) {
-  if (!id) {
-    return '';
-  }
-
-  return [getCollectionByIdBaseUrlWithQuery({ id }), getCollectionByIdAction];
 }
 
 export default function useCollectionById({ id }: Props): Collection | undefined {
