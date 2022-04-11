@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
-import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
+import useRefreshOpenseaData, { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
 import {
   ReactNode,
   createContext,
@@ -48,6 +48,9 @@ type Props = { id: string; children: ReactNode };
 export default memo(function WizardDataProvider({ id, children }: Props) {
   const [isRefreshingNfts, setIsRefreshingNfts] = useState(false);
 
+  // graphql version to be available once backend is ready
+  // const refreshOpenseaData = useRefreshOpenseaData();
+
   const refreshOpenseaSync = useRefreshOpenseaSync();
   const mutateAllNftsCache = useMutateAllNftsCache();
   const { pushToast } = useToastActions();
@@ -56,6 +59,9 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     setIsRefreshingNfts(true);
 
     try {
+      // TODO: grab addresses and pass them in here; need to decide whether
+      // we grab them from the OnboardingFlow level or somewhere else
+      // await refreshOpenseaData();
       await refreshOpenseaSync();
       void mutateAllNftsCache();
     } catch (error: unknown) {

@@ -460,8 +460,10 @@ type UpdateUserInfoPayload {
   viewer: Viewer
 }
 
-union RefreshOpenSeaNftsPayloadOrError = RefreshOpenSeaNftsPayload | ErrNotAuthorized
-
+union RefreshOpenSeaNftsPayloadOrError =
+    RefreshOpenSeaNftsPayload
+  | ErrNotAuthorized
+  | ErrOpenseaSyncFailure # temp hardcode until BE implementation
 type RefreshOpenSeaNftsPayload {
   viewer: Viewer
 }
@@ -511,6 +513,11 @@ type ErrInvalidToken implements Error {
 }
 
 type ErrDoesNotOwnRequiredNFT implements Error {
+  message: String!
+}
+
+# temp hardcode until BE implementation
+type ErrOpenseaSyncFailure implements Error {
   message: String!
 }
 

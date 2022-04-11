@@ -131,7 +131,7 @@ function CollectionEditor({ viewerRef }: Props) {
   const allNftsRaw = viewer.user.wallets.flatMap((wallet) => wallet?.nfts);
   const allNfts = removeNullValues(allNftsRaw);
 
-  // stabilize `allNfts` returned from `useAllNfts`, since SWR middleware can make it referentially unstable
+  // stabilize `allNfts` since SWR middleware can make it referentially unstable
   const allNftsCacheKey = useMemo(
     () => allNfts.reduce((prev, curr) => `${prev}-${curr.lastUpdated}`, ''),
     [allNfts]
@@ -142,7 +142,7 @@ function CollectionEditor({ viewerRef }: Props) {
     [collectionBeingEdited]
   );
 
-  // decorates NFTs returned from useAllNfts with additional fields for the purpose of editing / dnd
+  // decorates NFTs returned with additional fields for the purpose of editing / dnd
   const allEditModeNfts: SidebarNftsState = useMemo(() => {
     const editModeNfts = convertNftsToEditModeNfts(allNfts);
     return Object.fromEntries(editModeNfts.map((nft) => [nft.id, nft]));
