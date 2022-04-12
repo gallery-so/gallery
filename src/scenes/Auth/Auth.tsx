@@ -25,7 +25,7 @@ type Props = {
 };
 
 function Auth({ queryRef }: Props) {
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment AuthFragment on Query {
         viewer {
@@ -36,10 +36,14 @@ function Auth({ queryRef }: Props) {
             }
           }
         }
+
+        ...WalletSelectorFragment
       }
     `,
     queryRef
   );
+
+  const { viewer } = query;
 
   // Before the welcome screen, we should preload images so that the animation is smooth
   useEffect(preloadImages, []);
@@ -59,7 +63,7 @@ function Auth({ queryRef }: Props) {
   return (
     <StyledAuthPage centered>
       <StyledWalletSelectorWrapper>
-        <WalletSelector />
+        <WalletSelector queryRef={query} />
       </StyledWalletSelectorWrapper>
       <Spacer height={32} />
       <StyledBaseM>
