@@ -57,7 +57,7 @@ function AddWalletPendingDefault({
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment AddWalletPendingDefaultFragment on Query {
         viewer {
@@ -69,10 +69,14 @@ function AddWalletPendingDefault({
             }
           }
         }
+
+        ...ManageWalletsModalFragment
       }
     `,
     queryRef
   );
+
+  const { viewer } = query;
 
   const authenticatedUserAddresses = useMemo(
     () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
@@ -83,9 +87,9 @@ function AddWalletPendingDefault({
 
   const openManageWalletsModal = useCallback(
     (address: string) => {
-      showModal(<ManageWalletsModal newAddress={address} />);
+      showModal(<ManageWalletsModal queryRef={query} newAddress={address} />);
     },
-    [showModal]
+    [showModal, query]
   );
 
   const createNonce = useCreateNonceMutation();

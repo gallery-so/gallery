@@ -1,4 +1,3 @@
-import { FetcherType } from 'contexts/swr/useFetcher';
 import { Web3Error } from 'types/Error';
 import { graphql } from 'relay-runtime';
 import { authRequestUtilsCreateNonceMutation } from '../../../__generated__/authRequestUtilsCreateNonceMutation.graphql';
@@ -24,6 +23,13 @@ export function useAddWalletMutation() {
       addUserAddress(address: $address, authMechanism: $authMechanism) {
         ... on AddUserAddressPayload {
           __typename
+          viewer {
+            user {
+              wallets {
+                address
+              }
+            }
+          }
         }
       }
     }
@@ -228,40 +234,4 @@ export function useCreateNonceMutation() {
     },
     [createNonce]
   );
-}
-
-/**
- * Add address to user
- */
-type AddUserAddressRequest = {
-  signature?: string;
-  address: string;
-  nonce?: string;
-  wallet_type?: number;
-};
-
-type AddUserAddressResponse = {
-  signature_valid: boolean;
-};
-
-async function addUserAddress(
-  body: AddUserAddressRequest,
-  fetcher: FetcherType
-): Promise<AddUserAddressResponse> {
-  try {
-    return await fetcher<AddUserAddressResponse>(
-      '/users/update/addresses/add',
-      'add user address',
-      {
-        body,
-      }
-    );
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('error while attempting adding user address', error);
-      throw { code: 'GALLERY_SERVER_ERROR', ...error } as Web3Error;
-    }
-
-    throw new Error('unknown error');
-  }
 }

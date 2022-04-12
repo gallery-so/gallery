@@ -1,6 +1,3 @@
-import { useAuthState } from 'contexts/auth/AuthContext';
-import { isLoggedInState } from 'contexts/auth/typeguards';
-import { useMemo } from 'react';
 import { User } from 'types/User';
 import useGet from '../_rest/useGet';
 
