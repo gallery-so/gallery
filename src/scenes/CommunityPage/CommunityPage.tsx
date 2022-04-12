@@ -1,41 +1,50 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
-import useGet from 'hooks/api/_rest/useGet';
 import Head from 'next/head';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import NotFound from 'scenes/NotFound/NotFound';
 import styled from 'styled-components';
-import { Community } from 'types/Community';
+import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.graphql';
 import CommunityPageView from './CommunityPageView';
 
 type Props = {
   contractAddress: string;
+  queryRef: CommunityPageFragment$key;
 };
 
-type GetCommunityResponse = { community: Community };
-
-function useCommunityByContractAddress(contractAddress: string): Community | undefined {
-  const data = useGet<GetCommunityResponse>(
-    contractAddress ? `/communities/get?contract_address=${contractAddress}` : null,
-    'fetch community by contract address'
+export default function CommunityPage({ queryRef }: Props) {
+  const { community } = useFragment(
+    graphql`
+      fragment CommunityPageFragment on Query {
+        community: communityByAddress(contractAddress: $contractAddress) {
+          ... on ErrCommunityNotFound {
+            __typename
+          }
+          ... on Community {
+            __typename
+            name
+            ...CommunityPageViewFragment
+          }
+        }
+      }
+    `,
+    queryRef
   );
 
-  return data?.community;
-}
-
-export default function CommunityPage({ contractAddress }: Props) {
-  const community = useCommunityByContractAddress(contractAddress);
-
-  // this will be used when we're on graphql - right now useGet throws an error earlier if not found
-  if (!community) {
+  if (!community || community.__typename !== 'Community') {
     return <NotFound resource="community" />;
   }
 
-  const headTitle = `${contractAddress} | Gallery`;
+  const headTitle = community.name ? `${community.name} | Gallery` : 'Gallery';
+
   return (
     <>
-      <Head>{headTitle}</Head>
+      <Head>
+        <title>{headTitle}</title>
+      </Head>
       <StyledPage centered>
-        <CommunityPageView community={community} />
+        <CommunityPageView communityRef={community} />
       </StyledPage>
     </>
   );

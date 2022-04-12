@@ -7,16 +7,17 @@ import {
   useMemberListPageState,
 } from 'contexts/memberListPage/MemberListPageContext';
 import { useCallback, useMemo } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { Owner } from 'types/Community';
 import { removeNullValues } from 'utils/removeNullValues';
+import { CommunityPageListFragment$key } from '__generated__/CommunityPageListFragment.graphql';
 
 type CommunityPageUserProps = {
   username: string;
-  address: string;
 };
 
-function CommunityPageUser({ username, address }: CommunityPageUserProps) {
+function CommunityPageUser({ username }: CommunityPageUserProps) {
   const { setFadeUsernames } = useMemberListPageActions();
   const { fadeUsernames } = useMemberListPageState();
   const onMouseEnter = useCallback(() => {
@@ -30,7 +31,7 @@ function CommunityPageUser({ username, address }: CommunityPageUserProps) {
   return (
     <StyledOwner>
       <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <StyledLink key={address} href={`/${username}`} fadeUsernames={fadeUsernames}>
+        <StyledLink href={`/${username}`} fadeUsernames={fadeUsernames}>
           <StyledBaseXL>{username}</StyledBaseXL>
         </StyledLink>
       </div>
@@ -66,10 +67,21 @@ const StyledBaseXL = styled(BaseXL)`
 `;
 
 type Props = {
-  owners: Owner[];
+  communityRef: CommunityPageListFragment$key;
 };
 
-export default function CommunityPageList({ owners }: Props) {
+export default function CommunityPageList({ communityRef }: Props) {
+  const { owners } = useFragment(
+    graphql`
+      fragment CommunityPageListFragment on Community {
+        owners {
+          username @required(action: NONE)
+        }
+      }
+    `,
+    communityRef
+  );
+
   const { searchQuery } = useMemberListPageState();
 
   const sortedOwners = useMemo(() => {
@@ -94,10 +106,12 @@ export default function CommunityPageList({ owners }: Props) {
     );
   }, [searchQuery, sortedOwners]);
 
+  console.log(filteredOwners);
+
   return (
     <StyledCommunityPageList>
       {filteredOwners.map((owner) => (
-        <CommunityPageUser key={owner.address} address={owner.address} username={owner.username} />
+        <CommunityPageUser key={owner.username} username={owner.username} />
       ))}
     </StyledCommunityPageList>
   );
