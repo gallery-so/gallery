@@ -35,19 +35,3 @@ export default function useUser(props: Props): User | undefined {
 
   return data;
 }
-
-function useCurrentUser(makeRequest = true): User | undefined {
-  const data = useGet<User>(makeRequest ? '/users/get/current' : null, 'get current user');
-  return data;
-}
-
-// use this hook to get the current logged in user when you expect one to be returned.
-// ie in a component that is only rendered for authenticated users
-export function useAuthenticatedUser() {
-  const user = useCurrentUser();
-  if (!user) {
-    throw new Error('Authenticated user not found');
-  }
-
-  return user;
-}
