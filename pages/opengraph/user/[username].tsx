@@ -1,5 +1,3 @@
-import useGalleries from 'hooks/api/galleries/useGalleries';
-import useUser from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
 import { graphql, useLazyLoadQuery } from 'react-relay';
