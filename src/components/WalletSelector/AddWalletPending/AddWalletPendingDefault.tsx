@@ -19,7 +19,6 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { useAddWalletMutation, useCreateNonceMutation } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   useTrackAddWalletAttempt,
@@ -31,6 +30,8 @@ import { AddWalletPendingDefaultFragment$key } from '__generated__/AddWalletPend
 import { removeNullValues } from 'utils/removeNullValues';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import useCreateNonce from '../mutations/useCreateNonce';
+import useAddWallet from '../mutations/useAddWallet';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -92,7 +93,7 @@ function AddWalletPendingDefault({
     [showModal, query]
   );
 
-  const createNonce = useCreateNonceMutation();
+  const createNonce = useCreateNonce();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
   const trackAddWalletSuccess = useTrackAddWalletSuccess();
   const trackAddWalletError = useTrackAddWalletError();
@@ -103,7 +104,7 @@ function AddWalletPendingDefault({
    * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
    * 3. Add wallet address to user's account
    */
-  const addWallet = useAddWalletMutation();
+  const addWallet = useAddWallet();
   const attemptAddWallet = useCallback(
     async (address: string, signer: JsonRpcSigner) => {
       try {

@@ -7,7 +7,6 @@ import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
-import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,
@@ -22,6 +21,8 @@ import {
   useTrackCreateUserSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
+import useCreateNonce from '../mutations/useCreateNonce';
+import useLoginOrCreateUser from '../mutations/useLoginOrCreateUser';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -45,7 +46,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const [nonce, setNonce] = useState('');
   const [userExists, setUserExists] = useState(false);
 
-  const loginOrCreateUser = useLoginOrCreateUserMutation();
+  const loginOrCreateUser = useLoginOrCreateUser();
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
@@ -146,7 +147,7 @@ function AuthenticateWalletPendingGnosisSafe({
     }
   }, [account, attemptAuthentication, nonce]);
 
-  const createNonce = useCreateNonceMutation();
+  const createNonce = useCreateNonce();
 
   // This runs once to auto-initiate the authentication flow, when wallet is first connected (ie when 'account' is defined)
   useEffect(() => {

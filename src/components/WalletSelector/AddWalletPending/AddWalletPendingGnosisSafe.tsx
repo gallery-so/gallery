@@ -17,7 +17,6 @@ import {
 } from 'types/Wallet';
 import { useModal } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { useAddWalletMutation, useCreateNonceMutation } from '../authRequestUtils';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,
@@ -34,6 +33,8 @@ import { captureException } from '@sentry/nextjs';
 import { graphql, useFragment } from 'react-relay';
 import { AddWalletPendingGnosisSafeFragment$key } from '__generated__/AddWalletPendingGnosisSafeFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import useCreateNonce from '../mutations/useCreateNonce';
+import useAddWallet from '../mutations/useAddWallet';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -57,7 +58,7 @@ function AddWalletPendingGnosisSafe({
   const [userExists, setUserExists] = useState(false);
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
 
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment AddWalletPendingGnosisSafeFragment on Query {
         viewer {
@@ -69,10 +70,14 @@ function AddWalletPendingGnosisSafe({
             }
           }
         }
+
+        ...ManageWalletsModalFragment
       }
     `,
     queryRef
   );
+
+  const { viewer } = query;
 
   const authenticatedUserAddresses = useMemo(
     () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
@@ -83,9 +88,9 @@ function AddWalletPendingGnosisSafe({
 
   const openManageWalletsModal = useCallback(
     (address: string) => {
-      showModal(<ManageWalletsModal newAddress={address} />);
+      showModal(<ManageWalletsModal queryRef={query} newAddress={address} />);
     },
-    [showModal]
+    [query, showModal]
   );
 
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
@@ -110,7 +115,7 @@ function AddWalletPendingGnosisSafe({
     [setDetectedError, trackAddWalletError]
   );
 
-  const addWallet = useAddWalletMutation();
+  const addWallet = useAddWallet();
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
       const { signatureValid } = await addWallet({
@@ -192,7 +197,7 @@ function AddWalletPendingGnosisSafe({
     }
   }, [account, attemptAddWallet, nonce, userExists]);
 
-  const createNonce = useCreateNonceMutation();
+  const createNonce = useCreateNonce();
 
   // This runs once to auto-initiate the authentication flow, when wallet is first connected (ie when 'account' is defined)
   useEffect(() => {
