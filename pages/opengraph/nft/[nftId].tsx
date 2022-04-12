@@ -28,7 +28,7 @@ export default function OpenGraphCollectionPage() {
   );
 
   if (queryResponse.nft?.__typename !== 'Nft') {
-    throw new Error('no NFT found');
+    throw new Error('no NFT found for opengraph preview images');
   }
 
   const { nft } = queryResponse;

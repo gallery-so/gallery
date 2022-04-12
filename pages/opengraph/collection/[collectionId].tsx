@@ -32,7 +32,7 @@ export default function OpenGraphCollectionPage() {
   );
 
   if (queryResponse.collection?.__typename !== 'Collection') {
-    throw new Error('no collection found');
+    throw new Error('no collection found for opengraph preview images');
   }
 
   const { collection } = queryResponse;
