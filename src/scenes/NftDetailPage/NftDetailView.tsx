@@ -14,11 +14,6 @@ import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
 
-// util to parse the CollectionNftId to get the collection Id
-function getCollectionIdFromCollectionNftId(id: string) {
-  return id.split(':')[1];
-}
-
 type Props = {
   username: string;
   queryRef: NftDetailViewFragment$key;
@@ -43,7 +38,9 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
         collection @required(action: THROW) {
           dbid
           nfts {
-            id
+            nft {
+              dbid
+            }
           }
         }
         ...NftDetailAssetFragment
@@ -57,6 +54,7 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
   const authenticatedUser = usePossiblyAuthenticatedUser();
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
   const collectionNfts = collectionNft.collection.nfts;
+
   const { prevNftId, nextNftId } = useMemo(() => {
     if (!collectionNfts) {
       captureException(`NFT collection not found for NFT ${nftId}`);
@@ -67,7 +65,7 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
     }
 
     const nftIndex = collectionNfts.findIndex(
-      (collectionNft) => getCollectionIdFromCollectionNftId(collectionNft?.id ?? '') === nftId
+      (collectionNft) => collectionNft?.nft?.dbid === nftId
     );
 
     if (nftIndex === -1) {
@@ -79,8 +77,8 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
     }
 
     return {
-      prevNftId: collectionNfts[nftIndex - 1]?.id ?? null,
-      nextNftId: collectionNfts[nftIndex + 1]?.id ?? null,
+      prevNftId: collectionNfts[nftIndex - 1]?.nft?.dbid ?? null,
+      nextNftId: collectionNfts[nftIndex + 1]?.nft?.dbid ?? null,
     };
   }, [collectionNfts, nftId]);
 
