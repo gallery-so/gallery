@@ -41,7 +41,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
   return (
     <GalleryRoute
       element={<CommunityPageScene contractAddress={contractAddress} queryRef={query} />}
-      footerIsFixed
+      footerVisibleOutOfView
     />
   );
 }
