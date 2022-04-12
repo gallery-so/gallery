@@ -1,30 +1,63 @@
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { CollectionIdOpengraphQuery } from '__generated__/CollectionIdOpengraphQuery.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from 'utils/removeNullValues';
 
 export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
-  const collection = useCollectionById({ id: query.collectionId as string });
+  const queryResponse = useLazyLoadQuery<CollectionIdOpengraphQuery>(
+    graphql`
+      query CollectionIdOpengraphQuery($collectionId: DBID!) {
+        collection: collectionById(id: $collectionId) {
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+          ... on Collection {
+            __typename
+
+            name
+            collectorsNote
+            nfts {
+              nft {
+                ...getVideoOrImageUrlForNftPreviewFragment
+              }
+            }
+          }
+        }
+      }
+    `,
+    { collectionId: query.collectionId as string }
+  );
+
+  if (queryResponse.collection?.__typename !== 'Collection') {
+    throw new Error('no collection found');
+  }
+
+  const { collection } = queryResponse;
+
+  const imageUrls = removeNullValues(
+    removeNullValues(
+      removeNullValues(collection.nfts).map(({ nft }) =>
+        nft ? getVideoOrImageUrlForNftPreview(nft) : null
+      )
+    )
+      .slice(0, 4)
+      .map((nft) => nft.urls.large)
+  );
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
-
-  if (!collection) {
-    // TODO: render something nice?
-    throw new Error('no collection found');
-  }
 
   return (
     <>
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
           <OpenGraphPreview
-            title={collection.name}
-            description={collection.collectors_note}
-            imageUrls={collection.nfts
-              .filter((nft) => nft.image_url)
-              .slice(0, 4)
-              .map((nft) => nft.image_url)}
+            title={collection.name ?? ''}
+            description={collection.collectorsNote ?? ''}
+            imageUrls={imageUrls}
           />
         </div>
       </div>

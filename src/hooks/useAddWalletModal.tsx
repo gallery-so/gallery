@@ -21,6 +21,7 @@ const AddWalletModal = ({ queryRef }: ModalProps) => {
     `,
     queryRef
   );
+
   return (
     <Container>
       <WalletSelector connectionMode={ADD_WALLET_TO_USER} queryRef={query} />
