@@ -13,7 +13,7 @@ import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
-import { useRefreshNftConfig } from 'contexts/wizard/WizardDataProvider';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
@@ -103,7 +103,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
     }, 100);
   }, [stageNfts]);
 
-  const { isRefreshingNfts, handleRefreshNfts } = useRefreshNftConfig();
+  const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
 
   const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', nfts), [nfts]);
 
