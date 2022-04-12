@@ -106,6 +106,7 @@ export const organizeCollectionQuery = graphql`
       ... on Viewer {
         __typename
         user @required(action: THROW) {
+          username
           galleries @required(action: THROW) {
             dbid @required(action: THROW)
           }

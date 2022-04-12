@@ -5,32 +5,27 @@ import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useRouter } from 'next/router';
-import { graphql, useFragment } from 'react-relay';
-import { CongratulationsFragment$key } from '__generated__/CongratulationsFragment.graphql';
+import { usePreloadedQuery } from 'react-relay';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
+import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 
-type Props = {
-  queryRef: CongratulationsFragment$key;
-};
-
-function Congratulations({ queryRef }: Props) {
+function Congratulations() {
+  const { queryRef } = useWizardState();
   const { push } = useRouter();
 
-  const { viewer } = useFragment(
-    graphql`
-      fragment CongratulationsFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              username
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
+  if (!queryRef) {
+    throw new Error('Congratulations.tsx could not access queryRef');
+  }
 
-  const username = viewer?.user?.username;
+  const query = usePreloadedQuery(organizeCollectionQuery, queryRef);
+
+  if (query.viewer.__typename !== 'Viewer') {
+    throw new Error(
+      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
+    );
+  }
+
+  const username = query?.viewer?.user?.username;
 
   const handleClick = useCallback(() => {
     void push(`/${username}`);
