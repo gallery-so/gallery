@@ -11,9 +11,10 @@ type Props = {
   href?: string;
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
+  className?: string;
 };
 
-export default function InteractiveLink({ to, href, children }: Props) {
+export default function InteractiveLink({ to, href, children, className }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
@@ -29,14 +30,22 @@ export default function InteractiveLink({ to, href, children }: Props) {
   if (to) {
     return (
       <Link href={to} passHref>
-        <StyledAnchor onClick={handleClick}>{children}</StyledAnchor>
+        <StyledAnchor onClick={handleClick} className={className}>
+          {children}
+        </StyledAnchor>
       </Link>
     );
   }
 
   if (href) {
     return (
-      <StyledAnchor href={href} target="_blank" rel="noreferrer" onClick={handleClick}>
+      <StyledAnchor
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={handleClick}
+        className={className}
+      >
         {children}
       </StyledAnchor>
     );
