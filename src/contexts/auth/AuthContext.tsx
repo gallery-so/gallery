@@ -20,6 +20,8 @@ import {
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { User } from 'types/User';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
+import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -52,11 +54,40 @@ export const useAuthActions = (): AuthActions => {
   return context;
 };
 
+const useImperativelyFetchUser = () => {
+  const relayEnvironment = useRelayEnvironment();
+
+  return useCallback(async () => {
+    await fetchQuery<AuthContextFetchUserQuery>(
+      relayEnvironment,
+      graphql`
+        query AuthContextFetchUserQuery {
+          viewer {
+            ... on Viewer {
+              __typename
+              user {
+                id
+              }
+            }
+            ... on ErrNotAuthorized {
+              __typename
+            }
+          }
+        }
+      `,
+      {}
+    ).toPromise();
+  }, [relayEnvironment]);
+};
+
 type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  const [, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
+  const [, setLocallyLoggedInWalletAddress] = usePersistedState(
+    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+    ''
+  );
   const [isLoggedInLocally, setIsLoggedInLocally] = usePersistedState(
     USER_LOGGED_IN_LOCAL_STORAGE_KEY,
     false
@@ -69,9 +100,9 @@ const AuthProvider = memo(({ children }: Props) => {
    */
   const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
-    setUserSigninAddress('');
+    setLocallyLoggedInWalletAddress('');
     clearLocalStorageWithException([]);
-  }, [setUserSigninAddress]);
+  }, [setLocallyLoggedInWalletAddress]);
 
   /**
    * Fully logs user out by calling the logout endpoint and logging out in app state
@@ -86,11 +117,14 @@ const AuthProvider = memo(({ children }: Props) => {
     setLoggedOut();
   }, [pushToast, setLoggedOut]);
 
+  const imperativelyFetchUser = useImperativelyFetchUser();
+
   const handleLogin = useCallback(
     async (userId: string, address: string) => {
       try {
+        await imperativelyFetchUser();
         setAuthState({ type: 'LOGGED_IN', userId });
-        setUserSigninAddress(address.toLowerCase());
+        setLocallyLoggedInWalletAddress(address.toLowerCase());
         _identify(userId);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -98,7 +132,7 @@ const AuthProvider = memo(({ children }: Props) => {
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [setLoggedOut, setUserSigninAddress]
+    [imperativelyFetchUser, setLocallyLoggedInWalletAddress, setLoggedOut]
   );
 
   useEffect(() => {
