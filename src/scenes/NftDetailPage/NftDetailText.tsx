@@ -9,6 +9,8 @@ import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/const
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { useMemo, useRef } from 'react';
+import { ENABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 
 type Props = {
   name: string | null;
@@ -35,6 +37,14 @@ function NftDetailText({
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
   const addressToUse = creatorAddress || contractAddress || '';
 
+  // useRef to prevent rendered username from briefly changing before fade transition upon route change
+  const username = useRef(ownerUsername);
+
+  const showCommunityLink = useMemo(
+    () => !!contractAddress && ENABLED_CONTRACTS.includes(contractAddress),
+    [contractAddress]
+  );
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       {name && (
@@ -43,7 +53,13 @@ function NftDetailText({
           <Spacer height={4} />
         </>
       )}
-      {openseaCollectionName && <BaseM>{openseaCollectionName}</BaseM>}
+      {openseaCollectionName && showCommunityLink ? (
+        <InteractiveLink to={`/community/${contractAddress}`}>
+          {openseaCollectionName}
+        </InteractiveLink>
+      ) : (
+        <BaseM>{openseaCollectionName}</BaseM>
+      )}
       <Spacer height={32} />
       {description && (
         <>
@@ -54,7 +70,7 @@ function NftDetailText({
         </>
       )}
       <TitleXS>Owner</TitleXS>
-      <InteractiveLink to={`/${ownerUsername}`}>{ownerUsername}</InteractiveLink>
+      <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
       <Spacer height={16} />
       {addressToUse && (
         <>
