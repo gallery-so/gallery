@@ -12,9 +12,8 @@ import {
   useState,
   useCallback,
 } from 'react';
-import { graphql, PreloadedQuery, useLazyLoadQuery, useQueryLoader } from 'react-relay';
+import { PreloadedQuery, useQueryLoader } from 'react-relay';
 import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
-import { WizardDataProviderQuery } from '__generated__/WizardDataProviderQuery.graphql';
 
 export type WizardDataState = {
   id: string;
@@ -55,26 +54,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
 
   const [isRefreshingNfts, setIsRefreshingNfts] = useState(false);
 
-  // this lazyLoadQuery will be removed after we move off of opensea
-  const { viewer } = useLazyLoadQuery<WizardDataProviderQuery>(
-    graphql`
-      query WizardDataProviderQuery {
-        viewer {
-          ... on Viewer {
-            __typename
-            ...useRefreshOpenseaNftsFragment
-          }
-        }
-      }
-    `,
-    {}
-  );
-
-  if (viewer?.__typename !== 'Viewer') {
-    throw new Error('expected Viewer in WizardDataProvider');
-  }
-
-  const refreshOpenseaNfts = useRefreshOpenseaNfts({ viewerRef: viewer });
+  const refreshOpenseaNfts = useRefreshOpenseaNfts();
 
   const { pushToast } = useToastActions();
 
