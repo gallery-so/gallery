@@ -8,6 +8,8 @@ import ActionText from 'components/core/ActionText/ActionText';
 import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -26,6 +28,29 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
       collectionId,
     });
   }, [username, collectionId, track]);
+
+  const ePress = useKeyDown('e');
+
+  const { push } = useRouter();
+  const navigateToEdit = function () {
+    void push(`/edit?collectionId=${collectionId}`);
+  };
+
+  // FIXME: Do we also want escape/backspace to go back to main /{username} page? Not in spec
+  const escapePress = useKeyDown('Escape');
+  const backspacePress = useKeyDown('Backspace');
+  const navigateToUserGallery = function () {
+    void push(`/${username}`);
+  };
+
+  useEffect(() => {
+    if (ePress) {
+      navigateToEdit();
+    }
+    if (escapePress || backspacePress) {
+      navigateToUserGallery();
+    }
+  }, [ePress, escapePress, backspacePress]);
 
   return (
     <>

@@ -111,13 +111,15 @@ function NftDetailPage({ nftId }: Props) {
     />
   );
 
-  const { replace } = useRouter();
+  const { replace, back } = useRouter();
   const navigateToId = function (nftId: string) {
     void replace(`/${username}/${collectionId}/${nftId}`);
   };
 
   const nextPress = useKeyDown('ArrowRight');
   const prevPress = useKeyDown('ArrowLeft');
+  const escapePress = useKeyDown('Escape');
+  const backspacePress = useKeyDown('Backspace');
 
   useEffect(() => {
     if (nextPress && nextNftId) {
@@ -125,6 +127,14 @@ function NftDetailPage({ nftId }: Props) {
     }
     if (prevPress && prevNftId) {
       navigateToId(prevNftId);
+    }
+    if (escapePress || backspacePress) {
+      // FIXME: This is technically incorrect and triggers a TypeScript error
+      // handleBackClick expects a mouseevent. But we want to mimic the exact behavior of handleBackClick, so it would be nice to keep this
+      // Perhaps we can reconfigure or wrap handleBackClick in an event agnostic handler of sorts. Needs review
+
+      // This also does not go back to collection pages, just back to /{username}. I am unsure why.
+      handleBackClick(new MouseEvent('click')); // FIXME
     }
   }, [nextPress, nextNftId, prevPress, prevNftId, navigateToId]);
 

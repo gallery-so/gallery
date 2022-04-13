@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react';
 
 export default function useKeyDown(targetKey: string) {
-  // FIXME: If the user is not currently focused on the body, return
-  // We need to prevent accidental events like navigating while trying to move cursor in a textarea
-
   // State for keeping track of whether key is pressed
   const [keyPressed, setKeyPressed] = useState<boolean>(false);
 
   // If pressed key is our target key then set to true
-  function downHandler({ key }) {
+  function downHandler({ key }: KeyboardEvent) {
     if (key === targetKey) {
       setKeyPressed(true);
     }
   }
   // If released key is our target key then set to false
-  const upHandler = ({ key }) => {
+  const upHandler = ({ key }: KeyboardEvent) => {
     if (key === targetKey) {
       setKeyPressed(false);
     }
@@ -30,5 +27,9 @@ export default function useKeyDown(targetKey: string) {
       window.removeEventListener('keyup', upHandler);
     };
   }, []); // Empty array ensures that effect is only run on mount and unmount
+
+  // If the user is not currently focused on the body, return
+  const activeEl = document.activeElement;
+  if (activeEl?.tagName !== 'BODY') return;
   return keyPressed;
 }

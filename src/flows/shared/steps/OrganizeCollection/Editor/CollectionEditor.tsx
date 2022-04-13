@@ -22,6 +22,10 @@ import EditorMenu from './EditorMenu';
 import useAllNfts from 'hooks/api/nfts/useAllNfts';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 
+import useKeyDown from 'hooks/useKeyDown';
+import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
+import { useModal } from 'contexts/modal/ModalContext';
+
 function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
     index,
@@ -32,6 +36,17 @@ function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft
 }
 
 function CollectionEditor() {
+  const escapePress = useKeyDown('Escape');
+  const { showModal } = useModal();
+
+  // Whenever user clicks escape, go back to the previous route
+  useEffect(() => {
+    if (escapePress) {
+      // FIXME: Could we style this better?
+      showModal(<ConfirmLeaveModal />);
+    }
+  }, [escapePress]);
+
   const stagedNfts = useStagedItemsState();
   const sidebarNfts = useSidebarNftsState();
   const { setNextEnabled } = useWizardValidationActions();

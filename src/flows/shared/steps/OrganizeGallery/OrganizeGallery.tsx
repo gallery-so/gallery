@@ -21,6 +21,10 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
+import useKeyDown from 'hooks/useKeyDown';
+import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
+import { useModal } from 'contexts/modal/ModalContext';
+
 type ConfigProps = {
   wizardId: string;
   username: string;
@@ -115,6 +119,17 @@ function OrganizeGallery({ next, push }: WizardContext) {
   });
 
   const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
+
+  const escapePress = useKeyDown('Escape');
+  const { showModal } = useModal();
+
+  // Whenever user clicks escape, go back to the previous route
+  useEffect(() => {
+    if (escapePress) {
+      // FIXME: Could we style this better?
+      showModal(<ConfirmLeaveModal />);
+    }
+  }, [escapePress]);
 
   return (
     <StyledOrganizeGallery>

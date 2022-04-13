@@ -9,6 +9,9 @@ import UserGalleryHeader from './UserGalleryHeader';
 import EmptyGallery from './EmptyGallery';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 type Props = {
   username?: string;
@@ -21,6 +24,19 @@ function UserGallery({ username }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const showMobileLayoutToggle = isMobile && gallery?.collections?.length > 0;
   const { mobileLayout, setMobileLayout } = useMobileLayout();
+
+  const ePress = useKeyDown('e');
+
+  const { push } = useRouter();
+  const navigateToEdit = function () {
+    void push(`/edit`);
+  };
+
+  useEffect(() => {
+    if (ePress) {
+      navigateToEdit();
+    }
+  }, [ePress]);
 
   if (!user) {
     return <NotFound />;

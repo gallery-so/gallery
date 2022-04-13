@@ -12,6 +12,8 @@ function ConfirmLeaveModal() {
   const { hideModal } = useModal();
   const { back } = useRouter();
 
+  // FIXME: How would this handle (the very rare) instance in which user visits /edit directly, and back() does not exist?
+  // Need same canGoBack functionality
   const goBack = useCallback(() => {
     back();
     hideModal();
