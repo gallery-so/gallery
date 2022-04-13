@@ -1,9 +1,10 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+import { useRemoveWalletMutation } from '__generated__/useRemoveWalletMutation.graphql';
 
 export default function useRemoveWallet() {
-  const [removeWallet] = usePromisifiedMutation<any>(
+  const [removeWallet] = usePromisifiedMutation<useRemoveWalletMutation>(
     graphql`
       mutation useRemoveWalletMutation($addresses: [Address!]!) {
         removeUserAddresses(addresses: $addresses) {

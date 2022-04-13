@@ -9,7 +9,6 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
@@ -18,6 +17,7 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -83,6 +83,30 @@ const useImperativelyFetchUser = () => {
   }, [relayEnvironment]);
 };
 
+const useLogout = () => {
+  const [logout] = usePromisifiedMutation<any>(
+    graphql`
+      mutation AuthContextLogoutMutation {
+        logout {
+          success
+        }
+      }
+    `
+  );
+
+  return useCallback(() => {
+    logout({
+      variables: {},
+      updater: (store) => {
+        // TODO: manually dropping the viewer on logout for now,
+        // but it may be better for the mutation to respond with
+        // an empty viewer in the future
+        store.delete('client:root:viewer');
+      },
+    });
+  }, [logout]);
+};
+
 type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
@@ -104,15 +128,15 @@ const AuthProvider = memo(({ children }: Props) => {
     clearLocalStorageWithException([]);
   }, [setLocallyLoggedInWalletAddress]);
 
+  const logoutOnServer = useLogout();
+
   /**
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
   const handleLogout = useCallback(() => {
-    // TODO__GRAPHQL: migrate this to graphql mutation
-    // unsure how to clear out the viewer; maybe the mutation will
-    void _fetch('/auth/logout', 'logout', { body: {} });
+    logoutOnServer();
     setLoggedOut();
-  }, [setLoggedOut]);
+  }, [setLoggedOut, logoutOnServer]);
 
   const { pushToast } = useToastActions();
 
