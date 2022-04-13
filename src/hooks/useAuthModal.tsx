@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
@@ -13,16 +12,27 @@ type ModalProps = {
 
 const AuthModal = ({ queryRef }: ModalProps) => {
   const { hideModal } = useModal();
-  const isAuthenticated = useIsAuthenticated();
 
   const query = useFragment(
     graphql`
       fragment useAuthModalFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+          # TODO: handle ErrNotAuthorized type
+          # and display an error in the auth modal
+          # if user fetch fails
+        }
         ...WalletSelectorFragment
       }
     `,
     queryRef
   );
+
+  const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   useEffect(() => {
     if (isAuthenticated) {
