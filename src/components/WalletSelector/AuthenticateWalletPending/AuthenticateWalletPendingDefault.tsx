@@ -38,7 +38,7 @@ function AuthenticateWalletPendingDefault({
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const { setLoggedIn } = useAuthActions();
+  const { handleLogin } = useAuthActions();
 
   const createNonce = useCreateNonce();
   const loginOrCreateUser = useLoginOrCreateUser();
@@ -75,7 +75,7 @@ function AuthenticateWalletPendingDefault({
         trackCreateUserSuccess();
       }
 
-      setLoggedIn(userId, address);
+      handleLogin(userId, address);
     },
     [
       trackSignInAttempt,
@@ -83,7 +83,7 @@ function AuthenticateWalletPendingDefault({
       createNonce,
       pendingWallet,
       loginOrCreateUser,
-      setLoggedIn,
+      handleLogin,
       trackSignInSuccess,
       trackCreateUserSuccess,
     ]

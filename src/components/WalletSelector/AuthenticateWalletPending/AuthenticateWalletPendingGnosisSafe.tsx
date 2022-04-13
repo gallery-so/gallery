@@ -40,7 +40,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const fetcher = useFetcher();
-  const { setLoggedIn } = useAuthActions();
+  const { handleLogin } = useAuthActions();
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
   const [nonce, setNonce] = useState('');
@@ -66,9 +66,9 @@ function AuthenticateWalletPendingGnosisSafe({
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
-      setLoggedIn(userId, address);
+      handleLogin(userId, address);
     },
-    [loginOrCreateUser, setLoggedIn, trackCreateUserSuccess, trackSignInSuccess, userExists]
+    [loginOrCreateUser, handleLogin, trackCreateUserSuccess, trackSignInSuccess, userExists]
   );
 
   const handleError = useCallback(

@@ -25,12 +25,12 @@ function ManageWalletsModal({ newAddress, queryRef }: Props) {
   );
 
   const { hideModal } = useModal();
-  const { logOut } = useAuthActions();
+  const { handleLogout } = useAuthActions();
 
   const handleLogOut = useCallback(() => {
-    void logOut();
+    void handleLogout();
     void hideModal();
-  }, [hideModal, logOut]);
+  }, [hideModal, handleLogout]);
 
   return (
     <StyledManageWalletsModal>

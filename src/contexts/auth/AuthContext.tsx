@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
-import { LOADING, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
+import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 import {
   USER_LOGGED_IN_LOCAL_STORAGE_KEY,
@@ -21,7 +21,7 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import { User } from 'types/User';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
 
-export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
 const EXPIRED_SESSION_MESSAGE = 'Your session has expired. Please sign in again.';
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
@@ -36,9 +36,8 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  setLoggedIn: (userId: string, address: string) => void;
-  logOut: () => void;
-  setStateToLoading: () => void;
+  handleLogin: (userId: string, address: string) => void;
+  handleLogout: () => void;
   handleUnauthorized: () => void;
 };
 
@@ -68,34 +67,26 @@ const AuthProvider = memo(({ children }: Props) => {
   /**
    * Sets the user state to logged out and clears local storage
    */
-  const setLoggedOut = useCallback(
-    (isUnauthorized = false) => {
-      if (isUnauthorized) {
-        pushToast(EXPIRED_SESSION_MESSAGE);
-      }
-
-      setAuthState(LOGGED_OUT);
-      setUserSigninAddress('');
-      /**
-       * NOTE: clearing localStorage completely will also clear the SWR cache, which
-       * will require users to re-fetch data if they visit a profile they've already
-       * visited (including their own). In the future, we should clear data more
-       * selectively (such as only sensitive data)
-       */
-      clearLocalStorageWithException([]);
-    },
-    [pushToast, setUserSigninAddress]
-  );
+  const setLoggedOut = useCallback(() => {
+    setAuthState(LOGGED_OUT);
+    setUserSigninAddress('');
+    clearLocalStorageWithException([]);
+  }, [setUserSigninAddress]);
 
   /**
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
-  const logOut = useCallback(() => {
+  const handleLogout = useCallback(() => {
     void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
 
-  const setLoggedIn = useCallback(
+  const handleUnauthorized = useCallback(() => {
+    pushToast(EXPIRED_SESSION_MESSAGE);
+    setLoggedOut();
+  }, [pushToast, setLoggedOut]);
+
+  const handleLogin = useCallback(
     async (userId: string, address: string) => {
       try {
         setAuthState({ type: 'LOGGED_IN', userId });
@@ -109,14 +100,6 @@ const AuthProvider = memo(({ children }: Props) => {
     },
     [setLoggedOut, setUserSigninAddress]
   );
-
-  const setStateToLoading = useCallback(() => {
-    setAuthState(LOADING);
-  }, []);
-
-  const handleUnauthorized = useCallback(() => {
-    setLoggedOut(true);
-  }, [setLoggedOut]);
 
   useEffect(() => {
     async function getAuthenticatedUser() {
@@ -150,14 +133,11 @@ const AuthProvider = memo(({ children }: Props) => {
   }, [authState, isLoggedInLocally, pushToast, setIsLoggedInLocally]);
 
   const authActions: AuthActions = useMemo(
-    () => ({ handleUnauthorized, setLoggedIn, logOut, setStateToLoading }),
-    [handleUnauthorized, setLoggedIn, logOut, setStateToLoading]
+    () => ({ handleUnauthorized, handleLogin, handleLogout }),
+    [handleUnauthorized, handleLogin, handleLogout]
   );
 
-  const shouldDisplayUniversalLoader = useMemo(
-    () => authState === UNKNOWN || authState === LOADING,
-    [authState]
-  );
+  const shouldDisplayUniversalLoader = useMemo(() => authState === UNKNOWN, [authState]);
 
   // TODO: display a loader instead of `null`
   return shouldDisplayUniversalLoader ? null : (
