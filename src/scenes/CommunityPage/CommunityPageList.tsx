@@ -87,8 +87,16 @@ export default function CommunityPageList({ communityRef }: Props) {
   const sortedOwners = useMemo(() => {
     const nonNullOwners = removeNullValues(owners ?? []);
 
-    nonNullOwners.sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
+    // nonNullOwners.sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
 
+    nonNullOwners.sort((a, b) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      return (
+        (/^[0-9]/.test(usernameA) as any) - (/^[0-9]/.test(usernameB) as any) ||
+        usernameA.localeCompare(usernameB, undefined, { numeric: true })
+      );
+    });
     return nonNullOwners;
   }, [owners]);
 
@@ -105,8 +113,6 @@ export default function CommunityPageList({ communityRef }: Props) {
       owner.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
     );
   }, [searchQuery, sortedOwners]);
-
-  console.log(filteredOwners);
 
   return (
     <StyledCommunityPageList>
