@@ -24,11 +24,11 @@ function LoggedInNav({ queryRef }: Props) {
         ...EditUserInfoModalFragment
         ...ManageWalletsModalFragment
 
-        viewer @required(action: THROW) {
+        viewer {
           ... on Viewer {
             __typename
-            user @required(action: THROW) {
-              username @required(action: THROW)
+            user {
+              username
             }
           }
         }
@@ -36,12 +36,6 @@ function LoggedInNav({ queryRef }: Props) {
     `,
     queryRef
   );
-
-  if (query.viewer.__typename !== 'Viewer') {
-    throw new Error(
-      `LoggedInNav expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
-    );
-  }
 
   const handleManageWalletsClick = useCallback(() => {
     showModal(<ManageWalletsModal queryRef={query} />);
@@ -55,7 +49,11 @@ function LoggedInNav({ queryRef }: Props) {
     void push('/edit');
   }, [push]);
 
-  return (
+  // TODO: we shouldn't need to do this, since the parent should verify that
+  // `viewer` exists. however, the logout action that dismounts client:root:viewer
+  // causes this component to freak out before the parent realizes it shouldn't
+  // be rendering this child... need to figure out best practices here
+  return query.viewer?.__typename === 'Viewer' && query.viewer.user?.username ? (
     <>
       <NavElement>
         <Dropdown mainText="Edit Profile">
@@ -69,7 +67,7 @@ function LoggedInNav({ queryRef }: Props) {
         <TextButton onClick={handleManageWalletsClick} text={query.viewer.user.username} />
       </NavElement>
     </>
-  );
+  ) : null;
 }
 
 export default LoggedInNav;
