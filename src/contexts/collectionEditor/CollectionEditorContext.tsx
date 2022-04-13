@@ -2,15 +2,11 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import { CollectionLayout } from 'types/Collection';
-
-type CollectionMetadata = {
-  layout: CollectionLayout;
-};
+import { UpdateCollectionNftsInput } from '__generated__/useUpdateCollectionNftsMutation.graphql';
 
 export type SidebarNftsState = Record<string, EditModeNft>;
 export type StagedItemsState = StagingItem[];
-export type CollectionMetadataState = CollectionMetadata;
+export type CollectionMetadataState = Pick<UpdateCollectionNftsInput, 'layout'>;
 
 export type CollectionEditorState = {
   sidebarNfts: SidebarNftsState;
@@ -18,7 +14,7 @@ export type CollectionEditorState = {
   collectionMetadata: CollectionMetadataState;
 };
 
-const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3 } };
+const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3, whitespace: [] } };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarNfts: {},

@@ -10,14 +10,14 @@ import { useSWRConfig } from 'swr';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {
-  const { logOut } = useAuthActions();
+  const { handleLogout } = useAuthActions();
   const { cache } = useSWRConfig();
 
   useEffect(() => {
     // @ts-expect-error `clear` method not described in SWR types, but it's available
     cache.clear();
-    logOut();
-  }, [logOut, cache]);
+    handleLogout();
+  }, [handleLogout, cache]);
 
   return (
     <Page centered>

@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import RequestAction from 'hooks/api/_rest/RequestAction';
 import { ApiError } from 'errors/types';
-import { useAuthActions } from 'contexts/auth/AuthContext';
 
 export const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 
@@ -91,11 +90,9 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
  * - usePost for mutations
  */
 export default function useFetcher(): FetcherType {
-  const { handleUnauthorized } = useAuthActions();
   return useCallback(
-    async (path, action, parameters) =>
-      _fetch(path, action, { ...parameters, unauthorizedErrorHandler: handleUnauthorized }),
-    [handleUnauthorized]
+    async (path, action, parameters) => _fetch(path, action, { ...parameters }),
+    []
   );
 }
 

@@ -11,17 +11,15 @@ import {
 } from 'react';
 import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
-import { LOADING, LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
+import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import {
-  USER_LOGGED_IN_LOCAL_STORAGE_KEY,
-  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from 'constants/storageKeys';
+import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { User } from 'types/User';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
+import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
 
-export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof LOADING | typeof UNKNOWN;
+export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
 const EXPIRED_SESSION_MESSAGE = 'Your session has expired. Please sign in again.';
 const AuthStateContext = createContext<AuthState>(UNKNOWN);
@@ -36,9 +34,8 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  setLoggedIn: (userId: string, address: string) => void;
-  logOut: () => void;
-  setStateToLoading: () => void;
+  handleLogin: (userId: string, address: string) => void;
+  handleLogout: () => void;
   handleUnauthorized: () => void;
 };
 
@@ -53,53 +50,86 @@ export const useAuthActions = (): AuthActions => {
   return context;
 };
 
+const useImperativelyFetchUser = () => {
+  const relayEnvironment = useRelayEnvironment();
+
+  return useCallback(async () => {
+    return await fetchQuery<AuthContextFetchUserQuery>(
+      relayEnvironment,
+      graphql`
+        query AuthContextFetchUserQuery {
+          viewer {
+            ... on Viewer {
+              __typename
+              user {
+                id
+                dbid
+                username
+              }
+            }
+            ... on ErrNotAuthorized {
+              __typename
+              cause {
+                ... on ErrInvalidToken {
+                  __typename
+                }
+              }
+            }
+          }
+        }
+      `,
+      {}
+    ).toPromise();
+  }, [relayEnvironment]);
+};
+
 type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  const [, setUserSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
-  const [isLoggedInLocally, setIsLoggedInLocally] = usePersistedState(
-    USER_LOGGED_IN_LOCAL_STORAGE_KEY,
-    false
-  );
 
-  const { pushToast } = useToastActions();
+  // we store what wallet they've logged in with on metamask / etc.,
+  // which is necessary for the Manage Wallets view
+  const [, setLocallyLoggedInWalletAddress] = usePersistedState(
+    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+    ''
+  );
 
   /**
    * Sets the user state to logged out and clears local storage
    */
-  const setLoggedOut = useCallback(
-    (isUnauthorized = false) => {
-      if (isUnauthorized) {
-        pushToast(EXPIRED_SESSION_MESSAGE);
-      }
-
-      setAuthState(LOGGED_OUT);
-      setUserSigninAddress('');
-      /**
-       * NOTE: clearing localStorage completely will also clear the SWR cache, which
-       * will require users to re-fetch data if they visit a profile they've already
-       * visited (including their own). In the future, we should clear data more
-       * selectively (such as only sensitive data)
-       */
-      clearLocalStorageWithException([]);
-    },
-    [pushToast, setUserSigninAddress]
-  );
+  const setLoggedOut = useCallback(() => {
+    setAuthState(LOGGED_OUT);
+    setLocallyLoggedInWalletAddress('');
+    clearLocalStorageWithException([]);
+  }, [setLocallyLoggedInWalletAddress]);
 
   /**
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
-  const logOut = useCallback(() => {
+  const handleLogout = useCallback(() => {
+    // TODO__GRAPHQL: migrate this to graphql mutation
+    // unsure how to clear out the viewer; maybe the mutation will
     void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
 
-  const setLoggedIn = useCallback(
+  const { pushToast } = useToastActions();
+
+  const handleUnauthorized = useCallback(() => {
+    pushToast(EXPIRED_SESSION_MESSAGE);
+    setLoggedOut();
+  }, [pushToast, setLoggedOut]);
+
+  const imperativelyFetchUser = useImperativelyFetchUser();
+
+  const handleLogin = useCallback(
     async (userId: string, address: string) => {
       try {
+        // TODO__GRAPHQL: explicitly check error types (instead of try/catch)
+        await imperativelyFetchUser();
         setAuthState({ type: 'LOGGED_IN', userId });
-        setUserSigninAddress(address.toLowerCase());
+        setLocallyLoggedInWalletAddress(address.toLowerCase());
         _identify(userId);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -107,57 +137,52 @@ const AuthProvider = memo(({ children }: Props) => {
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [setLoggedOut, setUserSigninAddress]
+    [imperativelyFetchUser, setLocallyLoggedInWalletAddress, setLoggedOut]
   );
 
-  const setStateToLoading = useCallback(() => {
-    setAuthState(LOADING);
-  }, []);
-
-  const handleUnauthorized = useCallback(() => {
-    setLoggedOut(true);
-  }, [setLoggedOut]);
-
+  // this effect runs on mount to determine whether or not to display
+  // a logged in vs. logged out experience. in the future, this logic
+  // could theoretically be handled by each child component, rather
+  // than within this context.
   useEffect(() => {
-    async function getAuthenticatedUser() {
+    async function fetchAuthenticatedUser() {
       try {
-        const authenticatedUser = await _fetch<User>('/users/get/current', 'get current user');
+        const response = await imperativelyFetchUser();
 
-        if (authenticatedUser) {
-          setAuthState({ type: 'LOGGED_IN', userId: authenticatedUser.id });
-          setIsLoggedInLocally(true);
-          _identify(authenticatedUser.id);
+        if (response?.viewer?.__typename === 'Viewer' && response.viewer.user?.dbid) {
+          const userId = response.viewer.user.dbid;
+          setAuthState({ type: 'LOGGED_IN', userId: userId });
+          _identify(userId);
           return;
         }
 
-        // if no authenticated user is returned but they were logged in previously, show a toast
-        if (isLoggedInLocally) {
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrInvalidToken'
+        ) {
           pushToast(EXPIRED_SESSION_MESSAGE);
         }
 
         setAuthState(LOGGED_OUT);
-        setIsLoggedInLocally(false);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_error: unknown) {
+      } catch (error: unknown) {
+        // we can ignore errors when fetching the current user, since
+        // it just means we should give them the logged-out experience
         setAuthState(LOGGED_OUT);
-        setIsLoggedInLocally(false);
       }
     }
 
     if (authState === UNKNOWN) {
-      void getAuthenticatedUser();
+      void fetchAuthenticatedUser();
     }
-  }, [authState, isLoggedInLocally, pushToast, setIsLoggedInLocally]);
+  }, [authState, imperativelyFetchUser, pushToast]);
 
   const authActions: AuthActions = useMemo(
-    () => ({ handleUnauthorized, setLoggedIn, logOut, setStateToLoading }),
-    [handleUnauthorized, setLoggedIn, logOut, setStateToLoading]
+    () => ({ handleUnauthorized, handleLogin, handleLogout }),
+    [handleUnauthorized, handleLogin, handleLogout]
   );
 
-  const shouldDisplayUniversalLoader = useMemo(
-    () => authState === UNKNOWN || authState === LOADING,
-    [authState]
-  );
+  const shouldDisplayUniversalLoader = useMemo(() => authState === UNKNOWN, [authState]);
 
   // TODO: display a loader instead of `null`
   return shouldDisplayUniversalLoader ? null : (

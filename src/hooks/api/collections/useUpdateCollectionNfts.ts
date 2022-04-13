@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { CollectionLayout } from 'types/Collection';
 import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import {
   getWhitespacePositionsFromStagedItems,
@@ -9,7 +8,10 @@ import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
 import { useUpdateCollectionNftsRefresherQuery } from '__generated__/useUpdateCollectionNftsRefresherQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { useUpdateCollectionNftsMutation } from '__generated__/useUpdateCollectionNftsMutation.graphql';
+import {
+  UpdateCollectionNftsInput,
+  useUpdateCollectionNftsMutation,
+} from '__generated__/useUpdateCollectionNftsMutation.graphql';
 
 export default function useUpdateCollectionNfts() {
   const relayEnvironment = useRelayEnvironment();
@@ -24,7 +26,11 @@ export default function useUpdateCollectionNfts() {
   );
 
   return useCallback(
-    async (collectionId: string, stagedNfts: StagingItem[], collectionLayout: CollectionLayout) => {
+    async (
+      collectionId: string,
+      stagedNfts: StagingItem[],
+      collectionLayout: UpdateCollectionNftsInput['layout']
+    ) => {
       const layout = {
         ...collectionLayout,
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
