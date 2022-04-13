@@ -15,7 +15,6 @@ import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { User } from 'types/User';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
@@ -55,7 +54,7 @@ const useImperativelyFetchUser = () => {
   const relayEnvironment = useRelayEnvironment();
 
   return useCallback(async () => {
-    await fetchQuery<AuthContextFetchUserQuery>(
+    return await fetchQuery<AuthContextFetchUserQuery>(
       relayEnvironment,
       graphql`
         query AuthContextFetchUserQuery {
@@ -64,11 +63,17 @@ const useImperativelyFetchUser = () => {
               __typename
               user {
                 id
+                dbid
                 username
               }
             }
             ... on ErrNotAuthorized {
               __typename
+              cause {
+                ... on ErrInvalidToken {
+                  __typename
+                }
+              }
             }
           }
         }
@@ -103,7 +108,7 @@ const AuthProvider = memo(({ children }: Props) => {
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
   const handleLogout = useCallback(() => {
-    // TODO__GRAPHQL: migrate this to graphql
+    // TODO__GRAPHQL: migrate this to graphql mutation
     void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
@@ -134,24 +139,30 @@ const AuthProvider = memo(({ children }: Props) => {
     [imperativelyFetchUser, setLocallyLoggedInWalletAddress, setLoggedOut]
   );
 
+  // this effect runs on mount to determine whether or not to display
+  // a logged in vs. logged out experience. in the future, this logic
+  // could theoretically be handled by each child component, rather
+  // than within this context.
   useEffect(() => {
-    async function getAuthenticatedUser() {
+    async function fetchAuthenticatedUser() {
       try {
-        const authenticatedUser = await _fetch<User>('/users/get/current', 'get current user');
+        const response = await imperativelyFetchUser();
 
-        if (authenticatedUser) {
-          setAuthState({ type: 'LOGGED_IN', userId: authenticatedUser.id });
-          _identify(authenticatedUser.id);
+        if (response?.viewer?.__typename === 'Viewer' && response.viewer.user?.dbid) {
+          const userId = response.viewer.user.dbid;
+          setAuthState({ type: 'LOGGED_IN', userId: userId });
+          _identify(userId);
           return;
         }
 
-        // TODO: once we migrate above to using imperative user fetch
-        // if (__typename === 'ErrInvalidToken') {
-        //   pushToast(EXPIRED_SESSION_MESSAGE);
-        // }
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrInvalidToken'
+        ) {
+          pushToast(EXPIRED_SESSION_MESSAGE);
+        }
 
         setAuthState(LOGGED_OUT);
-
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error: unknown) {
         // we can ignore errors when fetching the current user, since
@@ -161,9 +172,9 @@ const AuthProvider = memo(({ children }: Props) => {
     }
 
     if (authState === UNKNOWN) {
-      void getAuthenticatedUser();
+      void fetchAuthenticatedUser();
     }
-  }, [authState]);
+  }, [authState, imperativelyFetchUser, pushToast]);
 
   const authActions: AuthActions = useMemo(
     () => ({ handleUnauthorized, handleLogin, handleLogout }),
