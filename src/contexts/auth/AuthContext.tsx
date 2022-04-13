@@ -64,6 +64,7 @@ const useImperativelyFetchUser = () => {
               __typename
               user {
                 id
+                username
               }
             }
             ... on ErrNotAuthorized {
@@ -81,12 +82,13 @@ type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
+
+  // we store what wallet they've logged in with on metamask / etc.,
+  // which is necessary for the Manage Wallets view
   const [, setLocallyLoggedInWalletAddress] = usePersistedState(
     USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
     ''
   );
-
-  const { pushToast } = useToastActions();
 
   /**
    * Sets the user state to logged out and clears local storage
@@ -101,9 +103,12 @@ const AuthProvider = memo(({ children }: Props) => {
    * Fully logs user out by calling the logout endpoint and logging out in app state
    */
   const handleLogout = useCallback(() => {
+    // TODO__GRAPHQL: migrate this to graphql
     void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
+
+  const { pushToast } = useToastActions();
 
   const handleUnauthorized = useCallback(() => {
     pushToast(EXPIRED_SESSION_MESSAGE);
@@ -115,6 +120,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const handleLogin = useCallback(
     async (userId: string, address: string) => {
       try {
+        // TODO__GRAPHQL: explicitly check error types (instead of try/catch)
         await imperativelyFetchUser();
         setAuthState({ type: 'LOGGED_IN', userId });
         setLocallyLoggedInWalletAddress(address.toLowerCase());
