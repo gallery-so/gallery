@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
-import useRefreshOpenseaData, { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
+import useRefreshOpenseaNfts from 'hooks/api/nfts/useRefreshOpenseaNfts';
 import {
   ReactNode,
   createContext,
@@ -12,8 +12,9 @@ import {
   useState,
   useCallback,
 } from 'react';
-import { PreloadedQuery, useQueryLoader } from 'react-relay';
+import { graphql, PreloadedQuery, useLazyLoadQuery, useQueryLoader } from 'react-relay';
 import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
+import { WizardDataProviderQuery } from '__generated__/WizardDataProviderQuery.graphql';
 
 export type WizardDataState = {
   id: string;
@@ -54,19 +55,34 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
 
   const [isRefreshingNfts, setIsRefreshingNfts] = useState(false);
 
-  // graphql version to be available once backend is ready
-  // const refreshOpenseaData = useRefreshOpenseaData();
-  const refreshOpenseaSync = useRefreshOpenseaSync();
+  // this lazyLoadQuery will be removed after we move off of opensea
+  const { viewer } = useLazyLoadQuery<WizardDataProviderQuery>(
+    graphql`
+      query WizardDataProviderQuery {
+        viewer {
+          ... on Viewer {
+            __typename
+            ...useRefreshOpenseaNftsFragment
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  if (viewer?.__typename !== 'Viewer') {
+    throw new Error('expected Viewer in WizardDataProvider');
+  }
+
+  const refreshOpenseaNfts = useRefreshOpenseaNfts({ viewerRef: viewer });
+
   const { pushToast } = useToastActions();
 
   const handleRefreshNfts = useCallback(async () => {
     setIsRefreshingNfts(true);
 
     try {
-      // TODO: grab addresses and pass them in here; need to decide whether
-      // we grab them from the OnboardingFlow level or somewhere else
-      // await refreshOpenseaData();
-      await refreshOpenseaSync();
+      await refreshOpenseaNfts();
       loadQuery({}, { fetchPolicy: 'store-and-network' });
     } catch (error: unknown) {
       captureException(error);
@@ -76,7 +92,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     }
 
     setIsRefreshingNfts(false);
-  }, [loadQuery, pushToast, refreshOpenseaSync]);
+  }, [loadQuery, pushToast, refreshOpenseaNfts]);
 
   useEffect(() => {
     if (id === 'onboarding') {
