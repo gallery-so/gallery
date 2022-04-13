@@ -87,8 +87,6 @@ export default function CommunityPageList({ communityRef }: Props) {
   const sortedOwners = useMemo(() => {
     const nonNullOwners = removeNullValues(owners ?? []);
 
-    // nonNullOwners.sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
-
     nonNullOwners.sort((a, b) => {
       const usernameA = a.username.toLowerCase();
       const usernameB = b.username.toLowerCase();
@@ -117,7 +115,7 @@ export default function CommunityPageList({ communityRef }: Props) {
   return (
     <StyledCommunityPageList>
       {filteredOwners.map((owner) => (
-        <CommunityPageUser key={owner.username} username={owner.username} />
+        <CommunityPageUser key={owner.address} username={owner.username} />
       ))}
     </StyledCommunityPageList>
   );
