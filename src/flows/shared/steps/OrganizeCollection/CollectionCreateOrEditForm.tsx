@@ -26,7 +26,7 @@ type Props = {
   stagedItems?: StagingItem[];
   layout?: {
     columns: number;
-    whitespace?: number[];
+    whitespace: readonly number[];
   };
 };
 

@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { CollectionLayout } from 'types/Collection';
 import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import {
   getWhitespacePositionsFromStagedItems,
@@ -7,7 +6,10 @@ import {
 } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
+import {
+  CreateCollectionInput,
+  useCreateCollectionMutation,
+} from '__generated__/useCreateCollectionMutation.graphql';
 
 export default function useCreateCollection() {
   const [createCollection] = usePromisifiedMutation<useCreateCollectionMutation>(graphql`
@@ -57,7 +59,7 @@ export default function useCreateCollection() {
       title: string,
       description: string,
       stagedNfts: StagingItem[],
-      collectionLayout: CollectionLayout
+      collectionLayout: CreateCollectionInput['layout']
     ) => {
       const layout = {
         ...collectionLayout,
