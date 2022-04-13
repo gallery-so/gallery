@@ -109,6 +109,7 @@ const AuthProvider = memo(({ children }: Props) => {
    */
   const handleLogout = useCallback(() => {
     // TODO__GRAPHQL: migrate this to graphql mutation
+    // unsure how to clear out the viewer; maybe the mutation will
     void _fetch('/auth/logout', 'logout', { body: {} });
     setLoggedOut();
   }, [setLoggedOut]);
