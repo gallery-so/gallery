@@ -69,14 +69,6 @@ function NftDetailText({
           <Spacer height={32} />
         </>
       )}
-      {description && (
-        <>
-          <StyledNftDescription>
-            <Markdown text={description} />
-          </StyledNftDescription>
-          <Spacer height={32} />
-        </>
-      )}
       <TitleXS>Owner</TitleXS>
       <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
       <Spacer height={16} />
