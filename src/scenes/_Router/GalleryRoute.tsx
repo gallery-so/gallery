@@ -1,5 +1,4 @@
-// uncomment if we need this next time
-// import Banner from 'components/Banner/Banner';
+import Banner from 'components/Banner/Banner';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from 'components/core/Page/constants';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
@@ -52,6 +51,7 @@ export default function GalleryRoute({
     graphql`
       fragment GalleryRouteFragment on Query {
         ...GlobalNavbarFragment
+        ...BannerFragment
       }
     `,
     queryRef
@@ -86,13 +86,7 @@ export default function GalleryRoute({
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed, isMobile]);
 
-  const banner = useMemo(
-    () =>
-      // uncomment if we need this next time
-      // <Banner text="We are currently migrating our backend systems to improve reliability. You will not be able to update your gallery for the next 1-2 hours (until 1 AM EST)." />
-      null,
-    []
-  );
+  const banner = useMemo(() => <Banner text="" queryRef={query} />, [query]);
 
   if (freshLayout) {
     return (
