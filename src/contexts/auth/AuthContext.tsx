@@ -13,10 +13,7 @@ import { _fetch } from 'contexts/swr/useFetcher';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import {
-  USER_LOGGED_IN_LOCAL_STORAGE_KEY,
-  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from 'constants/storageKeys';
+import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { User } from 'types/User';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
@@ -88,10 +85,6 @@ const AuthProvider = memo(({ children }: Props) => {
     USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
     ''
   );
-  const [isLoggedInLocally, setIsLoggedInLocally] = usePersistedState(
-    USER_LOGGED_IN_LOCAL_STORAGE_KEY,
-    false
-  );
 
   const { pushToast } = useToastActions();
 
@@ -142,29 +135,29 @@ const AuthProvider = memo(({ children }: Props) => {
 
         if (authenticatedUser) {
           setAuthState({ type: 'LOGGED_IN', userId: authenticatedUser.id });
-          setIsLoggedInLocally(true);
           _identify(authenticatedUser.id);
           return;
         }
 
-        // if no authenticated user is returned but they were logged in previously, show a toast
-        if (isLoggedInLocally) {
-          pushToast(EXPIRED_SESSION_MESSAGE);
-        }
+        // TODO: once we migrate above to using imperative user fetch
+        // if (__typename === 'ErrInvalidToken') {
+        //   pushToast(EXPIRED_SESSION_MESSAGE);
+        // }
 
         setAuthState(LOGGED_OUT);
-        setIsLoggedInLocally(false);
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_error: unknown) {
+      } catch (error: unknown) {
+        // we can ignore errors when fetching the current user, since
+        // it just means we should give them the logged-out experience
         setAuthState(LOGGED_OUT);
-        setIsLoggedInLocally(false);
       }
     }
 
     if (authState === UNKNOWN) {
       void getAuthenticatedUser();
     }
-  }, [authState, isLoggedInLocally, pushToast, setIsLoggedInLocally]);
+  }, [authState]);
 
   const authActions: AuthActions = useMemo(
     () => ({ handleUnauthorized, handleLogin, handleLogout }),
