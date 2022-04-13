@@ -1,4 +1,3 @@
-// consider refactoring with membership
 export type Owner = {
   address: string;
   username: string;
