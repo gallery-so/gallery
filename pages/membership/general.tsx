@@ -4,11 +4,23 @@ import GeneralMembershipMintPage from 'scenes/MembershipMintPage/GeneralMembersh
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { FeatureFlag } from 'components/core/enums';
 import { isFeatureEnabled } from 'utils/featureFlag';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { generalQuery } from '__generated__/generalQuery.graphql';
 
 export default function General() {
+  const query = useLazyLoadQuery<generalQuery>(
+    graphql`
+      query generalQuery {
+        ...GalleryRouteFragment
+      }
+    `,
+    {}
+  );
+
   if (!isFeatureEnabled(FeatureFlag.GENERAL_MEMBERSHIP_MINT)) {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<GeneralMembershipMintPage />} navbar={false} />;
+  return <GalleryRoute queryRef={query} element={<GeneralMembershipMintPage />} navbar={false} />;
 }
