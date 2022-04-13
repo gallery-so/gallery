@@ -75,6 +75,7 @@ export default function CommunityPageList({ communityRef }: Props) {
     graphql`
       fragment CommunityPageListFragment on Community {
         owners {
+          address @required(action: NONE)
           username @required(action: NONE)
         }
       }
