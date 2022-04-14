@@ -8,7 +8,6 @@ import { useAuthActions } from 'contexts/auth/AuthContext';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useCreateNonceMutation, useLoginOrCreateUserMutation } from '../authRequestUtils';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   useTrackCreateUserSuccess,
@@ -17,6 +16,8 @@ import {
   useTrackSignInSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
+import useCreateNonce from '../mutations/useCreateNonce';
+import useLoginOrCreateUser from '../mutations/useLoginOrCreateUser';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -37,10 +38,10 @@ function AuthenticateWalletPendingDefault({
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const { setLoggedIn } = useAuthActions();
+  const { handleLogin } = useAuthActions();
 
-  const createNonce = useCreateNonceMutation();
-  const loginOrCreateUser = useLoginOrCreateUserMutation();
+  const createNonce = useCreateNonce();
+  const loginOrCreateUser = useLoginOrCreateUser();
 
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
@@ -74,7 +75,7 @@ function AuthenticateWalletPendingDefault({
         trackCreateUserSuccess();
       }
 
-      setLoggedIn(userId, address);
+      handleLogin(userId, address);
     },
     [
       trackSignInAttempt,
@@ -82,7 +83,7 @@ function AuthenticateWalletPendingDefault({
       createNonce,
       pendingWallet,
       loginOrCreateUser,
-      setLoggedIn,
+      handleLogin,
       trackSignInSuccess,
       trackCreateUserSuccess,
     ]

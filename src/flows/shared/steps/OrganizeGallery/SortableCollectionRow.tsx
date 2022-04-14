@@ -1,15 +1,25 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { Collection } from 'types/Collection';
 import CollectionRow from './CollectionRow';
 
 type Props = {
-  collection: Collection;
+  collectionRef: any;
 };
 
-function SortableCollectionRow({ collection }: Props) {
+function SortableCollectionRow({ collectionRef }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment SortableCollectionRowFragment on Collection {
+        id
+        ...CollectionRowFragment
+      }
+    `,
+    collectionRef
+  );
+
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
     id: collection.id,
   });
@@ -33,7 +43,7 @@ function SortableCollectionRow({ collection }: Props) {
       {...attributes}
       {...listeners}
     >
-      <CollectionRow collection={collection} />
+      <CollectionRow collectionRef={collection} />
     </StyledSortableCollectionRow>
   );
 }

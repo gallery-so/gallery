@@ -2,8 +2,6 @@ import { memo, useEffect } from 'react';
 
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import Page from 'components/core/Page/Page';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
@@ -12,6 +10,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 // Preloading images for the welcome screen
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
+import { graphql, useFragment } from 'react-relay';
+import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {
@@ -20,19 +20,38 @@ const preloadImages = () => {
   });
 };
 
-function Auth() {
-  // Whether the user is web3-authenticated
-  const isAuthenticated = useIsAuthenticated();
-  const user = usePossiblyAuthenticatedUser();
-  const username = user?.username;
+type Props = {
+  queryRef: AuthFragment$key;
+};
+
+function Auth({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment AuthFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+            user {
+              username
+            }
+          }
+        }
+
+        ...WalletSelectorFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { viewer } = query;
 
   // Before the welcome screen, we should preload images so that the animation is smooth
   useEffect(preloadImages, []);
 
-  if (isAuthenticated) {
+  if (viewer?.__typename === 'Viewer') {
     // If user exists in DB, send them to their profile
-    if (username) {
-      return <GalleryRedirect to={`/${username}`} />;
+    if (viewer.user?.username) {
+      return <GalleryRedirect to={`/${viewer.user.username}`} />;
     }
 
     // If user is authenticated but hasn't set their username yet.
@@ -44,7 +63,7 @@ function Auth() {
   return (
     <StyledAuthPage centered>
       <StyledWalletSelectorWrapper>
-        <WalletSelector />
+        <WalletSelector queryRef={query} />
       </StyledWalletSelectorWrapper>
       <Spacer height={32} />
       <StyledBaseM>

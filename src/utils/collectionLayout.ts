@@ -1,9 +1,9 @@
 import {
+  EditModeNftChild,
   isEditModeNft,
   StagingItem,
   WhitespaceBlock,
 } from 'flows/shared/steps/OrganizeCollection/types';
-import { Nft } from 'types/Nft';
 
 // Each value in the whitespace list represents the index of the NFT that a whitespace appears before.
 // For example, whitespace: [0] means that there is one whitespace before the first NFT in the collection.
@@ -35,7 +35,7 @@ export function generate12DigitId() {
 
 // filter whitespaces from stagedItems and map each EditModeNft -> Nft
 export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
-  return stagedItems.reduce((filtered: Nft[], item) => {
+  return stagedItems.reduce((filtered: EditModeNftChild[], item) => {
     if (isEditModeNft(item)) {
       filtered.push(item.nft);
     }

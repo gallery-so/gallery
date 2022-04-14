@@ -17,8 +17,8 @@ import { useRouter } from 'next/router';
 import { baseUrl } from 'utils/baseUrl';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
+import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
@@ -51,9 +51,10 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
         name @required(action: THROW)
         collectorsNote
 
-        gallery {
-          owner {
-            id
+        gallery @required(action: THROW) {
+          dbid @required(action: THROW)
+          owner @required(action: THROW) {
+            id @required(action: THROW)
           }
         }
 
@@ -64,7 +65,8 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   );
 
   const loggedInUserId = useLoggedInUserId(query);
-  const showEditActions = loggedInUserId === collection.gallery?.owner?.id;
+  const showEditActions = loggedInUserId === collection.gallery.owner.id;
+  const galleryId = collection.gallery.dbid;
 
   const { showModal } = useModal();
   const { push, asPath } = useRouter();
@@ -110,12 +112,13 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
+        galleryId={galleryId}
         collectionId={collection.dbid}
         collectionName={collection.name}
         collectionCollectorsNote={collection.collectorsNote ?? ''}
       />
     );
-  }, [collection.collectorsNote, collection.dbid, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
     <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>

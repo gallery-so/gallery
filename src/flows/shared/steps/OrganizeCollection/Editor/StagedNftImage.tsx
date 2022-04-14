@@ -1,32 +1,42 @@
 import styled from 'styled-components';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import transitions from 'components/core/transitions';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
-import { NftMediaType } from 'components/core/enums';
-import { Nft } from 'types/Nft';
+import { graphql, useFragment } from 'react-relay';
+import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
-  nft: Nft;
+  nftRef: StagedNftImageFragment$key;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
-function StagedNftImage({ nft, size, setNodeRef, ...props }: Props) {
-  const srcUrl = getResizedNftImageUrlWithFallback(nft);
+function StagedNftImage({ nftRef, size, setNodeRef, ...props }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment StagedNftImageFragment on Nft {
+        name
+        openseaCollectionName
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    nftRef
+  );
 
-  const isVideo = getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO;
+  const result = getVideoOrImageUrlForNftPreview(nft);
 
-  // TODO:
-  // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
-  // 2) OR simply use custom indexer when that's ready
-  return isVideo ? (
+  if (!result || !result.urls.large) {
+    throw new Error('Image URL not found for StagedNftImageDragging');
+  }
+
+  return result.type === 'video' ? (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
-      <StyledGridVideo src={srcUrl} />
-      <StyledNftPreviewLabel title={nft.name} collectionName={nft.token_collection_name} />
+      <StyledGridVideo src={result.urls.large} />
+      <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
     </VideoContainer>
   ) : (
-    <StyledGridImage srcUrl={srcUrl} ref={setNodeRef} size={size} {...props}>
-      <StyledNftPreviewLabel title={nft.name} collectionName={nft.token_collection_name} />
+    <StyledGridImage srcUrl={result.urls.large} ref={setNodeRef} size={size} {...props}>
+      <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
     </StyledGridImage>
   );
 }

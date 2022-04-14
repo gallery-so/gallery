@@ -1,17 +1,12 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useSWRConfig } from 'swr';
-import { User } from 'types/User';
 import {
   useUpdateUserMutation,
   useUpdateUserMutation$data,
 } from '__generated__/useUpdateUserMutation.graphql';
-import { getUserCacheKey } from './useUser';
 
 export default function useUpdateUser() {
-  const { mutate } = useSWRConfig();
-
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(
     graphql`
       mutation useUpdateUserMutation($input: UpdateUserInfoInput!) {
@@ -55,22 +50,7 @@ export default function useUpdateUser() {
           },
         },
       });
-
-      await mutate(['/users/get/current', 'get current user']);
-
-      // Optimistically update both user caches by username, ID
-      await mutate(
-        getUserCacheKey({ username }),
-        (user: User) => ({ ...user, username, bio }),
-        false
-      );
-
-      await mutate(
-        getUserCacheKey({ id: userId }),
-        (user: User) => ({ ...user, username, bio }),
-        false
-      );
     },
-    [mutate, updateUser]
+    [updateUser]
   );
 }

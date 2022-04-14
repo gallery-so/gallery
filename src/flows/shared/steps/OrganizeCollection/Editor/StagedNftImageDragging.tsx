@@ -1,34 +1,43 @@
-import { NftMediaType } from 'components/core/enums';
 import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
-import { Nft } from 'types/Nft';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 
 type Props = {
-  nft: Nft;
+  nftRef: StagedNftImageDraggingFragment$key;
   size: number;
 };
 
-function StagedNftImageDragging({ nft, size }: Props) {
-  const srcUrl = getResizedNftImageUrlWithFallback(nft);
-  const isMouseUp = useMouseUp();
+function StagedNftImageDragging({ nftRef, size }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment StagedNftImageDraggingFragment on Nft {
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    nftRef
+  );
 
-  // TODO:
-  // 1) can grab image still from video: https://stackoverflow.com/questions/40143958/javascript-generate-video-thumbnail-from-video-url/53836300
-  // 2) OR simply use custom indexer when that's ready
-  const isVideo = getMediaTypeForAssetUrl(srcUrl) === NftMediaType.VIDEO;
+  const isMouseUp = useMouseUp();
 
   // slightly enlarge the image when dragging
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
-  return isVideo ? (
+  const result = getVideoOrImageUrlForNftPreview(nft);
+
+  if (!result || !result.urls.large) {
+    throw new Error('Image URL not found for StagedNftImageDragging');
+  }
+
+  return result.type === 'video' ? (
     <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
-      <StyledDraggingVideo src={srcUrl} />
+      <StyledDraggingVideo src={result.urls.large} />
     </VideoContainer>
   ) : (
     <ImageContainer size={zoomedSize}>
-      <StyledDraggingImage srcUrl={srcUrl} isMouseUp={isMouseUp} size={zoomedSize} />
+      <StyledDraggingImage srcUrl={result.urls.large} isMouseUp={isMouseUp} size={zoomedSize} />
     </ImageContainer>
   );
 }

@@ -12,6 +12,7 @@ describe.skip('WalletSelector', () => {
 
     render(
       <AuthProvider>
+        {/* @ts-expect-error: this test isn't used; need to mock graphql */}
         <WalletSelector />
       </AuthProvider>
     );

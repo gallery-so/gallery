@@ -2,40 +2,27 @@ import colors from 'components/core/colors';
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'hooks/useDebounce';
-import { EditModeNft } from '../types';
+import { graphql, useFragment } from 'react-relay';
+import { SearchBarFragment$key } from '__generated__/SearchBarFragment.graphql';
 
 type Props = {
+  nftsRef: SearchBarFragment$key;
   setSearchResults: Dispatch<SetStateAction<string[]>>;
-  sidebarNfts: EditModeNft[];
   setDebouncedSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
-// Returns an array of NFT ids that match the given query string
-function searchNftsWithQuery(editModeNfts: EditModeNft[], query: string) {
-  const lowerCaseQuery = query.toLowerCase();
-
-  return editModeNfts
-    .filter((editModeNft) => {
-      const nft = editModeNft.nft;
-
-      if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
-        return true;
+function SearchBar({ nftsRef, setSearchResults, setDebouncedSearchQuery }: Props) {
+  const nfts = useFragment(
+    graphql`
+      fragment SearchBarFragment on Nft @relay(plural: true) {
+        dbid
+        name
+        openseaCollectionName
       }
+    `,
+    nftsRef
+  );
 
-      // if (nft.creator_name.toLowerCase().includes(lowerCaseQuery)) {
-      //   return true;
-      // }
-
-      if (nft.token_collection_name?.toLowerCase().includes(lowerCaseQuery)) {
-        return true;
-      }
-
-      return false;
-    })
-    .map((editModeNft) => editModeNft.id);
-}
-
-function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
@@ -48,10 +35,25 @@ function SearchBar({ setSearchResults, setDebouncedSearchQuery, sidebarNfts }: P
   );
 
   useEffect(() => {
-    const searchResults = searchNftsWithQuery(sidebarNfts, debouncedSearchQuery);
+    const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
+
+    const searchResults = nfts
+      .filter((nft) => {
+        if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
+          return true;
+        }
+
+        if (nft.openseaCollectionName?.toLowerCase().includes(lowerCaseQuery)) {
+          return true;
+        }
+
+        return false;
+      })
+      .map((nft) => nft.dbid);
+
     setDebouncedSearchQuery(debouncedSearchQuery);
     setSearchResults(searchResults);
-  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, sidebarNfts]);
+  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, nfts]);
 
   return (
     <StyledSearchBar>

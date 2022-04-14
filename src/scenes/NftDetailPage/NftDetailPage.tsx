@@ -21,7 +21,7 @@ type Props = {
 };
 
 function NftDetailPage({ nftId, queryRef }: Props) {
-  const { collectionNft } = useFragment(
+  const { collectionNft, viewer } = useFragment(
     graphql`
       fragment NftDetailPageFragment on Query {
         collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
@@ -40,6 +40,15 @@ function NftDetailPage({ nftId, queryRef }: Props) {
               name
             }
             ...NftDetailViewFragment
+          }
+        }
+
+        viewer {
+          __typename
+          ... on Viewer {
+            user {
+              username
+            }
           }
         }
       }
@@ -70,6 +79,9 @@ function NftDetailPage({ nftId, queryRef }: Props) {
 
   const headTitle = `${collectionNft?.nft?.name} - ${username} | Gallery`;
 
+  const authenticatedUserOwnsAsset =
+    viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
+
   return (
     <>
       <Head>
@@ -85,7 +97,12 @@ function NftDetailPage({ nftId, queryRef }: Props) {
               : '← Back to gallery'}
           </ActionText>
         </StyledBackLink>
-        <NftDetailView username={username} queryRef={collectionNft} nftId={nftId} />
+        <NftDetailView
+          username={username}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          queryRef={collectionNft}
+          nftId={nftId}
+        />
       </StyledNftDetailPage>
     </>
   );

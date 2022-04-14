@@ -19,21 +19,21 @@ export default function AppProvider({ children, relayCache }: Props) {
   return (
     <Boundary>
       <ToastProvider>
-        <AuthProvider>
-          <AnalyticsProvider>
-            <ErrorReportingProvider>
-              <Web3ProviderNetwork>
-                <SwrProvider>
-                  <RelayProvider initialCache={relayCache}>
+        <RelayProvider initialCache={relayCache}>
+          <AuthProvider>
+            <AnalyticsProvider>
+              <ErrorReportingProvider>
+                <Web3ProviderNetwork>
+                  <SwrProvider>
                     <GalleryNavigationProvider>
                       <ModalProvider>{children}</ModalProvider>
                     </GalleryNavigationProvider>
-                  </RelayProvider>
-                </SwrProvider>
-              </Web3ProviderNetwork>
-            </ErrorReportingProvider>
-          </AnalyticsProvider>
-        </AuthProvider>
+                  </SwrProvider>
+                </Web3ProviderNetwork>
+              </ErrorReportingProvider>
+            </AnalyticsProvider>
+          </AuthProvider>
+        </RelayProvider>
       </ToastProvider>
     </Boundary>
   );

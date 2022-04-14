@@ -1,8 +1,12 @@
-import { Nft } from 'types/Nft';
+export type EditModeNftChild = {
+  dbid: string;
+  name: string;
+  lastUpdated: any;
+};
 
 export type EditModeNft = {
   id: string;
-  nft: Nft;
+  nft: EditModeNftChild;
   isSelected?: boolean;
 };
 

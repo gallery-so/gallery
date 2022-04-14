@@ -1,57 +1,69 @@
 import colors from 'components/core/colors';
-import { NftMediaType } from 'components/core/enums';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { getMediaTypeForAssetUrl } from 'utils/nft';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeNft } from '../types';
 
 type SidebarNftIconProps = {
+  nftRef: SidebarNftIconFragment$key;
   editModeNft: EditModeNft;
 };
 
-function SidebarNftIcon({ editModeNft }: SidebarNftIconProps) {
-  const isSelected = useMemo(() => Boolean(editModeNft.isSelected), [editModeNft.isSelected]);
+function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
+  const nft = useFragment(
+    graphql`
+      fragment SidebarNftIconFragment on Nft {
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    nftRef
+  );
+
+  const { isSelected, id } = editModeNft;
 
   const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    setNftsIsSelected([editModeNft.id], !isSelected);
+    setNftsIsSelected([id], !isSelected);
     if (isSelected) {
-      unstageNfts([editModeNft.id]);
+      unstageNfts([id]);
     } else {
       stageNfts([editModeNft]);
     }
-  }, [editModeNft, isSelected, setNftsIsSelected, stageNfts, unstageNfts]);
+  }, [setNftsIsSelected, id, isSelected, unstageNfts, stageNfts, editModeNft]);
 
   const mountRef = useRef(false);
-
-  const nft = editModeNft.nft;
 
   useEffect(() => {
     // When NFT is selected, scroll Staging Area to the added NFT.
     // But don't do this when this component is first mounted (we dont want to scroll to the bottom when we load the DnD)
     if (mountRef.current && isSelected) {
-      document.getElementById(editModeNft.id)?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
 
     mountRef.current = true;
-  }, [editModeNft.id, isSelected]);
+  }, [id, isSelected]);
 
-  // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
-  const useVideoAsImage = useMemo(
-    () => getMediaTypeForAssetUrl(nft.image_url) === NftMediaType.VIDEO,
-    [nft.image_url]
-  );
+  const result = getVideoOrImageUrlForNftPreview(nft);
+
+  if (!result || !result.urls.small) {
+    throw new Error('Image URL not found for SidebarNftIcon');
+  }
 
   return (
     <StyledSidebarNftIcon>
-      {useVideoAsImage ? (
-        <StyledVideo isSelected={isSelected} src={nft.image_url} />
-      ) : (
-        <StyledImage isSelected={isSelected} src={nft.image_thumbnail_url} alt="nft" />
-      )}
+      {
+        // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
+        result.type === 'video' ? (
+          <StyledVideo isSelected={isSelected} src={result.urls.small} />
+        ) : (
+          <StyledImage isSelected={isSelected} src={result.urls.small} alt="nft" />
+        )
+      }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );
@@ -74,7 +86,7 @@ export const StyledSidebarNftIcon = styled.div`
 `;
 
 type SelectedProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
 };
 
 const StyledOutline = styled.div<SelectedProps>`

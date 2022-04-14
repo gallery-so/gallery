@@ -3,19 +3,47 @@ import styled from 'styled-components';
 import { useModal } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { ADD_WALLET_TO_USER } from 'types/Wallet';
+import { graphql } from 'relay-runtime';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
+import { useAddWalletModalFragment$key } from '__generated__/useAddWalletModalFragment.graphql';
+import { useAddWalletModalQuery } from '__generated__/useAddWalletModalQuery.graphql';
 
-const AddWalletModal = () => (
-  <Container>
-    <WalletSelector connectionMode={ADD_WALLET_TO_USER} />
-  </Container>
-);
+type ModalProps = {
+  queryRef: useAddWalletModalFragment$key;
+};
+
+const AddWalletModal = ({ queryRef }: ModalProps) => {
+  const query = useFragment(
+    graphql`
+      fragment useAddWalletModalFragment on Query {
+        ...WalletSelectorFragment
+      }
+    `,
+    queryRef
+  );
+
+  return (
+    <Container>
+      <WalletSelector connectionMode={ADD_WALLET_TO_USER} queryRef={query} />
+    </Container>
+  );
+};
 
 export default function useAddWalletModal() {
   const { showModal } = useModal();
 
+  const query = useLazyLoadQuery<useAddWalletModalQuery>(
+    graphql`
+      query useAddWalletModalQuery {
+        ...useAddWalletModalFragment
+      }
+    `,
+    {}
+  );
+
   return useCallback(() => {
-    showModal(<AddWalletModal />);
-  }, [showModal]);
+    showModal(<AddWalletModal queryRef={query} />);
+  }, [query, showModal]);
 }
 
 const Container = styled.div`

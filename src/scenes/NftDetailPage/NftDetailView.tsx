@@ -2,7 +2,6 @@ import { captureException } from '@sentry/nextjs';
 import breakpoints from 'components/core/breakpoints';
 import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -16,11 +15,17 @@ import NftDetailText from './NftDetailText';
 
 type Props = {
   username: string;
+  authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewFragment$key;
   nftId: string;
 };
 
-export default function NftDetailView({ username, queryRef, nftId }: Props) {
+export default function NftDetailView({
+  username,
+  authenticatedUserOwnsAsset,
+  queryRef,
+  nftId,
+}: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionNft {
@@ -51,8 +56,6 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  const authenticatedUser = usePossiblyAuthenticatedUser();
-  const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
   const collectionNfts = collectionNft.collection.nfts;
 
   const { prevNftId, nextNftId } = useMemo(() => {

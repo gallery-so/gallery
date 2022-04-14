@@ -24,6 +24,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     graphql`
       query ContractAddressQuery($contractAddress: Address!) {
         ...CommunityPageFragment
+        ...GalleryRouteFragment
       }
     `,
     { contractAddress }
@@ -40,6 +41,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
 
   return (
     <GalleryRoute
+      queryRef={query}
       element={<CommunityPageScene contractAddress={contractAddress} queryRef={query} />}
       footerVisibleOutOfView
     />

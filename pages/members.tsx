@@ -8,6 +8,7 @@ export default function Members() {
   const query = useLazyLoadQuery<membersQuery>(
     graphql`
       query membersQuery {
+        ...GalleryRouteFragment
         ...MemberListPageFragment
       }
     `,
@@ -16,6 +17,7 @@ export default function Members() {
 
   return (
     <GalleryRoute
+      queryRef={query}
       element={<MemberListPage queryRef={query} />}
       navbar={false}
       footerVisibleOutOfView

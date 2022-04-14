@@ -331,6 +331,7 @@ type Query {
     nftById(id: DBID!): NftByIdOrError
     collectionNftById(nftId: DBID!, collectionId: DBID!): CollectionNftByIdOrError
     communityByAddress(contractAddress: Address!): CommunityByAddressOrError
+    generalAllowlist: [Address!]
 }
 
 input CollectionLayoutInput {
@@ -552,7 +553,13 @@ union LoginPayloadOrError =
     | ErrDoesNotOwnRequiredNFT
 
 type LoginPayload {
+    # TODO: Remove userId in favor of viewer
     userId: DBID
+    viewer: Viewer
+}
+
+type LogoutPayload {
+    viewer: Viewer
 }
 
 union CreateUserPayloadOrError =
@@ -564,6 +571,8 @@ union CreateUserPayloadOrError =
 type CreateUserPayload {
     userId: DBID
     galleryId: DBID
+    # TODO: Remove userId and galleryId in favor of viewer
+    viewer: Viewer
 }
 
 type Mutation {
@@ -586,10 +595,11 @@ type Mutation {
     updateNftInfo(input: UpdateNftInfoInput!): UpdateNftInfoPayloadOrError @authRequired
 
     # Mirroring the existing input (comma-separated list of addresses) because we expect to drop this functionality soon
-    refreshOpenSeaNfts(addresses: String!): RefreshOpenSeaNftsPayloadOrError @authRequired
+    refreshOpenSeaNfts(addresses: String): RefreshOpenSeaNftsPayloadOrError @authRequired
 
     getAuthNonce(address: Address!): GetAuthNoncePayloadOrError
 
     createUser(authMechanism: AuthMechanism!): CreateUserPayloadOrError
     login(authMechanism: AuthMechanism!): LoginPayloadOrError
+    logout: LogoutPayload
 }
