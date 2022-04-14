@@ -3,7 +3,6 @@ import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 
 import UserGallery from './UserGallery';
-import UserGalleryPageErrorBoundary from './UserGalleryPageErrorBoundary';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -35,7 +34,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   }, [username, track]);
 
   return (
-    <UserGalleryPageErrorBoundary>
+    <>
       <Head>
         <title>{headTitle}</title>
       </Head>
@@ -44,7 +43,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
           <UserGallery queryRef={query} />
         </StyledUserGalleryWrapper>
       </Page>
-    </UserGalleryPageErrorBoundary>
+    </>
   );
 }
 
