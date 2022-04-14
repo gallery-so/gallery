@@ -74,7 +74,13 @@ function CollectionDnd({ galleryRef }: Props) {
           return updatedCollections;
         });
 
-        void updateGallery(gallery.dbid, updatedCollections);
+        void updateGallery(
+          gallery.dbid,
+          // the `id` field in relay is represented as `Collection:123456`, and we only want the latter half.
+          // while we should use `dbid`, this will confuse the DND machine, which expects `id` to exist as a
+          // native key on each entity.
+          updatedCollections.map((id) => id.split(':')[1])
+        );
       }
     },
     [gallery.dbid, sortedCollectionIds, updateGallery]
