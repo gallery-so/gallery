@@ -2,6 +2,7 @@ import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseXL } from 'components/core/Text/Text';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import {
   useMemberListPageActions,
   useMemberListPageState,
@@ -28,10 +29,20 @@ function CommunityPageUser({ username }: CommunityPageUserProps) {
     setFadeUsernames(false);
   }, [setFadeUsernames]);
 
+  const track = useTrack();
+
+  const handleUsernameClick = useCallback(() => {
+    track('Community Page Username Click', { username });
+  }, [track, username]);
+
   return (
     <StyledOwner>
       <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <StyledLink href={`/${username}`} fadeUsernames={fadeUsernames}>
+        <StyledLink
+          href={`/${username}`}
+          fadeUsernames={fadeUsernames}
+          onClick={handleUsernameClick}
+        >
           <StyledBaseXL>{username}</StyledBaseXL>
         </StyledLink>
       </div>

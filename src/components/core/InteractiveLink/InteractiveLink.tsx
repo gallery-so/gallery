@@ -12,16 +12,21 @@ type Props = {
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
   className?: string;
+  onClick?: () => void;
 };
 
-export default function InteractiveLink({ to, href, children, className }: Props) {
+export default function InteractiveLink({ to, href, children, className, onClick }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
     track('Link Click', {
       to: to || href,
     });
-  }, [href, to, track]);
+
+    if (onClick) {
+      onClick();
+    }
+  }, [href, onClick, to, track]);
 
   if (!to && !href) {
     console.error('no link provided for InteractiveLink');
