@@ -90,6 +90,13 @@ const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-clamp: 4;
+  display: -webkit-box;
+
+  // allows descriptions with multiple paragraphs to be line clamped properly
+  p {
+    display: contents;
+  }
 `;
 
 const StyledDescriptionWrapper = styled.div`
