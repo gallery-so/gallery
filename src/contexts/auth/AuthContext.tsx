@@ -8,6 +8,8 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  Fragment,
+  Suspense,
 } from 'react';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
@@ -19,6 +21,8 @@ import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
+import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
+import Loader from 'components/core/Loader/Loader';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -215,13 +219,20 @@ const AuthProvider = memo(({ children }: Props) => {
 
   const shouldDisplayUniversalLoader = useMemo(() => authState === UNKNOWN, [authState]);
 
-  // TODO: display a loader instead of `null`
-  return shouldDisplayUniversalLoader ? null : (
-    <AuthStateContext.Provider value={authState}>
-      <AuthActionsContext.Provider value={authActions}>
-        <Web3WalletProvider>{children}</Web3WalletProvider>
-      </AuthActionsContext.Provider>
-    </AuthStateContext.Provider>
+  return (
+    <Fragment key={shouldDisplayUniversalLoader.toString()}>
+      <div style={{ display: shouldDisplayUniversalLoader ? 'none' : undefined }}>
+        <ErrorBoundary>
+          <Suspense fallback={<Loader />}>
+            <AuthStateContext.Provider value={authState}>
+              <AuthActionsContext.Provider value={authActions}>
+                <Web3WalletProvider>{children}</Web3WalletProvider>
+              </AuthActionsContext.Provider>
+            </AuthStateContext.Provider>
+          </Suspense>
+        </ErrorBoundary>
+      </div>
+    </Fragment>
   );
 });
 
