@@ -9,7 +9,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 
