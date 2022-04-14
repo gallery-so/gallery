@@ -18,6 +18,7 @@ import { _identify } from 'contexts/analytics/AnalyticsContext';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -84,11 +85,16 @@ const useImperativelyFetchUser = () => {
 };
 
 const useLogout = () => {
-  const [logout] = usePromisifiedMutation<any>(
+  const [logout] = usePromisifiedMutation<AuthContextLogoutMutation>(
     graphql`
       mutation AuthContextLogoutMutation {
         logout {
-          success
+          viewer {
+            __typename
+            user {
+              username
+            }
+          }
         }
       }
     `
@@ -98,9 +104,10 @@ const useLogout = () => {
     logout({
       variables: {},
       updater: (store) => {
-        // TODO: manually dropping the viewer on logout for now,
-        // but it may be better for the mutation to respond with
-        // an empty viewer in the future
+        // TODO: manually dropping the viewer on logout for now.
+        // for some reason the mutation that returns Viewer => user
+        // doesn't update the store as expected, and the Viewer
+        // remains in our cache...
         store.delete('client:root:viewer');
       },
     });
