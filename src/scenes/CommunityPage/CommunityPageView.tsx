@@ -9,7 +9,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 
@@ -31,20 +31,25 @@ export default function CommunityPageView({ communityRef }: Props) {
   const { name, description } = community;
   const isMobile = useIsMobileWindowWidth();
 
-  const shouldTruncateDescription = useMemo(
-    () => !!description && description?.length > 330,
-    [description]
-  );
-
-  const truncatedDescription = useMemo(() => {
-    return !!description ? `${description.slice(0, 327).trim()}...` : '';
-  }, [description]);
-
-  const [showFullDescription, setShowFullDescription] = useState(!shouldTruncateDescription);
+  // whether "Show More" has been clicked or not
+  const [showExpandedDescription, setShowExpandedDescription] = useState(false);
+  // whether or not the description appears truncated
+  const [isLineClampEnabled, setIsLineClampEnabled] = useState(false);
 
   const handleShowMoreClick = useCallback(() => {
-    setShowFullDescription((prev) => !prev);
+    setShowExpandedDescription((prev) => !prev);
   }, []);
+
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    // when the descriptionRef is first set, determine if the text exceeds the line clamp threshold of 4 lines by comparing the scrollHeight to the clientHeight
+    if (descriptionRef.current !== null) {
+      setIsLineClampEnabled(
+        descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight
+      );
+    }
+  }, [descriptionRef]);
 
   return (
     <MemberListPageProvider>
@@ -52,19 +57,19 @@ export default function CommunityPageView({ communityRef }: Props) {
       <StyledHeader>
         <TitleL>{name}</TitleL>
         {description && (
-          <StyledDescription>
+          <StyledDescriptionWrapper>
             <Spacer height={8} />
-            <BaseM>
-              <Markdown text={showFullDescription ? description : truncatedDescription} />
-            </BaseM>
+            <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
+              <Markdown text={description} />
+            </StyledBaseM>
             <Spacer height={8} />
-            {shouldTruncateDescription && (
+            {isLineClampEnabled && (
               <TextButton
-                text={showFullDescription ? 'Show less' : 'Show More'}
+                text={showExpandedDescription ? 'Show less' : 'Show More'}
                 onClick={handleShowMoreClick}
               />
             )}
-          </StyledDescription>
+          </StyledDescriptionWrapper>
         )}
       </StyledHeader>
       <Spacer height={isMobile ? 65 : 96} />
@@ -80,7 +85,14 @@ export default function CommunityPageView({ communityRef }: Props) {
   );
 }
 
-const StyledDescription = styled.div`
+const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
+  -webkit-line-clamp: ${({ showExpandedDescription }) => (showExpandedDescription ? 'initial' : 4)};
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const StyledDescriptionWrapper = styled.div`
   @media only screen and ${breakpoints.tablet} {
     width: 50%;
   }
