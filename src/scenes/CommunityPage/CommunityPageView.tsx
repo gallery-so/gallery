@@ -9,6 +9,9 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
+import { useCallback, useMemo, useState } from 'react';
+import TextButton from 'components/core/Button/TextButton';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -28,18 +31,40 @@ export default function CommunityPageView({ communityRef }: Props) {
   const { name, description } = community;
   const isMobile = useIsMobileWindowWidth();
 
+  const shouldTruncateDescription = useMemo(
+    () => !!description && description?.length > 330,
+    [description]
+  );
+
+  const truncatedDescription = useMemo(() => {
+    return !!description ? `${description.slice(0, 327).trim()}...` : '';
+  }, [description]);
+
+  const [showFullDescription, setShowFullDescription] = useState(!shouldTruncateDescription);
+
+  const handleShowMoreClick = useCallback(() => {
+    setShowFullDescription((prev) => !prev);
+  }, []);
+
   return (
     <MemberListPageProvider>
       <Spacer height={128} />
       <StyledHeader>
         <TitleL>{name}</TitleL>
         {description && (
-          <>
+          <StyledDescription>
             <Spacer height={8} />
             <BaseM>
-              <Markdown text={description} />
+              <Markdown text={showFullDescription ? description : truncatedDescription} />
             </BaseM>
-          </>
+            <Spacer height={8} />
+            {shouldTruncateDescription && (
+              <TextButton
+                text={showFullDescription ? 'Show less' : 'Show More'}
+                onClick={handleShowMoreClick}
+              />
+            )}
+          </StyledDescription>
         )}
       </StyledHeader>
       <Spacer height={isMobile ? 65 : 96} />
@@ -54,6 +79,12 @@ export default function CommunityPageView({ communityRef }: Props) {
     </MemberListPageProvider>
   );
 }
+
+const StyledDescription = styled.div`
+  @media only screen and ${breakpoints.tablet} {
+    width: 50%;
+  }
+`;
 
 const StyledListWrapper = styled.div`
   display: flex;
