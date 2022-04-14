@@ -31,14 +31,16 @@ export default function CommunityPageView({ communityRef }: Props) {
   const { name, description } = community;
   const isMobile = useIsMobileWindowWidth();
 
+  const shouldTruncateDescription = useMemo(
+    () => !!description && description?.length > 330,
+    [description]
+  );
+
   const truncatedDescription = useMemo(() => {
-    if (!description) {
-      return '';
-    }
-    return description.length > 330 ? `${description.slice(0, 327).trim()}...` : description;
+    return !!description ? `${description.slice(0, 327).trim()}...` : '';
   }, [description]);
 
-  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(!shouldTruncateDescription);
 
   const handleShowMoreClick = useCallback(() => {
     setShowFullDescription((prev) => !prev);
@@ -56,10 +58,12 @@ export default function CommunityPageView({ communityRef }: Props) {
               <Markdown text={showFullDescription ? description : truncatedDescription} />
             </BaseM>
             <Spacer height={8} />
-            <TextButton
-              text={showFullDescription ? 'Show less' : 'Show More'}
-              onClick={handleShowMoreClick}
-            />
+            {shouldTruncateDescription && (
+              <TextButton
+                text={showFullDescription ? 'Show less' : 'Show More'}
+                onClick={handleShowMoreClick}
+              />
+            )}
           </StyledDescription>
         )}
       </StyledHeader>
