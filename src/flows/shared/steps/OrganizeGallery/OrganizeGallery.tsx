@@ -16,8 +16,9 @@ import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
+import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 
 type ConfigProps = {
   wizardId: string;
@@ -76,6 +77,19 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
     setOnNext(saveGalleryAndReturnToProfile);
     setOnPrevious(returnToPrevious);
   }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
+}
+
+export function LazyOrganizeGallery(props: WizardContext) {
+  const query = useLazyLoadQuery<OrganizeGalleryQuery>(
+    graphql`
+      query OrganizeGalleryQuery {
+        ...OrganizeGalleryFragment
+      }
+    `,
+    {}
+  );
+
+  return <OrganizeGallery {...props} queryRef={query} />;
 }
 
 function OrganizeGallery({
