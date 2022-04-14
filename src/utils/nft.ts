@@ -1,6 +1,6 @@
 import { GOOGLE_CONTENT_IMG_URL } from './regex';
 
-const FALLBACK_URL = 'https://i.ibb.co/q7DP0Dz/no-image.png';
+export const FALLBACK_URL = 'https://www.ahhe.com/images/ecommerce/no-img-large.jpg?v=1575380448';
 
 export function graphqlGetResizedNftImageUrlWithFallback(url: string | null, size = 288): string {
   if (url?.endsWith('.gif')) {

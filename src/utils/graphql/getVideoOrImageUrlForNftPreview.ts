@@ -1,4 +1,5 @@
 import { readInlineData, graphql } from 'relay-runtime';
+import { FALLBACK_URL } from 'utils/nft';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
@@ -98,6 +99,13 @@ export default function getVideoOrImageUrlForNftPreview(
 
   if (!media || !('previewURLs' in media) || media.previewURLs === null) {
     return undefined;
+  }
+
+  if (!media.previewURLs.large && !media.previewURLs.medium && !media.previewURLs.small) {
+    return {
+      type: 'image',
+      urls: { large: FALLBACK_URL, medium: FALLBACK_URL, small: FALLBACK_URL },
+    };
   }
 
   if (media.__typename === 'VideoMedia') {
