@@ -9,6 +9,7 @@ export default function Edit() {
       query editQuery {
         ...GalleryAuthenticatedRouteFragment
         ...GalleryRouteFragment
+        ...EditGalleryFlowFragment
       }
     `,
     {}
@@ -18,7 +19,7 @@ export default function Edit() {
     <GalleryAuthenticatedRoute
       queryRef={query}
       authenticatedRouteQueryRef={query}
-      element={<EditGalleryFlow />}
+      element={<EditGalleryFlow queryRef={query} />}
       freshLayout
     />
   );

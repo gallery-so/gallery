@@ -16,8 +16,8 @@ import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
+import { graphql, useFragment } from 'react-relay';
+import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
 
 type ConfigProps = {
   wizardId: string;
@@ -78,12 +78,14 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
   }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
 }
 
-function OrganizeGallery({ next, push }: WizardContext) {
-  // TODO(Terence): Can we preload this query? We've introduced a network
-  // waterfall here.
-  const query = useLazyLoadQuery<OrganizeGalleryQuery>(
+function OrganizeGallery({
+  next,
+  push,
+  queryRef,
+}: WizardContext & { queryRef: OrganizeGalleryFragment$key }) {
+  const query = useFragment(
     graphql`
-      query OrganizeGalleryQuery {
+      fragment OrganizeGalleryFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             user @required(action: THROW) {
@@ -104,7 +106,7 @@ function OrganizeGallery({ next, push }: WizardContext) {
         }
       }
     `,
-    {}
+    queryRef
   );
 
   const gallery = query.viewer.viewerGalleries?.[0]?.gallery;
