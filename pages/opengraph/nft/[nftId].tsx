@@ -32,7 +32,6 @@ export default function OpenGraphCollectionPage() {
   }
 
   const { nft } = queryResponse;
-  console.log(nft);
 
   const media = getVideoOrImageUrlForNftPreview(nft);
 

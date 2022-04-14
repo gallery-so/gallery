@@ -44,14 +44,15 @@ export default function OpenGraphUserPage() {
   const { user } = queryResponse;
 
   const imageUrls = removeNullValues(
-    removeNullValues(
-      removeNullValues(
-        user.galleries?.[0]?.collections?.flatMap((collection) => collection?.nfts)
-      ).map(({ nft }) => (nft ? getVideoOrImageUrlForNftPreview(nft) : null))
-    )
-      .slice(0, 4)
-      .map((nft) => nft.urls.large)
-  );
+    user.galleries?.[0]?.collections
+      ?.flatMap((collection) => collection?.nfts)
+      .map((galleryNft) => {
+        return galleryNft?.nft ? getVideoOrImageUrlForNftPreview(galleryNft.nft) : null;
+      })
+      .map((nft) => nft?.urls.large)
+  ).slice(0, 4);
+
+  console.log({ imageUrls });
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
