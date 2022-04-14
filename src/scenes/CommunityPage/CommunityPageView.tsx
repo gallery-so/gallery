@@ -1,5 +1,5 @@
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, TitleL, TitleS, TitleXS } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleS } from 'components/core/Text/Text';
 import MemberListFilter from 'scenes/MemberListPage/MemberListFilter';
 import styled from 'styled-components';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
