@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import { SECOND } from 'utils/time';
-import { vanillaFetcher } from './useFetcher';
+import { vanillaFetcher } from './fetch';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 export const SwrProvider = memo(({ children }) => {

@@ -3,7 +3,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import useFetcher from 'contexts/swr/useFetcher';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
@@ -39,7 +38,6 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const fetcher = useFetcher();
   const { handleLogin } = useAuthActions();
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
@@ -181,7 +179,6 @@ function AuthenticateWalletPendingGnosisSafe({
     attemptAuthentication,
     authenticationFlowStarted,
     createNonce,
-    fetcher,
     handleError,
     previousAttemptNonce,
     trackSignInAttempt,

@@ -1,30 +1,17 @@
-import { useCallback } from 'react';
-import RequestAction from 'hooks/api/_rest/RequestAction';
-import { ApiError } from 'errors/types';
-
 export const baseurl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
-
-const ERR_UNAUTHORIZED = 401;
 
 type RequestParameters<T> = {
   body?: T;
   headers?: Record<string, string>;
-  unauthorizedErrorHandler?: () => void;
-};
-
-type GalleryErrorResponseBody = {
-  error?: string;
 };
 
 export type FetcherType = <ResponseData, RequestBody = Record<string, unknown>>(
   path: string,
-  action: RequestAction,
   parameters?: RequestParameters<RequestBody>
 ) => Promise<ResponseData>;
 
-// Raw fetcher. If you're in a hook/component, use `useFetcher` instead.
-export const _fetch: FetcherType = async (path, action, parameters = {}) => {
-  const { body, headers = {}, unauthorizedErrorHandler } = parameters;
+export const _fetch: FetcherType = async (path, parameters = {}) => {
+  const { body, headers = {} } = parameters;
 
   const requestOptions: RequestInit = {
     headers,
@@ -57,44 +44,15 @@ export const _fetch: FetcherType = async (path, action, parameters = {}) => {
       return null;
     }
 
-    // Attach custom error message if provided
-    if (action && error instanceof Error) {
-      throw new ApiError(error.message, action, response.status);
-    }
-
     throw error;
   });
 
   if (!response.ok) {
-    if (response.status === ERR_UNAUTHORIZED) {
-      unauthorizedErrorHandler?.();
-    }
-
-    // All gallery-provided error responses will have an `error` field
-    const errorResponseBody = responseBody as GalleryErrorResponseBody;
-    const serverErrorMessage = errorResponseBody?.error ?? 'Server Error';
-    if (action) {
-      throw new ApiError(serverErrorMessage, action, response.status);
-    }
-
-    throw new Error(serverErrorMessage);
+    throw new Error(responseBody);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return responseBody;
 };
-
-/**
- * You should rarely use this hook directly! Instead:
- * - useGet for fetching
- * - usePost for mutations
- */
-export default function useFetcher(): FetcherType {
-  return useCallback(
-    async (path, action, parameters) => _fetch(path, action, { ...parameters }),
-    []
-  );
-}
 
 export const vanillaFetcher = async (...args: Parameters<typeof fetch>) =>
   fetch(...args).then(async (res) => res.json());

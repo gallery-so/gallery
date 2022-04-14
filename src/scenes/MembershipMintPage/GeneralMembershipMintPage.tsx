@@ -16,7 +16,7 @@ import MembershipMintPageProvider, {
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 import { getLocalAllowlist } from './GeneralCardAllowlist';
-import { baseurl, vanillaFetcher } from 'contexts/swr/useFetcher';
+import { baseurl, vanillaFetcher } from 'contexts/swr/fetch';
 import useSWR from 'swr';
 
 export type AssetContract = {
