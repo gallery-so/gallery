@@ -128,8 +128,9 @@ function CollectionEditor({ viewerRef }: Props) {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
 
-  const allNftsRaw = viewer.user.wallets.flatMap((wallet) => wallet?.nfts);
-  const allNfts = removeNullValues(allNftsRaw);
+  const allNfts = useMemo(() => {
+    return removeNullValues(viewer.user.wallets.flatMap((wallet) => wallet?.nfts));
+  }, [viewer.user.wallets]);
 
   // stabilize `allNfts` since SWR middleware can make it referentially unstable
   const allNftsCacheKey = useMemo(
