@@ -123,7 +123,11 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
               const size = IMAGE_SIZES[columns];
               if (isEditModeNft(stagedItem)) {
                 return (
-                  <SortableStagedNft nftRef={nftFragmentsKeyedByID[stagedItem.id]} size={size} />
+                  <SortableStagedNft
+                    key={stagedItem.id}
+                    nftRef={nftFragmentsKeyedByID[stagedItem.id]}
+                    size={size}
+                  />
                 );
               }
               return (
