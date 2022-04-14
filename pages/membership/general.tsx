@@ -13,6 +13,7 @@ export default function General() {
     graphql`
       query generalQuery {
         ...GalleryRouteFragment
+        ...GeneralMembershipMintPageFragment
       }
     `,
     {}
@@ -22,5 +23,11 @@ export default function General() {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute queryRef={query} element={<GeneralMembershipMintPage />} navbar={false} />;
+  return (
+    <GalleryRoute
+      queryRef={query}
+      element={<GeneralMembershipMintPage queryRef={query} />}
+      navbar={false}
+    />
+  );
 }

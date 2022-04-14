@@ -16,8 +16,10 @@ import MembershipMintPageProvider, {
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 import { getLocalAllowlist } from './GeneralCardAllowlist';
-import { baseurl, vanillaFetcher } from 'contexts/swr/fetch';
-import useSWR from 'swr';
+import { graphql, useFragment } from 'react-relay';
+import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__/GeneralMembershipMintPageUseAllowlistFragment.graphql';
+import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
+import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
 
 export type AssetContract = {
   address: string;
@@ -40,13 +42,20 @@ async function detectOwnedGeneralCardsFromOpensea(account: string) {
   return responseBody.assets.length > 0;
 }
 
-function useAllowlist(): Set<string> {
-  const { data, error } = useSWR(`${baseurl}/glry/v1/proxy/snapshot`, vanillaFetcher, {
-    suspense: false,
-  });
+function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$key): Set<string> {
+  const query = useFragment(
+    graphql`
+      fragment GeneralMembershipMintPageUseAllowlistFragment on Query {
+        generalAllowlist
+      }
+    `,
+    queryRef
+  );
+
+  const data = query.generalAllowlist;
 
   // if API is down, fall back to hard-coded local data
-  if (!data || error) {
+  if (!data) {
     console.error('no data returned from the server. using backup.');
     return getLocalAllowlist();
   }
@@ -54,7 +63,20 @@ function useAllowlist(): Set<string> {
   return new Set(data);
 }
 
-function GeneralMembershipMintPageContent() {
+type ContentProps = {
+  queryRef: GeneralMembershipMintPageContentFragment$key;
+};
+
+function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
+  const query = useFragment(
+    graphql`
+      fragment GeneralMembershipMintPageContentFragment on Query {
+        ...GeneralMembershipMintPageUseAllowlistFragment
+      }
+    `,
+    queryRef
+  );
+
   const { account: rawAccount } = useWeb3React<Web3Provider>();
   const account = rawAccount?.toLowerCase();
   const contract = useGeneralMembershipCardContract();
@@ -63,7 +85,7 @@ function GeneralMembershipMintPageContent() {
 
   const [ownsGeneralCard, setOwnsGeneralCard] = useState(false);
 
-  const allowlist = useAllowlist();
+  const allowlist = useAllowlist(query);
 
   useEffect(() => {
     // for debugging
@@ -122,10 +144,23 @@ function GeneralMembershipMintPageContent() {
   );
 }
 
-function GeneralMembershipMintPage() {
+type Props = {
+  queryRef: GeneralMembershipMintPageFragment$key;
+};
+
+function GeneralMembershipMintPage({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GeneralMembershipMintPageFragment on Query {
+        ...GeneralMembershipMintPageContentFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <MembershipMintPageProvider>
-      <GeneralMembershipMintPageContent />
+      <GeneralMembershipMintPageContent queryRef={query} />
     </MembershipMintPageProvider>
   );
 }
