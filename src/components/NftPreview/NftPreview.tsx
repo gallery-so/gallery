@@ -115,6 +115,7 @@ const StyledLinkWrapper = styled.a`
   cursor: pointer;
   display: flex;
   width: 100%;
+  max-height: inherit;
 `;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
@@ -145,7 +146,8 @@ const StyledNftPreview = styled.div<{ width?: string }>`
   height: fit-content;
   overflow: hidden;
 
-  width: ${({ width }) => width};
+  max-height: 80vh;
+  max-width: ${({ width }) => width};
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);
