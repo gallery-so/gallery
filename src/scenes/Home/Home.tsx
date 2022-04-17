@@ -12,7 +12,7 @@ function Home() {
   const { push } = useRouter();
 
   const handleEnterGallery = useCallback(() => {
-    throw new Error('TEST ERROR');
+    throw new Error('NEW TEST ERROR');
     // If the user is already authenticated, /auth will handle forwarding
     // them directly to their profile
     void push('/auth');
