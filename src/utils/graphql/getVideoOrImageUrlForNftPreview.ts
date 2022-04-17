@@ -97,7 +97,7 @@ export default function getVideoOrImageUrlForNftPreview(
     nftRef
   );
 
-  if (!media || !('previewURLs' in media) || media.previewURLs === null) {
+  if (!media || !('previewURLs' in media) || media?.previewURLs === null) {
     return undefined;
   }
 
