@@ -86,7 +86,7 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   ) {
     return (
       <ImageWithLoading
-        src={graphqlGetResizedNftImageUrlWithFallback(nft.media.previewURLs.large, size)}
+        src={graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size)}
         heightType="inherit"
         alt={nft.name ?? ''}
       />
