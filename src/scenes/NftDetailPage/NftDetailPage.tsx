@@ -27,6 +27,7 @@ import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hoo
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
 import useKeyDown from 'hooks/useKeyDown';
+import useBackNavigation from 'hooks/useBackNavigation';
 
 type Props = {
   nftId: string;
@@ -71,6 +72,7 @@ function NftDetailPage({ nftId }: Props) {
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
 
   const handleBackClick = useBackButton({ username });
+  const navigateBack = useBackNavigation({ username });
 
   const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
@@ -129,14 +131,9 @@ function NftDetailPage({ nftId }: Props) {
       navigateToId(prevNftId);
     }
     if (escapePress || backspacePress) {
-      // FIXME: This is technically incorrect and triggers a TypeScript error
-      // handleBackClick expects a mouseevent. But we want to mimic the exact behavior of handleBackClick, so it would be nice to keep this
-      // Perhaps we can reconfigure or wrap handleBackClick in an event agnostic handler of sorts. Needs review
-
-      // This also does not go back to collection pages, just back to /{username}. I am unsure why.
-      handleBackClick(new MouseEvent('click')); // FIXME
+      navigateBack();
     }
-  }, [nextPress, nextNftId, prevPress, prevNftId, navigateToId]);
+  }, [nextPress, prevPress, escapePress, backspacePress]);
 
   return (
     <>

@@ -36,7 +36,7 @@ function CollectionGalleryPage({ collectionId, username }: CollectionGalleryPage
     void push(`/edit?collectionId=${collectionId}`);
   };
 
-  // FIXME: Do we also want escape/backspace to go back to main /{username} page? Not in spec
+  // FIXME: Do we also want the escape/backspace keypress to trigger navigation to /{username}? Not in spec
   const escapePress = useKeyDown('Escape');
   const backspacePress = useKeyDown('Backspace');
   const navigateToUserGallery = function () {

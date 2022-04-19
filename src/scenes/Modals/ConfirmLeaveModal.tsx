@@ -6,24 +6,26 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import useBackNavigation from 'hooks/useBackNavigation';
+import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 
 function ConfirmLeaveModal() {
   const { hideModal } = useModal();
-  const { back } = useRouter();
 
-  // FIXME: How would this handle (the very rare) instance in which user visits /edit directly, and back() does not exist?
-  // Need same canGoBack functionality
+  // FIXME: Do we want escape on /edit to go back to the previous state in history? Or simply always go to /{username}?
+  const username = useAuthenticatedUsername();
+  const navigateBack = useBackNavigation({ username });
+
   const goBack = useCallback(() => {
-    back();
+    navigateBack();
     hideModal();
-  }, []);
+  }, [navigateBack]);
 
   return (
     <StyledConfirmLeaveModal>
       <LeaveWrapper>
         <BaseM>Would you like to stop editing?</BaseM>
-        <Spacer height={12}></Spacer>
+        <Spacer height={28}></Spacer>
         <StyledButton onClick={goBack} text={'Leave'} />
       </LeaveWrapper>
     </StyledConfirmLeaveModal>

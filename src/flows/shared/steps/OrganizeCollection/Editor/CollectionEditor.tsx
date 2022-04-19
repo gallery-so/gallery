@@ -42,7 +42,6 @@ function CollectionEditor() {
   // Whenever user clicks escape, go back to the previous route
   useEffect(() => {
     if (escapePress) {
-      // FIXME: Could we style this better?
       showModal(<ConfirmLeaveModal />);
     }
   }, [escapePress]);
