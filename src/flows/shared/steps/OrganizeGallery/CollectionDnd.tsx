@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
   defaultDropAnimation,
@@ -45,16 +45,24 @@ function CollectionDnd({ galleryRef }: Props) {
     galleryRef
   );
 
-  const nonNullCollections = removeNullValues(gallery.collections);
+  const nonNullCollections = useMemo(() => {
+    return removeNullValues(gallery.collections);
+  }, [gallery.collections]);
 
-  const [sortedCollectionIds, setSortedCollectionIds] = useState(() => {
-    return nonNullCollections.map((collection) => collection.id);
-  });
+  const [sortedCollectionIds, setSortedCollectionIds] = useState(() =>
+    nonNullCollections.map((collection) => collection.id)
+  );
+
+  useEffect(() => {
+    setSortedCollectionIds(nonNullCollections.map((collection) => collection.id));
+  }, [nonNullCollections]);
 
   const sortedCollections = useMemo(() => {
     const collectionsKeyedById = arrayToObjectKeyedById('id', nonNullCollections);
 
-    return sortedCollectionIds.map((collectionId) => collectionsKeyedById[collectionId]);
+    return sortedCollectionIds
+      .map((collectionId) => collectionsKeyedById[collectionId])
+      .filter((collection) => Boolean(collection));
   }, [nonNullCollections, sortedCollectionIds]);
 
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
