@@ -36,27 +36,26 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
 
   const ePress = useKeyDown('e');
 
-  const { push } = useRouter();
-  const navigateToEdit = function () {
-    void push(`/edit?collectionId=${collectionId}`);
-  };
-
   // FIXME: Do we also want the escape/backspace keypress to trigger navigation to /{username}? Not in spec
   const escapePress = useKeyDown('Escape');
   const backspacePress = useKeyDown('Backspace');
-  const navigateToUserGallery = function () {
-    void push(`/${username}`);
-  };
+  const { push } = useRouter();
 
   useEffect(() => {
+    const navigateToEdit = function () {
+      void push(`/edit?collectionId=${collectionId}`);
+    };
+    const navigateToUserGallery = function () {
+      void push(`/${username}`);
+    };
     if (ePress) {
       navigateToEdit();
     }
     if (escapePress || backspacePress) {
       navigateToUserGallery();
     }
-  }, [ePress, escapePress, backspacePress]);
-    
+  }, [ePress, escapePress, backspacePress, push, username, collectionId]);
+
   const query = useFragment(
     graphql`
       fragment CollectionGalleryPageFragment on Query {

@@ -18,7 +18,7 @@ function ConfirmLeaveModal() {
   const goBack = useCallback(() => {
     navigateBack();
     hideModal();
-  }, [navigateBack]);
+  }, [navigateBack, hideModal]);
 
   return (
     <StyledConfirmLeaveModal>

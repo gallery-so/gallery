@@ -1,7 +1,7 @@
 import NotFound from 'scenes/NotFound/NotFound';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -39,15 +39,15 @@ function UserGallery({ queryRef }: Props) {
   const ePress = useKeyDown('e');
 
   const { push } = useRouter();
-  const navigateToEdit = function () {
+  const navigateToEdit = useCallback(() => {
     void push(`/edit`);
-  };
+  }, [push]);
 
   useEffect(() => {
     if (ePress) {
       navigateToEdit();
     }
-  }, [ePress]);
+  }, [ePress, navigateToEdit]);
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;

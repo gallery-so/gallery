@@ -3,7 +3,7 @@ import breakpoints from 'components/core/breakpoints';
 import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -88,17 +88,22 @@ export default function NftDetailView({
     };
   }, [collectionNfts, nftId]);
 
-  const handleBackClick = useBackButton({ username });
-
-  const { replace } = useRouter();
-  const navigateToId = function (nftId: string) {
-    void replace(`/${username}/${collection.dbid}/${nftId}`);
-  };
+  const { nft, collection } = collectionNft;
 
   const nextPress = useKeyDown('ArrowRight');
   const prevPress = useKeyDown('ArrowLeft');
   const escapePress = useKeyDown('Escape');
   const backspacePress = useKeyDown('Backspace');
+
+  const handleBackClick = useBackButton({ username });
+  const { replace } = useRouter();
+
+  const navigateToId = useCallback(
+    (nftId: string) => {
+      void replace(`/${username}/${collection.dbid}/${nftId}`);
+    },
+    [username, collection.dbid, replace]
+  );
 
   useEffect(() => {
     if (nextPress && nextNftId) {
@@ -110,9 +115,10 @@ export default function NftDetailView({
     if (escapePress || backspacePress) {
       handleBackClick();
     }
-  }, [nextPress, prevPress, escapePress, backspacePress]);
-
-  const { nft, collection } = collectionNft;
+    // Placing prevNftId and nextNftId in the dependency list would trigger back again, if the user navigated via collection
+    // E.g. nft detail page (back) -> collection page (back) -> gallery. Is there a better solution here?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextPress, prevPress, escapePress, backspacePress, navigateToId, handleBackClick]);
 
   const assetHasNote = !!nft.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;

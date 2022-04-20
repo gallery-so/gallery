@@ -168,7 +168,7 @@ function OrganizeGallery({
     if (escapePress) {
       showModal(<ConfirmLeaveModal />);
     }
-  }, [escapePress]);
+  }, [escapePress, showModal]);
 
   return (
     <StyledOrganizeGallery>

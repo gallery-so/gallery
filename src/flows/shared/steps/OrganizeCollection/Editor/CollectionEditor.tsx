@@ -24,7 +24,7 @@ import { removeNullValues } from 'utils/removeNullValues';
 import useKeyDown from 'hooks/useKeyDown';
 import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
 import { useModal } from 'contexts/modal/ModalContext';
-        
+
 function convertNftsToEditModeNfts(nfts: EditModeNftChild[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
     index,
@@ -198,7 +198,7 @@ function CollectionEditor({ viewerRef }: Props) {
   }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts, whitespaceList]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
-  
+
   const escapePress = useKeyDown('Escape');
   const { showModal } = useModal();
 
@@ -206,7 +206,7 @@ function CollectionEditor({ viewerRef }: Props) {
     if (escapePress) {
       showModal(<ConfirmLeaveModal />);
     }
-  }, [escapePress]);
+  }, [escapePress, showModal]);
 
   return (
     <StyledOrganizeCollection>
