@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
 import { BaseM, BaseXL } from 'components/core/Text/Text';

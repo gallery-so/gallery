@@ -39,7 +39,6 @@ function CollectionEditor() {
   const escapePress = useKeyDown('Escape');
   const { showModal } = useModal();
 
-  // Whenever user clicks escape, go back to the previous route
   useEffect(() => {
     if (escapePress) {
       showModal(<ConfirmLeaveModal />);
