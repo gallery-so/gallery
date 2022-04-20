@@ -199,14 +199,16 @@ function CollectionEditor({ viewerRef }: Props) {
 
   const shouldDisplayEditor = stagedNfts.length > 0;
 
-  const escapePress = useKeyDown('Escape');
   const { showModal } = useModal();
+  useKeyDown('Escape', () => {
+    showModal(<ConfirmLeaveModal />);
+  });
 
-  useEffect(() => {
-    if (escapePress) {
-      showModal(<ConfirmLeaveModal />);
-    }
-  }, [escapePress, showModal]);
+  // useEffect(() => {
+  //   if (escapePress) {
+  //     showModal(<ConfirmLeaveModal />);
+  //   }
+  // }, [escapePress, showModal]);
 
   return (
     <StyledOrganizeCollection>

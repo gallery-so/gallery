@@ -161,14 +161,10 @@ function OrganizeGallery({
     [gallery.collections.length]
   );
 
-  const escapePress = useKeyDown('Escape');
   const { showModal } = useModal();
-
-  useEffect(() => {
-    if (escapePress) {
-      showModal(<ConfirmLeaveModal />);
-    }
-  }, [escapePress, showModal]);
+  useKeyDown('Escape', () => {
+    showModal(<ConfirmLeaveModal />);
+  });
 
   return (
     <StyledOrganizeGallery>

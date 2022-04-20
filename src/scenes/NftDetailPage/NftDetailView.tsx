@@ -3,7 +3,7 @@ import breakpoints from 'components/core/breakpoints';
 import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -90,11 +90,6 @@ export default function NftDetailView({
 
   const { nft, collection } = collectionNft;
 
-  const nextPress = useKeyDown('ArrowRight');
-  const prevPress = useKeyDown('ArrowLeft');
-  const escapePress = useKeyDown('Escape');
-  const backspacePress = useKeyDown('Backspace');
-
   const handleBackClick = useBackButton({ username });
   const { replace } = useRouter();
 
@@ -105,20 +100,18 @@ export default function NftDetailView({
     [username, collection.dbid, replace]
   );
 
-  useEffect(() => {
-    if (nextPress && nextNftId) {
-      navigateToId(nextNftId);
-    }
-    if (prevPress && prevNftId) {
-      navigateToId(prevNftId);
-    }
-    if (escapePress || backspacePress) {
-      handleBackClick();
-    }
-    // Placing prevNftId and nextNftId in the dependency list would trigger back again, if the user navigated via collection
-    // E.g. nft detail page (back) -> collection page (back) -> gallery. Is there a better solution here?
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nextPress, prevPress, escapePress, backspacePress, handleBackClick]);
+  const handleNextPress = useCallback(() => {
+    if (nextNftId) navigateToId(nextNftId);
+  }, [nextNftId, navigateToId]);
+
+  const handlePrevPress = useCallback(() => {
+    if (prevNftId) navigateToId(prevNftId);
+  }, [prevNftId, navigateToId]);
+
+  useKeyDown('ArrowRight', handleNextPress);
+  useKeyDown('ArrowLeft', handlePrevPress);
+  useKeyDown('Escape', handleBackClick);
+  useKeyDown('Backspace', handleBackClick);
 
   const assetHasNote = !!nft.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
