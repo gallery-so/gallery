@@ -35,10 +35,9 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
   }, [username, collectionId, track]);
 
   const ePress = useKeyDown('e');
-
-  // FIXME: Do we also want the escape/backspace keypress to trigger navigation to /{username}? Not in spec
   const escapePress = useKeyDown('Escape');
   const backspacePress = useKeyDown('Backspace');
+
   const { push } = useRouter();
 
   const navigateToEdit = useCallback(() => {
@@ -52,6 +51,7 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     if (ePress) {
       navigateToEdit();
     }
+    // FIXME: Do we also want the escape/backspace keypress to trigger navigation to /{username}? Not in spec
     if (escapePress || backspacePress) {
       navigateToUserGallery();
     }
