@@ -21,8 +21,6 @@ import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragme
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 
 import useKeyDown from 'hooks/useKeyDown';
-import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
-import { useModal } from 'contexts/modal/ModalContext';
 
 type ConfigProps = {
   wizardId: string;
@@ -76,6 +74,8 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
 
     void push(`/${username}`);
   }, [clearOnNext, next, push, username, wizardId, track]);
+
+  useKeyDown('Escape', saveGalleryAndReturnToProfile);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
@@ -160,11 +160,6 @@ function OrganizeGallery({
     () => gallery.collections.length === 0,
     [gallery.collections.length]
   );
-
-  const { showModal } = useModal();
-  useKeyDown('Escape', () => {
-    showModal(<ConfirmLeaveModal />);
-  });
 
   return (
     <StyledOrganizeGallery>

@@ -7,13 +7,22 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 // import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import useBackButton from 'hooks/useBackButton';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { ConfirmLeaveModalFragment$key } from '__generated__/ConfirmLeaveModalFragment.graphql';
 
-function ConfirmLeaveModal() {
+function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key }) {
+  const user = useFragment(
+    graphql`
+      fragment ConfirmLeaveModalFragment on GalleryUser {
+        username @required(action: THROW)
+      }
+    `,
+    userRef
+  );
+
   const { hideModal } = useModal();
-
-  // FIXME: Need real auth for user
-  const username = 'connorr'; // useAuthenticatedUsername();
-  const navigateBack = useBackButton({ username });
+  const navigateBack = useBackButton({ username: user.username });
 
   const goBack = useCallback(() => {
     navigateBack();
@@ -38,7 +47,8 @@ const StyledConfirmLeaveModal = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  padding: 0px 16px;
+  padding: 0px 12px;
+  height: 30px;
 `;
 
 const LeaveWrapper = styled.div`

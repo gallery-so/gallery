@@ -29,9 +29,11 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
     if (activeEl?.tagName !== 'BODY') return;
 
     if (keyPressed) {
-      console.log('run');
       callbackFn();
+      // After executing, reset keyPressed to false so that the user can click the same key again on the same page
+      // Only currently relevant if user is on /edit -> escapes -> shows modal -> escapes -> clicks escape again
+      // This also prevents route-based navigation from duplicating
+      setKeyPressed(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyPressed]); // FIXME: Including callbackFn in the dependency array triggers duplication of navigation-based callbacks, so it is omitted
+  }, [keyPressed, callbackFn]);
 }

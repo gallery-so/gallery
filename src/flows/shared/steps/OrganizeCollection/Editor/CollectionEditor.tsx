@@ -68,6 +68,7 @@ function CollectionEditor({ viewerRef }: Props) {
               ...StagingAreaFragment
             }
           }
+          ...ConfirmLeaveModalFragment
         }
       }
     `,
@@ -200,15 +201,11 @@ function CollectionEditor({ viewerRef }: Props) {
   const shouldDisplayEditor = stagedNfts.length > 0;
 
   const { showModal } = useModal();
-  useKeyDown('Escape', () => {
-    showModal(<ConfirmLeaveModal />);
-  });
+  const user = viewer.user;
 
-  // useEffect(() => {
-  //   if (escapePress) {
-  //     showModal(<ConfirmLeaveModal />);
-  //   }
-  // }, [escapePress, showModal]);
+  useKeyDown('Escape', () => {
+    showModal(<ConfirmLeaveModal userRef={user} />);
+  });
 
   return (
     <StyledOrganizeCollection>

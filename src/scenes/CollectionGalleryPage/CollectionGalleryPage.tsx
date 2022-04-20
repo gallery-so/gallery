@@ -34,27 +34,38 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     });
   }, [username, collectionId, track]);
 
+  const query = useFragment(
+    graphql`
+      fragment CollectionGalleryPageFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+        ...CollectionGalleryFragment
+      }
+    `,
+    queryRef
+  );
+
   const { push } = useRouter();
 
-  // FIXME: Only navigate to /edit if the user owns the current collection
+  const userOwnsCollection = query?.viewer?.user?.username === username;
   const navigateToEdit = useCallback(() => {
-    void push(`/edit?collectionId=${collectionId}`);
-  }, [push, collectionId]);
+    if (userOwnsCollection) {
+      void push(`/edit?collectionId=${collectionId}`);
+    } else {
+      void push(`/edit`);
+    }
+  }, [push, collectionId, userOwnsCollection]);
   const navigateToUserGallery = useCallback(() => {
     void push(`/${username}`);
   }, [push, username]);
 
   useKeyDown('e', navigateToEdit);
   useKeyDown('Escape', navigateToUserGallery);
-
-  const query = useFragment(
-    graphql`
-      fragment CollectionGalleryPageFragment on Query {
-        ...CollectionGalleryFragment
-      }
-    `,
-    queryRef
-  );
 
   return (
     <>
