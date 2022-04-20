@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
@@ -14,8 +14,6 @@ import NotFound from 'scenes/NotFound/NotFound';
 import { NftDetailPageFragment$key } from '__generated__/NftDetailPageFragment.graphql';
 import NftDetailView from './NftDetailView';
 import { captureException } from '@sentry/nextjs';
-
-import useKeyDown from 'hooks/useKeyDown';
 
 type Props = {
   nftId: string;
@@ -83,28 +81,6 @@ function NftDetailPage({ nftId, queryRef }: Props) {
 
   const authenticatedUserOwnsAsset =
     viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
-
-  const { replace, back } = useRouter();
-  const navigateToId = function (nftId: string) {
-    void replace(`/${username}/${collectionId}/${nftId}`);
-  };
-
-  const nextPress = useKeyDown('ArrowRight');
-  const prevPress = useKeyDown('ArrowLeft');
-  const escapePress = useKeyDown('Escape');
-  const backspacePress = useKeyDown('Backspace');
-
-  useEffect(() => {
-    if (nextPress && nextNftId) {
-      navigateToId(nextNftId);
-    }
-    if (prevPress && prevNftId) {
-      navigateToId(prevNftId);
-    }
-    if (escapePress || backspacePress) {
-      handleBackClick();
-    }
-  }, [nextPress, prevPress, escapePress, backspacePress]);
 
   return (
     <>

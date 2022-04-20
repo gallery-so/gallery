@@ -1,13 +1,8 @@
 import NotFound from 'scenes/NotFound/NotFound';
-import UserGalleryCollections from './UserGalleryCollections';
-import UserGalleryHeader from './UserGalleryHeader';
-import EmptyGallery from './EmptyGallery';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import useMobileLayout from 'hooks/useMobileLayout';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-        
+
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';

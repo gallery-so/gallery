@@ -3,7 +3,7 @@ import breakpoints from 'components/core/breakpoints';
 import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -12,6 +12,9 @@ import NavigationHandle from './NavigationHandle';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
+import useBackButton from 'hooks/useBackButton';
 
 type Props = {
   username: string;
@@ -84,6 +87,30 @@ export default function NftDetailView({
       nextNftId: collectionNfts[nftIndex + 1]?.nft?.dbid ?? null,
     };
   }, [collectionNfts, nftId]);
+
+  const handleBackClick = useBackButton({ username });
+
+  const { replace } = useRouter();
+  const navigateToId = function (nftId: string) {
+    void replace(`/${username}/${collection.dbid}/${nftId}`);
+  };
+
+  const nextPress = useKeyDown('ArrowRight');
+  const prevPress = useKeyDown('ArrowLeft');
+  const escapePress = useKeyDown('Escape');
+  const backspacePress = useKeyDown('Backspace');
+
+  useEffect(() => {
+    if (nextPress && nextNftId) {
+      navigateToId(nextNftId);
+    }
+    if (prevPress && prevNftId) {
+      navigateToId(prevNftId);
+    }
+    if (escapePress || backspacePress) {
+      handleBackClick();
+    }
+  }, [nextPress, prevPress, escapePress, backspacePress]);
 
   const { nft, collection } = collectionNft;
 
