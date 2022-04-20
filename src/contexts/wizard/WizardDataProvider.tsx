@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { useMutateAllNftsCache } from 'hooks/api/nfts/useAllNfts';
-import { useRefreshOpenseaSync } from 'hooks/api/nfts/useOpenseaSync';
+import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
+import useRefreshOpenseaNfts from 'hooks/api/nfts/useRefreshOpenseaNfts';
 import {
   ReactNode,
   createContext,
@@ -12,17 +12,21 @@ import {
   useState,
   useCallback,
 } from 'react';
+import { PreloadedQuery, useQueryLoader } from 'react-relay';
+import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
 
 export type WizardDataState = {
   id: string;
   isRefreshingNfts: boolean;
   handleRefreshNfts: () => void;
+  queryRef: PreloadedQuery<OrganizeCollectionQuery, Record<string, unknown>> | null | undefined;
 };
 
 const WizardDataContext = createContext<WizardDataState>({
   id: '',
   isRefreshingNfts: false,
   handleRefreshNfts: () => {},
+  queryRef: null,
 });
 
 export const useWizardId = (): WizardDataState['id'] => {
@@ -34,7 +38,7 @@ export const useWizardId = (): WizardDataState['id'] => {
   return context.id;
 };
 
-export const useRefreshNftConfig = () => {
+export const useWizardState = () => {
   const context = useContext(WizardDataContext);
   if (!context) {
     throw new Error('Attempted to use WizardDataContext without a provider');
@@ -46,18 +50,20 @@ export const useRefreshNftConfig = () => {
 type Props = { id: string; children: ReactNode };
 
 export default memo(function WizardDataProvider({ id, children }: Props) {
+  const [queryRef, loadQuery] = useQueryLoader<OrganizeCollectionQuery>(organizeCollectionQuery);
+
   const [isRefreshingNfts, setIsRefreshingNfts] = useState(false);
 
-  const refreshOpenseaSync = useRefreshOpenseaSync();
-  const mutateAllNftsCache = useMutateAllNftsCache();
+  const refreshOpenseaNfts = useRefreshOpenseaNfts();
+
   const { pushToast } = useToastActions();
 
   const handleRefreshNfts = useCallback(async () => {
     setIsRefreshingNfts(true);
 
     try {
-      await refreshOpenseaSync();
-      void mutateAllNftsCache();
+      await refreshOpenseaNfts();
+      loadQuery({}, { fetchPolicy: 'store-and-network' });
     } catch (error: unknown) {
       captureException(error);
       pushToast(
@@ -66,7 +72,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     }
 
     setIsRefreshingNfts(false);
-  }, [mutateAllNftsCache, pushToast, refreshOpenseaSync]);
+  }, [loadQuery, pushToast, refreshOpenseaNfts]);
 
   useEffect(() => {
     if (id === 'onboarding') {
@@ -77,8 +83,8 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   }, []);
 
   const wizardDataState = useMemo(
-    () => ({ id, isRefreshingNfts, handleRefreshNfts }),
-    [id, isRefreshingNfts, handleRefreshNfts]
+    () => ({ id, isRefreshingNfts, handleRefreshNfts, queryRef }),
+    [id, isRefreshingNfts, handleRefreshNfts, queryRef]
   );
 
   return (

@@ -8,60 +8,73 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
-import { Collection } from 'types/Collection';
 import noop from 'utils/noop';
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionRowSettingsFragment$key } from '__generated__/CollectionRowSettingsFragment.graphql';
 
 type Props = {
-  collection: Collection;
+  collectionRef: CollectionRowSettingsFragment$key;
 };
 
-function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardComponentProps) {
+function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & WizardComponentProps) {
+  const collection = useFragment(
+    graphql`
+      fragment CollectionRowSettingsFragment on Collection {
+        dbid
+        name
+        collectorsNote
+        hidden
+        gallery @required(action: THROW) {
+          dbid @required(action: THROW)
+        }
+        ...DeleteCollectionConfirmationFragment
+      }
+    `,
+    collectionRef
+  );
+
   const { showModal } = useModal();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
-  const username = useAuthenticatedUsername();
 
-  const { id, name, collectors_note, hidden } = collection;
-
-  const collectionUrl = `${window.location.origin}/${username}/${id}`;
+  const { dbid, name, collectorsNote, hidden, gallery } = collection;
 
   const track = useTrack();
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection button clicked');
-    setCollectionIdBeingEdited(id);
+    setCollectionIdBeingEdited(dbid);
     push('organizeCollection');
-  }, [id, push, setCollectionIdBeingEdited, track]);
+  }, [dbid, push, setCollectionIdBeingEdited, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal(
       <CollectionCreateOrEditForm
         // No need for onNext because this isn't part of a wizard
         onNext={noop}
-        collectionId={id}
-        collectionName={name}
-        collectionCollectorsNote={collectors_note}
+        galleryId={gallery.dbid}
+        collectionId={dbid}
+        collectionName={name ?? ''}
+        collectionCollectorsNote={collectorsNote ?? ''}
       />
     );
-  }, [collectors_note, id, name, showModal]);
+  }, [collectorsNote, dbid, gallery.dbid, name, showModal]);
 
   const toggleHideCollection = useUpdateCollectionHidden();
 
   const handleToggleHiddenClick = useCallback(() => {
-    toggleHideCollection(id, !hidden).catch((error: unknown) => {
+    toggleHideCollection(dbid, !hidden).catch((error: unknown) => {
       // TODO handle toggle hide error
       throw error;
     });
-  }, [id, hidden, toggleHideCollection]);
+  }, [dbid, hidden, toggleHideCollection]);
 
   const handleDeleteClick = useCallback(() => {
     track('Delete collection button clicked');
-    showModal(<DeleteCollectionConfirmation collectionId={id} />);
-  }, [id, showModal, track]);
+    showModal(<DeleteCollectionConfirmation collectionRef={collection} />);
+  }, [collection, showModal, track]);
 
   return (
     <StyledCollectionRowSettings>
@@ -71,10 +84,6 @@ function CollectionRowSettings({ collection, wizard: { push } }: Props & WizardC
         <TextButton onClick={handleEditNameClick} text="Edit name & description" />
         <Spacer height={12} />
         <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
-        <Spacer height={12} />
-        <CopyToClipboard textToCopy={collectionUrl}>
-          <TextButton text="Share" />
-        </CopyToClipboard>
         <Spacer height={12} />
         <TextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>

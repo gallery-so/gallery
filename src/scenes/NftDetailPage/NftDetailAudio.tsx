@@ -1,16 +1,45 @@
 import styled from 'styled-components';
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { Nft } from 'types/Nft';
+import { graphql, useFragment } from 'react-relay';
+import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
 
 type Props = {
-  nft: Nft;
+  nftRef: NftDetailAudioFragment$key;
 };
 
-function NftDetailAudio({ nft }: Props) {
+function NftDetailAudio({ nftRef }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment NftDetailAudioFragment on Nft {
+        name
+        media @required(action: THROW) {
+          ... on AudioMedia {
+            __typename
+            previewURLs @required(action: THROW) {
+              large @required(action: THROW)
+            }
+            contentRenderURL @required(action: THROW)
+          }
+        }
+      }
+    `,
+    nftRef
+  );
+
+  if (nft.media.__typename !== 'AudioMedia') {
+    throw new Error('Using an NftDetailAudio component without an audio media type');
+  }
+
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={nft.image_url} alt={nft.name} />
-      <StyledAudio controls loop controlsList="nodownload" preload="none" src={nft.animation_url} />
+      <ImageWithLoading src={nft.media?.previewURLs.large} alt={nft.name ?? ''} />
+      <StyledAudio
+        controls
+        loop
+        controlsList="nodownload"
+        preload="none"
+        src={nft.media.contentRenderURL}
+      />
     </StyledAudioContainer>
   );
 }

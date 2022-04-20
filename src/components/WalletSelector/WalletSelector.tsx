@@ -3,7 +3,6 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { injected, walletconnect, walletlink } from 'connectors/index';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
-import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -15,8 +14,9 @@ import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
-import { GALLERY_DISCORD, GALLERY_MEMBERSHIP_OPENSEA } from 'constants/urls';
 import { getUserFriendlyWalletName } from 'utils/wallet';
+import { graphql, useFragment } from 'react-relay';
+import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -57,8 +57,6 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
   },
 };
 
-const MISSING_NFT_ERROR_MESSAGE = `You must have a [Membership Card](${GALLERY_MEMBERSHIP_OPENSEA}) to use Gallery.\n\nJoin our [Discord](${GALLERY_DISCORD}) to learn more.`;
-
 function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
@@ -71,9 +69,19 @@ type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CONNECT_W
 
 type Props = {
   connectionMode?: ConnectionMode;
+  queryRef: WalletSelectorFragment$key;
 };
 
-function WalletSelector({ connectionMode = AUTH }: Props) {
+function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment WalletSelectorFragment on Query {
+        ...AddWalletPendingFragment
+      }
+    `,
+    queryRef
+  );
+
   const { activate, deactivate, error } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
@@ -167,6 +175,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       return (
         <StyledWalletSelector>
           <AddWalletPending
+            queryRef={query}
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
             userFriendlyWalletName={userFriendlyWalletName}

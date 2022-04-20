@@ -1,9 +1,9 @@
 import {
+  EditModeNftChild,
   isEditModeNft,
   StagingItem,
   WhitespaceBlock,
 } from 'flows/shared/steps/OrganizeCollection/types';
-import { Nft } from 'types/Nft';
 
 // Each value in the whitespace list represents the index of the NFT that a whitespace appears before.
 // For example, whitespace: [0] means that there is one whitespace before the first NFT in the collection.
@@ -35,7 +35,7 @@ export function generate12DigitId() {
 
 // filter whitespaces from stagedItems and map each EditModeNft -> Nft
 export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
-  return stagedItems.reduce((filtered: Nft[], item) => {
+  return stagedItems.reduce((filtered: EditModeNftChild[], item) => {
     if (isEditModeNft(item)) {
       filtered.push(item.nft);
     }
@@ -44,15 +44,18 @@ export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
   }, []);
 }
 
-export function insertWhitespaceBlocks(
-  items: Array<Nft | WhitespaceBlock | StagingItem>,
+export function insertWhitespaceBlocks<T>(
+  items: ReadonlyArray<T>,
   whitespaceList: number[]
-) {
-  const result = [...items];
+): Array<T | WhitespaceBlock> {
+  const result: Array<T | WhitespaceBlock> = [...items];
   // Insert whitespace blocks into the list of items to stage according to the saved whitespace indexes.
   // Offset the index to insert at by the number of whitespaces already added
   whitespaceList.forEach((index, offset) =>
-    result.splice(index + offset, 0, { id: `blank-${generate12DigitId()}` })
+    result.splice(index + offset, 0, {
+      id: `blank-${generate12DigitId()}`,
+      whitespace: 'whitespace',
+    })
   );
 
   return result;

@@ -9,7 +9,7 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListPageFragment$key } from '../../../__generated__/MemberListPageFragment.graphql';
+import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {

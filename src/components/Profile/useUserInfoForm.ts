@@ -10,7 +10,6 @@ import {
   noConsecutivePeriodsOrUnderscores,
 } from 'utils/validators';
 
-// Import formatError from 'src/errors/formatError';
 import formatError from 'errors/formatError';
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 

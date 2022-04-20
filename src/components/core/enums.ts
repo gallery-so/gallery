@@ -5,14 +5,6 @@ export enum Directions {
   DOWN,
 }
 
-export enum NftMediaType {
-  IMAGE,
-  VIDEO,
-  ANIMATION,
-  AUDIO,
-  MODEL,
-}
-
 export enum DisplayLayout {
   GRID = 'GRID',
   LIST = 'LIST',
@@ -20,5 +12,4 @@ export enum DisplayLayout {
 
 export enum FeatureFlag {
   GENERAL_MEMBERSHIP_MINT = 'GENERAL_MEMBERSHIP_MINT',
-  COLLECTORS_NOTE = 'COLLECTORS_NOTE',
 }

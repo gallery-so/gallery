@@ -1,23 +1,28 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { BaseM } from 'components/core/Text/Text';
-import { Nft } from 'types/Nft';
 import breakpoints from 'components/core/breakpoints';
 
 type Props = {
-  nft: Nft;
   className?: string;
+  title?: string | null;
+  collectionName?: string | null;
 };
 
-function NftPreviewLabel({ nft, className }: Props) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function NftPreviewLabel({ className, title, collectionName }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
-      <StyledBaseM color={colors.white} lines={1}>
-        {nft.name}
-      </StyledBaseM>
-      <StyledBaseM color={colors.white} lines={2}>
-        {nft.token_collection_name}
-      </StyledBaseM>
+      {title && (
+        <StyledBaseM color={colors.white} lines={1}>
+          {title}
+        </StyledBaseM>
+      )}
+      {collectionName && (
+        <StyledBaseM color={colors.white} lines={2}>
+          {collectionName}
+        </StyledBaseM>
+      )}
     </StyledNftPreviewLabel>
   );
 }

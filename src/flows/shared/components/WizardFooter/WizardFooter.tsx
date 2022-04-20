@@ -12,7 +12,6 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { GalleryWizardProps } from 'flows/shared/types';
 import isPromise from 'utils/isPromise';
 import { useRouter } from 'next/router';
-import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 
 function WizardFooter({
   step,
@@ -25,10 +24,8 @@ function WizardFooter({
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext, onPrevious } = useWizardCallback();
-  const { back, push, query } = useRouter();
+  const { back, query } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
-  const username = useAuthenticatedUsername();
 
   const collectionId = query.collectionId;
 
@@ -66,7 +63,7 @@ function WizardFooter({
     }
 
     next();
-  }, [collectionId, next, onNext, push, username]);
+  }, [back, collectionId, next, onNext]);
 
   const handlePreviousClick = useCallback(() => {
     // If there is collectionId, redirect to previous page
@@ -79,7 +76,7 @@ function WizardFooter({
     } else {
       previous();
     }
-  }, [collectionId, onPrevious, push, username, previous]);
+  }, [collectionId, onPrevious, back, previous]);
 
   if (shouldHideFooter) {
     return null;

@@ -1,42 +1,100 @@
-import { NftMediaType } from 'components/core/enums';
-import { useMemo } from 'react';
-import styled from 'styled-components';
-
 import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
-import { Nft } from 'types/Nft';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
+import { useEffect } from 'react';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+
+type UnrenderedPreviewAssetProps = {
+  id: string;
+  assetType: string;
+};
+
+function UnrenderedPreviewAsset({ id, assetType }: UnrenderedPreviewAssetProps) {
+  const reportError = useReportError();
+
+  useEffect(() => {
+    reportError(new Error('unable to render NftPreviewAsset'), {
+      tags: {
+        id,
+        assetType,
+      },
+    });
+  }, [assetType, id, reportError]);
+
+  return null;
+}
 
 type Props = {
-  nft: Nft;
+  nftRef: NftPreviewAssetFragment$key;
   size: number;
 };
 
-function NftPreviewAsset({ nft, size }: Props) {
-  const setContentIsLoaded = useSetContentIsLoaded();
-  const nftAssetComponent = useMemo(() => {
-    // certain assets don't have `image_url` fields populated, such as ones from Foundation
-    const assetUrl = (nft.image_url || nft.animation_url) ?? '';
+function NftPreviewAsset({ nftRef, size }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment NftPreviewAssetFragment on Nft {
+        dbid
+        name
+        media {
+          __typename
 
-    if (getMediaTypeForAssetUrl(assetUrl) === NftMediaType.VIDEO) {
-      return (
-        <StyledVideo
-          src={`${assetUrl}#t=0.5`}
-          onLoadStart={setContentIsLoaded}
-          preload="metadata"
-        />
-      );
-    }
+          ... on VideoMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on ImageMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on HtmlMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on AudioMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on GltfMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+          ... on UnknownMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+        }
+      }
+    `,
+    nftRef
+  );
 
-    return <ImageWithLoading src={getResizedNftImageUrlWithFallback(nft, size)} alt={nft.name} />;
-  }, [nft, setContentIsLoaded, size]);
+  if (
+    nft.media?.__typename === 'VideoMedia' ||
+    nft.media?.__typename === 'ImageMedia' ||
+    nft.media?.__typename === 'HtmlMedia' ||
+    nft.media?.__typename === 'AudioMedia' ||
+    nft.media?.__typename === 'GltfMedia' ||
+    nft.media?.__typename === 'UnknownMedia'
+  ) {
+    return (
+      <ImageWithLoading
+        src={graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size)}
+        heightType="inherit"
+        alt={nft.name ?? ''}
+      />
+    );
+  }
 
-  return nftAssetComponent;
+  // TODO: instead of rendering this, just throw to an error boundary and have that report to sentry
+  return <UnrenderedPreviewAsset id={nft.dbid} assetType={nft.media?.__typename ?? ''} />;
 }
-
-const StyledVideo = styled.video`
-  display: flex;
-  width: 100%;
-`;
 
 export default NftPreviewAsset;

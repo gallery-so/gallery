@@ -11,21 +11,23 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListOwnerFragment$key } from '../../../__generated__/MemberListOwnerFragment.graphql';
+import { MemberListOwnerFragment$key } from '__generated__/MemberListOwnerFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 
 type Props = {
   ownerRef: MemberListOwnerFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
+  fadeUsernames: boolean;
 };
 
-function MemberListOwner({ ownerRef, direction }: Props) {
+function MemberListOwner({ ownerRef, direction, fadeUsernames }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
 
   const owner = useFragment(
     graphql`
       fragment MemberListOwnerFragment on MembershipOwner {
+        dbid
         user @required(action: THROW) {
           username @required(action: THROW)
         }
@@ -52,7 +54,6 @@ function MemberListOwner({ ownerRef, direction }: Props) {
       setShowPreview(true);
       return;
     }
-
     // If the user stopped hovering over the name and we are currently showing the preview, fade out the preview.
     if (!debouncedIsHovering && showPreview) {
       setStartFadeOut(true);
@@ -89,9 +90,13 @@ function MemberListOwner({ ownerRef, direction }: Props) {
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <GalleryLink href={`/${owner.user.username}`} underlined={false}>
+        <StyledGalleryLink
+          href={`/${owner.user.username}`}
+          underlined={false}
+          fadeUsernames={fadeUsernames}
+        >
           <StyledUsername>{owner.user.username}</StyledUsername>
-        </GalleryLink>
+        </StyledGalleryLink>
       </StyledUsernameWrapper>
       {isDesktop && showPreview && previewNfts && (
         <MemberListGalleryPreview
@@ -124,6 +129,14 @@ const StyledOwner = styled.div`
 
 const StyledUsernameWrapper = styled.div`
   max-width: 100%;
+`;
+
+const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
+  transition: color 0.15s ease-in-out;
+  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
+  &:hover {
+    color: ${colors.offBlack};
+  }
 `;
 
 const StyledUsername = styled(BaseXL)`

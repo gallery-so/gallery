@@ -1,39 +1,70 @@
-import useGalleries from 'hooks/api/galleries/useGalleries';
-import useUser from 'hooks/api/users/useUser';
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { UsernameOpengraphQuery } from '__generated__/UsernameOpengraphQuery.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from 'utils/removeNullValues';
 
 export default function OpenGraphUserPage() {
   const { query } = useRouter();
-  const user = useUser({ username: query.username as string });
-  const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
+  const queryResponse = useLazyLoadQuery<UsernameOpengraphQuery>(
+    graphql`
+      query UsernameOpengraphQuery($username: String!) {
+        user: userByUsername(username: $username) {
+          ... on ErrUserNotFound {
+            __typename
+          }
+          ... on ErrInvalidInput {
+            __typename
+          }
+          ... on GalleryUser {
+            __typename
+            username
+            bio
+            galleries {
+              collections {
+                nfts {
+                  nft {
+                    ...getVideoOrImageUrlForNftPreviewFragment
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    { username: query.username as string }
+  );
+
+  if (queryResponse.user?.__typename !== 'GalleryUser') {
+    throw new Error('no gallery user found for opengraph preview images');
+  }
+
+  const { user } = queryResponse;
+
+  const imageUrls = removeNullValues(
+    user.galleries?.[0]?.collections
+      ?.flatMap((collection) => collection?.nfts)
+      .map((galleryNft) => {
+        return galleryNft?.nft ? getVideoOrImageUrlForNftPreview(galleryNft.nft) : null;
+      })
+      .map((nft) => nft?.urls.large)
+  ).slice(0, 4);
+
+  console.log({ imageUrls });
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
-
-  if (!user) {
-    // TODO: 404?
-    throw new Error('no username provided');
-  }
-
-  if (!gallery) {
-    // TODO: render something nice?
-    throw new Error('no gallery found');
-  }
-
-  const nfts = gallery.collections.flatMap((collection) => collection.nfts);
 
   return (
     <>
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
           <OpenGraphPreview
-            title={user.username}
-            description={user.bio}
-            imageUrls={nfts
-              .filter((nft) => nft.image_url)
-              .slice(0, 4)
-              .map((nft) => nft.image_url)}
+            title={user.username ?? ''}
+            description={user.bio ?? ''}
+            imageUrls={imageUrls}
           />
         </div>
       </div>

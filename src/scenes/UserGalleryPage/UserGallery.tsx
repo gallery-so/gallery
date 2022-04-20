@@ -1,8 +1,3 @@
-import { contentSize } from 'components/core/breakpoints';
-import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
-import useUser, { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
-import useGalleries from 'hooks/api/galleries/useGalleries';
 import NotFound from 'scenes/NotFound/NotFound';
 import UserGalleryCollections from './UserGalleryCollections';
 import UserGalleryHeader from './UserGalleryHeader';
@@ -12,18 +7,39 @@ import useMobileLayout from 'hooks/useMobileLayout';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+        
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
+import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 
 type Props = {
-  username?: string;
+  queryRef: UserGalleryFragment$key;
 };
 
-function UserGallery({ username }: Props) {
-  const user = useUser({ username });
-  const [gallery] = useGalleries({ userId: user?.id ?? '' }) ?? [];
-  const authenticatedUser = usePossiblyAuthenticatedUser();
-  const isMobile = useIsMobileWindowWidth();
-  const showMobileLayoutToggle = isMobile && gallery?.collections?.length > 0;
-  const { mobileLayout, setMobileLayout } = useMobileLayout();
+function UserGallery({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryFragment on Query {
+        user: userByUsername(username: $username) @required(action: THROW) {
+          ... on GalleryUser {
+            __typename
+
+            ...UserGalleryLayoutFragment
+          }
+          ... on ErrUserNotFound {
+            __typename
+            message
+          }
+        }
+
+        ...UserGalleryLayoutQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { user } = query;
 
   const ePress = useKeyDown('e');
 
@@ -38,45 +54,15 @@ function UserGallery({ username }: Props) {
     }
   }, [ePress]);
 
-  if (!user) {
+  if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;
   }
 
-  const isAuthenticatedUsersPage = user.username === authenticatedUser?.username;
+  if (user.__typename !== 'GalleryUser') {
+    throw new Error(`Expected user to be type GalleryUser. Received: ${user.__typename}`);
+  }
 
-  const collectionsView = gallery ? (
-    <UserGalleryCollections
-      collections={gallery.collections}
-      isAuthenticatedUsersPage={isAuthenticatedUsersPage}
-      mobileLayout={mobileLayout}
-    />
-  ) : (
-    <EmptyGallery message="This user has not set up their gallery yet." />
-  );
-
-  return (
-    <StyledUserGallery>
-      <Spacer height={32} />
-      <UserGalleryHeader
-        username={user.username}
-        bio={user.bio}
-        showMobileLayoutToggle={showMobileLayoutToggle}
-        mobileLayout={mobileLayout}
-        setMobileLayout={setMobileLayout}
-      />
-      {collectionsView}
-      <Spacer height={32} />
-    </StyledUserGallery>
-  );
+  return <UserGalleryLayout userRef={user} queryRef={query} />;
 }
-
-const StyledUserGallery = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-
-  max-width: ${contentSize.desktop}px;
-`;
 
 export default UserGallery;

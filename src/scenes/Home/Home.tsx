@@ -4,8 +4,6 @@ import Button from 'components/core/Button/Button';
 import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import { useRouter } from 'next/router';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import TextButton from 'components/core/Button/TextButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
@@ -32,7 +30,7 @@ function Home() {
         <Spacer width={8} />
         <BaseS>·</BaseS>
         <Spacer width={8} />
-        <NavLink to="/aboutblank">Gallery of the Week</NavLink>
+        <NavLink to="/the_ayybee_gallery">Gallery of the Week</NavLink>
       </StyledLinkContainer>
     </Page>
   );

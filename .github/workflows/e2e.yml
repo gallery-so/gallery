@@ -12,30 +12,40 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup node
         uses: actions/setup-node@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn install
       - run: yarn add @synthetixio/synpress
-      - name: "Update apt"
+      - name: 'Update apt'
         run: sudo apt-get update
-      - name: "Download Keybase"
+      - name: 'Download Keybase'
         run: curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-      - name: "Install Keybase"
+      - name: 'Install Keybase'
         run: sudo apt-get install ./keybase_amd64.deb unzip
-      - name: "Run keybase globally"
+      - name: 'Run keybase globally'
         run: run_keybase -g
-      - name: "Oneshot Keybase"
+      - name: 'Oneshot Keybase'
         run: keybase oneshot
         env:
           KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
-      - name: "Decrypt secrets"
+      - name: 'Decrypt secrets'
         run: keybase decrypt -i _encrypted_internal -o _internal.zip
-      - name: "Unzip"
+      - name: 'Unzip'
         run: echo "A" | unzip _internal.zip -d _internal
-      - name: "Check file"
+      - name: 'Check file'
         run: ls
       - id: set_var
-        name: "Read JSON file"
+        name: 'Read JSON file'
         run: |
           content=`cat _internal/test-wallet.json`
           # the following lines are only required for multi line json

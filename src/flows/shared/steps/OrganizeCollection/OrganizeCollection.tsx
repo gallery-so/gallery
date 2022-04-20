@@ -12,16 +12,19 @@ import {
   useCollectionWizardActions,
   useCollectionWizardState,
 } from 'contexts/wizard/CollectionWizardContext';
-import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import { useWizardId, useWizardState } from 'contexts/wizard/WizardDataProvider';
 import CollectionEditor from './Editor/CollectionEditor';
 import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useLazyLoadQuery, usePreloadedQuery } from 'react-relay';
+import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
 
 type ConfigProps = {
   push: WizardContext['push'];
+  galleryId: string;
 };
 
-function useWizardConfig({ push }: ConfigProps) {
+function useWizardConfig({ push, galleryId }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
   const { showModal } = useModal();
   const wizardId = useWizardId();
@@ -66,6 +69,7 @@ function useWizardConfig({ push }: ConfigProps) {
       showModal(
         <CollectionCreateOrEditForm
           onNext={goToOrganizeGalleryStep}
+          galleryId={galleryId}
           stagedItems={stagedItems}
           layout={collectionMetadata.layout}
         />
@@ -88,24 +92,90 @@ function useWizardConfig({ push }: ConfigProps) {
     collectionMetadata,
     stagedItems,
     track,
+    galleryId,
   ]);
 }
 
-// In order to call `useWizardConfig`, component must be under `CollectionEditorProvider`
 type DecoratedCollectionEditorProps = {
   push: WizardContext['push'];
 };
 
-function DecoratedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
-  useWizardConfig({ push });
+export const organizeCollectionQuery = graphql`
+  query OrganizeCollectionQuery {
+    viewer @required(action: THROW) {
+      ... on Viewer {
+        __typename
+        user @required(action: THROW) {
+          username
+          galleries @required(action: THROW) {
+            dbid @required(action: THROW)
+          }
+        }
 
-  return <CollectionEditor />;
+        ...CollectionEditorFragment
+      }
+    }
+  }
+`;
+
+function DecoratedPreloadedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
+  const { queryRef } = useWizardState();
+
+  if (!queryRef) {
+    throw new Error('DecoratedCollectionEditor could not access queryRef');
+  }
+
+  const query = usePreloadedQuery(organizeCollectionQuery, queryRef);
+
+  if (query.viewer.__typename !== 'Viewer') {
+    throw new Error(
+      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
+    );
+  }
+
+  const galleryId = query.viewer.user.galleries[0]?.dbid;
+
+  if (!galleryId) {
+    throw new Error(`OrganizeCollection expected galleryId`);
+  }
+
+  useWizardConfig({ push, galleryId });
+
+  return <CollectionEditor viewerRef={query.viewer} />;
+}
+
+function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
+  const query = useLazyLoadQuery<OrganizeCollectionQuery>(organizeCollectionQuery, {});
+
+  if (query.viewer.__typename !== 'Viewer') {
+    throw new Error(
+      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
+    );
+  }
+
+  const galleryId = query.viewer.user.galleries[0]?.dbid;
+
+  if (!galleryId) {
+    throw new Error(`OrganizeCollection expected galleryId`);
+  }
+
+  useWizardConfig({ push, galleryId });
+
+  return <CollectionEditor viewerRef={query.viewer} />;
 }
 
 function OrganizeCollectionWithProvider({ push }: WizardContext) {
+  const id = useWizardId();
   return (
     <CollectionEditorProvider>
-      <DecoratedCollectionEditor push={push} />
+      {
+        // TODO: doing this because i have no idea how to conditionally use preloading
+        id === 'onboarding' ? (
+          <DecoratedPreloadedCollectionEditor push={push} />
+        ) : (
+          <DecoratedLazyloadedCollectionEditor push={push} />
+        )
+      }
     </CollectionEditorProvider>
   );
 }

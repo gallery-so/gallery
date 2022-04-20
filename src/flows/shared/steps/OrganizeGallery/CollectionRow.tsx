@@ -4,15 +4,17 @@ import unescape from 'utils/unescape';
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { Nft } from 'types/Nft';
-import { getMediaTypeForAssetUrl, getResizedNftImageUrlWithFallback } from 'utils/nft';
-import { Collection } from 'types/Collection';
-import { NftMediaType } from 'components/core/enums';
+import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import Markdown from 'components/core/Markdown/Markdown';
-import Settings from 'public/icons/settings.svg';
+import Settings from 'public/icons/ellipses.svg';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
+import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
-  collection: Collection;
+  collectionRef: CollectionRowFragment$key;
   className?: string;
 };
 
@@ -22,12 +24,31 @@ const SMOL_NFT_SIZE_PX = 25;
 /**
  * Displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
  */
-function CollectionRow({ collection, className }: Props) {
-  const { name, collectors_note, hidden } = collection;
-  const nfts = useMemo(() => collection.nfts || [], [collection]);
+function CollectionRow({ collectionRef, className }: Props) {
+  const collection = useFragment(
+    graphql`
+      fragment CollectionRowFragment on Collection {
+        name
+        collectorsNote
+        hidden
 
-  const unescapedCollectionName = useMemo(() => unescape(name), [name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collectors_note), [collectors_note]);
+        nfts {
+          id
+          nft @required(action: NONE) {
+            ...getVideoOrImageUrlForNftPreviewFragment
+            ...CollectionRowCompactNftsFragment
+          }
+        }
+      }
+    `,
+    collectionRef
+  );
+
+  const { name, collectorsNote, hidden } = collection;
+  const nfts = useMemo(() => removeNullValues(collection.nfts), [collection]);
+
+  const unescapedCollectionName = useMemo(() => unescape(name ?? ''), [name]);
+  const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote ?? ''), [collectorsNote]);
 
   const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
   const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
@@ -62,11 +83,20 @@ function CollectionRow({ collection, className }: Props) {
       <Spacer height={12} />
       <Body>
         {firstThreeNfts.map((nft) => {
-          const imageUrl = getResizedNftImageUrlWithFallback(nft, BIG_NFT_SIZE_PX);
-          const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+          const result = getVideoOrImageUrlForNftPreview(nft.nft);
+
+          if (!result) {
+            return null;
+          }
+
+          const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+            result.urls.large,
+            BIG_NFT_SIZE_PX
+          );
+
           return (
             <BigNftContainer key={nft.id}>
-              {isVideo ? (
+              {result.type === 'video' ? (
                 <BigNftVideoPreview src={imageUrl} />
               ) : (
                 <BigNftImagePreview src={imageUrl} />
@@ -74,7 +104,9 @@ function CollectionRow({ collection, className }: Props) {
             </BigNftContainer>
           );
         })}
-        {remainingNfts.length > 0 ? <CompactNfts nfts={remainingNfts} /> : null}
+        {remainingNfts.length > 0 ? (
+          <CompactNfts nftRefs={remainingNfts.map((it) => it.nft)} />
+        ) : null}
       </Body>
       {isHidden && <StyledHiddenLabel caps>Hidden</StyledHiddenLabel>}
     </StyledCollectionRow>
@@ -155,10 +187,22 @@ const Body = styled.div`
  * - if 5 or less NFTs, display them all in a row
  * - if more than 5 NFTs, display the first 3, then the rest in text
  */
-function CompactNfts({ nfts }: { nfts: Nft[] }) {
-  const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
-  const firstFiveNfts = useMemo(() => nfts.slice(0, 5), [nfts]);
-  const remainingNfts = useMemo(() => nfts.slice(5), [nfts]);
+function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
+  const nfts = useFragment(
+    graphql`
+      fragment CollectionRowCompactNftsFragment on Nft @relay(plural: true) {
+        id
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    nftRefs
+  );
+
+  const nonNullNfts = removeNullValues(nfts);
+
+  const firstThreeNfts = useMemo(() => nonNullNfts.slice(0, 3), [nonNullNfts]);
+  const firstFiveNfts = useMemo(() => nonNullNfts.slice(0, 5), [nonNullNfts]);
+  const remainingNfts = useMemo(() => nonNullNfts.slice(5), [nonNullNfts]);
 
   // Account for the fact that having more than 5 NFTs will result in
   // only 3 tiles being displayed before the text
@@ -172,11 +216,20 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
             {firstThreeNfts.map((nft) => {
-              const imageUrl = getResizedNftImageUrlWithFallback(nft, SMOL_NFT_SIZE_PX);
-              const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+              const result = getVideoOrImageUrlForNftPreview(nft);
+
+              if (!result) {
+                return null;
+              }
+
+              const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+                result.urls.small,
+                SMOL_NFT_SIZE_PX
+              );
+
               return (
                 <SmolNftContainer key={nft.id}>
-                  {isVideo ? (
+                  {result.type === 'video' ? (
                     <SmolNftVideoPreview src={imageUrl} />
                   ) : (
                     <SmolNftImagePreview src={imageUrl} />
@@ -189,15 +242,20 @@ function CompactNfts({ nfts }: { nfts: Nft[] }) {
           </NftsWithMoreText>
         ) : (
           firstFiveNfts.map((nft) => {
-            if (!nft) {
+            const result = getVideoOrImageUrlForNftPreview(nft);
+
+            if (!result) {
               return null;
             }
 
-            const imageUrl = getResizedNftImageUrlWithFallback(nft, SMOL_NFT_SIZE_PX);
-            const isVideo = getMediaTypeForAssetUrl(imageUrl) === NftMediaType.VIDEO;
+            const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+              result.urls.small,
+              SMOL_NFT_SIZE_PX
+            );
+
             return (
               <SmolNftContainer key={nft.id}>
-                {isVideo ? (
+                {result.type === 'video' ? (
                   <SmolNftVideoPreview src={imageUrl} />
                 ) : (
                   <SmolNftImagePreview src={imageUrl} />

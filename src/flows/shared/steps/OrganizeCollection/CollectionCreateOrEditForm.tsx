@@ -5,7 +5,6 @@ import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
@@ -13,8 +12,6 @@ import ErrorText from 'components/core/Text/ErrorText';
 import { useModal } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
-import { Collection, CollectionLayout } from 'types/Collection';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
@@ -22,17 +19,22 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   onNext: WizardContext['next'];
-  collectionId?: Collection['id'];
-  collectionName?: Collection['name'];
-  collectionCollectorsNote?: Collection['collectors_note'];
+  galleryId: string;
+  collectionId?: string;
+  collectionName?: string;
+  collectionCollectorsNote?: string;
   stagedItems?: StagingItem[];
-  layout?: CollectionLayout;
+  layout?: {
+    columns: number;
+    whitespace: readonly number[];
+  };
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
 
 function CollectionCreateOrEditForm({
   onNext,
+  galleryId,
   collectionId,
   collectionName,
   collectionCollectorsNote,
@@ -82,7 +84,6 @@ function CollectionCreateOrEditForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { id: galleryId } = useAuthenticatedGallery();
   const updateCollection = useUpdateCollectionInfo();
   const createCollection = useCreateCollection();
 
@@ -113,7 +114,7 @@ function CollectionCreateOrEditForm({
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
-          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ id }) => id),
+          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ dbid: id }) => id),
         });
         await createCollection(galleryId, title, description, stagedItems, layout);
       }

@@ -3,37 +3,65 @@ import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import NotFound from 'scenes/NotFound/NotFound';
 import CollectionGalleryHeader from './CollectionGalleryHeader';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
 import NftGallery from 'components/NftGallery/NftGallery';
 import useMobileLayout from 'hooks/useMobileLayout';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionGalleryFragment$key } from '__generated__/CollectionGalleryFragment.graphql';
 
 type Props = {
-  collectionId?: string;
+  queryRef: CollectionGalleryFragment$key;
 };
 
-function CollectionGallery({ collectionId }: Props) {
-  const collection = useCollectionById({ id: collectionId ?? '' });
+function CollectionGallery({ queryRef }: Props) {
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
-  if (!collection) {
-    return <NotFound />;
+  const query = useFragment(
+    graphql`
+      fragment CollectionGalleryFragment on Query {
+        collection: collectionById(id: $collectionId) {
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on Collection {
+            __typename
+
+            ...NftGalleryFragment
+            ...CollectionGalleryHeaderFragment
+          }
+        }
+
+        ...CollectionGalleryHeaderQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { collection } = query;
+
+  if (collection?.__typename === 'Collection') {
+    return (
+      <StyledCollectionGallery>
+        <Spacer height={32} />
+        <CollectionGalleryHeader
+          queryRef={query}
+          collectionRef={collection}
+          mobileLayout={mobileLayout}
+          setMobileLayout={setMobileLayout}
+        />
+        <Spacer height={32} />
+        <NftGalleryWrapper>
+          <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+        </NftGalleryWrapper>
+        <Spacer height={64} />
+      </StyledCollectionGallery>
+    );
+  } else if (collection?.__typename === 'ErrCollectionNotFound') {
+    return <NotFound resource="collection" />;
   }
 
-  return (
-    <StyledCollectionGallery>
-      <Spacer height={32} />
-      <CollectionGalleryHeader
-        collection={collection}
-        mobileLayout={mobileLayout}
-        setMobileLayout={setMobileLayout}
-      />
-      <Spacer height={32} />
-      <NftGalleryWrapper>
-        <NftGallery collection={collection} mobileLayout={mobileLayout} />
-      </NftGalleryWrapper>
-      <Spacer height={64} />
-    </StyledCollectionGallery>
-  );
+  // TODO: just throw to an error boundary and have that report to sentry
+  return null;
 }
 
 const StyledCollectionGallery = styled.div`

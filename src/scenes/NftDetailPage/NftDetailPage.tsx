@@ -1,115 +1,88 @@
 import { useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
-
-import useNft from 'hooks/api/nfts/useNft';
 import Page from 'components/core/Page/Page';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import NftDetailAsset from './NftDetailAsset';
-import NftDetailText from './NftDetailText';
-import NftDetailNote from './NftDetailNote';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
-import { usePossiblyAuthenticatedUser } from 'src/hooks/api/users/useUser';
-
-import { isFeatureEnabled } from 'utils/featureFlag';
-
-import { FeatureFlag, Directions } from 'components/core/enums';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-
-import NavigationHandle from './NavigationHandle';
-import useCollectionById from 'hooks/api/collections/useCollectionById';
-import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
+import { graphql, useFragment } from 'react-relay';
+import NotFound from 'scenes/NotFound/NotFound';
+import { NftDetailPageFragment$key } from '__generated__/NftDetailPageFragment.graphql';
+import NftDetailView from './NftDetailView';
+import { captureException } from '@sentry/nextjs';
 
 import useKeyDown from 'hooks/useKeyDown';
 
 type Props = {
   nftId: string;
+  queryRef: NftDetailPageFragment$key;
 };
 
-function NftDetailPage({ nftId }: Props) {
-  const { query } = useRouter();
+function NftDetailPage({ nftId, queryRef }: Props) {
+  const { collectionNft, viewer } = useFragment(
+    graphql`
+      fragment NftDetailPageFragment on Query {
+        collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
+          ... on ErrNftNotFound {
+            __typename
+          }
 
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on CollectionNft {
+            __typename
+            nft {
+              dbid
+              name
+            }
+            ...NftDetailViewFragment
+          }
+        }
+
+        viewer {
+          __typename
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const {
+    query: { collectionId },
+  } = useRouter();
   const username = window.location.pathname.split('/')[1];
-  const collectionId = query.collectionId as string;
-  // TODO: Should refactor to utilize navigation context instead of session storage
-  const isFromCollectionPage =
-    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
-
-  const collectionNfts = useCollectionById({ id: collectionId })?.nfts;
-
-  const { prevNftId, nextNftId } = useMemo(() => {
-    if (!collectionNfts) {
-      // TODO: send error to sentry. technically all NFTs should belong to a collection.
-      return {
-        prevNftId: null,
-        nextNftId: null,
-      };
-    }
-
-    const nftIndex = collectionNfts.findIndex((nft) => nft.id === nftId);
-    if (nftIndex === -1) {
-      // TODO: send error to sentry. technically the NFT should exist within the collection.
-      return {
-        prevNftId: null,
-        nextNftId: null,
-      };
-    }
-
-    return {
-      prevNftId: collectionNfts[nftIndex - 1]?.id ?? null,
-      nextNftId: collectionNfts[nftIndex + 1]?.id ?? null,
-    };
-  }, [collectionNfts, nftId]);
-
-  const authenticatedUser = usePossiblyAuthenticatedUser();
-  const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
-
-  const handleBackClick = useBackButton({ username });
-
-  const nft = useNft({ id: nftId ?? '' });
-  const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
-
+  const isMobile = useIsMobileWindowWidth();
   const track = useTrack();
+  const handleBackClick = useBackButton({ username });
 
   useEffect(() => {
     track('Page View: NFT Detail', { nftId });
   }, [nftId, track]);
 
-  const assetHasNote = nft?.collectors_note !== '';
-  const isCollectorsNoteEnabled = isFeatureEnabled(FeatureFlag.COLLECTORS_NOTE);
+  // TODO: Should refactor to utilize navigation context instead of session storage
+  const isFromCollectionPage =
+    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
-  const assetHasExtraPaddingForNote = assetHasNote || authenticatedUserOwnsAsset;
-
-  const isMobile = useIsMobileWindowWidth();
-  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
-
-  if (!nft) {
-    return <GalleryRedirect to="/404" />;
+  if (collectionNft?.__typename !== 'CollectionNft') {
+    captureException('NftDetailPage: requested nft did not return a CollectionNft');
+    return <NotFound resource="nft" />;
   }
 
-  const leftArrow = prevNftId && (
-    <NavigationHandle
-      direction={Directions.LEFT}
-      username={username}
-      collectionId={collectionId}
-      nftId={prevNftId}
-    />
-  );
+  const headTitle = `${collectionNft?.nft?.name} - ${username} | Gallery`;
 
-  const rightArrow = nextNftId && (
-    <NavigationHandle
-      direction={Directions.RIGHT}
-      username={username}
-      collectionId={collectionId}
-      nftId={nextNftId}
-    />
-  );
+  const authenticatedUserOwnsAsset =
+    viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
 
   const { replace, back } = useRouter();
   const navigateToId = function (nftId: string) {
@@ -148,68 +121,16 @@ function NftDetailPage({ nftId }: Props) {
               : '← Back to gallery'}
           </ActionText>
         </StyledBackLink>
-        <StyledBody>
-          {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
-          {leftArrow}
-          <StyledContentContainer>
-            <StyledAssetAndNoteContainer>
-              <ShimmerProvider>
-                <NftDetailAsset
-                  nft={nft}
-                  hasExtraPaddingForNote={isCollectorsNoteEnabled && assetHasExtraPaddingForNote}
-                />
-              </ShimmerProvider>
-              {isCollectorsNoteEnabled && (authenticatedUserOwnsAsset || assetHasNote) && (
-                <NftDetailNote
-                  nftId={nft.id}
-                  authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-                  nftCollectorsNote={nft?.collectors_note}
-                />
-              )}
-            </StyledAssetAndNoteContainer>
-
-            <NftDetailText nft={nft} ownerUsername={username} />
-          </StyledContentContainer>
-          {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
-          {rightArrow}
-        </StyledBody>
+        <NftDetailView
+          username={username}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          queryRef={collectionNft}
+          nftId={nftId}
+        />
       </StyledNftDetailPage>
     </>
   );
 }
-
-const StyledBody = styled.div`
-  display: flex;
-  width: 100%;
-
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
-`;
-
-const StyledContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
-  }
-`;
-
-const StyledAssetAndNoteContainer = styled.div`
-  position: relative;
-  width: 100%;
-`;
 
 const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.mobile} {
@@ -227,13 +148,6 @@ const StyledNftDetailPage = styled(Page)`
   @media only screen and ${breakpoints.desktop} {
     margin: 0px;
   }
-`;
-
-// We position the arrows using position absolute (so they reach the page bounds)
-// But we still want there to be space taken up in the document flow, so that the arrows do not overlap with content
-// This container simply creates space for the arrows to be positioned
-const StyledNavigationBuffer = styled.div`
-  width: 80px;
 `;
 
 export default NftDetailPage;

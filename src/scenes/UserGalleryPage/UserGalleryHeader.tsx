@@ -3,33 +3,43 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
-import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
 
 type Props = {
-  username: string;
-  bio: string;
+  userRef: UserGalleryHeaderFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
 
 function UserGalleryHeader({
-  username,
-  bio,
+  userRef,
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
 }: Props) {
-  const unescapedBio = useMemo(() => unescape(bio), [bio]);
+  const user = useFragment(
+    graphql`
+      fragment UserGalleryHeaderFragment on GalleryUser {
+        username @required(action: THROW)
+        bio
+      }
+    `,
+    userRef
+  );
+
+  const unescapedBio = useMemo(() => (user.bio ? unescape(user.bio) : ''), [user.bio]);
 
   return (
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
-        <StyledUsername>{username}</StyledUsername>
+        <StyledUsername>{user.username}</StyledUsername>
         {showMobileLayoutToggle && (
           <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
         )}

@@ -1,4 +1,3 @@
-import { vanillaFetcher } from 'contexts/swr/useFetcher';
 import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
 
@@ -10,8 +9,7 @@ const EnsName = ({ address }: Props) => {
   const { data } = useSWR(
     address
       ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.toLowerCase())}`
-      : null,
-    vanillaFetcher
+      : null
   );
 
   if (data?.address) {

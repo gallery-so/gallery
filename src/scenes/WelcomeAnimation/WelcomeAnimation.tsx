@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import Image from './Image';
@@ -9,8 +8,6 @@ import { AnimatedImage, animatedImages } from './Images';
 
 import styled, { css, keyframes } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
-import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
-import { useRouter } from 'next/router';
 import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
@@ -70,8 +67,6 @@ export default function WelcomeAnimation({ next }: Props) {
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [shouldExplode, setShouldExplode] = useState(false);
   const [imagesFaded, setImagesFaded] = useState(false);
-  const username = useAuthenticatedUsername();
-  const { push } = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
@@ -84,17 +79,13 @@ export default function WelcomeAnimation({ next }: Props) {
 
   const handleClick = useCallback(() => {
     track('Click through welcome page');
-    if (username) {
-      void push(`/${username}`);
-      return;
-    }
 
     // Delay next so we can show a transition animation
     setShouldFadeOut(true);
     setTimeout(() => {
       next();
     }, FADE_DURATION);
-  }, [track, username, push, next]);
+  }, [track, next]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>

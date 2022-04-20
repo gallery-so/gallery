@@ -10,40 +10,69 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
-import { Nft } from 'types/Nft';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
 import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
-import { EditModeNft } from '../types';
+import { EditModeNftChild, EditModeNft } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
-import useAllNfts from 'hooks/api/nfts/useAllNfts';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
-
+import { graphql, useFragment } from 'react-relay';
+import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 import useKeyDown from 'hooks/useKeyDown';
 import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
 import { useModal } from 'contexts/modal/ModalContext';
-
-function convertNftsToEditModeNfts(nfts: Nft[], isSelected = false): EditModeNft[] {
+        
+function convertNftsToEditModeNfts(nfts: EditModeNftChild[], isSelected = false): EditModeNft[] {
   return nfts.map((nft, index) => ({
     index,
     nft,
-    id: nft.id,
+    id: nft.dbid,
     isSelected,
   }));
 }
 
-function CollectionEditor() {
-  const escapePress = useKeyDown('Escape');
-  const { showModal } = useModal();
+type Props = {
+  viewerRef: CollectionEditorFragment$key;
+};
 
-  useEffect(() => {
-    if (escapePress) {
-      showModal(<ConfirmLeaveModal />);
-    }
-  }, [escapePress]);
+function CollectionEditor({ viewerRef }: Props) {
+  const viewer = useFragment(
+    graphql`
+      fragment CollectionEditorFragment on Viewer {
+        user @required(action: THROW) {
+          galleries @required(action: THROW) {
+            collections @required(action: THROW) {
+              dbid
+              nfts {
+                nft {
+                  dbid @required(action: THROW)
+                  name @required(action: THROW)
+                  lastUpdated @required(action: THROW)
+                }
+              }
+              layout {
+                columns
+                whitespace
+              }
+            }
+          }
+          wallets @required(action: THROW) {
+            nfts @required(action: THROW) {
+              dbid @required(action: THROW)
+              name @required(action: THROW)
+              lastUpdated @required(action: THROW)
+              ...SidebarFragment
+              ...StagingAreaFragment
+            }
+          }
+        }
+      }
+    `,
+    viewerRef
+  );
 
   const stagedNfts = useStagedItemsState();
   const sidebarNfts = useSidebarNftsState();
@@ -57,27 +86,39 @@ function CollectionEditor() {
     };
   }, [setNextEnabled, stagedNfts]);
 
-  const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setSidebarNfts, stageNfts, unstageNfts } = useCollectionEditorActions();
-
-  const { collections } = useAuthenticatedGallery();
+  const { collectionIdBeingEdited } = useCollectionWizardState();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
+
+  const gallery = viewer.user.galleries[0];
+
+  if (!gallery) {
+    throw new Error(`CollectionEditor expected a gallery`);
+  }
+
+  const { collections } = gallery;
+
+  const nonNullCollections = removeNullValues(collections);
+
   const collectionBeingEdited = useMemo(
-    () => collections.find((coll) => coll.id === collectionIdBeingEditedRef.current),
-    [collections]
+    () => nonNullCollections.find((coll) => coll.dbid === collectionIdBeingEditedRef.current),
+    [nonNullCollections]
   );
+
   const nftsInCollection = useMemo(
-    () => collectionBeingEdited?.nfts ?? [],
+    () => removeNullValues(collectionBeingEdited?.nfts?.flatMap((nft) => nft?.nft)) ?? [],
     [collectionBeingEdited]
   );
 
   // Set collection layout if we are editing an existing collection
   const { setColumns } = useCollectionEditorActions();
   const mountRef = useRef(false);
+
   useEffect(() => {
     if (collectionBeingEdited) {
-      const columns = isValidColumns(collectionBeingEdited.layout.columns)
-        ? collectionBeingEdited.layout.columns
+      const currentCollectionColumns = collectionBeingEdited.layout?.columns ?? 0;
+      const columns = isValidColumns(currentCollectionColumns)
+        ? currentCollectionColumns
         : DEFAULT_COLUMNS;
       setColumns(columns);
     }
@@ -90,20 +131,22 @@ function CollectionEditor() {
     sidebarNftsRef.current = sidebarNfts;
   }, [sidebarNfts]);
 
-  const allNfts = useAllNfts();
+  const allNfts = useMemo(() => {
+    return removeNullValues(viewer.user.wallets.flatMap((wallet) => wallet?.nfts));
+  }, [viewer.user.wallets]);
 
-  // stabilize `allNfts` returned from `useAllNfts`, since SWR middleware can make it referentially unstable
+  // stabilize `allNfts` since SWR middleware can make it referentially unstable
   const allNftsCacheKey = useMemo(
-    () => allNfts.reduce((prev, curr) => `${prev}-${curr.last_updated}`, ''),
+    () => allNfts.reduce((prev, curr) => `${prev}-${curr.lastUpdated}`, ''),
     [allNfts]
   );
 
   const whitespaceList = useMemo(
-    () => collectionBeingEdited?.layout?.whitespace ?? [],
+    () => removeNullValues(collectionBeingEdited?.layout?.whitespace) ?? [],
     [collectionBeingEdited]
   );
 
-  // decorates NFTs returned from useAllNfts with additional fields for the purpose of editing / dnd
+  // decorates NFTs returned with additional fields for the purpose of editing / dnd
   const allEditModeNfts: SidebarNftsState = useMemo(() => {
     const editModeNfts = convertNftsToEditModeNfts(allNfts);
     return Object.fromEntries(editModeNfts.map((nft) => [nft.id, nft]));
@@ -126,7 +169,7 @@ function CollectionEditor() {
     // Mark NFTs as selected if they're in the collection being edited
     const newSidebarNfts: SidebarNftsState = allEditModeNfts;
     nftsInCollection.forEach((nft) => {
-      const preRefreshNft = newSidebarNfts[nft.id];
+      const preRefreshNft = newSidebarNfts[nft.dbid];
       if (preRefreshNft) {
         preRefreshNft.isSelected = true;
       }
@@ -155,17 +198,26 @@ function CollectionEditor() {
   }, [allEditModeNfts, nftsInCollection, setSidebarNfts, stageNfts, unstageNfts, whitespaceList]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
+  
+  const escapePress = useKeyDown('Escape');
+  const { showModal } = useModal();
+
+  useEffect(() => {
+    if (escapePress) {
+      showModal(<ConfirmLeaveModal />);
+    }
+  }, [escapePress]);
 
   return (
     <StyledOrganizeCollection>
       <StyledSidebarContainer>
-        <Sidebar />
+        <Sidebar sidebarNfts={sidebarNfts} nftsRef={allNfts} />
       </StyledSidebarContainer>
       <StyledEditorContainer>
         {shouldDisplayEditor ? (
           <>
             <EditorMenu />
-            <StagingArea />
+            <StagingArea stagedItems={stagedNfts} nftsRef={allNfts} />
           </>
         ) : (
           <Directions />
