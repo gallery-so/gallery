@@ -36,6 +36,7 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
 
   const { push } = useRouter();
 
+  // FIXME: Only navigate to /edit if the user owns the current collection
   const navigateToEdit = useCallback(() => {
     void push(`/edit?collectionId=${collectionId}`);
   }, [push, collectionId]);

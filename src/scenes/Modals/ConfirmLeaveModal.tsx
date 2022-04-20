@@ -11,7 +11,7 @@ import useBackButton from 'hooks/useBackButton';
 function ConfirmLeaveModal() {
   const { hideModal } = useModal();
 
-  // FIXME: Do we want escape on /edit to go back to the previous state in history? Or simply always go to /{username}?
+  // FIXME: Need real auth for user
   const username = 'connorr'; // useAuthenticatedUsername();
   const navigateBack = useBackButton({ username });
 
