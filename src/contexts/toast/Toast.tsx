@@ -44,7 +44,7 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-  z-index: 20;
+  z-index: 25; // appears above cta footer mobile
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
