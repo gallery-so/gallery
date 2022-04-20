@@ -5,7 +5,7 @@ import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
 import useBackButton from 'hooks/useBackButton';
 import ActionText from 'components/core/ActionText/ActionText';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import useKeyDown from 'hooks/useKeyDown';
@@ -41,20 +41,21 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
   const backspacePress = useKeyDown('Backspace');
   const { push } = useRouter();
 
+  const navigateToEdit = useCallback(() => {
+    void push(`/edit?collectionId=${collectionId}`);
+  }, [push, collectionId]);
+  const navigateToUserGallery = useCallback(() => {
+    void push(`/${username}`);
+  }, [push, username]);
+
   useEffect(() => {
-    const navigateToEdit = function () {
-      void push(`/edit?collectionId=${collectionId}`);
-    };
-    const navigateToUserGallery = function () {
-      void push(`/${username}`);
-    };
     if (ePress) {
       navigateToEdit();
     }
     if (escapePress || backspacePress) {
       navigateToUserGallery();
     }
-  }, [ePress, escapePress, backspacePress, push, username, collectionId]);
+  }, [ePress, escapePress, backspacePress, navigateToEdit, navigateToUserGallery]);
 
   const query = useFragment(
     graphql`

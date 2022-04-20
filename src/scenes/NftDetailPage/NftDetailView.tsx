@@ -118,7 +118,7 @@ export default function NftDetailView({
     // Placing prevNftId and nextNftId in the dependency list would trigger back again, if the user navigated via collection
     // E.g. nft detail page (back) -> collection page (back) -> gallery. Is there a better solution here?
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nextPress, prevPress, escapePress, backspacePress, navigateToId, handleBackClick]);
+  }, [nextPress, prevPress, escapePress, backspacePress, handleBackClick]);
 
   const assetHasNote = !!nft.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
