@@ -14,7 +14,11 @@ function AnimatedModal({ isActive, hideModal, content }: Props) {
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        hideModal();
+        // This is wrapped in a setTimeout so that any event that triggers showModal via escape does not cause jitter
+        // E.g. CollectionEditor.tsx opens the modal via escape, and so trying to close here would jitter an open/close rapidly
+        setTimeout(() => {
+          hideModal();
+        }, 150);
       }
     };
 

@@ -5,9 +5,11 @@ import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
 import useBackButton from 'hooks/useBackButton';
 import ActionText from 'components/core/ActionText/ActionText';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
 
 import { graphql, useFragment } from 'react-relay';
 
@@ -35,11 +37,39 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
   const query = useFragment(
     graphql`
       fragment CollectionGalleryPageFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
         ...CollectionGalleryFragment
       }
     `,
     queryRef
   );
+
+  const { push } = useRouter();
+
+  const userOwnsCollection = Boolean(query?.viewer?.user?.username === username);
+  const isLoggedIn = Boolean(query?.viewer?.user?.username);
+
+  const navigateToEdit = useCallback(() => {
+    if (!isLoggedIn) return;
+    if (userOwnsCollection) {
+      void push(`/edit?collectionId=${collectionId}`);
+    } else {
+      void push(`/edit`);
+    }
+  }, [push, collectionId, userOwnsCollection, isLoggedIn]);
+
+  const navigateToUserGallery = useCallback(() => {
+    void push(`/${username}`);
+  }, [push, username]);
+
+  useKeyDown('e', navigateToEdit);
+  useKeyDown('Escape', navigateToUserGallery);
 
   return (
     <>

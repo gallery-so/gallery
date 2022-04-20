@@ -20,6 +20,8 @@ import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 
+import useKeyDown from 'hooks/useKeyDown';
+
 type ConfigProps = {
   wizardId: string;
   username: string;
@@ -72,6 +74,8 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
 
     void push(`/${username}`);
   }, [clearOnNext, next, push, username, wizardId, track]);
+
+  useKeyDown('Escape', saveGalleryAndReturnToProfile);
 
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);

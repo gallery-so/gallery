@@ -1,4 +1,8 @@
 import NotFound from 'scenes/NotFound/NotFound';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
@@ -12,6 +16,13 @@ function UserGallery({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
@@ -31,6 +42,16 @@ function UserGallery({ queryRef }: Props) {
   );
 
   const { user } = query;
+  const { push } = useRouter();
+
+  const isLoggedIn = Boolean(query.viewer?.user?.id);
+
+  const navigateToEdit = useCallback(() => {
+    if (!isLoggedIn) return;
+    void push(`/edit`);
+  }, [push, isLoggedIn]);
+
+  useKeyDown('e', navigateToEdit);
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;
