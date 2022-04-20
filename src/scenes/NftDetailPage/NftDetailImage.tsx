@@ -43,7 +43,6 @@ function NftDetailImage({ nftRef }: Props) {
     <ImageWithLoading
       src={graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200)}
       alt={nft.name ?? ''}
-      widthType="maxWidth"
       heightType={breakpoint === size.desktop ? 'maxHeightScreen' : undefined}
     />
   );
