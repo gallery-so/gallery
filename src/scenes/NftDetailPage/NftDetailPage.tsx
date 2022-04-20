@@ -27,7 +27,6 @@ import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from 'hoo
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 
 import useKeyDown from 'hooks/useKeyDown';
-import useBackNavigation from 'hooks/useBackNavigation';
 
 type Props = {
   nftId: string;
@@ -72,7 +71,6 @@ function NftDetailPage({ nftId }: Props) {
   const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
 
   const handleBackClick = useBackButton({ username });
-  const navigateBack = useBackNavigation({ username });
 
   const nft = useNft({ id: nftId ?? '' });
   const headTitle = useMemo(() => `${nft?.name} - ${username} | Gallery`, [nft, username]);
@@ -131,7 +129,7 @@ function NftDetailPage({ nftId }: Props) {
       navigateToId(prevNftId);
     }
     if (escapePress || backspacePress) {
-      navigateBack();
+      handleBackClick();
     }
   }, [nextPress, prevPress, escapePress, backspacePress]);
 

@@ -6,15 +6,15 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import useBackNavigation from 'hooks/useBackNavigation';
 import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
+import useBackButton from 'hooks/useBackButton';
 
 function ConfirmLeaveModal() {
   const { hideModal } = useModal();
 
   // FIXME: Do we want escape on /edit to go back to the previous state in history? Or simply always go to /{username}?
   const username = useAuthenticatedUsername();
-  const navigateBack = useBackNavigation({ username });
+  const navigateBack = useBackButton({ username });
 
   const goBack = useCallback(() => {
     navigateBack();

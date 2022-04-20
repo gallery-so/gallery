@@ -19,8 +19,8 @@ export default function useBackButton({ username }: Props) {
   const backDisabled = previousRoute?.includes('/edit?collectionId=');
 
   const handleBackClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      if (event.metaKey) {
+    (event?: React.MouseEvent<HTMLElement>) => {
+      if (event?.metaKey) {
         window.open(`/${username}`);
         return;
       }
