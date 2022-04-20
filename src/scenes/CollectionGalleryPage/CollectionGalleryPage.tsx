@@ -52,14 +52,18 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
 
   const { push } = useRouter();
 
-  const userOwnsCollection = query?.viewer?.user?.username === username;
+  const userOwnsCollection = Boolean(query?.viewer?.user?.username === username);
+  const isLoggedIn = Boolean(query?.viewer?.user?.username);
+
   const navigateToEdit = useCallback(() => {
+    if (!isLoggedIn) return;
     if (userOwnsCollection) {
       void push(`/edit?collectionId=${collectionId}`);
     } else {
       void push(`/edit`);
     }
-  }, [push, collectionId, userOwnsCollection]);
+  }, [push, collectionId, userOwnsCollection, isLoggedIn]);
+
   const navigateToUserGallery = useCallback(() => {
     void push(`/${username}`);
   }, [push, username]);

@@ -16,6 +16,13 @@ function UserGallery({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
@@ -35,11 +42,14 @@ function UserGallery({ queryRef }: Props) {
   );
 
   const { user } = query;
-
   const { push } = useRouter();
+
+  const isLoggedIn = Boolean(query.viewer?.user?.id);
+
   const navigateToEdit = useCallback(() => {
+    if (!isLoggedIn) return;
     void push(`/edit`);
-  }, [push]);
+  }, [push, isLoggedIn]);
 
   useKeyDown('e', navigateToEdit);
 
