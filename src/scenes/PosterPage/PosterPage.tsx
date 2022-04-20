@@ -9,12 +9,18 @@ import PosterFigmaFrame from './PosterFigmaFrame';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useToastActions } from 'contexts/toast/ToastContext';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
+  const { pushToast } = useToastActions();
 
   const handleBackClick = () => {
     window.history.back();
+  };
+
+  const handleSignPoster = () => {
+    pushToast('Thank you for participating in the (Object 006) 2022 Community Poster event.');
   };
 
   return (
@@ -22,7 +28,6 @@ export default function PosterPage() {
       <StyledBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
-
       <PosterFigmaFrame></PosterFigmaFrame>
       <StyledContent>
         <div>
@@ -43,9 +48,16 @@ export default function PosterPage() {
 
         {!isMobile && <StyledHr></StyledHr>}
 
+        <BaseXL>Event has ended. We will notify you once the final product is minted.</BaseXL>
+
         <StyledCallToAction>
           <BaseXL>11:23:21</BaseXL>
-          <StyledButton text="Sign Poster"></StyledButton>
+          <StyledAnchor
+            href="https://www.figma.com/file/YrjZkebwPMIPr3aFx8o2w1/Untitled?node-id=1%3A2"
+            target="_blank"
+          >
+            <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
+          </StyledAnchor>
         </StyledCallToAction>
       </StyledContent>
     </StyledPage>
@@ -116,9 +128,14 @@ const StyledCallToAction = styled.div`
   }
 `;
 
+const StyledAnchor = styled.a`
+  text-decoration: none;
+`;
+
 const StyledButton = styled(Button)`
   align-self: flex-end;
   width: 100%;
   height: 100%;
   padding: 12px 24px;
+  text-decoration: none;
 `;
