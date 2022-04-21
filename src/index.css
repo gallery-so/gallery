@@ -76,6 +76,11 @@ code {
   opacity: 1;
 }
 
+/* text highlight color */
+::selection {
+  background: #e2e2e2;
+}
+
 /* always display scrollbar if scrollable for accessibility */
 ::-webkit-scrollbar {
   -webkit-appearance: none;
