@@ -1,3 +1,4 @@
+import { ReportFn } from 'contexts/errorReporting/ErrorReportingContext';
 import { readInlineData, graphql } from 'relay-runtime';
 import { FALLBACK_URL } from 'utils/nft';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVideoOrImageUrlForNftPreviewFragment.graphql';
@@ -5,11 +6,13 @@ import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVi
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
 
 export default function getVideoOrImageUrlForNftPreview(
-  nftRef: getVideoOrImageUrlForNftPreviewFragment$key
+  nftRef: getVideoOrImageUrlForNftPreviewFragment$key,
+  handleReportError?: ReportFn
 ): { type: 'video'; urls: UrlSet } | { type: 'image'; urls: UrlSet } | undefined {
-  const { media } = readInlineData(
+  const result = readInlineData(
     graphql`
       fragment getVideoOrImageUrlForNftPreviewFragment on Nft @inline {
+        dbid
         media {
           ... on VideoMedia {
             __typename
@@ -97,7 +100,15 @@ export default function getVideoOrImageUrlForNftPreview(
     nftRef
   );
 
+  const media = result?.media;
+
   if (!media || !('previewURLs' in media) || media?.previewURLs === null) {
+    handleReportError?.(new Error('no media or preview URLs found for NFT'), {
+      tags: {
+        id: result.dbid,
+        assetType: media?.__typename,
+      },
+    });
     return undefined;
   }
 
