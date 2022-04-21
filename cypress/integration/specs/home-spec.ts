@@ -22,9 +22,9 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
-    cy.url().should('include', `/gentlemanbeggar`);
+    cy.url().should('include', `/silverlake`);
     cy.wait(1000);
-    home.getAccountButton('gentlemanbeggar').click();
+    home.getAccountButton('silverlake').click();
     home.getSignOutButton().click();
 
     home.getSignInButtonNav().should('be.exist');
