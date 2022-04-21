@@ -21,6 +21,10 @@ export default function useUpdateUser() {
               }
             }
           }
+          ... on ErrInvalidInput {
+            __typename
+            reasons
+          }
         }
       }
     `
@@ -41,7 +45,7 @@ export default function useUpdateUser() {
         },
       };
 
-      await updateUser({
+      const response = await updateUser({
         optimisticResponse,
         variables: {
           input: {
@@ -50,6 +54,7 @@ export default function useUpdateUser() {
           },
         },
       });
+      console.log(response);
     },
     [updateUser]
   );
