@@ -9,8 +9,8 @@
     "relay": "mkdir __generated__; relay-compiler",
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open --configFile cypress.json",
-    "synpress:run": "synpress run  --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js'",
-    "cypress:gh": "synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js' --group Desktop -b chromium",
+    "synpress:run": "synpress run  --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js',fixturesFolder='cypress/fixtures'",
+    "cypress:gh": "synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.json --config supportFile='cypress/support/index.js',pluginsFile='cypress/plugins/index.js',fixturesFolder='cypress/fixtures' --group Desktop -b chromium",
     "find-unused-modules": "ts-prune -s .graphql.ts -i pages/"
   },
   "dependencies": {
