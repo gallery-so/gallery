@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import Spacer from 'components/core/Spacer/Spacer';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import { Collection } from 'types/Collection';
 import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import detectMobileDevice from 'utils/detectMobileDevice';
@@ -19,12 +16,16 @@ import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
+import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
+
+import useKeyDown from 'hooks/useKeyDown';
 
 type ConfigProps = {
   wizardId: string;
   username: string;
   galleryId: string;
-  sortedCollections: Collection[];
   next: WizardContext['next'];
 };
 
@@ -74,18 +75,66 @@ function useWizardConfig({ wizardId, username, next }: ConfigProps) {
     void push(`/${username}`);
   }, [clearOnNext, next, push, username, wizardId, track]);
 
+  useKeyDown('Escape', saveGalleryAndReturnToProfile);
+
   useEffect(() => {
     setOnNext(saveGalleryAndReturnToProfile);
     setOnPrevious(returnToPrevious);
   }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
 }
 
-function OrganizeGallery({ next, push }: WizardContext) {
-  const wizardId = useWizardId();
-  const user = useAuthenticatedUser();
+export function LazyOrganizeGallery(props: WizardContext) {
+  const query = useLazyLoadQuery<OrganizeGalleryQuery>(
+    graphql`
+      query OrganizeGalleryQuery {
+        ...OrganizeGalleryFragment
+      }
+    `,
+    {}
+  );
 
-  const { id, collections } = useAuthenticatedGallery();
-  const [sortedCollections, setSortedCollections] = useState(collections);
+  return <OrganizeGallery {...props} queryRef={query} />;
+}
+
+function OrganizeGallery({
+  next,
+  push,
+  queryRef,
+}: WizardContext & { queryRef: OrganizeGalleryFragment$key }) {
+  const query = useFragment(
+    graphql`
+      fragment OrganizeGalleryFragment on Query {
+        viewer @required(action: THROW) {
+          ... on Viewer {
+            user @required(action: THROW) {
+              username @required(action: THROW)
+            }
+            viewerGalleries @required(action: THROW) {
+              gallery @required(action: THROW) {
+                dbid
+
+                ...CollectionDndFragment
+
+                collections @required(action: THROW) {
+                  __typename
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const gallery = query.viewer.viewerGalleries?.[0]?.gallery;
+  const username = query.viewer.user?.username ?? '';
+
+  if (!gallery) {
+    throw new Error('User did not have a gallery.');
+  }
+
+  const wizardId = useWizardId();
 
   useNotOptimizedForMobileWarning();
 
@@ -100,20 +149,17 @@ function OrganizeGallery({ next, push }: WizardContext) {
     }
   }, [collectionId, push, setCollectionIdBeingEdited]);
 
-  useEffect(() => {
-    // When the server sends down its source of truth, sync the local state
-    setSortedCollections(collections);
-  }, [collections]);
-
   useWizardConfig({
     wizardId,
-    username: user.username,
-    galleryId: id,
-    sortedCollections,
+    username,
+    galleryId: gallery.dbid,
     next,
   });
 
-  const isEmptyGallery = useMemo(() => sortedCollections.length === 0, [sortedCollections.length]);
+  const isEmptyGallery = useMemo(
+    () => gallery.collections.length === 0,
+    [gallery.collections.length]
+  );
 
   return (
     <StyledOrganizeGallery>
@@ -131,11 +177,7 @@ function OrganizeGallery({ next, push }: WizardContext) {
             </BaseM>
           </StyledEmptyGalleryMessage>
         ) : (
-          <CollectionDnd
-            galleryId={id}
-            sortedCollections={sortedCollections}
-            setSortedCollections={setSortedCollections}
-          />
+          <CollectionDnd galleryRef={gallery} />
         )}
         <Spacer height={120} />
       </Content>

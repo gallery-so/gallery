@@ -29,11 +29,12 @@
       "mocks/*": ["src/mocks/*"],
       "scenes/*": ["src/scenes/*"],
       "types/*": ["src/types/*"],
-      "utils/*": ["src/utils/*"]
+      "utils/*": ["src/utils/*"],
+      "generated/*": ["__generated__"]
     },
     "downlevelIteration": true,
     "incremental": true
   },
-  "include": ["src", "scripts", "pages", "next-env.d.ts", "app.d.ts"],
+  "include": ["src", "scripts", "pages", "next-env.d.ts", "app.d.ts", "__generated__"],
   "exclude": ["node_modules"]
 }

@@ -13,10 +13,16 @@ const Web3WalletProvider = memo(({ children }) => (
   <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
 ));
 
+let web3Root: ReturnType<typeof createWeb3ReactRoot>;
+
+// Create the react root once and never update it.
+// This is because Web3React does not work with SSR.
+if (typeof window !== 'undefined') {
+  web3Root = createWeb3ReactRoot(NETWORK_CONTEXT_NAME);
+}
+
 export const Web3ProviderNetwork = memo(({ children }) => {
-  // Create the react root once and never update it.
-  // This is because Web3React does not work with SSR.
-  const [Web3ReactRoot] = useState(() => createWeb3ReactRoot(NETWORK_CONTEXT_NAME));
+  const [Web3ReactRoot] = useState(() => web3Root);
 
   return <Web3ReactRoot getLibrary={getLibrary}>{children}</Web3ReactRoot>;
 });

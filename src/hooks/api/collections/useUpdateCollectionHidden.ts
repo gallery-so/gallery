@@ -1,51 +1,46 @@
 import { useCallback } from 'react';
-import { useSWRConfig } from 'swr';
-import cloneDeep from 'lodash.clonedeep';
-import usePost from '../_rest/usePost';
-import { useAuthenticatedUser } from '../users/useUser';
-import { getGalleriesCacheKey } from '../galleries/useGalleries';
-import { GetGalleriesResponse } from '../galleries/types';
-import { UpdateCollectionHiddenRequest, UpdateCollectionHiddenResponse } from './types';
-import { getISODate } from 'utils/time';
+
+import { graphql } from 'relay-runtime';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import {
+  useUpdateCollectionHiddenMutation,
+  useUpdateCollectionHiddenMutation$data,
+} from '__generated__/useUpdateCollectionHiddenMutation.graphql';
 
 export default function useUpdateCollectionHidden() {
-  const updateCollection = usePost();
-  const authenticatedUser = useAuthenticatedUser();
-  const { mutate } = useSWRConfig();
+  const [updateCollection] = usePromisifiedMutation<useUpdateCollectionHiddenMutation>(
+    graphql`
+      mutation useUpdateCollectionHiddenMutation($input: UpdateCollectionHiddenInput!) {
+        updateCollectionHidden(input: $input) {
+          __typename
+          ... on UpdateCollectionHiddenPayload {
+            collection {
+              id
+              hidden
+            }
+          }
+        }
+      }
+    `
+  );
 
   return useCallback(
     async (collectionId: string, hidden: boolean) => {
-      await updateCollection<UpdateCollectionHiddenResponse, UpdateCollectionHiddenRequest>(
-        '/collections/update/hidden',
-        'update collection hidden',
-        {
-          id: collectionId,
-          hidden,
-        }
-      );
-
-      // Optimistically update the collection within gallery cache.
-      // it should be less messy in the future when we have a dedicated
-      // endpoint for individual collections
-      await mutate(
-        getGalleriesCacheKey({ userId: authenticatedUser.id }),
-        (value: GetGalleriesResponse) => {
-          const newValue = cloneDeep<GetGalleriesResponse>(value);
-          const gallery = newValue.galleries[0];
-          const newCollections = gallery.collections.map((collection) => {
-            if (collection.id === collectionId) {
-              return { ...collection, hidden };
-            }
-
-            return collection;
-          });
-          gallery.collections = newCollections;
-          gallery.last_updated = getISODate();
-          return newValue;
+      const optimisticResponse: useUpdateCollectionHiddenMutation$data = {
+        updateCollectionHidden: {
+          __typename: 'UpdateCollectionHiddenPayload',
+          collection: {
+            id: `Collection:${collectionId}`,
+            hidden,
+          },
         },
-        false
-      );
+      };
+
+      await updateCollection({
+        optimisticResponse,
+        variables: { input: { collectionId, hidden } },
+      });
     },
-    [updateCollection, mutate, authenticatedUser.id]
+    [updateCollection]
   );
 }

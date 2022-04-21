@@ -1,44 +1,48 @@
-import cloneDeep from 'lodash.clonedeep';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
-import { useSWRConfig } from 'swr';
-import { Collection } from 'types/Collection';
-import { getISODate } from 'utils/time';
-import { useAuthenticatedUser } from '../users/useUser';
-import usePost from '../_rest/usePost';
-import { GetGalleriesResponse, UpdateGalleryRequest, UpdateGalleryResponse } from './types';
-import { getGalleriesCacheKey } from './useGalleries';
-
-function mapCollectionsToCollectionIds(collections: Collection[]) {
-  return collections.map((collection) => collection.id);
-}
+import { graphql } from 'relay-runtime';
+import {
+  useUpdateGalleryMutation,
+  useUpdateGalleryMutation$data,
+} from '__generated__/useUpdateGalleryMutation.graphql';
 
 export default function useUpdateGallery() {
-  const updateGallery = usePost();
-  const authenticatedUser = useAuthenticatedUser();
-  const { mutate } = useSWRConfig();
+  const [updateGallery] = usePromisifiedMutation<useUpdateGalleryMutation>(graphql`
+    mutation useUpdateGalleryMutation($input: UpdateGalleryCollectionsInput!) {
+      updateGalleryCollections(input: $input) {
+        __typename
+        ... on UpdateGalleryCollectionsPayload {
+          gallery {
+            collections {
+              id
+            }
+          }
+        }
+      }
+    }
+  `);
 
   return useCallback(
-    async (galleryId: string, collections: Collection[]) => {
-      await updateGallery<UpdateGalleryResponse, UpdateGalleryRequest>(
-        '/galleries/update',
-        'update gallery',
-        {
-          id: galleryId,
-          collections: mapCollectionsToCollectionIds(collections),
-        }
-      );
-
-      void mutate(
-        getGalleriesCacheKey({ userId: authenticatedUser.id }),
-        (value: GetGalleriesResponse) => {
-          const newValue = cloneDeep<GetGalleriesResponse>(value);
-          newValue.galleries[0].collections = collections;
-          newValue.galleries[0].last_updated = getISODate();
-          return newValue;
+    async (galleryId: string, collections: string[]) => {
+      const optimisticResponse: useUpdateGalleryMutation$data = {
+        updateGalleryCollections: {
+          __typename: 'UpdateGalleryCollectionsPayload',
+          gallery: {
+            collections: collections.map((id) => ({ id })),
+          },
         },
-        false
-      );
+      };
+
+      await updateGallery({
+        optimisticResponse,
+        variables: {
+          input: {
+            galleryId,
+            collections: collections,
+          },
+        },
+      });
     },
-    [authenticatedUser.id, mutate, updateGallery]
+    [updateGallery]
   );
 }

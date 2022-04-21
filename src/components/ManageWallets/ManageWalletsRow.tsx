@@ -5,9 +5,9 @@ import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
-import useRemoveUserAddress from 'hooks/api/users/useRemoveUserAddress';
 import ReactTooltip from 'react-tooltip';
 import breakpoints from 'components/core/breakpoints';
+import useRemoveWallet from 'components/WalletSelector/mutations/useRemoveWallet';
 
 type Props = {
   address: string;
@@ -22,7 +22,7 @@ function ManageWalletsRow({
   setErrorMessage,
   setRemovedAddress,
 }: Props) {
-  const removeUserAddress = useRemoveUserAddress();
+  const removeWallet = useRemoveWallet();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const handleDisconnectClick = useCallback(async () => {
@@ -30,7 +30,7 @@ function ManageWalletsRow({
     try {
       setErrorMessage('');
       setIsDisconnecting(true);
-      await removeUserAddress(address);
+      await removeWallet(address);
       setRemovedAddress(address);
     } catch (error: unknown) {
       setIsDisconnecting(false);
@@ -40,7 +40,7 @@ function ManageWalletsRow({
 
       throw error;
     }
-  }, [setErrorMessage, removeUserAddress, address, setRemovedAddress]);
+  }, [setErrorMessage, address, setRemovedAddress, removeWallet]);
 
   const showDisconnectButton = useMemo(
     () => address !== userSigninAddress,

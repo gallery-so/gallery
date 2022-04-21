@@ -1,28 +1,54 @@
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
-import useNft from 'hooks/api/nfts/useNft';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { NftIdOpengraphQuery } from '__generated__/NftIdOpengraphQuery.graphql';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
-  const nft = useNft({ id: query.nftId as string });
+  const queryResponse = useLazyLoadQuery<NftIdOpengraphQuery>(
+    graphql`
+      query NftIdOpengraphQuery($nftId: DBID!) {
+        nft: nftById(id: $nftId) {
+          ... on ErrNftNotFound {
+            __typename
+          }
+          ... on Nft {
+            __typename
+
+            name
+            collectorsNote
+            description
+            ...getVideoOrImageUrlForNftPreviewFragment
+          }
+        }
+      }
+    `,
+    { nftId: query.nftId as string }
+  );
+
+  if (queryResponse.nft?.__typename !== 'Nft') {
+    throw new Error('no NFT found for opengraph preview images');
+  }
+
+  const { nft } = queryResponse;
+
+  const media = getVideoOrImageUrlForNftPreview(nft);
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
-
-  if (!nft) {
-    // TODO: render something nice?
-    throw new Error('no NFT found');
-  }
 
   return (
     <>
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
-          <OpenGraphPreview
-            title={nft.name}
-            description={nft.collectors_note || nft.description}
-            imageUrls={[nft.image_url]}
-          />
+          {nft && (
+            <OpenGraphPreview
+              title={nft.name ?? ''}
+              description={(nft.collectorsNote || nft.description) ?? ''}
+              imageUrls={media?.urls.large ? [media.urls.large] : []}
+            />
+          )}
         </div>
       </div>
       <style jsx>{`

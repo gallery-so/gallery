@@ -6,18 +6,15 @@ import Spacer from 'components/core/Spacer/Spacer';
 import Page from 'components/core/Page/Page';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import { useSWRConfig } from 'swr';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {
-  const { logOut } = useAuthActions();
-  const { cache } = useSWRConfig();
+  const { handleLogout } = useAuthActions();
 
   useEffect(() => {
-    // @ts-expect-error `clear` method not described in SWR types, but it's available
-    cache.clear();
-    logOut();
-  }, [logOut, cache]);
+    handleLogout();
+    localStorage.clear();
+  }, [handleLogout]);
 
   return (
     <Page centered>

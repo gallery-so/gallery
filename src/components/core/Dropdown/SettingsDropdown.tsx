@@ -16,7 +16,7 @@ function SettingsDropdown({ children, className }: Props) {
 }
 
 const StyledSettingsDropdown = styled.div`
-  background: url(/icons/settings.svg) no-repeat scroll 10px 9px;
+  background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
 
   ${StyledDropdownButton} {
     width: 32px;

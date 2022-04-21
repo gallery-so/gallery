@@ -1,26 +1,29 @@
 import { useCallback } from 'react';
-import { useSWRConfig } from 'swr';
-import usePost from '../_rest/usePost';
-import { getNftCacheKey } from './useNft';
-import { UpdateNftInfoRequest, UpdateNftInfoResponse } from './types';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { graphql } from 'relay-runtime';
+import { useUpdateNftMutation } from '__generated__/useUpdateNftMutation.graphql';
 
 export default function useUpdateNft() {
-  const updateNft = usePost();
-  const { mutate } = useSWRConfig();
+  const [updateNft] = usePromisifiedMutation<useUpdateNftMutation>(
+    graphql`
+      mutation useUpdateNftMutation($input: UpdateNftInfoInput!) {
+        updateNftInfo(input: $input) {
+          ... on UpdateNftInfoPayload {
+            nft {
+              collectorsNote
+            }
+          }
+        }
+      }
+    `
+  );
 
   return useCallback(
     async (nftId: string, collectorsNote: string) => {
-      await updateNft<UpdateNftInfoResponse, UpdateNftInfoRequest>(
-        `/nfts/update`,
-        'update nft info',
-        {
-          id: nftId,
-          collectors_note: collectorsNote,
-        }
-      );
+      await updateNft({ variables: { input: { nftId, collectorsNote } } });
 
-      await mutate(getNftCacheKey({ id: nftId }));
+      // TODO: handle error cases
     },
-    [mutate, updateNft]
+    [updateNft]
   );
 }

@@ -6,12 +6,38 @@ import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
-import { useAuthenticatedUser } from 'hooks/api/users/useUser';
 import breakpoints from 'components/core/breakpoints';
 import { useRouter } from 'next/router';
+import { graphql, useFragment } from 'react-relay';
+import { EditUserInfoModalFragment$key } from '__generated__/EditUserInfoModalFragment.graphql';
 
-function EditUserInfoModal() {
-  const existingUser = useAuthenticatedUser();
+type Props = {
+  queryRef: EditUserInfoModalFragment$key;
+};
+
+function EditUserInfoModal({ queryRef }: Props) {
+  const { viewer } = useFragment(
+    graphql`
+      fragment EditUserInfoModalFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+              username
+              bio
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  if (!viewer?.user) {
+    throw new Error('Entered the EditUserInfoModal without a logged in user in the cache');
+  }
+
+  const existingUser = viewer.user;
 
   const { hideModal } = useModal();
   const { push } = useRouter();
@@ -40,9 +66,9 @@ function EditUserInfoModal() {
     onEditUser,
   } = useUserInfoForm({
     onSuccess: closeModalAndNavigateToNewUsername,
-    existingUsername: existingUser.username,
-    existingBio: existingUser.bio,
-    userId: existingUser.id,
+    existingUsername: existingUser.username ?? undefined,
+    existingBio: existingUser.bio ?? undefined,
+    userId: existingUser.dbid,
   });
 
   const [isLoading, setIsLoading] = useState(false);
