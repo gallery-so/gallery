@@ -1,6 +1,7 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { memo, useCallback, useEffect, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -48,7 +49,8 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
     mountRef.current = true;
   }, [id, isSelected]);
 
-  const result = getVideoOrImageUrlForNftPreview(nft);
+  const reportError = useReportError();
+  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
 
   if (!result || !result.urls.small) {
     throw new Error('Image URL not found for SidebarNftIcon');
