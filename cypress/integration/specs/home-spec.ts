@@ -26,11 +26,6 @@ describe('Homepage test', () => {
     cy.fixture('/account').then((account) => {
       const { username } = account;
       cy.url().should('include', `/${username}`);
-      cy.wait(1000);
-      home.getAccountButton(username).click();
-      home.getSignOutButton().click();
-
-      home.getSignInButtonNav().should('be.exist');
     });
   });
 });
