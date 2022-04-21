@@ -105,7 +105,7 @@ export default function getVideoOrImageUrlForNftPreview(
   if (!media || !('previewURLs' in media) || media?.previewURLs === null) {
     handleReportError?.(new Error('no media or preview URLs found for NFT'), {
       tags: {
-        id: result.dbid,
+        id: result?.dbid,
         assetType: media?.__typename,
       },
     });
