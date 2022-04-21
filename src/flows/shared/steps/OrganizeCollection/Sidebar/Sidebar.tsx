@@ -142,13 +142,15 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft) => (
-          <SidebarNftIcon
-            key={editModeNft.id}
-            nftRef={nftFragmentsKeyedByID[editModeNft.id]}
-            editModeNft={editModeNft}
-          />
-        ))}
+        {nftsToDisplayInSidebar
+          .filter((editModeNft) => Boolean(nftFragmentsKeyedByID[editModeNft.id]))
+          .map((editModeNft) => (
+            <SidebarNftIcon
+              key={editModeNft.id}
+              nftRef={nftFragmentsKeyedByID[editModeNft.id]}
+              editModeNft={editModeNft}
+            />
+          ))}
       </Selection>
       <Spacer height={12} />
     </StyledSidebar>
