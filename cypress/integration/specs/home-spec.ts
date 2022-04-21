@@ -22,11 +22,15 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
-    cy.url().should('include', `/silverlake`);
-    cy.wait(1000);
-    home.getAccountButton('silverlake').click();
-    home.getSignOutButton().click();
 
-    home.getSignInButtonNav().should('be.exist');
+    cy.fixture('/account').then((account) => {
+      const { username } = account;
+      cy.url().should('include', `/${username}`);
+      cy.wait(1000);
+      home.getAccountButton(username).click();
+      home.getSignOutButton().click();
+
+      home.getSignInButtonNav().should('be.exist');
+    });
   });
 });
