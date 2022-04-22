@@ -23,10 +23,14 @@ describe('Homepage test', () => {
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
 
+    cy.waitUntil(() => {
+      return cy.get('button').contains('Edit Profile').should('be.exist');
+    });
+
     cy.get('h1').then(($el) => {
       const username = $el.text();
       cy.get('h1').should('contain', username);
-      cy.location('pathname').should('eq', `/${username.toLowerCase()}`);
+      cy.url().should('include', `/${username.toLowerCase()}`);
     });
   });
 });
