@@ -64,11 +64,6 @@ export default function useUserInfoForm({
       onSuccess(username);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if (error.message?.toLowerCase().includes('username')) {
-          setUsernameError('Username is taken');
-          return;
-        }
-
         setGeneralError(formatError(error));
       }
     }

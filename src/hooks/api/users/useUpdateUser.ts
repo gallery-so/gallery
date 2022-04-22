@@ -23,7 +23,12 @@ export default function useUpdateUser() {
           }
           ... on ErrInvalidInput {
             __typename
-            reasons
+          }
+          ... on ErrNotAuthorized {
+            __typename
+          }
+          ... on ErrUserAlreadyExists {
+            __typename
           }
         }
       }
@@ -54,7 +59,17 @@ export default function useUpdateUser() {
           },
         },
       });
-      console.log(response);
+
+      if (response.updateUserInfo?.__typename === 'ErrUserAlreadyExists') {
+        throw new Error('Username is taken');
+      }
+      if (response.updateUserInfo?.__typename === 'ErrInvalidInput') {
+        throw new Error('Username or bio is invalid');
+      }
+      // TODO: log the user out
+      if (response.updateUserInfo?.__typename === 'ErrNotAuthorized') {
+        throw new Error('You are not authorized!');
+      }
     },
     [updateUser]
   );
