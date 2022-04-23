@@ -95,6 +95,7 @@ export default function NftDetailView({
 
   const navigateToId = useCallback(
     (nftId: string) => {
+      console.log(collection.dbid, nftId);
       void replace(`/${username}/${collection.dbid}/${nftId}`);
     },
     [username, collection.dbid, replace]
@@ -102,15 +103,11 @@ export default function NftDetailView({
 
   // Unsure why, but setTimeout is needed, otherwise next/prevNftId will be null sometimes
   const handleNextPress = useCallback(() => {
-    setTimeout(() => {
-      if (nextNftId) navigateToId(nextNftId);
-    }, 0);
+    if (nextNftId) navigateToId(nextNftId);
   }, [nextNftId, navigateToId]);
 
   const handlePrevPress = useCallback(() => {
-    setTimeout(() => {
-      if (prevNftId) navigateToId(prevNftId);
-    }, 0);
+    if (prevNftId) navigateToId(prevNftId);
   }, [prevNftId, navigateToId]);
 
   useKeyDown('ArrowRight', handleNextPress);

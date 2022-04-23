@@ -9,6 +9,8 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
     ({ key }: KeyboardEvent) => {
       if (key === targetKey) {
         setKeyPressed(true);
+      } else {
+        setKeyPressed(false);
       }
     },
     [targetKey]
@@ -26,7 +28,7 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
 
   // useEffect ensures that the callback function is called once, which is relevant when navigating
   useEffect(() => {
-    // If the user is not currently focused on the body, return
+    // If the user is currently focused on a textarea, return to prevent accidental navigation
     if (activeEl?.tagName == 'TEXTAREA') return;
 
     if (keyPressed) {
