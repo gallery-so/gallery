@@ -22,11 +22,12 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
     };
   }, [pressHandler]);
 
+  const activeEl = document.activeElement;
+
   // useEffect ensures that the callback function is called once, which is relevant when navigating
   useEffect(() => {
     // If the user is not currently focused on the body, return
-    const activeEl = document.activeElement;
-    if (activeEl?.tagName !== 'BODY') return;
+    if (activeEl?.tagName == 'TEXTAREA') return;
 
     if (keyPressed) {
       callbackFn();
@@ -35,5 +36,5 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
       // This also prevents route-based navigation from duplicating
       setKeyPressed(false);
     }
-  }, [keyPressed, callbackFn]);
+  }, [keyPressed, callbackFn, activeEl]);
 }

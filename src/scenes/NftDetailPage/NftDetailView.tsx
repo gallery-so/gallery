@@ -100,12 +100,17 @@ export default function NftDetailView({
     [username, collection.dbid, replace]
   );
 
+  // Unsure why, but setTimeout is needed, otherwise next/prevNftId will be null sometimes
   const handleNextPress = useCallback(() => {
-    if (nextNftId) navigateToId(nextNftId);
+    setTimeout(() => {
+      if (nextNftId) navigateToId(nextNftId);
+    }, 0);
   }, [nextNftId, navigateToId]);
 
   const handlePrevPress = useCallback(() => {
-    if (prevNftId) navigateToId(prevNftId);
+    setTimeout(() => {
+      if (prevNftId) navigateToId(prevNftId);
+    }, 0);
   }, [prevNftId, navigateToId]);
 
   useKeyDown('ArrowRight', handleNextPress);
