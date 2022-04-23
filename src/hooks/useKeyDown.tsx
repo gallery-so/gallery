@@ -28,8 +28,8 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
 
   // useEffect ensures that the callback function is called once, which is relevant when navigating
   useEffect(() => {
-    // If the user is currently focused on a textarea, return to prevent accidental navigation
-    if (activeEl?.tagName == 'TEXTAREA') return;
+    // If the user is currently not focused on body, return to prevent accidental navigation
+    if (activeEl?.tagName !== 'BODY') return;
 
     if (keyPressed) {
       callbackFn();
