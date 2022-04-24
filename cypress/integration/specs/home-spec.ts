@@ -22,12 +22,15 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
-    cy.confirmMetamaskSignatureRequest();
-    cy.url().should('include', `/gentlemanbeggar`);
-    cy.wait(1000);
-    home.getAccountButton('gentlemanbeggar').click();
-    home.getSignOutButton().click();
 
-    home.getSignInButtonNav().should('be.exist');
+    cy.waitUntil(() => {
+      return cy.get('button').contains('Edit Profile').should('be.exist');
+    });
+
+    cy.get('h1').then(($el) => {
+      const username = $el.text();
+      cy.get('h1').should('contain', username);
+      cy.url().should('include', `/${username.toLowerCase()}`);
+    });
   });
 });
