@@ -18,9 +18,10 @@ const MAX_CHAR_COUNT = 1200;
 type NoteEditorProps = {
   nftCollectorsNote: string;
   nftId: string;
+  collectionId: string;
 };
 
-function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
+function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
@@ -76,7 +77,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
     setIsEditing(false);
 
     try {
-      await updateNft(nftId, collectorsNote);
+      await updateNft({ nftId, collectorsNote, collectionId });
       track('Save NFT collectors note', {
         added_note: unescapedCollectorsNote.length > 0,
         num_chars: unescapedCollectorsNote.length,
@@ -86,7 +87,7 @@ function NoteEditor({ nftCollectorsNote, nftId }: NoteEditorProps) {
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote, track]);
+  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote, track, collectionId]);
 
   // If the user hits cmd + ctrl enter, submit the note
   const handleKeyDown = useCallback(
@@ -186,15 +187,25 @@ function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
 type Props = {
   nftCollectorsNote: string;
   nftId: string;
+  collectionId: string;
   authenticatedUserOwnsAsset: boolean;
 };
 
-function NftDetailNote({ nftCollectorsNote, nftId, authenticatedUserOwnsAsset }: Props) {
+function NftDetailNote({
+  nftCollectorsNote,
+  nftId,
+  collectionId,
+  authenticatedUserOwnsAsset,
+}: Props) {
   return (
     <StyledContainer>
       <Spacer height={24} />
       {authenticatedUserOwnsAsset ? (
-        <NoteEditor nftCollectorsNote={nftCollectorsNote} nftId={nftId} />
+        <NoteEditor
+          nftCollectorsNote={nftCollectorsNote}
+          nftId={nftId}
+          collectionId={collectionId}
+        />
       ) : (
         <NoteViewer nftCollectorsNote={nftCollectorsNote} />
       )}
