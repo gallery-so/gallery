@@ -66,9 +66,9 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
       loadQuery({}, { fetchPolicy: 'store-and-network' });
     } catch (error: unknown) {
       captureException(error);
-      pushToast(
-        'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
-      );
+      if (error instanceof Error) {
+        pushToast(error.message);
+      }
     }
 
     setIsRefreshingNfts(false);

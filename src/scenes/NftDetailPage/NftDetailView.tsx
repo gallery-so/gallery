@@ -150,6 +150,7 @@ export default function NftDetailView({
               nftId={nft.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
               nftCollectorsNote={nft.collectorsNote ?? ''}
+              collectionId={collection.dbid}
             />
           )}
         </StyledAssetAndNoteContainer>
