@@ -15,13 +15,19 @@ export default function UserGallery({ username }: UserGalleryProps) {
   const query = useLazyLoadQuery<UsernameQuery>(
     graphql`
       query UsernameQuery($username: String!) {
+        ...GalleryRouteFragment
         ...UserGalleryPageFragment
       }
     `,
     { username }
   );
 
-  return <GalleryRoute element={<UserGalleryPage username={username} queryRef={query} />} />;
+  return (
+    <GalleryRoute
+      queryRef={query}
+      element={<UserGalleryPage username={username} queryRef={query} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => {

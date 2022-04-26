@@ -1,6 +1,8 @@
 const emptyArray: unknown[] = [];
 
-export function removeNullValues<T>(values: ReadonlyArray<T | null> | null | undefined): T[] {
+export function removeNullValues<T>(
+  values: ReadonlyArray<T | null | undefined> | null | undefined
+): T[] {
   if (!values) {
     return emptyArray as T[];
   }

@@ -1,17 +1,12 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useSWRConfig } from 'swr';
-import { User } from 'types/User';
 import {
   useUpdateUserMutation,
   useUpdateUserMutation$data,
 } from '__generated__/useUpdateUserMutation.graphql';
-import { getUserCacheKey } from './useUser';
 
 export default function useUpdateUser() {
-  const { mutate } = useSWRConfig();
-
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(
     graphql`
       mutation useUpdateUserMutation($input: UpdateUserInfoInput!) {
@@ -25,6 +20,15 @@ export default function useUpdateUser() {
                 bio
               }
             }
+          }
+          ... on ErrInvalidInput {
+            __typename
+          }
+          ... on ErrNotAuthorized {
+            __typename
+          }
+          ... on ErrUserAlreadyExists {
+            __typename
           }
         }
       }
@@ -46,7 +50,7 @@ export default function useUpdateUser() {
         },
       };
 
-      await updateUser({
+      const response = await updateUser({
         optimisticResponse,
         variables: {
           input: {
@@ -56,21 +60,17 @@ export default function useUpdateUser() {
         },
       });
 
-      await mutate(['/users/get/current', 'get current user']);
-
-      // Optimistically update both user caches by username, ID
-      await mutate(
-        getUserCacheKey({ username }),
-        (user: User) => ({ ...user, username, bio }),
-        false
-      );
-
-      await mutate(
-        getUserCacheKey({ id: userId }),
-        (user: User) => ({ ...user, username, bio }),
-        false
-      );
+      if (response.updateUserInfo?.__typename === 'ErrUserAlreadyExists') {
+        throw new Error('Username is taken');
+      }
+      if (response.updateUserInfo?.__typename === 'ErrInvalidInput') {
+        throw new Error('Username or bio is invalid');
+      }
+      // TODO: log the user out
+      if (response.updateUserInfo?.__typename === 'ErrNotAuthorized') {
+        throw new Error('You are not authorized!');
+      }
     },
-    [mutate, updateUser]
+    [updateUser]
   );
 }

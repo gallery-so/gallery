@@ -1,17 +1,39 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { GLOBAL_NAVBAR_HEIGHT } from '../constants';
 import LoggedOutNav from './LoggedOutNav';
 import LoggedInNav from './LoggedInNav';
+import { graphql, useFragment } from 'react-relay';
+import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
 
-function GlobalNavbar() {
-  const isAuthenticated = useIsAuthenticated();
+type Props = {
+  queryRef: GlobalNavbarFragment$key;
+};
+
+function GlobalNavbar({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GlobalNavbarFragment on Query {
+        ...LoggedInNavFragment
+
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   return (
     <StyledGlobalNavbar data-testid="navbar">
-      {isAuthenticated ? <LoggedInNav /> : <LoggedOutNav />}
+      {isAuthenticated ? <LoggedInNav queryRef={query} /> : <LoggedOutNav />}
     </StyledGlobalNavbar>
   );
 }

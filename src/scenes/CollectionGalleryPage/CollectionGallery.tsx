@@ -15,7 +15,7 @@ type Props = {
 function CollectionGallery({ queryRef }: Props) {
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
-  const { collection } = useFragment(
+  const query = useFragment(
     graphql`
       fragment CollectionGalleryFragment on Query {
         collection: collectionById(id: $collectionId) {
@@ -30,16 +30,21 @@ function CollectionGallery({ queryRef }: Props) {
             ...CollectionGalleryHeaderFragment
           }
         }
+
+        ...CollectionGalleryHeaderQueryFragment
       }
     `,
     queryRef
   );
+
+  const { collection } = query;
 
   if (collection?.__typename === 'Collection') {
     return (
       <StyledCollectionGallery>
         <Spacer height={32} />
         <CollectionGalleryHeader
+          queryRef={query}
           collectionRef={collection}
           mobileLayout={mobileLayout}
           setMobileLayout={setMobileLayout}

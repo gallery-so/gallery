@@ -1,6 +1,8 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import Head from 'next/head';
+import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import NotFound from 'scenes/NotFound/NotFound';
@@ -31,6 +33,14 @@ export default function CommunityPage({ queryRef }: Props) {
     `,
     queryRef
   );
+
+  const track = useTrack();
+
+  useEffect(() => {
+    if (community && community.__typename === 'Community') {
+      track('Page View: Community', { name: community.name });
+    }
+  }, [community, track]);
 
   if (!community || community.__typename !== 'Community') {
     return <NotFound resource="community" />;

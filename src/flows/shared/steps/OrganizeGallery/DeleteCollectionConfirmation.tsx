@@ -5,15 +5,25 @@ import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useModal } from 'contexts/modal/ModalContext';
-import useDeleteCollection from 'hooks/api/collections/useDeleteCollection';
-import { Collection } from 'types/Collection';
+import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment } from 'react-relay';
+import { DeleteCollectionConfirmationFragment$key } from '__generated__/DeleteCollectionConfirmationFragment.graphql';
 
 type Props = {
-  collectionId: Collection['id'];
+  collectionRef: DeleteCollectionConfirmationFragment$key;
 };
 
-function DeleteCollectionConfirmation({ collectionId }: Props) {
+function DeleteCollectionConfirmation({ collectionRef }: Props) {
+  const { dbid: collectionId } = useFragment(
+    graphql`
+      fragment DeleteCollectionConfirmationFragment on Collection {
+        dbid
+      }
+    `,
+    collectionRef
+  );
+
   const { hideModal } = useModal();
   const deleteCollection = useDeleteCollection();
 

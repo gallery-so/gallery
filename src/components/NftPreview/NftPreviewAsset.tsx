@@ -84,9 +84,13 @@ function NftPreviewAsset({ nftRef, size }: Props) {
     nft.media?.__typename === 'GltfMedia' ||
     nft.media?.__typename === 'UnknownMedia'
   ) {
+    const src = graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size);
+
     return (
       <ImageWithLoading
-        src={graphqlGetResizedNftImageUrlWithFallback(nft.media.previewURLs.large, size)}
+        src={graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size)}
+        heightType="inherit"
+        widthType={src.endsWith('svg') ? 'fullWidth' : 'maxWidth'}
         alt={nft.name ?? ''}
       />
     );

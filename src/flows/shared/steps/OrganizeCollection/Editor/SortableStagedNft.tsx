@@ -8,16 +8,29 @@ import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
-import { Nft } from 'types/Nft';
+import { graphql, useFragment } from 'react-relay';
+import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 
 type Props = {
-  nft: Nft;
+  nftRef: SortableStagedNftFragment$key;
   size: number;
 };
 
-function SortableStagedNft({ nft, size }: Props) {
+function SortableStagedNft({ nftRef, size }: Props) {
+  const nft = useFragment(
+    graphql`
+      fragment SortableStagedNftFragment on Nft {
+        dbid @required(action: THROW)
+        ...StagedNftImageFragment
+      }
+    `,
+    nftRef
+  );
+
+  const { dbid: id } = nft;
+
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
-    id: nft.id,
+    id,
   });
 
   const style = useMemo(
@@ -31,19 +44,19 @@ function SortableStagedNft({ nft, size }: Props) {
 
   return (
     <StyledSortableNft
-      id={nft.id}
+      id={id}
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
     >
       <StagedNftImage
-        nft={nft}
+        nftRef={nft}
         size={size}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
       />
-      <StyledUnstageButton id={nft.id} />
+      <StyledUnstageButton id={id} />
       <StyledGradient type="top" direction="up" />
       <StyledGradient type="bottom" direction="down" />
     </StyledSortableNft>
@@ -73,6 +86,8 @@ export const StyledSortableNft = styled.div`
   }
   cursor: grab;
   margin: 24px;
+
+  user-select: none;
 
   &:hover ${StyledUnstageButton} {
     opacity: 1;

@@ -2,9 +2,8 @@ import { captureException } from '@sentry/nextjs';
 import breakpoints from 'components/core/breakpoints';
 import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { usePossiblyAuthenticatedUser } from 'hooks/api/users/useUser';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -13,14 +12,23 @@ import NavigationHandle from './NavigationHandle';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
+import useKeyDown from 'hooks/useKeyDown';
+import { useRouter } from 'next/router';
+import useBackButton from 'hooks/useBackButton';
 
 type Props = {
   username: string;
+  authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewFragment$key;
   nftId: string;
 };
 
-export default function NftDetailView({ username, queryRef, nftId }: Props) {
+export default function NftDetailView({
+  username,
+  authenticatedUserOwnsAsset,
+  queryRef,
+  nftId,
+}: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionNft {
@@ -51,8 +59,6 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  const authenticatedUser = usePossiblyAuthenticatedUser();
-  const authenticatedUserOwnsAsset = authenticatedUser?.username === username;
   const collectionNfts = collectionNft.collection.nfts;
 
   const { prevNftId, nextNftId } = useMemo(() => {
@@ -83,6 +89,29 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
   }, [collectionNfts, nftId]);
 
   const { nft, collection } = collectionNft;
+
+  const handleBackClick = useBackButton({ username });
+  const { replace } = useRouter();
+
+  const navigateToId = useCallback(
+    (nftId: string) => {
+      void replace(`/${username}/${collection.dbid}/${nftId}`);
+    },
+    [username, collection.dbid, replace]
+  );
+
+  const handleNextPress = useCallback(() => {
+    if (nextNftId) navigateToId(nextNftId);
+  }, [nextNftId, navigateToId]);
+
+  const handlePrevPress = useCallback(() => {
+    if (prevNftId) navigateToId(prevNftId);
+  }, [prevNftId, navigateToId]);
+
+  useKeyDown('ArrowRight', handleNextPress);
+  useKeyDown('ArrowLeft', handlePrevPress);
+  useKeyDown('Escape', handleBackClick);
+  useKeyDown('Backspace', handleBackClick);
 
   const assetHasNote = !!nft.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
@@ -121,6 +150,7 @@ export default function NftDetailView({ username, queryRef, nftId }: Props) {
               nftId={nft.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
               nftCollectorsNote={nft.collectorsNote ?? ''}
+              collectionId={collection.dbid}
             />
           )}
         </StyledAssetAndNoteContainer>

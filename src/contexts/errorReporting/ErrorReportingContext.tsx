@@ -6,7 +6,10 @@ import noop from 'utils/noop';
 
 type AdditionalContext = Partial<Pick<ScopeContext, 'tags' | 'level'>>;
 
-type ReportFn = (errorOrMessage: Error | string, additionalContext?: AdditionalContext) => void;
+export type ReportFn = (
+  errorOrMessage: Error | string,
+  additionalContext?: AdditionalContext
+) => void;
 
 const ErrorReportingContext = createContext<ReportFn | undefined>(undefined);
 

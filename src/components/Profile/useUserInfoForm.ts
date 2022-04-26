@@ -10,7 +10,6 @@ import {
   noConsecutivePeriodsOrUnderscores,
 } from 'utils/validators';
 
-// Import formatError from 'src/errors/formatError';
 import formatError from 'errors/formatError';
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
@@ -65,11 +64,6 @@ export default function useUserInfoForm({
       onSuccess(username);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if (error.message?.toLowerCase().includes('username')) {
-          setUsernameError('Username is taken');
-          return;
-        }
-
         setGeneralError(formatError(error));
       }
     }

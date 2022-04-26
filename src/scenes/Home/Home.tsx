@@ -30,7 +30,7 @@ function Home() {
         <Spacer width={8} />
         <BaseS>·</BaseS>
         <Spacer width={8} />
-        <NavLink to="/the_ayybee_gallery">Gallery of the Week</NavLink>
+        <NavLink to="/duaneking">Gallery of the Week</NavLink>
       </StyledLinkContainer>
     </Page>
   );

@@ -15,6 +15,8 @@ import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateW
 import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
 import { getUserFriendlyWalletName } from 'utils/wallet';
+import { graphql, useFragment } from 'react-relay';
+import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -67,9 +69,19 @@ type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CONNECT_W
 
 type Props = {
   connectionMode?: ConnectionMode;
+  queryRef: WalletSelectorFragment$key;
 };
 
-function WalletSelector({ connectionMode = AUTH }: Props) {
+function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment WalletSelectorFragment on Query {
+        ...AddWalletPendingFragment
+      }
+    `,
+    queryRef
+  );
+
   const { activate, deactivate, error } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
@@ -163,6 +175,7 @@ function WalletSelector({ connectionMode = AUTH }: Props) {
       return (
         <StyledWalletSelector>
           <AddWalletPending
+            queryRef={query}
             setDetectedError={setDetectedError}
             pendingWallet={pendingWallet}
             userFriendlyWalletName={userFriendlyWalletName}

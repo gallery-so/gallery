@@ -32,7 +32,7 @@ function NftDetailAudio({ nftRef }: Props) {
 
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={nft.media.previewURLs.large} alt={nft.name ?? ''} />
+      <ImageWithLoading src={nft.media?.previewURLs.large} alt={nft.name ?? ''} />
       <StyledAudio
         controls
         loop

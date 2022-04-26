@@ -16,6 +16,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
       query CollectionIdQuery($collectionId: DBID!) {
+        ...GalleryRouteFragment
         ...CollectionGalleryPageFragment
       }
     `,
@@ -28,6 +29,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
 
   return (
     <GalleryRoute
+      queryRef={query}
       element={
         <CollectionGalleryPage queryRef={query} collectionId={collectionId} username={username} />
       }

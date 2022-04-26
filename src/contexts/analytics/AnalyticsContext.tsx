@@ -48,7 +48,6 @@ export const _identify = (userId: string) => {
 export const useTrack = () => {
   const track = useContext(AnalyticsContext);
   if (!track) {
-    console.error('Attempted to use AnalyticsContext without a provider!');
     return noop;
   }
 

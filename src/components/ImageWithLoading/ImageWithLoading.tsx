@@ -1,11 +1,12 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
-type ContentWidthType =
-  | 'fullWidth' // fill container
-  | 'maxWidth'; // fill up to container
+type ContentWidthType = 'fullWidth' | 'maxWidth';
 
-type ContentHeightType = 'maxHeightScreen'; // fill up to screen
+type ContentHeightType =
+  | 'maxHeightScreen' // fill up to screen
+  | 'inherit';
 
 type Props = {
   className?: string;
@@ -17,18 +18,28 @@ type Props = {
 
 export default function ImageWithLoading({
   className,
-  widthType = 'fullWidth',
+  widthType = 'maxWidth',
   heightType,
   src,
   alt,
 }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
 
+  const maxHeight = useMemo(() => {
+    if (heightType === 'maxHeightScreen') {
+      return 'min(100%, 80vh)';
+    }
+    if (heightType === 'inherit') {
+      return 'inherit';
+    }
+    return '100%';
+  }, [heightType]);
+
   return (
     <StyledImg
       className={className}
+      maxHeight={maxHeight}
       widthType={widthType}
-      heightType={heightType}
       src={src}
       alt={alt}
       loading="lazy"
@@ -38,13 +49,12 @@ export default function ImageWithLoading({
 }
 
 type StyledImgProps = {
+  maxHeight: string;
   widthType: ContentWidthType;
-  heightType?: ContentHeightType;
 };
 
 const StyledImg = styled.img<StyledImgProps>`
   display: block;
+  max-height: ${({ maxHeight }) => maxHeight};
   ${({ widthType }) => (widthType === 'fullWidth' ? 'width' : 'max-width')}: 100%;
-  max-height: ${({ heightType }) =>
-    heightType === 'maxHeightScreen' ? 'min(100%, 80vh)' : '100%'};
 `;

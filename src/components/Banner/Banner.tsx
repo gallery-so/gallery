@@ -1,12 +1,13 @@
 import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import useIsAuthenticated from 'contexts/auth/useIsAuthenticated';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 type Props = {
   title?: string;
+  queryRef: any;
   text: string;
   requireAuth?: boolean;
   children?: React.ReactNode;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function Banner({
+  queryRef,
   children,
   localStorageKey,
   text,
@@ -21,18 +23,32 @@ export default function Banner({
   requireAuth = false,
 }: Props) {
   const LOCAL_STORAGE_KEY = localStorageKey;
+  const query = useFragment(
+    graphql`
+      fragment BannerFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   const [dismissed, setDismissed] = LOCAL_STORAGE_KEY
     ? usePersistedState(LOCAL_STORAGE_KEY, false)
     : [false, () => {}];
 
-  const isAuthenticated = useIsAuthenticated();
-
   const hideBanner = useCallback(() => {
     setDismissed(true);
   }, [setDismissed]);
 
-  return dismissed || (requireAuth && !isAuthenticated) ? null : (
+  return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
         <StyledText>

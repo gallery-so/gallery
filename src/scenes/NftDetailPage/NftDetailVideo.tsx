@@ -15,6 +15,7 @@ function NftDetailVideo({ mediaRef, maxHeight }: Props) {
       fragment NftDetailVideoFragment on VideoMedia {
         contentRenderURLs @required(action: THROW) {
           raw @required(action: THROW)
+          large @required(action: THROW)
         }
       }
     `,
@@ -24,7 +25,7 @@ function NftDetailVideo({ mediaRef, maxHeight }: Props) {
 
   return (
     <StyledVideo
-      src={nft.contentRenderURLs.raw}
+      src={nft.contentRenderURLs.large}
       muted
       autoPlay
       loop

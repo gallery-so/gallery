@@ -1,8 +1,12 @@
-import { Nft } from 'types/Nft';
+export type EditModeNftChild = {
+  dbid: string;
+  name: string;
+  lastUpdated: any;
+};
 
 export type EditModeNft = {
   id: string;
-  nft: Nft;
+  nft: EditModeNftChild;
   isSelected?: boolean;
 };
 
@@ -16,5 +20,5 @@ export type WhitespaceBlock = {
 export type StagingItem = EditModeNft | WhitespaceBlock;
 
 export function isEditModeNft(item: StagingItem): item is EditModeNft {
-  return 'nft' in item;
+  return 'nft' in item && !!item.nft;
 }

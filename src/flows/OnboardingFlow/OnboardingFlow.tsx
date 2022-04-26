@@ -3,7 +3,7 @@ import { Wizard, Steps, Step } from 'react-albus';
 import GalleryWizardProvider from 'contexts/wizard/GalleryWizardContext';
 import CollectionWizardProvider from 'contexts/wizard/CollectionWizardContext';
 import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
-import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
+import { LazyOrganizeGallery } from 'flows/shared/steps/OrganizeGallery/OrganizeGallery';
 import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
 import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
@@ -32,7 +32,7 @@ function OnboardingFlow() {
                   <Step id="addUserInfo" render={AddUserInfo} />
                   <Step id="create" render={CreateFirstCollection} />
                   <Step id="organizeCollection" render={OrganizeCollection} />
-                  <Step id="organizeGallery" render={OrganizeGallery} />
+                  <Step id="organizeGallery" render={LazyOrganizeGallery} />
                   <Step id="congratulations" render={Congratulations} />
                 </Steps>
               </FadeTransitioner>

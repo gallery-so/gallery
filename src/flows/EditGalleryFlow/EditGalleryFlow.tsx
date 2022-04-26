@@ -6,13 +6,28 @@ import OrganizeGallery from 'flows/shared/steps/OrganizeGallery/OrganizeGallery'
 import OrganizeCollection from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import { GalleryWizardProps, WizardProps } from 'flows/shared/types';
 import WizardFooter from 'flows/shared/components/WizardFooter/WizardFooter';
+import { graphql, useFragment } from 'react-relay';
+import { EditGalleryFlowFragment$key } from '__generated__/EditGalleryFlowFragment.graphql';
 
 const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   organizeGallery: 'Done',
   organizeCollection: 'Save Collection',
 };
 
-function EditGalleryFlow() {
+type Props = {
+  queryRef: EditGalleryFlowFragment$key;
+};
+
+function EditGalleryFlow({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment EditGalleryFlowFragment on Query {
+        ...OrganizeGalleryFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <GalleryWizardProvider id="edit-gallery">
       <CollectionWizardProvider>
@@ -20,7 +35,10 @@ function EditGalleryFlow() {
           render={(wizardProps) => (
             <>
               <Steps>
-                <Step id="organizeGallery" render={OrganizeGallery} />
+                <Step
+                  id="organizeGallery"
+                  render={(context) => <OrganizeGallery {...context} queryRef={query} />}
+                />
                 <Step id="organizeCollection" render={OrganizeCollection} />
               </Steps>
               <WizardFooter

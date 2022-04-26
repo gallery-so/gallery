@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
   defaultDropAnimation,
@@ -11,11 +11,13 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
-import useAuthenticatedGallery from 'hooks/api/galleries/useAuthenticatedGallery';
-import { Collection } from 'types/Collection';
 import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
 import CollectionRowWrapper from './CollectionRowWrapper';
 import CollectionRowDragging from './CollectionRowDragging';
+import { graphql, useFragment } from 'react-relay';
+import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
+import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -25,13 +27,44 @@ const defaultDropAnimationConfig: DropAnimation = {
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
-  galleryId: string;
-  sortedCollections: Collection[];
-  setSortedCollections: (sorter: (previous: Collection[]) => Collection[]) => void;
+  galleryRef: CollectionDndFragment$key;
 };
 
-function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: Props) {
-  const { collections } = useAuthenticatedGallery();
+function CollectionDnd({ galleryRef }: Props) {
+  const gallery = useFragment(
+    graphql`
+      fragment CollectionDndFragment on Gallery {
+        dbid
+        collections {
+          id
+          ...CollectionRowDraggingFragment
+          ...CollectionRowWrapperFragment
+        }
+      }
+    `,
+    galleryRef
+  );
+
+  const nonNullCollections = useMemo(() => {
+    return removeNullValues(gallery.collections);
+  }, [gallery.collections]);
+
+  const [sortedCollectionIds, setSortedCollectionIds] = useState(() =>
+    nonNullCollections.map((collection) => collection.id)
+  );
+
+  useEffect(() => {
+    setSortedCollectionIds(nonNullCollections.map((collection) => collection.id));
+  }, [nonNullCollections]);
+
+  const sortedCollections = useMemo(() => {
+    const collectionsKeyedById = arrayToObjectKeyedById('id', nonNullCollections);
+
+    return sortedCollectionIds
+      .map((collectionId) => collectionsKeyedById[collectionId])
+      .filter((collection) => Boolean(collection));
+  }, [nonNullCollections, sortedCollectionIds]);
+
   const [activeId, setActiveId] = useState<string | undefined>(undefined);
   const updateGallery = useUpdateGallery();
 
@@ -40,21 +73,30 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-        let updatedCollections = sortedCollections;
-        setSortedCollections((previous) => {
-          const oldIndex = previous.findIndex(({ id }) => id === active.id);
-          const newIndex = previous.findIndex(({ id }) => id === over?.id);
+        let updatedCollections = sortedCollectionIds;
+
+        setSortedCollectionIds((previous) => {
+          const oldIndex = previous.findIndex((id) => id === active.id);
+          const newIndex = previous.findIndex((id) => id === over?.id);
           updatedCollections = arrayMove(previous, oldIndex, newIndex);
           return updatedCollections;
         });
-        void updateGallery(galleryId, updatedCollections);
+
+        void updateGallery(
+          gallery.dbid,
+          // the `id` field in relay is represented as `Collection:123456`, and we only want the latter half.
+          // while we should use `dbid`, this will confuse the DND machine, which expects `id` to exist as a
+          // native key on each entity.
+          updatedCollections.map((id) => id.split(':')[1])
+        );
       }
     },
-    [galleryId, setSortedCollections, sortedCollections, updateGallery]
+    [gallery.dbid, sortedCollectionIds, updateGallery]
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
+
     if (!active) {
       return;
     }
@@ -63,8 +105,8 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
   }, []);
 
   const activeCollection = useMemo(
-    () => collections.find(({ id }) => id === activeId),
-    [activeId, collections]
+    () => nonNullCollections.find(({ id }) => id === activeId),
+    [activeId, nonNullCollections]
   );
 
   const handleDragEnd = useCallback(
@@ -83,11 +125,11 @@ function CollectionDnd({ galleryId, sortedCollections, setSortedCollections }: P
     >
       <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
         {sortedCollections.map((collection) => (
-          <CollectionRowWrapper key={collection.id} collection={collection} />
+          <CollectionRowWrapper key={collection.id} collectionRef={collection} />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={defaultDropAnimationConfig}>
-        {activeCollection ? <CollectionRowDragging collection={activeCollection} /> : null}
+        {activeCollection ? <CollectionRowDragging collectionRef={activeCollection} /> : null}
       </DragOverlay>
     </DndContext>
   );

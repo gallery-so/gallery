@@ -6,19 +6,37 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
 import {
-  useSidebarNftsState,
   useCollectionEditorActions,
+  SidebarNftsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { EditModeNft } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
-import { useRefreshNftConfig } from 'contexts/wizard/WizardDataProvider';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { generate12DigitId } from 'utils/collectionLayout';
+import { graphql, useFragment } from 'react-relay';
+import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
+import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
-function Sidebar() {
-  const sidebarNfts = useSidebarNftsState();
+type Props = {
+  sidebarNfts: SidebarNftsState;
+  nftsRef: SidebarFragment$key;
+};
+
+function Sidebar({ nftsRef, sidebarNfts }: Props) {
+  const nfts = useFragment(
+    graphql`
+      fragment SidebarFragment on Nft @relay(plural: true) {
+        dbid
+        ...SidebarNftIconFragment
+        ...SearchBarFragment
+      }
+    `,
+    nftsRef
+  );
+
   const { setNftsIsSelected, stageNfts, unstageAllItems } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -85,7 +103,9 @@ function Sidebar() {
     }, 100);
   }, [stageNfts]);
 
-  const { isRefreshingNfts, handleRefreshNfts } = useRefreshNftConfig();
+  const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
+
+  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', nfts), [nfts]);
 
   return (
     <StyledSidebar>
@@ -99,9 +119,9 @@ function Sidebar() {
       </Header>
       <Spacer height={16} />
       <SearchBar
+        nftsRef={nfts}
         setSearchResults={setSearchResults}
         setDebouncedSearchQuery={setDebouncedSearchQuery}
-        sidebarNfts={sidebarNftsAsArray}
       />
       <Spacer height={24} />
       <StyledSelectButtonWrapper>
@@ -122,9 +142,15 @@ function Sidebar() {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar.map((editModeNft) => (
-          <SidebarNftIcon key={editModeNft.id} editModeNft={editModeNft} />
-        ))}
+        {nftsToDisplayInSidebar
+          .filter((editModeNft) => Boolean(nftFragmentsKeyedByID[editModeNft.id]))
+          .map((editModeNft) => (
+            <SidebarNftIcon
+              key={editModeNft.id}
+              nftRef={nftFragmentsKeyedByID[editModeNft.id]}
+              editModeNft={editModeNft}
+            />
+          ))}
       </Selection>
       <Spacer height={12} />
     </StyledSidebar>

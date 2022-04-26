@@ -1,5 +1,5 @@
 import { FetchFunction, GraphQLResponse } from 'relay-runtime';
-import { _fetch, baseurl } from 'contexts/swr/useFetcher';
+import { _fetch, baseurl } from 'contexts/swr/fetch';
 
 /**
  * This is how Relay takes an arbitrary GraphQL request, and asks for a response.
@@ -7,7 +7,7 @@ import { _fetch, baseurl } from 'contexts/swr/useFetcher';
  * an example.
  */
 export const relayFetchFunction: FetchFunction = async (request, variables) => {
-  return _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, 'graphql request', {
+  return _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, {
     body: {
       query: request.text,
       variables,
