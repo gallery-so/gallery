@@ -20,19 +20,15 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
     };
   }, [pressHandler]);
 
-  const activeEl = document.activeElement;
-
   // useEffect ensures that the callback function is called once, which is relevant when navigating
   useEffect(() => {
-    // If the user is not currently focused on the body, return
-    if (activeEl?.tagName !== 'BODY') return;
-
     if (keyPressed) {
       callbackFn();
+
       // After executing, reset keyPressed to false so that the user can click the same key again on the same page
       // Only currently relevant if user is on /edit -> escapes -> shows modal -> escapes -> clicks escape again
       // This also prevents route-based navigation from duplicating
       setKeyPressed(false);
     }
-  }, [keyPressed, callbackFn, activeEl]);
+  }, [keyPressed, callbackFn]);
 }
