@@ -7,11 +7,7 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
   // If pressed key is our target key then set to true
   const pressHandler = useCallback(
     ({ key }: KeyboardEvent) => {
-      if (key === targetKey) {
-        setKeyPressed(true);
-      } else {
-        setKeyPressed(false);
-      }
+      setKeyPressed(key === targetKey);
     },
     [targetKey]
   );
