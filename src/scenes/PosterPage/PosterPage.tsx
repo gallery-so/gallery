@@ -10,12 +10,20 @@ import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
+import useTimer from 'hooks/useTimer';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
   const { pushToast } = useToastActions();
 
+  const FIGMA_URL = 'https://www.figma.com/file/YrjZkebwPMIPr3aFx8o2w1/Untitled?node-id=1%3A2';
+
+  const { days, hours, minutes, seconds, hasEnded } = useTimer();
+
+  const countdown = `${days}:${hours}:${minutes}:${seconds}`;
+
   const handleBackClick = () => {
+    // TODO: Replace with hook
     window.history.back();
   };
 
@@ -28,7 +36,7 @@ export default function PosterPage() {
       <StyledBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledBackLink>
-      <PosterFigmaFrame></PosterFigmaFrame>
+      <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
       <StyledContent>
         <div>
           {isMobile && <TitleM>(Object006)</TitleM>}
@@ -48,17 +56,18 @@ export default function PosterPage() {
 
         {!isMobile && <StyledHr></StyledHr>}
 
-        <BaseXL>Event has ended. We will notify you once the final product is minted.</BaseXL>
-
-        <StyledCallToAction>
-          <BaseXL>11:23:21</BaseXL>
-          <StyledAnchor
-            href="https://www.figma.com/file/YrjZkebwPMIPr3aFx8o2w1/Untitled?node-id=1%3A2"
-            target="_blank"
-          >
-            <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
-          </StyledAnchor>
-        </StyledCallToAction>
+        {hasEnded ? (
+          <StyledCallToAction hasEnded>
+            <BaseXL>Event has ended.</BaseXL>
+          </StyledCallToAction>
+        ) : (
+          <StyledCallToAction>
+            <BaseXL>{countdown}</BaseXL>
+            <StyledAnchor href={FIGMA_URL} target="_blank">
+              <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
+            </StyledAnchor>
+          </StyledCallToAction>
+        )}
       </StyledContent>
     </StyledPage>
   );
@@ -108,15 +117,15 @@ const StyledHr = styled.hr`
   width: 100%;
 `;
 
-const StyledCallToAction = styled.div`
+const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
   text-align: center;
   display: grid;
   gap: 12px;
 
   @media (max-width: ${contentSize.desktop}px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: ${({ hasEnded }) => (hasEnded ? '1fr' : 'repeat(2, minmax(0, 1fr))')};
     align-items: center;
-    text-align: left;
+    text-align: ${({ hasEnded }) => (hasEnded ? 'text-center' : 'text-left')};
     position: fixed;
     z-index: 20;
     bottom: 0;
