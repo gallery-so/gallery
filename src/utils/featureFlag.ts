@@ -4,11 +4,13 @@ import isProduction from './isProduction';
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   COLLECTORS_NOTE: true,
+  POSTER_PAGE: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   COLLECTORS_NOTE: true,
+  POSTER_PAGE: true,
 };
 
 export const isFeatureEnabled = (flag: FeatureFlag) =>

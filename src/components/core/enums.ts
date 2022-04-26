@@ -21,4 +21,5 @@ export enum DisplayLayout {
 export enum FeatureFlag {
   GENERAL_MEMBERSHIP_MINT = 'GENERAL_MEMBERSHIP_MINT',
   COLLECTORS_NOTE = 'COLLECTORS_NOTE',
+  POSTER_PAGE = 'POSTER_PAGE',
 }
