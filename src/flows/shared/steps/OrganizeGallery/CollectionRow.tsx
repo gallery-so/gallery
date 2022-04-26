@@ -156,6 +156,9 @@ const BigNftContainer = styled.div`
 
   width: ${BIG_NFT_SIZE_PX}px;
   height: ${BIG_NFT_SIZE_PX}px;
+
+  user-select: none;
+  pointer-events: none;
 `;
 
 const BigNftVideoPreview = styled.video`

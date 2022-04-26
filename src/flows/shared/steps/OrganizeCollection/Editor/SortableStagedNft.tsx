@@ -87,6 +87,8 @@ export const StyledSortableNft = styled.div`
   cursor: grab;
   margin: 24px;
 
+  user-select: none;
+
   &:hover ${StyledUnstageButton} {
     opacity: 1;
   }

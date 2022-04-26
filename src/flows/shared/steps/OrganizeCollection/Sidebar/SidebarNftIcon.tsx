@@ -99,6 +99,8 @@ const StyledOutline = styled.div<SelectedProps>`
   left: 0;
 
   border: ${({ isSelected }) => (isSelected ? 1 : 0)}px solid ${colors.activeBlue};
+
+  user-select: none;
 `;
 
 const StyledImage = styled.img<SelectedProps>`
