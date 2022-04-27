@@ -5,11 +5,13 @@ import { FeatureFlag } from 'components/core/enums';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { object006Query } from '__generated__/object006Query.graphql';
+import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
 
 export default function Poster() {
   const query = useLazyLoadQuery<object006Query>(
     graphql`
       query object006Query {
+        ...GalleryAuthenticatedRouteFragment
         ...GalleryRouteFragment
       }
     `,
@@ -20,5 +22,12 @@ export default function Poster() {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute queryRef={query} element={<PosterPage />} />;
+  return (
+    <GalleryAuthenticatedRoute
+      queryRef={query}
+      authenticatedRouteQueryRef={query}
+      element={<PosterPage />}
+      freshLayout
+    />
+  );
 }
