@@ -103,6 +103,7 @@ export default function GalleryRoute({
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
         queryRef={query}
         localStorageKey="gallery-poster-banner"
+        requireAuth
       >
         <NavLink to="/object006">Sign Poster</NavLink>
       </Banner>
