@@ -11,19 +11,18 @@ type Props = {
   queryRef: any;
   text: string;
   requireAuth?: boolean;
-  children?: React.ReactNode;
   localStorageKey?: string;
+  actionComponent?: React.ReactNode;
 };
 
 export default function Banner({
   queryRef,
-  children,
   localStorageKey,
   text,
   title,
   requireAuth = false,
+  actionComponent,
 }: Props) {
-  const LOCAL_STORAGE_KEY = localStorageKey;
   const query = useFragment(
     graphql`
       fragment BannerFragment on Query {
@@ -41,7 +40,7 @@ export default function Banner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [dismissed, setDismissed] = usePersistedState(LOCAL_STORAGE_KEY || '', false);
+  const [dismissed, setDismissed] = usePersistedState(localStorageKey || '', false);
 
   const hideBanner = useCallback(() => {
     setDismissed(true);
@@ -55,7 +54,7 @@ export default function Banner({
           <StyledText color={colors.offBlack}>{text}</StyledText>
         </StyledContent>
         <StyledAction>
-          <div onClick={hideBanner}>{children}</div>
+          <div onClick={hideBanner}>{actionComponent}</div>
           <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
         </StyledAction>
       </StyledBanner>
