@@ -1,5 +1,4 @@
 import PosterPage from 'scenes/PosterPage/PosterPage';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
