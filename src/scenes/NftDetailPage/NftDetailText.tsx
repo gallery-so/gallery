@@ -10,7 +10,7 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useMemo, useRef } from 'react';
-import { ENABLED_CONTRACTS } from 'pages/community/[contractAddress]';
+import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 
 type Props = {
   name: string | null;
@@ -41,7 +41,7 @@ function NftDetailText({
   const username = useRef(ownerUsername);
 
   const showCommunityLink = useMemo(
-    () => !!contractAddress && ENABLED_CONTRACTS.includes(contractAddress),
+    () => !!contractAddress && !DISABLED_CONTRACTS.includes(contractAddress),
     [contractAddress]
   );
 

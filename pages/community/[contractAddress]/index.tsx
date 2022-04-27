@@ -11,12 +11,8 @@ type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
 };
 
-export const ENABLED_CONTRACTS = [
-  '0x5180db8f5c931aae63c74266b211f580155ecac8', // Crypto Coven
-  '0xb228d7b6e099618ca71bd5522b3a8c3788a8f172', // Poolsuite Exec
-  '0x123214ef2bb526d1b3fb84a6d448985f537d9763', // Poolsuite Pool
-  // '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Crypto Citizens
-  '0xf64e6fb725f04042b5197e2529b84be4a925902c', // Zen Academy
+export const DISABLED_CONTRACTS = [
+  '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Art Blocks
 ];
 
 export default function CommunityPage({ contractAddress }: CommunityPageProps) {
@@ -35,7 +31,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  if (!ENABLED_CONTRACTS.includes(contractAddress)) {
+  if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return <GalleryRedirect to="/" />;
   }
 
