@@ -1,6 +1,9 @@
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
-import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSITION_MS,
+  ANIMATED_COMPONENT_TIMEOUT_MS,
+} from 'components/core/transitions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
@@ -8,17 +11,29 @@ type Props = {
   message: string;
   cornerPositioned?: boolean;
   onClose?: () => void;
+  autoClose?: boolean;
 };
 
 const noop = () => {};
 
-export function AnimatedToast({ message, cornerPositioned = true, onClose = noop }: Props) {
+export function AnimatedToast({
+  message,
+  cornerPositioned = true,
+  onClose = noop,
+  autoClose = false,
+}: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     setIsActive(true);
+
+    if (autoClose) {
+      setTimeout(() => {
+        setIsActive(false);
+      }, ANIMATED_COMPONENT_TIMEOUT_MS);
+    }
   }, []);
 
   const handleClose = useCallback(() => {
