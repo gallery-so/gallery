@@ -1,3 +1,4 @@
+import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
@@ -40,9 +41,7 @@ export default function Banner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [dismissed, setDismissed] = LOCAL_STORAGE_KEY
-    ? usePersistedState(LOCAL_STORAGE_KEY, false)
-    : [false, () => {}];
+  const [dismissed, setDismissed] = usePersistedState(LOCAL_STORAGE_KEY || '', false);
 
   const hideBanner = useCallback(() => {
     setDismissed(true);
@@ -51,12 +50,12 @@ export default function Banner({
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
-        <StyledText>
-          {title && <TitleS>{title}</TitleS>}
-          <BaseM color={colors.offBlack}>{text}</BaseM>
-        </StyledText>
+        <StyledContent>
+          {title && <StyledTitle>{title}</StyledTitle>}
+          <StyledText color={colors.offBlack}>{text}</StyledText>
+        </StyledContent>
         <StyledAction>
-          {children}
+          <div onClick={hideBanner}>{children}</div>
           <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
         </StyledAction>
       </StyledBanner>
@@ -66,6 +65,9 @@ export default function Banner({
 
 const StyledContainer = styled.div`
   padding: 24px;
+  @media (max-width: ${contentSize.desktop}px) {
+    padding: 0px;
+  }
 `;
 
 const StyledBanner = styled.div`
@@ -77,19 +79,41 @@ const StyledBanner = styled.div`
   justify-content: space-between;
   align-items: center;
   top: 0;
-  z-index: 1;
+  z-index: 20;
   border: 1px solid ${colors.shadow};
   position: relative;
+
+  @media (max-width: ${contentSize.desktop}px) {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 36px 8px 16px;
+  }
 `;
 
 const StyledClose = styled.span`
   cursor: pointer;
   color: #141414;
+
+  @media (max-width: ${contentSize.desktop}px) {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
 `;
 
-const StyledText = styled.div`
-  display: flex;
-  gap: 12px;
+const StyledContent = styled.div`
+  @media (max-width: ${contentSize.desktop}px) {
+    margin-bottom: 12px;
+  }
+`;
+
+const StyledTitle = styled(TitleS)`
+  display: inline-block;
+  margin-right: 8px;
+`;
+
+const StyledText = styled(BaseM)`
+  display: inline;
 `;
 
 const StyledAction = styled.div`
