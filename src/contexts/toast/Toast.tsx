@@ -34,7 +34,7 @@ export function AnimatedToast({
         setIsActive(false);
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
     }
-  }, []);
+  }, [autoClose]);
 
   const handleClose = useCallback(() => {
     setIsActive(false);
