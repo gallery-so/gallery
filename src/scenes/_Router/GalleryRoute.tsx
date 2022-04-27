@@ -109,7 +109,7 @@ export default function GalleryRoute({
     ) : (
       <Banner text="" queryRef={query} />
     );
-  }, [query]);
+  }, [query, countdownTimer]);
 
   if (freshLayout) {
     return (

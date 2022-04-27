@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // TODO: Abstract this as a props
-const mintDate = new Date('2024-01-01T00:00:00');
+const mintDate = new Date('2022-05-23T00:00:00');
 
 export default function useTimer() {
   const currentTime = Date.now();
