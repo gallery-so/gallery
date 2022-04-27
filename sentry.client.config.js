@@ -8,6 +8,8 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 const SENTRY_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
 
+const SENTRY_TRACING_ORIGIN = SENTRY_ENV === 'production' ? 'api.gallery.so' : 'api.dev.gallery.so';
+
 Sentry.init({
   // DSNs are safe to keep public because they only allow submission of
   // new events and related event data; they do not allow read access to
@@ -15,6 +17,11 @@ Sentry.init({
   // user can send events to your organization with any information they
   // want, this is a rare occurrence.
   dsn: SENTRY_DSN || 'https://bd40a4affc1740e8b7516502389262fe@o1135798.ingest.sentry.io/6187637',
+  integrations: [
+    new Sentry.BrowserTracing({
+      tracingOrigins: [SENTRY_TRACING_ORIGIN],
+    }),
+  ],
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1.0,
   // ...
