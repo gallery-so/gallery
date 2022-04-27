@@ -61,11 +61,11 @@ export default function GalleryRoute({
     queryRef
   );
 
-  const { days, hours, minutes, seconds } = useTimer();
+  const { timestamp } = useTimer();
 
   const countdownTimer = useMemo(() => {
-    return `Ends in ${days}:${hours}:${minutes}:${seconds}`;
-  }, [days, hours, minutes, seconds]);
+    return `Ends in ${timestamp}`;
+  }, [timestamp]);
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -102,11 +102,10 @@ export default function GalleryRoute({
         title={countdownTimer}
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
         queryRef={query}
-        localStorageKey="gallery-poster-banner"
+        localStorageKey="gallery_poster_banner"
         requireAuth
-      >
-        <NavLink to="/object006">Sign Poster</NavLink>
-      </Banner>
+        actionComponent={<NavLink to="/object006">Sign Poster</NavLink>}
+      />
     ) : (
       <Banner text="" queryRef={query} />
     );

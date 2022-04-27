@@ -32,10 +32,7 @@ export default function useTimer() {
   const hasEnded = countDown <= 0;
 
   return {
-    days,
-    hours,
-    minutes,
-    seconds,
+    timestamp: `${days}:${hours}:${minutes}:${seconds}`,
     hasEnded,
   };
 }

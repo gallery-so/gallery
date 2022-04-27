@@ -18,9 +18,7 @@ export default function PosterPage() {
 
   const FIGMA_URL = 'https://www.figma.com/file/YrjZkebwPMIPr3aFx8o2w1/Untitled?node-id=1%3A2';
 
-  const { days, hours, minutes, seconds, hasEnded } = useTimer();
-
-  const countdown = `${days}:${hours}:${minutes}:${seconds}`;
+  const { timestamp, hasEnded } = useTimer();
 
   const handleBackClick = () => {
     // TODO: Replace with hook
@@ -66,7 +64,7 @@ export default function PosterPage() {
           </StyledCallToAction>
         ) : (
           <StyledCallToAction>
-            <BaseXL>{countdown}</BaseXL>
+            <BaseXL>{timestamp}</BaseXL>
             <StyledAnchor href={FIGMA_URL} target="_blank">
               <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
             </StyledAnchor>
