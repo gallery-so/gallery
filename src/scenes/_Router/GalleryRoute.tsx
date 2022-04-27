@@ -65,7 +65,7 @@ export default function GalleryRoute({
 
   const countdownTimer = useMemo(() => {
     return `Ends in ${days}:${hours}:${minutes}:${seconds}`;
-  }, [seconds]);
+  }, [days, hours, minutes, seconds]);
 
   const isMobile = useIsMobileWindowWidth();
 

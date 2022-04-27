@@ -7,10 +7,6 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { object006Query } from '__generated__/object006Query.graphql';
 
 export default function Poster() {
-  if (!isFeatureEnabled(FeatureFlag.POSTER_PAGE)) {
-    return <GalleryRedirect to="/" />;
-  }
-
   const query = useLazyLoadQuery<object006Query>(
     graphql`
       query object006Query {
@@ -19,6 +15,10 @@ export default function Poster() {
     `,
     {}
   );
+
+  if (!isFeatureEnabled(FeatureFlag.POSTER_PAGE)) {
+    return <GalleryRedirect to="/" />;
+  }
 
   return <GalleryRoute queryRef={query} element={<PosterPage />} />;
 }
