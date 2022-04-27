@@ -5,6 +5,7 @@ import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from 'components/co
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
+import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
@@ -102,7 +103,7 @@ export default function GalleryRoute({
         title={countdownTimer}
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
         queryRef={query}
-        localStorageKey="gallery_poster_banner"
+        localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
         requireAuth
         actionComponent={<NavLink to="/object006">Sign Poster</NavLink>}
       />
