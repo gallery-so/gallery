@@ -25,9 +25,13 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
     <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
       {isMobile && <StyledHr />}
       <MainContent>
-        <Link href="/">
-          <StyledLogo src="/icons/logo-large.svg" />
-        </Link>
+        <LogoWrapper>
+          <Link href="/">
+            <StyledLogo src="/icons/logo-large.svg" />
+          </Link>
+          <Spacer width={4} />
+          <BaseS>BETA</BaseS>
+        </LogoWrapper>
         <Spacer height={4} />
         <StyledLinkContainer>
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
@@ -103,6 +107,10 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
 `;
 
 const MainContent = styled.div``;
+
+const LogoWrapper = styled.div`
+  display: flex;
+`;
 
 const StyledHr = styled.hr`
   border: 1px solid #f7f7f7;
