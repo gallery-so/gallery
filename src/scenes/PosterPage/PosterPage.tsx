@@ -90,7 +90,7 @@ const StyledPage = styled(Page)`
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 24px;
-    padding: 16px;
+    padding: 80px 16px;
   }
 `;
 
