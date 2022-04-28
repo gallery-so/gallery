@@ -43,13 +43,13 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
  * https://docs.sentry.io/platforms/javascript/guides/nextjs/performance/instrumentation/custom-instrumentation
  */
 function initSentryTracing(request: RequestParameters): Transaction | null {
-  if (request.operationKind !== 'mutation') {
-    return null;
+  if (request.operationKind === 'mutation') {
+    const transaction = startTransaction({ name: request.name, op: 'mutation' });
+    getCurrentHub().configureScope((scope) => scope.setSpan(transaction));
+    return transaction;
   }
 
-  const transaction = startTransaction({ name: request.name });
-  getCurrentHub().configureScope((scope) => scope.setSpan(transaction));
-  return transaction;
+  return null;
 }
 
 function teardownSentryTracing(transaction: Transaction | null) {
