@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 type Props = {
-  title?: string;
+  title?: React.ReactNode | string;
   queryRef: any;
   text: string;
   requireAuth?: boolean;
@@ -54,7 +54,7 @@ export default function Banner({
           <StyledText color={colors.offBlack}>{text}</StyledText>
         </StyledContent>
         <StyledAction>
-          <div onClick={hideBanner}>{actionComponent}</div>
+          <div>{actionComponent}</div>
           <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
         </StyledAction>
       </StyledBanner>

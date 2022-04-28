@@ -11,6 +11,7 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
@@ -104,12 +105,12 @@ export default function GalleryRoute({
     return isFeatureEnabled(FeatureFlag.POSTER_PAGE) &&
       !hideBannerPages.includes(router.pathname) ? (
       <Banner
-        title={countdownTimer}
+        title={<StyledTimer>{countdownTimer}</StyledTimer>}
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
         queryRef={query}
         localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
         requireAuth
-        actionComponent={<NavLink to="/object006">Sign Poster</NavLink>}
+        actionComponent={<NavLink to="/members/poster">Sign Poster</NavLink>}
       />
     ) : (
       <Banner text="" queryRef={query} />
@@ -134,3 +135,8 @@ export default function GalleryRoute({
     </>
   );
 }
+
+const StyledTimer = styled.div`
+  // Set the fixed width for timer
+  width: 124px;
+`;
