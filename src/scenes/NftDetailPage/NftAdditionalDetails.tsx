@@ -35,9 +35,9 @@ const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
 function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) {
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const handleToggleClick = useCallback(() => {
-    setShowAdditionalDetails((value) => !value);
+    setShowDetails((value) => !value);
   }, []);
 
   // Check for contract address befor rendering additional details
@@ -45,12 +45,8 @@ function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) 
 
   return (
     <StyledNftAdditionalDetails>
-      <TextButton
-        text={showAdditionalDetails ? 'Hide Details' : 'Additional Details'}
-        onClick={handleToggleClick}
-      />
-      <Spacer height={12} />
-      {showAdditionalDetails && (
+      {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
+      {showDetails && (
         <div>
           {hasContractAddress && (
             <>
@@ -75,6 +71,8 @@ function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) 
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
           </StyledLinkContainer>
+          <Spacer height={12} />
+          <TextButton text="Hide Details" onClick={handleToggleClick} />
         </div>
       )}
     </StyledNftAdditionalDetails>
