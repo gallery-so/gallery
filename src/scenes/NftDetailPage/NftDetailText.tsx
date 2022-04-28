@@ -78,7 +78,7 @@ function NftDetailText({
           <BaseM>{<EnsOrAddress address={addressToUse} />}</BaseM>
         </>
       )}
-      <Spacer height={32} />
+      <Spacer height={16} />
       <NftAdditionalDetails
         contractAddress={contractAddress}
         tokenId={tokenId}
