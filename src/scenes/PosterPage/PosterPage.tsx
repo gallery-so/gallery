@@ -55,7 +55,7 @@ export default function PosterPage() {
             </BaseM>
             <BaseM>
               The final product will be available to mint as a commemorative token for early
-              believers in our mission and product
+              believers in our mission and product.
             </BaseM>
           </StyledParagraph>
 
