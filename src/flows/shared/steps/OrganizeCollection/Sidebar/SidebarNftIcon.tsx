@@ -2,10 +2,11 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { getBackgroundColorOverrideForContract } from 'utils/nft';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeNft } from '../types';
 
@@ -18,6 +19,7 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   const nft = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Nft {
+        contractAddress
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -56,8 +58,13 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
     throw new Error('Image URL not found for SidebarNftIcon');
   }
 
+  const backgroundColorOverride = useMemo(
+    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
+    [nft.contractAddress]
+  );
+
   return (
-    <StyledSidebarNftIcon>
+    <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
       {
         // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
         result.type === 'video' ? (
@@ -71,7 +78,7 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   );
 }
 
-export const StyledSidebarNftIcon = styled.div`
+export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
   position: relative;
   width: 64px;
   height: 64px;
@@ -81,6 +88,8 @@ export const StyledSidebarNftIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${({ backgroundColorOverride }) =>
+    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   &:hover {
     cursor: pointer;

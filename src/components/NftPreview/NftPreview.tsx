@@ -11,6 +11,7 @@ import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
+import { getBackgroundColorOverrideForContract } from 'utils/nft';
 
 type Props = {
   galleryNftRef: NftPreviewFragment$key;
@@ -45,6 +46,7 @@ function NftPreview({ galleryNftRef }: Props) {
           dbid
           name
           openseaCollectionName
+          contractAddress
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
@@ -97,8 +99,13 @@ function NftPreview({ galleryNftRef }: Props) {
     }
   }, [columns, aspectRatioType, isMobile]);
 
+  const backgroundColorOverride = useMemo(
+    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
+    [nft.contractAddress]
+  );
+
   return (
-    <StyledNftPreview width={nftPreviewWidth}>
+    <StyledNftPreview width={nftPreviewWidth} backgroundColorOverride={backgroundColorOverride}>
       <StyledLinkWrapper onClick={handleNftClick}>
         {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
         <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
@@ -138,13 +145,16 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ width?: string }>`
+const StyledNftPreview = styled.div<{ width?: string; backgroundColorOverride: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   height: fit-content;
   overflow: hidden;
+
+  ${({ backgroundColorOverride }) =>
+    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   max-height: 80vh;
   max-width: ${({ width }) => width};

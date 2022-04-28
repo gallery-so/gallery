@@ -4,7 +4,10 @@ import unescape from 'utils/unescape';
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
+import {
+  getBackgroundColorOverrideForContract,
+  graphqlGetResizedNftImageUrlWithFallback,
+} from 'utils/nft';
 import Markdown from 'components/core/Markdown/Markdown';
 import Settings from 'public/icons/ellipses.svg';
 import { graphql, useFragment } from 'react-relay';
@@ -35,6 +38,7 @@ function CollectionRow({ collectionRef, className }: Props) {
         nfts {
           id
           nft @required(action: NONE) {
+            contractAddress
             ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
           }
@@ -99,7 +103,12 @@ function CollectionRow({ collectionRef, className }: Props) {
               {result.type === 'video' ? (
                 <BigNftVideoPreview src={imageUrl} />
               ) : (
-                <BigNftImagePreview src={imageUrl} />
+                <BigNftImagePreview
+                  src={imageUrl}
+                  backgroundColorOverride={getBackgroundColorOverrideForContract(
+                    nft.nft.contractAddress ?? ''
+                  )}
+                />
               )}
             </BigNftContainer>
           );
@@ -166,9 +175,11 @@ const BigNftVideoPreview = styled.video`
   max-height: 100%;
 `;
 
-const BigNftImagePreview = styled.img`
+const BigNftImagePreview = styled.img<{ backgroundColorOverride: string }>`
   max-width: 100%;
   max-height: 100%;
+  ${({ backgroundColorOverride }) =>
+    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 `;
 
 const Body = styled.div`
@@ -195,6 +206,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
     graphql`
       fragment CollectionRowCompactNftsFragment on Nft @relay(plural: true) {
         id
+        contractAddress
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -235,7 +247,12 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                   {result.type === 'video' ? (
                     <SmolNftVideoPreview src={imageUrl} />
                   ) : (
-                    <SmolNftImagePreview src={imageUrl} />
+                    <SmolNftImagePreview
+                      src={imageUrl}
+                      backgroundColorOverride={getBackgroundColorOverrideForContract(
+                        nft.contractAddress ?? ''
+                      )}
+                    />
                   )}
                 </SmolNftContainer>
               );
@@ -261,7 +278,12 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                 {result.type === 'video' ? (
                   <SmolNftVideoPreview src={imageUrl} />
                 ) : (
-                  <SmolNftImagePreview src={imageUrl} />
+                  <SmolNftImagePreview
+                    src={imageUrl}
+                    backgroundColorOverride={getBackgroundColorOverrideForContract(
+                      nft.contractAddress ?? ''
+                    )}
+                  />
                 )}
               </SmolNftContainer>
             );
@@ -296,9 +318,11 @@ const SmolNftVideoPreview = styled.video`
   max-height: 100%;
 `;
 
-const SmolNftImagePreview = styled.img`
+const SmolNftImagePreview = styled.img<{ backgroundColorOverride: string }>`
   max-width: 100%;
   max-height: 100%;
+  ${({ backgroundColorOverride }) =>
+    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 `;
 
 const Content = styled.div`

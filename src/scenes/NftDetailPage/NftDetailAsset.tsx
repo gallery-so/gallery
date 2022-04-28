@@ -11,6 +11,8 @@ import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
+import { useMemo } from 'react';
+import { getBackgroundColorOverrideForContract } from 'utils/nft';
 
 type NftDetailAssetComponentProps = {
   nftRef: NftDetailAssetComponentFragment$key;
@@ -90,6 +92,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
       fragment NftDetailAssetFragment on CollectionNft {
         id
         nft @required(action: THROW) {
+          contractAddress
           media @required(action: THROW) {
             ... on HtmlMedia {
               __typename
@@ -100,6 +103,11 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
       }
     `,
     nftRef
+  );
+
+  const backgroundColorOverride = useMemo(
+    () => getBackgroundColorOverrideForContract(nft.nft.contractAddress ?? ''),
+    [nft.nft.contractAddress]
   );
 
   const maxHeight = Math.min(
@@ -125,6 +133,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
       maxHeight={maxHeight}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
+      backgroundColorOverride={backgroundColorOverride}
     >
       <NftDetailAssetComponent nftRef={nft} maxHeight={maxHeight} />
     </StyledAssetContainer>
@@ -136,6 +145,7 @@ type AssetContainerProps = {
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
   hasExtraPaddingForNote: boolean;
+  backgroundColorOverride: string;
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
@@ -148,6 +158,9 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
+
+  ${({ backgroundColorOverride }) =>
+    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
