@@ -69,6 +69,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         font-size: 18px;
         color: black;
         flex-shrink: 0;
+        letter-spacing: -4%;
       }
       .separator {
         display: inline-block;
