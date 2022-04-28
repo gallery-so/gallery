@@ -8,7 +8,11 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 const SENTRY_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
 
-const SENTRY_TRACING_ORIGIN = SENTRY_ENV === 'production' ? 'api.gallery.so' : 'api.dev.gallery.so';
+const IS_PROD = SENTRY_ENV === 'production';
+
+const SENTRY_TRACING_ORIGIN = IS_PROD ? 'api.gallery.so' : 'api.dev.gallery.so';
+
+const SENTRY_TRACING_SAMPLE_RATE = IS_PROD ? 0.2 : 1.0;
 
 Sentry.init({
   // DSNs are safe to keep public because they only allow submission of
@@ -23,7 +27,7 @@ Sentry.init({
     }),
   ],
   // Adjust this value in production, or use tracesSampler for greater control
-  tracesSampleRate: 1.0,
+  tracesSampleRate: SENTRY_TRACING_SAMPLE_RATE,
   // ...
   // Note: if you want to override the automatic release value, do not set a
   // `release` value here - use the environment variable `SENTRY_RELEASE`, so
