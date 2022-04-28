@@ -1,16 +1,14 @@
 import Banner from 'components/Banner/Banner';
 import { FeatureFlag } from 'components/core/enums';
-import NavLink from 'components/core/NavLink/NavLink';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from 'components/core/Page/constants';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import Spacer from 'components/core/Spacer/Spacer';
-import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
+import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
@@ -66,12 +64,6 @@ export default function GalleryRoute({
     queryRef
   );
 
-  const { timestamp } = useTimer();
-
-  const countdownTimer = useMemo(() => {
-    return `Ends in ${timestamp}`;
-  }, [timestamp]);
-
   const isMobile = useIsMobileWindowWidth();
 
   const navbarComponent = useMemo(() => {
@@ -107,18 +99,11 @@ export default function GalleryRoute({
     }
 
     return isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
-      <Banner
-        title={<StyledTimer>{countdownTimer}</StyledTimer>}
-        text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
-        queryRef={query}
-        localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
-        requireAuth
-        actionComponent={<NavLink to="/members/poster">Sign Poster</NavLink>}
-      />
+      <PosterBanner queryRef={query} />
     ) : (
       <Banner text="" queryRef={query} />
     );
-  }, [banner, countdownTimer, query]);
+  }, [banner, query]);
 
   if (freshLayout) {
     return (
@@ -138,8 +123,3 @@ export default function GalleryRoute({
     </>
   );
 }
-
-const StyledTimer = styled.div`
-  // Set the fixed width for timer
-  width: 130px;
-`;
