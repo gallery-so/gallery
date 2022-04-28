@@ -78,7 +78,6 @@ const StyledBanner = styled.div`
   justify-content: space-between;
   align-items: center;
   top: 0;
-  z-index: 20;
   border: 1px solid ${colors.shadow};
   position: relative;
 
@@ -117,4 +116,5 @@ const StyledText = styled(BaseM)`
 const StyledAction = styled.div`
   display: flex;
   gap: 24px;
+  align-items: center;
 `;

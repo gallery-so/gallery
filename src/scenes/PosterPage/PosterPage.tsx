@@ -11,6 +11,7 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
+import Spacer from 'components/core/Spacer/Spacer';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -35,52 +36,54 @@ export default function PosterPage() {
 
   return (
     <StyledPage>
-      <StyledBackLink>
+      <Spacer height={80} />
+      <StyledPositionedBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
-      </StyledBackLink>
-      <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
-      <StyledContent>
-        <div>
-          {isMobile && <TitleM>(Object006)</TitleM>}
-          <TitleM>2022 Community Poster</TitleM>
-          <InteractiveLink href="/">Gallery</InteractiveLink>
-        </div>
-        <StyledParagraph>
-          <BaseM>
-            Thank you for being a member of Gallery. Celebrate our new brand with us by signing our
-            poster.
-          </BaseM>
-          <BaseM>
-            The final product will be available to mint as a commemorative token for early believers
-            in our mission and product
-          </BaseM>
-        </StyledParagraph>
+      </StyledPositionedBackLink>
+      <StyledWrapper>
+        <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
+        <StyledContent>
+          <div>
+            {isMobile && <TitleM>(Object006)</TitleM>}
+            <TitleM>2022 Community Poster</TitleM>
+            <InteractiveLink href="/">Gallery</InteractiveLink>
+          </div>
+          <StyledParagraph>
+            <BaseM>
+              Thank you for being a member of Gallery. Celebrate our new brand with us by signing
+              our poster.
+            </BaseM>
+            <BaseM>
+              The final product will be available to mint as a commemorative token for early
+              believers in our mission and product
+            </BaseM>
+          </StyledParagraph>
 
-        {!isMobile && <StyledHr></StyledHr>}
+          {!isMobile && <StyledHr></StyledHr>}
 
-        {hasEnded ? (
-          <StyledCallToAction hasEnded>
-            <BaseXL>Event has ended.</BaseXL>
-          </StyledCallToAction>
-        ) : (
-          <StyledCallToAction>
-            <BaseXL>{timestamp}</BaseXL>
-            <StyledAnchor href={FIGMA_URL} target="_blank">
-              <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
-            </StyledAnchor>
-          </StyledCallToAction>
-        )}
-      </StyledContent>
+          {hasEnded ? (
+            <StyledCallToAction hasEnded>
+              <BaseXL>Event has ended.</BaseXL>
+            </StyledCallToAction>
+          ) : (
+            <StyledCallToAction>
+              <BaseXL>{timestamp}</BaseXL>
+              <StyledAnchor href={FIGMA_URL} target="_blank">
+                <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
+              </StyledAnchor>
+            </StyledCallToAction>
+          )}
+        </StyledContent>
+      </StyledWrapper>
     </StyledPage>
   );
 }
 
 const StyledPage = styled(Page)`
   padding: 20px 40px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
 
-  flex-direction: row;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
   width: 100%;
   margin: 0 auto;
@@ -89,11 +92,25 @@ const StyledPage = styled(Page)`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    gap: 24px;
     padding: 80px 16px;
   }
 `;
 
+const StyledPositionedBackLink = styled(StyledBackLink)`
+  top: -0;
+`;
+
+const StyledWrapper = styled.div`
+  display: grid;
+  align-items: center;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (max-width: ${contentSize.desktop}px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 24px;
+  }
+`;
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;

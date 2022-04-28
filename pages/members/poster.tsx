@@ -26,6 +26,7 @@ export default function Poster() {
       queryRef={query}
       authenticatedRouteQueryRef={query}
       element={<PosterPage />}
+      banner={false}
       freshLayout
     />
   );

@@ -9,7 +9,7 @@ const StyledBackLink = styled.div`
 
   position: absolute;
   left: 0;
-  top: 0;
+  top: -80px;
   z-index: 3;
 
   padding: 0 ${pageGutter.mobile}px;

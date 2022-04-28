@@ -8,7 +8,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -16,6 +15,8 @@ import { isFeatureEnabled } from 'utils/featureFlag';
 import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
 export type LayoutProps = {
+  // whether the banner should be rendered
+  banner?: boolean;
   // whether the navbar should be rendered
   navbar?: boolean;
   // whether the footer should be rendered
@@ -50,6 +51,7 @@ export default function GalleryRoute({
   freshLayout = false,
   navbar = true,
   footer = true,
+  banner = true,
   footerIsFixed = false,
   footerVisibleWithinView = true,
   footerVisibleOutOfView = false,
@@ -64,7 +66,6 @@ export default function GalleryRoute({
     queryRef
   );
 
-  const router = useRouter();
   const { timestamp } = useTimer();
 
   const countdownTimer = useMemo(() => {
@@ -100,10 +101,12 @@ export default function GalleryRoute({
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed, isMobile]);
 
-  const banner = useMemo(() => {
-    const hideBannerPages = ['/auth'];
-    return isFeatureEnabled(FeatureFlag.POSTER_PAGE) &&
-      !hideBannerPages.includes(router.pathname) ? (
+  const bannerComponent = useMemo(() => {
+    if (!banner) {
+      return <Filler />;
+    }
+
+    return isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
       <Banner
         title={<StyledTimer>{countdownTimer}</StyledTimer>}
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
@@ -115,12 +118,12 @@ export default function GalleryRoute({
     ) : (
       <Banner text="" queryRef={query} />
     );
-  }, [query, countdownTimer, router.pathname]);
+  }, [banner, countdownTimer, query]);
 
   if (freshLayout) {
     return (
       <>
-        {banner}
+        {bannerComponent}
         {element}
       </>
     );
@@ -128,7 +131,7 @@ export default function GalleryRoute({
 
   return (
     <>
-      {banner}
+      {bannerComponent}
       {navbarComponent}
       {element}
       {footerComponent}
