@@ -54,7 +54,7 @@ export default function Banner({
           <StyledText color={colors.offBlack}>{text}</StyledText>
         </StyledContent>
         <StyledAction>
-          <div>{actionComponent}</div>
+          {actionComponent}
           <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
         </StyledAction>
       </StyledBanner>
@@ -108,7 +108,6 @@ const StyledContent = styled.div`
 
 const StyledTitle = styled(TitleS)`
   display: inline-block;
-  margin-right: 8px;
 `;
 
 const StyledText = styled(BaseM)`

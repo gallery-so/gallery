@@ -138,5 +138,5 @@ export default function GalleryRoute({
 
 const StyledTimer = styled.div`
   // Set the fixed width for timer
-  width: 124px;
+  width: 130px;
 `;
