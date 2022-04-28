@@ -16,7 +16,7 @@ export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
   const { pushToast } = useToastActions();
 
-  const FIGMA_URL = 'https://www.figma.com/file/YrjZkebwPMIPr3aFx8o2w1/Untitled?node-id=1%3A2';
+  const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
 
   const { timestamp, hasEnded } = useTimer();
 
@@ -51,8 +51,8 @@ export default function PosterPage() {
             poster.
           </BaseM>
           <BaseM>
-            The final product will be minted as an NFT and sent to everyone as a commemorative token
-            for early believers in our mission and product.
+            The final product will be available to mint as a commemorative token for early believers
+            in our mission and product
           </BaseM>
         </StyledParagraph>
 
