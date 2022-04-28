@@ -127,7 +127,7 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: ${({ hasEnded }) => (hasEnded ? '1fr' : 'repeat(2, minmax(0, 1fr))')};
     align-items: center;
-    text-align: ${({ hasEnded }) => (hasEnded ? 'text-center' : 'text-left')};
+    text-align: ${({ hasEnded }) => (hasEnded ? 'center' : 'left')};
     position: fixed;
     z-index: 30;
     bottom: 0;
