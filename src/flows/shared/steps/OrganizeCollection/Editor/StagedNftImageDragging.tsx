@@ -1,8 +1,10 @@
+import colors from 'components/core/colors';
 import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { getBackgroundColorOverrideForContract } from 'utils/nft';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 
 type Props = {
@@ -14,6 +16,7 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
   const nft = useFragment(
     graphql`
       fragment StagedNftImageDraggingFragment on Nft {
+        contractAddress
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -27,6 +30,11 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
 
   const result = getVideoOrImageUrlForNftPreview(nft);
 
+  const backgroundColorOverride = useMemo(
+    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
+    [nft.contractAddress]
+  );
+
   if (!result || !result.urls.large) {
     throw new Error('Image URL not found for StagedNftImageDragging');
   }
@@ -36,7 +44,7 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
       <StyledDraggingVideo src={result.urls.large} />
     </VideoContainer>
   ) : (
-    <ImageContainer size={zoomedSize}>
+    <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
       <StyledDraggingImage srcUrl={result.urls.large} isMouseUp={isMouseUp} size={zoomedSize} />
     </ImageContainer>
   );
@@ -62,8 +70,9 @@ const StyledDraggingVideo = styled.video`
   width: 100%;
 `;
 
-const ImageContainer = styled.div<{ size: number }>`
-  background: white;
+const ImageContainer = styled.div<{ size: number; backgroundColorOverride: string }>`
+  background-color: ${({ backgroundColorOverride }) =>
+    backgroundColorOverride ? backgroundColorOverride : colors.white};
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
 `;

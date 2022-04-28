@@ -18,3 +18,11 @@ export function graphqlGetResizedNftImageUrlWithFallback(url: string | null, siz
 
   return url || FALLBACK_URL;
 }
+
+const backgroundColorOverrides: Record<string, string> = {
+  '0x30cdac3871c41a63767247c8d1a2de59f5714e78': '#E0E0E0', // Obits
+};
+
+export function getBackgroundColorOverrideForContract(contractAddress: string) {
+  return backgroundColorOverrides[contractAddress] || '';
+}
