@@ -191,6 +191,7 @@ const StyledSidebar = styled.div`
   padding: 32px;
 
   overflow: auto;
+  user-select: none;
 
   &::-webkit-scrollbar {
     display: none;
