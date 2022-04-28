@@ -100,8 +100,8 @@ export default function GalleryRoute({
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed, isMobile]);
 
-  const hideBannerPages = ['/auth'];
   const banner = useMemo(() => {
+    const hideBannerPages = ['/auth'];
     return isFeatureEnabled(FeatureFlag.POSTER_PAGE) &&
       !hideBannerPages.includes(router.pathname) ? (
       <Banner
@@ -115,7 +115,7 @@ export default function GalleryRoute({
     ) : (
       <Banner text="" queryRef={query} />
     );
-  }, [query, countdownTimer]);
+  }, [query, countdownTimer, router.pathname]);
 
   if (freshLayout) {
     return (
