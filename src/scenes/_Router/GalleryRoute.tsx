@@ -8,6 +8,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { isFeatureEnabled } from 'utils/featureFlag';
@@ -62,6 +63,7 @@ export default function GalleryRoute({
     queryRef
   );
 
+  const router = useRouter();
   const { timestamp } = useTimer();
 
   const countdownTimer = useMemo(() => {
@@ -97,8 +99,10 @@ export default function GalleryRoute({
     }
   }, [footer, footerVisibleOutOfView, footerVisibleWithinView, footerIsFixed, isMobile]);
 
+  const hideBannerPages = ['/auth'];
   const banner = useMemo(() => {
-    return isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
+    return isFeatureEnabled(FeatureFlag.POSTER_PAGE) &&
+      !hideBannerPages.includes(router.pathname) ? (
       <Banner
         title={countdownTimer}
         text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
