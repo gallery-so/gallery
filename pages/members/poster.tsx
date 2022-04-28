@@ -3,13 +3,13 @@ import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { object006Query } from '__generated__/object006Query.graphql';
+import { posterQuery } from '__generated__/posterQuery.graphql';
 import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
 
 export default function Poster() {
-  const query = useLazyLoadQuery<object006Query>(
+  const query = useLazyLoadQuery<posterQuery>(
     graphql`
-      query object006Query {
+      query posterQuery {
         ...GalleryAuthenticatedRouteFragment
         ...GalleryRouteFragment
       }
