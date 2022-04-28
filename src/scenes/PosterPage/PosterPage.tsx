@@ -129,7 +129,7 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     align-items: center;
     text-align: ${({ hasEnded }) => (hasEnded ? 'text-center' : 'text-left')};
     position: fixed;
-    z-index: 20;
+    z-index: 30;
     bottom: 0;
     left: 0;
     width: 100%;
