@@ -94,7 +94,9 @@ const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
   display: -webkit-box;
 
   // allows descriptions with multiple paragraphs to be line clamped properly
-  p {
+  p,
+  ol,
+  li {
     display: contents;
   }
 `;
