@@ -78,9 +78,9 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
       </Head>
       <Page>
         <StyledCollectionGalleryWrapper>
-          <StyledBackLink>
+          <StyledPositionedBackLink>
             <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
-          </StyledBackLink>
+          </StyledPositionedBackLink>
           <CollectionGallery queryRef={query} />
         </StyledCollectionGalleryWrapper>
       </Page>
@@ -92,10 +92,15 @@ const StyledCollectionGalleryWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin: 0 ${pageGutter.mobile}px;
+  position: relative;
 
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
   }
+`;
+
+const StyledPositionedBackLink = styled(StyledBackLink)`
+  padding: 0;
 `;
 
 export default CollectionGalleryPage;

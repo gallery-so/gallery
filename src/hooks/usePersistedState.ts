@@ -26,6 +26,7 @@ function usePersistedState<T>(key: string, defaultValue: T): [T, SetValue<T>] {
   // TODO: debounce
   useEffect(() => {
     // TODO handle value == undefined, null etc
+    if (!key) return;
     const item = JSON.stringify(value);
     window.localStorage.setItem(key, item);
   }, [key, value]);

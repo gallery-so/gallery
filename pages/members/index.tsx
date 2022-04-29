@@ -2,7 +2,7 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import MemberListPage from 'scenes/MemberListPage/MemberListPage';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import { membersQuery } from '../__generated__/membersQuery.graphql';
+import { membersQuery } from '../../__generated__/membersQuery.graphql';
 
 export default function Members() {
   const query = useLazyLoadQuery<membersQuery>(

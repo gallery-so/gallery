@@ -1,6 +1,9 @@
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
-import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSITION_MS,
+  ANIMATED_COMPONENT_TIMEOUT_MS,
+} from 'components/core/transitions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
@@ -8,18 +11,30 @@ type Props = {
   message: string;
   cornerPositioned?: boolean;
   onClose?: () => void;
+  autoClose?: boolean;
 };
 
 const noop = () => {};
 
-export function AnimatedToast({ message, cornerPositioned = true, onClose = noop }: Props) {
+export function AnimatedToast({
+  message,
+  cornerPositioned = true,
+  onClose = noop,
+  autoClose = false,
+}: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     setIsActive(true);
-  }, []);
+
+    if (autoClose) {
+      setTimeout(() => {
+        setIsActive(false);
+      }, ANIMATED_COMPONENT_TIMEOUT_MS);
+    }
+  }, [autoClose]);
 
   const handleClose = useCallback(() => {
     setIsActive(false);
@@ -44,12 +59,16 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-  z-index: 20;
-  position: relative;
+  z-index: 25; // appears above cta footer mobile
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
   animation-fill-mode: forwards;
+
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  left: 24px;
 `;
 
 function Toast({ message, onClose, cornerPositioned }: Props) {
@@ -76,16 +95,16 @@ function Toast({ message, onClose, cornerPositioned }: Props) {
 
 const CornerPosition = styled.div`
   z-index: 2; // appears above navbar
-  position: fixed;
-  top: 24px;
-  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledToast = styled.div`
   position: relative;
   border: 1px solid black;
-  padding: 16px 32px 16px 24px;
-  width: 288px;
+  padding: 16px 40px 16px 24px;
+  max-width: 80vw; // Set width of toast to 80% of viewport
   background: ${colors.white};
 `;
 

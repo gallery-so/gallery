@@ -19,6 +19,7 @@ export default function Auth() {
       queryRef={query}
       element={<AuthScene queryRef={query} />}
       navbar={false}
+      banner={false}
       footerVisibleOutOfView
     />
   );

@@ -109,6 +109,7 @@ function NftDetailPage({ nftId, queryRef }: Props) {
 }
 
 const StyledNftDetailPage = styled(Page)`
+  position: relative;
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
