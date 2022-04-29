@@ -64,7 +64,7 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
     case 'AudioMedia':
       return <NftDetailAudio nftRef={nft.nft} />;
     case 'ImageMedia':
-      return <NftDetailImage nftRef={nft.nft} />;
+      return <NftDetailImage nftRef={nft.nft} maxHeight={maxHeight} />;
     case 'GltfMedia':
       return <NftDetailModel mediaRef={nft.nft.media} />;
     default:

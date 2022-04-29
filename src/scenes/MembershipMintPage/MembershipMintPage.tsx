@@ -232,7 +232,9 @@ type VideoProps = {
 
 function MembershipVideo({ src }: VideoProps) {
   const setContentIsLoaded = useSetContentIsLoaded();
-  return <StyledVideo src={src} autoPlay loop playsInline muted onLoadStart={setContentIsLoaded} />;
+  return (
+    <StyledVideo src={src} autoPlay loop playsInline muted onLoadedData={setContentIsLoaded} />
+  );
 }
 
 function MembershipNftVisual({ src }: VideoProps) {
