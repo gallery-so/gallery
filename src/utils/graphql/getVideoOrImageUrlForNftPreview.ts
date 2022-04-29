@@ -124,7 +124,7 @@ export default function getVideoOrImageUrlForNftPreview(
     // until we're on the indexer. in summary, we don't know whether something was categorized
     // as VideoMedia due to its OpenseaImageURL or OpenseaAnimationURL, so we need to do one
     // more check ourselves
-    if (media.previewURLs.large?.endsWith('mp4')) {
+    if (media.previewURLs.large?.endsWith('mp4') || media.previewURLs.large?.endsWith('webm')) {
       return { type: 'video', urls: media.previewURLs };
     }
     return { type: 'image', urls: media.previewURLs };

@@ -31,13 +31,13 @@ function NftDetailVideo({ mediaRef, maxHeight }: Props) {
       loop
       playsInline
       controls
-      onLoadStart={setContentIsLoaded}
+      onLoadedData={setContentIsLoaded}
       maxHeight={maxHeight}
     />
   );
 }
 
-const StyledVideo = styled.video<{ maxHeight: number }>`
+export const StyledVideo = styled.video<{ maxHeight: number }>`
   width: 100%;
   height: 100%;
   border: none;

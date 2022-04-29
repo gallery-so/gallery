@@ -1,10 +1,11 @@
-import ImageWithLoading from 'components/ImageWithLoading/ImageWithLoading';
+import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
 import { useEffect } from 'react';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import VideoWithLoading from 'components/LoadingAsset/VideoWithLoading';
 
 type UnrenderedPreviewAssetProps = {
   id: string;
@@ -86,9 +87,16 @@ function NftPreviewAsset({ nftRef, size }: Props) {
   ) {
     const src = graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size);
 
+    // TODO: this is a hack to handle videos that are returned by OS as images.
+    // i.e., assets that do not have animation_urls, and whose image_urls all contain
+    // links to videos. we should be able to remove this hack once we're off of OS.
+    if (src.endsWith('.mp4') || src.endsWith('.webm')) {
+      return <VideoWithLoading src={src} />;
+    }
+
     return (
       <ImageWithLoading
-        src={graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size)}
+        src={src}
         heightType="inherit"
         widthType={src.endsWith('svg') ? 'fullWidth' : 'maxWidth'}
         alt={nft.name ?? ''}
