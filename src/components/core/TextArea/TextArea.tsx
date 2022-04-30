@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
 import { BaseM } from '../Text/Text';
+import MarkdownOptions from '../Markdown/MarkdownOptions';
 
 type TextAreaProps = {
   className?: string;
@@ -11,31 +12,51 @@ type TextAreaProps = {
   defaultValue?: string;
   autoFocus?: boolean;
   textAreaHeight?: string;
+  hasMarkdown?: boolean;
 };
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
-    { className, onChange = noop, placeholder, defaultValue, autoFocus = false, textAreaHeight },
+    {
+      className,
+      onChange = noop,
+      placeholder,
+      defaultValue,
+      autoFocus = false,
+      textAreaHeight,
+      hasMarkdown = false,
+    },
     ref
   ) => {
     const _ref = useRef<HTMLTextAreaElement>(null);
     const textAreaRef = ref || _ref;
 
+    // Whenever textAreaRef's value changes (could be via a child component, like MarkdownOptions), trigger onChange
+    useEffect(() => {
+      console.log(defaultValue);
+      // if (textAreaRef.current) {
+      //   onChange(event);
+      // }
+    }, [defaultValue]);
+
     return (
-      <StyledTextArea
-        className={className}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        onChange={onChange}
-        onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
-        autoFocus={autoFocus}
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="off"
-        spellCheck="false"
-        textAreaHeight={textAreaHeight}
-        ref={textAreaRef}
-      />
+      <>
+        <StyledTextArea
+          className={className}
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
+          autoFocus={autoFocus}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+          textAreaHeight={textAreaHeight}
+          ref={textAreaRef}
+        />
+        {hasMarkdown && <MarkdownOptions textAreaRef={textAreaRef} onChange={onChange} />}
+      </>
     );
   }
 );
@@ -69,12 +90,14 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   return (
-    <StyledTextAreaWithCharCount className={className}>
-      <TextArea {...textAreaProps} />
-      <StyledCharacterCounter error={currentCharCount > maxCharCount}>
-        {currentCharCount}/{maxCharCount}
-      </StyledCharacterCounter>
-    </StyledTextAreaWithCharCount>
+    <>
+      <StyledTextAreaWithCharCount className={className}>
+        <TextArea {...textAreaProps} />
+        <StyledCharacterCounter error={currentCharCount > maxCharCount}>
+          {currentCharCount}/{maxCharCount}
+        </StyledCharacterCounter>
+      </StyledTextAreaWithCharCount>
+    </>
   );
 }
 

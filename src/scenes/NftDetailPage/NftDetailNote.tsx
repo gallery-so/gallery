@@ -155,6 +155,7 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
           defaultValue={unescapedCollectorsNote}
           currentCharCount={unescapedCollectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
+          hasMarkdown={true}
         />
       ) : (
         <StyledCollectorsNote
