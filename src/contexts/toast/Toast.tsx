@@ -32,7 +32,7 @@ export function AnimatedToast({
     if (autoClose) {
       setTimeout(() => {
         setIsActive(false);
-        onClose();
+        setTimeout(onClose, ANIMATED_COMPONENT_TRANSITION_MS);
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
     }
   }, [autoClose, onClose]);
