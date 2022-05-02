@@ -60,7 +60,7 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-  z-index: 35; // appears above cta footer mobile
+  z-index: 51; // appears above wizard footer for onboarding / welcome gallery
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
