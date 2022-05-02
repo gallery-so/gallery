@@ -32,6 +32,7 @@ export function AnimatedToast({
     if (autoClose) {
       setTimeout(() => {
         setIsActive(false);
+        onClose();
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
     }
   }, [autoClose]);
@@ -59,7 +60,7 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-  z-index: 25; // appears above cta footer mobile
+  z-index: 35; // appears above cta footer mobile
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
