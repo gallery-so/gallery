@@ -7,8 +7,11 @@ export default function MarkdownOptions({
   textAreaRef,
   onChange, // The onChange from the TextArea component. This ensures that we track the same event handlers (e.g. a collector's note change) via the addition of just markdown
 }: {
+  // textAreaRef:
+  //   | React.MutableRefObject<HTMLTextAreaElement>
+  //   | ((instance: HTMLTextAreaElement | null) => void);
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  onChange: (e: React.ChangeEventHandler<HTMLTextAreaElement>) => void;
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 }) {
   // FIXME: Need some way to trigger parent textarea onChange event
   // Currently a user needs to edit the text after adding Markdown, because markdown itself does not trigger a change event
@@ -18,6 +21,8 @@ export default function MarkdownOptions({
   //       onChange(textAreaRef.current);
   //     }
   //   }, [textAreaRef, onChange]);
+
+  console.log(onChange);
 
   // Rather than select the text, we select the range of select characters; this will prevent multiple instances of the same text getting same Markdown applied
   const [selectedRange, setSelectedRange] = useState([
@@ -45,10 +50,12 @@ export default function MarkdownOptions({
     if (textArea) {
       textArea.selectionStart = selectedRange[0];
       textArea.selectionEnd = selectedRange[1];
-      console.log(textArea);
     }
   }, [textAreaRef, selectedRange]);
 
+  ///////////////////
+  // BOLD HANDLING //
+  ///////////////////
   const handleBoldClick = useCallback(() => {
     const textArea = textAreaRef.current;
     if (textArea) {
@@ -113,7 +120,6 @@ export default function MarkdownOptions({
       // SINGLE LINE: User has either selected one line or is on line but has not selected text
       // If there is no selectedText but the user's cursor is on a line, get the current lines first character
       if (selectedText === '' || lines.length == 1) {
-        console.log('dfjans');
         const currentLine =
           textArea.value.split('\n')[textArea.value.substring(0, start).split('\n').length - 1];
         if (currentLine.startsWith('* ')) {

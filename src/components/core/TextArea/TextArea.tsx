@@ -31,9 +31,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const _ref = useRef<HTMLTextAreaElement>(null);
     const textAreaRef = ref || _ref;
 
-    // Whenever textAreaRef's value changes (could be via a child component, like MarkdownOptions), trigger onChange
+    // FIXME: Whenever textAreaRef's value changes (could be via a child component, like MarkdownOptions), trigger onChange
     useEffect(() => {
-      console.log(defaultValue);
+      // console.log(defaultValue);
       // if (textAreaRef.current) {
       //   onChange(event);
       // }
