@@ -35,7 +35,7 @@ export function AnimatedToast({
         onClose();
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
     }
-  }, [autoClose]);
+  }, [autoClose, onClose]);
 
   const handleClose = useCallback(() => {
     setIsActive(false);
