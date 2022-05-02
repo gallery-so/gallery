@@ -1,4 +1,4 @@
-# Gallery Frontend
+# Gallery Frontend test
 
 The premier gallery experience for your NFTs.
 
@@ -44,6 +44,7 @@ $ yarn dev
 The app will be available on http://localhost:3000
 
 ### E2E Test
+
 Cypress CI is configured as a github workflow in `.github/workflows`
 
 ### Advanced
