@@ -36,7 +36,7 @@ export default function PosterPage() {
 
   return (
     <StyledPage>
-      <Spacer height={80} />
+      {!isMobile && <Spacer height={80} />}
       <StyledPositionedBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
@@ -57,6 +57,7 @@ export default function PosterPage() {
               The final product will be available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
+            {isMobile && <Spacer height={56} />}
           </StyledParagraph>
 
           {!isMobile && <StyledHr></StyledHr>}
@@ -92,7 +93,7 @@ const StyledPage = styled(Page)`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    padding: 80px 16px;
+    padding: 0px 16px;
   }
 `;
 
