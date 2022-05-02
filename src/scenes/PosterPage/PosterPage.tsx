@@ -93,7 +93,7 @@ const StyledPage = styled(Page)`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    padding: 24px 16px;
+    padding: 0px 16px;
   }
 `;
 
