@@ -18,15 +18,20 @@ type Props = {
 export default function InteractiveLink({ to, href, children, className, onClick }: Props) {
   const track = useTrack();
 
-  const handleClick = useCallback(() => {
-    track('Link Click', {
-      to: to || href,
-    });
+  const handleClick = useCallback(
+    (event) => {
+      event.stopPropagation();
 
-    if (onClick) {
-      onClick();
-    }
-  }, [href, onClick, to, track]);
+      track('Link Click', {
+        to: to || href,
+      });
+
+      if (onClick) {
+        onClick();
+      }
+    },
+    [href, onClick, to, track]
+  );
 
   if (!to && !href) {
     console.error('no link provided for InteractiveLink');
