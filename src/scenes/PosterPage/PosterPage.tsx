@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Page from 'components/core/Page/Page';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Button from 'components/core/Button/Button';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
@@ -11,7 +10,6 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
-import Spacer from 'components/core/Spacer/Spacer';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
