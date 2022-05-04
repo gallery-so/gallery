@@ -132,7 +132,11 @@ function NftPreview({ galleryNftRef }: Props) {
         {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
         <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
         <StyledNftFooter>
-          <StyledNftLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+          <StyledNftLabel
+            title={nft.name}
+            collectionName={nft.openseaCollectionName}
+            contractAddress={nft.contractAddress}
+          />
           <StyledGradient type="bottom" direction="down" />
         </StyledNftFooter>
       </StyledLinkWrapper>
