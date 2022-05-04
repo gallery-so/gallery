@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Page from 'components/core/Page/Page';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Button from 'components/core/Button/Button';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
@@ -11,7 +10,6 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
-import Spacer from 'components/core/Spacer/Spacer';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -36,18 +34,13 @@ export default function PosterPage() {
 
   return (
     <StyledPage>
-      {!isMobile && <Spacer height={80} />}
       <StyledPositionedBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
       <StyledWrapper>
         <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
         <StyledContent>
-          <div>
-            {isMobile && <TitleM>(Object006)</TitleM>}
-            <TitleM>2022 Community Poster</TitleM>
-            <InteractiveLink href="/">Gallery</InteractiveLink>
-          </div>
+          <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
               Thank you for being a member of Gallery. Celebrate our new brand with us by signing
@@ -57,7 +50,6 @@ export default function PosterPage() {
               The final product will be available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
-            {isMobile && <Spacer height={56} />}
           </StyledParagraph>
 
           {!isMobile && <StyledHr></StyledHr>}
@@ -86,6 +78,7 @@ const StyledPage = styled(Page)`
   flex-direction: column;
 
   align-items: center;
+  justify-content: center;
   width: 100%;
   margin: 0 auto;
   max-width: ${contentSize.desktop}px;

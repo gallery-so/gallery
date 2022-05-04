@@ -5,6 +5,7 @@ import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { posterQuery } from '__generated__/posterQuery.graphql';
 import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 export default function Poster() {
   const query = useLazyLoadQuery<posterQuery>(
@@ -17,6 +18,8 @@ export default function Poster() {
     {}
   );
 
+  const isMobile = useIsMobileWindowWidth();
+
   if (!isFeatureEnabled(FeatureFlag.POSTER_PAGE)) {
     return <GalleryRedirect to="/" />;
   }
@@ -27,7 +30,8 @@ export default function Poster() {
       authenticatedRouteQueryRef={query}
       element={<PosterPage />}
       banner={false}
-      freshLayout
+      navbar={false}
+      footer={!isMobile}
     />
   );
 }
