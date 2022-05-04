@@ -80,7 +80,7 @@ export function MembershipMintPage({
     [canMintToken, price, transactionStatus]
   );
 
-  const mintIneligible = useMemo(
+  const directUserToSecondary = useMemo(
     () => membershipNft.tokenId === 6 || (active && !canMintToken),
     [active, canMintToken, membershipNft.tokenId]
   );
@@ -132,7 +132,7 @@ export function MembershipMintPage({
   }, [active, contract, error, getSupply, membershipNft.tokenId, mintToken, onMintSuccess]);
 
   const PrimaryButton = useMemo(() => {
-    if (mintIneligible) {
+    if (directUserToSecondary) {
       return (
         <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
           <TitleXS color={colors.white}>View on Secondary</TitleXS>
@@ -152,7 +152,7 @@ export function MembershipMintPage({
     handleMintButtonClick,
     isMintButtonEnabled,
     membershipNft.secondaryUrl,
-    mintIneligible,
+    directUserToSecondary,
   ]);
 
   // auto close the wallet modal once user connects
