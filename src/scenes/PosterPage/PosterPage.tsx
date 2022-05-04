@@ -10,6 +10,7 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
+import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -52,7 +53,7 @@ export default function PosterPage() {
             </BaseM>
           </StyledParagraph>
 
-          {!isMobile && <StyledHr></StyledHr>}
+          {!isMobile && <HorizontalBreak />}
 
           {hasEnded ? (
             <StyledCallToAction hasEnded>
@@ -121,13 +122,6 @@ const StyledContent = styled.div`
 const StyledParagraph = styled.div`
   display: grid;
   gap: 8px;
-`;
-
-const StyledHr = styled.hr`
-  height: 1px;
-  border: none;
-  background-color: ${colors.porcelain};
-  width: 100%;
 `;
 
 const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
