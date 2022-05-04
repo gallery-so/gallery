@@ -12,6 +12,7 @@ import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
 import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
   galleryNftRef: NftPreviewFragment$key;
@@ -47,6 +48,7 @@ function NftPreview({ galleryNftRef }: Props) {
           name
           openseaCollectionName
           contractAddress
+          ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
@@ -82,7 +84,7 @@ function NftPreview({ galleryNftRef }: Props) {
 
   const { aspectRatioType } = useContentState();
 
-  const nftPreviewWidth = useMemo(() => {
+  const nftPreviewMaxWidth = useMemo(() => {
     if (columns > 1) return '100%';
 
     // this could be a 1-liner but wanted to make it explicit
@@ -99,13 +101,33 @@ function NftPreview({ galleryNftRef }: Props) {
     }
   }, [columns, aspectRatioType, isMobile]);
 
+  const result = getVideoOrImageUrlForNftPreview(nft);
+
+  const nftPreviewWidth = useMemo(() => {
+    // this allows SVGs to stretch to fit its container, fixing images
+    // that appeared tiny.
+    //
+    // HOWEVER, stretching an svg to 100% when column size = 1 results
+    // in the preview label appearing stretched beneath the image, since
+    // we cap the max height to 80vh when column = 1; so this is disabled
+    // in those cases for now.
+    if (columns > 1 && result?.urls?.large?.endsWith('.svg')) {
+      return '100%';
+    }
+    return 'auto';
+  }, [columns, result?.urls?.large]);
+
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
     [nft.contractAddress]
   );
 
   return (
-    <StyledNftPreview width={nftPreviewWidth} backgroundColorOverride={backgroundColorOverride}>
+    <StyledNftPreview
+      maxWidth={nftPreviewMaxWidth}
+      width={nftPreviewWidth}
+      backgroundColorOverride={backgroundColorOverride}
+    >
       <StyledLinkWrapper onClick={handleNftClick}>
         {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
         <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
@@ -149,7 +171,11 @@ const StyledNftFooter = styled.div`
   opacity: 0;
 `;
 
-const StyledNftPreview = styled.div<{ width?: string; backgroundColorOverride: string }>`
+const StyledNftPreview = styled.div<{
+  maxWidth?: string;
+  width?: string;
+  backgroundColorOverride: string;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,7 +187,8 @@ const StyledNftPreview = styled.div<{ width?: string; backgroundColorOverride: s
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   max-height: 80vh;
-  max-width: ${({ width }) => width};
+  max-width: ${({ maxWidth }) => maxWidth};
+  width: ${({ width }) => width};
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);
