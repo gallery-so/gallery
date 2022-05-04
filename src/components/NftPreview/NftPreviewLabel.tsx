@@ -29,9 +29,11 @@ function NftPreviewLabel({ className, title, collectionName, contractAddress }: 
       {collectionName &&
         (showCommunityLink ? (
           <div>
-            <StyledInteractiveLink to={`/community/${contractAddress}`}>
-              {collectionName}
-            </StyledInteractiveLink>
+            <StyledBaseM lines={2}>
+              <StyledInteractiveLink to={`/community/${contractAddress}`}>
+                {collectionName}
+              </StyledInteractiveLink>
+            </StyledBaseM>
           </div>
         ) : (
           <StyledBaseM color={colors.white} lines={2}>
