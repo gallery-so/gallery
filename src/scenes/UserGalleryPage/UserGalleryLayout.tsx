@@ -10,6 +10,7 @@ import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFr
 import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
 import { contentSize } from 'components/core/breakpoints';
+import AnimationTest from 'components/Animation/Animation';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -58,6 +59,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
+      <AnimationTest />
       <Spacer height={32} />
       <UserGalleryHeader
         userRef={user}
