@@ -121,14 +121,9 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedItems.map((stagedItem) => {
               const size = IMAGE_SIZES[columns];
-              if (isEditModeNft(stagedItem)) {
-                return (
-                  <SortableStagedNft
-                    key={stagedItem.id}
-                    nftRef={nftFragmentsKeyedByID[stagedItem.id]}
-                    size={size}
-                  />
-                );
+              const stagedItemRef = nftFragmentsKeyedByID[stagedItem.id];
+              if (isEditModeNft(stagedItem) && stagedItemRef) {
+                return <SortableStagedNft key={stagedItem.id} nftRef={stagedItemRef} size={size} />;
               }
               return (
                 <SortableStagedWhitespace key={stagedItem.id} id={stagedItem.id} size={size} />
