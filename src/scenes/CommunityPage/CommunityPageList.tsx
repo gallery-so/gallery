@@ -38,11 +38,7 @@ function CommunityPageUser({ username }: CommunityPageUserProps) {
   return (
     <StyledOwner>
       <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <StyledLink
-          href={`/${username}`}
-          fadeUsernames={fadeUsernames}
-          onClick={handleUsernameClick}
-        >
+        <StyledLink to={`/${username}`} fadeUsernames={fadeUsernames} onClick={handleUsernameClick}>
           <StyledBaseXL>{username}</StyledBaseXL>
         </StyledLink>
       </div>
