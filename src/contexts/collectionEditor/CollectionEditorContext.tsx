@@ -3,6 +3,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { UpdateCollectionNftsInput } from '__generated__/useUpdateCollectionNftsMutation.graphql';
+import deduplicateObjectByOpenseaIdAndPreferEarliest from './deduplicateObjectByOpenseaIdAndPreferEarliest';
 
 export type SidebarNftsState = Record<string, EditModeNft>;
 export type StagedItemsState = StagingItem[];
@@ -93,7 +94,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   );
 
   const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
-    setSidebarNftsState(nfts);
+    setSidebarNftsState(deduplicateObjectByOpenseaIdAndPreferEarliest(nfts));
   }, []);
 
   const setNftsIsSelected = useCallback((nftIds: string[], isSelected: boolean) => {
