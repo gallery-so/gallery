@@ -27,12 +27,16 @@ export default function deduplicateObjectByOpenseaIdAndPreferEarliest(
     }
 
     const exists = objectByOpenseaId[openseaId];
+    // in JS, we can use a simple comparison operator to compare alphabetical
+    // order between two strings. // our DB IDs are KSUIDs and are naturally
+    // sorted: https://github.com/segmentio/ksuid
     if (exists && exists.id < v.id) {
       continue;
     }
     objectByOpenseaId[openseaId] = v;
   }
 
+  // map de-duped NFTs back into original shape
   const newObj: SidebarNftsState = {};
   for (const k in objectByOpenseaId) {
     const v = objectByOpenseaId[k];
