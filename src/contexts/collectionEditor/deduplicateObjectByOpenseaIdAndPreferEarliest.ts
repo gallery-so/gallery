@@ -8,7 +8,7 @@ import { SidebarNftsState } from './CollectionEditorContext';
  * those NFTs in and out of their wallets – trigger uniqueness constraints.
  *
  * In the long run:
- * 1) we will move off of opensea
+ * 1) we'll move off of opensea
  * 2) we'll associate NFTs in our main database with user IDs, instead of just
  *    wallet addresses
  */
@@ -28,7 +28,7 @@ export default function deduplicateObjectByOpenseaIdAndPreferEarliest(
 
     const exists = objectByOpenseaId[openseaId];
     // in JS, we can use a simple comparison operator to compare alphabetical
-    // order between two strings. // our DB IDs are KSUIDs and are naturally
+    // order between two strings. our DB IDs are KSUIDs and are naturally
     // sorted: https://github.com/segmentio/ksuid
     if (exists && exists.id < v.id) {
       continue;
