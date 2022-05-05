@@ -2,6 +2,7 @@ export type EditModeNftChild = {
   dbid: string;
   name: string;
   lastUpdated: any;
+  openseaId: number;
 };
 
 export type EditModeNft = {
