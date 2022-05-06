@@ -10,21 +10,29 @@ export default function MarkdownOptions({
   onChange, // The onChange from the TextArea component. This ensures that we track the same event handlers (e.g. a collector's note change) via the addition of just markdown
 }: {
   // textAreaRef:
-  //   | React.MutableRefObject<HTMLTextAreaElement>
-  //   | ((instance: HTMLTextAreaElement | null) => void);
-  textAreaRef: React.RefObject<HTMLTextAreaElement>;
+  //   | ((instance: HTMLTextAreaElement) => void)
+  //   | React.MutableRefObject<HTMLTextAreaElement | null>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 }) {
-  // FIXME: Need some way to trigger parent textarea onChange event
-  // Currently a user needs to edit the text after adding Markdown, because markdown itself does not trigger a change event
-  // Whenever the textAreaRef.current changes, trigger onChange
-  //   useEffect(() => {
-  //     if (textAreaRef.current) {
-  //       onChange(textAreaRef.current);
-  //     }
-  //   }, [textAreaRef, onChange]);
-
-  console.log(onChange);
+  // Trigger onChange whenever textAreaRef.current changes
+  useEffect(() => {
+    if (textAreaRef.current) {
+      console.log(textAreaRef.current.value);
+      const event = new CustomEvent('change', {
+        detail: { value: textAreaRef.current.value },
+      });
+      Object.defineProperty(event, 'target', {
+        value: textAreaRef.current,
+        writable: false,
+        enumerable: false,
+        configurable: false,
+      });
+      // textAreaRef.current.dispatchEvent(event);
+      // onChange(event as React.ChangeEvent<HTMLTextAreaElement>);
+      onChange(event);
+    }
+  }, [textAreaRef?.current?.value, onChange, textAreaRef]);
 
   // Rather than select the text, we select the range of select characters; this will prevent multiple instances of the same text getting same Markdown applied
   const [selectedRange, setSelectedRange] = useState([
