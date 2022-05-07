@@ -15,23 +15,53 @@ export default function Bold({
     if (textArea) {
       const [start, end] = selectedRange;
       const selectedText = textArea.value.substring(start, end);
-      const selectedTextIsList = selectedText.split('\n').every((line) => line.startsWith('*'));
 
-      const lines = selectedText.split('\n');
-      const numberOfLines = lines.length;
+      let allLines = textArea.value.split('\n');
+
+      // Map over each line and store in an array the number of characters in the string up until that point
+      const lineStartIndices = allLines.map((line, index) => {
+        return allLines.slice(0, index + 1).join('\n').length;
+      });
+
+      const selectedLines = allLines.filter((line, index) => {
+        const lineStart = lineStartIndices[index];
+        return lineStart <= end;
+      });
+
+      // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
+      const allLinesWithSelected = allLines.map((line, index) => {
+        const lineStart = lineStartIndices[index];
+        const isSelected = lineStart <= end;
+        const isList = line.startsWith('* ');
+        return {
+          text: line,
+          isSelected,
+          isList,
+        };
+      });
+
+      const selectedTextIsList = allLinesWithSelected.every(
+        (line) => line.isSelected && line.isList
+      );
 
       // SINGLE LINE: User has either selected one line or is on line but has not selected text
       // If there is no selectedText but the user's cursor is on a line, get the current lines first character
-      if (selectedText === '' || lines.length == 1) {
-        const currentLine =
-          textArea.value.split('\n')[textArea.value.substring(0, start).split('\n').length - 1];
+      if (!selectedText) {
+        const currentLineIndex = textArea.value.substring(0, start).split('\n').length - 1;
+        const currentLine = textArea.value.split('\n')[currentLineIndex];
+
         if (currentLine.startsWith('* ')) {
-          const newText = textArea.value.replace(currentLine, currentLine.slice(2));
+          allLines[currentLineIndex] = allLines[currentLineIndex].slice(2);
+          const newText = allLines.join('\n');
           textArea.value = newText;
+
           setSelectedRange([start - 2, end - 2]); // * [0, 2] -> [0, 0]
         } else {
-          const newText = textArea.value.replace(currentLine, `* ${currentLine}`);
+          // Detect the current lines index, and add the * to the beginning of the line
+          allLines[currentLineIndex] = `* ${allLines[currentLineIndex]}`;
+          const newText = allLines.join('\n');
           textArea.value = newText;
+
           setSelectedRange([start + 2, end + 2]); // Test [0, 3] -> * Test [0, 5]
         }
         return;
@@ -41,34 +71,23 @@ export default function Bold({
       // If the selected text includes all list tags, remove them
       if (selectedText) {
         if (selectedTextIsList) {
-          const newUnlistedText = lines
-            .map((line) => {
-              if (line.startsWith('* ')) {
-                return line.slice(2);
-              }
-              return line;
-            })
-            .join('\n');
-
-          const newText =
-            textArea.value.substring(0, start) + newUnlistedText + textArea.value.substring(end);
-
+          const newLines = allLinesWithSelected.map((line) => {
+            return line.isList ? line.text.slice(2) : line.text;
+          });
+          const newText = newLines.join('\n');
           textArea.value = newText;
-          setSelectedRange([start, end - numberOfLines * 2]); // * List ([0, 8]) -> List ([0, 4])
+          setSelectedRange([start, end - selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4])
         } else {
-          // If the selected text is not already a list, add it
-          // Do this for each line selected
-          const newLines = [];
-          for (const line of lines) {
-            newLines.push(`* ${line}`);
-          }
-          const newListText = newLines.join('\n');
-
-          const newText =
-            textArea.value.substring(0, start) + newListText + textArea.value.substring(end);
-
+          const newLines = allLinesWithSelected.map((line) => {
+            if (line.isSelected) {
+              return `* ${line.text}`;
+            }
+            return line.text;
+          });
+          const newText = newLines.join('\n');
           textArea.value = newText;
-          setSelectedRange([start, end + numberOfLines * 2]); // List ([0, 4]) -> * List ([2, 6])
+
+          setSelectedRange([start, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
         }
       }
     }
