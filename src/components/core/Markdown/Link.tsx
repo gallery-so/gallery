@@ -24,15 +24,16 @@ export default function Bold({
         // If the selected text is not already a link, add it
         const newText =
           textArea.value.substring(0, start) +
-          `[${selectedText}]()` +
+          `[${selectedText}](https://)` +
           textArea.value.substring(end);
         textArea.value = newText;
-        setSelectedRange([start + 3 + selectedText.length, start + 3 + selectedText.length]); // Link ([0, 4]) -> [Link]() ([6, 6])
+        setSelectedRange([start + 11 + selectedText.length, start + 11 + selectedText.length]); // Link [0, 4] -> [Link](https://) (end)
         return;
       }
       if (!selectedText) {
         // If there is no selected text, just add a link where the cursor is and place the cursor in middle
-        const newText = textArea.value.substring(0, start) + '[]()' + textArea.value.substring(end);
+        const newText =
+          textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
         textArea.value = newText;
         setSelectedRange([start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
         return;
