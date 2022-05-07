@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import breakpoints from 'components/core/breakpoints';
 
 import Bold from './Bold';
 import Link from './Link';
 import List from './List';
+
+import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 export default function MarkdownOptions({
   textAreaRef,
@@ -24,9 +27,6 @@ export default function MarkdownOptions({
       });
       Object.defineProperty(event, 'target', {
         value: textAreaRef.current,
-        writable: false,
-        enumerable: false,
-        configurable: false,
       });
       // textAreaRef.current.dispatchEvent(event);
       // onChange(event as React.ChangeEvent<HTMLTextAreaElement>);
@@ -65,7 +65,7 @@ export default function MarkdownOptions({
   }, [textAreaRef, selectedRange]);
 
   return (
-    <StyledMarkdownOptionsContainer>
+    <StyledMarkdownOptionsContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
@@ -85,10 +85,13 @@ export default function MarkdownOptions({
   );
 }
 
-const StyledMarkdownOptionsContainer = styled.div`
+const StyledMarkdownOptionsContainer = styled.div<{ footerHeight: number }>`
   display: flex;
   position: absolute;
   place-items: center;
   height: 20px;
-  bottom: 80px;
+
+  @media only screen and ${breakpoints.tablet} {
+    bottom: ${({ footerHeight }) => footerHeight}px;
+  }
 `;
