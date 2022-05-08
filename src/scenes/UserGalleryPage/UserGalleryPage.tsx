@@ -9,6 +9,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
+import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;
@@ -48,6 +49,8 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 }
 
 const StyledUserGalleryWrapper = styled.div`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+
   display: flex;
   justify-content: center;
   margin: 0 ${pageGutter.mobile}px 24px;
