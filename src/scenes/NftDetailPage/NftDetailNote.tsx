@@ -91,19 +91,9 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
     [handleSubmitCollectorsNote]
   );
 
-  const handleNoteChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (event.target.value.length > collectorsNote.length) {
-        // Scroll down as the user input goes off the screen
-        // Need setTimeout so that textarea height is updated
-        setTimeout(() => {
-          scrollDown();
-        }, 0);
-      }
-      setCollectorsNote(event.target?.value);
-    },
-    [scrollDown, collectorsNote]
-  );
+  const handleNoteChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCollectorsNote(event.target?.value);
+  }, []);
 
   return (
     <div onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
