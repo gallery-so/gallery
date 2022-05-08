@@ -93,6 +93,7 @@ function UserInfoForm({
         maxCharCount={BIO_MAX_CHAR_COUNT}
         autoFocus={shouldAutofocusBio}
         hasMarkdown={true}
+        hasPadding={true}
       />
     </StyledForm>
   );

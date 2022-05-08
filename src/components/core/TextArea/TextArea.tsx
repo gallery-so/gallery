@@ -13,6 +13,7 @@ type TextAreaProps = {
   autoFocus?: boolean;
   textAreaHeight?: string;
   hasMarkdown?: boolean;
+  hasPadding?: boolean;
 };
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -25,6 +26,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       autoFocus = false,
       textAreaHeight,
       hasMarkdown = false,
+      hasPadding = false,
     },
     ref
   ) => {
@@ -46,9 +48,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           spellCheck="false"
           textAreaHeight={textAreaHeight}
           ref={textAreaRef}
+          hasPadding={hasPadding}
         />
         {hasMarkdown && (
-          <StyledMarkdownContainer>
+          <StyledMarkdownContainer hasPadding={hasPadding}>
             <MarkdownOptions textAreaRef={textAreaRef} onChange={onChange} />
           </StyledMarkdownContainer>
         )}
@@ -89,7 +92,10 @@ export function TextAreaWithCharCount({
     <>
       <StyledTextAreaWithCharCount className={className}>
         <TextArea {...textAreaProps} />
-        <StyledCharacterCounter error={currentCharCount > maxCharCount}>
+        <StyledCharacterCounter
+          error={currentCharCount > maxCharCount}
+          hasPadding={textAreaProps?.hasPadding || false}
+        >
           {currentCharCount}/{maxCharCount}
         </StyledCharacterCounter>
       </StyledTextAreaWithCharCount>
@@ -155,7 +161,10 @@ export function AutoResizingTextAreaWithCharCount({
           textAreaHeight={textAreaHeight}
           onChange={handleChange}
         />
-        <StyledCharacterCounter error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}>
+        <StyledCharacterCounter
+          error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
+          hasPadding={textAreaProps?.hasPadding || false}
+        >
           {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
         </StyledCharacterCounter>
       </StyledParentContainer>
@@ -166,22 +175,23 @@ export function AutoResizingTextAreaWithCharCount({
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
   border: 1px solid ${colors.metal};
+  padding-bottom: 1px; /* This fixes a FF bug where the bottom border does not appear */
 `;
 
 const StyledParentContainer = styled.div`
   padding-bottom: 32px;
 `;
 
-const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
+const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boolean }>`
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
   color: ${({ error }) => (error ? colors.error : colors.metal)};
 `;
 
-const StyledMarkdownContainer = styled.div`
+const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  left: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 `;

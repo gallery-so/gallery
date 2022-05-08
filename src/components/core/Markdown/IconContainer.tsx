@@ -15,7 +15,7 @@ export default function IconContainer({ icon }: { icon: React.ReactElement }) {
 }
 
 const StyledIcon = styled.div`
-  margin-right: 4px;
+  // margin-right: 4px;
   cursor: pointer;
 
   & svg rect {
