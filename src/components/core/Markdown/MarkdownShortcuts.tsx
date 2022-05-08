@@ -5,7 +5,7 @@ import Bold from './Bold';
 import Link from './Link';
 import List from './List';
 
-export default function MarkdownOptions({
+export default function MarkdownShortcuts({
   textAreaRef,
   onChange, // The onChange from the TextArea component. This ensures that we track the same event handlers (e.g. a collector's note change) via the addition of just markdown
 }: {
@@ -70,7 +70,7 @@ export default function MarkdownOptions({
   }, [textAreaRef, selectedRange, userDragged]);
 
   return (
-    <StyledMarkdownOptionsContainer>
+    <StyledMarkdownShortcutsContainer>
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
@@ -89,11 +89,11 @@ export default function MarkdownOptions({
         setSelectedRange={setSelectedRange}
         setUserDragged={setUserDragged}
       />
-    </StyledMarkdownOptionsContainer>
+    </StyledMarkdownShortcutsContainer>
   );
 }
 
-const StyledMarkdownOptionsContainer = styled.div`
+const StyledMarkdownShortcutsContainer = styled.div`
   display: flex;
   height: 20px;
 `;

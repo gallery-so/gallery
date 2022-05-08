@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
 import { BaseM } from '../Text/Text';
-import MarkdownOptions from '../Markdown/MarkdownOptions';
+import MarkdownShortcuts from '../Markdown/MarkdownShortcuts';
 
 type TextAreaProps = {
   className?: string;
@@ -52,7 +52,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         />
         {hasMarkdown && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
-            <MarkdownOptions textAreaRef={textAreaRef} onChange={onChange} />
+            <MarkdownShortcuts textAreaRef={textAreaRef} onChange={onChange} />
           </StyledMarkdownContainer>
         )}
       </>
