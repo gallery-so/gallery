@@ -1,5 +1,5 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
+import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import Head from 'next/head';
 import { useEffect } from 'react';
@@ -53,14 +53,21 @@ export default function CommunityPage({ queryRef }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledPage centered>
+      <StyledPage>
         <CommunityPageView communityRef={community} />
       </StyledPage>
     </>
   );
 }
 
-const StyledPage = styled(Page)`
+const StyledPage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  min-height: 100vh;
+
   margin-left: ${pageGutter.mobile}px;
   margin-right: ${pageGutter.mobile}px;
   justify-content: flex-start;
@@ -74,6 +81,6 @@ const StyledPage = styled(Page)`
   @media only screen and ${breakpoints.desktop} {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: ${GLOBAL_NAVBAR_HEIGHT}px 32px 0;
   }
 `;
