@@ -27,21 +27,12 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [noteHeight, setNoteHeight] = useState(0);
-
   const [collectorsNote, setCollectorsNote] = useState(nftCollectorsNote ?? '');
   const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote), [collectorsNote]);
 
   const hasCollectorsNote = useMemo(() => collectorsNote.length > 0, [collectorsNote]);
 
   const collectorsNoteRef = useRef<HTMLDivElement>(null);
-
-  // We need to record the note height to prevent brief flashes between edit/save states, via StyledHeightBuffer
-  useEffect(() => {
-    if (collectorsNoteRef.current) {
-      setNoteHeight(collectorsNoteRef.current.scrollHeight);
-    }
-  }, [collectorsNote]);
 
   const scrollDown = useCallback(() => {
     if (collectorsNoteRef.current) {
@@ -136,8 +127,6 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
         )}
       </StyledTitleAndButtonContainer>
 
-      {/* Without StyledHeightBuffer, when the page switches between StyledTextAreaWithCharCount and StyledCollectorsNote, there would be a brief flash when there is no element on the page*/}
-      {/* <StyledHeightBuffer noteHeight={noteHeight} /> */}
       {generalError && (
         <>
           <Spacer height={8} />
@@ -263,6 +252,8 @@ const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<Te
     line-height: 20px;
     font-size: 14px;
     display: block;
+    height: 100%;
+    overflow: hidden;
 
     border-bottom: none;
     background: none;
