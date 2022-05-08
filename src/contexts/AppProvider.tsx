@@ -9,6 +9,7 @@ import { Web3ProviderNetwork } from './auth/Web3WalletContext';
 import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
 import { RelayProvider } from 'contexts/relay/RelayProvider';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 
 type Props = {
   children: React.ReactNode;
@@ -26,7 +27,9 @@ export default function AppProvider({ children, relayCache }: Props) {
                 <Web3ProviderNetwork>
                   <SwrProvider>
                     <GalleryNavigationProvider>
-                      <ModalProvider>{children}</ModalProvider>
+                      <ModalProvider>
+                        <GlobalLayoutContextProvider>{children}</GlobalLayoutContextProvider>
+                      </ModalProvider>
                     </GalleryNavigationProvider>
                   </SwrProvider>
                 </Web3ProviderNetwork>
