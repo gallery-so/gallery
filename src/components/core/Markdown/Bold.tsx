@@ -60,7 +60,7 @@ export default function Bold({
         return;
       }
     }
-  }, [textAreaRef, selectedRange, setSelectedRange]);
+  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
 
   return (
     <IconContainer

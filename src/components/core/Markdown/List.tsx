@@ -27,13 +27,17 @@ export default function Bold({
         // if (index === 0) {
         //   return 0;
         // }
-        return allLines.slice(0, index + 1).join('\n').length;
+        // Return the sum of each line's text length up until the current line
+        return allLines.slice(0, index).reduce((acc, curr) => acc + curr.length + 1, 0);
       });
 
       // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
       const allLinesWithSelected = allLines.map((line, index) => {
         const lineStart = lineStartIndices[index];
-        const isSelected = lineStart <= end && lineStart >= start;
+        const lineEnd = lineStartIndices[index] + line.length;
+        // isSelected is true if the user's selection range includes the start of the line
+        const isSelected =
+          (lineStart >= start && end >= lineEnd) || (start >= lineStart && start <= lineEnd);
         const isList = line.startsWith('* ');
         return {
           text: line,
@@ -92,7 +96,7 @@ export default function Bold({
         }
       }
     }
-  }, [textAreaRef, selectedRange, setSelectedRange]);
+  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
 
   return (
     <IconContainer
