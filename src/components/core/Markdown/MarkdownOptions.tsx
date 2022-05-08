@@ -36,11 +36,15 @@ export default function MarkdownOptions({
     textAreaRef?.current?.selectionEnd || 0,
   ]);
 
+  // We track whether the selection updated via user drag, or something external (e.g. a Markdown addition)
+  const [userDragged, setUserDragged] = useState(false);
+
   // Anytime the user selects new text, setSelectedRange to equal the indexes of that text
   useEffect(() => {
     const textArea = textAreaRef.current;
     if (textArea) {
       const onSelectionChange = () => {
+        setUserDragged(true);
         setSelectedRange([textArea.selectionStart, textArea.selectionEnd]);
       };
 
@@ -49,36 +53,42 @@ export default function MarkdownOptions({
         document.removeEventListener('selectionchange', onSelectionChange);
       };
     }
-  }, [textAreaRef, setSelectedRange]);
+  }, [textAreaRef]);
+  console.log(selectedRange);
 
   // Whenever selectedRange updates, set the textarea.current.selectionStart and selectionEnd to match
   // This means that we can apply markdown to selected text, but preserve selection afterwards
   useEffect(() => {
+    // We do not want to run if the selectedRange updated because of user cursor dragging
+    // This leads to a bug in Chrome where the user cannot drag text from the end backwards
+    if (userDragged) return;
+
     const textArea = textAreaRef.current;
     if (textArea) {
       textArea.selectionStart = selectedRange[0];
       textArea.selectionEnd = selectedRange[1];
     }
-  }, [textAreaRef, selectedRange]);
+  }, [textAreaRef, selectedRange, userDragged]);
 
   return (
-    <StyledMarkdownOptionsContainer
-    // footerHeight={GLOBAL_FOOTER_HEIGHT}
-    >
+    <StyledMarkdownOptionsContainer>
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
         setSelectedRange={setSelectedRange}
+        setUserDragged={setUserDragged}
       />
       <List
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
         setSelectedRange={setSelectedRange}
+        setUserDragged={setUserDragged}
       />
       <Link
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
         setSelectedRange={setSelectedRange}
+        setUserDragged={setUserDragged}
       />
     </StyledMarkdownOptionsContainer>
   );

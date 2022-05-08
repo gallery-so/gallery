@@ -5,12 +5,16 @@ export default function Bold({
   selectedRange,
   textAreaRef,
   setSelectedRange,
+  setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
   setSelectedRange: (value: number[] | ((prevVar: number[]) => number[])) => void;
+  setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
+    setUserDragged(false);
+
     const textArea = textAreaRef.current;
     if (textArea) {
       const [start, end] = selectedRange;
@@ -39,7 +43,7 @@ export default function Bold({
         return;
       }
     }
-  }, [textAreaRef, selectedRange, setSelectedRange]);
+  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
 
   return (
     <IconContainer
