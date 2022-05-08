@@ -54,7 +54,6 @@ export default function MarkdownOptions({
       };
     }
   }, [textAreaRef]);
-  console.log(selectedRange);
 
   // Whenever selectedRange updates, set the textarea.current.selectionStart and selectionEnd to match
   // This means that we can apply markdown to selected text, but preserve selection afterwards
