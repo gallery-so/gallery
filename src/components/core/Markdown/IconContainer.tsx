@@ -15,7 +15,6 @@ export default function IconContainer({ icon }: { icon: React.ReactElement }) {
 }
 
 const StyledIcon = styled.div`
-  height: 20px;
   margin-right: 4px;
   cursor: pointer;
 

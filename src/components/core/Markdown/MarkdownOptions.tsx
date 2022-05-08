@@ -6,7 +6,7 @@ import Bold from './Bold';
 import Link from './Link';
 import List from './List';
 
-import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
+// import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 export default function MarkdownOptions({
   textAreaRef,
@@ -21,7 +21,6 @@ export default function MarkdownOptions({
   // Trigger onChange whenever textAreaRef.current changes
   useEffect(() => {
     if (textAreaRef.current) {
-      console.log(textAreaRef.current.value);
       const event = new CustomEvent('change', {
         detail: { value: textAreaRef.current.value },
       });
@@ -65,7 +64,9 @@ export default function MarkdownOptions({
   }, [textAreaRef, selectedRange]);
 
   return (
-    <StyledMarkdownOptionsContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+    <StyledMarkdownOptionsContainer
+    // footerHeight={GLOBAL_FOOTER_HEIGHT}
+    >
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
@@ -85,13 +86,12 @@ export default function MarkdownOptions({
   );
 }
 
-const StyledMarkdownOptionsContainer = styled.div<{ footerHeight: number }>`
+// const StyledMarkdownOptionsContainer = styled.div<{ footerHeight: number }>`
+const StyledMarkdownOptionsContainer = styled.div`
   display: flex;
-  position: absolute;
-  place-items: center;
   height: 20px;
 
-  @media only screen and ${breakpoints.tablet} {
-    bottom: ${({ footerHeight }) => footerHeight}px;
-  }
+  // @media only screen and ${breakpoints.tablet} {
+  //   bottom: ${({ footerHeight }) => footerHeight}px;
+  // }
 `;

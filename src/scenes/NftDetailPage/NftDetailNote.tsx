@@ -102,15 +102,16 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
 
   const handleNoteChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      if (event.target.value.length > collectorsNote.length) {
+        // Scroll down as the user input goes off the screen
+        // Need setTimeout so that textarea height is updated
+        setTimeout(() => {
+          scrollDown();
+        }, 0);
+      }
       setCollectorsNote(event.target?.value);
-
-      // Scroll down as the user input goes off the screen
-      // Need setTimeout so that textarea height is updated
-      setTimeout(() => {
-        scrollDown();
-      }, 0);
     },
-    [scrollDown]
+    [scrollDown, collectorsNote]
   );
 
   return (
@@ -136,7 +137,7 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
       </StyledTitleAndButtonContainer>
 
       {/* Without StyledHeightBuffer, when the page switches between StyledTextAreaWithCharCount and StyledCollectorsNote, there would be a brief flash when there is no element on the page*/}
-      <StyledHeightBuffer noteHeight={noteHeight} />
+      {/* <StyledHeightBuffer noteHeight={noteHeight} /> */}
       {generalError && (
         <>
           <Spacer height={8} />
@@ -199,7 +200,7 @@ function NftDetailNote({
   authenticatedUserOwnsAsset,
 }: Props) {
   return (
-    <StyledContainer>
+    <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
       <Spacer height={24} />
       {authenticatedUserOwnsAsset ? (
         <NoteEditor
@@ -214,7 +215,7 @@ function NftDetailNote({
   );
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<{ footerHeight: number }>`
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;
   max-width: 296px;
@@ -228,6 +229,12 @@ const StyledContainer = styled.div`
     min-width: 0;
     max-width: none;
     position: absolute; // So that it does not affect height of the flex container
+  }
+
+  // We only apply padding to account for footer, which is not fixed on mobile
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: ${({ footerHeight }) =>
+      footerHeight + 20}px; // 20px is roughly the height of character counter/Markdown container
   }
 `;
 
@@ -262,20 +269,6 @@ const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<Te
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
-  p {
-    right: 0;
-    bottom: 0;
-  }
-
-  // We only apply padding to account for footer, which is not fixed on mobile
-  @media only screen and ${breakpoints.tablet} {
-    padding-bottom: ${({ footerHeight }) => footerHeight}px;
-
-    p {
-      bottom: ${({ footerHeight }) => footerHeight}px;
-    }
-  }
 `;
 
 type CollectorsNoteProps = {
@@ -288,20 +281,9 @@ const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
   height: 100%;
   color: #808080;
 
-  // We only apply padding to account for footer, which is not fixed on mobile
-  @media only screen and ${breakpoints.tablet} {
-    padding-bottom: ${({ footerHeight }) => footerHeight}px;
-  }
-
   p:last-of-type {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
   }
-`;
-
-const StyledHeightBuffer = styled.div<{ noteHeight: number }>`
-  height: ${({ noteHeight }) => noteHeight}px;
-  position: absolute;
-  z-index: -1;
 `;
 
 export default NftDetailNote;

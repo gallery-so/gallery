@@ -47,7 +47,11 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           textAreaHeight={textAreaHeight}
           ref={textAreaRef}
         />
-        {hasMarkdown && <MarkdownOptions textAreaRef={textAreaRef} onChange={onChange} />}
+        {hasMarkdown && (
+          <StyledMarkdownContainer>
+            <MarkdownOptions textAreaRef={textAreaRef} onChange={onChange} />
+          </StyledMarkdownContainer>
+        )}
       </>
     );
   }
@@ -165,7 +169,7 @@ const StyledTextAreaWithCharCount = styled.div`
 `;
 
 const StyledParentContainer = styled.div`
-  padding-bottom: 20px;
+  padding-bottom: 32px;
 `;
 
 const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
@@ -174,4 +178,10 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
   right: 8px;
 
   color: ${({ error }) => (error ? colors.error : colors.metal)};
+`;
+
+const StyledMarkdownContainer = styled.div`
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
 `;
