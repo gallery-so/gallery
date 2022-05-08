@@ -18,7 +18,7 @@ function Home() {
   }, [push]);
 
   return (
-    <Page centered>
+    <StyledHomePage>
       <GalleryIntro />
       <Spacer height={24} />
       <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
@@ -32,9 +32,17 @@ function Home() {
         <Spacer width={8} />
         <NavLink to="/duaneking">Gallery of the Week</NavLink>
       </StyledLinkContainer>
-    </Page>
+    </StyledHomePage>
   );
 }
+
+const StyledHomePage = styled(Page)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+`;
 
 const StyledButton = styled(Button)`
   width: 150px;
