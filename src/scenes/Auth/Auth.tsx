@@ -61,20 +61,25 @@ function Auth({ queryRef }: Props) {
   }
 
   return (
-    <StyledAuthPage centered>
+    <StyledAuthPage>
       <StyledWalletSelectorWrapper>
         <WalletSelector queryRef={query} />
       </StyledWalletSelectorWrapper>
-      <Spacer height={32} />
       <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledBaseM>
+      <Spacer height={32} />
     </StyledAuthPage>
   );
 }
 
 const StyledAuthPage = styled(Page)`
-  margin: 0 16px;
+  // margin: 0 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
 `;
 
 const StyledWalletSelectorWrapper = styled.div`
