@@ -1,19 +1,6 @@
-import { graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { pagesQuery } from '__generated__/pagesQuery.graphql';
+import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
 
 export default function Index() {
-  const query = useLazyLoadQuery<pagesQuery>(
-    graphql`
-      query pagesQuery {
-        ...GalleryRouteFragment
-      }
-    `,
-    {}
-  );
-
-  return (
-    <GalleryRoute queryRef={query} element={<HomeScene />} navbar={false} footerVisibleOutOfView />
-  );
+  return <GalleryV2Route element={<HomeScene />} navbar={false} />;
 }

@@ -74,7 +74,6 @@ function Auth({ queryRef }: Props) {
 }
 
 const StyledAuthPage = styled(Page)`
-  // margin: 0 16px;
   display: flex;
   justify-content: center;
   align-items: center;
