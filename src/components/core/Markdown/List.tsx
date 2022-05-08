@@ -20,18 +20,16 @@ export default function Bold({
 
       // Map over each line and store in an array the number of characters in the string up until that point
       const lineStartIndices = allLines.map((line, index) => {
+        // if (index === 0) {
+        //   return 0;
+        // }
         return allLines.slice(0, index + 1).join('\n').length;
-      });
-
-      const selectedLines = allLines.filter((line, index) => {
-        const lineStart = lineStartIndices[index];
-        return lineStart <= end;
       });
 
       // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
       const allLinesWithSelected = allLines.map((line, index) => {
         const lineStart = lineStartIndices[index];
-        const isSelected = lineStart <= end;
+        const isSelected = lineStart <= end && lineStart >= start;
         const isList = line.startsWith('* ');
         return {
           text: line,
@@ -40,9 +38,8 @@ export default function Bold({
         };
       });
 
-      const selectedTextIsList = allLinesWithSelected.every(
-        (line) => line.isSelected && line.isList
-      );
+      const selectedLines = allLinesWithSelected.filter((line) => line.isSelected);
+      const selectedTextIsList = selectedLines.every((line) => line.isList);
 
       // SINGLE LINE: User has either selected one line or is on line but has not selected text
       // If there is no selectedText but the user's cursor is on a line, get the current lines first character
