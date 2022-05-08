@@ -4,6 +4,8 @@ import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
+import styled from 'styled-components';
+import usePrevious from 'hooks/usePrevious';
 
 type GlobalLayoutActions = {
   setNavbarVisible: (b: boolean) => void;
@@ -36,6 +38,9 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const [navbarVisible, setNavbarVisible] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
 
+  const wasNavbarVisible = usePrevious(navbarVisible) ?? false;
+  const wasFooterVisible = usePrevious(footerVisible) ?? false;
+
   const actions: GlobalLayoutActions = useMemo(
     () => ({ setNavbarVisible, setFooterVisible }),
     [setNavbarVisible, setFooterVisible]
@@ -43,14 +48,23 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   return (
     <>
-      {/* TODO: handle banner */}
-      {navbarVisible && <GlobalNavbar queryRef={query} />}
+      <FadeVisibility isVisible={navbarVisible} wasVisible={wasNavbarVisible}>
+        <GlobalNavbar queryRef={query} />
+      </FadeVisibility>
       <GlobalLayoutActionsContext.Provider value={actions}>
         {children}
       </GlobalLayoutActionsContext.Provider>
-      {footerVisible && <GlobalFooter />}
+      <FadeVisibility isVisible={footerVisible} wasVisible={wasFooterVisible}>
+        <GlobalFooter />
+      </FadeVisibility>
     </>
   );
 });
+
+const FadeVisibility = styled.div<{ isVisible: boolean; wasVisible: boolean }>`
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transition: ${({ wasVisible }) =>
+    wasVisible ? 'opacity 300ms ease-in-out' : 'opacity 300ms ease-in-out 700ms'};
+`;
 
 export default GlobalLayoutContextProvider;
