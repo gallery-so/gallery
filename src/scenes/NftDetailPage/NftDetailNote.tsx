@@ -1,7 +1,7 @@
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'lodash.unescape';
 import styled from 'styled-components';

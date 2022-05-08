@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
 
 import Bold from './Bold';
 import Link from './Link';
 import List from './List';
-
-// import { GLOBAL_FOOTER_HEIGHT } from 'components/core/Page/constants';
 
 export default function MarkdownOptions({
   textAreaRef,
@@ -87,12 +84,7 @@ export default function MarkdownOptions({
   );
 }
 
-// const StyledMarkdownOptionsContainer = styled.div<{ footerHeight: number }>`
 const StyledMarkdownOptionsContainer = styled.div`
   display: flex;
   height: 20px;
-
-  // @media only screen and ${breakpoints.tablet} {
-  //   bottom: ${({ footerHeight }) => footerHeight}px;
-  // }
 `;
