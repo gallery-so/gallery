@@ -46,12 +46,14 @@ export default function MarkdownOptions({
       const onSelectionChange = () => {
         setSelectedRange([textArea.selectionStart, textArea.selectionEnd]);
       };
-      textArea.addEventListener('selectionchange', onSelectionChange);
+
+      document.addEventListener('selectionchange', onSelectionChange);
       return () => {
-        textArea.removeEventListener('selectionchange', onSelectionChange);
+        document.removeEventListener('selectionchange', onSelectionChange);
       };
     }
-  }, [textAreaRef]);
+  }, [textAreaRef, setSelectedRange]);
+  console.log(selectedRange);
 
   // Whenever selectedRange updates, set the textarea.current.selectionStart and selectionEnd to match
   // This means that we can apply markdown to selected text, but preserve selection afterwards
