@@ -16,7 +16,8 @@ export default function GalleryV2Route({ element, navbar = true, footer = true }
     setNavbarVisible(navbar);
     setFooterVisible(footer);
     setMounted(true);
-  }, [navbar, footer, setNavbarVisible, setFooterVisible]);
+    // we only want these properties to be set on mount
+  }, []);
 
   return mounted ? element : null;
 }
