@@ -1,7 +1,6 @@
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
-import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import { useRouter } from 'next/router';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -36,10 +35,11 @@ function Home() {
   );
 }
 
-const StyledHomePage = styled(Page)`
+const StyledHomePage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
   height: 100vh;
 `;
