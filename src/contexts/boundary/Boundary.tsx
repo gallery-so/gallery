@@ -7,4 +7,5 @@ const Boundary = memo(({ children }) => (
     <ErrorBoundary>{children}</ErrorBoundary>
   </Suspense>
 ));
+
 export default Boundary;
