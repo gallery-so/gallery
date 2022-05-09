@@ -55,55 +55,41 @@ export const useGlobalLayoutActions = (): GlobalLayoutActions => {
 
 type Props = { children: ReactNode };
 
-// function getFormattedDate() {
-//   var date = new Date();
+// the action that causes the fade
+type FadeTriggerType = 'route' | 'scroll';
 
-//   var month = date.getMonth() + 1;
-//   var day = date.getDate();
-//   var hour = date.getHours();
-//   var min = date.getMinutes();
-//   var sec = date.getSeconds();
-//   var ms = date.getMilliseconds();
+function getFormattedDate() {
+  var date = new Date();
 
-//   month = (month < 10 ? '0' : '') + month;
-//   day = (day < 10 ? '0' : '') + day;
-//   hour = (hour < 10 ? '0' : '') + hour;
-//   min = (min < 10 ? '0' : '') + min;
-//   sec = (sec < 10 ? '0' : '') + sec;
-//   // ms = (ms < 10 ? '0' : '') + ms;
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+  var hour = date.getHours();
+  var min = date.getMinutes();
+  var sec = date.getSeconds();
+  var ms = date.getMilliseconds();
 
-//   var str = min + ':' + sec + ':' + ms;
+  month = (month < 10 ? '0' : '') + month;
+  day = (day < 10 ? '0' : '') + day;
+  hour = (hour < 10 ? '0' : '') + hour;
+  min = (min < 10 ? '0' : '') + min;
+  sec = (sec < 10 ? '0' : '') + sec;
+  // ms = (ms < 10 ? '0' : '') + ms;
 
-//   /*alert(str);*/
+  var str = min + ':' + sec + ':' + ms;
 
-//   return str;
-// }
+  /*alert(str);*/
 
-const GlobalLayoutContextProvider = memo(({ children }: Props) => {
-  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
-    graphql`
-      query GlobalLayoutContextQuery {
-        ...GlobalNavbarFragment
-      }
-    `,
-    {}
-  );
+  return str;
+}
 
+type useNavbarControlsProps = {
+  isPageTransitioningRef: GlobalLayoutState['isPageTransitioningRef'];
+};
+
+function useNavbarControls({ isPageTransitioningRef }: useNavbarControlsProps) {
   const [isNavbarVisible, setNavbarVisible] = useState(false);
   const debouncedNavbarVisible = useDebounce(isNavbarVisible, 200);
-  const [footerVisible, setFooterVisible] = useState(false);
-
-  // storing this in ref to prevent triggering unnecessary re-renders / side-effects
-  const isPageTransitioningRef = useRef(false);
-
   const wasNavbarVisible = usePrevious(debouncedNavbarVisible) ?? false;
-
-  // console.log('parent', { isNavbarVisible: debouncedNavbarVisible, wasNavbarVisible });
-
-  const state = useMemo(
-    () => ({ isNavbarVisible: debouncedNavbarVisible, wasNavbarVisible, isPageTransitioningRef }),
-    [debouncedNavbarVisible, wasNavbarVisible]
-  );
 
   const [forcedHiddenByRoute, setForcedHiddenByRoute] = useState(false);
   const [fadeType, setFadeType] = useState<FadeTriggerType>('route');
@@ -143,44 +129,87 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     setNavbarVisible(visible);
     setFadeType('route');
     setForcedHiddenByRoute(!visible);
-    // console.log(getFormattedDate(), 'nav setting visible', visible);
+    console.log(getFormattedDate(), 'nav setting visible', visible);
   }, []);
+
+  return useMemo(
+    () => ({
+      isNavbarVisible: debouncedNavbarVisible,
+      wasNavbarVisible,
+      fadeType,
+      setNavbarVisibleFromRoute: handleSetNavbarVisibleFromGalleryRoute,
+    }),
+    [debouncedNavbarVisible, wasNavbarVisible, fadeType, handleSetNavbarVisibleFromGalleryRoute]
+  );
+}
+
+const GlobalLayoutContextProvider = memo(({ children }: Props) => {
+  // storing this in ref to prevent triggering unnecessary re-renders / side-effects
+  const isPageTransitioningRef = useRef(false);
+
+  const { isNavbarVisible, wasNavbarVisible, fadeType, setNavbarVisibleFromRoute } =
+    useNavbarControls({
+      isPageTransitioningRef,
+    });
+
+  const [isFooterVisible, setFooterVisible] = useState(false);
+  const wasFooterVisible = usePrevious(isFooterVisible) ?? false;
+
+  const state = useMemo(
+    () => ({ isNavbarVisible, wasNavbarVisible, isPageTransitioningRef }),
+    [isNavbarVisible, wasNavbarVisible]
+  );
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
-      setNavbarVisible: handleSetNavbarVisibleFromGalleryRoute,
+      setNavbarVisible: setNavbarVisibleFromRoute,
       setFooterVisible,
     }),
-    [handleSetNavbarVisibleFromGalleryRoute, setFooterVisible]
+    [setNavbarVisibleFromRoute, setFooterVisible]
   );
 
   return (
     <>
-      <VisibilityFader visible={debouncedNavbarVisible} fadeType={fadeType}>
-        <GlobalNavbar queryRef={query} />
-      </VisibilityFader>
+      <GlobalNavbarWithFadeEnabled
+        isVisible={isNavbarVisible}
+        wasVisible={wasNavbarVisible}
+        fadeType={fadeType}
+      />
+
       <GlobalLayoutStateContext.Provider value={state}>
         <GlobalLayoutActionsContext.Provider value={actions}>
           {children}
         </GlobalLayoutActionsContext.Provider>
       </GlobalLayoutStateContext.Provider>
-      <VisibilityFader visible={footerVisible} fadeType={fadeType}>
-        <GlobalFooter />
-      </VisibilityFader>
+
+      <GlobalFooterWithFadeEnabled
+        isVisible={isFooterVisible}
+        wasVisible={wasFooterVisible}
+        fadeType={fadeType}
+      />
     </>
   );
 });
 
-type VisibilityFaderProps = {
-  children: ReactNode;
-  visible: boolean;
+type GlobalNavbarWithFadeEnabledProps = {
+  isVisible: boolean;
+  wasVisible: boolean;
   fadeType: FadeTriggerType;
 };
 
-type FadeTriggerType = 'route' | 'scroll';
-
-function VisibilityFader({ children, visible, fadeType }: VisibilityFaderProps) {
-  const wasVisible = usePrevious(visible) ?? false;
+function GlobalNavbarWithFadeEnabled({
+  isVisible,
+  wasVisible,
+  fadeType,
+}: GlobalNavbarWithFadeEnabledProps) {
+  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
+    graphql`
+      query GlobalLayoutContextQuery {
+        ...GlobalNavbarFragment
+      }
+    `,
+    {}
+  );
 
   const transitionStyles = useMemo(() => {
     // FADING OUT
@@ -203,23 +232,76 @@ function VisibilityFader({ children, visible, fadeType }: VisibilityFaderProps) 
   }, [wasVisible, fadeType]);
 
   return (
-    <StyledVisibilityFader isVisible={visible} transitionStyles={transitionStyles}>
-      {children}
-    </StyledVisibilityFader>
+    <StyledGlobalNavbarWithFadeEnabled
+      isVisible={isVisible}
+      transitionStyles={transitionStyles}
+      onMouseEnter={() => console.log('enter')}
+      onMouseLeave={() => console.log('leave')}
+    >
+      <GlobalNavbar queryRef={query} />
+    </StyledGlobalNavbarWithFadeEnabled>
   );
 }
 
-const StyledVisibilityFader = styled.div<{
+const StyledGlobalNavbarWithFadeEnabled = styled.div<{
+  isVisible: boolean;
+  transitionStyles?: string;
+}>`
+  border: 2px solid yellow;
+
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transition: ${({ transitionStyles }) => transitionStyles};
+
+  // prevent child elements from being clickable when not in view
+  > div {
+    pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
+  }
+`;
+
+type GlobalFooterWithFadeEnabledProps = {
+  isVisible: boolean;
+  wasVisible: boolean;
+  fadeType: FadeTriggerType;
+};
+
+function GlobalFooterWithFadeEnabled({
+  isVisible,
+  wasVisible,
+  fadeType,
+}: GlobalFooterWithFadeEnabledProps) {
+  const transitionStyles = useMemo(() => {
+    // FADING OUT
+    // always fade out navbar without delay
+    if (wasVisible) {
+      return 'opacity 300ms ease-in-out;';
+    }
+
+    // FADING IN
+    if (!wasVisible) {
+      // if scrolling, fade-in navbar without delay
+      if (fadeType === 'scroll') {
+        return 'opacity 300ms ease-in-out';
+      }
+      // if moving between routes, fade-in navbar with delay
+      if (fadeType === 'route') {
+        return 'opacity 300ms ease-in-out 700ms';
+      }
+    }
+  }, [wasVisible, fadeType]);
+
+  return (
+    <StyledGlobalFooterWithFadeEnabled isVisible={isVisible} transitionStyles={transitionStyles}>
+      <GlobalFooter />
+    </StyledGlobalFooterWithFadeEnabled>
+  );
+}
+
+const StyledGlobalFooterWithFadeEnabled = styled.div<{
   isVisible: boolean;
   transitionStyles?: string;
 }>`
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: ${({ transitionStyles }) => transitionStyles};
-  // if pointer-events is set to none, it will *not* prevent elements beneath
-  // the navbar from being clickable since the navbar is position:fixed, and
-  // does not cause the parent to have any height.
-  // TL;DR – WE GOOD
-  pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
 `;
 
 export default GlobalLayoutContextProvider;
