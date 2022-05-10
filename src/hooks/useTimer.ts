@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function useTimer(date: string) {
   const currentTime = Date.now();
-  const mintDate = new Date(date);
+  const mintDate = useMemo(() => new Date(date), [date]);
 
   const [countDown, setCountDown] = useState(mintDate.getTime() - currentTime);
 
