@@ -1,18 +1,6 @@
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
-import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { silverQuery } from '__generated__/silverQuery.graphql';
+import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
 
 export default function SilverMembership() {
-  const query = useLazyLoadQuery<silverQuery>(
-    graphql`
-      query silverQuery {
-        ...GalleryRouteFragment
-      }
-    `,
-    {}
-  );
-
-  return <GalleryRoute queryRef={query} element={<SilverMembershipMintPage />} navbar={false} />;
+  return <GalleryV2Route element={<SilverMembershipMintPage />} navbar={false} />;
 }
