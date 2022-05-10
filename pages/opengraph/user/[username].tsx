@@ -38,7 +38,7 @@ export default function OpenGraphUserPage() {
   );
 
   if (queryResponse.user?.__typename !== 'GalleryUser') {
-    throw new Error('no gallery user found for opengraph preview images');
+    return null;
   }
 
   const { user } = queryResponse;
@@ -51,8 +51,6 @@ export default function OpenGraphUserPage() {
       })
       .map((nft) => nft?.urls.large)
   ).slice(0, 4);
-
-  console.log({ imageUrls });
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
