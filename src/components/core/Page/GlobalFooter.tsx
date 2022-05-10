@@ -77,9 +77,6 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   padding: 0 ${pageGutter.mobile}px 24px;
 
   background-color: ${colors.white};
-  z-index: 2;
-  position: relative;
-}
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px 24px;
@@ -87,7 +84,6 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
     ${({ isFixed }) =>
       isFixed &&
       css`
-        z-index: 2;
         position: fixed;
         bottom: 0;
         width: 100%;
