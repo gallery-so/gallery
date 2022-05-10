@@ -2,7 +2,7 @@ import GlobalFooter from 'components/core/Page/GlobalFooter';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect, useState } from 'react';
 
-type Props = {
+export type Props = {
   element: JSX.Element;
   banner?: boolean;
   navbar?: boolean;
