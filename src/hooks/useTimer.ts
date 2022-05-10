@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 
-// TODO: Abstract this as a props
-const mintDate = new Date('2022-05-23T00:00:00');
-
-export default function useTimer() {
+export default function useTimer(date: string) {
   const currentTime = Date.now();
+  const mintDate = new Date(date);
 
   const [countDown, setCountDown] = useState(mintDate.getTime() - currentTime);
 

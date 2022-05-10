@@ -11,6 +11,7 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
+import { mintDate } from 'constants/poster';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -18,7 +19,7 @@ export default function PosterPage() {
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
 
-  const { timestamp, hasEnded } = useTimer();
+  const { timestamp, hasEnded } = useTimer(mintDate);
 
   const handleBackClick = () => {
     // TODO: Replace with hook
