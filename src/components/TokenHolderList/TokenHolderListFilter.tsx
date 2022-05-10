@@ -71,25 +71,25 @@ const StyledFilterButtonText = styled(BaseXL)`
 
 const filterCharacters = [...getAlphabet(), '#'];
 
-function MemberListFilter() {
+function TokenHolderListFilter() {
   const { searchQuery } = useMemberListPageState();
 
   const hasSearchQuery = useMemo(() => searchQuery.length > 0, [searchQuery]);
 
   return (
-    <StyledMemberListFilter hasSearchQuery={hasSearchQuery}>
+    <StyledTokenHolderListFilter hasSearchQuery={hasSearchQuery}>
       {filterCharacters.map((character) => (
         <FilterButton key={character} character={character} />
       ))}
-    </StyledMemberListFilter>
+    </StyledTokenHolderListFilter>
   );
 }
 
-type StyledMemberListFilterProps = {
+type StyledTokenHolderListFilterProps = {
   hasSearchQuery: boolean;
 };
 
-const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
+const StyledTokenHolderListFilter = styled.div<StyledTokenHolderListFilterProps>`
   display: grid;
   grid-template-columns: repeat(auto-fill, 48px);
   grid-gap: 0;
@@ -119,4 +119,4 @@ const StyledMemberListFilter = styled.div<StyledMemberListFilterProps>`
   }`}
 `;
 
-export default MemberListFilter;
+export default TokenHolderListFilter;

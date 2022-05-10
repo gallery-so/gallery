@@ -5,7 +5,7 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
 import { Directions } from 'src/components/core/enums';
-import MemberListGalleryPreview from './MemberListGalleryPreview';
+import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
@@ -89,7 +89,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <StyledGalleryLink
-          href={`/${owner.user.username}`}
+          to={`/${owner.user.username}`}
           underlined={false}
           fadeUsernames={fadeUsernames}
         >

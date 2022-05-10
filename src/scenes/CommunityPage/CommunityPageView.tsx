@@ -1,6 +1,6 @@
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import MemberListFilter from 'scenes/MemberListPage/MemberListFilter';
+import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import styled from 'styled-components';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -11,7 +11,7 @@ import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFr
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
-import TokenHolderList from 'scenes/MemberListPage/TokenHolderList';
+import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
