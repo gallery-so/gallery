@@ -1,5 +1,4 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
@@ -14,6 +13,7 @@ import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
+import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -76,19 +76,20 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <Page>
-        <StyledCollectionGalleryWrapper>
-          <StyledPositionedBackLink>
-            <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
-          </StyledPositionedBackLink>
-          <CollectionGallery queryRef={query} />
-        </StyledCollectionGalleryWrapper>
-      </Page>
+      <StyledCollectionGalleryWrapper>
+        <StyledPositionedBackLink>
+          <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
+        </StyledPositionedBackLink>
+        <CollectionGallery queryRef={query} />
+      </StyledCollectionGalleryWrapper>
     </>
   );
 }
 
 const StyledCollectionGalleryWrapper = styled.div`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  min-height: 100vh;
+
   display: flex;
   justify-content: center;
   margin: 0 ${pageGutter.mobile}px;
