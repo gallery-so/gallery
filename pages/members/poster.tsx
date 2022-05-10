@@ -12,7 +12,6 @@ export default function Poster() {
     graphql`
       query posterQuery {
         ...GalleryAuthenticatedRouteFragment
-        ...GalleryRouteFragment
       }
     `,
     {}
@@ -26,11 +25,10 @@ export default function Poster() {
 
   return (
     <GalleryAuthenticatedRoute
-      queryRef={query}
       authenticatedRouteQueryRef={query}
       element={<PosterPage />}
-      banner={false}
       navbar={false}
+      banner={false}
       footer={!isMobile}
     />
   );
