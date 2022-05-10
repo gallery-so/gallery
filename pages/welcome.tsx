@@ -8,7 +8,6 @@ export default function Welcome() {
     graphql`
       query welcomeQuery {
         ...GalleryAuthenticatedRouteFragment
-        ...GalleryRouteFragment
       }
     `,
     {}
@@ -16,10 +15,10 @@ export default function Welcome() {
 
   return (
     <GalleryAuthenticatedRoute
-      queryRef={query}
       authenticatedRouteQueryRef={query}
       element={<OnboardingFlow />}
-      freshLayout
+      navbar={false}
+      footer={false}
     />
   );
 }
