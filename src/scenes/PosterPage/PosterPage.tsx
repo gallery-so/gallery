@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Page from 'components/core/Page/Page';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
@@ -77,7 +76,8 @@ export default function PosterPage() {
   );
 }
 
-const StyledPage = styled(Page)`
+const StyledPage = styled.div`
+  min-height: 100vh;
   padding: 20px 40px;
   display: flex;
   flex-direction: column;
