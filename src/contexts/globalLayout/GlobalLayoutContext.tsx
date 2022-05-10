@@ -115,13 +115,13 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
     if (isPageInSuspenseRef.current) {
       return;
     }
-    console.log(getFormattedDate(), 'isPageInSuspenseRef on scroll', isPageInSuspenseRef.current);
-    console.log(
-      getFormattedDate(),
-      'scroll setting visible',
-      window.scrollY,
-      window.scrollY <= GLOBAL_NAVBAR_HEIGHT
-    );
+    // console.log(getFormattedDate(), 'isPageInSuspenseRef on scroll', isPageInSuspenseRef.current);
+    // console.log(
+    //   getFormattedDate(),
+    //   'scroll setting visible',
+    //   window.scrollY,
+    //   window.scrollY <= GLOBAL_NAVBAR_HEIGHT
+    // );
     setNavbarVisible(window.scrollY <= GLOBAL_NAVBAR_HEIGHT);
     setFadeType('scroll');
   }, []);
@@ -140,15 +140,15 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
     forcedHiddenByRouteRef.current = !visible;
     lastFadeTriggeredByRouteTimestampRef.current = Date.now();
 
-    console.log(lastFadeTriggeredByRouteTimestampRef.current);
-    console.log(getFormattedDate(), 'nav setting visible', visible);
+    // console.log(lastFadeTriggeredByRouteTimestampRef.current);
+    // console.log(getFormattedDate(), 'nav setting visible', visible);
   }, []);
 
-  console.log(getFormattedDate(), { isNavbarVisible, wasNavbarVisible, debouncedNavbarVisible });
+  // console.log(getFormattedDate(), { isNavbarVisible, wasNavbarVisible, debouncedNavbarVisible });
 
   const handleFadeNavbarOnHover = useCallback((visible: boolean) => {
     // prevent navbar from fading out if user is near the top of the page
-    console.log(getFormattedDate(), 'hover setting visible', visible);
+    // console.log(getFormattedDate(), 'hover setting visible', visible);
     if (!visible && window.scrollY <= GLOBAL_NAVBAR_HEIGHT) {
       return;
     }
@@ -183,7 +183,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   });
 
   const [isFooterVisible, setFooterVisible] = useState(false);
-  const wasFooterVisible = usePrevious(isFooterVisible) ?? false;
 
   const state = useMemo(
     () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
@@ -213,11 +212,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         </GlobalLayoutActionsContext.Provider>
       </GlobalLayoutStateContext.Provider>
 
-      <GlobalFooterWithFadeEnabled
-        isVisible={isFooterVisible}
-        wasVisible={wasFooterVisible}
-        fadeType={fadeType}
-      />
+      {isFooterVisible && <GlobalFooter />}
     </>
   );
 });
@@ -254,7 +249,7 @@ function GlobalNavbarWithFadeEnabled({
     // FADING IN
     if (!wasVisible) {
       // if scrolling, fade-in navbar without delay
-      if (fadeType === 'scroll' || fadeType == 'hover') {
+      if (fadeType === 'scroll' || fadeType === 'hover') {
         return 'opacity 300ms ease-in-out';
       }
       // if moving between routes, fade-in navbar with delay
@@ -305,52 +300,6 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   > div > div {
     pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
   }
-`;
-
-type GlobalFooterWithFadeEnabledProps = {
-  isVisible: boolean;
-  wasVisible: boolean;
-  fadeType: FadeTriggerType;
-};
-
-function GlobalFooterWithFadeEnabled({
-  isVisible,
-  wasVisible,
-  fadeType,
-}: GlobalFooterWithFadeEnabledProps) {
-  const transitionStyles = useMemo(() => {
-    // FADING OUT
-    // always fade out navbar without delay
-    if (wasVisible) {
-      return 'opacity 300ms ease-in-out;';
-    }
-
-    // FADING IN
-    if (!wasVisible) {
-      // if scrolling, fade-in navbar without delay
-      if (fadeType === 'scroll' || fadeType == 'hover') {
-        return 'opacity 300ms ease-in-out';
-      }
-      // if moving between routes, fade-in navbar with delay
-      if (fadeType === 'route') {
-        return 'opacity 300ms ease-in-out 700ms';
-      }
-    }
-  }, [wasVisible, fadeType]);
-
-  return (
-    <StyledGlobalFooterWithFadeEnabled isVisible={isVisible} transitionStyles={transitionStyles}>
-      <GlobalFooter />
-    </StyledGlobalFooterWithFadeEnabled>
-  );
-}
-
-const StyledGlobalFooterWithFadeEnabled = styled.div<{
-  isVisible: boolean;
-  transitionStyles?: string;
-}>`
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transition: ${({ transitionStyles }) => transitionStyles};
 `;
 
 export default GlobalLayoutContextProvider;
