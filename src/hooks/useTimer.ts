@@ -12,7 +12,7 @@ export default function useTimer(date: string) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [countDown]);
+  }, [countDown, mintDate]);
 
   const days = Math.floor(countDown / (1000 * 60 * 60 * 24))
     .toString()
