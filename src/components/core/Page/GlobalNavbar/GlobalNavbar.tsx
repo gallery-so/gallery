@@ -44,6 +44,10 @@ const StyledGlobalNavbar = styled.div`
   display: flex;
   justify-content: flex-end;
 
+  // TODO: standardize these settings
+  background: rgba(254, 254, 254, 0.95);
+  backdrop-filter: blur(48px);
+
   position: fixed;
   z-index: 3;
 
