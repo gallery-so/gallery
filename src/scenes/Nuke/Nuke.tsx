@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { BaseXL } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import Page from 'components/core/Page/Page';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 
@@ -17,7 +16,7 @@ function Nuke() {
   }, [handleLogout]);
 
   return (
-    <Page centered>
+    <Page>
       <BaseXL>Your local cache has been nuked</BaseXL>
       <Spacer height={32} />
       <GalleryLink to="/">
@@ -26,6 +25,14 @@ function Nuke() {
     </Page>
   );
 }
+
+const Page = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+`;
 
 const StyledButton = styled(Button)`
   padding: 0px 24px;
