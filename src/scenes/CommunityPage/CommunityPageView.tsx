@@ -1,10 +1,9 @@
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, TitleL, TitleS } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import MemberListFilter from 'scenes/MemberListPage/MemberListFilter';
 import styled from 'styled-components';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import CommunityPageList from './CommunityPageList';
 import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
@@ -12,6 +11,7 @@ import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFr
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
+import TokenHolderList from 'scenes/MemberListPage/TokenHolderList';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -23,7 +23,13 @@ export default function CommunityPageView({ communityRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
-        ...CommunityPageListFragment
+        owners {
+          dbid
+          user @required(action: THROW) {
+            username @required(action: THROW)
+          }
+          ...TokenHolderListItemFragment
+        }
       }
     `,
     communityRef
@@ -76,9 +82,7 @@ export default function CommunityPageView({ communityRef }: Props) {
       <MemberListFilter />
       <Spacer height={56} />
       <StyledListWrapper>
-        <TitleS>Members in this community</TitleS>
-        <Spacer height={24} />
-        <CommunityPageList communityRef={community} />
+        <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
       </StyledListWrapper>
       <Spacer height={64} />
     </MemberListPageProvider>
