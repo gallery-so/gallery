@@ -1,8 +1,8 @@
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import MemberListPage from 'scenes/MemberListPage/MemberListPage';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import { membersQuery } from '../../__generated__/membersQuery.graphql';
+import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
 
 export default function Members() {
   const query = useLazyLoadQuery<membersQuery>(
@@ -15,12 +15,5 @@ export default function Members() {
     {}
   );
 
-  return (
-    <GalleryRoute
-      queryRef={query}
-      element={<MemberListPage queryRef={query} />}
-      navbar={false}
-      footerVisibleOutOfView
-    />
-  );
+  return <GalleryV2Route navbar={false} element={<MemberListPage queryRef={query} />} />;
 }

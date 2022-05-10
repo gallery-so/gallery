@@ -1,4 +1,3 @@
-import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import { TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -11,6 +10,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 
 type Props = {
   queryRef: MemberListPageFragment$key;
@@ -32,9 +32,9 @@ function MemberListPage({ queryRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <StyledPage centered>
+    <StyledPage>
       <MemberListPageProvider>
-        <Spacer height={128} />
+        <Spacer height={208} />
         <StyledBanner>
           <StyledBannerText>
             <i>Thank you,</i> for being a patron of Gallery.
@@ -53,7 +53,9 @@ function MemberListPage({ queryRef }: Props) {
   );
 }
 
-const StyledPage = styled(Page)`
+const StyledPage = styled.div`
+  min-height: 100vh;
+
   margin-left: ${pageGutter.mobile}px;
   margin-right: ${pageGutter.mobile}px;
   justify-content: flex-start;
