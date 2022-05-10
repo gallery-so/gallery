@@ -58,8 +58,6 @@ const StyledFullPageLoaderWithLayoutTransitionSupport = styled.div<{ keepNavbarI
 
   height: 100vh;
 
-  border: 5px solid red;
-
   ${({ keepNavbarInView }) => {
     return keepNavbarInView
       ? ''

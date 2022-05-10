@@ -10,7 +10,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
@@ -39,7 +38,6 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 
 type GlobalLayoutActions = {
   setNavbarVisible: (b: boolean) => void;
-  setFooterVisible: (b: boolean) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -164,7 +162,13 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
       handleFadeNavbarFromGalleryRoute,
       handleFadeNavbarOnHover,
     }),
-    [debouncedNavbarVisible, wasNavbarVisible, fadeType, handleFadeNavbarFromGalleryRoute]
+    [
+      debouncedNavbarVisible,
+      wasNavbarVisible,
+      fadeType,
+      handleFadeNavbarFromGalleryRoute,
+      handleFadeNavbarOnHover,
+    ]
   );
 }
 
@@ -182,8 +186,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     isPageInSuspenseRef,
   });
 
-  const [isFooterVisible, setFooterVisible] = useState(false);
-
   const state = useMemo(
     () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
     [isNavbarVisible, wasNavbarVisible]
@@ -192,12 +194,14 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
-      setFooterVisible,
     }),
-    [handleFadeNavbarFromGalleryRoute, setFooterVisible]
+    [handleFadeNavbarFromGalleryRoute]
   );
 
   return (
+    // note: we render the navbar here, above the main contents of the app,
+    // so that it can remain fixed across page transitions. the footer, on
+    // the other hand, is rendered at `GalleryRoute`.
     <>
       <GlobalNavbarWithFadeEnabled
         isVisible={isNavbarVisible}
@@ -211,8 +215,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
           {children}
         </GlobalLayoutActionsContext.Provider>
       </GlobalLayoutStateContext.Provider>
-
-      {isFooterVisible && <GlobalFooter />}
     </>
   );
 });
@@ -285,9 +287,6 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;
   transitionStyles?: string;
 }>`
-  // border: 2px solid yellow;
-  backgound: pink;
-
   position: fixed;
   width: 100%;
   height: ${GLOBAL_NAVBAR_HEIGHT}px;

@@ -25,8 +25,6 @@ const childNodeStyles = {
 const transitionGroupStyles = {
   // NOTE: this doesn't seem to do anything. in the future we could use this to only transition
   // the inner content of a page, while leaving the navbar + footer visible.
-  // minHeight: '100vh',
-  // border: '5px solid green',
 };
 
 /**
