@@ -1,18 +1,6 @@
-import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
 import PrivacyPolicyPage from 'scenes/BasicTextPage/PrivacyPolicyPage';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { privacyQuery } from '__generated__/privacyQuery.graphql';
+import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
 
 export default function Privacy() {
-  const query = useLazyLoadQuery<privacyQuery>(
-    graphql`
-      query privacyQuery {
-        ...GalleryRouteFragment
-      }
-    `,
-    {}
-  );
-
-  return <GalleryRoute queryRef={query} element={<PrivacyPolicyPage />} navbar={false} />;
+  return <GalleryV2Route element={<PrivacyPolicyPage />} navbar={false} />;
 }
