@@ -23,7 +23,7 @@ import useDebounce from 'hooks/useDebounce';
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
   wasNavbarVisible: boolean;
-  isPageTransitioningRef: MutableRefObject<boolean>;
+  isPageInSuspenseRef: MutableRefObject<boolean>;
 };
 
 const GlobalLayoutStateContext = createContext<GlobalLayoutState | undefined>(undefined);
@@ -58,65 +58,73 @@ type Props = { children: ReactNode };
 // the action that causes the fade
 type FadeTriggerType = 'route' | 'scroll' | 'hover';
 
-// function getFormattedDate() {
-//   var date = new Date();
+function getFormattedDate() {
+  var date = new Date();
 
-//   var month = date.getMonth() + 1;
-//   var day = date.getDate();
-//   var hour = date.getHours();
-//   var min = date.getMinutes();
-//   var sec = date.getSeconds();
-//   var ms = date.getMilliseconds();
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+  var hour = date.getHours();
+  var min = date.getMinutes();
+  var sec = date.getSeconds();
+  var ms = date.getMilliseconds();
 
-//   month = (month < 10 ? '0' : '') + month;
-//   day = (day < 10 ? '0' : '') + day;
-//   hour = (hour < 10 ? '0' : '') + hour;
-//   min = (min < 10 ? '0' : '') + min;
-//   sec = (sec < 10 ? '0' : '') + sec;
-//   // ms = (ms < 10 ? '0' : '') + ms;
+  month = (month < 10 ? '0' : '') + month;
+  day = (day < 10 ? '0' : '') + day;
+  hour = (hour < 10 ? '0' : '') + hour;
+  min = (min < 10 ? '0' : '') + min;
+  sec = (sec < 10 ? '0' : '') + sec;
+  // ms = (ms < 10 ? '0' : '') + ms;
 
-//   var str = min + ':' + sec + ':' + ms;
+  var str = min + ':' + sec + ':' + ms;
 
-//   /*alert(str);*/
+  /*alert(str);*/
 
-//   return str;
-// }
+  return str;
+}
 
 type useNavbarControlsProps = {
-  isPageTransitioningRef: GlobalLayoutState['isPageTransitioningRef'];
+  isPageInSuspenseRef: GlobalLayoutState['isPageInSuspenseRef'];
 };
 
-function useNavbarControls({ isPageTransitioningRef }: useNavbarControlsProps) {
+function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
   const [isNavbarVisible, setNavbarVisible] = useState(false);
-  const debouncedNavbarVisible = useDebounce(isNavbarVisible, 200);
+  const debouncedNavbarVisible = useDebounce(isNavbarVisible, 300);
   const wasNavbarVisible = usePrevious(debouncedNavbarVisible) ?? false;
 
-  const [forcedHiddenByRoute, setForcedHiddenByRoute] = useState(false);
   const [fadeType, setFadeType] = useState<FadeTriggerType>('route');
+
+  const forcedHiddenByRouteRef = useRef(false);
+
+  /**
+   * There is a race condition that arises if a scroll-based fade is triggered
+   * immediately after a route-based fade. We use a timestamp to determine whether
+   * a fade was recently triggered by route change.
+   */
+  const lastFadeTriggeredByRouteTimestampRef = useRef(0);
 
   const fadeNavbarOnScroll = useCallback(() => {
     // handle override. the route gets ultimate power over whether the navbar is displayed
-    if (forcedHiddenByRoute) {
+    if (forcedHiddenByRouteRef.current) {
       return;
     }
-    // if we're mid-page transition, don't trigger any scroll-related side effects
-    if (isPageTransitioningRef.current) {
+    // if we recently triggered a route transition, ignore scroll-related side effects
+    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
       return;
     }
-    // console.log(
-    //   getFormattedDate(),
-    //   'isPageTransitioningRef on scroll',
-    //   isPageTransitioningRef.current
-    // );
-    // console.log(
-    //   getFormattedDate(),
-    //   'scroll setting visible',
-    //   window.scrollY,
-    //   window.scrollY <= GLOBAL_NAVBAR_HEIGHT
-    // );
+    // if we're mid-suspense, don't trigger any scroll-related side effects
+    if (isPageInSuspenseRef.current) {
+      return;
+    }
+    console.log(getFormattedDate(), 'isPageInSuspenseRef on scroll', isPageInSuspenseRef.current);
+    console.log(
+      getFormattedDate(),
+      'scroll setting visible',
+      window.scrollY,
+      window.scrollY <= GLOBAL_NAVBAR_HEIGHT
+    );
     setNavbarVisible(window.scrollY <= GLOBAL_NAVBAR_HEIGHT);
     setFadeType('scroll');
-  }, [forcedHiddenByRoute]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', fadeNavbarOnScroll);
@@ -128,11 +136,22 @@ function useNavbarControls({ isPageTransitioningRef }: useNavbarControlsProps) {
   const handleFadeNavbarFromGalleryRoute = useCallback((visible: boolean) => {
     setNavbarVisible(visible);
     setFadeType('route');
-    setForcedHiddenByRoute(!visible);
+
+    forcedHiddenByRouteRef.current = !visible;
+    lastFadeTriggeredByRouteTimestampRef.current = Date.now();
+
+    console.log(lastFadeTriggeredByRouteTimestampRef.current);
     console.log(getFormattedDate(), 'nav setting visible', visible);
   }, []);
 
+  console.log(getFormattedDate(), { isNavbarVisible, wasNavbarVisible, debouncedNavbarVisible });
+
   const handleFadeNavbarOnHover = useCallback((visible: boolean) => {
+    // prevent navbar from fading out if user is near the top of the page
+    console.log(getFormattedDate(), 'hover setting visible', visible);
+    if (!visible && window.scrollY <= GLOBAL_NAVBAR_HEIGHT) {
+      return;
+    }
     setNavbarVisible(visible);
     setFadeType('hover');
   }, []);
@@ -151,7 +170,7 @@ function useNavbarControls({ isPageTransitioningRef }: useNavbarControlsProps) {
 
 const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   // storing this in ref to prevent triggering unnecessary re-renders / side-effects
-  const isPageTransitioningRef = useRef(false);
+  const isPageInSuspenseRef = useRef(false);
 
   const {
     isNavbarVisible,
@@ -160,14 +179,14 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     handleFadeNavbarFromGalleryRoute,
     handleFadeNavbarOnHover,
   } = useNavbarControls({
-    isPageTransitioningRef,
+    isPageInSuspenseRef,
   });
 
   const [isFooterVisible, setFooterVisible] = useState(false);
   const wasFooterVisible = usePrevious(isFooterVisible) ?? false;
 
   const state = useMemo(
-    () => ({ isNavbarVisible, wasNavbarVisible, isPageTransitioningRef }),
+    () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
     [isNavbarVisible, wasNavbarVisible]
   );
 
@@ -277,7 +296,7 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   position: fixed;
   width: 100%;
   height: ${GLOBAL_NAVBAR_HEIGHT}px;
-  z-index: 1;
+  z-index: 2;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: ${({ transitionStyles }) => transitionStyles};

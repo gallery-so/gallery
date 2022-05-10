@@ -26,14 +26,14 @@ const StyledFullPageLoader = styled.div`
  * This can only be used on components mounted beneath the GlobalLayoutContext.
  */
 export function FullPageLoaderWithLayoutTransitionSupport() {
-  const { isPageTransitioningRef, isNavbarVisible, wasNavbarVisible } = useGlobalLayoutState();
+  const { isPageInSuspenseRef, isNavbarVisible, wasNavbarVisible } = useGlobalLayoutState();
 
   useEffect(() => {
-    isPageTransitioningRef.current = true;
+    isPageInSuspenseRef.current = true;
     return () => {
-      isPageTransitioningRef.current = false;
+      isPageInSuspenseRef.current = false;
     };
-  }, [isPageTransitioningRef]);
+  }, [isPageInSuspenseRef]);
 
   return (
     <StyledFullPageLoaderWithLayoutTransitionSupport
