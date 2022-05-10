@@ -150,6 +150,19 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
     if (!visible && window.scrollY <= GLOBAL_NAVBAR_HEIGHT) {
       return;
     }
+
+    // handle override. the route gets ultimate power over whether the navbar is displayed
+    if (forcedHiddenByRouteRef.current) {
+      return;
+    }
+    // if we recently triggered a route transition, ignore scroll-related side effects
+    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
+      return;
+    }
+    // if we're mid-suspense, don't trigger any scroll-related side effects
+    if (isPageInSuspenseRef.current) {
+      return;
+    }
     setNavbarVisible(visible);
     setFadeType('hover');
   }, []);
