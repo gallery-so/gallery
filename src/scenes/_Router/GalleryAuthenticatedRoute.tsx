@@ -1,12 +1,12 @@
 import { graphql, useFragment } from 'react-relay';
 import { GalleryAuthenticatedRouteFragment$key } from '__generated__/GalleryAuthenticatedRouteFragment.graphql';
 import GalleryRedirect from './GalleryRedirect';
-import Route, { GalleryRouteProps } from './GalleryRoute';
+import GalleryV2Route, { Props as GalleryV2RouteProps } from './GalleryV2Route';
 
 // TODO: may want to remember where the user was going and redirect them
 // to their desired route upon authentication
 export default function GalleryAuthenticatedRoute(
-  props: GalleryRouteProps & { authenticatedRouteQueryRef: GalleryAuthenticatedRouteFragment$key }
+  props: GalleryV2RouteProps & { authenticatedRouteQueryRef: GalleryAuthenticatedRouteFragment$key }
 ) {
   const { viewer } = useFragment(
     graphql`
@@ -29,5 +29,5 @@ export default function GalleryAuthenticatedRoute(
     return <GalleryRedirect to="/" />;
   }
 
-  return <Route {...props} />;
+  return <GalleryV2Route {...props} />;
 }
