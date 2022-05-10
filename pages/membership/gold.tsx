@@ -1,18 +1,6 @@
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import GoldMembershipMintPage from 'scenes/MembershipMintPage/GoldMembershipMintPage';
-import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { goldQuery } from '__generated__/goldQuery.graphql';
+import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
 
 export default function SilverMembership() {
-  const query = useLazyLoadQuery<goldQuery>(
-    graphql`
-      query goldQuery {
-        ...GalleryRouteFragment
-      }
-    `,
-    {}
-  );
-
-  return <GalleryRoute queryRef={query} element={<GoldMembershipMintPage />} navbar={false} />;
+  return <GalleryV2Route element={<GoldMembershipMintPage />} navbar={false} />;
 }

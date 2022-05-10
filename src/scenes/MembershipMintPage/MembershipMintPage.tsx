@@ -1,6 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
@@ -163,7 +162,7 @@ export function MembershipMintPage({
   }, [active, hideModal]);
 
   return (
-    <StyledMintPage centered>
+    <StyledMintPage>
       <StyledContent>
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
@@ -284,7 +283,12 @@ function MembershipNftVisual({ src }: VideoProps) {
   );
 }
 
-export const StyledMintPage = styled(Page)`
+export const StyledMintPage = styled.div`
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;
