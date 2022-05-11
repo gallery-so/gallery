@@ -18,6 +18,7 @@ import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
 import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import useDebounce from 'hooks/useDebounce';
+import isTouchscreenDevice from 'utils/isTouchscreenDevice';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -93,6 +94,8 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
 
   const forcedHiddenByRouteRef = useRef(false);
 
+  const isTouchscreen = useRef(isTouchscreenDevice());
+
   /**
    * There is a race condition that arises if a scroll-based fade is triggered
    * immediately after a route-based fade. We use a timestamp to determine whether
@@ -145,6 +148,12 @@ function useNavbarControls({ isPageInSuspenseRef }: useNavbarControlsProps) {
   // console.log(getFormattedDate(), { isNavbarVisible, wasNavbarVisible, debouncedNavbarVisible });
 
   const handleFadeNavbarOnHover = useCallback((visible: boolean) => {
+    // prevent navbar from being accessible via touch-based hover; otherwise, users trying
+    // to click something near the top of the screen will trigger the navbar instead
+    if (isTouchscreen.current) {
+      return;
+    }
+
     // prevent navbar from fading out if user is near the top of the page
     // console.log(getFormattedDate(), 'hover setting visible', visible);
     if (!visible && window.scrollY <= GLOBAL_NAVBAR_HEIGHT) {
@@ -274,6 +283,19 @@ function GlobalNavbarWithFadeEnabled({
     }
   }, [wasVisible, fadeType]);
 
+  // for touch-enabled devices, we need to keep the upper area of the screen clickable.
+  // this is normally as simple as setting the navbar z-index to 0, but doing so right
+  // away makes it look like the navbar immediately disappears; therefore we need to
+  // delay until the navbar is out of site.
+  const isTouchscreen = useRef(isTouchscreenDevice());
+  const [zIndex, setZIndex] = useState(2);
+  useEffect(() => {
+    if (!isVisible && isTouchscreen.current) {
+      setTimeout(() => setZIndex(0), 300);
+    }
+    setZIndex(2);
+  }, [isVisible]);
+
   const handleMouseEnter = useCallback(
     () => handleFadeNavbarOnHover(true),
     [handleFadeNavbarOnHover]
@@ -288,6 +310,7 @@ function GlobalNavbarWithFadeEnabled({
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
       transitionStyles={transitionStyles}
+      zIndex={zIndex}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -299,11 +322,12 @@ function GlobalNavbarWithFadeEnabled({
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;
   transitionStyles?: string;
+  zIndex: number;
 }>`
   position: fixed;
   width: 100%;
   height: ${GLOBAL_NAVBAR_HEIGHT}px;
-  z-index: 2;
+  z-index: ${({ zIndex }) => zIndex};
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: ${({ transitionStyles }) => transitionStyles};
