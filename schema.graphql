@@ -56,6 +56,8 @@ type GalleryUser implements Node {
     wallets: [Wallet]
     galleries: [Gallery] @goField(forceResolver: true)
     isAuthenticatedUser: Boolean
+    followers: [GalleryUser] @goField(forceResolver: true)
+    following: [GalleryUser] @goField(forceResolver: true)
 }
 
 type Wallet implements Node @goGqlId(fields: ["address"]) {
@@ -265,9 +267,8 @@ type Gallery implements Node {
     collections: [Collection] @goField(forceResolver: true)
 }
 
-type MembershipOwner {
-    dbid: DBID!
-    address: Address
+type TokenHolder @goEmbedHelper {
+    addresses: [Address]
     user: GalleryUser @goField(forceResolver: true)
     previewNfts: [String]
 }
@@ -278,12 +279,7 @@ type MembershipTier implements Node {
     name: String
     assetUrl: String
     tokenId: String
-    owners: [MembershipOwner]
-}
-
-type CommunityOwner {
-    address: Address
-    username: String
+    owners: [TokenHolder]
 }
 
 type Community implements Node @goGqlId(fields: ["contractAddress"]) {
@@ -297,7 +293,7 @@ type Community implements Node @goGqlId(fields: ["contractAddress"]) {
     description: String
     previewImage: String
 
-    owners: [CommunityOwner]
+    owners: [TokenHolder]
 }
 
 # We have this extra type in case we need to stick authed data
@@ -338,7 +334,7 @@ type Query {
     collectionById(id: DBID!): CollectionByIdOrError
     nftById(id: DBID!): NftByIdOrError
     collectionNftById(nftId: DBID!, collectionId: DBID!): CollectionNftByIdOrError
-    communityByAddress(contractAddress: Address!): CommunityByAddressOrError
+    communityByAddress(contractAddress: Address!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [Address!]
 }
 
@@ -601,6 +597,26 @@ type CreateUserPayload {
     viewer: Viewer
 }
 
+union FollowUserPayloadOrError =
+    FollowUserPayload
+    | ErrAuthenticationFailed
+    | ErrUserNotFound
+    | ErrInvalidInput
+
+union UnfollowUserPayloadOrError =
+    UnfollowUserPayload
+    | ErrAuthenticationFailed
+    | ErrUserNotFound
+    | ErrInvalidInput
+
+type FollowUserPayload {
+    viewer: Viewer
+}
+
+type UnfollowUserPayload {
+    viewer: Viewer
+}
+
 type Mutation {
     # User Mutations
     addUserAddress(address: Address!, authMechanism: AuthMechanism!): AddUserAddressPayloadOrError @authRequired
@@ -628,4 +644,7 @@ type Mutation {
     createUser(authMechanism: AuthMechanism!): CreateUserPayloadOrError
     login(authMechanism: AuthMechanism!): LoginPayloadOrError
     logout: LogoutPayload
+
+    followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
+    unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
 }
