@@ -1,4 +1,4 @@
-import GlobalFooter from 'components/core/Page/GlobalFooter';
+import GlobalFooter from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect, useState } from 'react';
 

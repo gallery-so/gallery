@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
+import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from '../constants';
 import {
   GALLERY_FAQ,
   GALLERY_JOBS,
@@ -14,7 +14,7 @@ import {
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
-import NavLink from '../NavLink/NavLink';
+import NavLink from '../../../components/core/NavLink/NavLink';
 
 type GlobalFooterProps = { isFixed?: boolean };
 

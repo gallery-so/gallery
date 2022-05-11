@@ -20,7 +20,7 @@ import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragme
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 
 import useKeyDown from 'hooks/useKeyDown';
-import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 
 type ConfigProps = {
   wizardId: string;
