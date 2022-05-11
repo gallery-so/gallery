@@ -1,14 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useTimer from './useTimer';
 
-function convertToSeconds(timestamp: string): number {
-  const [days, hours, minutes, seconds] = timestamp.split(':');
-
-  return (
-    Number(days) * 24 * 60 * 60 + Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds)
-  );
-}
-
 describe('useTimer hooks', () => {
   test('render timestamp', () => {
     const now = new Date();
@@ -29,27 +21,32 @@ describe('useTimer hooks', () => {
   });
 
   test('if one hour left, it should return timestamp and not ended', () => {
-    const hour = 60 * 60;
-    const now = new Date();
-    const date = new Date(now.setHours(now.getHours() + 1)).toString();
-    const { result } = renderHook(() => useTimer(date));
+    const currentDate = new Date('2022-05-18T23:00:00').toString();
+    const mintDate = '2022-05-19T00:00:00';
+    const { result } = renderHook(() => useTimer(mintDate, currentDate));
     const { timestamp, hasEnded } = result.current;
 
-    const totalSeconds = convertToSeconds(timestamp);
-
-    expect(totalSeconds).toBeLessThanOrEqual(hour * 60);
+    expect(timestamp).toEqual('00:01:00:00');
     expect(hasEnded).toBe(false);
   });
 
-  test('if one minute left it should return timestamp and not ended', () => {
-    const minute = 1;
-    const date = new Date(new Date().getTime() + minute * 60000).toString();
-    const { result } = renderHook(() => useTimer(date));
+  test('if one minute left, it should return timestamp and not ended', () => {
+    const currentDate = new Date('2022-05-18T23:59:00').toString();
+    const mintDate = '2022-05-19T00:00:00';
+    const { result } = renderHook(() => useTimer(mintDate, currentDate));
     const { timestamp, hasEnded } = result.current;
 
-    const totalSeconds = convertToSeconds(timestamp);
+    expect(timestamp).toEqual('00:00:01:00');
+    expect(hasEnded).toBe(false);
+  });
 
-    expect(totalSeconds).toBeLessThanOrEqual(minute * 60);
+  test('if 10 second left, it should return timestamp and not ended', () => {
+    const currentDate = new Date('2022-05-18T23:59:50').toString();
+    const mintDate = '2022-05-19T00:00:00';
+    const { result } = renderHook(() => useTimer(mintDate, currentDate));
+    const { timestamp, hasEnded } = result.current;
+
+    expect(timestamp).toEqual('00:00:00:10');
     expect(hasEnded).toBe(false);
   });
 });
