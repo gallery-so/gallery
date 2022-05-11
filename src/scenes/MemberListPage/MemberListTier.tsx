@@ -13,8 +13,8 @@ function MemberListTier({ tierRef }: Props) {
       fragment MemberListTierFragment on MembershipTier {
         name
         owners {
-          dbid
           user @required(action: THROW) {
+            dbid
             username @required(action: THROW)
           }
           ...TokenHolderListItemFragment

@@ -60,7 +60,7 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
       <StyledTokenHoldersWrapper>
         {filteredTokenHolders.map((tokenHolder, index) => (
           <TokenHolderListItem
-            key={tokenHolder.dbid}
+            key={tokenHolder.user.dbid}
             tokenHolderRef={tokenHolder}
             direction={getPreviewDirection(index)}
             fadeUsernames={fadeUsernames}

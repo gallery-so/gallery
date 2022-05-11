@@ -24,8 +24,8 @@ export default function CommunityPageView({ communityRef }: Props) {
         name
         description
         owners {
-          dbid
           user @required(action: THROW) {
+            dbid
             username @required(action: THROW)
           }
           ...TokenHolderListItemFragment
