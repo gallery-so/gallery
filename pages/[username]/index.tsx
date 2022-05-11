@@ -5,7 +5,7 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type UserGalleryProps = MetaTagProps & {
   username: string;
@@ -21,7 +21,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
     { username }
   );
 
-  return <GalleryV2Route element={<UserGalleryPage username={username} queryRef={query} />} />;
+  return <GalleryRoute element={<UserGalleryPage username={username} queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => {

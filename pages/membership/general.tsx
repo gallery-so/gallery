@@ -6,7 +6,7 @@ import { isFeatureEnabled } from 'utils/featureFlag';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { generalQuery } from '__generated__/generalQuery.graphql';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function General() {
   const query = useLazyLoadQuery<generalQuery>(
@@ -22,5 +22,5 @@ export default function General() {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryV2Route element={<GeneralMembershipMintPage queryRef={query} />} navbar={false} />;
+  return <GalleryRoute element={<GeneralMembershipMintPage queryRef={query} />} navbar={false} />;
 }

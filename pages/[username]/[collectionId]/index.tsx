@@ -5,7 +5,7 @@ import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -27,7 +27,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
   }
 
   return (
-    <GalleryV2Route
+    <GalleryRoute
       element={
         <CollectionGalleryPage queryRef={query} collectionId={collectionId} username={username} />
       }
