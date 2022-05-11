@@ -6,11 +6,9 @@ import { useEffect, useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
-
 import { graphql, useFragment } from 'react-relay';
-
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 
 type CollectionGalleryPageProps = {
   username: string;

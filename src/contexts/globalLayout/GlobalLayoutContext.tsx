@@ -20,8 +20,7 @@ import isTouchscreenDevice from 'utils/isTouchscreenDevice';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import PosterBanner from 'scenes/PosterPage/PosterBanner';
-import GlobalNavbar from './GlobalNavbar/GlobalNavbar';
-import { GLOBAL_NAVBAR_HEIGHT } from './constants';
+import GlobalNavbar, { GLOBAL_NAVBAR_HEIGHT } from './GlobalNavbar/GlobalNavbar';
 import Banner from './GlobalBanner/GlobalBanner';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 

@@ -8,7 +8,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;

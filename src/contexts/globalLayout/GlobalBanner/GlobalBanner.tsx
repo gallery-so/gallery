@@ -1,12 +1,12 @@
 import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
+import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
 
 type Props = {
   title?: React.ReactNode | string;

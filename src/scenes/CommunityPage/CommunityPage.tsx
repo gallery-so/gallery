@@ -1,6 +1,6 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
