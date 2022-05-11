@@ -22,7 +22,6 @@ import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQue
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
-import Loader from 'components/core/Loader/Loader';
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
@@ -238,7 +237,7 @@ const AuthProvider = memo(({ children }: Props) => {
     <Fragment key={shouldDisplayUniversalLoader.toString()}>
       <div style={{ display: shouldDisplayUniversalLoader ? 'none' : undefined }}>
         <ErrorBoundary>
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={null}>
             <AuthStateContext.Provider value={authState}>
               <AuthActionsContext.Provider value={authActions}>
                 <Web3WalletProvider>{children}</Web3WalletProvider>
