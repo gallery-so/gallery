@@ -1,6 +1,6 @@
 import SilverMembershipMintPage from 'scenes/MembershipMintPage/SilverMembershipMintPage';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function SilverMembership() {
-  return <GalleryV2Route element={<SilverMembershipMintPage />} navbar={false} />;
+  return <GalleryRoute element={<SilverMembershipMintPage />} navbar={false} />;
 }

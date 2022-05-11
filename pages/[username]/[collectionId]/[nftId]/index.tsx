@@ -5,7 +5,7 @@ import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { NftIdQuery } from '__generated__/NftIdQuery.graphql';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
   nftId: string;
@@ -27,7 +27,7 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryV2Route element={<NftDetailPageScene queryRef={query} nftId={nftId} />} />;
+  return <GalleryRoute element={<NftDetailPageScene queryRef={query} nftId={nftId} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {

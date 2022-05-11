@@ -1,6 +1,6 @@
 import NukeScene from 'scenes/Nuke/Nuke';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function Nuke() {
-  return <GalleryV2Route element={<NukeScene />} navbar={false} />;
+  return <GalleryRoute element={<NukeScene />} navbar={false} />;
 }

@@ -5,7 +5,7 @@ import { MetaTagProps } from 'pages/_app';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -39,7 +39,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
   }
 
   return (
-    <GalleryV2Route
+    <GalleryRoute
       element={<CommunityPageScene contractAddress={contractAddress} queryRef={query} />}
     />
   );

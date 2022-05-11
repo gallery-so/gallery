@@ -9,7 +9,7 @@ export type Props = {
   footer?: boolean;
 };
 
-export default function GalleryV2Route({
+export default function GalleryRoute({
   element,
   navbar = true,
   footer = true,

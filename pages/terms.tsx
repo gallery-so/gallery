@@ -1,6 +1,6 @@
 import TermsPage from 'scenes/BasicTextPage/TermsPage';
-import GalleryV2Route from 'scenes/_Router/GalleryV2Route';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function Terms() {
-  return <GalleryV2Route element={<TermsPage />} navbar={false} />;
+  return <GalleryRoute element={<TermsPage />} navbar={false} />;
 }
