@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
-import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 
 type CollectionGalleryPageProps = {
   username: string;

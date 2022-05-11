@@ -5,7 +5,7 @@ import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
-import NavElement from 'components/core/Page/GlobalNavbar/NavElement';
+import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';

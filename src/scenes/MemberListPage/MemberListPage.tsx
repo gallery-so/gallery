@@ -10,7 +10,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 
 type Props = {
   queryRef: MemberListPageFragment$key;

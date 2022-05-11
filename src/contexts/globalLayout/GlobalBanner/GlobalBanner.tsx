@@ -1,16 +1,16 @@
 import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { BannerFragment$key } from '__generated__/BannerFragment.graphql';
+import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
 
 type Props = {
   title?: React.ReactNode | string;
-  queryRef: BannerFragment$key;
+  queryRef: GlobalBannerFragment$key;
   text: string;
   requireAuth?: boolean;
   localStorageKey?: string;
@@ -27,7 +27,7 @@ export default function Banner({
 }: Props) {
   const query = useFragment(
     graphql`
-      fragment BannerFragment on Query {
+      fragment GlobalBannerFragment on Query {
         viewer {
           ... on Viewer {
             user {

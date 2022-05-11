@@ -5,7 +5,7 @@ import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Markdown from 'components/core/Markdown/Markdown';
 import NftAdditionalDetails from './NftAdditionalDetails';
-import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
+import { fullPageHeightWithoutNavbarAndFooter } from 'contexts/globalLayout/constants';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';

@@ -10,19 +10,19 @@ import {
   useRef,
   useState,
 } from 'react';
-import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import { graphql } from 'relay-runtime';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
-import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import useDebounce from 'hooks/useDebounce';
 import isTouchscreenDevice from 'utils/isTouchscreenDevice';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import PosterBanner from 'scenes/PosterPage/PosterBanner';
-import Banner from 'components/Banner/Banner';
+import GlobalNavbar from './GlobalNavbar/GlobalNavbar';
+import { GLOBAL_NAVBAR_HEIGHT } from './constants';
+import Banner from './GlobalBanner/GlobalBanner';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 
 type GlobalLayoutState = {
@@ -282,7 +282,7 @@ function GlobalNavbarWithFadeEnabled({
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
         ...GlobalNavbarFragment
-        ...BannerFragment
+        ...GlobalBannerFragment
       }
     `,
     queryRef
