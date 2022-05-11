@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { FADE_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
+import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
@@ -20,6 +20,13 @@ function useGalleryNavigationContext() {
 type Props = {
   children: ReactNode;
 };
+
+const SCROLL_TRIGGER_TIME_MS =
+  FADE_TRANSITION_TIME_MS +
+  // this adds an arbirarily small timeframe to ensure the fade transition defined in
+  // `FadeTransitioner.tsx` has completed; without this, in rare cases, the user may
+  // see a flash of scrolling while transitioning
+  20;
 
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
@@ -108,7 +115,7 @@ export function GalleryNavigationProvider({ children }: Props) {
           // at the top of the next page.
           setTimeout(() => {
             window.scrollTo({ top: 0 });
-          }, FADE_TIME_MS);
+          }, SCROLL_TRIGGER_TIME_MS);
 
           scrollY = window.scrollY;
 
@@ -141,7 +148,7 @@ export function GalleryNavigationProvider({ children }: Props) {
         setTimeout(() => {
           // @ts-expect-error We're getting too raw here
           originalScrollTo(...args);
-        }, FADE_TIME_MS);
+        }, SCROLL_TRIGGER_TIME_MS);
 
         window.scrollTo = originalScrollTo;
       };

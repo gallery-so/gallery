@@ -8,13 +8,13 @@ type Props = {
   children: React.ReactNode;
 };
 
-// NOTE: if you change these, make sure to update `transition.css`
-export const FADE_TIME_MS = 300;
+// NOTE: if you change these value, make sure to update `transition.css`
+export const FADE_TRANSITION_TIME_MS = 300;
 export const NAVIGATION_TRANSITION_TIME_MS = 700;
 
 const timeoutConfig = {
-  enter: FADE_TIME_MS + NAVIGATION_TRANSITION_TIME_MS,
-  exit: FADE_TIME_MS,
+  enter: FADE_TRANSITION_TIME_MS + NAVIGATION_TRANSITION_TIME_MS,
+  exit: FADE_TRANSITION_TIME_MS,
 };
 
 const childNodeStyles = {
