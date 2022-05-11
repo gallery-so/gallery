@@ -1,14 +1,16 @@
 import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
+import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { BannerFragment$key } from '__generated__/BannerFragment.graphql';
 
 type Props = {
   title?: React.ReactNode | string;
-  queryRef: any;
+  queryRef: BannerFragment$key;
   text: string;
   requireAuth?: boolean;
   localStorageKey?: string;
@@ -63,14 +65,22 @@ export default function Banner({
 }
 
 const StyledContainer = styled.div`
-  padding: 24px;
+  position: absolute;
+  width: 100%;
+  height: ${GLOBAL_NAVBAR_HEIGHT}px;
+  z-index: 4;
+
+  // TODO: standardize these settings
+  background: rgba(254, 254, 254, 0.95);
+  backdrop-filter: blur(48px);
+
+  padding: 17px;
   @media (max-width: ${contentSize.desktop}px) {
     padding: 0px;
   }
 `;
 
 const StyledBanner = styled.div`
-  background: white;
   text-align: left;
   width: 100%;
   padding: 8px 16px;
