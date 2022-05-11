@@ -2,11 +2,8 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
-import useBackButton from 'hooks/useBackButton';
-import ActionText from 'components/core/ActionText/ActionText';
 import { useEffect, useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 
@@ -23,7 +20,6 @@ type CollectionGalleryPageProps = {
 
 function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
-  const handleBackClick = useBackButton({ username });
 
   const track = useTrack();
 
@@ -77,9 +73,6 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
         <title>{headTitle}</title>
       </Head>
       <StyledCollectionGalleryWrapper>
-        <StyledPositionedBackLink>
-          <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
-        </StyledPositionedBackLink>
         <CollectionGallery queryRef={query} />
       </StyledCollectionGalleryWrapper>
     </>
@@ -98,10 +91,6 @@ const StyledCollectionGalleryWrapper = styled.div`
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
   }
-`;
-
-const StyledPositionedBackLink = styled(StyledBackLink)`
-  padding: 0;
 `;
 
 export default CollectionGalleryPage;
