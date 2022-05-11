@@ -1,7 +1,6 @@
 import { memo, useEffect } from 'react';
 
 import WalletSelector from 'components/WalletSelector/WalletSelector';
-import Page from 'components/core/Page/Page';
 import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
@@ -73,10 +72,11 @@ function Auth({ queryRef }: Props) {
   );
 }
 
-const StyledAuthPage = styled(Page)`
+const StyledAuthPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
   height: 100vh;
 `;

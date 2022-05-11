@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { TitleL, BaseM } from 'components/core/Text/Text';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import Page from 'components/core/Page/Page';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
 
@@ -12,7 +11,7 @@ type Props = {
 
 function NotFound({ resource = 'user' }: Props) {
   return (
-    <Page centered>
+    <StyledNotFound>
       <TitleL>404</TitleL>
       <Spacer height={16} />
       <StyledBody>
@@ -24,9 +23,16 @@ function NotFound({ resource = 'user' }: Props) {
       <GalleryLink to="/">
         <StyledButton text="Take me back" />
       </GalleryLink>
-    </Page>
+    </StyledNotFound>
   );
 }
+
+const StyledNotFound = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
 
 const StyledBody = styled(BaseM)`
   max-width: 300px;

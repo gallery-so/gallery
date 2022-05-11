@@ -1,8 +1,8 @@
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { ReactNode } from 'react';
-import { Filler } from 'scenes/_Router/GalleryRoute';
 import styled from 'styled-components';
 import { size } from '../breakpoints';
+import Spacer from '../Spacer/Spacer';
 import {
   GLOBAL_FOOTER_HEIGHT,
   GLOBAL_FOOTER_HEIGHT_MOBILE,
@@ -33,7 +33,7 @@ function Page({
 
   return (
     <>
-      {topPadding ? <Filler tallVariant={isMobile} /> : null}
+      {topPadding ? <Spacer height={80} /> : null}
       <StyledPage
         className={className}
         centered={centered}

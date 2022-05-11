@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import formatError from 'errors/formatError';
@@ -27,7 +26,7 @@ class ErrorBoundary extends Component {
       const errorMessage = formatError(this.state.error);
 
       return (
-        <Page centered topPadding>
+        <StyledErrorBoundary>
           <BaseXL>{errorMessage}</BaseXL>
           <Spacer height={48} />
           <StyledReachOut>
@@ -35,13 +34,21 @@ class ErrorBoundary extends Component {
             <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
           </StyledReachOut>
           <Spacer height={16} />
-        </Page>
+        </StyledErrorBoundary>
       );
     }
 
     return this.props.children;
   }
 }
+
+const StyledErrorBoundary = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+`;
 
 const StyledReachOut = styled(BaseM)`
   font-style: italic;
