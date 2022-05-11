@@ -11,15 +11,17 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { mintDate } from 'constants/poster';
+import { MINT_DATE } from 'constants/poster';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
   const { pushToast } = useToastActions();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
+  const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp, hasEnded } = useTimer(mintDate);
+  const { timestamp, hasEnded } = useTimer(MINT_DATE);
 
   const handleBackClick = () => {
     // TODO: Replace with hook
@@ -45,7 +47,8 @@ export default function PosterPage() {
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Celebrate our new brand with us by signing
+              Thank you for being a member of Gallery. Celebrate our{' '}
+              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> with us by signing
               our poster.
             </BaseM>
             <BaseM>

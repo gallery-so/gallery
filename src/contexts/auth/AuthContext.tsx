@@ -23,6 +23,7 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import Loader from 'components/core/Loader/Loader';
+import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -161,18 +162,32 @@ const AuthProvider = memo(({ children }: Props) => {
   const handleLogin = useCallback(
     async (userId: string, address: string) => {
       try {
-        // TODO__GRAPHQL: explicitly check error types (instead of try/catch)
-        await imperativelyFetchUser();
-        setAuthState({ type: 'LOGGED_IN', userId });
-        setLocallyLoggedInWalletAddress(address.toLowerCase());
-        _identify(userId);
+        const transaction = startTransaction({ name: 'imperativelyFetchUser', op: 'login' });
+        getCurrentHub().configureScope((scope) => scope.setSpan(transaction));
+
+        const response = await imperativelyFetchUser();
+
+        if (response?.viewer?.__typename === 'Viewer' && response.viewer.user?.dbid) {
+          setAuthState({ type: 'LOGGED_IN', userId });
+          setLocallyLoggedInWalletAddress(address.toLowerCase());
+          _identify(userId);
+        }
+
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrInvalidToken'
+        ) {
+          pushToast(EXPIRED_SESSION_MESSAGE);
+        }
+
+        transaction.finish();
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [imperativelyFetchUser, setLocallyLoggedInWalletAddress, setLoggedOut]
+    [imperativelyFetchUser, pushToast, setLocallyLoggedInWalletAddress, setLoggedOut]
   );
 
   // this effect runs on mount to determine whether or not to display
