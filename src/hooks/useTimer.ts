@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 
-export default function useTimer(date: string) {
-  const currentTime = Date.now();
-  const mintDate = useMemo(() => new Date(date), [date]);
+export default function useTimer(date: string, currentTime?: string) {
+  const endDate = useMemo(() => new Date(date), [date]);
 
-  const [countDown, setCountDown] = useState(mintDate.getTime() - currentTime);
+  const now = useMemo(() => {
+    return currentTime ? new Date(currentTime) : new Date();
+  }, [currentTime]);
+
+  const [countDown, setCountDown] = useState(endDate.getTime() - now.getTime());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCountDown(mintDate.getTime() - Date.now());
+      setCountDown(endDate.getTime() - Date.now());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [countDown, mintDate]);
+  }, [countDown, endDate, now]);
 
   const days = Math.floor(countDown / (1000 * 60 * 60 * 24))
     .toString()
