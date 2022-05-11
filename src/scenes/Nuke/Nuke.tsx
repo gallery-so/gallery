@@ -16,17 +16,17 @@ function Nuke() {
   }, [handleLogout]);
 
   return (
-    <Page>
+    <StyledNuke>
       <BaseXL>Your local cache has been nuked</BaseXL>
       <Spacer height={32} />
       <GalleryLink to="/">
         <StyledButton text="Take me home" />
       </GalleryLink>
-    </Page>
+    </StyledNuke>
   );
 }
 
-const Page = styled.div`
+const StyledNuke = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
