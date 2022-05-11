@@ -12,13 +12,18 @@ import {
 } from 'react';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
 import { graphql } from 'relay-runtime';
-import { useLazyLoadQuery } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
 import { GLOBAL_NAVBAR_HEIGHT } from 'components/core/Page/constants';
 import useDebounce from 'hooks/useDebounce';
 import isTouchscreenDevice from 'utils/isTouchscreenDevice';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
+import PosterBanner from 'scenes/PosterPage/PosterBanner';
+import Banner from 'components/Banner/Banner';
+import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -38,6 +43,7 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 };
 
 type GlobalLayoutActions = {
+  setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
 };
 
@@ -213,11 +219,23 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [isNavbarVisible, wasNavbarVisible]
   );
 
+  const [isBannerVisible, setBannerVisible] = useState(false);
+
   const actions: GlobalLayoutActions = useMemo(
     () => ({
+      setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
     }),
     [handleFadeNavbarFromGalleryRoute]
+  );
+
+  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
+    graphql`
+      query GlobalLayoutContextQuery {
+        ...GlobalLayoutContextNavbarFragment
+      }
+    `,
+    {}
   );
 
   return (
@@ -226,7 +244,9 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     // the other hand, is rendered at `GalleryRoute`.
     <>
       <GlobalNavbarWithFadeEnabled
+        queryRef={query}
         isVisible={isNavbarVisible}
+        isBannerVisible={isBannerVisible}
         wasVisible={wasNavbarVisible}
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
@@ -242,25 +262,30 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 });
 
 type GlobalNavbarWithFadeEnabledProps = {
+  queryRef: GlobalLayoutContextNavbarFragment$key;
   isVisible: boolean;
+  isBannerVisible: boolean;
   wasVisible: boolean;
   fadeType: FadeTriggerType;
   handleFadeNavbarOnHover: (visible: boolean) => void;
 };
 
 function GlobalNavbarWithFadeEnabled({
+  queryRef,
   isVisible,
   wasVisible,
+  isBannerVisible,
   fadeType,
   handleFadeNavbarOnHover,
 }: GlobalNavbarWithFadeEnabledProps) {
-  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
+  const query = useFragment(
     graphql`
-      query GlobalLayoutContextQuery {
+      fragment GlobalLayoutContextNavbarFragment on Query {
         ...GlobalNavbarFragment
+        ...BannerFragment
       }
     `,
-    {}
+    queryRef
   );
 
   const transitionStyles = useMemo(() => {
@@ -307,15 +332,24 @@ function GlobalNavbarWithFadeEnabled({
   );
 
   return (
-    <StyledGlobalNavbarWithFadeEnabled
-      isVisible={isVisible}
-      transitionStyles={transitionStyles}
-      zIndex={zIndex}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <GlobalNavbar queryRef={query} />
-    </StyledGlobalNavbarWithFadeEnabled>
+    <>
+      <StyledGlobalNavbarWithFadeEnabled
+        isVisible={isVisible}
+        transitionStyles={transitionStyles}
+        zIndex={zIndex}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {isBannerVisible ? (
+          isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
+            <PosterBanner queryRef={query} />
+          ) : (
+            <Banner text="" queryRef={query} />
+          )
+        ) : null}
+        <GlobalNavbar queryRef={query} />
+      </StyledGlobalNavbarWithFadeEnabled>
+    </>
   );
 }
 

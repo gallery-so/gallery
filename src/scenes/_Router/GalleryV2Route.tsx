@@ -9,11 +9,17 @@ export type Props = {
   footer?: boolean;
 };
 
-export default function GalleryV2Route({ element, navbar = true, footer = true }: Props) {
+export default function GalleryV2Route({
+  element,
+  navbar = true,
+  footer = true,
+  banner = true,
+}: Props) {
   const [mounted, setMounted] = useState(false);
-  const { setNavbarVisible } = useGlobalLayoutActions();
+  const { setBannerVisible, setNavbarVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
+    setBannerVisible(banner);
     setNavbarVisible(navbar);
     setMounted(true);
     // we only want these properties to be set on mount

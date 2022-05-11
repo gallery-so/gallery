@@ -5,10 +5,10 @@ import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { GalleryRouteFragment$data } from '__generated__/GalleryRouteFragment.graphql';
+import { BannerFragment$key } from '__generated__/BannerFragment.graphql';
 
 type Props = {
-  queryRef: GalleryRouteFragment$data;
+  queryRef: BannerFragment$key;
 };
 
 export default function PosterBanner({ queryRef }: Props) {
