@@ -13,6 +13,7 @@ import colors from '../colors';
 
 type Props = {
   mainText?: string;
+  shouldCloseOnMenuItemClick?: boolean;
   children?: ReactNode;
 };
 
@@ -22,7 +23,7 @@ const refContainsEventTarget = (ref: RefObject<HTMLDivElement>, event: MouseEven
 const dropdownMenuWrapperStyle: CSSProperties = { position: 'relative' };
 const dropdownButtonWrapperStyle: CSSProperties = { display: 'flex' };
 
-function Dropdown({ mainText, children }: Props) {
+function Dropdown({ mainText, shouldCloseOnMenuItemClick = false, children }: Props) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const handleDropdownButtonClick = useCallback(() => {
@@ -32,14 +33,24 @@ function Dropdown({ mainText, children }: Props) {
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLDivElement>(null);
 
-  const handleDocumentClick = useCallback((event: MouseEvent) => {
-    const clickedOutsideMenu = !refContainsEventTarget(dropdownMenuRef, event);
-    const clickedOnButton = refContainsEventTarget(dropdownButtonRef, event);
+  const handleDocumentClick = useCallback(
+    (event: MouseEvent) => {
+      const clickedOutsideMenu = !refContainsEventTarget(dropdownMenuRef, event);
+      const clickedOnButton = refContainsEventTarget(dropdownButtonRef, event);
 
-    if (clickedOutsideMenu && !clickedOnButton) {
-      setIsDropdownVisible(false);
-    }
-  }, []);
+      if (clickedOutsideMenu && !clickedOnButton) {
+        setIsDropdownVisible(false);
+      }
+      if (!clickedOutsideMenu && shouldCloseOnMenuItemClick) {
+        // without this timeout, the menu would immediately close and prevent the
+        // underlying child element's `onClick` from triggering
+        setTimeout(() => {
+          setIsDropdownVisible(false);
+        }, 10);
+      }
+    },
+    [shouldCloseOnMenuItemClick]
+  );
 
   useEffect(() => {
     // We only need to add document listener if dropdown is open

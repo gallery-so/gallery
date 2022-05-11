@@ -56,7 +56,7 @@ function LoggedInNav({ queryRef }: Props) {
   return query.viewer?.__typename === 'Viewer' && query.viewer.user?.username ? (
     <>
       <NavElement>
-        <Dropdown mainText="Edit Profile">
+        <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
           <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
           <Spacer height={12} />
           <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} />
