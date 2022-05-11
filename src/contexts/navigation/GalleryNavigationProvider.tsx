@@ -21,12 +21,13 @@ type Props = {
   children: ReactNode;
 };
 
+const SCROLL_DELAY_TIME_MS = 80;
 const SCROLL_TRIGGER_TIME_MS =
   FADE_TRANSITION_TIME_MS +
   // this adds an arbirarily small timeframe to ensure the fade transition defined in
   // `FadeTransitioner.tsx` has completed; without this, in rare cases, the user may
   // see a flash of scrolling while transitioning
-  20;
+  +SCROLL_DELAY_TIME_MS;
 
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
