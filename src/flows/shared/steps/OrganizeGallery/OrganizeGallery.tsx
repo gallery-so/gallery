@@ -18,9 +18,8 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
-
 import useKeyDown from 'hooks/useKeyDown';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/constants';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type ConfigProps = {
   wizardId: string;

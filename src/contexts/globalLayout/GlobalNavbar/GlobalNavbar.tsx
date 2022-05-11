@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { GLOBAL_NAVBAR_HEIGHT } from '../constants';
 import LoggedOutNav from './LoggedOutNav';
 import LoggedInNav from './LoggedInNav';
 import { graphql, useFragment } from 'react-relay';
@@ -37,6 +36,8 @@ function GlobalNavbar({ queryRef }: Props) {
     </StyledGlobalNavbar>
   );
 }
+
+export const GLOBAL_NAVBAR_HEIGHT = 72;
 
 const StyledGlobalNavbar = styled.div`
   width: 100%;

@@ -10,8 +10,8 @@ import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/constants';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 
 const MAX_CHAR_COUNT = 1200;
 
