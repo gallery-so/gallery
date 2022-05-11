@@ -23,6 +23,11 @@ import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import GlobalNavbar, { GLOBAL_NAVBAR_HEIGHT } from './GlobalNavbar/GlobalNavbar';
 import Banner from './GlobalBanner/GlobalBanner';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import useThrottle from 'hooks/useThrottle';
+import {
+  FADE_TRANSITION_TIME_MS,
+  NAVIGATION_TRANSITION_TIME_MS,
+} from 'components/FadeTransitioner/FadeTransitioner';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -292,18 +297,18 @@ function GlobalNavbarWithFadeEnabled({
     // FADING OUT
     // always fade out navbar without delay
     if (wasVisible) {
-      return 'opacity 300ms ease-in-out;';
+      return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out;`;
     }
 
     // FADING IN
     if (!wasVisible) {
       // if scrolling, fade-in navbar without delay
       if (fadeType === 'scroll' || fadeType === 'hover') {
-        return 'opacity 300ms ease-in-out';
+        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out`;
       }
       // if moving between routes, fade-in navbar with delay
       if (fadeType === 'route') {
-        return 'opacity 300ms ease-in-out 700ms';
+        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${NAVIGATION_TRANSITION_TIME_MS}ms`;
       }
     }
   }, [wasVisible, fadeType]);
