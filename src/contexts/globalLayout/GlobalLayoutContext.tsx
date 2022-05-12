@@ -50,6 +50,7 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 type GlobalLayoutActions = {
   setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
+  setIsPageInSuspenseState: (b: boolean) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -68,28 +69,6 @@ type Props = { children: ReactNode };
 // the action that causes the fade
 type FadeTriggerType = 'route' | 'scroll' | 'hover';
 
-function getFormattedDate() {
-  let date = new Date();
-
-  let month: any = date.getMonth() + 1;
-  let day: any = date.getDate();
-  let hour: any = date.getHours();
-  let min: any = date.getMinutes();
-  let sec: any = date.getSeconds();
-  let ms: any = date.getMilliseconds();
-
-  month = (month < 10 ? '0' : '') + month;
-  day = (day < 10 ? '0' : '') + day;
-  hour = (hour < 10 ? '0' : '') + hour;
-  min = (min < 10 ? '0' : '') + min;
-  sec = (sec < 10 ? '0' : '') + sec;
-  // ms = (ms < 10 ? '0' : '') + ms;
-
-  let str = min + ':' + sec + ':' + ms;
-
-  return str;
-}
-
 const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
     graphql`
@@ -100,11 +79,22 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     {}
   );
 
+  const [isPageInSuspenseState, setIsPageInSuspenseState] = useState(false);
+  // storing this in ref to prevent triggering unnecessary re-renders / side-effects
+  const isPageInSuspenseRef = useRef(false);
+
   const [isBannerVisible, setBannerVisible] = useState(false);
 
   const [isNavbarVisible, setNavbarVisible] = useState(false);
-  const debouncedNavbarVisible = useDebounce(isNavbarVisible, 300);
-  // const debouncedNavbarVisible = useThrottle(isNavbarVisible, 300);
+  const debounced = useDebounce(isNavbarVisible, 300);
+  const throttled = useThrottle(isNavbarVisible, 300);
+  const debouncedNavbarVisible = useMemo(() => {
+    if (isPageInSuspenseState && isNavbarVisible) {
+      return debounced;
+    }
+    return throttled;
+  }, [isNavbarVisible, isPageInSuspenseState, throttled, debounced]);
+
   const wasNavbarVisible = usePrevious(debouncedNavbarVisible) ?? false;
 
   // the action that triggered the fade
@@ -114,8 +104,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   // should not reveal the navbar
   const forcedHiddenByRouteRef = useRef(false);
 
-  // storing this in ref to prevent triggering unnecessary re-renders / side-effects
-  const isPageInSuspenseRef = useRef(false);
   const isTouchscreen = useRef(isTouchscreenDevice());
 
   /**
@@ -126,7 +114,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const lastFadeTriggeredByRouteTimestampRef = useRef(0);
 
   const fadeNavbarOnScroll = useCallback(() => {
-    console.log(getFormattedDate(), 'top-level-scroll');
     // handle override. the route gets ultimate power over whether the navbar is displayed
     if (forcedHiddenByRouteRef.current) {
       return;
@@ -139,13 +126,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     if (isPageInSuspenseRef.current) {
       return;
     }
-    // console.log(getFormattedDate(), 'isPageInSuspenseRef on scroll', isPageInSuspenseRef.current);
-    console.log(
-      getFormattedDate(),
-      '[setNavbarVisible] SCROLL',
-      window.scrollY,
-      window.scrollY <= GLOBAL_NAVBAR_HEIGHT
-    );
     setNavbarVisible(window.scrollY <= GLOBAL_NAVBAR_HEIGHT);
     setFadeType('scroll');
   }, []);
@@ -163,12 +143,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
     forcedHiddenByRouteRef.current = !visible;
     lastFadeTriggeredByRouteTimestampRef.current = Date.now();
-
-    // console.log(lastFadeTriggeredByRouteTimestampRef.current);
-    console.log(getFormattedDate(), '[setNavbarVisible] ROUTE', visible);
   }, []);
-
-  console.log(getFormattedDate(), { isNavbarVisible, wasNavbarVisible, debouncedNavbarVisible });
 
   const handleFadeNavbarOnHover = useCallback((visible: boolean) => {
     // prevent navbar from being accessible via touch-based hover; otherwise, users trying
@@ -192,7 +167,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     if (isPageInSuspenseRef.current) {
       return;
     }
-    console.log(getFormattedDate(), '[setNavbarVisible] HOVER', visible);
 
     setNavbarVisible(visible);
     setFadeType('hover');
@@ -207,6 +181,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     () => ({
       setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
+      setIsPageInSuspenseState,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
@@ -276,7 +251,11 @@ function GlobalNavbarWithFadeEnabled({
       }
       // if moving between routes, fade-in navbar with delay
       if (fadeType === 'route') {
+        // return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out`;
         return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${NAVIGATION_TRANSITION_TIME_MS}ms`;
+        // return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${
+        //   NAVIGATION_TRANSITION_TIME_MS + 300
+        // }ms`;
       }
     }
   }, [wasVisible, fadeType]);
