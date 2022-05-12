@@ -16,32 +16,32 @@ export default function Bold({
     setUserDragged(false);
 
     const textArea = textAreaRef.current;
-    if (textArea) {
-      const [start, end] = selectedRange;
-      const selectedText = textArea.value.substring(start, end);
+    if (!textArea) return;
 
-      // If user is inbetween two brackets, they probably just clicked the link button. Do nothing
-      if (textArea.value.substring(start - 1, end + 1) == '[]') {
-        return;
-      }
-      if (selectedText.length > 0) {
-        // If the selected text is not already a link, add it
-        const newText =
-          textArea.value.substring(0, start) +
-          `[${selectedText}](https://)` +
-          textArea.value.substring(end);
-        textArea.value = newText;
-        setSelectedRange([start + 11 + selectedText.length, start + 11 + selectedText.length]); // Link [0, 4] -> [Link](https://) (end)
-        return;
-      }
-      if (!selectedText) {
-        // If there is no selected text, just add a link where the cursor is and place the cursor in middle
-        const newText =
-          textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
-        textArea.value = newText;
-        setSelectedRange([start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
-        return;
-      }
+    const [start, end] = selectedRange;
+    const selectedText = textArea.value.substring(start, end);
+
+    // If user is inbetween two brackets, they probably just clicked the link button. Do nothing
+    if (textArea.value.substring(start - 1, end + 1) == '[]') {
+      return;
+    }
+    if (selectedText.length > 0) {
+      // If the selected text is not already a link, add it
+      const newText =
+        textArea.value.substring(0, start) +
+        `[${selectedText}](https://)` +
+        textArea.value.substring(end);
+      textArea.value = newText;
+      setSelectedRange([start + 11 + selectedText.length, start + 11 + selectedText.length]); // Link [0, 4] -> [Link](https://) (end)
+      return;
+    }
+    if (!selectedText) {
+      // If there is no selected text, just add a link where the cursor is and place the cursor in middle
+      const newText =
+        textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
+      textArea.value = newText;
+      setSelectedRange([start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
+      return;
     }
   }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
 

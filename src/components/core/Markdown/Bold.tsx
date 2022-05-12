@@ -16,49 +16,47 @@ export default function Bold({
     setUserDragged(false);
 
     const textArea = textAreaRef.current;
-    if (textArea) {
-      const [start, end] = selectedRange;
-      const selectedText = textArea.value.substring(start, end);
-      const selectedTextWithSurrounding = textArea.value.substring(start - 2, end + 2);
+    if (!textArea) return;
 
-      const selectedTextIsBold = selectedText.startsWith('**') && selectedText.endsWith('**');
-      const selectedTextIsSurroundedBold =
-        selectedTextWithSurrounding.startsWith('**') && selectedTextWithSurrounding.endsWith('**');
+    const [start, end] = selectedRange;
+    const selectedText = textArea.value.substring(start, end);
+    const selectedTextWithSurrounding = textArea.value.substring(start - 2, end + 2);
 
-      // If the selected text includes any bold tags, remove them
-      if (selectedTextIsBold) {
-        const newText = textArea.value.replace(selectedText, selectedText.slice(2, -2));
-        textArea.value = newText;
-        setSelectedRange([start, end - 4]); // **Bold** ([0, 8]) -> Bold ([0, 4])
-        return;
-      }
-      if (selectedTextIsSurroundedBold) {
-        const newText = textArea.value.replace(
-          selectedTextWithSurrounding,
-          selectedTextWithSurrounding.slice(2, -2)
-        );
-        textArea.value = newText;
-        setSelectedRange([start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
-        return;
-      }
-      if (selectedText.length > 0) {
-        // If the selected text is not already bold, add it
-        const newText =
-          textArea.value.substring(0, start) +
-          `**${selectedText}**` +
-          textArea.value.substring(end);
-        textArea.value = newText;
-        setSelectedRange([start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
-        return;
-      }
-      if (!selectedText) {
-        // If there is no selected text, just add four asterisks where the cursor is and place the cursor in middle
-        const newText = textArea.value.substring(0, start) + '****' + textArea.value.substring(end);
+    const selectedTextIsBold = selectedText.startsWith('**') && selectedText.endsWith('**');
+    const selectedTextIsSurroundedBold =
+      selectedTextWithSurrounding.startsWith('**') && selectedTextWithSurrounding.endsWith('**');
 
-        textArea.value = newText;
-        setSelectedRange([start + 2, start + 2]); // Bold ([0, 0]) -> **Bold** ([2, 2])
-        return;
-      }
+    // If the selected text includes any bold tags, remove them
+    if (selectedTextIsBold) {
+      const newText = textArea.value.replace(selectedText, selectedText.slice(2, -2));
+      textArea.value = newText;
+      setSelectedRange([start, end - 4]); // **Bold** ([0, 8]) -> Bold ([0, 4])
+      return;
+    }
+    if (selectedTextIsSurroundedBold) {
+      const newText = textArea.value.replace(
+        selectedTextWithSurrounding,
+        selectedTextWithSurrounding.slice(2, -2)
+      );
+      textArea.value = newText;
+      setSelectedRange([start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
+      return;
+    }
+    if (selectedText.length > 0) {
+      // If the selected text is not already bold, add it
+      const newText =
+        textArea.value.substring(0, start) + `**${selectedText}**` + textArea.value.substring(end);
+      textArea.value = newText;
+      setSelectedRange([start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
+      return;
+    }
+    if (!selectedText) {
+      // If there is no selected text, just add four asterisks where the cursor is and place the cursor in middle
+      const newText = textArea.value.substring(0, start) + '****' + textArea.value.substring(end);
+
+      textArea.value = newText;
+      setSelectedRange([start + 2, start + 2]); // Bold ([0, 0]) -> **Bold** ([2, 2])
+      return;
     }
   }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
 
