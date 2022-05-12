@@ -23,14 +23,12 @@ export default function Bold({
 
     let allLines = textArea.value.split('\n');
 
-    // Map over each line and store in an array the number of characters in the string up until that point
-    const lineStartIndices = allLines.map((line, index) => {
-      // if (index === 0) {
-      //   return 0;
-      // }
-      // Return the sum of each line's text length up until the current line
-      return allLines.slice(0, index).reduce((acc, curr) => acc + curr.length + 1, 0);
-    });
+    // Map over each line and store in an array the number of characters in the total string up until that point
+    const lineStartIndices = allLines.map((line, index) =>
+      allLines.slice(0, index).reduce((acc, curr) => acc + curr.length + 1, 0)
+    );
+
+    console.log(lineStartIndices);
 
     // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
     const allLinesWithSelected = allLines.map((line, index) => {

@@ -21,12 +21,15 @@ export default function Bold({
     const [start, end] = selectedRange;
     const selectedText = textArea.value.substring(start, end);
 
-    // If user is inbetween two brackets, they probably just clicked the link button. Do nothing
-    if (textArea.value.substring(start - 1, end + 1) == '[]') {
+    // If user is inbetween two brackets, or at the end of (https://), they probably just clicked the link button. Do nothing
+    if (
+      textArea.value.substring(start - 1, end + 1) == '[]' ||
+      textArea.value.substring(start - 1, end + 1) == '/)'
+    ) {
       return;
     }
     if (selectedText.length > 0) {
-      // If the selected text is not already a link, add it
+      // If the user has selected text, add a link around it
       const newText =
         textArea.value.substring(0, start) +
         `[${selectedText}](https://)` +
