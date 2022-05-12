@@ -1,4 +1,7 @@
-import { useGlobalLayoutState } from 'contexts/globalLayout/GlobalLayoutContext';
+import {
+  useGlobalLayoutActions,
+  useGlobalLayoutState,
+} from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import CapitalGLoader from './CapitalGLoader';
@@ -27,13 +30,16 @@ const StyledFullPageLoader = styled.div`
  */
 export function FullPageLoaderWithLayoutTransitionSupport() {
   const { isPageInSuspenseRef, isNavbarVisible, wasNavbarVisible } = useGlobalLayoutState();
+  const { setIsPageInSuspenseState } = useGlobalLayoutActions();
 
   useEffect(() => {
     isPageInSuspenseRef.current = true;
+    setIsPageInSuspenseState(true);
     return () => {
       isPageInSuspenseRef.current = false;
+      setIsPageInSuspenseState(false);
     };
-  }, [isPageInSuspenseRef]);
+  }, [isPageInSuspenseRef, setIsPageInSuspenseState]);
 
   return (
     <StyledFullPageLoaderWithLayoutTransitionSupport
