@@ -28,24 +28,29 @@ export default function Bold({
 
     // If the selected text includes any bold tags, remove them
     if (selectedTextIsBold) {
-      const newText = textArea.value.replace(selectedText, selectedText.slice(2, -2));
+      const newText =
+        textArea.value.substring(0, start) +
+        selectedText.slice(2, -2) +
+        textArea.value.substring(end);
       textArea.value = newText;
       setSelectedRange([start, end - 4]); // **Bold** ([0, 8]) -> Bold ([0, 4])
       return;
     }
     if (selectedTextIsSurroundedBold) {
-      const newText = textArea.value.replace(
-        selectedTextWithSurrounding,
-        selectedTextWithSurrounding.slice(2, -2)
-      );
+      const newText =
+        textArea.value.substring(0, start) +
+        selectedTextWithSurrounding.slice(2, -2) +
+        textArea.value.substring(end);
       textArea.value = newText;
       setSelectedRange([start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
       return;
     }
     if (selectedText.length > 0) {
       // If the selected text is not already bold, add it
-      const newText =
-        textArea.value.substring(0, start) + `**${selectedText}**` + textArea.value.substring(end);
+      const newText = `${textArea.value.substring(
+        0,
+        start
+      )} **${selectedText}** ${textArea.value.substring(end)}`;
       textArea.value = newText;
       setSelectedRange([start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
       return;
