@@ -1,4 +1,4 @@
-import TokenHolderList from '../../components/TokenHolderList/TokenHolderList';
+import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListTierFragment$key } from '__generated__/MemberListTierFragment.graphql';

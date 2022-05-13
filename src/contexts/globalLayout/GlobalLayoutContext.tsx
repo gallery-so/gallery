@@ -13,7 +13,6 @@ import {
 } from 'react';
 import { graphql } from 'relay-runtime';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
 import useDebounce from 'hooks/useDebounce';
@@ -23,12 +22,13 @@ import { FeatureFlag } from 'components/core/enums';
 import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import GlobalNavbar, { GLOBAL_NAVBAR_HEIGHT } from './GlobalNavbar/GlobalNavbar';
 import Banner from './GlobalBanner/GlobalBanner';
-import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 import useThrottle from 'hooks/useThrottle';
 import {
   FADE_TRANSITION_TIME_MS,
   NAVIGATION_TRANSITION_TIME_MS,
 } from 'components/FadeTransitioner/FadeTransitioner';
+import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
+import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -101,7 +101,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
    * - it allows us to disable visibility of the navbar against the loading fallback
    *
    * can't we just address the above with z-index?
-   * - no, because when both the loading fallback and the navbar have between 0-1 opacity,
+   * - no, because when both the loading fallback and the navbar have between 0~1 opacity,
    *   both elements are displayed on the screen.
    */
   const [isPageInSuspenseState, setIsPageInSuspenseState] = useState(false);

@@ -3,7 +3,7 @@ import { TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
-import MemberListFilter from '../../components/TokenHolderList/TokenHolderListFilter';
+import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';

@@ -123,7 +123,6 @@ type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  // console.log('auth provider');
   // we store what wallet they've logged in with on metamask / etc.,
   // which is necessary for the Manage Wallets view
   const [, setLocallyLoggedInWalletAddress] = usePersistedState(
