@@ -19,6 +19,7 @@ export default function Bold({
     if (!textArea) return;
 
     const [start, end] = selectedRange;
+
     const selectedText = textArea.value.substring(start, end);
     const selectedTextWithSurrounding = textArea.value.substring(start - 2, end + 2);
 
@@ -38,9 +39,9 @@ export default function Bold({
     }
     if (selectedTextIsSurroundedBold) {
       const newText =
-        textArea.value.substring(0, start) +
+        textArea.value.substring(0, start - 2) +
         selectedTextWithSurrounding.slice(2, -2) +
-        textArea.value.substring(end);
+        textArea.value.substring(end + 2);
       textArea.value = newText;
       setSelectedRange([start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
       return;
@@ -50,7 +51,7 @@ export default function Bold({
       const newText = `${textArea.value.substring(
         0,
         start
-      )} **${selectedText}** ${textArea.value.substring(end)}`;
+      )}**${selectedText}**${textArea.value.substring(end)}`;
       textArea.value = newText;
       setSelectedRange([start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
       return;

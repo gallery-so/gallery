@@ -46,8 +46,6 @@ export default function Bold({
     const selectedLines = allLinesWithSelected.filter((line) => line.isSelected);
     const selectedTextIsList = selectedLines.every((line) => line.isList);
 
-    console.log(allLinesWithSelected);
-
     // SINGLE LINE: User has either selected one line or is on line but has not selected text
     // If there is no selectedText but the user's cursor is on a line, get the current lines first character
     if (!selectedText) {
@@ -80,7 +78,7 @@ export default function Bold({
         });
         const newText = newLines.join('\n');
         textArea.value = newText;
-        setSelectedRange([start, end - selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4])
+        setSelectedRange([start - 2, end + selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4])
       } else {
         const newLines = allLinesWithSelected.map((line) => {
           if (line.isSelected) {
@@ -91,7 +89,7 @@ export default function Bold({
         const newText = newLines.join('\n');
         textArea.value = newText;
 
-        setSelectedRange([start, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
+        setSelectedRange([start + 2, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
       }
     }
   }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);

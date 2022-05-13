@@ -48,12 +48,14 @@ export default function MarkdownShortcuts({
         setSelectedRange([textArea.selectionStart, textArea.selectionEnd]);
       };
 
+      onSelectionChange(); // Trigger anytime textAreaRef.current.value changes
+
       document.addEventListener('selectionchange', onSelectionChange);
       return () => {
         document.removeEventListener('selectionchange', onSelectionChange);
       };
     }
-  }, [textAreaRef]);
+  }, [textAreaRef, textAreaRef?.current?.value]);
 
   // Whenever selectedRange updates, set the textarea.current.selectionStart and selectionEnd to match
   // This means that we can apply markdown to selected text, but preserve selection afterwards
