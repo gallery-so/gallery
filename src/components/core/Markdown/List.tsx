@@ -28,8 +28,6 @@ export default function Bold({
       allLines.slice(0, index).reduce((acc, curr) => acc + curr.length + 1, 0)
     );
 
-    console.log(lineStartIndices);
-
     // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
     const allLinesWithSelected = allLines.map((line, index) => {
       const lineStart = lineStartIndices[index];
@@ -47,6 +45,8 @@ export default function Bold({
 
     const selectedLines = allLinesWithSelected.filter((line) => line.isSelected);
     const selectedTextIsList = selectedLines.every((line) => line.isList);
+
+    console.log(allLinesWithSelected);
 
     // SINGLE LINE: User has either selected one line or is on line but has not selected text
     // If there is no selectedText but the user's cursor is on a line, get the current lines first character
@@ -76,7 +76,7 @@ export default function Bold({
     if (selectedText) {
       if (selectedTextIsList) {
         const newLines = allLinesWithSelected.map((line) => {
-          return line.isList ? line.text.slice(2) : line.text;
+          return line.isList && line.isSelected ? line.text.slice(2) : line.text;
         });
         const newText = newLines.join('\n');
         textArea.value = newText;
