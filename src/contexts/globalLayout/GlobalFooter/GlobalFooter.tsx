@@ -13,7 +13,7 @@ import {
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
-import NavLink from '../../../components/core/NavLink/NavLink';
+import NavLink from 'components/core/NavLink/NavLink';
 
 type GlobalFooterProps = { isFixed?: boolean };
 

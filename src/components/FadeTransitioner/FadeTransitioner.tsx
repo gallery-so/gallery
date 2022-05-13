@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-// NOTE: if you change these value, make sure to update `transition.css`
+// NOTE: if you change these values, make sure to update `transition.css`
 export const FADE_TRANSITION_TIME_MS = 300;
 export const NAVIGATION_TRANSITION_TIME_MS = 700;
 
@@ -22,11 +22,6 @@ const childNodeStyles = {
   height: '100%',
 };
 
-const transitionGroupStyles = {
-  // NOTE: this doesn't seem to do anything. in the future we could use this to only transition
-  // the inner content of a page, while leaving the navbar + footer visible.
-};
-
 /**
  * Fades child elements in and out as they mount/unmount.
  *
@@ -35,7 +30,7 @@ const transitionGroupStyles = {
  */
 function FadeTransitioner({ locationKey, children }: Props) {
   return (
-    <TransitionGroup style={transitionGroupStyles}>
+    <TransitionGroup>
       <CSSTransition key={locationKey} timeout={timeoutConfig} classNames="fade">
         {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
             to remain uninterrupted upon navigation */}

@@ -33,6 +33,7 @@ export function FullPageLoaderWithLayoutTransitionSupport() {
   const { setIsPageInSuspenseState } = useGlobalLayoutActions();
 
   useEffect(() => {
+    // why we use both React State and Ref is explained in `GlobalLayoutContext.tsx`
     isPageInSuspenseRef.current = true;
     setIsPageInSuspenseState(true);
     return () => {
