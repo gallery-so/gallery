@@ -30,9 +30,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref
   ) => {
-    const _ref = useRef<HTMLTextAreaElement>(null);
-    const textAreaRef = ref || _ref;
-
     return (
       <>
         <StyledTextArea
@@ -47,12 +44,15 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           autoCapitalize="off"
           spellCheck="false"
           textAreaHeight={textAreaHeight}
-          ref={textAreaRef}
+          ref={ref}
           hasPadding={hasPadding}
         />
         {hasMarkdown && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
-            <MarkdownShortcuts textAreaRef={textAreaRef} onChange={onChange} />
+            <MarkdownShortcuts
+              textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>}
+              onChange={onChange}
+            />
           </StyledMarkdownContainer>
         )}
       </>

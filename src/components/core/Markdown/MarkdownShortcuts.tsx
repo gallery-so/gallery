@@ -12,7 +12,7 @@ export default function MarkdownShortcuts({
   // textAreaRef:
   //   | ((instance: HTMLTextAreaElement) => void)
   //   | React.MutableRefObject<HTMLTextAreaElement | null>;
-  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement>;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 }) {
   // Trigger onChange whenever textAreaRef.current changes
