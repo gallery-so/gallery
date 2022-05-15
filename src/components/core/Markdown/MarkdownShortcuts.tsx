@@ -9,13 +9,10 @@ export default function MarkdownShortcuts({
   textAreaRef,
   onChange, // The onChange from the TextArea component. This ensures that we track the same event handlers (e.g. a collector's note change) via the addition of just markdown
 }: {
-  // textAreaRef:
-  //   | ((instance: HTMLTextAreaElement) => void)
-  //   | React.MutableRefObject<HTMLTextAreaElement | null>;
   textAreaRef: React.MutableRefObject<HTMLTextAreaElement>;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 }) {
-  // Trigger onChange whenever textAreaRef.current changes
+  // This enables us to run onChange even when adding markdown, which does not trigger a textarea onChange
   useEffect(() => {
     if (textAreaRef.current) {
       const event = new CustomEvent('change', {
@@ -24,9 +21,7 @@ export default function MarkdownShortcuts({
       Object.defineProperty(event, 'target', {
         value: textAreaRef.current,
       });
-      // textAreaRef.current.dispatchEvent(event);
-      // onChange(event as React.ChangeEvent<HTMLTextAreaElement>);
-      onChange(event);
+      onChange(event as unknown as React.ChangeEvent<HTMLTextAreaElement>);
     }
   }, [textAreaRef?.current?.value, onChange, textAreaRef]);
 
