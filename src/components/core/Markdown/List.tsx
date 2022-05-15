@@ -1,7 +1,7 @@
 import IconContainer from './IconContainer';
 import { useCallback } from 'react';
 
-export default function Bold({
+export default function List({
   selectedRange,
   textAreaRef,
   setSelectedRange,
