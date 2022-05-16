@@ -5,12 +5,10 @@ import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 export default function Bold({
   selectedRange,
   textAreaRef,
-  setSelectedRange,
   setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  setSelectedRange: (value: number[] | ((prevVar: number[]) => number[])) => void;
   setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
@@ -35,19 +33,20 @@ export default function Bold({
         textArea.value.substring(0, start) +
         `[${selectedText}](https://)` +
         textArea.value.substring(end);
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start + 11 + selectedText.length, start + 11 + selectedText.length]); // Link [0, 4] -> [Link](https://) (end)
+      setValueAndTriggerOnChange(textArea, newText, [
+        start + 11 + selectedText.length,
+        start + 11 + selectedText.length,
+      ]); // Link [0, 4] -> [Link](https://) (end)
       return;
     }
     if (!selectedText) {
       // If there is no selected text, just add a link where the cursor is and place the cursor in middle
       const newText =
         textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
+      setValueAndTriggerOnChange(textArea, newText, [start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
       return;
     }
-  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
+  }, [textAreaRef, selectedRange, setUserDragged]);
 
   return (
     <IconContainer

@@ -5,12 +5,10 @@ import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 export default function Bold({
   selectedRange,
   textAreaRef,
-  setSelectedRange,
   setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  setSelectedRange: (value: number[] | ((prevVar: number[]) => number[])) => void;
   setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
@@ -34,8 +32,7 @@ export default function Bold({
         textArea.value.substring(0, start) +
         selectedText.slice(2, -2) +
         textArea.value.substring(end);
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start, end - 4]); // **Bold** ([0, 8]) -> Bold ([0, 4])
+      setValueAndTriggerOnChange(textArea, newText, [start, end - 4]); // **Bold** ([0, 8]) -> Bold ([0, 4])
       return;
     }
     if (selectedTextIsSurroundedBold) {
@@ -43,8 +40,7 @@ export default function Bold({
         textArea.value.substring(0, start - 2) +
         selectedTextWithSurrounding.slice(2, -2) +
         textArea.value.substring(end + 2);
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
+      setValueAndTriggerOnChange(textArea, newText, [start - 2, end - 2]); // **Bold** ([2, 6]) -> Bold ([0, 4])
       return;
     }
     if (selectedText.length > 0) {
@@ -53,19 +49,17 @@ export default function Bold({
         0,
         start
       )}**${selectedText}**${textArea.value.substring(end)}`;
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
+      setValueAndTriggerOnChange(textArea, newText, [start + 2, start + 2 + selectedText.length]); // Bold ([0, 4]) -> **Bold** ([4, 8])
       return;
     }
     if (!selectedText) {
       // If there is no selected text, just add four asterisks where the cursor is and place the cursor in middle
       const newText = textArea.value.substring(0, start) + '****' + textArea.value.substring(end);
 
-      setValueAndTriggerOnChange(textArea, newText);
-      setSelectedRange([start + 2, start + 2]); // Bold ([0, 0]) -> **Bold** ([2, 2])
+      setValueAndTriggerOnChange(textArea, newText, [start + 2, start + 2]); // Bold ([0, 0]) -> **Bold** ([2, 2])
       return;
     }
-  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
+  }, [textAreaRef, selectedRange, setUserDragged]);
 
   return (
     <IconContainer

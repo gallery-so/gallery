@@ -7,7 +7,11 @@ import Link from './Link';
 import List from './List';
 
 // Use the TextArea element's native setter and dispatch an input event to trigger the onChange callback
-export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newValue: string) {
+export function setValueAndTriggerOnChange(
+  textArea: HTMLTextAreaElement,
+  newValue: string,
+  selectionRange: [number, number]
+) {
   var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
     HTMLTextAreaElement.prototype,
     'value'
@@ -22,6 +26,9 @@ export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newVal
 
   nativeTextAreaValueSetter.call(textArea, newValue);
   textArea.dispatchEvent(new Event('input', { bubbles: true }));
+
+  textArea.selectionStart = selectionRange[0];
+  textArea.selectionEnd = selectionRange[1];
 }
 
 type Props = {
@@ -75,19 +82,16 @@ export default function MarkdownShortcuts({ textAreaRef }: Props) {
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
-        setSelectedRange={setSelectedRange}
         setUserDragged={setUserDragged}
       />
       <List
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
-        setSelectedRange={setSelectedRange}
         setUserDragged={setUserDragged}
       />
       <Link
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
-        setSelectedRange={setSelectedRange}
         setUserDragged={setUserDragged}
       />
     </StyledMarkdownShortcutsContainer>

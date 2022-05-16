@@ -5,12 +5,10 @@ import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 export default function List({
   selectedRange,
   textAreaRef,
-  setSelectedRange,
   setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  setSelectedRange: (value: number[] | ((prevVar: number[]) => number[])) => void;
   setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
@@ -56,16 +54,12 @@ export default function List({
       if (currentLine.startsWith('* ')) {
         allLines[currentLineIndex] = allLines[currentLineIndex].slice(2);
         const newText = allLines.join('\n');
-        setValueAndTriggerOnChange(textArea, newText);
-
-        setSelectedRange([start - 2, end - 2]); // * [0, 2] -> [0, 0]
+        setValueAndTriggerOnChange(textArea, newText, [start - 2, end - 2]); // * [0, 2] -> [0, 0]
       } else {
         // Detect the current lines index, and add the * to the beginning of the line
         allLines[currentLineIndex] = `* ${allLines[currentLineIndex]}`;
         const newText = allLines.join('\n');
-        setValueAndTriggerOnChange(textArea, newText);
-
-        setSelectedRange([start + 2, end + 2]); // Test [0, 3] -> * Test [0, 5]
+        setValueAndTriggerOnChange(textArea, newText, [start + 2, end + 2]); // Test [0, 3] -> * Test [0, 5]
       }
       return;
     }
@@ -78,8 +72,7 @@ export default function List({
           return line.isList && line.isSelected ? line.text.slice(2) : line.text;
         });
         const newText = newLines.join('\n');
-        setValueAndTriggerOnChange(textArea, newText);
-        setSelectedRange([start - 2, end + selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4])
+        setValueAndTriggerOnChange(textArea, newText, [start - 2, end + selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4]);
       } else {
         const newLines = allLinesWithSelected.map((line) => {
           if (line.isSelected) {
@@ -88,12 +81,10 @@ export default function List({
           return line.text;
         });
         const newText = newLines.join('\n');
-        setValueAndTriggerOnChange(textArea, newText);
-
-        setSelectedRange([start + 2, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
+        setValueAndTriggerOnChange(textArea, newText, [start + 2, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
       }
     }
-  }, [textAreaRef, selectedRange, setSelectedRange, setUserDragged]);
+  }, [textAreaRef, selectedRange, setUserDragged]);
 
   return (
     <IconContainer
