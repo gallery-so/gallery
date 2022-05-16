@@ -12,7 +12,7 @@ type TextAreaProps = {
   defaultValue?: string;
   autoFocus?: boolean;
   textAreaHeight?: string;
-  hasMarkdown?: boolean;
+  showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
 };
 
@@ -25,7 +25,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       defaultValue,
       autoFocus = false,
       textAreaHeight,
-      hasMarkdown = false,
+      showMarkdownShortcuts = false,
       hasPadding = false,
     },
     ref
@@ -47,7 +47,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           hasPadding={hasPadding}
         />
-        {hasMarkdown && (
+        {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
             <MarkdownShortcuts textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>} />
           </StyledMarkdownContainer>
