@@ -71,6 +71,7 @@ export default function Bold({
     <IconContainer
       icon={
         <svg
+          data-testid="markdown-icon"
           onClick={handleClick}
           width="24"
           height="24"

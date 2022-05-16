@@ -21,6 +21,7 @@ export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newVal
   }
 
   nativeTextAreaValueSetter.call(textArea, newValue);
+  console.log('3jurnij2n2rjn21jnkr323r1');
   textArea.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
@@ -71,7 +72,7 @@ export default function MarkdownShortcuts({ textAreaRef }: Props) {
   }, [textAreaRef, selectedRange, userDragged]);
 
   return (
-    <StyledMarkdownShortcutsContainer>
+    <StyledMarkdownShortcutsContainer data-testid="markdown-shortcuts-container">
       <Bold
         selectedRange={selectedRange}
         textAreaRef={textAreaRef}
