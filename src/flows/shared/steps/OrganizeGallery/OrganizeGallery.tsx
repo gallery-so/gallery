@@ -34,9 +34,10 @@ function useNotOptimizedForMobileWarning() {
 
   useEffect(() => {
     if (detectMobileDevice()) {
-      pushToast(
-        "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery."
-      );
+      pushToast({
+        message:
+          "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery.",
+      });
     }
   }, [pushToast]);
 }
@@ -156,10 +157,9 @@ function OrganizeGallery({
     next,
   });
 
-  const isEmptyGallery = useMemo(
-    () => gallery.collections.length === 0,
-    [gallery.collections.length]
-  );
+  const isEmptyGallery = useMemo(() => gallery.collections.length === 0, [
+    gallery.collections.length,
+  ]);
 
   return (
     <StyledOrganizeGallery>

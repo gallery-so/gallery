@@ -153,7 +153,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const { pushToast } = useToastActions();
 
   const handleUnauthorized = useCallback(() => {
-    pushToast(EXPIRED_SESSION_MESSAGE);
+    pushToast({ message: EXPIRED_SESSION_MESSAGE });
     setLoggedOut();
   }, [pushToast, setLoggedOut]);
 
@@ -177,11 +177,11 @@ const AuthProvider = memo(({ children }: Props) => {
           response?.viewer?.__typename === 'ErrNotAuthorized' &&
           response.viewer.cause.__typename === 'ErrInvalidToken'
         ) {
-          pushToast(EXPIRED_SESSION_MESSAGE);
+          pushToast({ message: EXPIRED_SESSION_MESSAGE });
         }
 
         transaction.finish();
-      } catch (error: unknown) {
+      } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);
@@ -210,12 +210,12 @@ const AuthProvider = memo(({ children }: Props) => {
           response?.viewer?.__typename === 'ErrNotAuthorized' &&
           response.viewer.cause.__typename === 'ErrInvalidToken'
         ) {
-          pushToast(EXPIRED_SESSION_MESSAGE);
+          pushToast({ message: EXPIRED_SESSION_MESSAGE });
         }
 
         setAuthState(LOGGED_OUT);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error: unknown) {
+      } catch (error) {
         // we can ignore errors when fetching the current user, since
         // it just means we should give them the logged-out experience
         setAuthState(LOGGED_OUT);
