@@ -5,6 +5,7 @@ import Bold from './Bold';
 import Link from './Link';
 import List from './List';
 
+// Use the TextArea element's native setter and dispatch an input event to trigger the onChange callback
 export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newValue: string) {
   var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
     HTMLTextAreaElement.prototype,
