@@ -21,7 +21,6 @@ export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newVal
   }
 
   nativeTextAreaValueSetter.call(textArea, newValue);
-  console.log('3jurnij2n2rjn21jnkr323r1');
   textArea.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
@@ -62,7 +61,7 @@ export default function MarkdownShortcuts({ textAreaRef }: Props) {
   useEffect(() => {
     // We do not want to run if the selectedRange updated because of user cursor dragging
     // This leads to a bug in Chrome where the user cannot drag text from the end backwards
-    if (userDragged) return;
+    // if (userDragged) return;
 
     const textArea = textAreaRef.current;
     if (textArea) {
