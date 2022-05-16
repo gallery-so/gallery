@@ -8,7 +8,7 @@ import LeftContent from './LeftContent';
 
 export type Props = {
   queryRef: GlobalNavbarFragment$key;
-  customLeftContent: ReactElement;
+  customLeftContent: ReactElement | null;
 };
 
 function GlobalNavbar({ queryRef, customLeftContent }: Props) {
@@ -23,7 +23,13 @@ function GlobalNavbar({ queryRef, customLeftContent }: Props) {
 
   return (
     <StyledGlobalNavbar data-testid="navbar">
-      <LeftContent content={customLeftContent} />
+      {customLeftContent ? (
+        <LeftContent content={customLeftContent} />
+      ) : (
+        // display an empty div here if there's no left content; otherwise,
+        // the `RightContent` component will appear on the left side
+        <div />
+      )}
       <RightContent queryRef={query} />
     </StyledGlobalNavbar>
   );
