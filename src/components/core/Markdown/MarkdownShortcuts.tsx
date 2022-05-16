@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -10,9 +11,16 @@ export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newVal
   var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
     HTMLTextAreaElement.prototype,
     'value'
-  ).set;
-  nativeTextAreaValueSetter.call(textArea, newValue);
+  )?.set;
 
+  if (!nativeTextAreaValueSetter) {
+    // unlikely, but if the native setter is not available, set the value directly. this will not trigger the onChange callback.
+    textArea.value = newValue;
+    captureException(new Error('Native TextArea setter not available'));
+    return;
+  }
+
+  nativeTextAreaValueSetter.call(textArea, newValue);
   textArea.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
