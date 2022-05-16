@@ -1,38 +1,30 @@
-import { memo } from 'react';
+import { memo, ReactElement } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import LoggedOutNav from './LoggedOutNav';
-import LoggedInNav from './LoggedInNav';
 import { graphql, useFragment } from 'react-relay';
 import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
+import RightContent from './RightContent';
+import LeftContent from './LeftContent';
 
-type Props = {
+export type Props = {
   queryRef: GlobalNavbarFragment$key;
+  customLeftContent: ReactElement;
 };
 
-function GlobalNavbar({ queryRef }: Props) {
+function GlobalNavbar({ queryRef, customLeftContent }: Props) {
   const query = useFragment(
     graphql`
       fragment GlobalNavbarFragment on Query {
-        ...LoggedInNavFragment
-
-        viewer {
-          ... on Viewer {
-            user {
-              id
-            }
-          }
-        }
+        ...RightContentFragment
       }
     `,
     queryRef
   );
 
-  const isAuthenticated = Boolean(query.viewer?.user?.id);
-
   return (
     <StyledGlobalNavbar data-testid="navbar">
-      {isAuthenticated ? <LoggedInNav queryRef={query} /> : <LoggedOutNav />}
+      <LeftContent content={customLeftContent} />
+      <RightContent queryRef={query} />
     </StyledGlobalNavbar>
   );
 }
@@ -43,7 +35,8 @@ const StyledGlobalNavbar = styled.div`
   width: 100%;
   height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 
   // TODO: standardize these settings
   background: rgba(254, 254, 254, 0.95);
