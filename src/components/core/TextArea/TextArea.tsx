@@ -122,7 +122,6 @@ export function AutoResizingTextAreaWithCharCount({
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      console.log('handling');
       if (textAreaRef.current) {
         const textWasDeleted = oldText.current // If oldText.current is null/undefined, we do not need to reduce because textarea height will be 0
           ? oldText.current.length > event.target.value.length
