@@ -49,10 +49,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         />
         {hasMarkdown && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
-            <MarkdownShortcuts
-              textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>}
-              onChange={onChange}
-            />
+            <MarkdownShortcuts textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>} />
           </StyledMarkdownContainer>
         )}
       </>

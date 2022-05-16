@@ -1,5 +1,6 @@
 import IconContainer from './IconContainer';
 import { useCallback } from 'react';
+import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 
 export default function Bold({
   selectedRange,
@@ -34,7 +35,7 @@ export default function Bold({
         textArea.value.substring(0, start) +
         `[${selectedText}](https://)` +
         textArea.value.substring(end);
-      textArea.value = newText;
+      setValueAndTriggerOnChange(textArea, newText);
       setSelectedRange([start + 11 + selectedText.length, start + 11 + selectedText.length]); // Link [0, 4] -> [Link](https://) (end)
       return;
     }
@@ -42,7 +43,7 @@ export default function Bold({
       // If there is no selected text, just add a link where the cursor is and place the cursor in middle
       const newText =
         textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
-      textArea.value = newText;
+      setValueAndTriggerOnChange(textArea, newText);
       setSelectedRange([start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
       return;
     }

@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -5,26 +6,29 @@ import Bold from './Bold';
 import Link from './Link';
 import List from './List';
 
-export default function MarkdownShortcuts({
-  textAreaRef,
-  onChange, // The onChange from the TextArea component. This ensures that we track the same event handlers (e.g. a collector's note change) via the addition of just markdown
-}: {
-  textAreaRef: React.MutableRefObject<HTMLTextAreaElement>;
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
-}) {
-  // This enables us to run onChange even when adding markdown, which does not trigger a textarea onChange
-  useEffect(() => {
-    if (textAreaRef.current) {
-      const event = new CustomEvent('change', {
-        detail: { value: textAreaRef.current.value },
-      });
-      Object.defineProperty(event, 'target', {
-        value: textAreaRef.current,
-      });
-      onChange(event as unknown as React.ChangeEvent<HTMLTextAreaElement>);
-    }
-  }, [textAreaRef?.current?.value, onChange, textAreaRef]);
+// Use the TextArea element's native setter and dispatch an input event to trigger the onChange callback
+export function setValueAndTriggerOnChange(textArea: HTMLTextAreaElement, newValue: string) {
+  var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
+    HTMLTextAreaElement.prototype,
+    'value'
+  )?.set;
 
+  if (!nativeTextAreaValueSetter) {
+    // unlikely, but if the native setter is not available, set the value directly. this will not trigger the onChange callback.
+    textArea.value = newValue;
+    captureException(new Error('Native TextArea setter not available'));
+    return;
+  }
+
+  nativeTextAreaValueSetter.call(textArea, newValue);
+  textArea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+type Props = {
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement>;
+};
+
+export default function MarkdownShortcuts({ textAreaRef }: Props) {
   // Rather than select the text, we select the range of select characters; this will prevent multiple instances of the same text getting same Markdown applied
   const [selectedRange, setSelectedRange] = useState([
     textAreaRef?.current?.selectionStart || 0,
