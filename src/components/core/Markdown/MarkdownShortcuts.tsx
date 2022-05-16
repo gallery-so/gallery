@@ -40,7 +40,7 @@ export default function MarkdownShortcuts({ textAreaRef }: Props) {
 
   // Anytime the user selects new text, setSelectedRange to equal the indexes of that text
   useEffect(() => {
-    const textArea = textAreaRef.current;
+    const textArea = textAreaRef?.current;
     if (textArea) {
       const onSelectionChange = () => {
         setUserDragged(true);
@@ -63,7 +63,7 @@ export default function MarkdownShortcuts({ textAreaRef }: Props) {
     // This leads to a bug in Chrome where the user cannot drag text from the end backwards
     // if (userDragged) return;
 
-    const textArea = textAreaRef.current;
+    const textArea = textAreaRef?.current;
     if (textArea) {
       textArea.selectionStart = selectedRange[0];
       textArea.selectionEnd = selectedRange[1];
