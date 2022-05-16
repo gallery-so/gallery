@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
+import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import Button from 'components/core/Button/Button';
@@ -20,6 +20,10 @@ import {
 } from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { Contract } from '@ethersproject/contracts';
 import { MembershipNft } from './cardProperties';
+import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { GALLERY_FAQ } from 'constants/urls';
+import colors from 'components/core/colors';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -68,12 +72,17 @@ export function MembershipMintPage({
       return 'Mint Successful';
     }
 
-    return canMintToken ? 'Mint Card' : 'Mint Ineligible';
+    return canMintToken ? 'Mint Card' : 'Buy on Secondary';
   }, [active, canMintToken, transactionStatus]);
 
   const isMintButtonEnabled = useMemo(
     () => (Number(price) > 0 || canMintToken) && transactionStatus !== TransactionStatus.PENDING,
     [canMintToken, price, transactionStatus]
+  );
+
+  const directUserToSecondary = useMemo(
+    () => membershipNft.tokenId === 6 || (active && !canMintToken),
+    [active, canMintToken, membershipNft.tokenId]
   );
 
   const handleConnectWalletButtonClick = useCallback(() => {
@@ -122,6 +131,30 @@ export function MembershipMintPage({
     }
   }, [active, contract, error, getSupply, membershipNft.tokenId, mintToken, onMintSuccess]);
 
+  const PrimaryButton = useMemo(() => {
+    if (directUserToSecondary) {
+      return (
+        <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
+          <TitleXS color={colors.white}>View on Secondary</TitleXS>
+        </StyledSecondaryLink>
+      );
+    }
+
+    return active ? (
+      <Button text={buttonText} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick} />
+    ) : (
+      <Button text={buttonText} onClick={handleConnectWalletButtonClick} />
+    );
+  }, [
+    active,
+    buttonText,
+    handleConnectWalletButtonClick,
+    handleMintButtonClick,
+    isMintButtonEnabled,
+    membershipNft.secondaryUrl,
+    directUserToSecondary,
+  ]);
+
   // auto close the wallet modal once user connects
   useEffect(() => {
     if (active) {
@@ -146,9 +179,9 @@ export function MembershipMintPage({
               <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
             </>
           )}
-          <Spacer height={16} />
           {Boolean(totalSupply) && (
             <>
+              <Spacer height={16} />
               <TitleXS>Available</TitleXS>
               <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
@@ -164,15 +197,21 @@ export function MembershipMintPage({
             </>
           )}
           <Spacer height={32} />
-          {active ? (
-            <Button
-              text={buttonText}
-              disabled={!isMintButtonEnabled}
-              onClick={handleMintButtonClick}
-            />
-          ) : (
-            <Button text={buttonText} onClick={handleConnectWalletButtonClick} />
+          <HorizontalBreak />
+          <Spacer height={32} />
+          {active && !canMintToken && (
+            <>
+              <StyledIneligibleMessageWrapper>
+                <BaseXL>You are ineligible for this mint.</BaseXL>
+                <Spacer width={4} />
+                <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+                  <InfoCircleIcon />
+                </InteractiveLink>
+              </StyledIneligibleMessageWrapper>
+              <Spacer height={24} />
+            </>
           )}
+          {PrimaryButton}
           {transactionHash && (
             <>
               <Spacer height={16} />
@@ -277,5 +316,29 @@ const StyledVideo = styled.video`
   @media only screen and ${breakpoints.desktop} {
     height: 600px;
     width: 600px;
+  }
+`;
+
+const StyledIneligibleMessageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const InfoCircleIcon = styled.div`
+  height: 16px;
+  width: 16px;
+  background: url(/icons/info_circle.svg) no-repeat scroll;
+`;
+
+const StyledSecondaryLink = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${colors.offBlack};
+  cursor: pointer;
+  height: 40px;
+  text-decoration: none;
+  &:hover {
+    opacity: 0.8;
   }
 `;

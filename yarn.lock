@@ -3595,6 +3595,14 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
+"@testing-library/react-hooks@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/react-hooks/-/react-hooks-8.0.0.tgz#7d0164bffce4647f506039de0a97f6fcbd20f4bf"
+  integrity sha512-uZqcgtcUUtw7Z9N32W13qQhVAD+Xki2hxbTR461MKax8T6Jr8nsUvZB+vcBTkzY2nFvsUet434CsgF0ncW2yFw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    react-error-boundary "^3.1.0"
+
 "@testing-library/react@13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.0.0.tgz#8cdaf4667c6c2b082eb0513731551e9db784e8bc"
@@ -14250,6 +14258,13 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-error-boundary@^3.1.0:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-3.1.4.tgz#255db92b23197108757a888b01e5b729919abde0"
+  integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -14599,10 +14614,10 @@ regjsparser@^0.8.2:
   dependencies:
     jsesc "~0.5.0"
 
-relay-compiler@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/relay-compiler/-/relay-compiler-13.0.1.tgz#09c713647aa7e1d8cf3de9f7fb4ee6a76b32cf26"
-  integrity sha512-C/qJ7IdfZ140b9JaNpuAP6WhV/Odt/tIq4sUZoTwsaOlhs+1Zu3fvIOoWKTnZT5PC6krRuw1hD7GSX6/paVpTQ==
+relay-compiler@^13.2.0:
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/relay-compiler/-/relay-compiler-13.2.0.tgz#06dd416e19e1cd22008b89499726ea5eb342c36e"
+  integrity sha512-GGLWTJYqQ5jQLMXlq++Fl17f4gMuvmIi3+xU/TrD4UqWZLI3qhxE0NFAmOvg6xgBQ8xtCMhP066kv+3bhL+7Aw==
 
 relay-runtime@13.0.1, relay-runtime@^13.0.1:
   version "13.0.1"

@@ -5,37 +5,35 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import breakpoints, { size } from 'components/core/breakpoints';
 import useDebounce from 'hooks/useDebounce';
 import { Directions } from 'src/components/core/enums';
-import MemberListGalleryPreview from './MemberListGalleryPreview';
+import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import colors from 'components/core/colors';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListOwnerFragment$key } from '__generated__/MemberListOwnerFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
+import { TokenHolderListItemFragment$key } from '__generated__/TokenHolderListItemFragment.graphql';
 
 type Props = {
-  ownerRef: MemberListOwnerFragment$key;
+  tokenHolderRef: TokenHolderListItemFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
   fadeUsernames: boolean;
 };
 
-function MemberListOwner({ ownerRef, direction, fadeUsernames }: Props) {
+function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
 
   const owner = useFragment(
     graphql`
-      fragment MemberListOwnerFragment on MembershipOwner {
-        dbid
+      fragment TokenHolderListItemFragment on TokenHolder {
         user @required(action: THROW) {
           username @required(action: THROW)
         }
-
         previewNfts
       }
     `,
-    ownerRef
+    tokenHolderRef
   );
 
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
@@ -91,7 +89,7 @@ function MemberListOwner({ ownerRef, direction, fadeUsernames }: Props) {
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <StyledGalleryLink
-          href={`/${owner.user.username}`}
+          to={`/${owner.user.username}`}
           underlined={false}
           fadeUsernames={fadeUsernames}
         >
@@ -146,4 +144,4 @@ const StyledUsername = styled(BaseXL)`
   color: inherit;
 `;
 
-export default MemberListOwner;
+export default TokenHolderListItem;

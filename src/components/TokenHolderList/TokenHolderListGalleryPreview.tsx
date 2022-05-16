@@ -77,17 +77,17 @@ function PreviewImage({ src, top, left, movement }: PreviewImageProps) {
   );
 }
 
-type MemberListGalleryPreviewProps = {
+type TokenHolderListGalleryPreviewProps = {
   direction: Directions.LEFT | Directions.RIGHT;
   nftUrls: string[];
   startFadeOut?: boolean;
 };
 
-function MemberListGalleryPreview({
+function TokenHolderListGalleryPreview({
   direction,
   nftUrls,
   startFadeOut,
-}: MemberListGalleryPreviewProps) {
+}: TokenHolderListGalleryPreviewProps) {
   const animationMovements = useMemo(() => nftUrls.map(() => getAnimationMovement()), [nftUrls]);
   const imagePositions = useMemo(() => getImagePositions(nftUrls), [nftUrls]);
 
@@ -183,4 +183,4 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
     `}
 `;
 
-export default MemberListGalleryPreview;
+export default TokenHolderListGalleryPreview;

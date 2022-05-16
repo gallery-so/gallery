@@ -13,7 +13,7 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
   const transaction = initSentryTracing(request);
   // ---------- end pre-request hooks
 
-  const response = _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, {
+  const response = await _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, {
     body: {
       query: request.text,
       variables,

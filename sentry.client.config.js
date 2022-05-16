@@ -23,7 +23,7 @@ Sentry.init({
   dsn: SENTRY_DSN || 'https://bd40a4affc1740e8b7516502389262fe@o1135798.ingest.sentry.io/6187637',
   integrations: [
     new Sentry.BrowserTracing({
-      tracingOrigins: [SENTRY_TRACING_ORIGIN],
+      tracingOrigins: [SENTRY_TRACING_ORIGIN, 'localhost'],
     }),
   ],
   // Adjust this value in production, or use tracesSampler for greater control

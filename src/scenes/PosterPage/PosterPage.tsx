@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Page from 'components/core/Page/Page';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Button from 'components/core/Button/Button';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
@@ -11,15 +10,18 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
-import Spacer from 'components/core/Spacer/Spacer';
+import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
+import { MINT_DATE } from 'constants/poster';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
   const { pushToast } = useToastActions();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
+  const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp, hasEnded } = useTimer();
+  const { timestamp, hasEnded } = useTimer(MINT_DATE);
 
   const handleBackClick = () => {
     // TODO: Replace with hook
@@ -36,21 +38,17 @@ export default function PosterPage() {
 
   return (
     <StyledPage>
-      <Spacer height={80} />
       <StyledPositionedBackLink>
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
       <StyledWrapper>
         <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
         <StyledContent>
-          <div>
-            {isMobile && <TitleM>(Object006)</TitleM>}
-            <TitleM>2022 Community Poster</TitleM>
-            <InteractiveLink href="/">Gallery</InteractiveLink>
-          </div>
+          <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Celebrate our new brand with us by signing
+              Thank you for being a member of Gallery. Celebrate our{' '}
+              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> with us by signing
               our poster.
             </BaseM>
             <BaseM>
@@ -59,7 +57,7 @@ export default function PosterPage() {
             </BaseM>
           </StyledParagraph>
 
-          {!isMobile && <StyledHr></StyledHr>}
+          {!isMobile && <HorizontalBreak />}
 
           {hasEnded ? (
             <StyledCallToAction hasEnded>
@@ -85,6 +83,7 @@ const StyledPage = styled(Page)`
   flex-direction: column;
 
   align-items: center;
+  justify-content: center;
   width: 100%;
   margin: 0 auto;
   max-width: ${contentSize.desktop}px;
@@ -92,7 +91,7 @@ const StyledPage = styled(Page)`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    padding: 80px 16px;
+    padding: 0px 16px;
   }
 `;
 
@@ -127,13 +126,6 @@ const StyledContent = styled.div`
 const StyledParagraph = styled.div`
   display: grid;
   gap: 8px;
-`;
-
-const StyledHr = styled.hr`
-  height: 1px;
-  border: none;
-  background-color: ${colors.porcelain};
-  width: 100%;
 `;
 
 const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
