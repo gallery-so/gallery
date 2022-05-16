@@ -55,7 +55,7 @@ type GlobalLayoutActions = {
   setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
-  setCustomNavLeftContent: (e: ReactElement) => void;
+  setCustomNavLeftContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -218,7 +218,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [isNavbarVisible, wasNavbarVisible]
   );
 
-  const [customNavLeftContent, setCustomNavLeftContent] = useState(<></>);
+  const [customNavLeftContent, setCustomNavLeftContent] = useState<ReactElement | null>(null);
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
