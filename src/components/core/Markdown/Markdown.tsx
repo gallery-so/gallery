@@ -43,6 +43,8 @@ function BaseMarkdown({ text, allowedElements }: BaseProps) {
             <>{children}</>
           ),
         h3: ({ children }) => <StyledBodyHeading>{children}</StyledBodyHeading>,
+        ul: ({ children }) => <StyledUl>{children}</StyledUl>,
+        p: ({ children }) => <StyledP>{children}</StyledP>,
       }}
       allowedElements={allowedElements}
       unwrapDisallowed
@@ -54,4 +56,14 @@ function BaseMarkdown({ text, allowedElements }: BaseProps) {
 
 const StyledBodyHeading = styled(BaseXL)`
   margin: 32px 0 16px;
+`;
+
+const StyledUl = styled.ul`
+  padding-inline-start: 24px;
+  margin: 0;
+  white-space: normal;
+`;
+
+const StyledP = styled.p`
+  white-space: pre-line;
 `;
