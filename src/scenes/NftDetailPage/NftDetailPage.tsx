@@ -1,13 +1,8 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import ActionText from 'components/core/ActionText/ActionText';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import useBackButton from 'hooks/useBackButton';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { graphql, useFragment } from 'react-relay';
 import NotFound from 'scenes/NotFound/NotFound';
 import { NftDetailPageFragment$key } from '__generated__/NftDetailPageFragment.graphql';
@@ -55,21 +50,12 @@ function NftDetailPage({ nftId, queryRef }: Props) {
     queryRef
   );
 
-  const {
-    query: { collectionId },
-  } = useRouter();
   const username = window.location.pathname.split('/')[1];
-  const isMobile = useIsMobileWindowWidth();
   const track = useTrack();
-  const handleBackClick = useBackButton({ username });
 
   useEffect(() => {
     track('Page View: NFT Detail', { nftId });
   }, [nftId, track]);
-
-  // TODO: Should refactor to utilize navigation context instead of session storage
-  const isFromCollectionPage =
-    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
 
   if (collectionNft?.__typename !== 'CollectionNft') {
     captureException('NftDetailPage: requested nft did not return a CollectionNft');
@@ -87,15 +73,6 @@ function NftDetailPage({ nftId, queryRef }: Props) {
         <title>{headTitle}</title>
       </Head>
       <StyledNftDetailPage>
-        <StyledBackLink>
-          <ActionText onClick={handleBackClick}>
-            {isMobile
-              ? '← Back'
-              : isFromCollectionPage
-              ? '← Back to collection'
-              : '← Back to gallery'}
-          </ActionText>
-        </StyledBackLink>
         <NftDetailView
           username={username}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
