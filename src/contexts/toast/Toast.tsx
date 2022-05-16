@@ -32,9 +32,10 @@ export function AnimatedToast({
     if (autoClose) {
       setTimeout(() => {
         setIsActive(false);
+        setTimeout(onClose, ANIMATED_COMPONENT_TRANSITION_MS);
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
     }
-  }, [autoClose]);
+  }, [autoClose, onClose]);
 
   const handleClose = useCallback(() => {
     setIsActive(false);
@@ -59,7 +60,7 @@ const translateDownAndFadeOut = keyframes`
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
-  z-index: 25; // appears above cta footer mobile
+  z-index: 51; // appears above wizard footer for onboarding / welcome gallery
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};

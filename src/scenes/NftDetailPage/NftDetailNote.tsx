@@ -267,11 +267,10 @@ type CollectorsNoteProps = {
 };
 
 const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
-  white-space: pre-line;
   height: 100%;
   color: #808080;
 
-  p:last-of-type {
+  :last-child {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
   }
 `;

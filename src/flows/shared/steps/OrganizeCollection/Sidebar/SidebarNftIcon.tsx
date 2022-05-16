@@ -6,7 +6,7 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/nft';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeNft } from '../types';
 
@@ -55,7 +55,7 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   const result = getVideoOrImageUrlForNftPreview(nft, reportError);
 
   if (!result || !result.urls.small) {
-    throw new Error('Image URL not found for SidebarNftIcon');
+    reportError('Image URL not found for SidebarNftIcon');
   }
 
   const backgroundColorOverride = useMemo(
@@ -67,10 +67,10 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
     <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
       {
         // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
-        result.type === 'video' ? (
-          <StyledVideo isSelected={isSelected} src={result.urls.small} />
+        result?.type === 'video' ? (
+          <StyledVideo isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} />
         ) : (
-          <StyledImage isSelected={isSelected} src={result.urls.small} alt="nft" />
+          <StyledImage isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} alt="nft" />
         )
       }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />

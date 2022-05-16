@@ -2,15 +2,23 @@ import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
+import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
+import { useMemo } from 'react';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 type Props = {
   className?: string;
   title?: string | null;
   collectionName?: string | null;
+  contractAddress?: string | null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function NftPreviewLabel({ className, title, collectionName }: Props) {
+function NftPreviewLabel({ className, title, collectionName, contractAddress }: Props) {
+  const showCommunityLink = useMemo(
+    () => !!contractAddress && !DISABLED_CONTRACTS.includes(contractAddress),
+    [contractAddress]
+  );
   return (
     <StyledNftPreviewLabel className={className}>
       {title && (
@@ -18,11 +26,20 @@ function NftPreviewLabel({ className, title, collectionName }: Props) {
           {title}
         </StyledBaseM>
       )}
-      {collectionName && (
-        <StyledBaseM color={colors.white} lines={2}>
-          {collectionName}
-        </StyledBaseM>
-      )}
+      {collectionName &&
+        (showCommunityLink ? (
+          <div>
+            <StyledBaseM lines={2}>
+              <StyledInteractiveLink to={`/community/${contractAddress}`}>
+                {collectionName}
+              </StyledInteractiveLink>
+            </StyledBaseM>
+          </div>
+        ) : (
+          <StyledBaseM color={colors.white} lines={2}>
+            {collectionName}
+          </StyledBaseM>
+        ))}
     </StyledNftPreviewLabel>
   );
 }
@@ -77,6 +94,20 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
     text-overflow: unset;
   }
 }
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  color: ${colors.white};
+  width: fit-content;
+  font-size: 12px;
+
+  &:hover {
+    color: ${colors.white};
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
+  }
 `;
 
 export default NftPreviewLabel;

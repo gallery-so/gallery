@@ -70,8 +70,8 @@ export default function GalleryRoute({
       return <GlobalNavbar queryRef={query} />;
     }
 
-    return <Filler tallVariant={isMobile} />;
-  }, [navbar, isMobile, query]);
+    return <Filler tallVariant={isMobile && footer} />;
+  }, [navbar, isMobile, footer, query]);
 
   const footerComponent = useMemo(() => {
     if (!footer) {
@@ -94,7 +94,7 @@ export default function GalleryRoute({
 
   const bannerComponent = useMemo(() => {
     if (!banner) {
-      return <Filler />;
+      return;
     }
 
     return isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (

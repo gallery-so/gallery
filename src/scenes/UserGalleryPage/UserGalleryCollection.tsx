@@ -223,9 +223,6 @@ const StyledCollectorsTitle = styled(TitleS)`
 `;
 
 const StyledCollectorsNote = styled(BaseM)`
-  /* ensures linebreaks are reflected in UI */
-  white-space: pre-line;
-
   width: 100%;
 
   @media only screen and ${breakpoints.mobileLarge} {

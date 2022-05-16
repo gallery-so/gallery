@@ -4,6 +4,8 @@ import transitions from 'components/core/transitions';
 import { graphql, useFragment } from 'react-relay';
 import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { FALLBACK_URL } from 'utils/nft';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
   nftRef: StagedNftImageFragment$key;
@@ -23,19 +25,25 @@ function StagedNftImage({ nftRef, size, setNodeRef, ...props }: Props) {
     nftRef
   );
 
-  const result = getVideoOrImageUrlForNftPreview(nft);
+  const reportError = useReportError();
+  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
 
   if (!result || !result.urls.large) {
-    throw new Error('Image URL not found for StagedNftImageDragging');
+    reportError('Image URL not found for StagedNftImageDragging');
   }
 
-  return result.type === 'video' ? (
+  return result?.type === 'video' ? (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
-      <StyledGridVideo src={result.urls.large} />
+      <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
       <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
     </VideoContainer>
   ) : (
-    <StyledGridImage srcUrl={result.urls.large} ref={setNodeRef} size={size} {...props}>
+    <StyledGridImage
+      srcUrl={result?.urls.large ?? FALLBACK_URL}
+      ref={setNodeRef}
+      size={size}
+      {...props}
+    >
       <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
     </StyledGridImage>
   );
