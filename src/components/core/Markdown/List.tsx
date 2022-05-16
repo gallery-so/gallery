@@ -1,5 +1,6 @@
 import IconContainer from './IconContainer';
 import { useCallback } from 'react';
+import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 
 export default function List({
   selectedRange,
@@ -55,14 +56,14 @@ export default function List({
       if (currentLine.startsWith('* ')) {
         allLines[currentLineIndex] = allLines[currentLineIndex].slice(2);
         const newText = allLines.join('\n');
-        textArea.value = newText;
+        setValueAndTriggerOnChange(textArea, newText);
 
         setSelectedRange([start - 2, end - 2]); // * [0, 2] -> [0, 0]
       } else {
         // Detect the current lines index, and add the * to the beginning of the line
         allLines[currentLineIndex] = `* ${allLines[currentLineIndex]}`;
         const newText = allLines.join('\n');
-        textArea.value = newText;
+        setValueAndTriggerOnChange(textArea, newText);
 
         setSelectedRange([start + 2, end + 2]); // Test [0, 3] -> * Test [0, 5]
       }
@@ -77,7 +78,7 @@ export default function List({
           return line.isList && line.isSelected ? line.text.slice(2) : line.text;
         });
         const newText = newLines.join('\n');
-        textArea.value = newText;
+        setValueAndTriggerOnChange(textArea, newText);
         setSelectedRange([start - 2, end + selectedLines.length * 2]); // * List ([0, 8]) -> List ([0, 4])
       } else {
         const newLines = allLinesWithSelected.map((line) => {
@@ -87,7 +88,7 @@ export default function List({
           return line.text;
         });
         const newText = newLines.join('\n');
-        textArea.value = newText;
+        setValueAndTriggerOnChange(textArea, newText);
 
         setSelectedRange([start + 2, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
       }
