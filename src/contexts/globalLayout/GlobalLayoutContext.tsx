@@ -3,6 +3,7 @@ import {
   createContext,
   memo,
   MutableRefObject,
+  ReactElement,
   ReactNode,
   useCallback,
   useContext,
@@ -20,7 +21,10 @@ import isTouchscreenDevice from 'utils/isTouchscreenDevice';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import PosterBanner from 'scenes/PosterPage/PosterBanner';
-import GlobalNavbar, { GLOBAL_NAVBAR_HEIGHT } from './GlobalNavbar/GlobalNavbar';
+import GlobalNavbar, {
+  GLOBAL_NAVBAR_HEIGHT,
+  Props as GlobalNavbarProps,
+} from './GlobalNavbar/GlobalNavbar';
 import Banner from './GlobalBanner/GlobalBanner';
 import useThrottle from 'hooks/useThrottle';
 import {
@@ -51,6 +55,7 @@ type GlobalLayoutActions = {
   setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
+  setCustomNavLeftContent: (e: ReactElement) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -213,11 +218,14 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [isNavbarVisible, wasNavbarVisible]
   );
 
+  const [customNavLeftContent, setCustomNavLeftContent] = useState(<></>);
+
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
       setIsPageInSuspenseState,
+      setCustomNavLeftContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
@@ -234,6 +242,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         wasVisible={wasNavbarVisible}
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
+        customLeftContent={customNavLeftContent}
       />
 
       <GlobalLayoutStateContext.Provider value={state}>
@@ -252,6 +261,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   handleFadeNavbarOnHover: (visible: boolean) => void;
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
+  customLeftContent: GlobalNavbarProps['customLeftContent'];
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -261,6 +271,7 @@ function GlobalNavbarWithFadeEnabled({
   handleFadeNavbarOnHover,
   fadeType,
   isBannerVisible,
+  customLeftContent,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
@@ -343,7 +354,7 @@ function GlobalNavbarWithFadeEnabled({
             )
           ) : null
         }
-        <GlobalNavbar queryRef={query} />
+        <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
       </StyledGlobalNavbarWithFadeEnabled>
     </>
   );
