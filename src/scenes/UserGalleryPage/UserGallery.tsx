@@ -1,16 +1,41 @@
-import NotFound from 'scenes/NotFound/NotFound';
 import useKeyDown from 'hooks/useKeyDown';
+import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
-
+import { useCallback, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
+import { useModal } from 'contexts/modal/ModalContext';
+import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
+import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
 };
+
+function useDisplayNftDetailModal() {
+  const { showModal } = useModal();
+  const {
+    pathname,
+    query: { username, collectionId, nftId, originPage },
+    push,
+  } = useRouter();
+
+  // TODO: get whether modal is mounted from context, so we don't re-open
+  // another modal as the user transitions between NFT detail page
+  const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
+
+  useEffect(() => {
+    if (nftId && collectionId) {
+      // have to do this weird check on query param types
+      if (Array.isArray(collectionId) || Array.isArray(nftId)) {
+        return;
+      }
+
+      showModal(<NftDetailPage collectionId={collectionId} nftId={nftId} />, () => push(returnTo));
+    }
+  }, [collectionId, nftId, showModal, push, pathname, returnTo]);
+}
 
 function UserGallery({ queryRef }: Props) {
   const query = useFragment(
@@ -23,6 +48,7 @@ function UserGallery({ queryRef }: Props) {
             }
           }
         }
+
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
@@ -52,6 +78,8 @@ function UserGallery({ queryRef }: Props) {
   }, [push, isLoggedIn]);
 
   useKeyDown('e', navigateToEdit);
+
+  useDisplayNftDetailModal();
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;

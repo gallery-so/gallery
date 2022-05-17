@@ -3,21 +3,22 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Head from 'next/head';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import NotFound from 'scenes/NotFound/NotFound';
-import { NftDetailPageFragment$key } from '__generated__/NftDetailPageFragment.graphql';
 import NftDetailView from './NftDetailView';
 import { captureException } from '@sentry/nextjs';
+import { NftDetailPageQuery } from '__generated__/NftDetailPageQuery.graphql';
+import { useRouter } from 'next/router';
 
 type Props = {
   nftId: string;
-  queryRef: NftDetailPageFragment$key;
+  collectionId: string;
 };
 
-function NftDetailPage({ nftId, queryRef }: Props) {
-  const { collectionNft, viewer } = useFragment(
+function NftDetailPage({ nftId, collectionId }: Props) {
+  const { collectionNft, viewer } = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      fragment NftDetailPageFragment on Query {
+      query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
         collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
           ... on ErrNftNotFound {
             __typename
@@ -47,8 +48,11 @@ function NftDetailPage({ nftId, queryRef }: Props) {
         }
       }
     `,
-    queryRef
+    { nftId, collectionId }
   );
+
+  const { query: routerQuery } = useRouter();
+  console.log({ routerQuery });
 
   const username = window.location.pathname.split('/')[1];
   const track = useTrack();
@@ -85,22 +89,29 @@ function NftDetailPage({ nftId, queryRef }: Props) {
 }
 
 const StyledNftDetailPage = styled.div`
-  position: relative;
-  @media only screen and ${breakpoints.mobile} {
-    margin-left: ${pageGutter.mobile}px;
-    margin-right: ${pageGutter.mobile}px;
-    margin-bottom: 32px;
-  }
+  // position: relative;
+  // @media only screen and ${breakpoints.mobile} {
+  //   margin-left: ${pageGutter.mobile}px;
+  //   margin-right: ${pageGutter.mobile}px;
+  //   margin-bottom: 32px;
+  // }
 
-  @media only screen and ${breakpoints.tablet} {
-    margin-top: 0px;
-    margin-left: ${pageGutter.tablet}px;
-    margin-right: ${pageGutter.tablet}px;
-  }
+  // @media only screen and ${breakpoints.tablet} {
+  //   margin-top: 0px;
+  //   margin-left: ${pageGutter.tablet}px;
+  //   margin-right: ${pageGutter.tablet}px;
+  // }
 
-  @media only screen and ${breakpoints.desktop} {
-    margin: 0px;
-  }
+  // @media only screen and ${breakpoints.desktop} {
+  //   margin: 0px;
+  // }
+
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default NftDetailPage;
