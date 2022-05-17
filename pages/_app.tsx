@@ -7,8 +7,9 @@ import 'src/scenes/NftDetailPage/model-viewer.css';
 
 import Head from 'next/head';
 import AppProvider from 'contexts/AppProvider';
-import FadeTransitioner from 'components/FadeTransitioner/FadeTransitioner';
-import { useRouter } from 'next/router';
+import FadeTransitioner, {
+  useRouteTransitionKey,
+} from 'components/FadeTransitioner/FadeTransitioner';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 type NameOrProperty =
@@ -32,7 +33,7 @@ const App: FC<{
 }> = ({ Component, pageProps }) => {
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
-  const { asPath } = useRouter();
+  const locationKey = useRouteTransitionKey();
 
   return (
     <>
@@ -69,7 +70,7 @@ const App: FC<{
       </Head>
       <SafeHydrate>
         <AppProvider relayCache={relayCache}>
-          <FadeTransitioner locationKey={asPath}>
+          <FadeTransitioner locationKey={locationKey}>
             <Component {...pageProps} />
           </FadeTransitioner>
         </AppProvider>
