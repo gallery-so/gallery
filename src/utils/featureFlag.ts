@@ -10,7 +10,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   POSTER_PAGE: true,
-  MARKDOWN_SHORTCUTS: false,
+  MARKDOWN_SHORTCUTS: true,
 };
 
 export const isFeatureEnabled = (flag: FeatureFlag) =>
