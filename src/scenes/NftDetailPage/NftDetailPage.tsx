@@ -51,15 +51,18 @@ function NftDetailPage({ nftId, collectionId }: Props) {
     { nftId, collectionId }
   );
 
-  const { query: routerQuery } = useRouter();
-  console.log({ routerQuery });
-
-  const username = window.location.pathname.split('/')[1];
   const track = useTrack();
-
   useEffect(() => {
     track('Page View: NFT Detail', { nftId });
   }, [nftId, track]);
+
+  const {
+    query: { username },
+  } = useRouter();
+
+  if (!username || Array.isArray(username)) {
+    throw new Error('something has gone horribly wrong!');
+  }
 
   if (collectionNft?.__typename !== 'CollectionNft') {
     captureException('NftDetailPage: requested nft did not return a CollectionNft');
