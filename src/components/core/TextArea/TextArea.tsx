@@ -5,6 +5,9 @@ import colors from '../colors';
 import { BaseM } from '../Text/Text';
 import MarkdownShortcuts from '../Markdown/MarkdownShortcuts';
 
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
+
 type TextAreaProps = {
   className?: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
@@ -47,7 +50,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           hasPadding={hasPadding}
         />
-        {showMarkdownShortcuts && (
+        {showMarkdownShortcuts && isFeatureEnabled(FeatureFlag.MARKDOWN_SHORTCUTS) && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
             <MarkdownShortcuts textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>} />
           </StyledMarkdownContainer>
