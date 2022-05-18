@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { ReactElement, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import colors from 'components/core/colors';
@@ -10,13 +10,15 @@ import breakpoints from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import ArrowLeft from 'public/icons/arrow_left.svg';
 import ArrowRight from 'public/icons/arrow_right.svg';
+import ArrowLeftIcon from 'src/icons/ArrowLeftIcon';
+import ArrowRightIcon from 'src/icons/ArrowRightIcon';
 
-const ARROWS = new Map<number, string>([
-  [Directions.LEFT, '←'],
-  [Directions.RIGHT, '→'],
+const ARROWS = new Map<number, ReactElement>([
+  [Directions.LEFT, <ArrowLeftIcon key={1} />],
+  [Directions.RIGHT, <ArrowRightIcon key={2} />],
 ]);
 
-const MOBILE_ARROWS = new Map<number, any>([
+const MOBILE_ARROWS = new Map<number, ReactElement>([
   [Directions.LEFT, <ArrowLeft key={1} />],
   [Directions.RIGHT, <ArrowRight key={2} />],
 ]);
@@ -54,7 +56,7 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   return (
     <StyledNavigationHandle direction={direction}>
       <StyledTextWrapper direction={direction} onClick={handleOnClick}>
-        <ActionText>{arrow}</ActionText>
+        <StyledArrow>{arrow}</StyledArrow>
         <Spacer width={3} />
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
@@ -65,8 +67,15 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
 }
 
 const StyledHoverText = styled.div`
-  transition: opacity ${transitions.cubic};
+  transition: ${transitions.cubic};
   opacity: 0;
+  padding: 0px 4px;
+`;
+
+const StyledArrow = styled.div`
+  path {
+    transition: ${transitions.cubic};
+  }
 `;
 
 const StyledTextWrapper = styled.div<{ direction: Directions }>`
@@ -85,8 +94,12 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   right: ${({ direction }) => (direction ? '16px' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '16px')};
 
-  &:hover ${StyledHoverText} ${ActionText}, &:hover ${ActionText} {
+  &:hover ${StyledHoverText} ${ActionText} {
     color: ${colors.offBlack};
+  }
+
+  &:hover ${StyledArrow} path {
+    stroke: ${colors.offBlack};
   }
 
   @media only screen and ${breakpoints.tablet} {
