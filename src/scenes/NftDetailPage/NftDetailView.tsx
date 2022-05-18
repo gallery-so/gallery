@@ -133,6 +133,7 @@ export default function NftDetailView({
       nftId={nextNftId}
     />
   );
+
   return (
     <StyledBody>
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
