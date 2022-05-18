@@ -9,12 +9,13 @@ import {
   useCallback,
   useMemo,
   useRef,
+  MutableRefObject,
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
 
 type ModalState = {
-  isActive: boolean;
+  isModalOpenRef: MutableRefObject<boolean>;
 };
 
 const ModalStateContext = createContext<ModalState | undefined>(undefined);
@@ -52,6 +53,9 @@ function ModalProvider({ children }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
+  // ref version of the above. used when needed to prevent race
+  // conditions within side-effects that look up this state
+  const isModalOpenRef = useRef(false);
   // Whether the modal should take up the entire page
   const [isFullPage, setIsFullPage] = useState(false);
   // Content to be displayed within the modal
@@ -59,10 +63,11 @@ function ModalProvider({ children }: Props) {
   // Callback to trigger when the modal is closed
   const onCloseRef = useRef(noop);
 
-  const state = useMemo(() => ({ isActive }), [isActive]);
+  const state = useMemo(() => ({ isModalOpenRef }), [isModalOpenRef]);
 
   const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
     setIsActive(true);
+    isModalOpenRef.current = true;
     setIsMounted(true);
     setIsFullPage(isFullPage);
     setContent(providedContent);
@@ -73,6 +78,7 @@ function ModalProvider({ children }: Props) {
   // schedule unmount in X seconds
   const hideModal = useCallback(() => {
     setIsActive(false);
+    isModalOpenRef.current = false;
     onCloseRef.current?.();
     setTimeout(() => {
       setIsMounted(false);

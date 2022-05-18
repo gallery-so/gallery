@@ -7,7 +7,7 @@ import NftDetailPage from './NftDetailPage';
 // displays a full-screen NFT Detail Modal if the route is detected to follow /username/collectionId/nftId.
 // the actual component that uses this hook will remain intact in the background.
 export default function useDisplayFullPageNftDetailModal() {
-  const { isActive: isModalActive } = useModalState();
+  const { isModalOpenRef } = useModalState();
   const { showModal } = useModalActions();
   const {
     pathname,
@@ -20,7 +20,7 @@ export default function useDisplayFullPageNftDetailModal() {
   const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
 
   useEffect(() => {
-    if (nftId && collectionId && !isModalActive) {
+    if (nftId && collectionId && !isModalOpenRef.current) {
       // have to do this weird check on query param types
       if (Array.isArray(collectionId) || Array.isArray(nftId)) {
         return;
@@ -34,5 +34,5 @@ export default function useDisplayFullPageNftDetailModal() {
         true
       );
     }
-  }, [collectionId, nftId, showModal, push, pathname, returnTo, isModalActive]);
+  }, [collectionId, nftId, showModal, push, pathname, returnTo, isModalOpenRef]);
 }
