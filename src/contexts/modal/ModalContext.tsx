@@ -13,17 +13,32 @@ import {
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
 
+type ModalState = {
+  isActive: boolean;
+};
+
+const ModalStateContext = createContext<ModalState | undefined>(undefined);
+
+export const useModalState = (): ModalState => {
+  const context = useContext(ModalStateContext);
+  if (!context) {
+    throw new Error('Attempted to use ModalStateContext without a provider!');
+  }
+
+  return context;
+};
+
 type ModalActions = {
   showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
   hideModal: () => void;
 };
 
-const ModalContext = createContext<ModalActions | undefined>(undefined);
+const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
 
-export const useModal = (): ModalActions => {
-  const context = useContext(ModalContext);
+export const useModalActions = (): ModalActions => {
+  const context = useContext(ModalActionsContext);
   if (!context) {
-    throw new Error('Attempted to use ModalContext without a provider!');
+    throw new Error('Attempted to use ModalActionsContext without a provider!');
   }
 
   return context;
@@ -41,7 +56,10 @@ function ModalProvider({ children }: Props) {
   const [isFullPage, setIsFullPage] = useState(false);
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
+  // Callback to trigger when the modal is closed
   const onCloseRef = useRef(noop);
+
+  const state = useMemo(() => ({ isActive }), [isActive]);
 
   const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
     setIsActive(true);
@@ -75,17 +93,19 @@ function ModalProvider({ children }: Props) {
   );
 
   return (
-    <ModalContext.Provider value={actions}>
-      {children}
-      {isMounted && content && (
-        <AnimatedModal
-          isActive={isActive}
-          hideModal={hideModal}
-          content={content}
-          isFullPage={isFullPage}
-        />
-      )}
-    </ModalContext.Provider>
+    <ModalStateContext.Provider value={state}>
+      <ModalActionsContext.Provider value={actions}>
+        {children}
+        {isMounted && content && (
+          <AnimatedModal
+            isActive={isActive}
+            hideModal={hideModal}
+            content={content}
+            isFullPage={isFullPage}
+          />
+        )}
+      </ModalActionsContext.Provider>
+    </ModalStateContext.Provider>
   );
 }
 

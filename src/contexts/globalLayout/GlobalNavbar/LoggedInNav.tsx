@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import NavElement from './NavElement';
@@ -15,7 +15,7 @@ type Props = {
 };
 
 function LoggedInNav({ queryRef }: Props) {
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
   const { push } = useRouter();
 
   const query = useFragment(

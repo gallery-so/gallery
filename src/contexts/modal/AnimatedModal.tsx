@@ -121,6 +121,7 @@ const StyledContent = styled.div<{ noPadding: boolean }>`
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
+  z-index: 1;
   position: absolute;
   right: 0;
   top: 0;

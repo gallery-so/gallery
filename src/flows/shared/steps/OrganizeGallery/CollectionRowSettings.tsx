@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
@@ -36,7 +36,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
     collectionRef
   );
 
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
   const { dbid, name, collectorsNote, hidden, gallery } = collection;

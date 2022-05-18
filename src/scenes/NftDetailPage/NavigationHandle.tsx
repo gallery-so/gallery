@@ -83,7 +83,6 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
   position: absolute;
-  z-index: 100;
   color: ${colors.metal};
   padding: 16px;
   margin: 0 -16px -16px -16px;
@@ -125,7 +124,6 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   height: auto;
   display: flex;
   place-items: flex-end;
-  z-index: 1;
 
   color: ${colors.metal};
   right: ${({ direction }) => (direction ? '0' : 'unset')};
