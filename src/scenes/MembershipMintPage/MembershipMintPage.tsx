@@ -81,8 +81,8 @@ export function MembershipMintPage({
   );
 
   const directUserToSecondary = useMemo(
-    () => membershipNft.tokenId === 6 || (active && !canMintToken),
-    [active, canMintToken, membershipNft.tokenId]
+    () => membershipNft.tokenId === 6 || (active && !canMintToken && transactionStatus === null),
+    [active, canMintToken, membershipNft.tokenId, transactionStatus]
   );
 
   const handleConnectWalletButtonClick = useCallback(() => {
@@ -199,7 +199,7 @@ export function MembershipMintPage({
           <Spacer height={32} />
           <HorizontalBreak />
           <Spacer height={32} />
-          {active && !canMintToken && (
+          {active && !canMintToken && transactionStatus === null && (
             <>
               <StyledIneligibleMessageWrapper>
                 <BaseXL>You are ineligible for this mint.</BaseXL>
