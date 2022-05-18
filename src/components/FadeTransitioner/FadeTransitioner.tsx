@@ -54,7 +54,7 @@ export function useRouteTransitionKey() {
     }
     // same logic for modal triggered from collection page
     if (pathname === '/[username]/[collectionId]' && query.nftId) {
-      return `/${query.username}/$${query.collectionId}`;
+      return `/${query.username}/${query.collectionId}`;
     }
     return asPath;
   }, [asPath, pathname, query]);

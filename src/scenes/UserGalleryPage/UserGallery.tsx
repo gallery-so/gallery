@@ -1,48 +1,16 @@
 import useKeyDown from 'hooks/useKeyDown';
 import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
-import { Suspense, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
-import { useModal } from 'contexts/modal/ModalContext';
-import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
 };
-
-function useDisplayNftDetailModal() {
-  const { showModal } = useModal();
-  const {
-    pathname,
-    query: { username, collectionId, nftId, originPage },
-    push,
-  } = useRouter();
-
-  // TODO: get whether modal is mounted from context, so we don't re-open
-  // another modal as the user transitions between NFT detail page
-  const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
-
-  useEffect(() => {
-    if (nftId && collectionId) {
-      // have to do this weird check on query param types
-      if (Array.isArray(collectionId) || Array.isArray(nftId)) {
-        return;
-      }
-
-      showModal(
-        <Suspense fallback={<FullPageLoader />}>
-          <NftDetailPage collectionId={collectionId} nftId={nftId} />
-        </Suspense>,
-        () => push(returnTo),
-        true
-      );
-    }
-  }, [collectionId, nftId, showModal, push, pathname, returnTo]);
-}
 
 function UserGallery({ queryRef }: Props) {
   const query = useFragment(
@@ -86,7 +54,7 @@ function UserGallery({ queryRef }: Props) {
 
   useKeyDown('e', navigateToEdit);
 
-  useDisplayNftDetailModal();
+  useDisplayFullPageNftDetailModal();
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;
