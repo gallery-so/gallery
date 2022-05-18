@@ -1,13 +1,14 @@
 import useKeyDown from 'hooks/useKeyDown';
 import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { Suspense, useCallback, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 import { useModal } from 'contexts/modal/ModalContext';
 import NftDetailPage from 'scenes/NftDetailPage/NftDetailPage';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
+import FullPageLoader from 'components/core/Loader/FullPageLoader';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -32,7 +33,13 @@ function useDisplayNftDetailModal() {
         return;
       }
 
-      showModal(<NftDetailPage collectionId={collectionId} nftId={nftId} />, () => push(returnTo));
+      showModal(
+        <Suspense fallback={<FullPageLoader />}>
+          <NftDetailPage collectionId={collectionId} nftId={nftId} />
+        </Suspense>,
+        () => push(returnTo),
+        true
+      );
     }
   }, [collectionId, nftId, showModal, push, pathname, returnTo]);
 }

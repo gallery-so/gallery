@@ -14,7 +14,7 @@ import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
 
 type ModalActions = {
-  showModal: (content: ReactElement, onClose?: () => void) => void;
+  showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
   hideModal: () => void;
 };
 
@@ -37,12 +37,16 @@ function ModalProvider({ children }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
+  // Whether the modal should take up the entire page
+  const [isFullPage, setIsFullPage] = useState(false);
+  // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   const onCloseRef = useRef(noop);
 
-  const showModal = useCallback((providedContent, onClose) => {
+  const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
     setIsActive(true);
     setIsMounted(true);
+    setIsFullPage(isFullPage);
     setContent(providedContent);
     onCloseRef.current = onClose;
   }, []);
@@ -51,10 +55,11 @@ function ModalProvider({ children }: Props) {
   // schedule unmount in X seconds
   const hideModal = useCallback(() => {
     setIsActive(false);
-    onCloseRef.current();
+    onCloseRef.current?.();
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
+      setIsFullPage(false);
       onCloseRef.current = noop;
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
@@ -73,7 +78,12 @@ function ModalProvider({ children }: Props) {
     <ModalContext.Provider value={actions}>
       {children}
       {isMounted && content && (
-        <AnimatedModal isActive={isActive} hideModal={hideModal} content={content} />
+        <AnimatedModal
+          isActive={isActive}
+          hideModal={hideModal}
+          content={content}
+          isFullPage={isFullPage}
+        />
       )}
     </ModalContext.Provider>
   );

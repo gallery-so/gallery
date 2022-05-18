@@ -1,16 +1,18 @@
 import { ReactElement, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
+import transitions, { ANIMATED_COMPONENT_TRANSLATION_PIXELS } from 'components/core/transitions';
 import breakpoints from 'components/core/breakpoints';
+import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 
 type Props = {
   isActive: boolean;
   hideModal: () => void;
   content: ReactElement;
+  isFullPage: boolean;
 };
 
-function AnimatedModal({ isActive, hideModal, content }: Props) {
+function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -33,8 +35,8 @@ function AnimatedModal({ isActive, hideModal, content }: Props) {
       <Overlay onClick={hideModal} />
       <StyledContentContainer>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent>
-            <StyledClose onClick={hideModal}>&#x2715;</StyledClose>
+          <StyledContent noPadding={isFullPage}>
+            <StyledDecoratedCloseIcon onClick={hideModal} />
             {content}
           </StyledContent>
         </_ToggleTranslate>
@@ -63,16 +65,14 @@ const _ToggleFade = styled.div<{ isActive: boolean }>`
     `};
 `;
 
-const TRANSLATE_PIXELS = 10;
-
 const translateUp = keyframes`
-    from { transform: translateY(${TRANSLATE_PIXELS}px) };
+    from { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS}px) };
     to { transform: translateY(0px) };
 `;
 
 const translateDown = keyframes`
     from { transform: translateY(0px) };
-    to { transform: translateY(${TRANSLATE_PIXELS}px) };
+    to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS}px) };
 `;
 
 const _ToggleTranslate = styled.div<{ isActive: boolean }>`
@@ -114,18 +114,16 @@ const StyledContentContainer = styled.div`
   border: 1px solid ${colors.shadow};
 `;
 
-const StyledContent = styled.div`
+const StyledContent = styled.div<{ noPadding: boolean }>`
   position: relative;
-  padding: 40px;
+  padding: ${({ noPadding }) => (noPadding ? 0 : 40)}px;
   background: ${colors.white};
 `;
 
-const StyledClose = styled.span`
+const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
   position: absolute;
-  right: 30px;
-  top: 28px;
-  padding: 12px 10px;
-  cursor: pointer;
+  right: 0;
+  top: 0;
 `;
 
 export default AnimatedModal;
