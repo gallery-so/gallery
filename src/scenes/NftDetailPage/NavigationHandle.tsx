@@ -1,11 +1,10 @@
-import { ReactElement, useCallback, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
 import { Directions } from 'components/core/enums';
-import { useRouter } from 'next/router';
 import breakpoints from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import ArrowLeft from 'public/icons/arrow_left.svg';
@@ -30,12 +29,10 @@ const HOVER_TEXT = new Map<number, string>([
 
 type Props = {
   direction: Directions;
-  username: string;
-  collectionId: string;
-  nftId: string;
+  onClick: () => void;
 };
 
-function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
+function NavigationHandle({ direction, onClick }: Props) {
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const arrow = useMemo(
@@ -45,17 +42,9 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
-  const { replace } = useRouter();
-  const handleOnClick = useCallback(() => {
-    // TODO(Terence): Figure out how to get this state across since Next doesn't support navigation state
-    // void push(nftId, { state: { collection: [] } });
-    // void push({ pathname: nftId });
-    void replace(`/${username}/${collectionId}/${nftId}`);
-  }, [nftId, collectionId, username, replace]);
-
   return (
     <StyledNavigationHandle direction={direction}>
-      <StyledTextWrapper direction={direction} onClick={handleOnClick}>
+      <StyledTextWrapper direction={direction} onClick={onClick}>
         <StyledArrow>{arrow}</StyledArrow>
         <Spacer width={3} />
         <StyledHoverText>

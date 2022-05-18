@@ -1,22 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Head from 'next/head';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import NotFound from 'scenes/NotFound/NotFound';
 import NftDetailView from './NftDetailView';
-import { captureException } from '@sentry/nextjs';
 import { NftDetailPageQuery } from '__generated__/NftDetailPageQuery.graphql';
 import { useRouter } from 'next/router';
+import useNavigationArrows from './useNavigationArrows';
 
 type Props = {
   nftId: string;
   collectionId: string;
 };
 
-function NftDetailPage({ nftId, collectionId }: Props) {
-  const { collectionNft, viewer } = useLazyLoadQuery<NftDetailPageQuery>(
+function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId }: Props) {
+  const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
       query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
         collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
@@ -34,7 +33,16 @@ function NftDetailPage({ nftId, collectionId }: Props) {
               dbid
               name
             }
-            ...NftDetailViewFragment
+            collection {
+              nfts {
+                nft {
+                  dbid
+                  name
+                }
+                ...useNavigationArrowsFragment
+                ...NftDetailViewFragment
+              }
+            }
           }
         }
 
@@ -48,13 +56,41 @@ function NftDetailPage({ nftId, collectionId }: Props) {
         }
       }
     `,
-    { nftId, collectionId }
+    { nftId: initialNftId, collectionId: initialCollectionId }
   );
+
+  const { collectionNft: initialCollectionNft, viewer } = query;
+
+  const [nftId, setNftId] = useState(initialNftId);
 
   const track = useTrack();
   useEffect(() => {
     track('Page View: NFT Detail', { nftId });
   }, [nftId, track]);
+
+  if (initialCollectionNft?.__typename !== 'CollectionNft') {
+    // captureException('NftDetailPage: requested nft did not return a CollectionNft');
+    // return <NotFound resource="nft" />;
+
+    // TODO: wrap this page in an error boundary that will capture and display a NotFound
+    throw new Error('NftDetailPage: requested nft did not return a CollectionNft');
+  }
+
+  const currentlySelectedCollectionNft = initialCollectionNft.collection?.nfts?.find(
+    (nft) => nft?.nft?.dbid === nftId
+  );
+  console.log(currentlySelectedCollectionNft);
+
+  if (!currentlySelectedCollectionNft) {
+    // TODO: wrap this page in an error boundary that will capture and display a NotFound
+    throw new Error('NftDetailPage: Selected NFT was not found within component');
+  }
+
+  const { leftArrow, rightArrow } = useNavigationArrows({
+    queryRef: currentlySelectedCollectionNft,
+    nftId,
+    handleSetNftId: setNftId,
+  });
 
   const {
     query: { username },
@@ -64,12 +100,7 @@ function NftDetailPage({ nftId, collectionId }: Props) {
     throw new Error('something has gone horribly wrong!');
   }
 
-  if (collectionNft?.__typename !== 'CollectionNft') {
-    captureException('NftDetailPage: requested nft did not return a CollectionNft');
-    return <NotFound resource="nft" />;
-  }
-
-  const headTitle = `${collectionNft?.nft?.name} - ${username} | Gallery`;
+  const headTitle = `${currentlySelectedCollectionNft?.nft?.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
     viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
@@ -80,12 +111,13 @@ function NftDetailPage({ nftId, collectionId }: Props) {
         <title>{headTitle}</title>
       </Head>
       <StyledNftDetailPage>
+        {leftArrow}
         <NftDetailView
           username={username}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-          queryRef={collectionNft}
-          nftId={nftId}
+          queryRef={currentlySelectedCollectionNft}
         />
+        {rightArrow}
       </StyledNftDetailPage>
     </>
   );
