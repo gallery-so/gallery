@@ -7,7 +7,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
@@ -97,11 +96,7 @@ export default function GalleryRoute({
       return;
     }
 
-    return isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
-      <PosterBanner queryRef={query} />
-    ) : (
-      <Banner text="" queryRef={query} />
-    );
+    <Banner text="" queryRef={query} />;
   }, [banner, query]);
 
   if (freshLayout) {
