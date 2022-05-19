@@ -1,5 +1,4 @@
 import Banner from 'components/Banner/Banner';
-import { FeatureFlag } from 'components/core/enums';
 import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from 'components/core/Page/constants';
 import GlobalFooter from 'components/core/Page/GlobalFooter';
 import GlobalNavbar from 'components/core/Page/GlobalNavbar/GlobalNavbar';
@@ -7,7 +6,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { isFeatureEnabled } from 'utils/featureFlag';
 import { GalleryRouteFragment$key } from '__generated__/GalleryRouteFragment.graphql';
 
 export type LayoutProps = {
