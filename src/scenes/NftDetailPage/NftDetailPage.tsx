@@ -1,28 +1,28 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import ActionText from 'components/core/ActionText/ActionText';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import useBackButton from 'hooks/useBackButton';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
-import { graphql, useFragment } from 'react-relay';
-import NotFound from 'scenes/NotFound/NotFound';
-import { NftDetailPageFragment$key } from '__generated__/NftDetailPageFragment.graphql';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import NftDetailView from './NftDetailView';
-import { captureException } from '@sentry/nextjs';
+import { NftDetailPageQuery } from '__generated__/NftDetailPageQuery.graphql';
+import { useRouter } from 'next/router';
+import transitions from 'components/core/transitions';
+import { Directions } from 'components/core/enums';
+import useKeyDown from 'hooks/useKeyDown';
+import NavigationHandle from './NavigationHandle';
+import { removeNullValues } from 'utils/removeNullValues';
+import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
 
 type Props = {
   nftId: string;
-  queryRef: NftDetailPageFragment$key;
+  collectionId: string;
 };
 
-function NftDetailPage({ nftId, queryRef }: Props) {
-  const { collectionNft, viewer } = useFragment(
+function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId }: Props) {
+  const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      fragment NftDetailPageFragment on Query {
+      query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
         collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
           ... on ErrNftNotFound {
             __typename
@@ -38,7 +38,16 @@ function NftDetailPage({ nftId, queryRef }: Props) {
               dbid
               name
             }
-            ...NftDetailViewFragment
+            collection {
+              nfts {
+                nft @required(action: THROW) {
+                  dbid
+                  name
+                }
+                # ...useNavigationArrowsFragment
+                ...NftDetailViewFragment
+              }
+            }
           }
         }
 
@@ -52,34 +61,112 @@ function NftDetailPage({ nftId, queryRef }: Props) {
         }
       }
     `,
-    queryRef
+    { nftId: initialNftId, collectionId: initialCollectionId }
   );
 
-  const {
-    query: { collectionId },
-  } = useRouter();
-  const username = window.location.pathname.split('/')[1];
-  const isMobile = useIsMobileWindowWidth();
-  const track = useTrack();
-  const handleBackClick = useBackButton({ username });
+  const { collectionNft: initialCollectionNft, viewer } = query;
 
+  const [nftId, setNftId] = useState(initialNftId);
+
+  const track = useTrack();
   useEffect(() => {
     track('Page View: NFT Detail', { nftId });
   }, [nftId, track]);
 
-  // TODO: Should refactor to utilize navigation context instead of session storage
-  const isFromCollectionPage =
-    globalThis?.sessionStorage?.getItem('prevPage') === `/${username}/${collectionId}`;
+  if (initialCollectionNft?.__typename !== 'CollectionNft') {
+    // captureException('NftDetailPage: requested nft did not return a CollectionNft');
+    // return <NotFound resource="nft" />;
 
-  if (collectionNft?.__typename !== 'CollectionNft') {
-    captureException('NftDetailPage: requested nft did not return a CollectionNft');
-    return <NotFound resource="nft" />;
+    // TODO: wrap this page in an error boundary that will capture and display a NotFound
+    throw new Error('NftDetailPage: requested nft did not return a CollectionNft');
   }
 
-  const headTitle = `${collectionNft?.nft?.name} - ${username} | Gallery`;
+  const collection = removeNullValues(initialCollectionNft.collection?.nfts);
+
+  if (!collection) {
+    throw new Error('NftDetailPage: Collection of NFTs not found');
+  }
+
+  const { selectedNftIndex, selectedNft } = useMemo(() => {
+    const index = collection.findIndex(({ nft }) => nft.dbid === nftId);
+    if (index === -1) {
+      throw new Error('NFT Detail Page: NFT index not found within collection');
+    }
+    return { selectedNftIndex: index, selectedNft: collection[index] };
+  }, [nftId, collection]);
+
+  const { query: urlQuery, push, pathname } = useRouter();
+  const { username } = urlQuery;
+
+  if (!username || Array.isArray(username)) {
+    throw new Error('something has gone horribly wrong!');
+  }
+
+  const headTitle = `${selectedNft?.nft?.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
     viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
+
+  const { prevNft, nextNft } = useMemo(() => {
+    const prevNft = collection[selectedNftIndex - 1] ?? null;
+    const nextNft = collection[selectedNftIndex + 1] ?? null;
+
+    return {
+      prevNft,
+      nextNft,
+    };
+  }, [collection, selectedNftIndex]);
+
+  // TODO: write comment about how this works
+  const [mountedNfts, setMountedNfts] = useState<MountedNft<typeof prevNft>[]>(
+    removeNullValues([
+      prevNft ? { nft: prevNft, visibility: 'hidden-left' } : null,
+      { nft: selectedNft, visibility: 'visible' },
+      nextNft ? { nft: nextNft, visibility: 'hidden-right' } : null,
+    ])
+  );
+
+  // TODO: write explanatory comments
+  const pushToNftById = useCallback(
+    (nftId: string) => {
+      const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
+      const currentLocation = `${pathname}?${querystring}`;
+      push(
+        // href
+        currentLocation,
+        // as
+        `/${username}/${initialCollectionId}/${nftId}`,
+        // prevent scroll-to-top when navigating
+        { scroll: false }
+      );
+    },
+    [initialCollectionId, pathname, push, urlQuery, username]
+  );
+
+  const handleNextPress = useCallback(() => {
+    if (nextNft) {
+      const nextNftId = nextNft.nft.dbid;
+      setNftId(nextNftId);
+      setMountedNfts((prevMountedNfts) => {
+        return shiftNftCarousel(Directions.RIGHT, prevMountedNfts, selectedNftIndex, collection);
+      });
+      pushToNftById(nextNftId);
+    }
+  }, [collection, nextNft, pushToNftById, selectedNftIndex]);
+
+  const handlePrevPress = useCallback(() => {
+    if (prevNft) {
+      const prevNftId = prevNft.nft.dbid;
+      setNftId(prevNftId);
+      setMountedNfts((prevMountedNfts) => {
+        return shiftNftCarousel(Directions.LEFT, prevMountedNfts, selectedNftIndex, collection);
+      });
+      pushToNftById(prevNftId);
+    }
+  }, [collection, prevNft, pushToNftById, selectedNftIndex]);
+
+  useKeyDown('ArrowRight', handleNextPress);
+  useKeyDown('ArrowLeft', handlePrevPress);
 
   return (
     <>
@@ -87,43 +174,65 @@ function NftDetailPage({ nftId, queryRef }: Props) {
         <title>{headTitle}</title>
       </Head>
       <StyledNftDetailPage>
-        <StyledBackLink>
-          <ActionText onClick={handleBackClick}>
-            {isMobile
-              ? '← Back'
-              : isFromCollectionPage
-              ? '← Back to collection'
-              : '← Back to gallery'}
-          </ActionText>
-        </StyledBackLink>
-        <NftDetailView
-          username={username}
-          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-          queryRef={collectionNft}
-          nftId={nftId}
-        />
+        {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
+        {mountedNfts.map(({ nft, visibility }) => (
+          <_DirectionalFade key={nft.nft.dbid} visibility={visibility}>
+            <NftDetailView
+              username={username}
+              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+              queryRef={nft}
+            />
+          </_DirectionalFade>
+        ))}
+        {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
       </StyledNftDetailPage>
     </>
   );
 }
 
+const _DirectionalFade = styled.div<{ visibility: string }>`
+  position: absolute;
+  opacity: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
+  transform: ${({ visibility }) => {
+    if (visibility === 'visible') {
+      return 'translate(0px,0px)';
+    }
+    if (visibility === 'hidden-right') {
+      return 'translate(10px,0px)';
+    }
+    if (visibility === 'hidden-left') {
+      return 'translate(-10px,0px)';
+    }
+  }};
+  z-index: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
+
+  transition: ${transitions.cubic};
+`;
+
 const StyledNftDetailPage = styled.div`
-  position: relative;
-  @media only screen and ${breakpoints.mobile} {
-    margin-left: ${pageGutter.mobile}px;
-    margin-right: ${pageGutter.mobile}px;
-    margin-bottom: 32px;
-  }
+  // position: relative;
+  // @media only screen and ${breakpoints.mobile} {
+  //   margin-left: ${pageGutter.mobile}px;
+  //   margin-right: ${pageGutter.mobile}px;
+  //   margin-bottom: 32px;
+  // }
 
-  @media only screen and ${breakpoints.tablet} {
-    margin-top: 0px;
-    margin-left: ${pageGutter.tablet}px;
-    margin-right: ${pageGutter.tablet}px;
-  }
+  // @media only screen and ${breakpoints.tablet} {
+  //   margin-top: 0px;
+  //   margin-left: ${pageGutter.tablet}px;
+  //   margin-right: ${pageGutter.tablet}px;
+  // }
 
-  @media only screen and ${breakpoints.desktop} {
-    margin: 0px;
-  }
+  // @media only screen and ${breakpoints.desktop} {
+  //   margin: 0px;
+  // }
+
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default NftDetailPage;

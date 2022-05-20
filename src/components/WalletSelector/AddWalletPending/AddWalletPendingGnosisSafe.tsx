@@ -15,7 +15,7 @@ import {
   PendingState,
   LISTENING_ONCHAIN,
 } from 'types/Wallet';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import {
   listenForGnosisSignature,
@@ -84,7 +84,7 @@ function AddWalletPendingGnosisSafe({
     [viewer?.user?.wallets]
   );
 
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const openManageWalletsModal = useCallback(
     (address: string) => {

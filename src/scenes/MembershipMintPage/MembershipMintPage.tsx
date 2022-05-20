@@ -12,7 +12,7 @@ import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/Shimmer
 import ErrorText from 'components/core/Text/ErrorText';
 import { useWeb3React } from '@web3-react/core';
 import useWalletModal from 'hooks/useWalletModal';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import {
   useMembershipMintPageActions,
   useMembershipMintPageState,
@@ -50,7 +50,7 @@ export function MembershipMintPage({
   const { active, account } = useWeb3React<Web3Provider>();
 
   const showWalletModal = useWalletModal();
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const [error, setError] = useState('');
 
   const { totalSupply, remainingSupply, price } = useMembershipMintPageState();

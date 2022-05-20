@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { ADD_WALLET_TO_USER } from 'types/Wallet';
 import { graphql } from 'relay-runtime';
@@ -30,7 +30,7 @@ const AddWalletModal = ({ queryRef }: ModalProps) => {
 };
 
 export default function useAddWalletModal() {
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const query = useLazyLoadQuery<useAddWalletModalQuery>(
     graphql`

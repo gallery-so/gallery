@@ -3,7 +3,7 @@ import breakpoints from 'components/core/breakpoints';
 import Spacer from 'components/core/Spacer/Spacer';
 import ManageWallets from 'components/ManageWallets/ManageWallets';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -24,7 +24,7 @@ function ManageWalletsModal({ newAddress, queryRef }: Props) {
     queryRef
   );
 
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const { handleLogout } = useAuthActions();
 
   const handleLogOut = useCallback(() => {
