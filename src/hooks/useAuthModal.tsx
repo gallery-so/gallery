@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
@@ -11,7 +11,7 @@ type ModalProps = {
 };
 
 const AuthModal = ({ queryRef }: ModalProps) => {
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
 
   const query = useFragment(
     graphql`
@@ -48,7 +48,7 @@ const AuthModal = ({ queryRef }: ModalProps) => {
 };
 
 export default function useAuthModal() {
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const query = useLazyLoadQuery<useAuthModalQuery>(
     graphql`

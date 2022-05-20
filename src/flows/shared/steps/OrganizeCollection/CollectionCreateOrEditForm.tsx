@@ -9,7 +9,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
@@ -41,7 +41,7 @@ function CollectionCreateOrEditForm({
   stagedItems,
   layout,
 }: Props) {
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
 
   const unescapedCollectionName = useMemo(() => unescape(collectionName), [collectionName]);
   const unescapedCollectorsNote = useMemo(

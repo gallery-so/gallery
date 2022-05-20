@@ -2,10 +2,9 @@ import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import styled from 'styled-components';
-// import { useAuthenticatedUsername } from 'hooks/api/users/useUser';
 import useBackButton from 'hooks/useBackButton';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -21,7 +20,7 @@ function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key
     userRef
   );
 
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const navigateBack = useBackButton({ username: user.username });
 
   const goBack = useCallback(() => {

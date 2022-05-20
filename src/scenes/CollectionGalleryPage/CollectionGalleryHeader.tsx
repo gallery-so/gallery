@@ -10,7 +10,7 @@ import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { useRouter } from 'next/router';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
@@ -40,7 +40,7 @@ function CollectionGalleryHeader({
   const username = useMemo(() => window.location.pathname.split('/')[1], []);
 
   const { push } = useRouter();
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
   const handleBackClick = useBackButton({ username });
 
   const query = useFragment(

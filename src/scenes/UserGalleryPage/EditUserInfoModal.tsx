@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import Button from 'components/core/Button/Button';
@@ -39,7 +39,7 @@ function EditUserInfoModal({ queryRef }: Props) {
 
   const existingUser = viewer.user;
 
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const { push } = useRouter();
 
   const closeModalAndNavigateToNewUsername = useCallback(
