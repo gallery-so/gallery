@@ -9,6 +9,7 @@ import NavElement from './NavElement';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graphql';
+import styled from 'styled-components';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -54,7 +55,7 @@ function LoggedInNav({ queryRef }: Props) {
   // causes this component to freak out before the parent realizes it shouldn't
   // be rendering this child... need to figure out best practices here
   return query.viewer?.__typename === 'Viewer' && query.viewer.user?.username ? (
-    <>
+    <StyledLoggedInNav>
       <NavElement>
         <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
           <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
@@ -66,8 +67,12 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <TextButton onClick={handleManageWalletsClick} text={query.viewer.user.username} />
       </NavElement>
-    </>
+    </StyledLoggedInNav>
   ) : null;
 }
+
+const StyledLoggedInNav = styled.div`
+  display: flex;
+`;
 
 export default LoggedInNav;
