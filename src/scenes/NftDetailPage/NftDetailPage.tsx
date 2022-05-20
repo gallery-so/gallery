@@ -145,22 +145,25 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
 
   const handleNextPress = useCallback(() => {
     if (nextNft) {
-      setNftId(nextNft.nft.dbid);
+      const nextNftId = nextNft.nft.dbid;
+      setNftId(nextNftId);
       setMountedNfts((prevMountedNfts) => {
         return shiftNftCarousel(Directions.RIGHT, prevMountedNfts, selectedNftIndex, collection);
       });
-      pushToNftById(nextNft.nft.dbid);
+      pushToNftById(nextNftId);
     }
   }, [collection, nextNft, pushToNftById, selectedNftIndex]);
 
   const handlePrevPress = useCallback(() => {
     if (prevNft) {
-      setNftId(prevNft.nft.dbid);
+      const prevNftId = prevNft.nft.dbid;
+      setNftId(prevNftId);
       setMountedNfts((prevMountedNfts) => {
         return shiftNftCarousel(Directions.LEFT, prevMountedNfts, selectedNftIndex, collection);
       });
+      pushToNftById(prevNftId);
     }
-  }, [collection, prevNft, selectedNftIndex]);
+  }, [collection, prevNft, pushToNftById, selectedNftIndex]);
 
   useKeyDown('ArrowRight', handleNextPress);
   useKeyDown('ArrowLeft', handlePrevPress);

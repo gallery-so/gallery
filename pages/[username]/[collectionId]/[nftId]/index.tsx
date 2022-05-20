@@ -38,7 +38,7 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
 }
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   right: 0;
   top: 0;
