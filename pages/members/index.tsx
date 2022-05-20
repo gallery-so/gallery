@@ -8,7 +8,6 @@ export default function Members() {
   const query = useLazyLoadQuery<membersQuery>(
     graphql`
       query membersQuery {
-        ...GalleryRouteFragment
         ...MemberListPageFragment
       }
     `,

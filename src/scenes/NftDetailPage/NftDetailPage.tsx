@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import ActionText from 'components/core/ActionText/ActionText';
-import Page from 'components/core/Page/Page';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useBackButton from 'hooks/useBackButton';
@@ -87,7 +86,7 @@ function NftDetailPage({ nftId, queryRef }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledNftDetailPage centered={!isMobile} fixedFullPageHeight>
+      <StyledNftDetailPage>
         <StyledBackLink>
           <ActionText onClick={handleBackClick}>
             {isMobile
@@ -108,7 +107,8 @@ function NftDetailPage({ nftId, queryRef }: Props) {
   );
 }
 
-const StyledNftDetailPage = styled(Page)`
+// centered={!isMobile}
+const StyledNftDetailPage = styled.div`
   position: relative;
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
