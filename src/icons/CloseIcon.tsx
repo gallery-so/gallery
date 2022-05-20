@@ -25,7 +25,7 @@ export default function CloseIcon({ isActive }: Props) {
 
 type DecoratedCloseIconProps = {
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 export function DecoratedCloseIcon({ className, onClick }: DecoratedCloseIconProps) {
