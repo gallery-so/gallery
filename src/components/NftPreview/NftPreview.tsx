@@ -134,35 +134,28 @@ function NftPreview({ galleryNftRef }: Props) {
       // disable scroll-to-top when the modal opens
       scroll={false}
     >
-      {/* we nest a link here since we can't directly style NextJS Links */}
-      <StyledLink>
-        <StyledNftPreview
-          maxWidth={nftPreviewMaxWidth}
-          width={nftPreviewWidth}
-          backgroundColorOverride={backgroundColorOverride}
-        >
-          <NftPreviewAsset
-            nftRef={nft}
-            // we'll request images at double the size of the element so that it looks sharp on retina
-            size={previewSize * 2}
+      <StyledNftPreview
+        maxWidth={nftPreviewMaxWidth}
+        width={nftPreviewWidth}
+        backgroundColorOverride={backgroundColorOverride}
+      >
+        <NftPreviewAsset
+          nftRef={nft}
+          // we'll request images at double the size of the element so that it looks sharp on retina
+          size={previewSize * 2}
+        />
+        <StyledNftFooter>
+          <StyledNftLabel
+            title={nft.name}
+            collectionName={nft.openseaCollectionName}
+            contractAddress={nft.contractAddress}
           />
-          <StyledNftFooter>
-            <StyledNftLabel
-              title={nft.name}
-              collectionName={nft.openseaCollectionName}
-              contractAddress={nft.contractAddress}
-            />
-            <StyledGradient type="bottom" direction="down" />
-          </StyledNftFooter>
-        </StyledNftPreview>
-      </StyledLink>
+          <StyledGradient type="bottom" direction="down" />
+        </StyledNftFooter>
+      </StyledNftPreview>
     </Link>
   );
 }
-
-const StyledLink = styled.a`
-  cursor: pointer;
-`;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
@@ -189,6 +182,8 @@ const StyledNftPreview = styled.div<{
   width?: string;
   backgroundColorOverride: string;
 }>`
+  cursor: pointer;
+
   display: flex;
   justify-content: center;
   align-items: center;
