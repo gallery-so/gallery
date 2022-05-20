@@ -17,7 +17,7 @@ import {
   PROMPT_SIGNATURE,
   WalletName,
 } from 'types/Wallet';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { signMessageWithEOA } from '../walletUtils';
 import {
@@ -84,7 +84,7 @@ function AddWalletPendingDefault({
     [viewer?.user?.wallets]
   );
 
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const openManageWalletsModal = useCallback(
     (address: string) => {

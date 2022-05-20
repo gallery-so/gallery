@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
@@ -29,7 +29,7 @@ const WalletModal = ({ queryRef }: ModalProps) => {
 };
 
 export default function useWalletModal() {
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const query = useLazyLoadQuery<useWalletModalQuery>(
     graphql`

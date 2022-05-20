@@ -1,7 +1,8 @@
-import { CSSProperties, memo, Suspense } from 'react';
+import { CSSProperties, memo, Suspense, useMemo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { FullPageLoaderWithLayoutTransitionSupport } from 'components/core/Loader/FullPageLoader';
+import { useRouter } from 'next/router';
 
 type Props = {
   locationKey?: string;
@@ -40,6 +41,28 @@ function FadeTransitioner({ locationKey, children }: Props) {
       </CSSTransition>
     </TransitionGroup>
   );
+}
+
+/**
+ * Stabilizes the location key in certain scenarios to avoid triggering the Fade Transition animation
+ */
+export function useStabilizedRouteTransitionKey() {
+  const { asPath, pathname, query } = useRouter();
+
+  const transitionAnimationKey = useMemo(() => {
+    // if we're looking at the NFT detail modal from the user gallery page,
+    // keep the location key static as to not trigger an animation
+    if (pathname === '/[username]' && query.nftId) {
+      return `/${query.username}`;
+    }
+    // same logic for modal triggered from collection page
+    if (pathname === '/[username]/[collectionId]' && query.nftId) {
+      return `/${query.username}/${query.collectionId}`;
+    }
+    return asPath;
+  }, [asPath, pathname, query]);
+
+  return transitionAnimationKey;
 }
 
 export default memo(FadeTransitioner);

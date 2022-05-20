@@ -1,34 +1,21 @@
-import { captureException } from '@sentry/nextjs';
 import breakpoints from 'components/core/breakpoints';
-import { Directions } from 'components/core/enums';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo, useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { NftDetailViewFragment$key } from '__generated__/NftDetailViewFragment.graphql';
-import NavigationHandle from './NavigationHandle';
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
-import useKeyDown from 'hooks/useKeyDown';
-import { useRouter } from 'next/router';
-import useBackButton from 'hooks/useBackButton';
 
 type Props = {
   username: string;
   authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewFragment$key;
-  nftId: string;
 };
 
-export default function NftDetailView({
-  username,
-  authenticatedUserOwnsAsset,
-  queryRef,
-  nftId,
-}: Props) {
+export default function NftDetailView({ username, authenticatedUserOwnsAsset, queryRef }: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionNft {
@@ -45,11 +32,6 @@ export default function NftDetailView({
         }
         collection @required(action: THROW) {
           dbid
-          nfts {
-            nft {
-              dbid
-            }
-          }
         }
         ...NftDetailAssetFragment
       }
@@ -59,84 +41,14 @@ export default function NftDetailView({
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  const collectionNfts = collectionNft.collection.nfts;
-
-  const { prevNftId, nextNftId } = useMemo(() => {
-    if (!collectionNfts) {
-      captureException(`NFT collection not found for NFT ${nftId}`);
-      return {
-        prevNftId: null,
-        nextNftId: null,
-      };
-    }
-
-    const nftIndex = collectionNfts.findIndex(
-      (collectionNft) => collectionNft?.nft?.dbid === nftId
-    );
-
-    if (nftIndex === -1) {
-      captureException(`NFT not found in collection for NFT ${nftId}`);
-      return {
-        prevNftId: null,
-        nextNftId: null,
-      };
-    }
-
-    return {
-      prevNftId: collectionNfts[nftIndex - 1]?.nft?.dbid ?? null,
-      nextNftId: collectionNfts[nftIndex + 1]?.nft?.dbid ?? null,
-    };
-  }, [collectionNfts, nftId]);
-
   const { nft, collection } = collectionNft;
-
-  const handleBackClick = useBackButton({ username });
-  const { replace } = useRouter();
-
-  const navigateToId = useCallback(
-    (nftId: string) => {
-      void replace(`/${username}/${collection.dbid}/${nftId}`);
-    },
-    [username, collection.dbid, replace]
-  );
-
-  const handleNextPress = useCallback(() => {
-    if (nextNftId) navigateToId(nextNftId);
-  }, [nextNftId, navigateToId]);
-
-  const handlePrevPress = useCallback(() => {
-    if (prevNftId) navigateToId(prevNftId);
-  }, [prevNftId, navigateToId]);
-
-  useKeyDown('ArrowRight', handleNextPress);
-  useKeyDown('ArrowLeft', handlePrevPress);
-  useKeyDown('Escape', handleBackClick);
-  useKeyDown('Backspace', handleBackClick);
 
   const assetHasNote = !!nft.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
-  const leftArrow = prevNftId && (
-    <NavigationHandle
-      direction={Directions.LEFT}
-      username={username}
-      collectionId={collection.dbid}
-      nftId={prevNftId}
-    />
-  );
-
-  const rightArrow = nextNftId && (
-    <NavigationHandle
-      direction={Directions.RIGHT}
-      username={username}
-      collectionId={collection.dbid}
-      nftId={nextNftId}
-    />
-  );
   return (
     <StyledBody>
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
-      {leftArrow}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
           <ShimmerProvider>
@@ -167,7 +79,6 @@ export default function NftDetailView({
         />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
-      {rightArrow}
     </StyledBody>
   );
 }

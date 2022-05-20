@@ -6,7 +6,7 @@ import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
 import {
   useCollectionWizardActions,
@@ -26,7 +26,7 @@ type ConfigProps = {
 
 function useWizardConfig({ push, galleryId }: ConfigProps) {
   const { setOnNext, setOnPrevious } = useWizardCallback();
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
   const wizardId = useWizardId();
 
   const stagedItems = useStagedItemsState();

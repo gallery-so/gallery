@@ -1,22 +1,23 @@
-import { useCallback, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import Spacer from 'components/core/Spacer/Spacer';
 import { Directions } from 'components/core/enums';
-import { useRouter } from 'next/router';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import breakpoints from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import ArrowLeft from 'public/icons/arrow_left.svg';
 import ArrowRight from 'public/icons/arrow_right.svg';
+import ArrowLeftIcon from 'src/icons/ArrowLeftIcon';
+import ArrowRightIcon from 'src/icons/ArrowRightIcon';
 
-const ARROWS = new Map<number, string>([
-  [Directions.LEFT, '←'],
-  [Directions.RIGHT, '→'],
+const ARROWS = new Map<number, ReactElement>([
+  [Directions.LEFT, <ArrowLeftIcon key={1} />],
+  [Directions.RIGHT, <ArrowRightIcon key={2} />],
 ]);
 
-const MOBILE_ARROWS = new Map<number, any>([
+const MOBILE_ARROWS = new Map<number, ReactElement>([
   [Directions.LEFT, <ArrowLeft key={1} />],
   [Directions.RIGHT, <ArrowRight key={2} />],
 ]);
@@ -28,12 +29,10 @@ const HOVER_TEXT = new Map<number, string>([
 
 type Props = {
   direction: Directions;
-  username: string;
-  collectionId: string;
-  nftId: string;
+  onClick: () => void;
 };
 
-function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
+function NavigationHandle({ direction, onClick }: Props) {
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const arrow = useMemo(
@@ -43,18 +42,10 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
 
   const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
 
-  const { replace } = useRouter();
-  const handleOnClick = useCallback(() => {
-    // TODO(Terence): Figure out how to get this state across since Next doesn't support navigation state
-    // void push(nftId, { state: { collection: [] } });
-    // void push({ pathname: nftId });
-    void replace(`/${username}/${collectionId}/${nftId}`);
-  }, [nftId, collectionId, username, replace]);
-
   return (
-    <StyledNavigationHandle onClick={handleOnClick} direction={direction}>
-      <StyledTextWrapper direction={direction}>
-        <ActionText>{arrow}</ActionText>
+    <StyledNavigationHandle direction={direction}>
+      <StyledTextWrapper direction={direction} onClick={onClick}>
+        <StyledArrow>{arrow}</StyledArrow>
         <Spacer width={3} />
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
@@ -64,63 +55,77 @@ function NavigationHandle({ direction, username, collectionId, nftId }: Props) {
   );
 }
 
+const StyledHoverText = styled.div`
+  transition: ${transitions.cubic};
+  opacity: 0;
+  padding: 0px 4px;
+`;
+
+const StyledArrow = styled.div`
+  path {
+    transition: ${transitions.cubic};
+  }
+`;
+
 const StyledTextWrapper = styled.div<{ direction: Directions }>`
   display: flex;
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
   position: absolute;
-  z-index: 100;
   color: ${colors.metal};
   padding: 16px;
   margin: 0 -16px -16px -16px;
+  cursor: pointer;
 
   // We want to set these to 0 rather than pageGutter.mobile because they are positioned absolutely
   // within the StyledPage, which already has padding equal to pageGutter.mobile
   right: ${({ direction }) => (direction ? '16px' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '16px')};
 
-  @media only screen and ${breakpoints.tablet} {
-    position: relative;
-    top: unset;
-    right: ${({ direction }) => (direction ? `${pageGutter.tablet}px` : 'unset')};
-    left: ${({ direction }) => (direction ? 'unset' : `${pageGutter.tablet}px`)};
-    padding: 0;
-    margin: auto;
-  }
-`;
-
-const StyledHoverText = styled.div`
-  transition: opacity ${transitions.cubic};
-  opacity: 0;
-`;
-
-const StyledNavigationHandle = styled.div<{ direction: Directions }>`
-  // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
-  position: fixed;
-  bottom: 16px;
-  height: auto;
-  display: flex;
-  place-items: flex-end;
-  z-index: 1;
-  cursor: pointer;
-
-  color: ${colors.metal};
-  right: ${({ direction }) => (direction ? '0' : 'unset')};
-  left: ${({ direction }) => (direction ? 'unset' : '0')};
-
-  &:hover ${StyledHoverText} ${ActionText}, &:hover ${ActionText} {
+  &:hover ${StyledHoverText} ${ActionText} {
     color: ${colors.offBlack};
   }
 
-  @media only screen and ${breakpoints.tablet} {
+  &:hover ${StyledArrow} path {
+    stroke: ${colors.offBlack};
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     &:hover ${StyledHoverText} {
       opacity: 1;
     }
   }
 
   @media only screen and ${breakpoints.tablet} {
+    position: relative;
+    top: unset;
+    right: ${({ direction }) => (direction ? '0' : 'unset')};
+    left: ${({ direction }) => (direction ? 'unset' : '0')};
+    padding: 24px;
+    margin: auto;
+  }
+`;
+
+const StyledNavigationHandle = styled.div<{ direction: Directions }>`
+  z-index: 1;
+
+  // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
+  position: fixed;
+  bottom: 16px;
+  height: auto;
+  display: flex;
+  place-items: flex-end;
+
+  color: ${colors.metal};
+  right: ${({ direction }) => (direction ? '0' : 'unset')};
+  left: ${({ direction }) => (direction ? 'unset' : '0')};
+
+  @media only screen and ${breakpoints.desktop} {
     height: 100%;
     width: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   // Prevent accidental selection rather than click

@@ -8,6 +8,7 @@ import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
 
 type CollectionGalleryPageProps = {
@@ -64,6 +65,8 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
 
   useKeyDown('e', navigateToEdit);
   useKeyDown('Escape', navigateToUserGallery);
+
+  useDisplayFullPageNftDetailModal();
 
   return (
     <>

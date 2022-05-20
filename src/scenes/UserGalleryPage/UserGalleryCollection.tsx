@@ -22,7 +22,7 @@ import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryColl
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -68,7 +68,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const showEditActions = loggedInUserId === collection.gallery.owner.id;
   const galleryId = collection.gallery.dbid;
 
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
   const { push, asPath } = useRouter();
   const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
