@@ -1,4 +1,5 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/GlobalLayoutContext';
 import {
   ReactElement,
   ReactNode,
@@ -17,6 +18,7 @@ import AnimatedModal from './AnimatedModal';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
+  isModalMounted: boolean;
 };
 
 const ModalStateContext = createContext<ModalState | undefined>(undefined);
@@ -64,7 +66,10 @@ function ModalProvider({ children }: Props) {
   // Callback to trigger when the modal is closed
   const onCloseRef = useRef(noop);
 
-  const state = useMemo(() => ({ isModalOpenRef }), [isModalOpenRef]);
+  const state = useMemo(
+    () => ({ isModalOpenRef, isModalMounted: isMounted }),
+    [isModalOpenRef, isMounted]
+  );
 
   const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
     setIsActive(true);
@@ -78,7 +83,7 @@ function ModalProvider({ children }: Props) {
     // set padding as a placeholder for the scrollbar to prevent jank.
     // width is defined in `index.css`
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = '6px';
+    document.body.style.paddingRight = `${SCROLLBAR_WIDTH_PX}px`;
   }, []);
 
   // Trigger fade-out that takes X seconds
