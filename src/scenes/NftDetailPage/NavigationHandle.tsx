@@ -90,7 +90,7 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
     stroke: ${colors.offBlack};
   }
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     &:hover ${StyledHoverText} {
       opacity: 1;
     }
@@ -107,6 +107,8 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
 `;
 
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
+  z-index: 1;
+
   // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
   position: fixed;
   bottom: 16px;
@@ -118,7 +120,7 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   right: ${({ direction }) => (direction ? '0' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     height: 100%;
     width: unset;
     display: flex;
