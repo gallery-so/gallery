@@ -131,6 +131,8 @@ function NftPreview({ galleryNftRef }: Props) {
       // styled-components. Without this, the <a> tag will not have the href attribute,
       // which hurts your site's accessibility and might affect SEO
       passHref
+      // disable scroll-to-top when the modal opens
+      scroll={false}
     >
       {/* we nest a link here since we can't directly style NextJS Links */}
       <StyledLink>

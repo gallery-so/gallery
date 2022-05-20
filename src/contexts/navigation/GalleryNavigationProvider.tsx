@@ -1,5 +1,8 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FADE_TRANSITION_TIME_MS,
+  useStabilizedRouteTransitionKey,
+} from 'components/FadeTransitioner/FadeTransitioner';
 import { useRouter } from 'next/router';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
@@ -45,6 +48,19 @@ export function GalleryNavigationProvider({ children }: Props) {
     track('Page view', { path: asPath });
   }, [asPath, track]);
 
+  // If the URL technically changes but our internal route key remains stable, avoid
+  // custom scroll behavior as it only gets in the way. Without this, for example,
+  // entering and exiting the NFT Detail Modal would cause scroll jank.
+  const locationKey = useStabilizedRouteTransitionKey();
+  const locationKeyRef = useRef('');
+  const previousLocationKeyRef = useRef('');
+  useEffect(() => {
+    previousLocationKeyRef.current = locationKeyRef.current;
+    locationKeyRef.current = locationKey;
+    // `asPath` needs to be a dependency here even if it's not used, because it ensures
+    // we keep track of the locationKey on every navigation
+  }, [asPath, locationKey]);
+
   useEffect(() => {
     const originalPushState = window.history.pushState;
 
@@ -62,6 +78,11 @@ export function GalleryNavigationProvider({ children }: Props) {
         let scrollY = window.scrollY;
 
         function handleScroll() {
+          // prevent default scroll behavior if internal location hasn't changed
+          if (locationKeyRef.current === previousLocationKeyRef.current) {
+            return;
+          }
+
           /**
            * !!! WARNING !!!
            *

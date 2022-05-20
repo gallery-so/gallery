@@ -72,6 +72,12 @@ function ModalProvider({ children }: Props) {
     setIsFullPage(isFullPage);
     setContent(providedContent);
     onCloseRef.current = onClose;
+
+    // prevent main body from being scrollable while the modal is open.
+    // set padding as a placeholder for the scrollbar to prevent jank.
+    // width is defined in `index.css`
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '6px';
   }, []);
 
   // Trigger fade-out that takes X seconds
@@ -85,6 +91,11 @@ function ModalProvider({ children }: Props) {
       setContent(null);
       setIsFullPage(false);
       onCloseRef.current = noop;
+
+      // enable scrolling again
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
     }, ANIMATED_COMPONENT_TRANSITION_MS - 30);

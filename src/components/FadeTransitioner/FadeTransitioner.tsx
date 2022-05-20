@@ -43,7 +43,10 @@ function FadeTransitioner({ locationKey, children }: Props) {
   );
 }
 
-export function useRouteTransitionKey() {
+/**
+ * Stabilizes the location key in certain scenarios to avoid triggering the Fade Transition animation
+ */
+export function useStabilizedRouteTransitionKey() {
   const { asPath, pathname, query } = useRouter();
 
   const transitionAnimationKey = useMemo(() => {

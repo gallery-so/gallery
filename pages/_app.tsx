@@ -8,7 +8,7 @@ import 'src/scenes/NftDetailPage/model-viewer.css';
 import Head from 'next/head';
 import AppProvider from 'contexts/AppProvider';
 import FadeTransitioner, {
-  useRouteTransitionKey,
+  useStabilizedRouteTransitionKey,
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
@@ -33,7 +33,7 @@ const App: FC<{
 }> = ({ Component, pageProps }) => {
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
-  const locationKey = useRouteTransitionKey();
+  const locationKey = useStabilizedRouteTransitionKey();
 
   return (
     <>

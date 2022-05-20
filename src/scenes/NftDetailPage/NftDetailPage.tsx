@@ -126,7 +126,7 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
     ])
   );
 
-  // TODO: write comment
+  // TODO: write explanatory comments
   const pushToNftById = useCallback(
     (nftId: string) => {
       const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
@@ -135,7 +135,9 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
         // href
         currentLocation,
         // as
-        `/${username}/${initialCollectionId}/${nftId}`
+        `/${username}/${initialCollectionId}/${nftId}`,
+        // prevent scroll-to-top when navigating
+        { scroll: false }
       );
     },
     [initialCollectionId, pathname, push, urlQuery, username]

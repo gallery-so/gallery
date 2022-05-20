@@ -15,8 +15,6 @@ export default function useDisplayFullPageNftDetailModal() {
     push,
   } = useRouter();
 
-  // TODO: get whether modal is mounted from context, so we don't re-open
-  // another modal as the user transitions between NFT detail page
   const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
 
   useEffect(() => {
@@ -30,7 +28,13 @@ export default function useDisplayFullPageNftDetailModal() {
         <Suspense fallback={<FullPageLoader />}>
           <NftDetailPage collectionId={collectionId} nftId={nftId} />
         </Suspense>,
-        () => push(returnTo),
+        () =>
+          push(
+            returnTo,
+            undefined,
+            // prevent scroll-to-top when exiting the modal
+            { scroll: false }
+          ),
         true
       );
     }
