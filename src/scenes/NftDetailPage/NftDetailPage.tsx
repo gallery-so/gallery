@@ -131,8 +131,13 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
       const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
       // TODO: this attempts to fix a suspense call that gets triggered when moving between
       // NFTs after a user arrives directly at an NFT detail page /[username]/[collectionId]/[nftId].
-      // stabiliizing someone works, but it still calls the collection data. we may need to pre-load
-      // the collection data using nextjs tooling
+      // stabiliizing someone works, but it still calls the collection data.
+      //
+      // possible solution 1: pre-load the Collection Page data if a user arrives directly
+      // on an NFT Detail Page
+      //
+      // possible solution 2: figure out why the page is making an imperative request for data
+      // that should technically be in the cache. ask terence?!
       //
       // const stabilizedPathname = pathname.includes('[nftId]')
       //   ? '/[username]/[collectionId]'
