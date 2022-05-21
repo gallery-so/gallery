@@ -4,6 +4,7 @@ import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
 
 type Props = {
