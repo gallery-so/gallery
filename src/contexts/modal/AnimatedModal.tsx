@@ -1,9 +1,10 @@
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useCallback, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
 import transitions, { ANIMATED_COMPONENT_TRANSLATION_PIXELS } from 'components/core/transitions';
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
+import useKeyDown from 'hooks/useKeyDown';
 
 type Props = {
   isActive: boolean;
@@ -13,22 +14,24 @@ type Props = {
 };
 
 function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
+  // hide modal if user clicks Back
   useEffect(() => {
-    const close = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        // This is wrapped in a setTimeout so that any event that triggers showModal via escape does not cause jitter
-        // E.g. CollectionEditor.tsx opens the modal via escape, and so trying to close here would jitter an open/close rapidly
-        setTimeout(() => {
-          hideModal();
-        }, 150);
-      }
-    };
-
-    window.addEventListener('keydown', close);
-    return () => {
-      window.removeEventListener('keydown', close);
-    };
+    function handlePopState() {
+      hideModal();
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [hideModal]);
+
+  // this is wrapped in a setTimeout so that any event that triggers showModal
+  // via escape does not cause jitter. e.g. CollectionEditor.tsx opens the modal
+  // via escape, so trying to close here would jitter an open/close rapidly
+  const delayedHideModal = useCallback(() => {
+    setTimeout(hideModal, 150);
+  }, [hideModal]);
+
+  // hide modal if user clicks Escape
+  useKeyDown('Escape', delayedHideModal);
 
   return (
     <_ToggleFade isActive={isActive}>
@@ -121,7 +124,7 @@ const StyledContent = styled.div<{ noPadding: boolean }>`
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   right: 0;
   top: 0;
