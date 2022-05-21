@@ -59,12 +59,9 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     }
   }, [push, collectionId, userOwnsCollection, isLoggedIn]);
 
-  const navigateToUserGallery = useCallback(() => {
-    void push(`/${username}`);
-  }, [push, username]);
-
   useKeyDown('e', navigateToEdit);
-  useKeyDown('Escape', navigateToUserGallery);
+
+  useDisplayFullPageNftDetailModal();
 
   useDisplayFullPageNftDetailModal();
 

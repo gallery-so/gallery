@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Head from 'next/head';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -130,6 +129,19 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
   const pushToNftById = useCallback(
     (nftId: string) => {
       const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
+      // TODO: this attempts to fix a suspense call that gets triggered when moving between
+      // NFTs after a user arrives directly at an NFT detail page /[username]/[collectionId]/[nftId].
+      // stabiliizing someone works, but it still calls the collection data.
+      //
+      // possible solution 1: pre-load the Collection Page data if a user arrives directly
+      // on an NFT Detail Page
+      //
+      // possible solution 2: figure out why the page is making an imperative request for data
+      // that should technically be in the cache. ask terence?!
+      //
+      // const stabilizedPathname = pathname.includes('[nftId]')
+      //   ? '/[username]/[collectionId]'
+      //   : pathname;
       const currentLocation = `${pathname}?${querystring}`;
       push(
         // href
@@ -210,23 +222,6 @@ const _DirectionalFade = styled.div<{ visibility: string }>`
 `;
 
 const StyledNftDetailPage = styled.div`
-  // position: relative;
-  // @media only screen and ${breakpoints.mobile} {
-  //   margin-left: ${pageGutter.mobile}px;
-  //   margin-right: ${pageGutter.mobile}px;
-  //   margin-bottom: 32px;
-  // }
-
-  // @media only screen and ${breakpoints.tablet} {
-  //   margin-top: 0px;
-  //   margin-left: ${pageGutter.tablet}px;
-  //   margin-right: ${pageGutter.tablet}px;
-  // }
-
-  // @media only screen and ${breakpoints.desktop} {
-  //   margin: 0px;
-  // }
-
   width: 100vw;
   height: 100vh;
 
