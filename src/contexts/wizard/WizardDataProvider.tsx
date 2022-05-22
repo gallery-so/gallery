@@ -64,7 +64,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     try {
       await refreshOpenseaNfts();
       loadQuery({}, { fetchPolicy: 'store-and-network' });
-    } catch (error) {
+    } catch (error: unknown) {
       captureException(error);
       if (error instanceof Error) {
         pushToast({ message: error.message });
@@ -82,12 +82,10 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const wizardDataState = useMemo(() => ({ id, isRefreshingNfts, handleRefreshNfts, queryRef }), [
-    id,
-    isRefreshingNfts,
-    handleRefreshNfts,
-    queryRef,
-  ]);
+  const wizardDataState = useMemo(
+    () => ({ id, isRefreshingNfts, handleRefreshNfts, queryRef }),
+    [id, isRefreshingNfts, handleRefreshNfts, queryRef]
+  );
 
   return (
     <WizardDataContext.Provider value={wizardDataState}>{children}</WizardDataContext.Provider>

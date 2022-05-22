@@ -157,10 +157,11 @@ function OrganizeGallery({
     next,
   });
 
-  const isEmptyGallery = useMemo(() => gallery.collections.length === 0, [
-    gallery.collections.length,
-  ]);
-
+  const isEmptyGallery = useMemo(
+    () => gallery.collections.length === 0,
+    [gallery.collections.length]
+  );
+  
   return (
     <StyledOrganizeGallery>
       <Filler />

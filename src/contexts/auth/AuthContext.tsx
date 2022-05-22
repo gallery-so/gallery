@@ -181,7 +181,7 @@ const AuthProvider = memo(({ children }: Props) => {
         }
 
         transaction.finish();
-      } catch (error) {
+      } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);
@@ -215,7 +215,7 @@ const AuthProvider = memo(({ children }: Props) => {
 
         setAuthState(LOGGED_OUT);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+      } catch (error: unknown) {
         // we can ignore errors when fetching the current user, since
         // it just means we should give them the logged-out experience
         setAuthState(LOGGED_OUT);
