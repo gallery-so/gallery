@@ -125,7 +125,7 @@ function NftPreview({ galleryNftRef }: Props) {
       // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
       // appropriate query params attached. this allows the app to stay on the current page,
       // while also feeding the modal the necessary data to display an NFT in detail.
-      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&nftId=${nft.dbid}&originPage=${originPage}`}
+      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&nftId=${nft.dbid}&originPage=${originPage}&modal=true`}
       // from the docs: if the child of Link is a custom component that wraps an <a> tag,
       // you must add `passHref` to Link. This is necessary if you’re using libraries like
       // styled-components. Without this, the <a> tag will not have the href attribute,
