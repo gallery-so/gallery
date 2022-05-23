@@ -31,7 +31,7 @@ export enum contentSize {
 
 export enum pageGutter {
   mobile = 16,
-  tablet = 32,
+  tablet = 24,
 }
 
 export default breakpoints;
