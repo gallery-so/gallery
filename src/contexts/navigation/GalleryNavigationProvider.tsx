@@ -3,10 +3,14 @@ import {
   FADE_TRANSITION_TIME_MS,
   useStabilizedRouteTransitionKey,
 } from 'components/FadeTransitioner/FadeTransitioner';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
-type GalleryNavigationContextType = { historyStackLength: number; historyStack: string[] };
+type HistoryStackElement = Pick<NextRouter, 'asPath' | 'route' | 'pathname' | 'query'>;
+type GalleryNavigationContextType = {
+  historyStackLength: number;
+  historyStack: HistoryStackElement[];
+};
 
 const GalleryNavigationContext = createContext<GalleryNavigationContextType | undefined>(undefined);
 
@@ -34,18 +38,21 @@ const SCROLL_TRIGGER_TIME_MS =
 
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
-  const { asPath } = useRouter();
   // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
-  const [historyStack, setHistoryStack] = useState<string[]>([]);
+  const [historyStack, setHistoryStack] = useState<HistoryStackElement[]>([]);
+  const { asPath, route, pathname, query } = useRouter();
 
   const track = useTrack();
 
   useEffect(() => {
     // history
-    setHistoryStack((stack) => [...stack, asPath]);
+    setHistoryStack((stack) => [...stack, { asPath, route, pathname, query }]);
 
     // analytics
     track('Page view', { path: asPath });
+
+    // only trigger this effect on `asPath` change; other params are decorative and may cause over-active calls
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath, track]);
 
   // If the URL technically changes but our internal route key remains stable, avoid

@@ -371,7 +371,7 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   z-index: ${({ zIndex }) => zIndex};
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transition: opacity ${({ transitionStyles }) => transitionStyles};
+  transition: ${({ transitionStyles }) => transitionStyles};
 
   // prevent nav child elements from being clickable when not in view
   > div > div {

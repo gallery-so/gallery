@@ -63,8 +63,6 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
 
   useDisplayFullPageNftDetailModal();
 
-  useDisplayFullPageNftDetailModal();
-
   return (
     <>
       <Head>
