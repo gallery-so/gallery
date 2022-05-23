@@ -153,7 +153,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const { pushToast } = useToastActions();
 
   const handleUnauthorized = useCallback(() => {
-    pushToast(EXPIRED_SESSION_MESSAGE);
+    pushToast({ message: EXPIRED_SESSION_MESSAGE });
     setLoggedOut();
   }, [pushToast, setLoggedOut]);
 
@@ -177,7 +177,7 @@ const AuthProvider = memo(({ children }: Props) => {
           response?.viewer?.__typename === 'ErrNotAuthorized' &&
           response.viewer.cause.__typename === 'ErrInvalidToken'
         ) {
-          pushToast(EXPIRED_SESSION_MESSAGE);
+          pushToast({ message: EXPIRED_SESSION_MESSAGE });
         }
 
         transaction.finish();
@@ -210,7 +210,7 @@ const AuthProvider = memo(({ children }: Props) => {
           response?.viewer?.__typename === 'ErrNotAuthorized' &&
           response.viewer.cause.__typename === 'ErrInvalidToken'
         ) {
-          pushToast(EXPIRED_SESSION_MESSAGE);
+          pushToast({ message: EXPIRED_SESSION_MESSAGE });
         }
 
         setAuthState(LOGGED_OUT);

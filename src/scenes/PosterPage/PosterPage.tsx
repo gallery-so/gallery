@@ -29,11 +29,10 @@ export default function PosterPage() {
   };
 
   const handleSignPoster = () => {
-    pushToast(
-      'Thank you for participating in the (Object 006) 2022 Community Poster event.',
-      () => {},
-      true
-    );
+    pushToast({
+      message: 'Thank you for participating in the (Object 006) 2022 Community Poster event.',
+      autoClose: true,
+    });
   };
 
   return (
