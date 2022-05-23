@@ -123,6 +123,10 @@ const StyledContent = styled.div<{ noPadding: boolean }>`
   position: relative;
   padding: ${({ noPadding }) => (noPadding ? 0 : 40)}px;
   background: ${colors.white};
+
+  // allows for scrolling within child components
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
