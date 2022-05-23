@@ -1,11 +1,11 @@
 import TextButton from 'components/core/Button/TextButton';
 import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
-import { useModal } from 'contexts/modal/ModalContext';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
+import { useModalActions } from 'contexts/modal/ModalContext';
 
 type Props = {
   userRef: FollowerCountFragment$key;
@@ -27,7 +27,7 @@ export default function FollowerCount({ userRef }: Props) {
     userRef
   );
 
-  const { showModal } = useModal();
+  const { showModal } = useModalActions();
 
   const handleClick = useCallback(() => {
     showModal(<FollowList userRef={user}></FollowList>);
@@ -39,7 +39,7 @@ export default function FollowerCount({ userRef }: Props) {
   return (
     <StyledFollowerCount>
       <StyledTooltipParent>
-        <TextButton text={user.followers.length} onClick={handleClick}></TextButton>
+        <TextButton text={`${user.followers.length}`} onClick={handleClick}></TextButton>
         <Tooltip
           text={`See ${followerCount} follower${
             followerCount > 1 ? 's' : ''

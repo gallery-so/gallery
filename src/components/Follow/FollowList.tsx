@@ -11,6 +11,8 @@ type Props = {
   userRef: any;
 };
 
+const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
+
 // TODO abbreivate long numbers
 export default function FollowList({ userRef }: Props) {
   const user = useFragment(
@@ -59,11 +61,18 @@ export default function FollowList({ userRef }: Props) {
           <StyledListItem key={user.dbid} href={`/${user.username}`}>
             <TitleS>{user.username}</TitleS>
             <BaseM>
-              <Markdown text={user.bio} />
+              <Markdown text={getFirstLine(user.bio)} />
             </BaseM>
-            {/* <BaseM> {user.bio}</BaseM> */}
           </StyledListItem>
         ))}
+        {userList.length === 0 && (
+          <StyledEmptyList>
+            <BaseM>
+              {displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'}
+            </BaseM>
+            <Spacer height={48} />
+          </StyledEmptyList>
+        )}
       </StyledList>
     </StyledFollowList>
   );
@@ -95,6 +104,7 @@ const StyledList = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  height: 100%;
 `;
 
 const StyledListItem = styled.a`
@@ -112,4 +122,12 @@ const StyledTextButton = styled(TextButton)<{ active: boolean }>`
     `${StyledButtonText} {
     color: ${colors.offBlack};
   }`}
+`;
+
+const StyledEmptyList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
 `;

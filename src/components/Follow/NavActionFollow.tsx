@@ -11,19 +11,6 @@ type Props = {
   queryRef: any;
 };
 
-//
-// TODO
-// dont show navbar actions if signed out - OR NOT, ASK JESS
-// format markdown for bio
-// test extreme cases, consider virtualizing list
-
-// questions
-// how to format bio - with markdown, new lines, etc
-// blank state with 0 followers
-// behavior when signed out: disabled, like when you view your own gallery? or have follow up button and prompt sign in?
-// or disabled + if you hover, it shows "please sign in to follow"
-
-// rename to NavActionFollow
 export default function NavActionFollow({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
@@ -39,7 +26,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     userRef
   );
 
-  const query = useFragment(
+  const loggedInUserQuery = useFragment(
     graphql`
       fragment NavActionFollowQueryFragment on Query {
         ...useLoggedInUserIdFragment
@@ -48,9 +35,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     queryRef
   );
 
-  const loggedInUserId = useLoggedInUserId(query);
-
-  const isAuthenticatedUsersPage = loggedInUserId === user?.id;
+  const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
 
   const followerIds = useMemo(
     () => user.followers.map((follower: { id: string }) => follower.id),
@@ -64,7 +49,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <StyledNavActionFollow>
-      <FollowButton userRef={user} isFollowing={isFollowing} disabled={isAuthenticatedUsersPage} />
+      <FollowButton userRef={user} isFollowing={isFollowing} loggedInUserId={loggedInUserId} />
       <Spacer width={4} />
       <FollowerCount userRef={user}></FollowerCount>
     </StyledNavActionFollow>

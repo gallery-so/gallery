@@ -9,13 +9,14 @@ import IconButton from 'components/IconButton/IconButton';
 type Props = {
   userRef: any;
   isFollowing: boolean;
-  disabled: boolean;
+  loggedInUserId?: string;
 };
 
-export default function FollowButton({ userRef, isFollowing, disabled }: Props) {
+export default function FollowButton({ userRef, isFollowing, loggedInUserId }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowButtonFragment on GalleryUser {
+        id
         dbid
       }
     `,
@@ -29,11 +30,26 @@ export default function FollowButton({ userRef, isFollowing, disabled }: Props) 
     isFollowing ? unfollowUser(user.dbid) : followUser(user.dbid);
   }, [followUser, isFollowing, unfollowUser, user.dbid]);
 
-  const tooltipText = useMemo(() => (isFollowing ? 'Unfollow' : 'Follow'), [isFollowing]);
+  const isAuthenticatedUsersPage = loggedInUserId === user?.id;
+  const isFollowActionDisabled = useMemo(
+    () => isAuthenticatedUsersPage || !loggedInUserId,
+    [isAuthenticatedUsersPage, loggedInUserId]
+  );
+
+  const tooltipText = useMemo(() => {
+    if (!loggedInUserId) {
+      return 'Please sign in to follow.';
+    }
+    return isFollowing ? 'Unfollow' : 'Follow';
+  }, [isFollowing, loggedInUserId]);
 
   return (
-    <StyledTooltipParent disabled={disabled}>
-      <IconButton onClick={handleClick} isFollowing={isFollowing} disabled={disabled} />
+    <StyledTooltipParent disabled={isAuthenticatedUsersPage}>
+      <IconButton
+        onClick={handleClick}
+        isFollowing={isFollowing}
+        disabled={isFollowActionDisabled}
+      />
       <Tooltip text={tooltipText} />
     </StyledTooltipParent>
   );
