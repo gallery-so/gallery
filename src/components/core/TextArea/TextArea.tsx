@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
 import { BaseM } from '../Text/Text';
+import MarkdownShortcuts from '../Markdown/MarkdownShortcuts';
+
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 
 type TextAreaProps = {
   className?: string;
@@ -11,31 +15,47 @@ type TextAreaProps = {
   defaultValue?: string;
   autoFocus?: boolean;
   textAreaHeight?: string;
+  showMarkdownShortcuts?: boolean;
+  hasPadding?: boolean;
 };
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
-    { className, onChange = noop, placeholder, defaultValue, autoFocus = false, textAreaHeight },
+    {
+      className,
+      onChange = noop,
+      placeholder,
+      defaultValue,
+      autoFocus = false,
+      textAreaHeight,
+      showMarkdownShortcuts = false,
+      hasPadding = false,
+    },
     ref
   ) => {
-    const _ref = useRef<HTMLTextAreaElement>(null);
-    const textAreaRef = ref || _ref;
-
     return (
-      <StyledTextArea
-        className={className}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        onChange={onChange}
-        onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
-        autoFocus={autoFocus}
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="off"
-        spellCheck="false"
-        textAreaHeight={textAreaHeight}
-        ref={textAreaRef}
-      />
+      <>
+        <StyledTextArea
+          className={className}
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
+          autoFocus={autoFocus}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+          textAreaHeight={textAreaHeight}
+          ref={ref}
+          hasPadding={hasPadding}
+        />
+        {showMarkdownShortcuts && isFeatureEnabled(FeatureFlag.MARKDOWN_SHORTCUTS) && (
+          <StyledMarkdownContainer hasPadding={hasPadding}>
+            <MarkdownShortcuts textAreaRef={ref as React.MutableRefObject<HTMLTextAreaElement>} />
+          </StyledMarkdownContainer>
+        )}
+      </>
     );
   }
 );
@@ -69,12 +89,17 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   return (
-    <StyledTextAreaWithCharCount className={className}>
-      <TextArea {...textAreaProps} />
-      <StyledCharacterCounter error={currentCharCount > maxCharCount}>
-        {currentCharCount}/{maxCharCount}
-      </StyledCharacterCounter>
-    </StyledTextAreaWithCharCount>
+    <>
+      <StyledTextAreaWithCharCount className={className}>
+        <TextArea {...textAreaProps} />
+        <StyledCharacterCounter
+          error={currentCharCount > maxCharCount}
+          hasPadding={textAreaProps?.hasPadding || false}
+        >
+          {currentCharCount}/{maxCharCount}
+        </StyledCharacterCounter>
+      </StyledTextAreaWithCharCount>
+    </>
   );
 }
 
@@ -136,7 +161,10 @@ export function AutoResizingTextAreaWithCharCount({
           textAreaHeight={textAreaHeight}
           onChange={handleChange}
         />
-        <StyledCharacterCounter error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}>
+        <StyledCharacterCounter
+          error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
+          hasPadding={textAreaProps?.hasPadding || false}
+        >
           {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
         </StyledCharacterCounter>
       </StyledParentContainer>
@@ -147,16 +175,23 @@ export function AutoResizingTextAreaWithCharCount({
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
   border: 1px solid ${colors.metal};
+  padding-bottom: 1px; /* This fixes a FF bug where the bottom border does not appear */
 `;
 
 const StyledParentContainer = styled.div`
-  padding-bottom: 20px;
+  padding-bottom: 32px;
 `;
 
-const StyledCharacterCounter = styled(BaseM)<{ error: boolean }>`
+const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boolean }>`
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
   color: ${({ error }) => (error ? colors.error : colors.metal)};
+`;
+
+const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`
+  position: absolute;
+  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  left: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 `;

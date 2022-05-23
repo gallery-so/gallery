@@ -99,9 +99,14 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
 const StyledInteractiveLink = styled(InteractiveLink)`
   color: ${colors.white};
   width: fit-content;
+  font-size: 12px;
 
   &:hover {
     color: ${colors.white};
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
   }
 `;
 

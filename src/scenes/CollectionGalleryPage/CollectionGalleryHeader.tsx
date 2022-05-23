@@ -222,8 +222,6 @@ const StyledUsername = styled.span`
 const StyledCollectionNote = styled(BaseM)`
   width: 100%;
   word-break: break-word;
-  /* ensures linebreaks are reflected in UI */
-  white-space: pre-line;
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;

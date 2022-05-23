@@ -11,7 +11,6 @@ import {
   useMemo,
   useRef,
   MutableRefObject,
-  useEffect,
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
@@ -106,15 +105,6 @@ function ModalProvider({ children }: Props) {
       // elements flashing before they're removed from view
     }, ANIMATED_COMPONENT_TRANSITION_MS - 30);
   }, []);
-
-  // hide modal if user clicks Back
-  useEffect(() => {
-    function handlePopState() {
-      hideModal();
-    }
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [hideModal]);
 
   const actions = useMemo(
     () => ({

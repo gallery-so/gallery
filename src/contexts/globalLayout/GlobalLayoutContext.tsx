@@ -18,9 +18,6 @@ import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
 import useDebounce from 'hooks/useDebounce';
 import isTouchscreenDevice from 'utils/isTouchscreenDevice';
-import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
-import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import GlobalNavbar, {
   GLOBAL_NAVBAR_HEIGHT,
   Props as GlobalNavbarProps,
@@ -352,13 +349,7 @@ function GlobalNavbarWithFadeEnabled({
     >
       {
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? (
-          isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
-            <PosterBanner queryRef={query} />
-          ) : (
-            <Banner text="" queryRef={query} />
-          )
-        ) : null
+        isBannerVisible ? <Banner text="" queryRef={query} /> : null
       }
       <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
     </StyledGlobalNavbarWithFadeEnabled>
