@@ -126,33 +126,32 @@ function NftPreview({ galleryNftRef }: Props) {
       // appropriate query params attached. this allows the app to stay on the current page,
       // while also feeding the modal the necessary data to display an NFT in detail.
       href={`${pathname}?username=${username}&collectionId=${collection.dbid}&nftId=${nft.dbid}&originPage=${originPage}&modal=true`}
-      // from the docs: if the child of Link is a custom component that wraps an <a> tag,
-      // you must add `passHref` to Link. This is necessary if you’re using libraries like
-      // styled-components. Without this, the <a> tag will not have the href attribute,
-      // which hurts your site's accessibility and might affect SEO
-      passHref
       // disable scroll-to-top when the modal opens
       scroll={false}
     >
-      <StyledNftPreview
-        maxWidth={nftPreviewMaxWidth}
-        width={nftPreviewWidth}
-        backgroundColorOverride={backgroundColorOverride}
-      >
-        <NftPreviewAsset
-          nftRef={nft}
-          // we'll request images at double the size of the element so that it looks sharp on retina
-          size={previewSize * 2}
-        />
-        <StyledNftFooter>
-          <StyledNftLabel
-            title={nft.name}
-            collectionName={nft.openseaCollectionName}
-            contractAddress={nft.contractAddress}
+      {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
+          This will inherit the `as` URL from the parent component. */}
+      <a>
+        <StyledNftPreview
+          maxWidth={nftPreviewMaxWidth}
+          width={nftPreviewWidth}
+          backgroundColorOverride={backgroundColorOverride}
+        >
+          <NftPreviewAsset
+            nftRef={nft}
+            // we'll request images at double the size of the element so that it looks sharp on retina
+            size={previewSize * 2}
           />
-          <StyledGradient type="bottom" direction="down" />
-        </StyledNftFooter>
-      </StyledNftPreview>
+          <StyledNftFooter>
+            <StyledNftLabel
+              title={nft.name}
+              collectionName={nft.openseaCollectionName}
+              contractAddress={nft.contractAddress}
+            />
+            <StyledGradient type="bottom" direction="down" />
+          </StyledNftFooter>
+        </StyledNftPreview>
+      </a>
     </Link>
   );
 }
