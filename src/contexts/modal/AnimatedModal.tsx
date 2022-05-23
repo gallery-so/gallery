@@ -1,7 +1,9 @@
 import { ReactElement, useCallback, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
-import transitions, { ANIMATED_COMPONENT_TRANSLATION_PIXELS } from 'components/core/transitions';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
+} from 'components/core/transitions';
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
@@ -69,13 +71,13 @@ const _ToggleFade = styled.div<{ isActive: boolean }>`
 `;
 
 const translateUp = keyframes`
-    from { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS}px) };
+    from { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
     to { transform: translateY(0px) };
 `;
 
 const translateDown = keyframes`
     from { transform: translateY(0px) };
-    to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS}px) };
+    to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
 `;
 
 const _ToggleTranslate = styled.div<{ isActive: boolean }>`
