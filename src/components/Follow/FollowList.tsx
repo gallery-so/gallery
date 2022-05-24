@@ -14,7 +14,6 @@ type Props = {
 
 const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
 
-// TODO abbreivate long numbers
 export default function FollowList({ userRef }: Props) {
   const user = useFragment(
     graphql`
