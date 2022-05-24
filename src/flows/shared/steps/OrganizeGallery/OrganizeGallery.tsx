@@ -33,9 +33,10 @@ function useNotOptimizedForMobileWarning() {
 
   useEffect(() => {
     if (detectMobileDevice()) {
-      pushToast(
-        "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery."
-      );
+      pushToast({
+        message:
+          "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery.",
+      });
     }
   }, [pushToast]);
 }
@@ -159,7 +160,7 @@ function OrganizeGallery({
     () => gallery.collections.length === 0,
     [gallery.collections.length]
   );
-
+  
   return (
     <StyledOrganizeGallery>
       <Spacer height={GLOBAL_NAVBAR_HEIGHT} />

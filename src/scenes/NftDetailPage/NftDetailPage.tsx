@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Head from 'next/head';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -12,6 +12,9 @@ import useKeyDown from 'hooks/useKeyDown';
 import NavigationHandle from './NavigationHandle';
 import { removeNullValues } from 'utils/removeNullValues';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
+import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 type Props = {
   nftId: string;
@@ -43,7 +46,6 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
                   dbid
                   name
                 }
-                # ...useNavigationArrowsFragment
                 ...NftDetailViewFragment
               }
             }
@@ -73,11 +75,7 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
   }, [nftId, track]);
 
   if (initialCollectionNft?.__typename !== 'CollectionNft') {
-    // captureException('NftDetailPage: requested nft did not return a CollectionNft');
-    // return <NotFound resource="nft" />;
-
-    // TODO: wrap this page in an error boundary that will capture and display a NotFound
-    throw new Error('NftDetailPage: requested nft did not return a CollectionNft');
+    throw new Error('NftDetailPage: CollectionNft for requested NFT not found');
   }
 
   const collection = removeNullValues(initialCollectionNft.collection?.nfts);
@@ -98,7 +96,7 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
   const { username } = urlQuery;
 
   if (!username || Array.isArray(username)) {
-    throw new Error('something has gone horribly wrong!');
+    throw new Error('NFT Detail Page: username not found in page query params');
   }
 
   const headTitle = `${selectedNft?.nft?.name} - ${username} | Gallery`;
@@ -116,7 +114,18 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
     };
   }, [collection, selectedNftIndex]);
 
-  // TODO: write comment about how this works
+  /**
+   * This state will keep track of up-to-3 NFTs that are mounted on the DOM:
+   *
+   *            [hidden-left]    [visible]    [hidden-right]
+   * opacity :        0              1              0
+   * position:      -10px            0px          +10px
+   *
+   * You can picture the "current" NFT as the middle one, while the left and right
+   * NFTs are hidden on either side. This will allow the adjacent NFTs to slide in
+   * smoothly as the user navigates left and right. Edge cases are handled accordingly
+   * in the `shiftNftCarousel` util function.
+   */
   const [mountedNfts, setMountedNfts] = useState<MountedNft<typeof prevNft>[]>(
     removeNullValues([
       prevNft ? { nft: prevNft, visibility: 'hidden-left' } : null,
@@ -125,10 +134,9 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
     ])
   );
 
-  // TODO: write explanatory comments
+  // Redirects user to view an adjacent NFT
   const pushToNftById = useCallback(
     (nftId: string) => {
-      const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
       // TODO: this attempts to fix a suspense call that gets triggered when moving between
       // NFTs after a user arrives directly at an NFT detail page /[username]/[collectionId]/[nftId].
       // stabiliizing someone works, but it still calls the collection data.
@@ -142,13 +150,17 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
       // const stabilizedPathname = pathname.includes('[nftId]')
       //   ? '/[username]/[collectionId]'
       //   : pathname;
+      //-------------–––----------------
+
+      const querystring = new URLSearchParams(urlQuery as Record<string, string>).toString();
       const currentLocation = `${pathname}?${querystring}`;
       push(
-        // href
+        // This `href` param will remain the same, so that it feels like the user is rooted in a modal
+        // and not navigating between pages (even while the URL is changing).
         currentLocation,
-        // as
+        // This `as` param is purely cosmetic and determines what users will see in the address bar.
         `/${username}/${initialCollectionId}/${nftId}`,
-        // prevent scroll-to-top when navigating
+        // Prevent scroll-to-top when navigating
         { scroll: false }
       );
     },
@@ -222,12 +234,41 @@ const _DirectionalFade = styled.div<{ visibility: string }>`
 `;
 
 const StyledNftDetailPage = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 
   display: flex;
   justify-content: center;
-  align-items: center;
+
+  @media only screen and ${breakpoints.mobile} {
+    ${_DirectionalFade} {
+      padding: 80px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
+    }
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    align-items: center;
+    ${_DirectionalFade} {
+      padding: 0;
+    }
+  }
 `;
 
-export default NftDetailPage;
+function NftDetailPageWithBoundary({ collectionId, nftId }: Props) {
+  return (
+    <StyledNftDetailPageWithBoundary>
+      <Suspense fallback={<FullPageLoader />}>
+        <ErrorBoundary>
+          <NftDetailPage collectionId={collectionId} nftId={nftId} />
+        </ErrorBoundary>
+      </Suspense>
+    </StyledNftDetailPageWithBoundary>
+  );
+}
+
+const StyledNftDetailPageWithBoundary = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
+
+export default NftDetailPageWithBoundary;
