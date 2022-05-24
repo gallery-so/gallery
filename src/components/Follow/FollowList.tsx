@@ -3,6 +3,7 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -37,8 +38,10 @@ export default function FollowList({ userRef }: Props) {
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
-    <StyledFollowList>
+    <StyledFollowList fullscreen={isMobile}>
       <StyledHeader>
         <StyledHeaderTextRight>
           <StyledTextButton
@@ -78,9 +81,10 @@ export default function FollowList({ userRef }: Props) {
   );
 }
 
-const StyledFollowList = styled.div`
-  height: 640px;
-  width: 540px;
+const StyledFollowList = styled.div<{ fullscreen: boolean }>`
+  height: ${({ fullscreen }) => (fullscreen ? '100vh' : '640px')};
+  width: ${({ fullscreen }) => (fullscreen ? '100vw' : '540px')};
+  // width: 540px;
   display: flex;
   flex-direction: column;
 `;

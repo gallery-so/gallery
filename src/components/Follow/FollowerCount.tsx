@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   userRef: FollowerCountFragment$key;
@@ -30,7 +30,7 @@ export default function FollowerCount({ userRef }: Props) {
 
   const { showModal } = useModalActions();
 
-  const isMobile = useIsMobileWindowWidth();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const handleClick = useCallback(() => {
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
   }, [isMobile, showModal, user]);
