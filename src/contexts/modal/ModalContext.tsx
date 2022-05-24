@@ -31,8 +31,14 @@ export const useModalState = (): ModalState => {
   return context;
 };
 
+type ShowModalFnProps = {
+  content: ReactElement;
+  onClose?: () => void;
+  isFullPage?: boolean;
+};
+
 type ModalActions = {
-  showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
+  showModal: ({ content, onClose, isFullPage }: ShowModalFnProps) => void;
   hideModal: () => void;
 };
 
@@ -70,12 +76,12 @@ function ModalProvider({ children }: Props) {
     [isModalOpenRef, isMounted]
   );
 
-  const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
+  const showModal = useCallback(({ content, onClose = noop, isFullPage = false }) => {
     setIsActive(true);
     isModalOpenRef.current = true;
     setIsMounted(true);
     setIsFullPage(isFullPage);
-    setContent(providedContent);
+    setContent(content);
     onCloseRef.current = onClose;
 
     // prevent main body from being scrollable while the modal is open.
