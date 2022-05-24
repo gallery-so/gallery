@@ -39,7 +39,7 @@ type Props = { children: ReactNode };
 const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
-  const pushToast = useCallback(({ message, onDismiss = noop, autoClose = false }: ToastProps) => {
+  const pushToast = useCallback(({ message, onDismiss = noop, autoClose = true }: ToastProps) => {
     setToasts((previousMessages) => [...previousMessages, { message, onDismiss, autoClose }]);
   }, []);
 

@@ -35,16 +35,16 @@ export default function FollowerCount({ userRef }: Props) {
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
   }, [isMobile, showModal, user]);
 
-  const followerCount = useMemo(() => user.followers.length, [user.followers]);
-  const followingCount = useMemo(() => user.following.length, [user.following]);
+  const followerCount = useMemo(() => user.followers?.length, [user.followers]);
+  const followingCount = useMemo(() => user.following?.length, [user.following]);
 
   return (
     <StyledFollowerCount>
       <StyledTooltipParent>
-        <TextButton text={`${user.followers.length}`} onClick={handleClick}></TextButton>
+        <TextButton text={`${user.followers?.length}`} onClick={handleClick}></TextButton>
         <Tooltip
           text={`See ${followerCount} follower${
-            followerCount > 1 ? 's' : ''
+            followerCount === 1 ? '' : 's'
           } and ${followingCount} following`}
         />
       </StyledTooltipParent>
