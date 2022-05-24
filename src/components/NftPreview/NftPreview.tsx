@@ -131,7 +131,7 @@ function NftPreview({ galleryNftRef }: Props) {
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-      <a>
+      <StyledA>
         <StyledNftPreview
           maxWidth={nftPreviewMaxWidth}
           width={nftPreviewWidth}
@@ -151,10 +151,17 @@ function NftPreview({ galleryNftRef }: Props) {
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>
         </StyledNftPreview>
-      </a>
+      </StyledA>
     </Link>
   );
 }
+
+const StyledA = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;
