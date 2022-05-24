@@ -1,5 +1,5 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
-import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/GlobalLayoutContext';
+import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/ScrollbarAwareContent/ScrollbarAwareContent';
 import {
   ReactElement,
   ReactNode,
