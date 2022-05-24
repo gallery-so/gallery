@@ -81,8 +81,8 @@ code {
   background: #e2e2e2;
 }
 
-/* always display scrollbar if scrollable for accessibility */
-::-webkit-scrollbar {
+/* always display scrollbar for inner divs if scrollable */
+div::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 6px;
   height: 6px;

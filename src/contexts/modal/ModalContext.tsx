@@ -1,5 +1,4 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
-import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/GlobalLayoutContext';
 import {
   ReactElement,
   ReactNode,
@@ -79,10 +78,7 @@ function ModalProvider({ children }: Props) {
     onCloseRef.current = onClose;
 
     // prevent main body from being scrollable while the modal is open.
-    // set padding as a placeholder for the scrollbar to prevent jank.
-    // width is defined in `index.css`
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${SCROLLBAR_WIDTH_PX}px`;
   }, []);
 
   // Trigger fade-out that takes X seconds
@@ -99,7 +95,6 @@ function ModalProvider({ children }: Props) {
 
       // enable scrolling again
       document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
 
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
