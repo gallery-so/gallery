@@ -83,8 +83,9 @@ export default function FollowList({ userRef }: Props) {
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   height: ${({ fullscreen }) => (fullscreen ? '100vh' : '640px')};
+  max-height: calc(100vh - 80px); // 80px accounts for modal padding
   width: ${({ fullscreen }) => (fullscreen ? '100vw' : '540px')};
-  // width: 540px;
+  max-width: calc(540vw - 80px); // 80px accounts for modal padding
   display: flex;
   flex-direction: column;
 `;
