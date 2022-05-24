@@ -31,6 +31,7 @@ export default function IconButton({ isFollowing, onClick, disabled }: Props) {
     }
     return StyledFollowIcon;
   }, [isFollowing, isHovering]);
+  console.log('disabled', disabled);
 
   return (
     <StyledButtonWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
