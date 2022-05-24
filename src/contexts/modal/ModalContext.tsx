@@ -1,5 +1,4 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
-import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/GlobalLayoutContext';
 import {
   ReactElement,
   ReactNode,
@@ -31,8 +30,14 @@ export const useModalState = (): ModalState => {
   return context;
 };
 
+type ShowModalFnProps = {
+  content: ReactElement;
+  onClose?: () => void;
+  isFullPage?: boolean;
+};
+
 type ModalActions = {
-  showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
+  showModal: ({ content, onClose, isFullPage }: ShowModalFnProps) => void;
   hideModal: () => void;
 };
 
@@ -70,19 +75,16 @@ function ModalProvider({ children }: Props) {
     [isModalOpenRef, isMounted]
   );
 
-  const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
+  const showModal = useCallback(({ content, onClose = noop, isFullPage = false }) => {
     setIsActive(true);
     isModalOpenRef.current = true;
     setIsMounted(true);
     setIsFullPage(isFullPage);
-    setContent(providedContent);
+    setContent(content);
     onCloseRef.current = onClose;
 
     // prevent main body from being scrollable while the modal is open.
-    // set padding as a placeholder for the scrollbar to prevent jank.
-    // width is defined in `index.css`
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${SCROLLBAR_WIDTH_PX}px`;
   }, []);
 
   // Trigger fade-out that takes X seconds
@@ -99,7 +101,6 @@ function ModalProvider({ children }: Props) {
 
       // enable scrolling again
       document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
 
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view

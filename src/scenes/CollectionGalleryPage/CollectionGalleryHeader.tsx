@@ -104,16 +104,18 @@ function CollectionGalleryHeader({
   }, [collection.dbid, push, track]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(
-      <CollectionCreateOrEditForm
-        // No need for onNext because this isn't part of a wizard
-        onNext={noop}
-        galleryId={collection.gallery.dbid}
-        collectionId={collection.dbid}
-        collectionName={collection.name ?? undefined}
-        collectionCollectorsNote={collection.collectorsNote ?? undefined}
-      />
-    );
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          // No need for onNext because this isn't part of a wizard
+          onNext={noop}
+          galleryId={collection.gallery.dbid}
+          collectionId={collection.dbid}
+          collectionName={collection.name ?? undefined}
+          collectionCollectorsNote={collection.collectorsNote ?? undefined}
+        />
+      ),
+    });
   }, [
     collection.collectorsNote,
     collection.dbid,

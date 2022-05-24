@@ -39,11 +39,11 @@ function LoggedInNav({ queryRef }: Props) {
   );
 
   const handleManageWalletsClick = useCallback(() => {
-    showModal(<ManageWalletsModal queryRef={query} />);
+    showModal({ content: <ManageWalletsModal queryRef={query} /> });
   }, [query, showModal]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(<EditUserInfoModal queryRef={query} />);
+    showModal({ content: <EditUserInfoModal queryRef={query} /> });
   }, [query, showModal]);
 
   const handleEditGalleryClick = useCallback(() => {

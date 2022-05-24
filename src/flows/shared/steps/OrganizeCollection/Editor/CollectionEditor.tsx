@@ -206,7 +206,7 @@ function CollectionEditor({ viewerRef }: Props) {
   const user = viewer.user;
 
   useKeyDown('Escape', () => {
-    showModal(<ConfirmLeaveModal userRef={user} />);
+    showModal({ content: <ConfirmLeaveModal userRef={user} /> });
   });
 
   return (

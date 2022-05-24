@@ -41,7 +41,7 @@ export default function useWalletModal() {
   );
 
   return useCallback(() => {
-    showModal(<WalletModal queryRef={query} />);
+    showModal({ content: <WalletModal queryRef={query} /> });
   }, [query, showModal]);
 }
 
