@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
 import RightContent from './RightContent';
 import LeftContent from './LeftContent';
+import ScrollbarAwareContent from '../ScrollbarAwareContent/ScrollbarAwareContent';
 
 export type Props = {
   queryRef: GlobalNavbarFragment$key;
@@ -30,7 +31,9 @@ function GlobalNavbar({ queryRef, customLeftContent }: Props) {
         // the `RightContent` component will appear on the left side
         <div />
       )}
-      <RightContent queryRef={query} />
+      <ScrollbarAwareContent>
+        <RightContent queryRef={query} />
+      </ScrollbarAwareContent>
     </StyledGlobalNavbar>
   );
 }
