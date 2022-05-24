@@ -5,6 +5,7 @@ import useFollowUser from './mutations/useFollowUser';
 import useUnfollowUser from './mutations/useUnfollowUser';
 import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import IconButton from 'components/IconButton/IconButton';
+import { useToastActions } from 'contexts/toast/ToastContext';
 
 type Props = {
   userRef: any;
@@ -18,6 +19,13 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
       fragment FollowButtonFragment on GalleryUser {
         id
         dbid
+        username
+        followers {
+          id
+        }
+        following {
+          id
+        }
       }
     `,
     userRef
@@ -25,10 +33,27 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
 
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
+  const { pushToast } = useToastActions();
+
+  const handleFollowClick = useCallback(() => {
+    const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
+    followUser(user.dbid, optimisticNewFollowersList, user.following).then(() =>
+      pushToast({ message: `You have followed ${user.username}.` })
+    );
+  }, [followUser, pushToast, loggedInUserId, user]);
+
+  const handleUnfollowClick = useCallback(() => {
+    const optimisticNewFollowersList = user.followers.filter(
+      (follower: { id: string }) => follower.id !== loggedInUserId
+    );
+    unfollowUser(user.dbid, optimisticNewFollowersList, user.following).then(() =>
+      pushToast({ message: `You have unfollowed ${user.username}.` })
+    );
+  }, [unfollowUser, pushToast, loggedInUserId, user]);
 
   const handleClick = useCallback(() => {
-    isFollowing ? unfollowUser(user.dbid) : followUser(user.dbid);
-  }, [followUser, isFollowing, unfollowUser, user.dbid]);
+    isFollowing ? handleUnfollowClick() : handleFollowClick();
+  }, [handleFollowClick, handleUnfollowClick, isFollowing]);
 
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
   const isFollowActionDisabled = useMemo(

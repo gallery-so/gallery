@@ -42,7 +42,7 @@ export default function FollowerCount({ userRef }: Props) {
         <TextButton text={`${user.followers.length}`} onClick={handleClick}></TextButton>
         <Tooltip
           text={`See ${followerCount} follower${
-            followerCount > 1 ? 's' : ''
+            followerCount === 1 ? '' : 's'
           } and ${followingCount} following`}
         />
       </StyledTooltipParent>

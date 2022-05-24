@@ -1,7 +1,14 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { useFollowUserMutation } from '__generated__/useFollowUserMutation.graphql';
+import {
+  useFollowUserMutation,
+  useFollowUserMutation$data,
+} from '__generated__/useFollowUserMutation.graphql';
+
+type UserId = {
+  id: string;
+};
 
 export default function useFollowUser() {
   const [followUserMutate] = usePromisifiedMutation<useFollowUserMutation>(
@@ -37,8 +44,19 @@ export default function useFollowUser() {
   );
 
   return useCallback(
-    async (userId: string) => {
-      await followUserMutate({ variables: { userId: userId } });
+    async (userId: string, followerIds: UserId[], followingIds: UserId[]) => {
+      const optimisticResponse: useFollowUserMutation$data = {
+        followUser: {
+          __typename: 'FollowUserPayload',
+          user: {
+            __typename: 'GalleryUser',
+            id: `GalleryUser:${userId}`,
+            followers: followerIds,
+            following: followingIds,
+          },
+        },
+      };
+      await followUserMutate({ optimisticResponse, variables: { userId: userId } });
     },
     [followUserMutate]
   );
