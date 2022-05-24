@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
 
@@ -20,7 +21,9 @@ const EnsName = ({ address }: Props) => {
 };
 
 export const EnsOrAddress = ({ address }: Props) => (
-  <PlainErrorBoundary fallback={<span title={address}>{address}</span>}>
-    <EnsName address={address} />
-  </PlainErrorBoundary>
+  <Suspense fallback={null}>
+    <PlainErrorBoundary fallback={<span title={address}>{address}</span>}>
+      <EnsName address={address} />
+    </PlainErrorBoundary>
+  </Suspense>
 );
