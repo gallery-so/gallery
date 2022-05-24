@@ -248,12 +248,9 @@ const StyledNftDetailPage = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     align-items: center;
-    padding: 0;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    align-items: center;
-    padding: 0;
+    ${_DirectionalFade} {
+      padding: 0;
+    }
   }
 `;
 

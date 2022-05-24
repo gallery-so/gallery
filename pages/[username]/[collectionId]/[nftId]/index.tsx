@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useKeyDown from 'hooks/useKeyDown';
 import { useCallback } from 'react';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
   nftId: string;
@@ -41,7 +42,11 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
       <Link href={collectionRoute}>
         <StyledDecoratedCloseIcon />
       </Link>
-      <NftDetailPageScene collectionId={collectionId} nftId={nftId} />
+      <GalleryRoute
+        element={<NftDetailPageScene collectionId={collectionId} nftId={nftId} />}
+        navbar={false}
+        footer={false}
+      />
     </>
   );
 }
