@@ -14,6 +14,7 @@ import { removeNullValues } from 'utils/removeNullValues';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 type Props = {
   nftId: string;
@@ -238,7 +239,22 @@ const StyledNftDetailPage = styled.div`
 
   display: flex;
   justify-content: center;
-  align-items: center;
+
+  @media only screen and ${breakpoints.mobile} {
+    ${_DirectionalFade} {
+      padding: 80px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
+    }
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    align-items: center;
+    padding: 0;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    align-items: center;
+    padding: 0;
+  }
 `;
 
 function NftDetailPageWithBoundary({ collectionId, nftId }: Props) {
