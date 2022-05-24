@@ -4,7 +4,7 @@ import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
@@ -24,7 +24,7 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
     collectionRef
   );
 
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const deleteCollection = useDeleteCollection();
 
   const [isLoading, setIsLoading] = useState(false);

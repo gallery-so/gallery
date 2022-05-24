@@ -1,4 +1,3 @@
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGalleryPage';
@@ -6,6 +5,7 @@ import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -16,7 +16,6 @@ export default function CollectionGallery({ collectionId, username }: Collection
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
       query CollectionIdQuery($collectionId: DBID!) {
-        ...GalleryRouteFragment
         ...CollectionGalleryPageFragment
       }
     `,
@@ -29,7 +28,6 @@ export default function CollectionGallery({ collectionId, username }: Collection
 
   return (
     <GalleryRoute
-      queryRef={query}
       element={
         <CollectionGalleryPage queryRef={query} collectionId={collectionId} username={username} />
       }

@@ -1,18 +1,14 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import Head from 'next/head';
 import CollectionGallery from './CollectionGallery';
-import useBackButton from 'hooks/useBackButton';
-import ActionText from 'components/core/ActionText/ActionText';
 import { useEffect, useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
-
 import { graphql, useFragment } from 'react-relay';
-
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
 
 type CollectionGalleryPageProps = {
@@ -23,7 +19,6 @@ type CollectionGalleryPageProps = {
 
 function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
-  const handleBackClick = useBackButton({ username });
 
   const track = useTrack();
 
@@ -64,31 +59,26 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     }
   }, [push, collectionId, userOwnsCollection, isLoggedIn]);
 
-  const navigateToUserGallery = useCallback(() => {
-    void push(`/${username}`);
-  }, [push, username]);
-
   useKeyDown('e', navigateToEdit);
-  useKeyDown('Escape', navigateToUserGallery);
+
+  useDisplayFullPageNftDetailModal();
 
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <Page>
-        <StyledCollectionGalleryWrapper>
-          <StyledPositionedBackLink>
-            <ActionText onClick={handleBackClick}>← Back to Gallery</ActionText>
-          </StyledPositionedBackLink>
-          <CollectionGallery queryRef={query} />
-        </StyledCollectionGalleryWrapper>
-      </Page>
+      <StyledCollectionGalleryWrapper>
+        <CollectionGallery queryRef={query} />
+      </StyledCollectionGalleryWrapper>
     </>
   );
 }
 
 const StyledCollectionGalleryWrapper = styled.div`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  min-height: 100vh;
+
   display: flex;
   justify-content: center;
   margin: 0 ${pageGutter.mobile}px;
@@ -97,10 +87,6 @@ const StyledCollectionGalleryWrapper = styled.div`
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
   }
-`;
-
-const StyledPositionedBackLink = styled(StyledBackLink)`
-  padding: 0;
 `;
 
 export default CollectionGalleryPage;

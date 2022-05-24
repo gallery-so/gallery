@@ -1,10 +1,9 @@
-import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 import { TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
-import MemberListFilter from '../../components/TokenHolderList/TokenHolderListFilter';
+import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
@@ -32,9 +31,9 @@ function MemberListPage({ queryRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <StyledPage centered>
+    <StyledPage>
       <MemberListPageProvider>
-        <Spacer height={128} />
+        <Spacer height={208} />
         <StyledBanner>
           <StyledBannerText>
             <i>Thank you,</i> for being a patron of Gallery.
@@ -53,7 +52,9 @@ function MemberListPage({ queryRef }: Props) {
   );
 }
 
-const StyledPage = styled(Page)`
+const StyledPage = styled.div`
+  min-height: 100vh;
+
   margin-left: ${pageGutter.mobile}px;
   margin-right: ${pageGutter.mobile}px;
   justify-content: flex-start;

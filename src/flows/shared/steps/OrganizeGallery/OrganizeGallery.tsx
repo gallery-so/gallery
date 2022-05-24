@@ -6,7 +6,6 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import Spacer from 'components/core/Spacer/Spacer';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
-import { Filler } from 'scenes/_Router/GalleryRoute';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
@@ -19,8 +18,8 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
-
 import useKeyDown from 'hooks/useKeyDown';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type ConfigProps = {
   wizardId: string;
@@ -164,7 +163,7 @@ function OrganizeGallery({
   
   return (
     <StyledOrganizeGallery>
-      <Filler />
+      <Spacer height={GLOBAL_NAVBAR_HEIGHT} />
       <Content>
         <Header />
         <Spacer height={24} />

@@ -5,10 +5,12 @@ import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
+import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
 
 type Props = {
   title?: React.ReactNode | string;
-  queryRef: any;
+  queryRef: GlobalBannerFragment$key;
   text: string;
   requireAuth?: boolean;
   localStorageKey?: string;
@@ -25,7 +27,7 @@ export default function Banner({
 }: Props) {
   const query = useFragment(
     graphql`
-      fragment BannerFragment on Query {
+      fragment GlobalBannerFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -63,14 +65,22 @@ export default function Banner({
 }
 
 const StyledContainer = styled.div`
-  padding: 24px;
+  position: absolute;
+  width: 100%;
+  height: ${GLOBAL_NAVBAR_HEIGHT}px;
+  z-index: 4;
+
+  // TODO: standardize these settings
+  background: rgba(254, 254, 254, 0.95);
+  backdrop-filter: blur(48px);
+
+  padding: 17px;
   @media (max-width: ${contentSize.desktop}px) {
     padding: 0px;
   }
 `;
 
 const StyledBanner = styled.div`
-  background: white;
   text-align: left;
   width: 100%;
   padding: 8px 16px;

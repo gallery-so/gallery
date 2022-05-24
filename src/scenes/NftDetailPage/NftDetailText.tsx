@@ -5,12 +5,12 @@ import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Markdown from 'components/core/Markdown/Markdown';
 import NftAdditionalDetails from './NftAdditionalDetails';
-import { fullPageHeightWithoutNavbarAndFooter } from 'components/core/Page/constants';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useMemo, useRef } from 'react';
 import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type Props = {
   name: string | null;
@@ -97,7 +97,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
   ${({ horizontalLayout }) =>
     horizontalLayout
       ? `
-    max-height: ${fullPageHeightWithoutNavbarAndFooter};
+    max-height: calc(100vh - ${GLOBAL_NAVBAR_HEIGHT * 2}px);
     overflow: auto;
     padding-right: 16px;
     `

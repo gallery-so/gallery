@@ -1,12 +1,12 @@
-import NotFound from 'scenes/NotFound/NotFound';
 import useKeyDown from 'hooks/useKeyDown';
+import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
+import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -23,6 +23,7 @@ function UserGallery({ queryRef }: Props) {
             }
           }
         }
+
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
@@ -52,6 +53,8 @@ function UserGallery({ queryRef }: Props) {
   }, [push, isLoggedIn]);
 
   useKeyDown('e', navigateToEdit);
+
+  useDisplayFullPageNftDetailModal();
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;

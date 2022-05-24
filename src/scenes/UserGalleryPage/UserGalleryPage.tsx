@@ -1,5 +1,4 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
 import styled from 'styled-components';
 
 import UserGallery from './UserGallery';
@@ -9,6 +8,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;
@@ -38,16 +38,20 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <Page>
-        <StyledUserGalleryWrapper>
-          <UserGallery queryRef={query} />
-        </StyledUserGalleryWrapper>
-      </Page>
+      <StyledUserGalleryPage>
+        <UserGallery queryRef={query} />
+      </StyledUserGalleryPage>
     </>
   );
 }
 
-const StyledUserGalleryWrapper = styled.div`
+const StyledUserGalleryPage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  min-height: 100vh;
+
   display: flex;
   justify-content: center;
   margin: 0 ${pageGutter.mobile}px 24px;

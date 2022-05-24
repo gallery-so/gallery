@@ -1,6 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Page from 'components/core/Page/Page';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
@@ -13,7 +12,7 @@ import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/Shimmer
 import ErrorText from 'components/core/Text/ErrorText';
 import { useWeb3React } from '@web3-react/core';
 import useWalletModal from 'hooks/useWalletModal';
-import { useModal } from 'contexts/modal/ModalContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import {
   useMembershipMintPageActions,
   useMembershipMintPageState,
@@ -51,7 +50,7 @@ export function MembershipMintPage({
   const { active, account } = useWeb3React<Web3Provider>();
 
   const showWalletModal = useWalletModal();
-  const { hideModal } = useModal();
+  const { hideModal } = useModalActions();
   const [error, setError] = useState('');
 
   const { totalSupply, remainingSupply, price } = useMembershipMintPageState();
@@ -163,7 +162,7 @@ export function MembershipMintPage({
   }, [active, hideModal]);
 
   return (
-    <StyledMintPage centered>
+    <StyledMintPage>
       <StyledContent>
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
@@ -284,7 +283,12 @@ function MembershipNftVisual({ src }: VideoProps) {
   );
 }
 
-export const StyledMintPage = styled(Page)`
+export const StyledMintPage = styled.div`
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   @media only screen and ${breakpoints.mobile} {
     margin-left: ${pageGutter.mobile}px;
     margin-right: ${pageGutter.mobile}px;

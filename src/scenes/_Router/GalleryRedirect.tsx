@@ -1,6 +1,6 @@
-import Page from 'components/core/Page/Page';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
 type Props = {
   to: string;
@@ -14,5 +14,9 @@ export default function GalleryRedirect({ to }: Props) {
     void replace(to);
   }, [replace, to]);
 
-  return <Page />;
+  return <Placeholder />;
 }
+
+const Placeholder = styled.div`
+  height: 100vh;
+`;

@@ -22,8 +22,8 @@ import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQue
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
-import Loader from 'components/core/Loader/Loader';
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
+import FullPageLoader from 'components/core/Loader/FullPageLoader';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -123,7 +123,6 @@ type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-
   // we store what wallet they've logged in with on metamask / etc.,
   // which is necessary for the Manage Wallets view
   const [, setLocallyLoggedInWalletAddress] = usePersistedState(
@@ -236,17 +235,17 @@ const AuthProvider = memo(({ children }: Props) => {
 
   return (
     <Fragment key={shouldDisplayUniversalLoader.toString()}>
-      <div style={{ display: shouldDisplayUniversalLoader ? 'none' : undefined }}>
-        <ErrorBoundary>
-          <Suspense fallback={<Loader />}>
-            <AuthStateContext.Provider value={authState}>
-              <AuthActionsContext.Provider value={authActions}>
-                <Web3WalletProvider>{children}</Web3WalletProvider>
-              </AuthActionsContext.Provider>
-            </AuthStateContext.Provider>
-          </Suspense>
-        </ErrorBoundary>
-      </div>
+      <ErrorBoundary>
+        <Suspense fallback={<FullPageLoader />}>
+          <AuthStateContext.Provider value={authState}>
+            <AuthActionsContext.Provider value={authActions}>
+              <Web3WalletProvider>
+                {shouldDisplayUniversalLoader ? null : children}
+              </Web3WalletProvider>
+            </AuthActionsContext.Provider>
+          </AuthStateContext.Provider>
+        </Suspense>
+      </ErrorBoundary>
     </Fragment>
   );
 });

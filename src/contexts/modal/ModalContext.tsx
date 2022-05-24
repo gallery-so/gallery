@@ -1,4 +1,5 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import { SCROLLBAR_WIDTH_PX } from 'contexts/globalLayout/GlobalLayoutContext';
 import {
   ReactElement,
   ReactNode,
@@ -8,20 +9,39 @@ import {
   useState,
   useCallback,
   useMemo,
+  useRef,
+  MutableRefObject,
 } from 'react';
+import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
 
+type ModalState = {
+  isModalOpenRef: MutableRefObject<boolean>;
+  isModalMounted: boolean;
+};
+
+const ModalStateContext = createContext<ModalState | undefined>(undefined);
+
+export const useModalState = (): ModalState => {
+  const context = useContext(ModalStateContext);
+  if (!context) {
+    throw new Error('Attempted to use ModalStateContext without a provider!');
+  }
+
+  return context;
+};
+
 type ModalActions = {
-  showModal: (content: ReactElement) => void;
+  showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
   hideModal: () => void;
 };
 
-const ModalContext = createContext<ModalActions | undefined>(undefined);
+const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
 
-export const useModal = (): ModalActions => {
-  const context = useContext(ModalContext);
+export const useModalActions = (): ModalActions => {
+  const context = useContext(ModalActionsContext);
   if (!context) {
-    throw new Error('Attempted to use ModalContext without a provider!');
+    throw new Error('Attempted to use ModalActionsContext without a provider!');
   }
 
   return context;
@@ -35,21 +55,52 @@ function ModalProvider({ children }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   const [isActive, setIsActive] = useState(false);
+  // ref version of the above. used when needed to prevent race
+  // conditions within side-effects that look up this state
+  const isModalOpenRef = useRef(false);
+  // Whether the modal should take up the entire page
+  const [isFullPage, setIsFullPage] = useState(false);
+  // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
+  // Callback to trigger when the modal is closed
+  const onCloseRef = useRef(noop);
 
-  const showModal = useCallback((providedContent) => {
+  const state = useMemo(
+    () => ({ isModalOpenRef, isModalMounted: isMounted }),
+    [isModalOpenRef, isMounted]
+  );
+
+  const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
     setIsActive(true);
+    isModalOpenRef.current = true;
     setIsMounted(true);
+    setIsFullPage(isFullPage);
     setContent(providedContent);
+    onCloseRef.current = onClose;
+
+    // prevent main body from being scrollable while the modal is open.
+    // set padding as a placeholder for the scrollbar to prevent jank.
+    // width is defined in `index.css`
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${SCROLLBAR_WIDTH_PX}px`;
   }, []);
 
   // Trigger fade-out that takes X seconds
   // schedule unmount in X seconds
   const hideModal = useCallback(() => {
     setIsActive(false);
+    isModalOpenRef.current = false;
+    onCloseRef.current?.();
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
+      setIsFullPage(false);
+      onCloseRef.current = noop;
+
+      // enable scrolling again
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+
       // Unmount a bit sooner to avoid race condition of
       // elements flashing before they're removed from view
     }, ANIMATED_COMPONENT_TRANSITION_MS - 30);
@@ -64,12 +115,19 @@ function ModalProvider({ children }: Props) {
   );
 
   return (
-    <ModalContext.Provider value={actions}>
-      {children}
-      {isMounted && content && (
-        <AnimatedModal isActive={isActive} hideModal={hideModal} content={content} />
-      )}
-    </ModalContext.Provider>
+    <ModalStateContext.Provider value={state}>
+      <ModalActionsContext.Provider value={actions}>
+        {children}
+        {isMounted && content && (
+          <AnimatedModal
+            isActive={isActive}
+            hideModal={hideModal}
+            content={content}
+            isFullPage={isFullPage}
+          />
+        )}
+      </ModalActionsContext.Provider>
+    </ModalStateContext.Provider>
   );
 }
 

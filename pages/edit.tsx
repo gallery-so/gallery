@@ -8,7 +8,6 @@ export default function Edit() {
     graphql`
       query editQuery {
         ...GalleryAuthenticatedRouteFragment
-        ...GalleryRouteFragment
         ...EditGalleryFlowFragment
       }
     `,
@@ -17,10 +16,10 @@ export default function Edit() {
 
   return (
     <GalleryAuthenticatedRoute
-      queryRef={query}
       authenticatedRouteQueryRef={query}
       element={<EditGalleryFlow queryRef={query} />}
-      freshLayout
+      navbar={false}
+      footer={false}
     />
   );
 }

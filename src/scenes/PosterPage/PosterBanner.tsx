@@ -1,14 +1,14 @@
-import Banner from 'components/Banner/Banner';
+import Banner from 'contexts/globalLayout/GlobalBanner/GlobalBanner';
 import NavLink from 'components/core/NavLink/NavLink';
 import { MINT_DATE } from 'constants/poster';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { GalleryRouteFragment$data } from '__generated__/GalleryRouteFragment.graphql';
+import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
 
 type Props = {
-  queryRef: GalleryRouteFragment$data;
+  queryRef: GlobalBannerFragment$key;
 };
 
 export default function PosterBanner({ queryRef }: Props) {

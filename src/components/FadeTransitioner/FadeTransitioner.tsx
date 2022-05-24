@@ -1,31 +1,26 @@
-import { CSSProperties, memo, Suspense } from 'react';
+import { CSSProperties, memo, Suspense, useMemo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import { FullPageLoaderWithLayoutTransitionSupport } from 'components/core/Loader/FullPageLoader';
+import { useRouter } from 'next/router';
 
 type Props = {
   locationKey?: string;
   children: React.ReactNode;
 };
 
-// NOTE: if you change these, make sure to update `transition.css`
-export const FADE_TIME_MS = 300;
+// NOTE: if you change these values, make sure to update `transition.css`
+export const FADE_TRANSITION_TIME_MS = 300;
 export const NAVIGATION_TRANSITION_TIME_MS = 700;
 
 const timeoutConfig = {
-  enter: FADE_TIME_MS + NAVIGATION_TRANSITION_TIME_MS,
-  exit: FADE_TIME_MS,
+  enter: FADE_TRANSITION_TIME_MS + NAVIGATION_TRANSITION_TIME_MS,
+  exit: FADE_TRANSITION_TIME_MS,
 };
 
 const childNodeStyles = {
   width: '100%',
   height: '100%',
-};
-
-const transitionGroupStyles = {
-  // NOTE: this doesn't seem to do anything. in the future we could use this to only transition
-  // the inner content of a page, while leaving the navbar + footer visible.
-  // minHeight: fullPageHeightWithoutNavbarAndFooter,
 };
 
 /**
@@ -36,16 +31,42 @@ const transitionGroupStyles = {
  */
 function FadeTransitioner({ locationKey, children }: Props) {
   return (
-    <TransitionGroup style={transitionGroupStyles}>
+    <TransitionGroup>
       <CSSTransition key={locationKey} timeout={timeoutConfig} classNames="fade">
         {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
             to remain uninterrupted upon navigation */}
         <div style={childNodeStyles as CSSProperties}>
-          <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
+          <Suspense fallback={<FullPageLoaderWithLayoutTransitionSupport />}>{children}</Suspense>
         </div>
       </CSSTransition>
     </TransitionGroup>
   );
+}
+
+/**
+ * Stabilizes the location key in certain scenarios to avoid triggering the Fade Transition animation
+ */
+export function useStabilizedRouteTransitionKey() {
+  const { asPath, pathname, query } = useRouter();
+
+  const transitionAnimationKey = useMemo(() => {
+    // if we're looking at the NFT detail modal from the user gallery page,
+    // keep the location key static as to not trigger an animation
+    if (pathname === '/[username]' && query.nftId) {
+      return `/${query.username}`;
+    }
+    // same logic for modal triggered from collection page
+    if (pathname === '/[username]/[collectionId]' && query.nftId) {
+      return `/${query.username}/${query.collectionId}`;
+    }
+    // keep location stable for NFT detail pages
+    if (pathname === '/[username]/[collectionId]/[nftId]') {
+      return `/${query.username}/${query.collectionId}`;
+    }
+    return asPath;
+  }, [asPath, pathname, query]);
+
+  return transitionAnimationKey;
 }
 
 export default memo(FadeTransitioner);

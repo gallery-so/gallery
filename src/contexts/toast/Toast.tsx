@@ -3,6 +3,7 @@ import { BaseM } from 'components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TIMEOUT_MS,
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from 'components/core/transitions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -50,13 +51,13 @@ export function AnimatedToast({
 }
 
 const translateUpAndFadeIn = keyframes`
-    from { opacity: 0; transform: translateY(8px); };
+    from { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); };
     to { opacity: 1; transform: translateY(0px); };
 `;
 
 const translateDownAndFadeOut = keyframes`
     from { opacity: 1; transform: translateY(0px); };
-    to { opacity: 0; transform: translateY(8px); };
+    to { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); };
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`

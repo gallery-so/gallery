@@ -1,5 +1,4 @@
 import { InternalMarkdown } from 'components/core/Markdown/Markdown';
-import Page from 'components/core/Page/Page';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleL } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -24,9 +23,10 @@ export default function BasicTextPage({ title, body }: Props) {
   );
 }
 
-const StyledPage = styled(Page)`
-  padding: 120px 40px;
+const StyledPage = styled.div`
+  padding: 200px 40px;
   display: flex;
+  justify-content: center;
   align-items: center;
 `;
 

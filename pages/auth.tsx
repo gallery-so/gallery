@@ -8,19 +8,10 @@ export default function Auth() {
     graphql`
       query authQuery {
         ...AuthFragment
-        ...GalleryRouteFragment
       }
     `,
     {}
   );
 
-  return (
-    <GalleryRoute
-      queryRef={query}
-      element={<AuthScene queryRef={query} />}
-      navbar={false}
-      banner={false}
-      footerVisibleOutOfView
-    />
-  );
+  return <GalleryRoute element={<AuthScene queryRef={query} />} navbar={false} />;
 }

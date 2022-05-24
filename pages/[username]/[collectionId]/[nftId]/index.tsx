@@ -1,11 +1,15 @@
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import NftDetailPageScene from 'scenes/NftDetailPage/NftDetailPage';
 import { GetServerSideProps } from 'next';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { NftIdQuery } from '__generated__/NftIdQuery.graphql';
+import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
+import styled from 'styled-components';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import useKeyDown from 'hooks/useKeyDown';
+import { useCallback } from 'react';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
   nftId: string;
@@ -13,15 +17,20 @@ type NftDetailPageProps = MetaTagProps & {
 };
 
 export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProps) {
-  const query = useLazyLoadQuery<NftIdQuery>(
-    graphql`
-      query NftIdQuery($nftId: DBID!, $collectionId: DBID!) {
-        ...GalleryRouteFragment
-        ...NftDetailPageFragment
-      }
-    `,
-    { nftId, collectionId }
-  );
+  const {
+    query: { username },
+    push,
+  } = useRouter();
+
+  // the default "back" behavior from the NFT Detail Page
+  // is a redirect to the Collection Page
+  const collectionRoute = `/${username}/${collectionId}`;
+
+  const handleReturnToCollectionPage = useCallback(() => {
+    push(collectionRoute);
+  }, [collectionRoute, push]);
+
+  useKeyDown('Escape', handleReturnToCollectionPage);
 
   if (!nftId) {
     // Something went horribly wrong
@@ -29,13 +38,25 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
   }
 
   return (
-    <GalleryRoute
-      queryRef={query}
-      element={<NftDetailPageScene queryRef={query} nftId={nftId} />}
-      footerIsFixed
-    />
+    <>
+      <Link href={collectionRoute}>
+        <StyledDecoratedCloseIcon />
+      </Link>
+      <GalleryRoute
+        element={<NftDetailPageScene collectionId={collectionId} nftId={nftId} />}
+        navbar={false}
+        footer={false}
+      />
+    </>
   );
 }
+
+const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
+  z-index: 2;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;

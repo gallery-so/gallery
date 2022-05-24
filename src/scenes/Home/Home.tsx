@@ -1,7 +1,6 @@
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import Button from 'components/core/Button/Button';
-import Page from 'components/core/Page/Page';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import { useRouter } from 'next/router';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -18,7 +17,7 @@ function Home() {
   }, [push]);
 
   return (
-    <Page centered>
+    <StyledHomePage>
       <GalleryIntro />
       <Spacer height={24} />
       <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
@@ -32,9 +31,18 @@ function Home() {
         <Spacer width={8} />
         <NavLink to="/casesimmons">Gallery of the Week</NavLink>
       </StyledLinkContainer>
-    </Page>
+    </StyledHomePage>
   );
 }
+
+const StyledHomePage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  height: 100vh;
+`;
 
 const StyledButton = styled(Button)`
   width: 150px;

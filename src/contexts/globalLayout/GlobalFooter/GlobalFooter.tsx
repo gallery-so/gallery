@@ -3,7 +3,6 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import { GLOBAL_FOOTER_HEIGHT, GLOBAL_FOOTER_HEIGHT_MOBILE } from './constants';
 import {
   GALLERY_FAQ,
   GALLERY_JOBS,
@@ -14,7 +13,7 @@ import {
 } from 'constants/urls';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
-import NavLink from '../NavLink/NavLink';
+import NavLink from 'components/core/NavLink/NavLink';
 
 type GlobalFooterProps = { isFixed?: boolean };
 
@@ -67,6 +66,9 @@ type StyledFooterProps = {
   isMobile: boolean;
 };
 
+export const GLOBAL_FOOTER_HEIGHT = 80;
+export const GLOBAL_FOOTER_HEIGHT_MOBILE = 134;
+
 const StyledGlobalFooter = styled.div<StyledFooterProps>`
   display: flex;
   justify-content: space-between;
@@ -77,17 +79,14 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   padding: 0 ${pageGutter.mobile}px 24px;
 
   background-color: ${colors.white};
-  z-index: 2;
-  position: relative;
-}
 
+  // TODO: all of this can go away with new layout + NFT Detail Modal update
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px 24px;
 
     ${({ isFixed }) =>
       isFixed &&
       css`
-        z-index: 2;
         position: fixed;
         bottom: 0;
         width: 100%;

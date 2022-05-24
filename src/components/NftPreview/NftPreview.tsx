@@ -1,18 +1,19 @@
 import transitions from 'components/core/transitions';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { useNavigateToUrl } from 'utils/navigate';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
 import { getBackgroundColorOverrideForContract } from 'utils/nft';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
 
 type Props = {
   galleryNftRef: NftPreviewFragment$key;
@@ -56,6 +57,7 @@ function NftPreview({ galleryNftRef }: Props) {
           dbid
           ...useCollectionColumnsFragment
         }
+        ...NftDetailViewFragment
       }
     `,
     galleryNftRef
@@ -63,23 +65,8 @@ function NftPreview({ galleryNftRef }: Props) {
 
   const columns = useCollectionColumns(collection);
 
-  const navigateToUrl = useNavigateToUrl();
-
-  const username = window.location.pathname.split('/')[1];
-  const storage = globalThis?.sessionStorage;
-
-  const handleNftClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.stopPropagation();
-      // TODO: Should refactor to utilize navigation context instead of session storage
-      if (storage) storage.setItem('prevPage', window.location.pathname);
-      navigateToUrl(`/${username}/${collection.dbid}/${nft.dbid}`, event);
-    },
-    [collection.dbid, navigateToUrl, nft.dbid, storage, username]
-  );
-  const isMobile = useIsMobileWindowWidth();
-
   // width for rendering so that we request the apprpriate size image.
+  const isMobile = useIsMobileWindowWidth();
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
   const { aspectRatioType } = useContentState();
@@ -122,33 +109,58 @@ function NftPreview({ galleryNftRef }: Props) {
     [nft.contractAddress]
   );
 
+  const {
+    pathname,
+    query: { username, collectionId },
+  } = useRouter();
+
+  // whether the user is on a gallery page or collection page prior to clicking on an NFT
+  const originPage = collectionId ? 'collection' : 'gallery';
+
   return (
-    <StyledNftPreview
-      maxWidth={nftPreviewMaxWidth}
-      width={nftPreviewWidth}
-      backgroundColorOverride={backgroundColorOverride}
+    <Link
+      // path that will be shown in the browser URL bar
+      as={`/${username}/${collection.dbid}/${nft.dbid}`}
+      // query params purely for internal tracking. this will NOT be displayed in URL bar.
+      // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
+      // appropriate query params attached. this allows the app to stay on the current page,
+      // while also feeding the modal the necessary data to display an NFT in detail.
+      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&nftId=${nft.dbid}&originPage=${originPage}&modal=true`}
+      // disable scroll-to-top when the modal opens
+      scroll={false}
     >
-      <StyledLinkWrapper onClick={handleNftClick}>
-        {/* // we'll request images at double the size of the element so that it looks sharp on retina */}
-        <NftPreviewAsset nftRef={nft} size={previewSize * 2} />
-        <StyledNftFooter>
-          <StyledNftLabel
-            title={nft.name}
-            collectionName={nft.openseaCollectionName}
-            contractAddress={nft.contractAddress}
+      {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
+          This will inherit the `as` URL from the parent component. */}
+      <StyledA>
+        <StyledNftPreview
+          maxWidth={nftPreviewMaxWidth}
+          width={nftPreviewWidth}
+          backgroundColorOverride={backgroundColorOverride}
+        >
+          <NftPreviewAsset
+            nftRef={nft}
+            // we'll request images at double the size of the element so that it looks sharp on retina
+            size={previewSize * 2}
           />
-          <StyledGradient type="bottom" direction="down" />
-        </StyledNftFooter>
-      </StyledLinkWrapper>
-    </StyledNftPreview>
+          <StyledNftFooter>
+            <StyledNftLabel
+              title={nft.name}
+              collectionName={nft.openseaCollectionName}
+              contractAddress={nft.contractAddress}
+            />
+            <StyledGradient type="bottom" direction="down" />
+          </StyledNftFooter>
+        </StyledNftPreview>
+      </StyledA>
+    </Link>
   );
 }
 
-const StyledLinkWrapper = styled.a`
-  cursor: pointer;
+const StyledA = styled.a`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  max-height: inherit;
 `;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
@@ -176,6 +188,8 @@ const StyledNftPreview = styled.div<{
   width?: string;
   backgroundColorOverride: string;
 }>`
+  cursor: pointer;
+
   display: flex;
   justify-content: center;
   align-items: center;

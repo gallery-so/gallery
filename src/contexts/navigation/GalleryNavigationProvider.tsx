@@ -1,9 +1,16 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { FADE_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
-import { useRouter } from 'next/router';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FADE_TRANSITION_TIME_MS,
+  useStabilizedRouteTransitionKey,
+} from 'components/FadeTransitioner/FadeTransitioner';
+import { NextRouter, useRouter } from 'next/router';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
-type GalleryNavigationContextType = { historyStackLength: number; historyStack: string[] };
+type HistoryStackElement = Pick<NextRouter, 'asPath' | 'route' | 'pathname' | 'query'>;
+type GalleryNavigationContextType = {
+  historyStackLength: number;
+  historyStack: HistoryStackElement[];
+};
 
 const GalleryNavigationContext = createContext<GalleryNavigationContextType | undefined>(undefined);
 
@@ -21,21 +28,45 @@ type Props = {
   children: ReactNode;
 };
 
+const SCROLL_DELAY_TIME_MS = 80;
+const SCROLL_TRIGGER_TIME_MS =
+  FADE_TRANSITION_TIME_MS +
+  // this adds an arbirarily small timeframe to ensure the fade transition defined in
+  // `FadeTransitioner.tsx` has completed; without this, in rare cases, the user may
+  // see a flash of scrolling while transitioning
+  SCROLL_DELAY_TIME_MS;
+
 export function GalleryNavigationProvider({ children }: Props) {
   const [historyStackLength, setHistoryStackLength] = useState(0);
-  const { asPath } = useRouter();
   // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
-  const [historyStack, setHistoryStack] = useState<string[]>([]);
+  const [historyStack, setHistoryStack] = useState<HistoryStackElement[]>([]);
+  const { asPath, route, pathname, query } = useRouter();
 
   const track = useTrack();
 
   useEffect(() => {
     // history
-    setHistoryStack((stack) => [...stack, asPath]);
+    setHistoryStack((stack) => [...stack, { asPath, route, pathname, query }]);
 
     // analytics
     track('Page view', { path: asPath });
+
+    // only trigger this effect on `asPath` change; other params are decorative and may cause over-active calls
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath, track]);
+
+  // If the URL technically changes but our internal route key remains stable, avoid
+  // custom scroll behavior as it only gets in the way. Without this, for example,
+  // entering and exiting the NFT Detail Modal would cause scroll jank.
+  const locationKey = useStabilizedRouteTransitionKey();
+  const locationKeyRef = useRef('');
+  const previousLocationKeyRef = useRef('');
+  useEffect(() => {
+    previousLocationKeyRef.current = locationKeyRef.current;
+    locationKeyRef.current = locationKey;
+    // `asPath` needs to be a dependency here even if it's not used, because it ensures
+    // we keep track of the locationKey on every navigation
+  }, [asPath, locationKey]);
 
   useEffect(() => {
     const originalPushState = window.history.pushState;
@@ -54,6 +85,11 @@ export function GalleryNavigationProvider({ children }: Props) {
         let scrollY = window.scrollY;
 
         function handleScroll() {
+          // prevent default scroll behavior if internal location hasn't changed
+          if (locationKeyRef.current === previousLocationKeyRef.current) {
+            return;
+          }
+
           /**
            * !!! WARNING !!!
            *
@@ -108,7 +144,7 @@ export function GalleryNavigationProvider({ children }: Props) {
           // at the top of the next page.
           setTimeout(() => {
             window.scrollTo({ top: 0 });
-          }, FADE_TIME_MS);
+          }, SCROLL_TRIGGER_TIME_MS);
 
           scrollY = window.scrollY;
 
@@ -141,7 +177,7 @@ export function GalleryNavigationProvider({ children }: Props) {
         setTimeout(() => {
           // @ts-expect-error We're getting too raw here
           originalScrollTo(...args);
-        }, FADE_TIME_MS);
+        }, SCROLL_TRIGGER_TIME_MS);
 
         window.scrollTo = originalScrollTo;
       };
