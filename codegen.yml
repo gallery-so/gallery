@@ -1,0 +1,9 @@
+schema: ./schema.graphql
+documents: ./src/**/*.{ts,tsx}
+generates:
+  ./src/__generated__/operations.ts:
+    config:
+      avoidOptionals: true
+    plugins:
+      - typescript
+      - typescript-operations
