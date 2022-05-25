@@ -12,6 +12,10 @@ type Props = {
   userRef: FollowerCountFragment$key;
 };
 
+export function pluralize(count: number, singular: string) {
+  return count === 1 ? singular : `${singular}s`;
+}
+
 export default function FollowerCount({ userRef }: Props) {
   const user = useFragment(
     graphql`
@@ -35,17 +39,18 @@ export default function FollowerCount({ userRef }: Props) {
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
   }, [isMobile, showModal, user]);
 
-  const followerCount = useMemo(() => user.followers?.length, [user.followers]);
-  const followingCount = useMemo(() => user.following?.length, [user.following]);
+  const followerCount = useMemo(() => user.followers?.length ?? 0, [user.followers]);
+  const followingCount = useMemo(() => user.following?.length ?? 0, [user.following]);
 
   return (
     <StyledFollowerCount>
       <StyledTooltipParent>
         <TextButton text={`${user.followers?.length}`} onClick={handleClick}></TextButton>
         <Tooltip
-          text={`See ${followerCount} follower${
-            followerCount === 1 ? '' : 's'
-          } and ${followingCount} following`}
+          text={`See ${followerCount} ${pluralize(
+            followerCount,
+            'follower'
+          )} and ${followingCount} following`}
         />
       </StyledTooltipParent>
     </StyledFollowerCount>

@@ -1,40 +1,37 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import FollowIcon from 'src/icons/FollowIcon';
 import FollowingIcon from 'src/icons/FollowingIcon';
 import UnfollowIcon from 'src/icons/UnfollowIcon';
 
 type Props = {
+  isHovering: boolean;
+  clickedAndStillHovering: boolean;
   isFollowing: boolean;
   onClick: () => void;
   disabled: boolean;
 };
 
-export default function IconButton({ isFollowing, onClick, disabled }: Props) {
-  const [isHovering, setIsHovering] = useState(false);
-
-  const handleMouseEnter = useCallback(() => {
-    setIsHovering(true);
-  }, []);
-
-  const handleMouseExit = useCallback(() => {
-    setIsHovering(false);
-  }, []);
-
+export default function IconButton({
+  isFollowing,
+  isHovering,
+  clickedAndStillHovering,
+  onClick,
+  disabled,
+}: Props) {
   const DisplayedIcon = useMemo(() => {
     if (isFollowing) {
-      if (isHovering) {
+      if (isHovering && !clickedAndStillHovering) {
         return StyledUnfollowIcon;
       }
       return FollowingIcon;
     }
     return StyledFollowIcon;
-  }, [isFollowing, isHovering]);
-  console.log('disabled', disabled);
+  }, [clickedAndStillHovering, isFollowing, isHovering]);
 
   return (
-    <StyledButtonWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+    <StyledButtonWrapper>
       <StyledButton disabled={disabled} onClick={onClick}>
         <DisplayedIcon />
       </StyledButton>
@@ -66,14 +63,16 @@ const StyledButton = styled.button<{ disabled: boolean }>`
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  border: 1px solid ${colors.porcelain};
   color: ${colors.shadow};
+  border: 1px solid transparent;
   background: none;
   cursor: pointer;
   padding: 7px;
-  transition: opacity 200ms ease-in-out, background 200ms ease-in-out, scale 200ms ease-in-out;
+  transition: opacity 200ms ease-in-out, background 200ms ease-in-out, scale 200ms ease-in-out,
+    border 200ms ease-in-out;
 
   &:hover {
+    border: 1px solid ${colors.porcelain};
     color: ${colors.offBlack};
     background: ${colors.offWhite};
 

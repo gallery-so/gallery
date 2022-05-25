@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import useFollowUser from './mutations/useFollowUser';
@@ -53,6 +53,7 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
 
   const handleClick = useCallback(() => {
     isFollowing ? handleUnfollowClick() : handleFollowClick();
+    setClickedAndStillHovering(true);
   }, [handleFollowClick, handleUnfollowClick, isFollowing]);
 
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
@@ -61,19 +62,43 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
     [isAuthenticatedUsersPage, loggedInUserId]
   );
 
+  const [isHovering, setIsHovering] = useState(false);
+  // Used to prevent hover state/icon from showing when user has just clicked the button.
+  // ie When the user clicks follow, we want to immediately show the default Following state, instead of Following's hover state (unfollow)
+  const [clickedAndStillHovering, setClickedAndStillHovering] = useState(false);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+  }, []);
+
+  const handleMouseExit = useCallback(() => {
+    setIsHovering(false);
+    setClickedAndStillHovering(false);
+  }, []);
+
   const tooltipText = useMemo(() => {
     if (!loggedInUserId) {
       return 'Please sign in to follow.';
     }
+
+    if (clickedAndStillHovering) {
+      return isFollowing ? 'Follow' : 'Unfollow';
+    }
     return isFollowing ? 'Unfollow' : 'Follow';
-  }, [isFollowing, loggedInUserId]);
+  }, [clickedAndStillHovering, isFollowing, loggedInUserId]);
 
   return (
-    <StyledTooltipParent disabled={isAuthenticatedUsersPage}>
+    <StyledTooltipParent
+      disabled={isAuthenticatedUsersPage || clickedAndStillHovering}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseExit}
+    >
       <IconButton
         onClick={handleClick}
         isFollowing={isFollowing}
         disabled={isFollowActionDisabled}
+        isHovering={isHovering}
+        clickedAndStillHovering={clickedAndStillHovering}
       />
       <Tooltip text={tooltipText} />
     </StyledTooltipParent>

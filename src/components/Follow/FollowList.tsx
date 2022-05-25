@@ -7,6 +7,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { pluralize } from './FollowerCount';
 
 type Props = {
   userRef: any;
@@ -44,7 +45,7 @@ export default function FollowList({ userRef }: Props) {
       <StyledHeader>
         <StyledHeaderTextRight>
           <StyledTextButton
-            text={`Followers ∙ ${user.followers.length}`}
+            text={`${user.followers.length} ${pluralize(user.followers.length, 'follower')}`}
             onClick={() => setDisplayedList('followers')}
             active={displayedList === 'followers'}
           ></StyledTextButton>
@@ -52,7 +53,7 @@ export default function FollowList({ userRef }: Props) {
         <Spacer width={16} />
         <StyledHeaderText>
           <StyledTextButton
-            text={`Following ∙ ${user.following.length}`}
+            text={`${user.following.length} Following`}
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
           ></StyledTextButton>
@@ -82,16 +83,16 @@ export default function FollowList({ userRef }: Props) {
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   height: ${({ fullscreen }) => (fullscreen ? '100vh' : '640px')};
-  max-height: calc(100vh - 80px); // 80px accounts for modal padding
+  max-height: calc(100vh - 48px); // 48px accounts for modal padding
   width: ${({ fullscreen }) => (fullscreen ? '100vw' : '540px')};
-  max-width: calc(540vw - 80px); // 80px accounts for modal padding
+  max-width: calc(100vw - 48px); // 48px accounts for modal padding
   display: flex;
   flex-direction: column;
 `;
 
 const StyledHeader = styled.div`
-  padding: 24px;
-  height: 64px;
+  padding: 0 24px 24px;
+
   display: flex;
   justify-content: center;
 `;
