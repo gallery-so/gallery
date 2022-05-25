@@ -5,15 +5,11 @@ import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 export default function Bold({
   selectedRange,
   textAreaRef,
-  setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
-    setUserDragged(false);
-
     const textArea = textAreaRef.current;
     if (!textArea) return;
 
@@ -59,7 +55,7 @@ export default function Bold({
       setValueAndTriggerOnChange(textArea, newText, [start + 2, start + 2]); // Bold ([0, 0]) -> **Bold** ([2, 2])
       return;
     }
-  }, [textAreaRef, selectedRange, setUserDragged]);
+  }, [textAreaRef, selectedRange]);
 
   return (
     <IconContainer
