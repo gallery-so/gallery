@@ -40,7 +40,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
 
   const followerIds = useMemo(
-    () => user.followers.map((follower: { id: string }) => follower.id),
+    () => user.followers.map((follower: { id: string } | null) => follower?.id),
     [user.followers]
   );
 

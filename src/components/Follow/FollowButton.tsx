@@ -46,7 +46,7 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
   const handleUnfollowClick = useCallback(async () => {
     setClickedAndStillHovering(true);
     const optimisticNewFollowersList = user.followers.filter(
-      (follower: { id: string }) => follower.id !== loggedInUserId
+      (follower: { id: string } | null) => follower?.id !== loggedInUserId
     );
     await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have unfollowed ${user.username}.` });
