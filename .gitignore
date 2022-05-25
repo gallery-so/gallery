@@ -35,7 +35,13 @@ tsconfig.tsbuildinfo
 
 # SECRITS
 _internal*
+
+# Relay Generated Files
 **/*.graphql.ts
+
+# GraphQL Codegen Files
+src/__generated__/operations.ts
+
 
 # Sentry
 .sentryclirc
