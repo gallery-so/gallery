@@ -121,7 +121,7 @@ const StyledContentContainer = styled.div`
 
 const StyledContent = styled.div<{ noPadding: boolean }>`
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? 0 : 40)}px;
+  padding: ${({ noPadding }) => (noPadding ? 0 : 24)}px;
   background: ${colors.white};
 
   // allows for scrolling within child components

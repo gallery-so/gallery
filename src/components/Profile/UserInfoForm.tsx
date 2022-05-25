@@ -84,7 +84,7 @@ function UserInfoForm({
         errorMessage={usernameError}
         autoFocus={shouldAutofocusUsername}
       />
-      <Spacer height={24} />
+      <Spacer height={16} />
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."
@@ -92,8 +92,8 @@ function UserInfoForm({
         currentCharCount={unescapedBio.length}
         maxCharCount={BIO_MAX_CHAR_COUNT}
         autoFocus={shouldAutofocusBio}
-        showMarkdownShortcuts={true}
-        hasPadding={true}
+        showMarkdownShortcuts
+        hasPadding
       />
     </StyledForm>
   );

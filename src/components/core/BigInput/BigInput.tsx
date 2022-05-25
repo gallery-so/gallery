@@ -1,6 +1,7 @@
 import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
+import colors from '../colors';
 import Spacer from '../Spacer/Spacer';
 import ErrorText from '../Text/ErrorText';
 
@@ -42,17 +43,17 @@ function BigInput({
 }
 
 const StyledBigInput = styled.input`
-  padding: 0 2px;
+  padding: 12px;
   border: 0;
   font-size: 32px;
   font-family: 'GT Alpina';
   line-height: 36px;
   letter-spacing: -0.03em;
+  background: ${colors.offWhite};
 
   ::placeholder {
     opacity: 0.5;
   }
-  background: none;
 `;
 
 export default BigInput;

@@ -159,6 +159,8 @@ function CollectionCreateOrEditForm({
         defaultValue={unescapedCollectorsNote}
         currentCharCount={description.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
+        showMarkdownShortcuts
+        hasPadding
       />
       {generalError && (
         <>
