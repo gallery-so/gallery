@@ -1,6 +1,6 @@
 import TextButton from 'components/core/Button/TextButton';
 import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
@@ -39,13 +39,13 @@ export default function FollowerCount({ userRef }: Props) {
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
   }, [isMobile, showModal, user]);
 
-  const followerCount = useMemo(() => user.followers?.length ?? 0, [user.followers]);
-  const followingCount = useMemo(() => user.following?.length ?? 0, [user.following]);
+  const followerCount = user.followers?.length ?? 0;
+  const followingCount = user.following?.length ?? 0;
 
   return (
     <StyledFollowerCount>
       <StyledTooltipParent>
-        <TextButton text={`${user.followers?.length}`} onClick={handleClick}></TextButton>
+        <TextButton text={`${followerCount}`} onClick={handleClick}></TextButton>
         <Tooltip
           text={`See ${followerCount} ${pluralize(
             followerCount,

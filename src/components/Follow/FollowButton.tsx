@@ -6,9 +6,10 @@ import useUnfollowUser from './mutations/useUnfollowUser';
 import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import IconButton from 'components/IconButton/IconButton';
 import { useToastActions } from 'contexts/toast/ToastContext';
+import { FollowButtonFragment$key } from '__generated__/FollowButtonFragment.graphql';
 
 type Props = {
-  userRef: any;
+  userRef: FollowButtonFragment$key;
   isFollowing: boolean;
   loggedInUserId?: string;
 };
@@ -20,11 +21,11 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
         id
         dbid
         username
-        followers {
-          id
+        followers @required(action: THROW) {
+          id @required(action: THROW)
         }
-        following {
-          id
+        following @required(action: THROW) {
+          id @required(action: THROW)
         }
       }
     `,
@@ -35,32 +36,26 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
 
-  const handleFollowClick = useCallback(() => {
-    const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
-    followUser(user.dbid, optimisticNewFollowersList, user.following).then(() =>
-      pushToast({ message: `You have followed ${user.username}.` })
-    );
-  }, [followUser, pushToast, loggedInUserId, user]);
+  const handleFollowClick = useCallback(async () => {
+    setClickedAndStillHovering(true);
+    const optimisticNewFollowersList = [{ id: loggedInUserId! }, ...user.followers];
+    await followUser(user.dbid, optimisticNewFollowersList, user.following);
+    pushToast({ message: `You have followed ${user.username}.` });
+  }, [loggedInUserId, user, followUser, pushToast]);
 
-  const handleUnfollowClick = useCallback(() => {
+  const handleUnfollowClick = useCallback(async () => {
+    setClickedAndStillHovering(true);
     const optimisticNewFollowersList = user.followers.filter(
       (follower: { id: string }) => follower.id !== loggedInUserId
     );
-    unfollowUser(user.dbid, optimisticNewFollowersList, user.following).then(() =>
-      pushToast({ message: `You have unfollowed ${user.username}.` })
-    );
-  }, [unfollowUser, pushToast, loggedInUserId, user]);
+    await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
+    pushToast({ message: `You have unfollowed ${user.username}.` });
+  }, [user, unfollowUser, pushToast, loggedInUserId]);
 
-  const handleClick = useCallback(() => {
-    isFollowing ? handleUnfollowClick() : handleFollowClick();
-    setClickedAndStillHovering(true);
-  }, [handleFollowClick, handleUnfollowClick, isFollowing]);
+  const handleClick = isFollowing ? handleUnfollowClick : handleFollowClick;
 
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
-  const isFollowActionDisabled = useMemo(
-    () => isAuthenticatedUsersPage || !loggedInUserId,
-    [isAuthenticatedUsersPage, loggedInUserId]
-  );
+  const isFollowActionDisabled = isAuthenticatedUsersPage || !loggedInUserId;
 
   const [isHovering, setIsHovering] = useState(false);
   // Used to prevent hover state/icon from showing when user has just clicked the button.

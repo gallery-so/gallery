@@ -7,10 +7,11 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
 import { pluralize } from './FollowerCount';
 
 type Props = {
-  userRef: any;
+  userRef: FollowListFragment$key;
 };
 
 const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
@@ -19,12 +20,12 @@ export default function FollowList({ userRef }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowListFragment on GalleryUser {
-        followers {
+        followers @required(action: THROW) {
           dbid
           username
           bio
         }
-        following {
+        following @required(action: THROW) {
           dbid
           username
           bio
