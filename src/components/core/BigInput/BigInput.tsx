@@ -26,6 +26,7 @@ function BigInput({
         placeholder={placeholder}
         defaultValue={defaultValue}
         onChange={onChange}
+        onKeyUp={(e) => e.stopPropagation()}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
