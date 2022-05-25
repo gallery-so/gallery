@@ -3,8 +3,9 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
@@ -36,10 +37,14 @@ export default function FollowList({ userRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
+  const track = useTrack();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const handleClick = useCallback(() => {
+    track('Follower List Username Click');
+  }, [track]);
 
   return (
     <StyledFollowList fullscreen={isMobile}>
@@ -62,7 +67,7 @@ export default function FollowList({ userRef }: Props) {
       </StyledHeader>
       <StyledList>
         {userList.map((user: any) => (
-          <StyledListItem key={user.dbid} href={`/${user.username}`}>
+          <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
             <TitleS>{user.username}</TitleS>
             <BaseM>
               <Markdown text={getFirstLine(user.bio)} />

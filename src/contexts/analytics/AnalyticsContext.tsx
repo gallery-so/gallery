@@ -10,7 +10,7 @@ type TrackFn = (eventName: string, eventProps?: EventProps) => void;
 
 const AnalyticsContext = createContext<TrackFn | undefined>(undefined);
 
-let mixpanelEnabled = false;
+let mixpanelEnabled = true;
 
 if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_API_URL) {
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {

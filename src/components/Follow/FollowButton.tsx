@@ -7,6 +7,7 @@ import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import IconButton from 'components/IconButton/IconButton';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { FollowButtonFragment$key } from '__generated__/FollowButtonFragment.graphql';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   userRef: FollowButtonFragment$key;
@@ -35,22 +36,29 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
+  const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
     setClickedAndStillHovering(true);
+    track('Follow Click', {
+      followee: user.dbid,
+    });
     const optimisticNewFollowersList = [{ id: loggedInUserId! }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have followed ${user.username}.` });
-  }, [loggedInUserId, user, followUser, pushToast]);
+  }, [loggedInUserId, user, track, followUser, pushToast]);
 
   const handleUnfollowClick = useCallback(async () => {
     setClickedAndStillHovering(true);
+    track('Unfollow Click', {
+      followee: user.dbid,
+    });
     const optimisticNewFollowersList = user.followers.filter(
       (follower: { id: string } | null) => follower?.id !== loggedInUserId
     );
     await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have unfollowed ${user.username}.` });
-  }, [user, unfollowUser, pushToast, loggedInUserId]);
+  }, [user, track, unfollowUser, pushToast, loggedInUserId]);
 
   const handleClick = isFollowing ? handleUnfollowClick : handleFollowClick;
 

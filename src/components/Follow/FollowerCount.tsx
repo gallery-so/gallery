@@ -7,6 +7,7 @@ import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.g
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   userRef: FollowerCountFragment$key;
@@ -33,11 +34,13 @@ export default function FollowerCount({ userRef }: Props) {
   );
 
   const { showModal } = useModalActions();
+  const track = useTrack();
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const handleClick = useCallback(() => {
+    track('View Follower List Click');
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
-  }, [isMobile, showModal, user]);
+  }, [isMobile, showModal, track, user]);
 
   const followerCount = user.followers?.length ?? 0;
   const followingCount = user.following?.length ?? 0;
