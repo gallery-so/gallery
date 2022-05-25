@@ -46,7 +46,7 @@ function Dropdown({ mainText, shouldCloseOnMenuItemClick = false, children }: Pr
         // underlying child element's `onClick` from triggering
         setTimeout(() => {
           setIsDropdownVisible(false);
-        }, 10);
+        }, 200);
       }
     },
     [shouldCloseOnMenuItemClick]
