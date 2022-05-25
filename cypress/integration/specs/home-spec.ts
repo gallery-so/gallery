@@ -21,6 +21,7 @@ describe('Homepage test', () => {
   it('should redirect to collection page when click the sign in button', () => {
     home.getSignInButton().should('be.exist');
     home.getSignInButton().click();
+    home.getMetaMaskButton().should('be.exist');
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
 
