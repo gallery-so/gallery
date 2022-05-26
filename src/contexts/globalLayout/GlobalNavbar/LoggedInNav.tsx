@@ -54,7 +54,13 @@ function LoggedInNav({ queryRef }: Props) {
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
   // causes this component to freak out before the parent realizes it shouldn't
   // be rendering this child... need to figure out best practices here
-  return query.viewer?.__typename === 'Viewer' && query.viewer.user?.username ? (
+  if (!query || query.viewer?.__typename !== 'Viewer') {
+    return null;
+  }
+
+  const username = query.viewer.user?.username;
+
+  return username ? (
     <StyledLoggedInNav>
       <NavElement>
         <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
@@ -65,7 +71,11 @@ function LoggedInNav({ queryRef }: Props) {
       </NavElement>
       <Spacer width={24} />
       <NavElement>
-        <TextButton onClick={handleManageWalletsClick} text={query.viewer.user.username} />
+        <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
+          <TextButton text="My Gallery" onClick={() => push(username)} />
+          <Spacer height={12} />
+          <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+        </Dropdown>
       </NavElement>
     </StyledLoggedInNav>
   ) : null;
