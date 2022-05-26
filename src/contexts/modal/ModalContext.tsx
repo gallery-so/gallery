@@ -88,7 +88,9 @@ function ModalProvider({ children }: Props) {
   const hideModal = useCallback((bypassOnClose = false) => {
     setIsActive(false);
     isModalOpenRef.current = false;
-    if (!bypassOnClose) {
+    // need to explicitly check for true, because if this function
+    // is passed into an onClick, it'll be given a truthy MouseEvent
+    if (bypassOnClose !== true) {
       onCloseRef.current?.();
     }
     setTimeout(() => {
