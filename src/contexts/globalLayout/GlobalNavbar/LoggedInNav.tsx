@@ -72,7 +72,7 @@ function LoggedInNav({ queryRef }: Props) {
       <Spacer width={24} />
       <NavElement>
         <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
-          <TextButton text="My Gallery" onClick={() => push(username)} />
+          <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
           <Spacer height={12} />
           <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
         </Dropdown>
