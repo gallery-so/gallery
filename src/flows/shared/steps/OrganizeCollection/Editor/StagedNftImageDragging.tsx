@@ -1,10 +1,11 @@
 import colors from 'components/core/colors';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/nft';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 
 type Props = {
@@ -28,24 +29,29 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
   // slightly enlarge the image when dragging
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
-  const result = getVideoOrImageUrlForNftPreview(nft);
+  const reportError = useReportError();
+  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
+
+  if (!result || !result.urls.large) {
+    reportError('Image URL not found for StagedNftImageDragging');
+  }
 
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
     [nft.contractAddress]
   );
 
-  if (!result || !result.urls.large) {
-    throw new Error('Image URL not found for StagedNftImageDragging');
-  }
-
-  return result.type === 'video' ? (
+  return result?.type === 'video' ? (
     <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
-      <StyledDraggingVideo src={result.urls.large} />
+      <StyledDraggingVideo src={result?.urls.large ?? FALLBACK_URL} />
     </VideoContainer>
   ) : (
     <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
-      <StyledDraggingImage srcUrl={result.urls.large} isMouseUp={isMouseUp} size={zoomedSize} />
+      <StyledDraggingImage
+        srcUrl={result?.urls.large ?? FALLBACK_URL}
+        isMouseUp={isMouseUp}
+        size={zoomedSize}
+      />
     </ImageContainer>
   );
 }

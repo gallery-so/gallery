@@ -60,7 +60,7 @@ export default function useAuthModal() {
   );
 
   return useCallback(() => {
-    showModal(<AuthModal queryRef={query} />);
+    showModal({ content: <AuthModal queryRef={query} /> });
   }, [query, showModal]);
 }
 

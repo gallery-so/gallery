@@ -3,8 +3,14 @@ import { AnimatedToast } from './Toast';
 
 type DismissToastHandler = () => void;
 
+type ToastProps = {
+  message: string;
+  onDismiss?: DismissToastHandler;
+  autoClose?: boolean;
+};
+
 type ToastActions = {
-  pushToast: (message: string, onDismiss?: DismissToastHandler, autoClose?: boolean) => void;
+  pushToast: ({ message, onDismiss, autoClose }: ToastProps) => void;
   dismissToast: () => void;
   dismissAllToasts: () => void;
 };
@@ -33,12 +39,9 @@ type Props = { children: ReactNode };
 const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
-  const pushToast = useCallback(
-    (message: string, onDismiss: DismissToastHandler = noop, autoClose: boolean = false) => {
-      setToasts((previousMessages) => [...previousMessages, { message, onDismiss, autoClose }]);
-    },
-    []
-  );
+  const pushToast = useCallback(({ message, onDismiss = noop, autoClose = true }: ToastProps) => {
+    setToasts((previousMessages) => [...previousMessages, { message, onDismiss, autoClose }]);
+  }, []);
 
   // TODO: allow consumer to specify which toast to dismissbyID
   const dismissToast = useCallback(() => {

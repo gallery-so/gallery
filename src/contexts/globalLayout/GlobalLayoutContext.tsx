@@ -18,9 +18,6 @@ import styled from 'styled-components';
 import usePrevious from 'hooks/usePrevious';
 import useDebounce from 'hooks/useDebounce';
 import isTouchscreenDevice from 'utils/isTouchscreenDevice';
-import { isFeatureEnabled } from 'utils/featureFlag';
-import { FeatureFlag } from 'components/core/enums';
-import PosterBanner from 'scenes/PosterPage/PosterBanner';
 import GlobalNavbar, {
   GLOBAL_NAVBAR_HEIGHT,
   Props as GlobalNavbarProps,
@@ -33,7 +30,6 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
-import { useModalState } from 'contexts/modal/ModalContext';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -336,8 +332,6 @@ function GlobalNavbarWithFadeEnabled({
     [handleFadeNavbarOnHover]
   );
 
-  const { isModalMounted } = useModalState();
-
   return (
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
@@ -345,34 +339,20 @@ function GlobalNavbarWithFadeEnabled({
       zIndex={zIndex}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      // addresses navbar shifting jank when a modal is opened and the scrollbar is removed.
-      // while most of this is covered in `ModalContext`, the layout context must handle a
-      // piece manually given the navbar is position:fixed.
-      artificialPadding={isModalMounted}
     >
       {
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? (
-          isFeatureEnabled(FeatureFlag.POSTER_PAGE) ? (
-            <PosterBanner queryRef={query} />
-          ) : (
-            <Banner text="" queryRef={query} />
-          )
-        ) : null
+        isBannerVisible ? <Banner text="" queryRef={query} /> : null
       }
       <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
 
-// also defined in `index.css`
-export const SCROLLBAR_WIDTH_PX = 6;
-
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;
   transitionStyles?: string;
   zIndex: number;
-  artificialPadding: boolean;
 }>`
   position: fixed;
   width: 100%;
@@ -380,15 +360,12 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   z-index: ${({ zIndex }) => zIndex};
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transition: opacity ${({ transitionStyles }) => transitionStyles};
+  transition: ${({ transitionStyles }) => transitionStyles};
 
   // prevent nav child elements from being clickable when not in view
   > div > div {
     pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
   }
-
-  transform: ${({ artificialPadding }) =>
-    `translate(${artificialPadding ? -SCROLLBAR_WIDTH_PX : 0}px)`};
 `;
 
 export default GlobalLayoutContextProvider;

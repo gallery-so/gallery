@@ -9,6 +9,7 @@ import nock from 'nock';
 import { baseurl } from 'contexts/swr/fetch';
 import { NavActionFollowTestQueryQuery } from 'src/__generated__/operations';
 import ModalProvider from 'contexts/modal/ModalContext';
+import ToastProvider from 'contexts/toast/ToastContext';
 
 const Fixture = () => {
   const query = useLazyLoadQuery<NavActionFollowTestQuery>(
@@ -17,7 +18,7 @@ const Fixture = () => {
         viewer {
           ... on Viewer {
             user {
-              ...NavActionFollowFragment
+              ...NavActionFollowUserFragment
             }
           }
         }
@@ -73,13 +74,15 @@ test.only('it works', async () => {
   nock(baseurl).post('/glry/graphql/query').reply(200, { data: response });
 
   const { debug } = render(
-    <RelayProvider>
-      <ModalProvider>
-        <Suspense fallback={null}>
-          <Fixture />
-        </Suspense>
-      </ModalProvider>
-    </RelayProvider>
+    <ToastProvider>
+      <RelayProvider>
+        <ModalProvider>
+          <Suspense fallback={null}>
+            <Fixture />
+          </Suspense>
+        </ModalProvider>
+      </RelayProvider>
+    </ToastProvider>
   );
 
   await new Promise((resolve) => setTimeout(resolve, 500));

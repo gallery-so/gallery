@@ -67,7 +67,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     } catch (error: unknown) {
       captureException(error);
       if (error instanceof Error) {
-        pushToast(error.message);
+        pushToast({ message: error.message });
       }
     }
 

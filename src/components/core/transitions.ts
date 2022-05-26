@@ -1,6 +1,9 @@
 export const ANIMATED_COMPONENT_TRANSITION_MS = 300;
 export const ANIMATED_COMPONENT_TIMEOUT_MS = 4000;
-export const ANIMATED_COMPONENT_TRANSLATION_PIXELS = 10;
+// translation for larger items like modals, popovers
+export const ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE = 12;
+// translation for smaller items like tooltips
+export const ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL = 8;
 
 const cubic = `${ANIMATED_COMPONENT_TRANSITION_MS}ms cubic-bezier(0.4, 0, 0.6, 1)`;
 

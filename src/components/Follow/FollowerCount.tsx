@@ -1,15 +1,21 @@
 import TextButton from 'components/core/Button/TextButton';
 import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   userRef: FollowerCountFragment$key;
 };
+
+export function pluralize(count: number, singular: string) {
+  return count === 1 ? singular : `${singular}s`;
+}
 
 export default function FollowerCount({ userRef }: Props) {
   const user = useFragment(
@@ -28,22 +34,26 @@ export default function FollowerCount({ userRef }: Props) {
   );
 
   const { showModal } = useModalActions();
+  const track = useTrack();
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const handleClick = useCallback(() => {
-    showModal(<FollowList userRef={user}></FollowList>);
-  }, [showModal, user]);
+    track('View Follower List Click');
+    showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
+  }, [isMobile, showModal, track, user]);
 
-  const followerCount = useMemo(() => user.followers.length, [user.followers]);
-  const followingCount = useMemo(() => user.following.length, [user.following]);
+  const followerCount = user.followers?.length ?? 0;
+  const followingCount = user.following?.length ?? 0;
 
   return (
     <StyledFollowerCount>
       <StyledTooltipParent>
-        <TextButton text={`${user.followers.length}`} onClick={handleClick}></TextButton>
+        <TextButton text={`${followerCount}`} onClick={handleClick}></TextButton>
         <Tooltip
-          text={`See ${followerCount} follower${
-            followerCount > 1 ? 's' : ''
-          } and ${followingCount} following`}
+          text={`See ${followerCount} ${pluralize(
+            followerCount,
+            'follower'
+          )} and ${followingCount} following`}
         />
       </StyledTooltipParent>
     </StyledFollowerCount>

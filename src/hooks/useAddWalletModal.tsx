@@ -42,7 +42,7 @@ export default function useAddWalletModal() {
   );
 
   return useCallback(() => {
-    showModal(<AddWalletModal queryRef={query} />);
+    showModal({ content: <AddWalletModal queryRef={query} /> });
   }, [query, showModal]);
 }
 

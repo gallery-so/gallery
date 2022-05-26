@@ -59,6 +59,10 @@ export function useStabilizedRouteTransitionKey() {
     if (pathname === '/[username]/[collectionId]' && query.nftId) {
       return `/${query.username}/${query.collectionId}`;
     }
+    // keep location stable for NFT detail pages
+    if (pathname === '/[username]/[collectionId]/[nftId]') {
+      return `/${query.username}/${query.collectionId}`;
+    }
     return asPath;
   }, [asPath, pathname, query]);
 

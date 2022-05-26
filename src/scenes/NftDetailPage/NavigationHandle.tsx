@@ -107,7 +107,7 @@ const StyledTextWrapper = styled.div<{ direction: Directions }>`
 `;
 
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
-  z-index: 1;
+  z-index: 2;
 
   // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
   position: fixed;

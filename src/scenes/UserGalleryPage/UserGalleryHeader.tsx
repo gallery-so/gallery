@@ -46,9 +46,9 @@ function UserGalleryHeader({
       </StyledUsernameWrapper>
       <Spacer height={8} />
       <StyledUserDetails>
-        <StyledBio>
+        <BaseM>
           <Markdown text={unescapedBio} />
-        </StyledBio>
+        </BaseM>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
@@ -82,11 +82,6 @@ const StyledUserDetails = styled.div`
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }
-`;
-
-const StyledBio = styled(BaseM)`
-  /* ensures linebreaks are reflected in UI */
-  white-space: pre-line;
 `;
 
 export default UserGalleryHeader;

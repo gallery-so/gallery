@@ -88,7 +88,7 @@ function AddWalletPendingDefault({
 
   const openManageWalletsModal = useCallback(
     (address: string) => {
-      showModal(<ManageWalletsModal queryRef={query} newAddress={address} />);
+      showModal({ content: <ManageWalletsModal queryRef={query} newAddress={address} /> });
     },
     [showModal, query]
   );

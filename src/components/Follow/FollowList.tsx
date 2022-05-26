@@ -3,27 +3,30 @@ import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import { useState } from 'react';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
+import { pluralize } from './FollowerCount';
 
 type Props = {
-  userRef: any;
+  userRef: FollowListFragment$key;
 };
 
 const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
 
-// TODO abbreivate long numbers
 export default function FollowList({ userRef }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowListFragment on GalleryUser {
-        followers {
+        followers @required(action: THROW) {
           dbid
           username
           bio
         }
-        following {
+        following @required(action: THROW) {
           dbid
           username
           bio
@@ -34,15 +37,21 @@ export default function FollowList({ userRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
+  const track = useTrack();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
+  const handleClick = useCallback(() => {
+    track('Follower List Username Click');
+  }, [track]);
+
   return (
-    <StyledFollowList>
+    <StyledFollowList fullscreen={isMobile}>
       <StyledHeader>
         <StyledHeaderTextRight>
           <StyledTextButton
-            text={`Followers ∙ ${user.followers.length}`}
+            text={`${user.followers.length} ${pluralize(user.followers.length, 'follower')}`}
             onClick={() => setDisplayedList('followers')}
             active={displayedList === 'followers'}
           ></StyledTextButton>
@@ -50,7 +59,7 @@ export default function FollowList({ userRef }: Props) {
         <Spacer width={16} />
         <StyledHeaderText>
           <StyledTextButton
-            text={`Following ∙ ${user.following.length}`}
+            text={`${user.following.length} Following`}
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
           ></StyledTextButton>
@@ -58,7 +67,7 @@ export default function FollowList({ userRef }: Props) {
       </StyledHeader>
       <StyledList>
         {userList.map((user: any) => (
-          <StyledListItem key={user.dbid} href={`/${user.username}`}>
+          <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
             <TitleS>{user.username}</TitleS>
             <BaseM>
               <Markdown text={getFirstLine(user.bio)} />
@@ -78,16 +87,18 @@ export default function FollowList({ userRef }: Props) {
   );
 }
 
-const StyledFollowList = styled.div`
-  height: 640px;
-  width: 540px;
+const StyledFollowList = styled.div<{ fullscreen: boolean }>`
+  height: ${({ fullscreen }) => (fullscreen ? '100vh' : '640px')};
+  max-height: calc(100vh - 48px); // 48px accounts for modal padding
+  width: ${({ fullscreen }) => (fullscreen ? '100vw' : '540px')};
+  max-width: calc(100vw - 48px); // 48px accounts for modal padding
   display: flex;
   flex-direction: column;
 `;
 
 const StyledHeader = styled.div`
-  padding: 24px;
-  height: 64px;
+  padding: 0 24px 24px;
+
   display: flex;
   justify-content: center;
 `;

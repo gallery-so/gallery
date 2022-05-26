@@ -41,7 +41,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
           ...UserGalleryCollectionsFragment
         }
-        ...NavActionFollowFragment
+        ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
       }

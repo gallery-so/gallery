@@ -50,16 +50,18 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
   }, [dbid, push, setCollectionIdBeingEdited, track]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(
-      <CollectionCreateOrEditForm
-        // No need for onNext because this isn't part of a wizard
-        onNext={noop}
-        galleryId={gallery.dbid}
-        collectionId={dbid}
-        collectionName={name ?? ''}
-        collectionCollectorsNote={collectorsNote ?? ''}
-      />
-    );
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          // No need for onNext because this isn't part of a wizard
+          onNext={noop}
+          galleryId={gallery.dbid}
+          collectionId={dbid}
+          collectionName={name ?? ''}
+          collectionCollectorsNote={collectorsNote ?? ''}
+        />
+      ),
+    });
   }, [collectorsNote, dbid, gallery.dbid, name, showModal]);
 
   const toggleHideCollection = useUpdateCollectionHidden();
@@ -73,7 +75,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
   const handleDeleteClick = useCallback(() => {
     track('Delete collection button clicked');
-    showModal(<DeleteCollectionConfirmation collectionRef={collection} />);
+    showModal({ content: <DeleteCollectionConfirmation collectionRef={collection} /> });
   }, [collection, showModal, track]);
 
   return (
