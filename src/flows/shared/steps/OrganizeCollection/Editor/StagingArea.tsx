@@ -42,10 +42,10 @@ const DND_WIDTHS: Record<number, number> = {
 const IMAGE_SIZES: Record<number, number> = {
   1: 400,
   2: 320,
-  3: 280,
-  4: 207,
-  5: 156,
-  6: 122,
+  3: 250,
+  4: 180,
+  5: 130,
+  6: 100,
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
