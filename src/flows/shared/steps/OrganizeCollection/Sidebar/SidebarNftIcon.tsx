@@ -107,7 +107,7 @@ const StyledOutline = styled.div<SelectedProps>`
   top: 0;
   left: 0;
 
-  border: ${({ isSelected }) => (isSelected ? 1 : 0)}px solid ${colors.activeBlue};
+  border: ${({ isSelected }) => (isSelected ? 2 : 0)}px solid ${colors.activeBlue};
 
   user-select: none;
 `;

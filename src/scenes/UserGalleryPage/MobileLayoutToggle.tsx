@@ -1,3 +1,4 @@
+import colors from 'components/core/colors';
 import { DisplayLayout } from 'components/core/enums';
 import { useCallback } from 'react';
 import styled from 'styled-components';
@@ -7,7 +8,7 @@ type Props = {
   setMobileLayout: (layout: DisplayLayout) => void;
 };
 
-const ListLayout = () => (
+const ListLayoutIcon = () => (
   // Although the svg has a height and width of 24, it is actually 18px (per Figma)
   // Notice how the path elements begin at 21; there is simply padding around the icon
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,7 +20,7 @@ const ListLayout = () => (
   </svg>
 );
 
-const GridLayout = () => (
+const GridLayoutIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M15 3V21" strokeMiterlimit="10" />
     <path d="M9 3V21" strokeMiterlimit="10" />
@@ -40,11 +41,11 @@ function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
 
   return mobileLayout === DisplayLayout.GRID ? (
     <StyledToggleButton onClick={handleGridClick} title="Grid view">
-      <ListLayout />
+      <ListLayoutIcon />
     </StyledToggleButton>
   ) : (
     <StyledToggleButton onClick={handleListClick} title="List view">
-      <GridLayout />
+      <GridLayoutIcon />
     </StyledToggleButton>
   );
 }
@@ -57,11 +58,7 @@ const StyledToggleButton = styled.button`
   padding: 0;
 
   & svg path {
-    transition: stroke 300ms ease;
-    stroke: #808080;
-  }
-  & svg:hover path {
-    stroke: #000000;
+    stroke: ${colors.offBlack};
   }
 `;
 

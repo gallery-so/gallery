@@ -65,12 +65,13 @@ function SearchBar({ nftsRef, setSearchResults, setDebouncedSearchQuery }: Props
 const StyledSearchBar = styled.div``;
 
 const StyledSearchInput = styled.input`
-  border: 1px solid ${colors.metal};
+  border: none;
   width: 100%;
   padding: 8px;
-  padding-left: 30px;
+  padding-left: 16px;
   color: ${colors.metal};
-  background: url(/icons/search.svg) no-repeat scroll 10px 9px;
+  background: ${colors.offWhite};
+  height: 36px;
 
   ::placeholder {
     color: ${colors.metal};
