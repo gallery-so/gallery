@@ -6,7 +6,9 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import NftDetailView from './NftDetailView';
 import { NftDetailPageQuery } from '__generated__/NftDetailPageQuery.graphql';
 import { useRouter } from 'next/router';
-import transitions from 'components/core/transitions';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
+} from 'components/core/transitions';
 import { Directions } from 'components/core/enums';
 import useKeyDown from 'hooks/useKeyDown';
 import NavigationHandle from './NavigationHandle';
@@ -222,10 +224,10 @@ const _DirectionalFade = styled.div<{ visibility: string }>`
       return 'translate(0px,0px)';
     }
     if (visibility === 'hidden-right') {
-      return 'translate(10px,0px)';
+      return `translate(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px,0px)`;
     }
     if (visibility === 'hidden-left') {
-      return 'translate(-10px,0px)';
+      return `translate(-${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px,0px)`;
     }
   }};
   z-index: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};

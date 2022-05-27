@@ -63,10 +63,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 const StyledTextArea = styled.textarea<TextAreaProps>`
   width: 100%;
   height: 100%;
-  padding: 16px;
+  padding: 12px;
   font-family: ABC Diatype;
   border: none;
-  border-bottom: 28px solid ${colors.white};
+  border-bottom: 36px solid transparent;
   resize: none;
   font-size: 14px;
   line-height: 20px;
@@ -88,10 +88,11 @@ export function TextAreaWithCharCount({
   maxCharCount,
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   return (
     <>
       <StyledTextAreaWithCharCount className={className}>
-        <TextArea {...textAreaProps} />
+        <TextArea ref={textAreaRef} {...textAreaProps} />
         <StyledCharacterCounter
           error={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
@@ -174,7 +175,7 @@ export function AutoResizingTextAreaWithCharCount({
 
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
-  border: 1px solid ${colors.metal};
+  background: ${colors.offWhite};
   padding-bottom: 1px; /* This fixes a FF bug where the bottom border does not appear */
 `;
 
@@ -192,6 +193,7 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boole
 
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`
   position: absolute;
-  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  background: none;
+  bottom: ${({ hasPadding }) => (hasPadding ? '12px' : '0')};
   left: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 `;
