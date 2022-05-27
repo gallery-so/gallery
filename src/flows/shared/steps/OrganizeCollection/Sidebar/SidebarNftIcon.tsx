@@ -80,10 +80,10 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
 
 export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   overflow: hidden;
-  margin: 5px;
+  margin-bottom: 16px;
 
   display: flex;
   justify-content: center;
@@ -107,7 +107,7 @@ const StyledOutline = styled.div<SelectedProps>`
   top: 0;
   left: 0;
 
-  border: ${({ isSelected }) => (isSelected ? 1 : 0)}px solid ${colors.activeBlue};
+  border: ${({ isSelected }) => (isSelected ? 2 : 0)}px solid ${colors.activeBlue};
 
   user-select: none;
 `;
