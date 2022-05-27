@@ -1,5 +1,5 @@
 import TextButton from 'components/core/Button/TextButton';
-import Tooltip, { StyledTooltipParent } from 'components/Tooltip/Tooltip';
+import { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -11,22 +11,17 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   userRef: FollowerCountFragment$key;
+  className?: string;
 };
 
 export function pluralize(count: number, singular: string) {
   return count === 1 ? singular : `${singular}s`;
 }
 
-export default function FollowerCount({ userRef }: Props) {
+export default function FollowerCount({ userRef, className }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowerCountFragment on GalleryUser {
-        followers {
-          dbid
-        }
-        following {
-          dbid
-        }
         ...FollowListFragment
       }
     `,
@@ -42,22 +37,16 @@ export default function FollowerCount({ userRef }: Props) {
     showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
   }, [isMobile, showModal, track, user]);
 
-  const followerCount = user.followers?.length ?? 0;
-  const followingCount = user.following?.length ?? 0;
-
   return (
-    <StyledFollowerCount>
+    <StyledFollowerCount className={className}>
       <StyledTooltipParent>
-        <TextButton text={`${followerCount}`} onClick={handleClick}></TextButton>
-        <Tooltip
-          text={`See ${followerCount} ${pluralize(
-            followerCount,
-            'follower'
-          )} and ${followingCount} following`}
-        />
+        <TextButton text={`Followers`} onClick={handleClick}></TextButton>
       </StyledTooltipParent>
     </StyledFollowerCount>
   );
 }
 
-const StyledFollowerCount = styled.div``;
+export const StyledFollowerCount = styled.div`
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+`;

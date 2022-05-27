@@ -9,7 +9,6 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
-import { pluralize } from './FollowerCount';
 
 type Props = {
   userRef: FollowListFragment$key;
@@ -51,7 +50,7 @@ export default function FollowList({ userRef }: Props) {
       <StyledHeader>
         <StyledHeaderTextRight>
           <StyledTextButton
-            text={`${user.followers.length} ${pluralize(user.followers.length, 'follower')}`}
+            text="Followers"
             onClick={() => setDisplayedList('followers')}
             active={displayedList === 'followers'}
           ></StyledTextButton>
@@ -59,7 +58,7 @@ export default function FollowList({ userRef }: Props) {
         <Spacer width={16} />
         <StyledHeaderText>
           <StyledTextButton
-            text={`${user.following.length} Following`}
+            text="Following"
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
           ></StyledTextButton>
