@@ -205,6 +205,10 @@ const StyledCollectionHeader = styled.div`
   // to appear above content underneath
   z-index: 1;
   margin-bottom: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-bottom: 24px;
+  }
 `;
 
 const StyledCollectionTitleWrapper = styled.div`
