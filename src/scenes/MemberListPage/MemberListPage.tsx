@@ -3,7 +3,7 @@ import { TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
-import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
+import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
@@ -39,9 +39,9 @@ function MemberListPage({ queryRef }: Props) {
             <i>Thank you,</i> for being a patron of Gallery.
           </StyledBannerText>
         </StyledBanner>
-        <Spacer height={isMobile ? 65 : 96} />
-        <MemberListFilter />
-        <Spacer height={56} />
+        <Spacer height={isMobile ? 32 : 80} />
+        <TokenHolderListFilter />
+        <Spacer height={isMobile ? 32 : 64} />
         <StyledTierWrapper>
           {removeNullValues(membershipTiers).map((tier) => (
             <MemberListTier key={tier.id} tierRef={tier} />

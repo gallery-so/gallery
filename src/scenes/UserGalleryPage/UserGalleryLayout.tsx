@@ -58,7 +58,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <Spacer height={32} />
+      <Spacer height={isMobile ? 48 : 80} />
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}

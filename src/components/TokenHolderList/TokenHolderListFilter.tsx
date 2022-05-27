@@ -96,17 +96,17 @@ const StyledTokenHolderListFilter = styled.div<StyledTokenHolderListFilterProps>
   justify-content: space-between;
   align-content: stretch;
   width: 97vw;
+  margin-left: -16px;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: space-between;
     flex-wrap: nowrap;
-    margin-left: -16px;
     width: 100%;
     display: flex;
+    margin-left: -12px;
   }
 
   @media only screen and ${breakpoints.desktop} {
-    margin-left: -28px;
     justify-content: flex-start;
   }
 

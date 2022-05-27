@@ -8,6 +8,7 @@ import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
 import { MemberListTierFragment$data } from '__generated__/MemberListTierFragment.graphql';
 import { CommunityPageViewFragment$data } from '__generated__/CommunityPageViewFragment.graphql';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 // Get which side of the tokenHolder name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -53,10 +54,12 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
     );
   }, [searchQuery, sortedTokenHolders]);
 
+  const isMobile = useIsMobileWindowWidth();
+
   return (
     <>
       <TitleS>{title}</TitleS>
-      <Spacer height={24} />
+      <Spacer height={isMobile ? 24 : 16} />
       <StyledTokenHoldersWrapper>
         {filteredTokenHolders.map((tokenHolder, index) => (
           <TokenHolderListItem
