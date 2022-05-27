@@ -6,7 +6,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useMemo } from 'react';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
-import { CirclePlusIcon } from 'src/icons/CirclePlusIcon';
+import CirclePlusIcon from 'src/icons/CirclePlusIcon';
 import styled from 'styled-components';
 
 function ColumnAdjuster() {

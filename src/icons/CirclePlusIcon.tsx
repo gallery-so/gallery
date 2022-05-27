@@ -1,4 +1,4 @@
-export function CirclePlusIcon() {
+export default function CirclePlusIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M8 5.33325V10.6666" stroke="#707070" stroke-miterlimit="10" />
