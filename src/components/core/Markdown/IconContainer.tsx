@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import colors from '../colors';
 
 export default function IconContainer({ icon }: { icon: React.ReactElement }) {
   return (
@@ -16,17 +17,13 @@ export default function IconContainer({ icon }: { icon: React.ReactElement }) {
 
 const StyledIcon = styled.div`
   cursor: pointer;
+  height: 24px;
 
-  & svg rect {
-    transition: fill 300ms ease;
-    fill: rgba(254, 254, 254, 1);
+  &:hover {
+    background: ${colors.porcelain};
   }
 
-  &:hover svg rect {
-    fill: rgba(249, 249, 249, 1);
-  }
-
-  &:active svg rect {
-    fill: rgba(226, 226, 226, 1);
+  &:active {
+    background: ${colors.metal};
   }
 `;

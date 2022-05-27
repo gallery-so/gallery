@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
+import { useModalState } from 'contexts/modal/ModalContext';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -47,10 +48,13 @@ function UserGallery({ queryRef }: Props) {
 
   const isLoggedIn = Boolean(query.viewer?.user?.id);
 
+  const { isModalOpenRef } = useModalState();
+
   const navigateToEdit = useCallback(() => {
     if (!isLoggedIn) return;
+    if (isModalOpenRef.current) return;
     void push(`/edit`);
-  }, [push, isLoggedIn]);
+  }, [push, isLoggedIn, isModalOpenRef]);
 
   useKeyDown('e', navigateToEdit);
 

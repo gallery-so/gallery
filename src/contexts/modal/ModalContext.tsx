@@ -1,4 +1,5 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
 import {
   ReactElement,
   ReactNode,
@@ -10,6 +11,7 @@ import {
   useMemo,
   useRef,
   MutableRefObject,
+  useEffect,
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
@@ -89,10 +91,14 @@ function ModalProvider({ children }: Props) {
 
   // Trigger fade-out that takes X seconds
   // schedule unmount in X seconds
-  const hideModal = useCallback(() => {
+  const hideModal = useCallback((bypassOnClose = false) => {
     setIsActive(false);
     isModalOpenRef.current = false;
-    onCloseRef.current?.();
+    // need to explicitly check for true, because if this function
+    // is passed into an onClick, it'll be given a truthy MouseEvent
+    if (bypassOnClose !== true) {
+      onCloseRef.current?.();
+    }
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
@@ -114,6 +120,15 @@ function ModalProvider({ children }: Props) {
     }),
     [showModal, hideModal]
   );
+
+  // close modal on route change
+  const route = useStabilizedRouteTransitionKey();
+  useEffect(() => {
+    if (isModalOpenRef.current) {
+      // bypass onClose as to not navigate the user back mid-route change
+      hideModal(true);
+    }
+  }, [route, hideModal]);
 
   return (
     <ModalStateContext.Provider value={state}>
