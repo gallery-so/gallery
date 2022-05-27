@@ -19,11 +19,13 @@ function EditorMenu() {
 
 export const MENU_HEIGHT = 20;
 
+export const MENU_WIDTH = 250;
+
 const StyledEditorMenu = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 16px;
-  width: 250px;
+  width: ${MENU_WIDTH}px;
   border-left: 1px solid ${colors.porcelain};
 `;
 
