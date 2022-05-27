@@ -14,7 +14,6 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import { BaseXL } from 'components/core/Text/Text';
 
 import {
   useCollectionEditorActions,
@@ -115,9 +114,6 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
         layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedItems}>
-          <StyledHeadingWrapper>
-            <BaseXL>Your collection</BaseXL>
-          </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedItems.map((stagedItem) => {
               const size = IMAGE_SIZES[columns];
@@ -157,10 +153,9 @@ const StyledStagingArea = styled.div`
 
   margin: 0 auto;
 
-  width: 100%;
   height: calc(100vh - ${FOOTER_HEIGHT}px - ${MENU_HEIGHT}px);
 
-  padding: 100px 80px;
+  padding: 48px 80px;
 
   overflow: auto;
 
@@ -176,8 +171,6 @@ type StyledStagedNftContainerProps = {
 const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   display: flex;
   flex-wrap: wrap;
-
-  margin-top: 20px;
 
   // Limit DnD to 3 columns
   max-width: ${({ width }) => width}px;

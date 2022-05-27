@@ -110,7 +110,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
   return (
     <StyledSidebar>
       <Header>
-        <TitleS>Your NFTs</TitleS>
+        <TitleS>Pieces</TitleS>
         <TextButton
           text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
           onClick={handleRefreshNfts}
@@ -158,9 +158,8 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
 }
 
 const StyledAddBlankBlock = styled.div`
-  height: 64px;
-  width: 64px;
-  margin: 5px;
+  height: 60px;
+  width: 60px;
   background-color: ${colors.offWhite};
   border: 1px solid ${colors.metal};
   text-transform: uppercase;
@@ -183,12 +182,10 @@ const StyledAddBlankBlockText = styled(TitleXS)`
 `;
 
 const StyledSidebar = styled.div`
-  width: 100%;
   height: calc(100vh - ${FOOTER_HEIGHT}px);
+  border-right: 1px solid ${colors.porcelain};
 
-  background: ${colors.offWhite};
-
-  padding: 32px;
+  padding: 16px;
 
   overflow: auto;
   user-select: none;
@@ -212,14 +209,8 @@ const StyledSelectButtonWrapper = styled.div`
 const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
-
-  // Safari doesn't support this yet
-  // column-gap: 12px;
-  // row-gap: 12px;
-
-  // Temporary solution until Safari support
-  width: calc(100% + 12px);
-  margin-left: -6px;
+  width: 218px;
+  justify-content: space-between;
 `;
 
 export default memo(Sidebar);

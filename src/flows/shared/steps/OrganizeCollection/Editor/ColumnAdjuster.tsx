@@ -1,5 +1,3 @@
-import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
 import {
@@ -7,6 +5,8 @@ import {
   useCollectionMetadataState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useMemo } from 'react';
+import CircleMinusIcon from 'src/icons/CircleMinusIcon';
+import { CirclePlusIcon } from 'src/icons/CirclePlusIcon';
 import styled from 'styled-components';
 
 function ColumnAdjuster() {
@@ -20,12 +20,16 @@ function ColumnAdjuster() {
 
   return (
     <StyledColumnAdjuster>
-      <BaseM>COLUMNS</BaseM>
+      <BaseM>Columns</BaseM>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton text="−" onClick={decrementColumns} disabled={columns <= 1} />
+        <StyledColumnButton onClick={decrementColumns} disabled={columns <= 1}>
+          <CircleMinusIcon />
+        </StyledColumnButton>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton text="+" onClick={incrementColumns} disabled={columns > 5} />
+        <StyledColumnButton onClick={incrementColumns} disabled={columns > 5}>
+          <CirclePlusIcon />
+        </StyledColumnButton>
       </StyledButtonContainer>
     </StyledColumnAdjuster>
   );
@@ -34,21 +38,23 @@ function ColumnAdjuster() {
 const StyledColumnAdjuster = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const StyledButtonContainer = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: center;
 `;
 
-const StyledColumnButton = styled(TextButton)<{ disabled: boolean }>`
+const StyledColumnButton = styled.button<{ disabled: boolean }>`
   font-size: 16px;
-
-  // Override default TextButton font size
-  ${StyledButtonText} {
-    color: ${({ disabled }) => (disabled ? colors.porcelain : colors.metal)};
-    font-size: 20px;
-  }
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: none;
 `;
 const StyledNumberOfColumns = styled(BaseM)`
   padding: 0 8px;

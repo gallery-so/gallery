@@ -217,8 +217,8 @@ function CollectionEditor({ viewerRef }: Props) {
       <StyledEditorContainer>
         {shouldDisplayEditor ? (
           <>
-            <EditorMenu />
             <StagingArea stagedItems={stagedNfts} nftsRef={allNfts} />
+            <EditorMenu />
           </>
         ) : (
           <Directions />
@@ -228,7 +228,7 @@ function CollectionEditor({ viewerRef }: Props) {
   );
 }
 
-const SIDEBAR_WIDTH = 280;
+const SIDEBAR_WIDTH = 250;
 
 const StyledOrganizeCollection = styled.div`
   display: flex;
@@ -239,6 +239,7 @@ const StyledSidebarContainer = styled.div`
 `;
 
 const StyledEditorContainer = styled.div`
+  display: flex;
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
 
