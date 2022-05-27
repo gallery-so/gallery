@@ -19,7 +19,7 @@ import {
   useCollectionEditorActions,
   useCollectionMetadataState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { MENU_HEIGHT, MENU_WIDTH } from './EditorMenu';
+import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 import { isEditModeNft, StagingItem } from '../types';
@@ -150,7 +150,7 @@ const StyledStagingArea = styled.div`
 
   margin: 0 auto;
 
-  height: calc(100vh - ${FOOTER_HEIGHT}px - ${MENU_HEIGHT}px);
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 
   padding: 48px 80px;
 

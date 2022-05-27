@@ -17,8 +17,6 @@ function EditorMenu() {
   );
 }
 
-export const MENU_HEIGHT = 20;
-
 export const MENU_WIDTH = 250;
 
 const StyledEditorMenu = styled.div`
