@@ -30,9 +30,9 @@ import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
 // Width of DND area for each Column # setting
 const DND_WIDTHS: Record<number, number> = {
-  1: 600,
-  2: 800,
-  3: 984,
+  1: 400,
+  2: 736,
+  3: 774,
   4: 1020,
   5: 1020,
   6: 1020,
