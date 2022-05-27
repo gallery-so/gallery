@@ -141,11 +141,6 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
   );
 }
 
-const StyledHeadingWrapper = styled.div`
-  width: 100%;
-  padding: 0 8px;
-`;
-
 const StyledStagingArea = styled.div`
   display: flex;
   flex-direction: column;
