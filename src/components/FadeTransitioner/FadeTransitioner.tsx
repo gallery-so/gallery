@@ -52,11 +52,11 @@ export function useStabilizedRouteTransitionKey() {
   const transitionAnimationKey = useMemo(() => {
     // if we're looking at the NFT detail modal from the user gallery page,
     // keep the location key static as to not trigger an animation
-    if (pathname === '/[username]' && query.nftId) {
+    if (pathname === '/[username]' && query.modal === 'true') {
       return `/${query.username}`;
     }
     // same logic for modal triggered from collection page
-    if (pathname === '/[username]/[collectionId]' && query.nftId) {
+    if (pathname === '/[username]/[collectionId]' && query.modal === 'true') {
       return `/${query.username}/${query.collectionId}`;
     }
     // keep location stable for NFT detail pages
