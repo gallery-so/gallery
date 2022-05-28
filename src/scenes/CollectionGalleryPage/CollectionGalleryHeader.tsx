@@ -185,17 +185,18 @@ const StyledCollectionGalleryHeaderWrapper = styled.div`
 
 const StyledHeaderWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-  }
+  align-items: end;
 `;
 
 const StyledBreadcrumbsWrapper = styled(TitleL)`
   display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 40px);
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;
 
 const StyledUsernameWrapper = styled.div`
@@ -244,11 +245,8 @@ const StyledCollectionActions = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  width: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    width: auto;
-  }
+  width: 40px;
+  padding-bottom: 4px;
 `;
 
 export default CollectionGalleryHeader;
