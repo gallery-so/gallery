@@ -11,11 +11,10 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { MINT_DATE } from 'constants/poster';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import PosterMintButton from './PosterMintButton';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
-  const { pushToast } = useToastActions();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
@@ -25,13 +24,6 @@ export default function PosterPage() {
   const handleBackClick = () => {
     // TODO: Replace with hook
     window.history.back();
-  };
-
-  const handleSignPoster = () => {
-    pushToast({
-      message: 'Thank you for participating in the (Object 006) 2022 Community Poster event.',
-      autoClose: true,
-    });
   };
 
   return (
@@ -59,9 +51,7 @@ export default function PosterPage() {
           ) : (
             <StyledCallToAction>
               <BaseXL>{timestamp}</BaseXL>
-              <StyledAnchor href={FIGMA_URL} target="_blank">
-                <StyledButton onClick={handleSignPoster} text="Mint"></StyledButton>
-              </StyledAnchor>
+              <PosterMintButton></PosterMintButton>
             </StyledCallToAction>
           )}
         </StyledContent>
@@ -140,16 +130,4 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     padding: 12px 16px;
     border-top: 1px solid ${colors.porcelain};
   }
-`;
-
-const StyledAnchor = styled.a`
-  text-decoration: none;
-`;
-
-const StyledButton = styled(Button)`
-  align-self: flex-end;
-  width: 100%;
-  height: 100%;
-  padding: 12px 24px;
-  text-decoration: none;
 `;

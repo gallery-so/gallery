@@ -33,7 +33,8 @@ type Props = {
   onMintSuccess?: () => void;
 };
 
-enum TransactionStatus {
+// TODO: move to constants
+export enum TransactionStatus {
   PENDING,
   SUCCESS,
   FAILED,
