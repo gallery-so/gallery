@@ -125,47 +125,53 @@ function CollectionGalleryHeader({
   return (
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
-        <StyledUsernameWrapper>
-          <StyledUsernameAndSeparatorWrapper>
-            <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
-            {collection.name && <StyledSeparator>/</StyledSeparator>}
-          </StyledUsernameAndSeparatorWrapper>
-          {shouldDisplayMobileLayoutToggle && (
-            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+        <StyledBreadcrumbsWrapper>
+          <StyledUsernameWrapper>
+            <StyledUsernameAndSeparatorWrapper>
+              <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
+              {collection.name && <StyledSeparator>/</StyledSeparator>}
+            </StyledUsernameAndSeparatorWrapper>
+            {shouldDisplayMobileLayoutToggle && (
+              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+            )}
+          </StyledUsernameWrapper>
+          <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
+        </StyledBreadcrumbsWrapper>
+
+        <StyledCollectionActions>
+          {showEditActions ? (
+            <SettingsDropdown>
+              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+              {!shouldDisplayMobileLayoutToggle && (
+                <>
+                  <Spacer height={8} />
+                  <NavElement>
+                    <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                  </NavElement>
+                </>
+              )}
+              <Spacer height={8} />
+              <CopyToClipboard textToCopy={collectionUrl}>
+                <TextButton text="Share" onClick={handleShareClick} />
+              </CopyToClipboard>
+            </SettingsDropdown>
+          ) : (
+            <CopyToClipboard textToCopy={collectionUrl}>
+              <TextButton text="Share" onClick={handleShareClick} />
+            </CopyToClipboard>
           )}
-        </StyledUsernameWrapper>
-        <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
+        </StyledCollectionActions>
       </StyledHeaderWrapper>
+
       <Spacer height={32} />
+
       {unescapedCollectorsNote && (
         <StyledCollectionNote>
           <Markdown text={unescapedCollectorsNote} />
         </StyledCollectionNote>
       )}
-      <Spacer height={60} />
-      <StyledCollectionActions>
-        {showEditActions ? (
-          <SettingsDropdown>
-            <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-            {!shouldDisplayMobileLayoutToggle && (
-              <>
-                <Spacer height={8} />
-                <NavElement>
-                  <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                </NavElement>
-              </>
-            )}
-            <Spacer height={8} />
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
-            </CopyToClipboard>
-          </SettingsDropdown>
-        ) : (
-          <CopyToClipboard textToCopy={collectionUrl}>
-            <TextButton text="Share" onClick={handleShareClick} />
-          </CopyToClipboard>
-        )}
-      </StyledCollectionActions>
+
+      <Spacer height={80} />
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
@@ -177,13 +183,19 @@ const StyledCollectionGalleryHeaderWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledHeaderWrapper = styled(TitleL)`
+const StyledHeaderWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+`;
+
+const StyledBreadcrumbsWrapper = styled(TitleL)`
+  display: flex;
 `;
 
 const StyledUsernameWrapper = styled.div`
