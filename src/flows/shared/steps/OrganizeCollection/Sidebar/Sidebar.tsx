@@ -137,7 +137,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
           />
         )}
       </StyledSelectButtonWrapper>
-      <Spacer height={8} />
+      <Spacer height={16} />
       <Selection>
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
@@ -210,7 +210,7 @@ const Selection = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 218px;
-  justify-content: space-between;
+  grid-gap: 19px;
 `;
 
 export default memo(Sidebar);
