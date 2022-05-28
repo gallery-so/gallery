@@ -51,6 +51,7 @@ const StyledBigInput = styled.input`
   line-height: 36px;
   letter-spacing: -0.03em;
   background: ${colors.offWhite};
+  color: ${colors.offBlack};
 
   ::placeholder {
     opacity: 0.5;
