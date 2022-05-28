@@ -34,14 +34,14 @@ export const MEMBERSHIP_NFT_SILVER: MembershipNft = {
   title: 'Silver Member Card',
   description: DESCRIPTION_SILVER,
   tokenId: 6,
-  videoUrl: 'https://storage.opensea.io/files/e4a966f87311b7f4aa782cec912502d6.mp4',
+  videoUrl: 'https://openseauserdata.com/files/e4a966f87311b7f4aa782cec912502d6.mp4#t=0.001',
   secondaryUrl: 'https://opensea.io/assets/0xe01569ca9b39e55bc7c0dfa09f05fa15cb4c7698/6',
 };
 export const MEMBERSHIP_NFT_GOLD: MembershipNft = {
   title: 'Gold Member Card',
   description: DESCRIPTION_GOLD,
   tokenId: 5,
-  videoUrl: 'https://storage.opensea.io/files/b5b5300c6ef782299fe31c65a320d3b5.mp4',
+  videoUrl: 'https://openseauserdata.com/files/b5b5300c6ef782299fe31c65a320d3b5.mp4#t=0.001',
   secondaryUrl: 'https://opensea.io/assets/0xe01569ca9b39e55bc7c0dfa09f05fa15cb4c7698/5',
 };
 
@@ -49,6 +49,6 @@ export const MEMBERSHIP_NFT_GENERAL: MembershipNft = {
   title: 'General Member Card',
   description: DESCRIPTION_GENERAL,
   tokenId: 0,
-  videoUrl: 'https://storage.opensea.io/files/2a834b456a6d3e2a80374d143c764086.mp4#t=0.001',
+  videoUrl: 'https://openseauserdata.com/files/5d2f45c6252d5729611ac0cff58ad4c9.mp4#t=0.001',
   secondaryUrl: 'https://opensea.io/assets/0xe3d0fe9b7e0b951663267a3ed1e6577f6f79757e/0',
 };
