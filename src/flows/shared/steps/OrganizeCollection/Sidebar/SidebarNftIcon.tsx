@@ -83,7 +83,6 @@ export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string
   width: 60px;
   height: 60px;
   overflow: hidden;
-  margin-bottom: 16px;
 
   display: flex;
   justify-content: center;
