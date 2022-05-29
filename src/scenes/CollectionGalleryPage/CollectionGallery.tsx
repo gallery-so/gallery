@@ -42,14 +42,13 @@ function CollectionGallery({ queryRef }: Props) {
   if (collection?.__typename === 'Collection') {
     return (
       <StyledCollectionGallery>
-        <Spacer height={32} />
+        <Spacer height={80} />
         <CollectionGalleryHeader
           queryRef={query}
           collectionRef={collection}
           mobileLayout={mobileLayout}
           setMobileLayout={setMobileLayout}
         />
-        <Spacer height={32} />
         <NftGalleryWrapper>
           <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
         </NftGalleryWrapper>
