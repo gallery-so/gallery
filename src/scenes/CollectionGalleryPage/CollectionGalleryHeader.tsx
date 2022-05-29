@@ -163,7 +163,7 @@ function CollectionGalleryHeader({
         </StyledCollectionActions>
       </StyledHeaderWrapper>
 
-      <Spacer height={32} />
+      <Spacer height={16} />
 
       {unescapedCollectorsNote && (
         <StyledCollectionNote>
