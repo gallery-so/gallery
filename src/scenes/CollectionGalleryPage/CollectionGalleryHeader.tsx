@@ -159,7 +159,7 @@ function CollectionGalleryHeader({
           )}
           {shouldDisplayMobileLayoutToggle && (
             <>
-              <Spacer width={4} />
+              <Spacer width={16} />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
             </>
           )}
