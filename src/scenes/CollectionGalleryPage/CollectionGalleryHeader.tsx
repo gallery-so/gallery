@@ -199,7 +199,7 @@ const StyledBreadcrumbsWrapper = styled(TitleL)`
   display: flex;
   flex-direction: column;
   max-width: calc(100% - ${BreadcrumbsWrapperWidth}px);
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.mobileLarge} {
     flex-direction: row;
   }
 `;
