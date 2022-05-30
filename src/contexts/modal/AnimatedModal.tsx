@@ -7,15 +7,15 @@ import transitions, {
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   isActive: boolean;
   hideModal: () => void;
   content: ReactElement;
-  isFullPage: boolean;
 };
 
-function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
+function AnimatedModal({ isActive, hideModal, content }: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
     function handlePopState() {
@@ -35,12 +35,14 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
   // hide modal if user clicks Escape
   useKeyDown('Escape', delayedHideModal);
 
+  const isFullPage = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={hideModal} />
       <StyledContentContainer>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent noPadding={isFullPage}>
+          <StyledContent isFullPage={isFullPage}>
             <StyledDecoratedCloseIcon onClick={hideModal} />
             {content}
           </StyledContent>
@@ -117,16 +119,26 @@ const StyledContentContainer = styled.div`
   z-index: 2;
 `;
 
-const StyledContent = styled.div<{ noPadding: boolean }>`
+const StyledContent = styled.div<{ isFullPage: boolean }>`
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? 0 : 24)}px;
   background: ${colors.white};
-
-  border: 1px solid ${colors.shadow};
 
   // allows for scrolling within child components
   overflow-y: auto;
   overflow-x: hidden;
+
+  // no border on full page
+  border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
+  // no padding on full page
+  padding: ${({ isFullPage }) => (isFullPage ? 0 : 24)}px;
+  // take up entire page on full page
+  ${({ isFullPage }) =>
+    isFullPage
+      ? `
+    width: 100vw;
+    height: 100vh;
+  `
+      : ''};
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
