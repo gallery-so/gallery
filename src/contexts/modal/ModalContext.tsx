@@ -89,11 +89,11 @@ function ModalProvider({ children }: Props) {
     return isMobile;
   }, [isFullPageOverride, isMobile]);
 
-  const showModal = useCallback(({ content, onClose = noop, isFullPage = null }) => {
+  const showModal = useCallback(({ content, onClose = noop, isFullPageOverride = null }) => {
     setIsActive(true);
     isModalOpenRef.current = true;
     setIsMounted(true);
-    setIsFullPageOverride(isFullPage);
+    setIsFullPageOverride(isFullPageOverride);
     setContent(content);
     onCloseRef.current = onClose;
 
