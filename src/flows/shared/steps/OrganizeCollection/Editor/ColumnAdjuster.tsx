@@ -1,3 +1,4 @@
+import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
 import {
@@ -55,7 +56,12 @@ const StyledColumnButton = styled.button<{ disabled: boolean }>`
   padding: 0;
   cursor: pointer;
   background: none;
+
+  path {
+    stroke: ${({ disabled }) => (disabled ? `${colors.porcelain}` : 'auto')};
+  }
 `;
+
 const StyledNumberOfColumns = styled(BaseM)`
   padding: 0 8px;
 `;

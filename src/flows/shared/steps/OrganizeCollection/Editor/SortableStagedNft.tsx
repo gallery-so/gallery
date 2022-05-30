@@ -11,13 +11,15 @@ import UnstageButton from './UnstageButton';
 import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 
 type Props = {
   nftRef: SortableStagedNftFragment$key;
   size: number;
+  mini: boolean;
 };
 
-function SortableStagedNft({ nftRef, size }: Props) {
+function SortableStagedNft({ nftRef, size, mini }: Props) {
   const nft = useFragment(
     graphql`
       fragment SortableStagedNftFragment on Nft {
@@ -60,13 +62,14 @@ function SortableStagedNft({ nftRef, size }: Props) {
       <StagedNftImage
         nftRef={nft}
         size={size}
+        hideLabel={mini}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
       />
       <StyledUnstageButton id={id} />
-      <StyledGradient type="top" direction="up" />
-      <StyledGradient type="bottom" direction="down" />
+      <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
+      {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
   );
 }
@@ -93,7 +96,8 @@ export const StyledSortableNft = styled.div<{ backgroundColorOverride: string }>
     outline: none;
   }
   cursor: grab;
-  margin: 24px;
+
+  margin: ${PADDING_BETWEEN_STAGED_IMAGES_PX / 2}px;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
