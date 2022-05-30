@@ -20,7 +20,7 @@ const StyledSettingsDropdown = styled.div`
 
   ${StyledDropdownButton} {
     width: 32px;
-    height: 24px;
+    height: 32px;
   }
 `;
 

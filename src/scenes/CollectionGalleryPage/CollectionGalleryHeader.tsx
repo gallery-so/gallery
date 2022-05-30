@@ -131,9 +131,6 @@ function CollectionGalleryHeader({
               <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
               {collection.name && <StyledSeparator>/</StyledSeparator>}
             </StyledUsernameAndSeparatorWrapper>
-            {shouldDisplayMobileLayoutToggle && (
-              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-            )}
           </StyledUsernameWrapper>
           <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
         </StyledBreadcrumbsWrapper>
@@ -159,6 +156,12 @@ function CollectionGalleryHeader({
             <CopyToClipboard textToCopy={collectionUrl}>
               <TextButton text="Share" onClick={handleShareClick} />
             </CopyToClipboard>
+          )}
+          {shouldDisplayMobileLayoutToggle && (
+            <>
+              <Spacer width={4} />
+              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+            </>
           )}
         </StyledCollectionActions>
       </StyledHeaderWrapper>
@@ -190,11 +193,13 @@ const StyledHeaderWrapper = styled.div`
   align-items: end;
 `;
 
+const BreadcrumbsWrapperWidth = 80;
+
 const StyledBreadcrumbsWrapper = styled(TitleL)`
   display: flex;
   flex-direction: column;
-  max-width: calc(100% - 40px);
-  @media only screen and ${breakpoints.tablet} {
+  max-width: calc(100% - ${BreadcrumbsWrapperWidth}px);
+  @media only screen and ${breakpoints.mobileLarge} {
     flex-direction: row;
   }
 `;
@@ -245,8 +250,8 @@ const StyledCollectionActions = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  width: 40px;
-  padding-bottom: 4px;
+  align-items: center;
+  width: ${BreadcrumbsWrapperWidth}px;
 `;
 
 export default CollectionGalleryHeader;
