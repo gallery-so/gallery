@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAddWalletModalFragment$key } from '__generated__/useAddWalletModalFragment.graphql';
 import { useAddWalletModalQuery } from '__generated__/useAddWalletModalQuery.graphql';
+import breakpoints from 'components/core/breakpoints';
 
 type ModalProps = {
   queryRef: useAddWalletModalFragment$key;
@@ -52,4 +53,9 @@ const Container = styled.div`
   align-items: center;
 
   min-height: 280px;
+
+  padding: 48px 24px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
 `;
