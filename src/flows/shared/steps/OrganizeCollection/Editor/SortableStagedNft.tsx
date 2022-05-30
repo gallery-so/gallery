@@ -16,9 +16,10 @@ import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 type Props = {
   nftRef: SortableStagedNftFragment$key;
   size: number;
+  mini: boolean;
 };
 
-function SortableStagedNft({ nftRef, size }: Props) {
+function SortableStagedNft({ nftRef, size, mini }: Props) {
   const nft = useFragment(
     graphql`
       fragment SortableStagedNftFragment on Nft {
@@ -61,6 +62,7 @@ function SortableStagedNft({ nftRef, size }: Props) {
       <StagedNftImage
         nftRef={nft}
         size={size}
+        hideLabel={mini}
         setNodeRef={setNodeRef}
         {...attributes}
         {...listeners}
