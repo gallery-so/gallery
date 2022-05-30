@@ -5,6 +5,7 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
+import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
@@ -71,5 +72,8 @@ const Container = styled.div`
 
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
-  min-height: 300px;
+  min-height: 400px;
+  height: 100%;
+
+  padding: ${MODAL_PADDING_PX}px;
 `;
