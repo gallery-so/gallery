@@ -115,14 +115,14 @@ const StyledContentContainer = styled.div`
 
   // should appear above the overlay
   z-index: 2;
-
-  border: 1px solid ${colors.shadow};
 `;
 
 const StyledContent = styled.div<{ noPadding: boolean }>`
   position: relative;
   padding: ${({ noPadding }) => (noPadding ? 0 : 24)}px;
   background: ${colors.white};
+
+  border: 1px solid ${colors.shadow};
 
   // allows for scrolling within child components
   overflow-y: auto;
