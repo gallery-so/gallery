@@ -1,5 +1,6 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
 import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import {
   ReactElement,
   ReactNode,
@@ -35,11 +36,11 @@ export const useModalState = (): ModalState => {
 type ShowModalFnProps = {
   content: ReactElement;
   onClose?: () => void;
-  isFullPage?: boolean;
+  isFullPageOverride?: boolean;
 };
 
 type ModalActions = {
-  showModal: ({ content, onClose, isFullPage }: ShowModalFnProps) => void;
+  showModal: ({ content, onClose, isFullPageOverride }: ShowModalFnProps) => void;
   hideModal: () => void;
 };
 
@@ -65,8 +66,8 @@ function ModalProvider({ children }: Props) {
   // ref version of the above. used when needed to prevent race
   // conditions within side-effects that look up this state
   const isModalOpenRef = useRef(false);
-  // Whether the modal should take up the entire page
-  const [isFullPage, setIsFullPage] = useState(false);
+  // Whether the modal should take up the entire page.
+  const [isFullPageOverride, setIsFullPageOverride] = useState<boolean | null>(null);
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -77,11 +78,22 @@ function ModalProvider({ children }: Props) {
     [isModalOpenRef, isMounted]
   );
 
-  const showModal = useCallback(({ content, onClose = noop, isFullPage = false }) => {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  // Default behavior is to display full-page on mobile,
+  // but this can be overridden.
+  const isFullPage = useMemo(() => {
+    if (isFullPageOverride !== null) {
+      return isFullPageOverride;
+    }
+    return isMobile;
+  }, [isFullPageOverride, isMobile]);
+
+  const showModal = useCallback(({ content, onClose = noop, isFullPageOverride = null }) => {
     setIsActive(true);
     isModalOpenRef.current = true;
     setIsMounted(true);
-    setIsFullPage(isFullPage);
+    setIsFullPageOverride(isFullPageOverride);
     setContent(content);
     onCloseRef.current = onClose;
 
@@ -102,7 +114,7 @@ function ModalProvider({ children }: Props) {
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
-      setIsFullPage(false);
+      setIsFullPageOverride(null);
       onCloseRef.current = noop;
 
       // enable scrolling again

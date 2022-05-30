@@ -5,6 +5,7 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
+import breakpoints from 'components/core/breakpoints';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
@@ -47,6 +48,22 @@ const AuthModal = ({ queryRef }: ModalProps) => {
   );
 };
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // the height of the inner content with all wallet options listed.
+  // ensures the height of the modal doesn't shift
+  min-height: 360px;
+  height: 100%;
+
+  padding: 48px 24px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
+`;
+
 export default function useAuthModal() {
   const { showModal } = useModalActions();
 
@@ -63,13 +80,3 @@ export default function useAuthModal() {
     showModal({ content: <AuthModal queryRef={query} /> });
   }, [query, showModal]);
 }
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  // the height of the inner content with all wallet options listed.
-  // ensures the height of the modal doesn't shift
-  min-height: 300px;
-`;
