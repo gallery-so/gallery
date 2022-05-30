@@ -68,8 +68,8 @@ function SortableStagedNft({ nftRef, size, mini }: Props) {
         {...listeners}
       />
       <StyledUnstageButton id={id} />
-      <StyledGradient type="top" direction="up" />
-      <StyledGradient type="bottom" direction="down" />
+      <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
+      {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
   );
 }

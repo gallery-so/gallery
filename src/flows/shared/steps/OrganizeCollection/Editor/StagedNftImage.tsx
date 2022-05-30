@@ -36,7 +36,9 @@ function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props
   return result?.type === 'video' ? (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
-      <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      {hideLabel ? null : (
+        <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      )}
     </VideoContainer>
   ) : (
     <StyledGridImage
