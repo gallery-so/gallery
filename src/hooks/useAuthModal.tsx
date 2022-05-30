@@ -6,6 +6,7 @@ import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
 import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
+import { useIsMobileOrMobileLargeWindowWidth } from './useWindowSize';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
@@ -41,12 +42,27 @@ const AuthModal = ({ queryRef }: ModalProps) => {
     }
   }, [isAuthenticated, hideModal]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
-    <Container>
+    <Container isMobile={isMobile}>
       <WalletSelector queryRef={query} />
     </Container>
   );
 };
+
+const Container = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // the height of the inner content with all wallet options listed.
+  // ensures the height of the modal doesn't shift
+  min-height: 360px;
+  height: 100%;
+
+  padding: ${({ isMobile }) => `${isMobile ? MODAL_PADDING_PX : 0}px`};
+`;
 
 export default function useAuthModal() {
   const { showModal } = useModalActions();
@@ -64,16 +80,3 @@ export default function useAuthModal() {
     showModal({ content: <AuthModal queryRef={query} /> });
   }, [query, showModal]);
 }
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  // the height of the inner content with all wallet options listed.
-  // ensures the height of the modal doesn't shift
-  min-height: 400px;
-  height: 100%;
-
-  padding: ${MODAL_PADDING_PX}px;
-`;
