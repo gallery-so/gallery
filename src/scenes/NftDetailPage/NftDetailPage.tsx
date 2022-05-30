@@ -259,9 +259,11 @@ const StyledNftDetailPage = styled.div`
 function NftDetailPageWithBoundary({ collectionId, nftId }: Props) {
   return (
     <StyledNftDetailPageWithBoundary>
-      <ErrorBoundary>
-        <NftDetailPage collectionId={collectionId} nftId={nftId} />
-      </ErrorBoundary>
+      <Suspense fallback={<FullPageLoader />}>
+        <ErrorBoundary>
+          <NftDetailPage collectionId={collectionId} nftId={nftId} />
+        </ErrorBoundary>
+      </Suspense>
     </StyledNftDetailPageWithBoundary>
   );
 }
