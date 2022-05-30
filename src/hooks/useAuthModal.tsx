@@ -5,8 +5,7 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
-import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
-import { useIsMobileOrMobileLargeWindowWidth } from './useWindowSize';
+import breakpoints from 'components/core/breakpoints';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
@@ -42,16 +41,14 @@ const AuthModal = ({ queryRef }: ModalProps) => {
     }
   }, [isAuthenticated, hideModal]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
-    <Container isMobile={isMobile}>
+    <Container>
       <WalletSelector queryRef={query} />
     </Container>
   );
 };
 
-const Container = styled.div<{ isMobile: boolean }>`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,7 +58,10 @@ const Container = styled.div<{ isMobile: boolean }>`
   min-height: 360px;
   height: 100%;
 
-  padding: ${({ isMobile }) => `${isMobile ? MODAL_PADDING_PX : 0}px`};
+  padding: 48px 24px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
 `;
 
 export default function useAuthModal() {
