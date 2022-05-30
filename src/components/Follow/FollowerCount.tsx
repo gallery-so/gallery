@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
@@ -31,11 +30,10 @@ export default function FollowerCount({ userRef, className }: Props) {
   const { showModal } = useModalActions();
   const track = useTrack();
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const handleClick = useCallback(() => {
     track('View Follower List Click');
-    showModal({ content: <FollowList userRef={user} />, isFullPage: isMobile });
-  }, [isMobile, showModal, track, user]);
+    showModal({ content: <FollowList userRef={user} /> });
+  }, [showModal, track, user]);
 
   return (
     <StyledFollowerCount className={className}>

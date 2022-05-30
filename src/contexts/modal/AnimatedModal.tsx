@@ -7,15 +7,15 @@ import transitions, {
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   isActive: boolean;
   hideModal: () => void;
   content: ReactElement;
+  isFullPage: boolean;
 };
 
-function AnimatedModal({ isActive, hideModal, content }: Props) {
+function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
     function handlePopState() {
@@ -34,8 +34,6 @@ function AnimatedModal({ isActive, hideModal, content }: Props) {
 
   // hide modal if user clicks Escape
   useKeyDown('Escape', delayedHideModal);
-
-  const isFullPage = useIsMobileOrMobileLargeWindowWidth();
 
   return (
     <_ToggleFade isActive={isActive}>
