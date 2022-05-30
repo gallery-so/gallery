@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
-import FollowerCount, { StyledFollowerCount } from './FollowerCount';
+import FollowerCount, { StyledFollowerListButton } from './FollowerListButton';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;
@@ -21,7 +21,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
         followers @required(action: THROW) {
           id @required(action: THROW)
         }
-        ...FollowerCountFragment
+        ...FollowerListButtonFragment
         ...FollowButtonFragment
       }
     `,
@@ -63,7 +63,7 @@ const StyledNavActionFollow = styled.div`
   align-items: center;
 
   &:hover {
-    ${StyledFollowerCount} {
+    ${StyledFollowerListButton} {
       opacity: 1;
     }
   }

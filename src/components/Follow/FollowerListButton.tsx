@@ -3,13 +3,13 @@ import { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { FollowerCountFragment$key } from '__generated__/FollowerCountFragment.graphql';
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { FollowerListButtonFragment$key } from '__generated__/FollowerListButtonFragment.graphql';
 
 type Props = {
-  userRef: FollowerCountFragment$key;
+  userRef: FollowerListButtonFragment$key;
   className?: string;
 };
 
@@ -17,10 +17,10 @@ export function pluralize(count: number, singular: string) {
   return count === 1 ? singular : `${singular}s`;
 }
 
-export default function FollowerCount({ userRef, className }: Props) {
+export default function FollowerListButton({ userRef, className }: Props) {
   const user = useFragment(
     graphql`
-      fragment FollowerCountFragment on GalleryUser {
+      fragment FollowerListButtonFragment on GalleryUser {
         ...FollowListFragment
       }
     `,
@@ -36,15 +36,15 @@ export default function FollowerCount({ userRef, className }: Props) {
   }, [showModal, track, user]);
 
   return (
-    <StyledFollowerCount className={className}>
+    <StyledFollowerListButton className={className}>
       <StyledTooltipParent>
         <TextButton text={`Followers`} onClick={handleClick}></TextButton>
       </StyledTooltipParent>
-    </StyledFollowerCount>
+    </StyledFollowerListButton>
   );
 }
 
-export const StyledFollowerCount = styled.div`
+export const StyledFollowerListButton = styled.div`
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
 `;

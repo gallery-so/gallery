@@ -65,6 +65,10 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   useEffect(() => {
     setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
+
+    return () => {
+      setCustomNavLeftContent(null);
+    };
   }, [query, setCustomNavLeftContent, user]);
 
   return (
