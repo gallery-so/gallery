@@ -27,16 +27,7 @@ import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
-
-// Width of DND area for each Column # setting
-const DND_WIDTHS: Record<number, number> = {
-  1: 400,
-  2: 736,
-  3: 774,
-  4: 1020,
-  5: 1020,
-  6: 1020,
-};
+import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 
 // Width of draggable image for each Column # setting
 const IMAGE_SIZES: Record<number, number> = {
@@ -46,6 +37,22 @@ const IMAGE_SIZES: Record<number, number> = {
   4: 145,
   5: 110,
   6: 78,
+};
+
+function _getDndWidth(numImagesInRow: number) {
+  return (
+    IMAGE_SIZES[numImagesInRow] * numImagesInRow + PADDING_BETWEEN_STAGED_IMAGES_PX * numImagesInRow
+  );
+}
+
+// Width of DND area for each Column # setting
+const DND_WIDTHS: Record<number, number> = {
+  1: _getDndWidth(1),
+  2: _getDndWidth(2),
+  3: _getDndWidth(3),
+  4: _getDndWidth(4),
+  5: _getDndWidth(5),
+  6: _getDndWidth(6),
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -177,7 +184,7 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   // row-gap: 48px;
 
   // Temporary solution until Safari support
-  width: calc(100% + 48px);
+  width: calc(100% + ${PADDING_BETWEEN_STAGED_IMAGES_PX}px);
 
   ${StyledSortableNft} * {
     outline: none;

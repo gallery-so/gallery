@@ -1,0 +1,1 @@
+export const PADDING_BETWEEN_STAGED_IMAGES_PX = 48;

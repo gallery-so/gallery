@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { CSS } from '@dnd-kit/utilities';
 import UnstageButton from './UnstageButton';
+import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 
 type Props = {
   id: string;
@@ -109,7 +110,8 @@ const StyledSortableWhitespace = styled.div`
   }
   cursor: grab;
 
-  margin: 24px;
+  margin: ${PADDING_BETWEEN_STAGED_IMAGES_PX / 2}px;
+
   ${BaseM} {
     color: ${colors.metal};
   }
