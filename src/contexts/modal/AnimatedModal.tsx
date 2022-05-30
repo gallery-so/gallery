@@ -117,6 +117,8 @@ const StyledContentContainer = styled.div`
   z-index: 2;
 `;
 
+export const MODAL_PADDING_PX = 24;
+
 const StyledContent = styled.div<{ isFullPage: boolean }>`
   position: relative;
   background: ${colors.white};
@@ -128,7 +130,9 @@ const StyledContent = styled.div<{ isFullPage: boolean }>`
   // no border on full page
   border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
   // no padding on full page
-  padding: ${({ isFullPage }) => (isFullPage ? 0 : 24)}px;
+  padding: ${({ isFullPage }) => (isFullPage ? 0 : MODAL_PADDING_PX)}px;
+  max-height: ${({ isFullPage }) => `calc(100vh - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
+  max-width: ${({ isFullPage }) => `calc(100vw - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
   // take up entire page on full page
   ${({ isFullPage }) =>
     isFullPage

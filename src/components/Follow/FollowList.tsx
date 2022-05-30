@@ -4,6 +4,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -87,16 +88,14 @@ export default function FollowList({ userRef }: Props) {
 }
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
-  height: ${({ fullscreen }) => (fullscreen ? '100vh' : '640px')};
-  max-height: calc(100vh - 48px); // 48px accounts for modal padding
-  width: ${({ fullscreen }) => (fullscreen ? '100vw' : '540px')};
-  max-width: calc(100vw - 48px); // 48px accounts for modal padding
+  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
 `;
 
 const StyledHeader = styled.div`
-  padding: 0 24px 24px;
+  padding: ${MODAL_PADDING_PX}px;
 
   display: flex;
   justify-content: center;
