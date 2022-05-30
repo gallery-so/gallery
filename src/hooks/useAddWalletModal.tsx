@@ -53,6 +53,7 @@ const Container = styled.div`
   align-items: center;
 
   min-height: 280px;
+  height: 100%;
 
   padding: 48px 24px;
   @media only screen and ${breakpoints.tablet} {
