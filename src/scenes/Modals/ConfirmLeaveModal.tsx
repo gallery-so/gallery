@@ -40,6 +40,7 @@ function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key
 }
 
 const StyledConfirmLeaveModal = styled.div`
+  height: 100%;
   @media only screen and ${breakpoints.tablet} {
     width: 480px;
   }
@@ -56,6 +57,7 @@ const LeaveWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   place-items: center;
+  height: 100%;
 `;
 
 export default ConfirmLeaveModal;
