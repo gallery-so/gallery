@@ -53,9 +53,10 @@ function MobileLayoutToggle({ mobileLayout, setMobileLayout }: Props) {
 const StyledToggleButton = styled.button`
   background: none;
   border: 0;
-  margin-top: 12px;
   cursor: pointer;
   padding: 0;
+  height: 24px;
+  width: 24px;
 
   & svg path {
     stroke: ${colors.offBlack};
