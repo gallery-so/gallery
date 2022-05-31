@@ -10,7 +10,7 @@ type Props = {
   isFollowing: boolean;
   onClick: () => void;
   disabled: boolean;
-  isSignedIn: string;
+  isSignedIn: boolean;
 };
 
 export default function IconButton({ isFollowing, onClick, disabled, isSignedIn }: Props) {
