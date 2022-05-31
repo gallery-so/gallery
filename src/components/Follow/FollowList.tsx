@@ -54,7 +54,7 @@ export default function FollowList({ userRef }: Props) {
             text="Followers"
             onClick={() => setDisplayedList('followers')}
             active={displayedList === 'followers'}
-          ></StyledTextButton>
+          />
         </StyledHeaderTextRight>
         <Spacer width={16} />
         <StyledHeaderText>
@@ -62,7 +62,7 @@ export default function FollowList({ userRef }: Props) {
             text="Following"
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
-          ></StyledTextButton>
+          />
         </StyledHeaderText>
       </StyledHeader>
       <StyledList>
@@ -122,6 +122,13 @@ const StyledListItem = styled.a`
 
   &:hover {
     background: ${colors.offWhite};
+  }
+
+  // truncate bios
+  p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
