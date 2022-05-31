@@ -40,7 +40,7 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
       <Overlay onClick={hideModal} />
       <StyledContentContainer>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent noPadding={isFullPage}>
+          <StyledContent isFullPage={isFullPage}>
             <StyledDecoratedCloseIcon onClick={hideModal} />
             {content}
           </StyledContent>
@@ -115,18 +115,32 @@ const StyledContentContainer = styled.div`
 
   // should appear above the overlay
   z-index: 2;
-
-  border: 1px solid ${colors.shadow};
 `;
 
-const StyledContent = styled.div<{ noPadding: boolean }>`
+export const MODAL_PADDING_PX = 24;
+
+const StyledContent = styled.div<{ isFullPage: boolean }>`
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? 0 : 24)}px;
   background: ${colors.white};
 
   // allows for scrolling within child components
   overflow-y: auto;
   overflow-x: hidden;
+
+  // no border on full page
+  border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
+  // no padding on full page
+  padding: ${({ isFullPage }) => (isFullPage ? 0 : MODAL_PADDING_PX)}px;
+  max-height: ${({ isFullPage }) => `calc(100vh - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
+  max-width: ${({ isFullPage }) => `calc(100vw - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
+  // take up entire page on full page
+  ${({ isFullPage }) =>
+    isFullPage
+      ? `
+    width: 100vw;
+    height: 100vh;
+  `
+      : ''};
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`

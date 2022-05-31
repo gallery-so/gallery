@@ -21,7 +21,7 @@ export function AnimatedToast({
   message,
   cornerPositioned = true,
   onClose = noop,
-  autoClose = false,
+  autoClose = true,
 }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting

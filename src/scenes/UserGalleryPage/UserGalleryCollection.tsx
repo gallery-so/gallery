@@ -108,16 +108,18 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, []);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(
-      <CollectionCreateOrEditForm
-        // No need for onNext because this isn't part of a wizard
-        onNext={noop}
-        galleryId={galleryId}
-        collectionId={collection.dbid}
-        collectionName={collection.name}
-        collectionCollectorsNote={collection.collectorsNote ?? ''}
-      />
-    );
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          // No need for onNext because this isn't part of a wizard
+          onNext={noop}
+          galleryId={galleryId}
+          collectionId={collection.dbid}
+          collectionName={collection.name}
+          collectionCollectorsNote={collection.collectorsNote ?? ''}
+        />
+      ),
+    });
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (

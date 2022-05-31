@@ -10,6 +10,11 @@ import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFr
 import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
 import { contentSize } from 'components/core/breakpoints';
+import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
+import { useEffect } from 'react';
+import NavActionFollow from 'components/Follow/NavActionFollow';
+import { FeatureFlag } from 'components/core/enums';
+import { isFeatureEnabled } from 'utils/featureFlag';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -21,6 +26,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     graphql`
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
+        ...NavActionFollowQueryFragment
       }
     `,
     queryRef
@@ -37,6 +43,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
           ...UserGalleryCollectionsFragment
         }
+        ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
       }
@@ -55,6 +62,18 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   ) : (
     <EmptyGallery message="This user has not set up their gallery yet." />
   );
+
+  const { setCustomNavLeftContent } = useGlobalLayoutActions();
+
+  useEffect(() => {
+    if (isFeatureEnabled(FeatureFlag.FOLLOW)) {
+      setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
+    }
+
+    return () => {
+      setCustomNavLeftContent(null);
+    };
+  }, [query, setCustomNavLeftContent, user]);
 
   return (
     <StyledUserGalleryLayout>

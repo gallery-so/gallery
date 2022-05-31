@@ -13,4 +13,5 @@ export enum DisplayLayout {
 export enum FeatureFlag {
   GENERAL_MEMBERSHIP_MINT = 'GENERAL_MEMBERSHIP_MINT',
   MARKDOWN_SHORTCUTS = 'MARKDOWN_SHORTCUTS',
+  FOLLOW = 'FOLLOW',
 }
