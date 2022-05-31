@@ -31,7 +31,7 @@ export default function FollowerListButton({ userRef, className }: Props) {
 
   const handleClick = useCallback(() => {
     track('View Follower List Click');
-    showModal({ content: <FollowList userRef={user} /> });
+    showModal({ content: <FollowList userRef={user} />, isPaddingDisabled: true });
   }, [showModal, track, user]);
 
   return (

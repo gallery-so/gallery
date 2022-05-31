@@ -54,7 +54,7 @@ export default function FollowList({ userRef }: Props) {
             text="Followers"
             onClick={() => setDisplayedList('followers')}
             active={displayedList === 'followers'}
-          ></StyledTextButton>
+          />
         </StyledHeaderTextRight>
         <Spacer width={16} />
         <StyledHeaderText>
@@ -62,7 +62,7 @@ export default function FollowList({ userRef }: Props) {
             text="Following"
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
-          ></StyledTextButton>
+          />
         </StyledHeaderText>
       </StyledHeader>
       <StyledList>
@@ -92,10 +92,11 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
+  padding: ${MODAL_PADDING_PX}px 8px;
 `;
 
 const StyledHeader = styled.div`
-  padding: ${MODAL_PADDING_PX}px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
 
   display: flex;
   justify-content: center;
@@ -122,6 +123,13 @@ const StyledListItem = styled.a`
 
   &:hover {
     background: ${colors.offWhite};
+  }
+
+  // truncate bios
+  p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 

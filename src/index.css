@@ -81,12 +81,13 @@ code {
   background: #e2e2e2;
 }
 
-/* always display scrollbar for inner divs if scrollable */
-div::-webkit-scrollbar {
+/* the following block *always displays the scrollbar* for inner divs if scrollable.
+   we're reconsidering whether we want this behavior, so commenting this out for now. */
+/* div::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 6px;
   height: 6px;
-}
+} */
 
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
