@@ -8,9 +8,10 @@ import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage'
 type Props = {
   contract: Contract | null;
   tokenId: number;
+  onMintSuccess?: () => void;
 };
 
-export default function useMintContract({ contract, tokenId }: Props) {
+export default function useMintContract({ contract, tokenId, onMintSuccess }: Props) {
   const { active, account: rawAccount } = useWeb3React<Web3Provider>();
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
@@ -42,7 +43,7 @@ export default function useMintContract({ contract, tokenId }: Props) {
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
-        console.log(error);
+        console.log(`error bitches`);
         setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
         setTransactionStatus(TransactionStatus.FAILED);
       });
@@ -63,13 +64,13 @@ export default function useMintContract({ contract, tokenId }: Props) {
         });
         if (waitResult) {
           setTransactionStatus(TransactionStatus.SUCCESS);
-          // if (onMintSuccess) {
-          //   onMintSuccess();
-          // }
+          if (onMintSuccess) {
+            onMintSuccess();
+          }
         }
       }
     }
-  }, [active, contract, error, mintToken, tokenId]);
+  }, [active, contract, error, mintToken, onMintSuccess, tokenId]);
 
   const buttonText = useMemo(() => {
     if (!active) {

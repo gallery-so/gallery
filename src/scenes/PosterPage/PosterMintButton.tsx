@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import Button from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
+import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
 import { NFT_TOKEN_ID } from 'constants/poster';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -23,12 +24,16 @@ export default function PosterMintButton() {
   const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintPosterContract();
-  const { transactionHash, transactionStatus, buttonText, handleMintButtonClick } = useMintContract(
-    {
-      contract,
-      tokenId,
-    }
-  );
+  const {
+    transactionHash,
+    transactionStatus,
+    buttonText,
+    error,
+    handleMintButtonClick,
+  } = useMintContract({
+    contract,
+    tokenId,
+  });
 
   useEffect(() => {
     if (active) {
@@ -62,6 +67,21 @@ export default function PosterMintButton() {
               <BaseM>View on Etherscan</BaseM>
             </GalleryLink>
           </div>
+        </>
+      )}
+      {transactionStatus === TransactionStatus.SUCCESS && (
+        <>
+          <Spacer height={16} />
+          <BaseM>You can now sign up for Gallery.</BaseM>
+          <GalleryLink href="/auth">
+            <BaseM>Proceed to Onboarding</BaseM>
+          </GalleryLink>
+        </>
+      )}
+      {error && (
+        <>
+          <Spacer height={16} />
+          <ErrorText message={error} />
         </>
       )}
     </>
