@@ -37,6 +37,7 @@ type ShowModalFnProps = {
   content: ReactElement;
   onClose?: () => void;
   isFullPageOverride?: boolean;
+  isPaddingDisabled?: boolean;
 };
 
 type ModalActions = {
@@ -68,6 +69,8 @@ function ModalProvider({ children }: Props) {
   const isModalOpenRef = useRef(false);
   // Whether the modal should take up the entire page.
   const [isFullPageOverride, setIsFullPageOverride] = useState<boolean | null>(null);
+  // Whether to disable default padding
+  const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -89,17 +92,21 @@ function ModalProvider({ children }: Props) {
     return isMobile;
   }, [isFullPageOverride, isMobile]);
 
-  const showModal = useCallback(({ content, onClose = noop, isFullPageOverride = null }) => {
-    setIsActive(true);
-    isModalOpenRef.current = true;
-    setIsMounted(true);
-    setIsFullPageOverride(isFullPageOverride);
-    setContent(content);
-    onCloseRef.current = onClose;
+  const showModal = useCallback(
+    ({ content, onClose = noop, isFullPageOverride = null, isPaddingDisabled = false }) => {
+      setIsActive(true);
+      isModalOpenRef.current = true;
+      setIsMounted(true);
+      setIsFullPageOverride(isFullPageOverride);
+      setIsPaddingDisabled(isPaddingDisabled);
+      setContent(content);
+      onCloseRef.current = onClose;
 
-    // prevent main body from being scrollable while the modal is open.
-    document.body.style.overflow = 'hidden';
-  }, []);
+      // prevent main body from being scrollable while the modal is open.
+      document.body.style.overflow = 'hidden';
+    },
+    []
+  );
 
   // Trigger fade-out that takes X seconds
   // schedule unmount in X seconds
@@ -115,6 +122,7 @@ function ModalProvider({ children }: Props) {
       setIsMounted(false);
       setContent(null);
       setIsFullPageOverride(null);
+      setIsPaddingDisabled(false);
       onCloseRef.current = noop;
 
       // enable scrolling again
@@ -152,6 +160,7 @@ function ModalProvider({ children }: Props) {
             hideModal={hideModal}
             content={content}
             isFullPage={isFullPage}
+            isPaddingDisabled={isPaddingDisabled}
           />
         )}
       </ModalActionsContext.Provider>

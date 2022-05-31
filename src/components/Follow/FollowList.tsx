@@ -92,10 +92,11 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
+  padding: ${MODAL_PADDING_PX}px 8px;
 `;
 
 const StyledHeader = styled.div`
-  padding: ${MODAL_PADDING_PX}px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
 
   display: flex;
   justify-content: center;

@@ -13,9 +13,10 @@ type Props = {
   hideModal: () => void;
   content: ReactElement;
   isFullPage: boolean;
+  isPaddingDisabled: boolean;
 };
 
-function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
+function AnimatedModal({ isActive, hideModal, content, isFullPage, isPaddingDisabled }: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
     function handlePopState() {
@@ -40,7 +41,7 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage }: Props) {
       <Overlay onClick={hideModal} />
       <StyledContentContainer>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent isFullPage={isFullPage}>
+          <StyledContent isFullPage={isFullPage} isPaddingDisabled={isPaddingDisabled}>
             <StyledDecoratedCloseIcon onClick={hideModal} />
             {content}
           </StyledContent>
@@ -119,7 +120,7 @@ const StyledContentContainer = styled.div`
 
 export const MODAL_PADDING_PX = 24;
 
-const StyledContent = styled.div<{ isFullPage: boolean }>`
+const StyledContent = styled.div<{ isFullPage: boolean; isPaddingDisabled: boolean }>`
   position: relative;
   background: ${colors.white};
 
@@ -130,7 +131,8 @@ const StyledContent = styled.div<{ isFullPage: boolean }>`
   // no border on full page
   border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
   // no padding on full page
-  padding: ${({ isFullPage }) => (isFullPage ? 0 : MODAL_PADDING_PX)}px;
+  padding: ${({ isFullPage, isPaddingDisabled }) =>
+    isFullPage || isPaddingDisabled ? 0 : MODAL_PADDING_PX}px;
   max-height: ${({ isFullPage }) => `calc(100vh - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
   max-width: ${({ isFullPage }) => `calc(100vw - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
   // take up entire page on full page
