@@ -30,6 +30,9 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import PosterBanner from 'scenes/PosterPage/PosterBanner';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -210,10 +213,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     setIsNavbarEnabled(visible);
   }, []);
 
-  const state = useMemo(
-    () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
-    [isNavbarVisible, wasNavbarVisible]
-  );
+  const state = useMemo(() => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }), [
+    isNavbarVisible,
+    wasNavbarVisible,
+  ]);
 
   const [customNavLeftContent, setCustomNavLeftContent] = useState<ReactElement | null>(null);
 
@@ -322,15 +325,13 @@ function GlobalNavbarWithFadeEnabled({
     setZIndex(2);
   }, [isVisible, fadeType]);
 
-  const handleMouseEnter = useCallback(
-    () => handleFadeNavbarOnHover(true),
-    [handleFadeNavbarOnHover]
-  );
+  const handleMouseEnter = useCallback(() => handleFadeNavbarOnHover(true), [
+    handleFadeNavbarOnHover,
+  ]);
 
-  const handleMouseLeave = useCallback(
-    () => handleFadeNavbarOnHover(false),
-    [handleFadeNavbarOnHover]
-  );
+  const handleMouseLeave = useCallback(() => handleFadeNavbarOnHover(false), [
+    handleFadeNavbarOnHover,
+  ]);
 
   return (
     <StyledGlobalNavbarWithFadeEnabled
@@ -342,7 +343,13 @@ function GlobalNavbarWithFadeEnabled({
     >
       {
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? <Banner text="" queryRef={query} /> : null
+        isBannerVisible ? (
+          isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
+            <PosterBanner queryRef={query} />
+          ) : (
+            <Banner text="" queryRef={query} />
+          )
+        ) : null
       }
       <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
     </StyledGlobalNavbarWithFadeEnabled>

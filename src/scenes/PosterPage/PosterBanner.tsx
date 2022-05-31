@@ -21,11 +21,11 @@ export default function PosterBanner({ queryRef }: Props) {
   return (
     <Banner
       title={<StyledTimer>{countdownTimer}</StyledTimer>}
-      text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
+      text="You may now mint and claim (Object 006) 2022 Community Poster. Thank you for participating."
       queryRef={queryRef}
       localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
       requireAuth
-      actionComponent={<NavLink to="/members/poster">Sign Poster</NavLink>}
+      actionComponent={<NavLink to="/members/poster">Mint</NavLink>}
     />
   );
 }

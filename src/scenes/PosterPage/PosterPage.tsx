@@ -45,13 +45,8 @@ export default function PosterPage() {
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Celebrate our{' '}
-              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> with us by signing
-              our poster.
-            </BaseM>
-            <BaseM>
-              The final product will be available to mint as a commemorative token for early
-              believers in our mission and product.
+              Thank you for being a member of Gallery. Members celebrated our new brand by signing a
+              poster.
             </BaseM>
           </StyledParagraph>
 
@@ -65,7 +60,7 @@ export default function PosterPage() {
             <StyledCallToAction>
               <BaseXL>{timestamp}</BaseXL>
               <StyledAnchor href={FIGMA_URL} target="_blank">
-                <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
+                <StyledButton onClick={handleSignPoster} text="Mint"></StyledButton>
               </StyledAnchor>
             </StyledCallToAction>
           )}
