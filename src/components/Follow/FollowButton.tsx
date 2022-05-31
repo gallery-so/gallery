@@ -68,6 +68,7 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
       isFollowing={isFollowing}
       disabled={isFollowActionDisabled}
       isSignedIn={!!loggedInUserId}
+      isAuthenticatedUsersPage={isAuthenticatedUsersPage}
     />
   );
 }

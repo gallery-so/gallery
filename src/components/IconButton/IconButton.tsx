@@ -11,9 +11,16 @@ type Props = {
   onClick: () => void;
   disabled: boolean;
   isSignedIn: boolean;
+  isAuthenticatedUsersPage: boolean;
 };
 
-export default function IconButton({ isFollowing, onClick, disabled, isSignedIn }: Props) {
+export default function IconButton({
+  isFollowing,
+  onClick,
+  disabled,
+  isSignedIn,
+  isAuthenticatedUsersPage,
+}: Props) {
   const DisplayedIcon = useMemo(
     () => (isFollowing ? FollowingIcon : StyledFollowIcon),
     [isFollowing]
@@ -81,7 +88,7 @@ export default function IconButton({ isFollowing, onClick, disabled, isSignedIn 
           <HoverIcon />
         </StyledHoverIconWrapper>
       </StyledButton>
-      <StyledTooltip text={tooltipText} showTooltip={showTooltip} />
+      <StyledTooltip text={tooltipText} showTooltip={!isAuthenticatedUsersPage && showTooltip} />
     </StyledButtonWrapper>
   );
 }
@@ -171,6 +178,7 @@ const StyledButton = styled.button<{ disabled: boolean }>`
     cursor: initial;
     pointer-events: none;
     border: none;
+    background: none;
 
     ${StyledFollowIcon} {
       path {
