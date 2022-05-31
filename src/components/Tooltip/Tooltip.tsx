@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 type Props = {
   text: string;
+  className?: string;
 };
 
-export default function Tooltip({ text }: Props) {
+export default function Tooltip({ text, className }: Props) {
   return (
-    <StyledTooltip>
-      <BaseS color={colors.white}>{text}</BaseS>
+    <StyledTooltip className={className}>
+      <StyledBaseS color={colors.white}>{text}</StyledBaseS>
     </StyledTooltip>
   );
 }
@@ -21,20 +22,9 @@ export const StyledTooltip = styled.div`
   position: absolute;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-0px);
   transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
 `;
 
-// When using the tooltip, Wrap the tooltip and target component with this parent.
-export const StyledTooltipParent = styled.div<{ disabled?: boolean }>`
-  ${({ disabled }) =>
-    !disabled &&
-    `
-  &:hover {
-    ${StyledTooltip} {
-      opacity: 1;
-      transform: translateY(6px);
-    }
-  }
-  `}
+const StyledBaseS = styled(BaseS)`
+  white-space: nowrap;
 `;

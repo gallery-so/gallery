@@ -1,5 +1,4 @@
 import TextButton from 'components/core/Button/TextButton';
-import { StyledTooltipParent } from 'components/Tooltip/Tooltip';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -37,9 +36,7 @@ export default function FollowerListButton({ userRef, className }: Props) {
 
   return (
     <StyledFollowerListButton className={className}>
-      <StyledTooltipParent>
-        <TextButton text={`Followers`} onClick={handleClick}></TextButton>
-      </StyledTooltipParent>
+      <TextButton text={`Followers`} onClick={handleClick}></TextButton>
     </StyledFollowerListButton>
   );
 }

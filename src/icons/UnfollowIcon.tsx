@@ -13,7 +13,7 @@ export default function UnfollowIcon({ className }: { className?: string }) {
         stroke="#707070"
       />
       <path d="M1 20.5V16.5L4 13.5L8.5 15L13 13.5L16 16.5V20.5" stroke="#707070" />
-      <path d="M23 10H16" stroke="#707070" stroke-miterlimit="10" />
+      <path d="M23 10H16" stroke="#707070" strokeMiterlimit="10" />
     </svg>
   );
 }

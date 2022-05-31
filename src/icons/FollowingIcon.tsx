@@ -13,7 +13,7 @@ export default function FollowingIcon({ className }: { className?: string }) {
         stroke="#0022F0"
       />
       <path d="M1 20.5V16.5L4 13.5L8.5 15L13 13.5L16 16.5V20.5" stroke="#0022F0" />
-      <path d="M16 9.5L18.5 12L23 7.5" stroke="#0022F0" stroke-miterlimit="10" />
+      <path d="M16 9.5L18.5 12L23 7.5" stroke="#0022F0" strokeMiterlimit="10" />
     </svg>
   );
 }
