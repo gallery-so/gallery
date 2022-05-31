@@ -3,7 +3,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useMemo, useState } from 'react';
 import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage';
-import MerkleTree from 'scenes/MembershipMintPage/MerkleTree';
+// import MerkleTree from 'scenes/MembershipMintPage/MerkleTree';
 
 type Props = {
   contract: Contract | null;
@@ -11,18 +11,17 @@ type Props = {
 };
 
 export default function useMintContract({ contract, tokenId }: Props) {
-  const { active, account: rawAccount, chainId } = useWeb3React<Web3Provider>();
+  const { active, account: rawAccount } = useWeb3React<Web3Provider>();
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [transactionHash, setTransactionHash] = useState('');
 
   const account = rawAccount?.toLowerCase();
 
-  function generateMerkleProof(address: string, allowlist: string[]) {
-    const merkleTree = new MerkleTree(allowlist);
-    console.log(merkleTree);
-    return merkleTree.getHexProof(address);
-  }
+  // function generateMerkleProof(address: string, allowlist: string[]) {
+  //   const merkleTree = new MerkleTree(allowlist);
+  //   return merkleTree.getHexProof(address);
+  // }
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
@@ -30,7 +29,7 @@ export default function useMintContract({ contract, tokenId }: Props) {
         return contract.mint(tokenId, account, []);
       }
     },
-    [account, contract]
+    [account]
   );
 
   const handleMintButtonClick = useCallback(async () => {
@@ -64,14 +63,13 @@ export default function useMintContract({ contract, tokenId }: Props) {
         });
         if (waitResult) {
           setTransactionStatus(TransactionStatus.SUCCESS);
-          console.log(`success`);
-          //   if (onMintSuccess) {
-          //     onMintSuccess();
-          //   }
+          // if (onMintSuccess) {
+          //   onMintSuccess();
+          // }
         }
       }
     }
-  }, [active, contract, error, mintToken]);
+  }, [active, contract, error, mintToken, tokenId]);
 
   const buttonText = useMemo(() => {
     if (!active) {
