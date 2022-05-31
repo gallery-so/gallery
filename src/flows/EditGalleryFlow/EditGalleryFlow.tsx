@@ -11,7 +11,7 @@ import { EditGalleryFlowFragment$key } from '__generated__/EditGalleryFlowFragme
 
 const footerButtonTextMap: GalleryWizardProps['footerButtonTextMap'] = {
   organizeGallery: 'Done',
-  organizeCollection: 'Save Collection',
+  organizeCollection: 'Save and close',
 };
 
 type Props = {

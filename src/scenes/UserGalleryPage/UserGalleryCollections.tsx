@@ -11,14 +11,13 @@ import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCol
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
   queryRef: UserGalleryCollectionsQueryFragment$key;
   mobileLayout: DisplayLayout;
 };
-
-const COLLECTION_SPACING = 48;
 
 function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const query = useFragment(
@@ -55,6 +54,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 
   const nonNullCollections = removeNullValues(collections);
+  const isMobile = useIsMobileWindowWidth();
 
   const visibleCollections = useMemo(
     () => nonNullCollections.filter((collection) => !collection.hidden && collection.nfts?.length),
@@ -71,16 +71,15 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   return (
     <StyledUserGalleryCollections>
-      <Spacer height={32} />
-      {visibleCollections.map((collection, index) => (
+      <Spacer height={isMobile ? 48 : 80} />
+      {visibleCollections.map((collection) => (
         <Fragment key={collection.id}>
-          <Spacer height={index === 0 ? 16 : COLLECTION_SPACING} />
           <UserGalleryCollection
             queryRef={query}
             collectionRef={collection}
             mobileLayout={mobileLayout}
           />
-          <Spacer height={index === nonNullCollections.length - 1 ? COLLECTION_SPACING : 0} />
+          <Spacer height={48} />
         </Fragment>
       ))}
     </StyledUserGalleryCollections>

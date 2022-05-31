@@ -235,10 +235,10 @@ const StyledWalletSelector = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  width: 70vw;
+  width: 320px;
   justify-content: center;
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.mobileLarge} {
     width: 400px;
     max-width: 480px;
   }

@@ -1,4 +1,6 @@
 import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
+import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import {
   ReactElement,
   ReactNode,
@@ -10,6 +12,7 @@ import {
   useMemo,
   useRef,
   MutableRefObject,
+  useEffect,
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
@@ -30,8 +33,14 @@ export const useModalState = (): ModalState => {
   return context;
 };
 
+type ShowModalFnProps = {
+  content: ReactElement;
+  onClose?: () => void;
+  isFullPageOverride?: boolean;
+};
+
 type ModalActions = {
-  showModal: (content: ReactElement, onClose?: () => void, isFullPage?: boolean) => void;
+  showModal: ({ content, onClose, isFullPageOverride }: ShowModalFnProps) => void;
   hideModal: () => void;
 };
 
@@ -57,8 +66,8 @@ function ModalProvider({ children }: Props) {
   // ref version of the above. used when needed to prevent race
   // conditions within side-effects that look up this state
   const isModalOpenRef = useRef(false);
-  // Whether the modal should take up the entire page
-  const [isFullPage, setIsFullPage] = useState(false);
+  // Whether the modal should take up the entire page.
+  const [isFullPageOverride, setIsFullPageOverride] = useState<boolean | null>(null);
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -69,12 +78,23 @@ function ModalProvider({ children }: Props) {
     [isModalOpenRef, isMounted]
   );
 
-  const showModal = useCallback((providedContent, onClose = noop, isFullPage = false) => {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  // Default behavior is to display full-page on mobile,
+  // but this can be overridden.
+  const isFullPage = useMemo(() => {
+    if (isFullPageOverride !== null) {
+      return isFullPageOverride;
+    }
+    return isMobile;
+  }, [isFullPageOverride, isMobile]);
+
+  const showModal = useCallback(({ content, onClose = noop, isFullPageOverride = null }) => {
     setIsActive(true);
     isModalOpenRef.current = true;
     setIsMounted(true);
-    setIsFullPage(isFullPage);
-    setContent(providedContent);
+    setIsFullPageOverride(isFullPageOverride);
+    setContent(content);
     onCloseRef.current = onClose;
 
     // prevent main body from being scrollable while the modal is open.
@@ -83,14 +103,18 @@ function ModalProvider({ children }: Props) {
 
   // Trigger fade-out that takes X seconds
   // schedule unmount in X seconds
-  const hideModal = useCallback(() => {
+  const hideModal = useCallback((bypassOnClose = false) => {
     setIsActive(false);
     isModalOpenRef.current = false;
-    onCloseRef.current?.();
+    // need to explicitly check for true, because if this function
+    // is passed into an onClick, it'll be given a truthy MouseEvent
+    if (bypassOnClose !== true) {
+      onCloseRef.current?.();
+    }
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
-      setIsFullPage(false);
+      setIsFullPageOverride(null);
       onCloseRef.current = noop;
 
       // enable scrolling again
@@ -108,6 +132,15 @@ function ModalProvider({ children }: Props) {
     }),
     [showModal, hideModal]
   );
+
+  // close modal on route change
+  const route = useStabilizedRouteTransitionKey();
+  useEffect(() => {
+    if (isModalOpenRef.current) {
+      // bypass onClose as to not navigate the user back mid-route change
+      hideModal(true);
+    }
+  }, [route, hideModal]);
 
   return (
     <ModalStateContext.Provider value={state}>

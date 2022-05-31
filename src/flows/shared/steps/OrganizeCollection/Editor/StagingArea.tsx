@@ -14,13 +14,12 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import { BaseXL } from 'components/core/Text/Text';
 
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { MENU_HEIGHT } from './EditorMenu';
+import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
 import { isEditModeNft, StagingItem } from '../types';
@@ -28,25 +27,32 @@ import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
-
-// Width of DND area for each Column # setting
-const DND_WIDTHS: Record<number, number> = {
-  1: 600,
-  2: 800,
-  3: 984,
-  4: 1020,
-  5: 1020,
-  6: 1020,
-};
+import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 
 // Width of draggable image for each Column # setting
 const IMAGE_SIZES: Record<number, number> = {
   1: 400,
   2: 320,
-  3: 280,
-  4: 207,
-  5: 156,
-  6: 122,
+  3: 210,
+  4: 145,
+  5: 110,
+  6: 78,
+};
+
+function _getDndWidth(numImagesInRow: number) {
+  return (
+    IMAGE_SIZES[numImagesInRow] * numImagesInRow + PADDING_BETWEEN_STAGED_IMAGES_PX * numImagesInRow
+  );
+}
+
+// Width of DND area for each Column # setting
+const DND_WIDTHS: Record<number, number> = {
+  1: _getDndWidth(1),
+  2: _getDndWidth(2),
+  3: _getDndWidth(3),
+  4: _getDndWidth(4),
+  5: _getDndWidth(5),
+  6: _getDndWidth(6),
 };
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -115,15 +121,19 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
         layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedItems}>
-          <StyledHeadingWrapper>
-            <BaseXL>Your collection</BaseXL>
-          </StyledHeadingWrapper>
           <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
             {stagedItems.map((stagedItem) => {
               const size = IMAGE_SIZES[columns];
               const stagedItemRef = nftFragmentsKeyedByID[stagedItem.id];
               if (isEditModeNft(stagedItem) && stagedItemRef) {
-                return <SortableStagedNft key={stagedItem.id} nftRef={stagedItemRef} size={size} />;
+                return (
+                  <SortableStagedNft
+                    key={stagedItem.id}
+                    nftRef={stagedItemRef}
+                    size={size}
+                    mini={columns > 4}
+                  />
+                );
               }
               return (
                 <SortableStagedWhitespace key={stagedItem.id} id={stagedItem.id} size={size} />
@@ -145,22 +155,18 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
   );
 }
 
-const StyledHeadingWrapper = styled.div`
-  width: 100%;
-  padding: 0 8px;
-`;
-
 const StyledStagingArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 
+  width: calc(100% - ${MENU_WIDTH}px);
+
   margin: 0 auto;
 
-  width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT}px - ${MENU_HEIGHT}px);
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 
-  padding: 100px 80px;
+  padding: 48px 80px;
 
   overflow: auto;
 
@@ -177,8 +183,6 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   display: flex;
   flex-wrap: wrap;
 
-  margin-top: 20px;
-
   // Limit DnD to 3 columns
   max-width: ${({ width }) => width}px;
 
@@ -187,7 +191,7 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   // row-gap: 48px;
 
   // Temporary solution until Safari support
-  width: calc(100% + 48px);
+  width: calc(100% + ${PADDING_BETWEEN_STAGED_IMAGES_PX}px);
 
   ${StyledSortableNft} * {
     outline: none;

@@ -66,14 +66,16 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
     // If collection is being created, trigger creation
     setOnNext(async () => {
       track('Save new collection button clicked');
-      showModal(
-        <CollectionCreateOrEditForm
-          onNext={goToOrganizeGalleryStep}
-          galleryId={galleryId}
-          stagedItems={stagedItems}
-          layout={collectionMetadata.layout}
-        />
-      );
+      showModal({
+        content: (
+          <CollectionCreateOrEditForm
+            onNext={goToOrganizeGalleryStep}
+            galleryId={galleryId}
+            stagedItems={stagedItems}
+            layout={collectionMetadata.layout}
+          />
+        ),
+      });
     });
 
     // If user is editing their gallery, clicking "back" should bring them

@@ -24,6 +24,10 @@ export default function useBackButton({ username }: Props) {
     if (previousRoute?.asPath.includes('/edit?collectionId=')) {
       return true;
     }
+    // disable going back to the NFT detail page
+    if (previousRoute?.pathname === '/[username]/[collectionId]/[nftId]') {
+      return true;
+    }
     // disable going back to a modal
     if (previousRoute?.query.modal === 'true') {
       return true;

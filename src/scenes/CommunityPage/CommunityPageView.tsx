@@ -59,12 +59,12 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   return (
     <MemberListPageProvider>
-      <Spacer height={128} />
+      <Spacer height={80} />
       <StyledHeader>
         <TitleL>{name}</TitleL>
         {description && (
           <StyledDescriptionWrapper>
-            <Spacer height={8} />
+            <Spacer height={4} />
             <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
               <Markdown text={description} />
             </StyledBaseM>
@@ -78,9 +78,9 @@ export default function CommunityPageView({ communityRef }: Props) {
           </StyledDescriptionWrapper>
         )}
       </StyledHeader>
-      <Spacer height={isMobile ? 65 : 96} />
+      <Spacer height={isMobile ? 32 : 80} />
       <MemberListFilter />
-      <Spacer height={56} />
+      <Spacer height={isMobile ? 32 : 64} />
       <StyledListWrapper>
         <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
       </StyledListWrapper>

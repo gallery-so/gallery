@@ -5,15 +5,11 @@ import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 export default function List({
   selectedRange,
   textAreaRef,
-  setUserDragged,
 }: {
   selectedRange: number[];
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  setUserDragged: (value: boolean) => void;
 }) {
   const handleClick = useCallback(() => {
-    setUserDragged(false);
-
     const textArea = textAreaRef.current;
     if (!textArea) return;
 
@@ -84,7 +80,7 @@ export default function List({
         setValueAndTriggerOnChange(textArea, newText, [start + 2, end + selectedLines.length * 2]); // List ([0, 4]) -> * List ([2, 6])
       }
     }
-  }, [textAreaRef, selectedRange, setUserDragged]);
+  }, [textAreaRef, selectedRange]);
 
   return (
     <IconContainer

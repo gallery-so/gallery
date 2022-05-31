@@ -16,6 +16,7 @@ import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -159,6 +160,8 @@ function CollectionCreateOrEditForm({
         defaultValue={unescapedCollectorsNote}
         currentCharCount={description.length}
         maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
+        showMarkdownShortcuts
+        hasPadding
       />
       {generalError && (
         <>
@@ -183,6 +186,12 @@ function CollectionCreateOrEditForm({
 const StyledCollectionEditInfoForm = styled.div`
   display: flex;
   flex-direction: column;
+
+  padding: 48px 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0px;
+  }
 `;
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`

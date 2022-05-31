@@ -11,9 +11,10 @@ type Props = {
   nftRef: StagedNftImageFragment$key;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
+  hideLabel: boolean;
 };
 
-function StagedNftImage({ nftRef, size, setNodeRef, ...props }: Props) {
+function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props) {
   const nft = useFragment(
     graphql`
       fragment StagedNftImageFragment on Nft {
@@ -35,7 +36,9 @@ function StagedNftImage({ nftRef, size, setNodeRef, ...props }: Props) {
   return result?.type === 'video' ? (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
-      <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      {hideLabel ? null : (
+        <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      )}
     </VideoContainer>
   ) : (
     <StyledGridImage
@@ -44,7 +47,9 @@ function StagedNftImage({ nftRef, size, setNodeRef, ...props }: Props) {
       size={size}
       {...props}
     >
-      <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      {hideLabel ? null : (
+        <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+      )}
     </StyledGridImage>
   );
 }

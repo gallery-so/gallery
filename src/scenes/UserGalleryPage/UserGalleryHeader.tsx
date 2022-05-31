@@ -44,7 +44,7 @@ function UserGalleryHeader({
           <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
         )}
       </StyledUsernameWrapper>
-      <Spacer height={8} />
+      <Spacer height={16} />
       <StyledUserDetails>
         <BaseM>
           <Markdown text={unescapedBio} />

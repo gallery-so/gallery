@@ -10,6 +10,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
+import { useModalState } from 'contexts/modal/ModalContext';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -50,14 +51,17 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
   const userOwnsCollection = Boolean(query?.viewer?.user?.username === username);
   const isLoggedIn = Boolean(query?.viewer?.user?.username);
 
+  const { isModalOpenRef } = useModalState();
+
   const navigateToEdit = useCallback(() => {
     if (!isLoggedIn) return;
+    if (isModalOpenRef.current) return;
     if (userOwnsCollection) {
       void push(`/edit?collectionId=${collectionId}`);
     } else {
       void push(`/edit`);
     }
-  }, [push, collectionId, userOwnsCollection, isLoggedIn]);
+  }, [push, collectionId, userOwnsCollection, isLoggedIn, isModalOpenRef]);
 
   useKeyDown('e', navigateToEdit);
 

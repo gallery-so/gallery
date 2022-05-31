@@ -63,7 +63,6 @@ export default function CommunityPage({ queryRef }: Props) {
 const StyledPage = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
 
   padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
   min-height: 100vh;

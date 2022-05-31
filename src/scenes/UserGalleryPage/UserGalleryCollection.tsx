@@ -108,16 +108,18 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, []);
 
   const handleEditNameClick = useCallback(() => {
-    showModal(
-      <CollectionCreateOrEditForm
-        // No need for onNext because this isn't part of a wizard
-        onNext={noop}
-        galleryId={galleryId}
-        collectionId={collection.dbid}
-        collectionName={collection.name}
-        collectionCollectorsNote={collection.collectorsNote ?? ''}
-      />
-    );
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          // No need for onNext because this isn't part of a wizard
+          onNext={noop}
+          galleryId={galleryId}
+          collectionId={collection.dbid}
+          collectionName={collection.name}
+          collectionCollectorsNote={collection.collectorsNote ?? ''}
+        />
+      ),
+    });
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
@@ -205,6 +207,10 @@ const StyledCollectionHeader = styled.div`
   // to appear above content underneath
   z-index: 1;
   margin-bottom: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-bottom: 24px;
+  }
 `;
 
 const StyledCollectionTitleWrapper = styled.div`

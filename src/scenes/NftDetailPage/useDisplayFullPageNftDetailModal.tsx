@@ -24,19 +24,21 @@ export default function useDisplayFullPageNftDetailModal() {
         return;
       }
 
-      showModal(
-        <Suspense fallback={<FullPageLoader />}>
-          <NftDetailPage collectionId={collectionId} nftId={nftId} />
-        </Suspense>,
-        () =>
+      showModal({
+        content: (
+          <Suspense fallback={<FullPageLoader />}>
+            <NftDetailPage collectionId={collectionId} nftId={nftId} />
+          </Suspense>
+        ),
+        onClose: () =>
           push(
             returnTo,
             undefined,
             // prevent scroll-to-top when exiting the modal
             { scroll: false }
           ),
-        true
-      );
+        isFullPageOverride: true,
+      });
     }
   }, [collectionId, nftId, showModal, push, pathname, returnTo, isModalOpenRef]);
 }

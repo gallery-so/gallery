@@ -105,35 +105,6 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
 
   return (
     <div onKeyDown={handleKeyDown} ref={collectorsNoteRef}>
-      <StyledTitleAndButtonContainer>
-        {/* We also include isEditing as an option here so the user can click save with an empty note (e.g. delete their note) */}
-        {hasCollectorsNote || isEditing ? (
-          <>
-            <BaseM>Collector&rsquo;s Note</BaseM>
-            {isEditing ? (
-              <TextButton
-                disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
-                text="Save"
-                onClick={handleSubmitCollectorsNote}
-              />
-            ) : (
-              <TextButton text="Edit" onClick={handleEditCollectorsNote} />
-            )}
-          </>
-        ) : (
-          <TextButton text={"+ Add Collector's Note"} onClick={handleEditCollectorsNote} />
-        )}
-      </StyledTitleAndButtonContainer>
-
-      {generalError && (
-        <>
-          <Spacer height={8} />
-          <ErrorText message={generalError} />
-        </>
-      )}
-
-      <Spacer height={8} />
-
       {/* Create a dummy textbox of the same height so that, when the element switches from the above to this one, there is not a jump to the top of the screen before scrollDown applies */}
       {isEditing ? (
         <StyledTextAreaWithCharCount
@@ -143,8 +114,8 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
           defaultValue={unescapedCollectorsNote}
           currentCharCount={unescapedCollectorsNote.length}
           maxCharCount={MAX_CHAR_COUNT}
-          showMarkdownShortcuts={true}
-          hasPadding={false}
+          showMarkdownShortcuts
+          hasPadding
         />
       ) : (
         <StyledCollectorsNote
@@ -154,9 +125,44 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
           <Markdown text={collectorsNote} />
         </StyledCollectorsNote>
       )}
+      {generalError && (
+        <>
+          <Spacer height={8} />
+          <ErrorText message={generalError} />
+        </>
+      )}
+
+      <Spacer height={16} />
+      <StyledBottomButtonContainer>
+        {isEditing ? (
+          <SaveNoteButton
+            disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
+            text="Save Note"
+            onClick={handleSubmitCollectorsNote}
+          />
+        ) : (
+          <EditNoteButton
+            text={hasCollectorsNote ? 'Edit note' : 'Add Note'}
+            onClick={handleEditCollectorsNote}
+          />
+        )}
+      </StyledBottomButtonContainer>
     </div>
   );
 }
+
+const StyledBottomButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SaveNoteButton = styled(TextButton)`
+  align-self: end;
+`;
+
+const EditNoteButton = styled(TextButton)`
+  align-self: start;
+`;
 
 type NoteViewerProps = {
   nftCollectorsNote: string;
@@ -226,14 +232,6 @@ const StyledContainer = styled.div<{ footerHeight: number }>`
   }
 `;
 
-const StyledTitleAndButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  z-index: 2; /* Above footer so user can click buttons on very small vertical screens */
-  position: relative;
-`;
-
 type TextAreaProps = {
   footerHeight: number;
 };
@@ -247,7 +245,6 @@ const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<Te
   textarea {
     color: #808080;
     margin: 0;
-    padding: 0;
     line-height: 20px;
     font-size: 14px;
     display: block;
