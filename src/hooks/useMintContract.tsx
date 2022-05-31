@@ -3,7 +3,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useMemo, useState } from 'react';
 import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage';
-// import MerkleTree from 'scenes/MembershipMintPage/MerkleTree';
 
 type Props = {
   contract: Contract | null;
@@ -18,11 +17,6 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
   const [transactionHash, setTransactionHash] = useState('');
 
   const account = rawAccount?.toLowerCase();
-
-  // function generateMerkleProof(address: string, allowlist: string[]) {
-  //   const merkleTree = new MerkleTree(allowlist);
-  //   return merkleTree.getHexProof(address);
-  // }
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
@@ -85,7 +79,6 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
       return 'Mint Successful';
     }
     return 'Mint';
-    // return canMintToken ? 'Mint Card' : 'Buy on Secondary';
   }, [active, transactionStatus]);
 
   return {
