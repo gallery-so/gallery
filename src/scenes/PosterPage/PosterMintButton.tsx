@@ -9,7 +9,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import { useMintPosterContract } from 'hooks/useContract';
 import useMintContract from 'hooks/useMintContract';
 import useWalletModal from 'hooks/useWalletModal';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage';
 import styled from 'styled-components';
 
@@ -23,16 +23,12 @@ export default function PosterMintButton() {
   const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintPosterContract();
-  const {
-    transactionHash,
-    transactionStatus,
-    error,
-    buttonText,
-    handleMintButtonClick,
-  } = useMintContract({
-    contract,
-    tokenId,
-  });
+  const { transactionHash, transactionStatus, buttonText, handleMintButtonClick } = useMintContract(
+    {
+      contract,
+      tokenId,
+    }
+  );
 
   useEffect(() => {
     if (active) {
