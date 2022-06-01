@@ -37,7 +37,6 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
-        console.log(`error bitches`);
         setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
         setTransactionStatus(TransactionStatus.FAILED);
       });

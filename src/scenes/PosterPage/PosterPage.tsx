@@ -15,7 +15,6 @@ export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
-  // const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
   const { timestamp, hasEnded } = useTimer(MINT_DATE);
 
