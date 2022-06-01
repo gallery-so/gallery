@@ -23,6 +23,7 @@ import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { GALLERY_FAQ } from 'constants/urls';
 import colors from 'components/core/colors';
+import { TransactionStatus } from 'constants/transaction';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -32,13 +33,6 @@ type Props = {
   children?: ReactNode;
   onMintSuccess?: () => void;
 };
-
-// TODO: move to constants
-export enum TransactionStatus {
-  PENDING,
-  SUCCESS,
-  FAILED,
-}
 
 export function MembershipMintPage({
   membershipNft,

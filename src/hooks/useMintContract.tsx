@@ -1,8 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
+import { TransactionStatus } from 'constants/transaction';
 import { useCallback, useMemo, useState } from 'react';
-import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage';
 
 type Props = {
   contract: Contract | null;
