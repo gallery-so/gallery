@@ -56,7 +56,6 @@ export default function PosterMintButton() {
       <StyledButton onClick={handleOnClick} text={buttonText}></StyledButton>
       {transactionHash && (
         <>
-          <Spacer height={16} />
           <div>
             <BaseM>
               {transactionStatus === TransactionStatus.SUCCESS
@@ -71,11 +70,7 @@ export default function PosterMintButton() {
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (
         <>
-          <Spacer height={16} />
-          <BaseM>You can now sign up for Gallery.</BaseM>
-          <GalleryLink href="/auth">
-            <BaseM>Proceed to Onboarding</BaseM>
-          </GalleryLink>
+          <BaseM>It should be in your wallet at the moment</BaseM>
         </>
       )}
       {error && (
