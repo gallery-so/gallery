@@ -11,7 +11,7 @@ import { useMintPosterContract } from 'hooks/useContract';
 import useMintContract from 'hooks/useMintContract';
 import useWalletModal from 'hooks/useWalletModal';
 import { useCallback, useEffect } from 'react';
-import { TransactionStatus } from 'scenes/MembershipMintPage/MembershipMintPage';
+import { TransactionStatus } from 'constants/transaction';
 import styled from 'styled-components';
 
 // TODO: Might be a great idea to encapsulated this method from mint page
