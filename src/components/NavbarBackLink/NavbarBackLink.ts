@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 // mimics a navbar element on the top left corner
 const StyledBackLink = styled.div`
-  height: 80px;
+  height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
   align-items: center;
 
