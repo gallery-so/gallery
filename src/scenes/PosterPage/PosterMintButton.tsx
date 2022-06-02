@@ -5,7 +5,7 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
-import { NFT_TOKEN_ID } from 'constants/poster';
+import { NFT_TOKEN_ID, OPENSEA_URL } from 'constants/poster';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useMintPosterContract } from 'hooks/useContract';
 import useMintContract from 'hooks/useMintContract';
@@ -13,6 +13,7 @@ import useWalletModal from 'hooks/useWalletModal';
 import { useCallback, useEffect, useMemo } from 'react';
 import { TransactionStatus } from 'constants/transaction';
 import styled from 'styled-components';
+import { useToastActions } from 'contexts/toast/ToastContext';
 
 // TODO: Might be a great idea to encapsulated this method from mint page
 export default function PosterMintButton() {
@@ -20,6 +21,7 @@ export default function PosterMintButton() {
 
   const showWalletModal = useWalletModal();
   const { hideModal } = useModalActions();
+  const { pushToast } = useToastActions();
 
   const tokenId = NFT_TOKEN_ID;
 
@@ -51,8 +53,18 @@ export default function PosterMintButton() {
     active ? handleMintButtonClick() : handleConnectWalletButtonClick();
   };
 
+  useEffect(() => {
+    if (transactionStatus === TransactionStatus.SUCCESS) {
+      pushToast({
+        message: 'You’ve succesfully minted 2022 Community Poster.',
+        autoClose: true,
+      });
+      window.open(OPENSEA_URL);
+    }
+  }, [transactionStatus]);
+
   const isButtonDisabled = useMemo(() => {
-    // Disabled if pending && the user already minted
+    // Disabled if pending && if the user already minted
     return transactionStatus === TransactionStatus.PENDING;
   }, [transactionStatus]);
 
