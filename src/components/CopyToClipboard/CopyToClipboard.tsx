@@ -42,7 +42,6 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
 
 const Container = styled.span`
   display: flex;
-  justify-content: center;
 `;
 
 const translateUpAndFadeIn = keyframes`
