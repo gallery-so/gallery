@@ -21,7 +21,7 @@ export default function PosterBanner({ queryRef }: Props) {
   return (
     <Banner
       title={<StyledTimer>{countdownTimer}</StyledTimer>}
-      text="You may now mint and claim (Object 006) 2022 Community Poster. Thank you for participating."
+      text="You may now mint and claim our 2022 Community Poster. Thank you for participating."
       queryRef={queryRef}
       localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
       requireAuth
