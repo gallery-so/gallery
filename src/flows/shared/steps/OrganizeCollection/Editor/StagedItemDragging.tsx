@@ -15,7 +15,7 @@ type Props = {
 function StagedItemDragging({ nftRef, isEditModeNft, size }: Props) {
   const nft = useFragment(
     graphql`
-      fragment StagedItemDraggingFragment on Nft {
+      fragment StagedItemDraggingFragment on Token {
         ...StagedNftImageDraggingFragment
       }
     `,

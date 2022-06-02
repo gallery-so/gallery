@@ -24,7 +24,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
           columns
           whitespace
         }
-        nfts {
+        tokens {
           id
           ...NftPreviewFragment
         }

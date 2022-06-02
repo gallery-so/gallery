@@ -35,7 +35,7 @@ type Props = {
 function NftPreviewAsset({ nftRef, size }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftPreviewAssetFragment on Nft {
+      fragment NftPreviewAssetFragment on Token {
         dbid
         name
         media {

@@ -43,12 +43,14 @@ function NftPreviewWithShimmer(props: Props) {
 function NftPreview({ galleryNftRef }: Props) {
   const { nft, collection } = useFragment(
     graphql`
-      fragment NftPreviewFragment on CollectionNft {
-        nft @required(action: THROW) {
+      fragment NftPreviewFragment on CollectionToken {
+        token @required(action: THROW) {
           dbid
           name
           openseaCollectionName
-          contractAddress
+          contractAddress @required(action: NONE) {
+            address
+          }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
         }
@@ -105,8 +107,8 @@ function NftPreview({ galleryNftRef }: Props) {
   }, [columns, result?.urls?.large]);
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
+    [nft.contractAddress.address]
   );
 
   const {
@@ -146,7 +148,7 @@ function NftPreview({ galleryNftRef }: Props) {
             <StyledNftLabel
               title={nft.name}
               collectionName={nft.openseaCollectionName}
-              contractAddress={nft.contractAddress}
+              contractAddress={nft.contractAddress.address}
             />
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>

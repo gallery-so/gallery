@@ -46,7 +46,9 @@ function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$ke
   const query = useFragment(
     graphql`
       fragment GeneralMembershipMintPageUseAllowlistFragment on Query {
-        generalAllowlist
+        generalAllowlist @required(action: THROW) {
+          address
+        }
       }
     `,
     queryRef
@@ -60,7 +62,7 @@ function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$ke
     return getLocalAllowlist();
   }
 
-  return new Set(data);
+  return new Set(data.map((entry) => entry.address));
 }
 
 type ContentProps = {

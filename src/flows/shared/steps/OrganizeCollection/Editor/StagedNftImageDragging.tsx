@@ -16,8 +16,10 @@ type Props = {
 function StagedNftImageDragging({ nftRef, size }: Props) {
   const nft = useFragment(
     graphql`
-      fragment StagedNftImageDraggingFragment on Nft {
-        contractAddress
+      fragment StagedNftImageDraggingFragment on Token {
+        contractAddress @required(action: NONE) {
+          address
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -37,8 +39,8 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
   }
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
+    [nft.contractAddress.address]
   );
 
   return result?.type === 'video' ? (

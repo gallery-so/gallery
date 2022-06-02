@@ -14,7 +14,7 @@ type Props = {
 function SearchBar({ nftsRef, setSearchResults, setDebouncedSearchQuery }: Props) {
   const nfts = useFragment(
     graphql`
-      fragment SearchBarFragment on Nft @relay(plural: true) {
+      fragment SearchBarFragment on Token @relay(plural: true) {
         dbid
         name
         openseaCollectionName

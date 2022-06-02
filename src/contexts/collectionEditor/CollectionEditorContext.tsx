@@ -2,12 +2,12 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import { UpdateCollectionNftsInput } from '__generated__/useUpdateCollectionNftsMutation.graphql';
+import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 import deduplicateObjectByOpenseaIdAndPreferEarliest from './deduplicateObjectByOpenseaIdAndPreferEarliest';
 
 export type SidebarNftsState = Record<string, EditModeNft>;
 export type StagedItemsState = StagingItem[];
-export type CollectionMetadataState = Pick<UpdateCollectionNftsInput, 'layout'>;
+export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'>;
 
 export type CollectionEditorState = {
   sidebarNfts: SidebarNftsState;

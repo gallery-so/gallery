@@ -27,7 +27,9 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           ... on Viewer {
             user {
               wallets {
-                address
+                chainAddress {
+                  address
+                }
               }
             }
           }
@@ -38,7 +40,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
   );
 
   const addresses = useMemo(
-    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
+    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.chainAddress.address)),
     [viewer?.user?.wallets]
   );
 
@@ -80,10 +82,10 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         </>
       )}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
-      {addresses.map((address) => (
+      {viewer?.user?.wallets.map((wallet) => (
         <ManageWalletsRow
-          key={address}
-          address={address}
+          key={wallet.chainAddress.address}
+          wallet={wallet}
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
           setRemovedAddress={setRemovedAddress}

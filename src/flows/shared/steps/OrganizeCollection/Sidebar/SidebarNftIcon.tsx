@@ -18,8 +18,10 @@ type SidebarNftIconProps = {
 function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   const nft = useFragment(
     graphql`
-      fragment SidebarNftIconFragment on Nft {
-        contractAddress
+      fragment SidebarNftIconFragment on Token {
+        contractAddress @required(action: NONE) {
+          address
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -59,8 +61,8 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   }
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
+    [nft.contractAddress.address]
   );
 
   return (

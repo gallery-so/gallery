@@ -9,14 +9,19 @@ import {
 export default function useAddWallet() {
   const [addWallet] = usePromisifiedMutation<useAddWalletMutation>(
     graphql`
-      mutation useAddWalletMutation($address: Address!, $authMechanism: AuthMechanism!) {
-        addUserAddress(address: $address, authMechanism: $authMechanism) {
-          ... on AddUserAddressPayload {
+      mutation useAddWalletMutation(
+        $chainAddress: ChainAddressInput!
+        $authMechanism: AuthMechanism!
+      ) {
+        addUserWallet(chainAddress: $chainAddress, authMechanism: $authMechanism) {
+          ... on AddUserWalletPayload {
             __typename
             viewer {
               user {
                 wallets {
-                  address
+                  chainAddress {
+                    address
+                  }
                 }
               }
             }

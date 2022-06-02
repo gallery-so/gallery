@@ -23,8 +23,8 @@ export default function OpenGraphUserPage() {
             bio
             galleries {
               collections {
-                nfts {
-                  nft {
+                tokens {
+                  token {
                     ...getVideoOrImageUrlForNftPreviewFragment
                   }
                 }

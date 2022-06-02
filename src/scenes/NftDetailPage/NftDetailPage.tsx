@@ -26,9 +26,9 @@ type Props = {
 function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId }: Props) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
-        collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
-          ... on ErrNftNotFound {
+      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!) {
+        collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
+          ... on ErrTokenNotFound {
             __typename
           }
 
@@ -36,15 +36,15 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
             __typename
           }
 
-          ... on CollectionNft {
+          ... on CollectionToken {
             __typename
-            nft {
+            token {
               dbid
               name
             }
             collection {
-              nfts {
-                nft @required(action: THROW) {
+              tokens {
+                token @required(action: THROW) {
                   dbid
                   name
                 }

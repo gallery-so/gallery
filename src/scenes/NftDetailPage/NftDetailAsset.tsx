@@ -23,9 +23,9 @@ type NftDetailAssetComponentProps = {
 function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentProps) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAssetComponentFragment on CollectionNft {
+      fragment NftDetailAssetComponentFragment on CollectionToken {
         id
-        nft @required(action: THROW) {
+        token @required(action: THROW) {
           media @required(action: THROW) {
             ... on VideoMedia {
               __typename
@@ -90,10 +90,12 @@ if (typeof window !== 'undefined') {
 function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAssetFragment on CollectionNft {
+      fragment NftDetailAssetFragment on CollectionToken {
         id
-        nft @required(action: THROW) {
-          contractAddress
+        token @required(action: THROW) {
+          contractAddress @required(action: NONE) {
+            address
+          }
           media @required(action: THROW) {
             ... on HtmlMedia {
               __typename
@@ -107,8 +109,8 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
   );
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.nft.contractAddress ?? ''),
-    [nft.nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(nft.nft.contractAddress.address ?? ''),
+    [nft.nft.contractAddress.address]
   );
 
   const maxHeight = Math.min(

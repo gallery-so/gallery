@@ -11,7 +11,7 @@ export default function getVideoOrImageUrlForNftPreview(
 ): { type: 'video'; urls: UrlSet } | { type: 'image'; urls: UrlSet } | undefined {
   const result = readInlineData(
     graphql`
-      fragment getVideoOrImageUrlForNftPreviewFragment on Nft @inline {
+      fragment getVideoOrImageUrlForNftPreviewFragment on Token @inline {
         dbid
         media {
           ... on VideoMedia {

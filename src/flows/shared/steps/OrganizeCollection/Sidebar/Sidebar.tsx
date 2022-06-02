@@ -28,7 +28,7 @@ type Props = {
 function Sidebar({ nftsRef, sidebarNfts }: Props) {
   const nfts = useFragment(
     graphql`
-      fragment SidebarFragment on Nft @relay(plural: true) {
+      fragment SidebarFragment on Token @relay(plural: true) {
         dbid
         ...SidebarNftIconFragment
         ...SearchBarFragment

@@ -9,11 +9,11 @@ export default function OpenGraphCollectionPage() {
   const queryResponse = useLazyLoadQuery<NftIdOpengraphQuery>(
     graphql`
       query NftIdOpengraphQuery($nftId: DBID!) {
-        nft: nftById(id: $nftId) {
-          ... on ErrNftNotFound {
+        nft: tokenById(id: $nftId) {
+          ... on ErrTokenNotFound {
             __typename
           }
-          ... on Nft {
+          ... on Token {
             __typename
 
             name

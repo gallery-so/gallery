@@ -17,7 +17,7 @@ type Props = {
 function NftDetailImage({ nftRef, maxHeight }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailImageFragment on Nft {
+      fragment NftDetailImageFragment on Token {
         name
         media @required(action: THROW) {
           ... on ImageMedia {

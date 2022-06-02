@@ -13,7 +13,7 @@ type Props = {
 function NftDetailAnimation({ mediaRef }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAnimationFragment on Nft {
+      fragment NftDetailAnimationFragment on Token {
         media @required(action: THROW) {
           ... on HtmlMedia {
             __typename

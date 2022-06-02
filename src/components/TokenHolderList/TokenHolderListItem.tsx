@@ -30,7 +30,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
         user @required(action: THROW) {
           username @required(action: THROW)
         }
-        previewNfts
+        previewTokens
       }
     `,
     tokenHolderRef

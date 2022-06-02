@@ -19,8 +19,8 @@ export default function OpenGraphCollectionPage() {
 
             name
             collectorsNote
-            nfts {
-              nft {
+            tokens {
+              token {
                 ...getVideoOrImageUrlForNftPreviewFragment
               }
             }

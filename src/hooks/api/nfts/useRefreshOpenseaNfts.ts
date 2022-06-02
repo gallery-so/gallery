@@ -1,14 +1,15 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useRefreshOpenseaNftsMutation } from '__generated__/useRefreshOpenseaNftsMutation.graphql';
+import { useRefreshTokensMutation } from '__generated__/useRefreshTokensMutation.graphql';
 
 // this will be deprecated once we're off opensea
-export default function useRefreshOpenseaNfts() {
-  const [refreshOpenseaNfts] = usePromisifiedMutation<useRefreshOpenseaNftsMutation>(
+// TODO replace with refreshTokens
+export default function useRefreshTokens() {
+  const [refreshTokens] = usePromisifiedMutation<useRefreshTokensMutation>(
     graphql`
-      mutation useRefreshOpenseaNftsMutation($addresses: String) {
-        refreshOpenSeaNfts(addresses: $addresses) {
+      mutation useRefreshTokensMutation {
+        refreshTokens {
           __typename
         }
       }
@@ -16,7 +17,7 @@ export default function useRefreshOpenseaNfts() {
   );
 
   return useCallback(async () => {
-    const response = await refreshOpenseaNfts({
+    const response = await refreshTokens({
       variables: {},
     });
 
@@ -29,5 +30,5 @@ export default function useRefreshOpenseaNfts() {
     if (response.refreshOpenSeaNfts?.__typename === 'ErrNotAuthorized') {
       throw new Error('You are not authorized!');
     }
-  }, [refreshOpenseaNfts]);
+  }, [refreshTokens]);
 }

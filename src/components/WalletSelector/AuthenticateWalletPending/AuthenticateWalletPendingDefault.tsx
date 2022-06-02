@@ -66,7 +66,7 @@ function AuthenticateWalletPendingDefault({
 
       const { userId } = await loginOrCreateUser({
         userExists,
-        variables: { mechanism: { ethereumEoa: { address, nonce, signature } } },
+        variables: { mechanism: { eoa: { address, nonce, signature } } },
       });
 
       if (userExists) {

@@ -35,10 +35,12 @@ function CollectionRow({ collectionRef, className }: Props) {
         collectorsNote
         hidden
 
-        nfts {
+        tokens {
           id
-          nft @required(action: NONE) {
-            contractAddress
+          token @required(action: NONE) {
+            contractAddress @required(action: NONE) {
+              address
+            }
             ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
           }
@@ -106,7 +108,7 @@ function CollectionRow({ collectionRef, className }: Props) {
                 <BigNftImagePreview
                   src={imageUrl}
                   backgroundColorOverride={getBackgroundColorOverrideForContract(
-                    nft.nft.contractAddress ?? ''
+                    nft.nft.contractAddress.address ?? ''
                   )}
                 />
               )}
@@ -204,9 +206,11 @@ const Body = styled.div`
 function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
   const nfts = useFragment(
     graphql`
-      fragment CollectionRowCompactNftsFragment on Nft @relay(plural: true) {
+      fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {
         id
-        contractAddress
+        contractAddress @required(action: NONE) {
+          address
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -250,7 +254,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                     <SmolNftImagePreview
                       src={imageUrl}
                       backgroundColorOverride={getBackgroundColorOverrideForContract(
-                        nft.contractAddress ?? ''
+                        nft.contractAddress.address ?? ''
                       )}
                     />
                   )}
@@ -281,7 +285,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                   <SmolNftImagePreview
                     src={imageUrl}
                     backgroundColorOverride={getBackgroundColorOverrideForContract(
-                      nft.contractAddress ?? ''
+                      nft.contractAddress.address ?? ''
                     )}
                   />
                 )}

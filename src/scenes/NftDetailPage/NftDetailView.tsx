@@ -18,16 +18,20 @@ type Props = {
 export default function NftDetailView({ username, authenticatedUserOwnsAsset, queryRef }: Props) {
   const collectionNft = useFragment(
     graphql`
-      fragment NftDetailViewFragment on CollectionNft {
-        nft @required(action: THROW) {
+      fragment NftDetailViewFragment on CollectionToken {
+        token @required(action: THROW) {
           dbid
           name
           description
-          contractAddress
+          contractAddress @required(action: NONE) {
+            address
+          }
           tokenId
           externalUrl
           collectorsNote
-          creatorAddress
+          creatorAddress @required(action: NONE) {
+            address
+          }
           openseaCollectionName
         }
         collection @required(action: THROW) {
@@ -71,10 +75,10 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           name={nft.name}
           description={nft.description}
           ownerUsername={username}
-          contractAddress={nft.contractAddress}
+          contractAddress={nft.contractAddress.address}
           tokenId={nft.tokenId}
           externalUrl={nft.externalUrl}
-          creatorAddress={nft.creatorAddress}
+          creatorAddress={nft.creatorAddress.address}
           openseaCollectionName={nft.openseaCollectionName}
         />
       </StyledContentContainer>

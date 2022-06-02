@@ -17,7 +17,7 @@ type Props = {
 function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props) {
   const nft = useFragment(
     graphql`
-      fragment StagedNftImageFragment on Nft {
+      fragment StagedNftImageFragment on Token {
         name
         openseaCollectionName
         ...getVideoOrImageUrlForNftPreviewFragment

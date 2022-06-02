@@ -10,7 +10,7 @@ type Props = {
 function NftDetailAudio({ nftRef }: Props) {
   const nft = useFragment(
     graphql`
-      fragment NftDetailAudioFragment on Nft {
+      fragment NftDetailAudioFragment on Token {
         name
         media @required(action: THROW) {
           ... on AudioMedia {

@@ -46,8 +46,8 @@ function CollectionEditor({ viewerRef }: Props) {
           galleries @required(action: THROW) {
             collections @required(action: THROW) {
               dbid
-              nfts {
-                nft {
+              tokens {
+                token {
                   dbid @required(action: THROW)
                   name @required(action: THROW)
                   lastUpdated @required(action: THROW)
@@ -61,7 +61,7 @@ function CollectionEditor({ viewerRef }: Props) {
             }
           }
           wallets @required(action: THROW) {
-            nfts @required(action: THROW) {
+            tokens @required(action: THROW) {
               dbid @required(action: THROW)
               name @required(action: THROW)
               lastUpdated @required(action: THROW)

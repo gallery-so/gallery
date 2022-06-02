@@ -68,7 +68,7 @@ function CollectionGalleryHeader({
           dbid @required(action: THROW)
         }
 
-        nfts {
+        tokens {
           __typename
         }
       }

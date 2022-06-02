@@ -14,10 +14,12 @@ type Props = {
   userSigninAddress: string;
   setErrorMessage: (message: string) => void;
   setRemovedAddress: (address: string) => void;
+  // TODO: set type
+  wallet: any;
 };
 
 function ManageWalletsRow({
-  address,
+  wallet,
   userSigninAddress,
   setErrorMessage,
   setRemovedAddress,

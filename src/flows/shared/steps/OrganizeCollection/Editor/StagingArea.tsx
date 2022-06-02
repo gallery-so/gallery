@@ -70,7 +70,7 @@ type Props = {
 function StagingArea({ nftsRef, stagedItems }: Props) {
   const nfts = useFragment(
     graphql`
-      fragment StagingAreaFragment on Nft @relay(plural: true) {
+      fragment StagingAreaFragment on Token @relay(plural: true) {
         dbid
         name
         ...SortableStagedNftFragment

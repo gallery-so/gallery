@@ -22,9 +22,11 @@ type Props = {
 function SortableStagedNft({ nftRef, size, mini }: Props) {
   const nft = useFragment(
     graphql`
-      fragment SortableStagedNftFragment on Nft {
+      fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
-        contractAddress
+        contractAddress @required(action: NONE) {
+          address
+        }
         ...StagedNftImageFragment
       }
     `,
@@ -47,8 +49,8 @@ function SortableStagedNft({ nftRef, size, mini }: Props) {
   );
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
+    [nft.contractAddress.address]
   );
 
   return (

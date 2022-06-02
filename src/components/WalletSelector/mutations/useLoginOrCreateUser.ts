@@ -26,7 +26,7 @@ export default function useLoginOrCreateUser() {
           ... on ErrAuthenticationFailed {
             message
           }
-          ... on ErrDoesNotOwnRequiredNFT {
+          ... on ErrDoesNotOwnRequiredToken {
             message
           }
         }
@@ -48,7 +48,7 @@ export default function useLoginOrCreateUser() {
           ... on ErrAuthenticationFailed {
             message
           }
-          ... on ErrDoesNotOwnRequiredNFT {
+          ... on ErrDoesNotOwnRequiredToken {
             message
           }
         }

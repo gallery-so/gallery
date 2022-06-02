@@ -41,7 +41,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         collections {
           id
           hidden
-          nfts {
+          tokens {
             __typename
           }
           ...UserGalleryCollectionFragment
