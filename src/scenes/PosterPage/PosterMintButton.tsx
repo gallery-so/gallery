@@ -10,7 +10,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import { useMintPosterContract } from 'hooks/useContract';
 import useMintContract from 'hooks/useMintContract';
 import useWalletModal from 'hooks/useWalletModal';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { TransactionStatus } from 'constants/transaction';
 import styled from 'styled-components';
 
@@ -51,21 +51,24 @@ export default function PosterMintButton() {
     active ? handleMintButtonClick() : handleConnectWalletButtonClick();
   };
 
+  const isButtonDisabled = useMemo(() => {
+    // Disabled if pending && the user already minted
+    return transactionStatus === TransactionStatus.PENDING;
+  }, [transactionStatus]);
+
   return (
     <>
-      <StyledButton onClick={handleOnClick} text={buttonText}></StyledButton>
+      <StyledButton onClick={handleOnClick} text={buttonText} disabled={isButtonDisabled} />
       {transactionHash && (
         <>
-          <div>
-            <BaseM>
-              {transactionStatus === TransactionStatus.SUCCESS
-                ? 'Transaction successful!'
-                : 'Transaction submitted. This may take several minutes.'}
-            </BaseM>
-            <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
-              <BaseM>View on Etherscan</BaseM>
-            </GalleryLink>
-          </div>
+          <BaseM>
+            {transactionStatus === TransactionStatus.SUCCESS
+              ? 'Transaction successful!'
+              : 'Transaction submitted. This may take several minutes.'}
+          </BaseM>
+          <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+            <BaseM>View on Etherscan</BaseM>
+          </GalleryLink>
         </>
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (
