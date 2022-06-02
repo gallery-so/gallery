@@ -17,6 +17,8 @@ type Props = {
   queryRef: ManageWalletsFragment$key;
 };
 
+const MAX_ALLOWED_ADDRESSES = 10;
+
 function ManageWallets({ newAddress, queryRef }: Props) {
   const { viewer } = useFragment(
     graphql`
@@ -50,7 +52,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
     showAddWalletModal();
   }, [showAddWalletModal]);
 
-  const addWalletDisabled = useMemo(() => addresses.length >= 5, [addresses]);
+  const addWalletDisabled = useMemo(() => addresses.length >= MAX_ALLOWED_ADDRESSES, [addresses]);
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   useEffect(() => {

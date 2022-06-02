@@ -19,11 +19,16 @@ import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 type Props = {
+  username: string;
   nftId: string;
   collectionId: string;
 };
 
-function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId }: Props) {
+function NftDetailPage({
+  nftId: initialNftId,
+  collectionId: initialCollectionId,
+  username,
+}: Props) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
       query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
@@ -95,7 +100,6 @@ function NftDetailPage({ nftId: initialNftId, collectionId: initialCollectionId 
   }, [nftId, collection]);
 
   const { query: urlQuery, push, pathname } = useRouter();
-  const { username } = urlQuery;
 
   if (!username || Array.isArray(username)) {
     throw new Error('NFT Detail Page: username not found in page query params');
@@ -256,12 +260,12 @@ const StyledNftDetailPage = styled.div`
   }
 `;
 
-function NftDetailPageWithBoundary({ collectionId, nftId }: Props) {
+function NftDetailPageWithBoundary({ username, collectionId, nftId }: Props) {
   return (
     <StyledNftDetailPageWithBoundary>
       <Suspense fallback={<FullPageLoader />}>
         <ErrorBoundary>
-          <NftDetailPage collectionId={collectionId} nftId={nftId} />
+          <NftDetailPage username={username} collectionId={collectionId} nftId={nftId} />
         </ErrorBoundary>
       </Suspense>
     </StyledNftDetailPageWithBoundary>
