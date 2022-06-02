@@ -163,7 +163,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
-            <Spacer height={8} />
             <StyledCollectorsNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
