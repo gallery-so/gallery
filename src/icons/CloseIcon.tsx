@@ -1,4 +1,6 @@
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
+import { MODAL_PADDING_MOBILE_PX, MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
@@ -52,6 +54,10 @@ export function DecoratedCloseIcon({ className, onClick }: DecoratedCloseIconPro
 }
 
 const StyledDecoratedCloseIcon = styled.div`
-  padding: 24px;
   cursor: pointer;
+  padding: ${MODAL_PADDING_MOBILE_PX}px;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    padding: ${MODAL_PADDING_PX}px;
+  }
 `;

@@ -37,7 +37,7 @@ export default function useDisplayFullPageNftDetailModal() {
             // prevent scroll-to-top when exiting the modal
             { scroll: false }
           ),
-        isFullPageOverride: true,
+        isFullPage: true,
       });
     }
   }, [collectionId, nftId, showModal, push, pathname, returnTo, isModalOpenRef, username]);

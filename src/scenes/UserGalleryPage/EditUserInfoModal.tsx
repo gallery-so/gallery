@@ -112,7 +112,6 @@ function EditUserInfoModal({ queryRef }: Props) {
 const StyledEditUserInfoModal = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 48px 24px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0px;
