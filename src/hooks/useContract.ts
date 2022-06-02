@@ -11,7 +11,7 @@ export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS = '0xe01569ca9b39E55Bc7C0dFa09F
 export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS = '0x989Cb023620Cec6798161EcA6C7eccFf68C0C9c3';
 
 // rinkeby
-export const POSTER_PAGE_CONTRACT_ADDRESS = '0xe956Fe011432CD0Edbb52865c7437744bEF1508b';
+export const GALLERY_MEMORABILIA_CONTRACT_ADDRESS = '0xe956Fe011432CD0Edbb52865c7437744bEF1508b';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
@@ -62,5 +62,5 @@ export function useGeneralMembershipCardContract() {
 }
 
 export function useMintPosterContract() {
-  return useContract(POSTER_PAGE_CONTRACT_ADDRESS, GALLERY_MEMORABILIA_CONTRACT_ABI);
+  return useContract(GALLERY_MEMORABILIA_CONTRACT_ADDRESS, GALLERY_MEMORABILIA_CONTRACT_ABI);
 }
