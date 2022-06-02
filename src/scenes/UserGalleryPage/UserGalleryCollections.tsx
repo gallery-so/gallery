@@ -57,7 +57,8 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   const visibleCollections = useMemo(
-    () => nonNullCollections.filter((collection) => !collection.hidden && collection.nfts?.length),
+    () =>
+      nonNullCollections.filter((collection) => !collection.hidden && collection.tokens?.length),
     [nonNullCollections]
   );
 

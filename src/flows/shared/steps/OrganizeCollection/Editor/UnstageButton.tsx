@@ -9,12 +9,12 @@ type Props = {
   className?: string;
 };
 function UnstageButton({ id, className }: Props) {
-  const { setNftsIsSelected, unstageNfts } = useCollectionEditorActions();
+  const { setTokensIsSelected, unstageTokens } = useCollectionEditorActions();
 
   const handleOnClick = useCallback(() => {
-    setNftsIsSelected([id], false);
-    unstageNfts([id]);
-  }, [id, setNftsIsSelected, unstageNfts]);
+    setTokensIsSelected([id], false);
+    unstageTokens([id]);
+  }, [id, setTokensIsSelected, unstageTokens]);
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>

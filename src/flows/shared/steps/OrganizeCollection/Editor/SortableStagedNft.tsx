@@ -10,17 +10,17 @@ import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
-import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 
 type Props = {
-  nftRef: SortableStagedNftFragment$key;
+  tokenRef: SortableStagedNftFragment$key;
   size: number;
   mini: boolean;
 };
 
-function SortableStagedNft({ nftRef, size, mini }: Props) {
-  const nft = useFragment(
+function SortableStagedNft({ tokenRef, size, mini }: Props) {
+  const token = useFragment(
     graphql`
       fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
@@ -30,10 +30,10 @@ function SortableStagedNft({ nftRef, size, mini }: Props) {
         ...StagedNftImageFragment
       }
     `,
-    nftRef
+    tokenRef
   );
 
-  const { dbid: id } = nft;
+  const { dbid: id } = token;
 
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
     id,
@@ -49,8 +49,8 @@ function SortableStagedNft({ nftRef, size, mini }: Props) {
   );
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
-    [nft.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
+    [token.contractAddress.address]
   );
 
   return (
@@ -62,7 +62,7 @@ function SortableStagedNft({ nftRef, size, mini }: Props) {
       backgroundColorOverride={backgroundColorOverride}
     >
       <StagedNftImage
-        nftRef={nft}
+        tokenRef={token}
         size={size}
         hideLabel={mini}
         setNodeRef={setNodeRef}

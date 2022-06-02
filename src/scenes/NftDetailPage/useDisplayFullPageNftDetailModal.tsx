@@ -4,30 +4,30 @@ import { useRouter } from 'next/router';
 import { useEffect, Suspense } from 'react';
 import NftDetailPage from './NftDetailPage';
 
-// displays a full-screen NFT Detail Modal if the route is detected to follow /username/collectionId/nftId.
+// displays a full-screen NFT Detail Modal if the route is detected to follow /username/collectionId/tokenId.
 // the actual component that uses this hook will remain intact in the background.
 export default function useDisplayFullPageNftDetailModal() {
   const { isModalOpenRef } = useModalState();
   const { showModal } = useModalActions();
   const {
     pathname,
-    query: { username, collectionId, nftId, originPage },
+    query: { username, collectionId, tokenId, originPage },
     push,
   } = useRouter();
 
   const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
 
   useEffect(() => {
-    if (nftId && collectionId && !isModalOpenRef.current) {
+    if (tokenId && collectionId && !isModalOpenRef.current) {
       // have to do this weird check on query param types
-      if (Array.isArray(collectionId) || Array.isArray(nftId)) {
+      if (Array.isArray(collectionId) || Array.isArray(tokenId)) {
         return;
       }
 
       showModal({
         content: (
           <Suspense fallback={<FullPageLoader />}>
-            <NftDetailPage collectionId={collectionId} nftId={nftId} />
+            <NftDetailPage collectionId={collectionId} tokenId={tokenId} />
           </Suspense>
         ),
         onClose: () =>
@@ -40,5 +40,5 @@ export default function useDisplayFullPageNftDetailModal() {
         isFullPageOverride: true,
       });
     }
-  }, [collectionId, nftId, showModal, push, pathname, returnTo, isModalOpenRef]);
+  }, [collectionId, tokenId, showModal, push, pathname, returnTo, isModalOpenRef]);
 }

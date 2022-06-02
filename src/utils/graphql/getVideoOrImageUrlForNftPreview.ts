@@ -1,12 +1,12 @@
 import { ReportFn } from 'contexts/errorReporting/ErrorReportingContext';
 import { readInlineData, graphql } from 'relay-runtime';
-import { FALLBACK_URL } from 'utils/nft';
+import { FALLBACK_URL } from 'utils/token';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
 
 export default function getVideoOrImageUrlForNftPreview(
-  nftRef: getVideoOrImageUrlForNftPreviewFragment$key,
+  tokenRef: getVideoOrImageUrlForNftPreviewFragment$key,
   handleReportError?: ReportFn
 ): { type: 'video'; urls: UrlSet } | { type: 'image'; urls: UrlSet } | undefined {
   const result = readInlineData(
@@ -97,7 +97,7 @@ export default function getVideoOrImageUrlForNftPreview(
         }
       }
     `,
-    nftRef
+    tokenRef
   );
 
   const media = result?.media;

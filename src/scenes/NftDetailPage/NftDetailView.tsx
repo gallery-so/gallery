@@ -45,9 +45,9 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  const { nft, collection } = collectionNft;
+  const { token, collection } = collectionNft;
 
-  const assetHasNote = !!nft.collectorsNote;
+  const assetHasNote = !!token.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
   return (
@@ -57,29 +57,29 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
         <StyledAssetAndNoteContainer>
           <ShimmerProvider>
             <NftDetailAsset
-              nftRef={collectionNft}
+              tokenRef={collectionNft}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
           </ShimmerProvider>
           {showCollectorsNoteComponent && (
             <NftDetailNote
-              nftId={nft.dbid}
+              tokenId={token.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              nftCollectorsNote={nft.collectorsNote ?? ''}
+              nftCollectorsNote={token.collectorsNote ?? ''}
               collectionId={collection.dbid}
             />
           )}
         </StyledAssetAndNoteContainer>
 
         <NftDetailText
-          name={nft.name}
-          description={nft.description}
+          name={token.name}
+          description={token.description}
           ownerUsername={username}
-          contractAddress={nft.contractAddress.address}
-          tokenId={nft.tokenId}
-          externalUrl={nft.externalUrl}
-          creatorAddress={nft.creatorAddress.address}
-          openseaCollectionName={nft.openseaCollectionName}
+          contractAddress={token.contractAddress.address}
+          tokenId={token.tokenId}
+          externalUrl={token.externalUrl}
+          creatorAddress={token.creatorAddress.address}
+          openseaCollectionName={token.openseaCollectionName}
         />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}

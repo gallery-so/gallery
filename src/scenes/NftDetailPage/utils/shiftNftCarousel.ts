@@ -1,13 +1,13 @@
 import { Directions } from 'components/core/enums';
 
 export type VisibilityState = 'hidden-left' | 'visible' | 'hidden-right';
-export type MountedNft<T> = { nft: T; visibility: VisibilityState };
+export type MountedNft<T> = { token: T; visibility: VisibilityState };
 
 // moves a triptych of NFTs to the left or right, and toggles visibility accordingly.
 // see unit tests for more details.
 export default function shiftNftCarousel<T>(
   direction: Directions,
-  elements: { nft: any; visibility: VisibilityState }[],
+  elements: { token: any; visibility: VisibilityState }[],
   currentElementIndex: number,
   collection: T[]
 ): MountedNft<T>[] {
@@ -29,7 +29,7 @@ export default function shiftNftCarousel<T>(
     });
     const nextOnDeck = collection[currentElementIndex + 2];
     if (nextOnDeck) {
-      shiftedElements.push({ nft: nextOnDeck, visibility: 'hidden-right' });
+      shiftedElements.push({ token: nextOnDeck, visibility: 'hidden-right' });
     }
     return shiftedElements;
   }
@@ -37,7 +37,7 @@ export default function shiftNftCarousel<T>(
   // moving carousel to the left
   const nextOnDeck = collection[currentElementIndex - 2];
   if (nextOnDeck) {
-    shiftedElements.push({ nft: nextOnDeck, visibility: 'hidden-left' });
+    shiftedElements.push({ token: nextOnDeck, visibility: 'hidden-left' });
   }
   elements.forEach((element) => {
     if (element.visibility === 'hidden-left') {

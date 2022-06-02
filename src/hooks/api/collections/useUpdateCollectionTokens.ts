@@ -35,14 +35,14 @@ export default function useUpdateCollectionTokens() {
         ...collectionLayout,
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
-      const nfts = removeWhitespacesFromStagedItems(stagedNfts);
-      const nftIds = nfts.map((nft) => nft.dbid);
+      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
+      const tokenIds = tokens.map((token) => token.dbid);
 
       await updateCollectionTokens({
         variables: {
           input: {
             collectionId,
-            nfts: nftIds,
+            tokens: tokenIds,
             layout,
           },
         },
@@ -64,7 +64,7 @@ export default function useUpdateCollectionTokens() {
       //
       // In other places, we can do an optimistic update since
       // there's not much data to update (hidden, collectorsNote, etc).
-      // Here, we'd have to optimistically update a bunch of nfts which
+      // Here, we'd have to optimistically update a bunch of tokens which
       // is more risky since that mapping logic might get out of hand.
       // The safer approach here is to just refetch the data.
       await fetchQuery<useUpdateCollectionTokensRefresherQuery>(

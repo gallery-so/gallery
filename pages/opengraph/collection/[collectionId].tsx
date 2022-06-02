@@ -39,12 +39,12 @@ export default function OpenGraphCollectionPage() {
 
   const imageUrls = removeNullValues(
     removeNullValues(
-      removeNullValues(collection.nfts).map(({ nft }) =>
-        nft ? getVideoOrImageUrlForNftPreview(nft) : null
+      removeNullValues(collection.tokens).map(({ token }) =>
+        token ? getVideoOrImageUrlForNftPreview(token) : null
       )
     )
       .slice(0, 4)
-      .map((nft) => nft.urls.large)
+      .map((token) => token.urls.large)
   );
 
   const width = parseInt(query.width as string) || 600;

@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
-import useRefreshTokens from 'hooks/api/nfts/useRefreshTokens';
+import useRefreshTokens from 'hooks/api/tokens/useRefreshTokens';
 import {
   ReactNode,
   createContext,

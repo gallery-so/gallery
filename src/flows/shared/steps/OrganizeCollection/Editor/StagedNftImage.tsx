@@ -4,18 +4,18 @@ import transitions from 'components/core/transitions';
 import { graphql, useFragment } from 'react-relay';
 import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL } from 'utils/nft';
+import { FALLBACK_URL } from 'utils/token';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
-  nftRef: StagedNftImageFragment$key;
+  tokenRef: StagedNftImageFragment$key;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
   hideLabel: boolean;
 };
 
-function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props) {
-  const nft = useFragment(
+function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Props) {
+  const token = useFragment(
     graphql`
       fragment StagedNftImageFragment on Token {
         name
@@ -23,11 +23,11 @@ function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
-    nftRef
+    tokenRef
   );
 
   const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
+  const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
   if (!result || !result.urls.large) {
     reportError('Image URL not found for StagedNftImageDragging');
@@ -37,7 +37,7 @@ function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
       {hideLabel ? null : (
-        <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+        <StyledNftPreviewLabel title={token.name} collectionName={token.openseaCollectionName} />
       )}
     </VideoContainer>
   ) : (
@@ -48,7 +48,7 @@ function StagedNftImage({ nftRef, size, hideLabel, setNodeRef, ...props }: Props
       {...props}
     >
       {hideLabel ? null : (
-        <StyledNftPreviewLabel title={nft.name} collectionName={nft.openseaCollectionName} />
+        <StyledNftPreviewLabel title={token.name} collectionName={token.openseaCollectionName} />
       )}
     </StyledGridImage>
   );

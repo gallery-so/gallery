@@ -12,11 +12,11 @@ import { useCallback } from 'react';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
-  nftId: string;
+  tokenId: string;
   collectionId: string;
 };
 
-export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProps) {
+export default function NftDetailPage({ collectionId, tokenId }: NftDetailPageProps) {
   const {
     query: { username },
     push,
@@ -32,7 +32,7 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
 
   useKeyDown('Escape', handleReturnToCollectionPage);
 
-  if (!nftId) {
+  if (!tokenId) {
     // Something went horribly wrong
     return <GalleryRedirect to="/" />;
   }
@@ -43,7 +43,7 @@ export default function NftDetailPage({ collectionId, nftId }: NftDetailPageProp
         <StyledDecoratedCloseIcon />
       </Link>
       <GalleryRoute
-        element={<NftDetailPageScene collectionId={collectionId} nftId={nftId} />}
+        element={<NftDetailPageScene collectionId={collectionId} tokenId={tokenId} />}
         navbar={false}
         footer={false}
       />
@@ -60,16 +60,16 @@ const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;
-  const nftId = params?.nftId ? (params.nftId as string) : '';
+  const tokenId = params?.tokenId ? (params.tokenId as string) : '';
   const collectionId = params?.collectionId ? (params.collectionId as string) : '';
   return {
     props: {
-      nftId,
+      tokenId,
       collectionId,
-      metaTags: nftId
+      metaTags: tokenId
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/nft/${nftId}`,
+            previewPath: `/opengraph/nft/${tokenId}`,
           })
         : null,
     },

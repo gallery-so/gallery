@@ -9,7 +9,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
     const nftWithoutOpenseaId = {
       '1zsXvHA8Y3iwqq9lzorrHIhw3GU': {
         index: 9,
-        nft: {
+        token: {
           dbid: '1zsXvHA8Y3iwqq9lzorrHIhw3GU',
           name: 'Flowers #2078',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -29,7 +29,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
     const data = {
       '5zsXvDWYOrn9A42n83ezne4QjYF': {
         index: 0,
-        nft: {
+        token: {
           dbid: '5zsXvDWYOrn9A42n83ezne4QjYF',
           name: 'Chromie Squiggle #2728',
           lastUpdated: '2022-02-17T07:23:06.778053Z',
@@ -40,7 +40,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '27Xt9cs0aIvUnMm6pMVTppIcSgj': {
         index: 1,
-        nft: {
+        token: {
           dbid: '27Xt9cs0aIvUnMm6pMVTppIcSgj',
           name: 'Venus',
           lastUpdated: '2022-04-09T04:21:47.859042Z',
@@ -51,7 +51,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '3zsXvFt0w03yx6Ptjvvsi589x4g': {
         index: 2,
-        nft: {
+        token: {
           dbid: '3zsXvFt0w03yx6Ptjvvsi589x4g',
           name: 'CryptoSerg #521',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -62,7 +62,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvDDNdSZ3xdMLSXWQRu8Kamj': {
         index: 3,
-        nft: {
+        token: {
           dbid: '1zsXvDDNdSZ3xdMLSXWQRu8Kamj',
           name: 'A Study in Floral Hypercolor',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -73,7 +73,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvDYssSQQNmxOB7pqJjHUC4A': {
         index: 4,
-        nft: {
+        token: {
           dbid: '1zsXvDYssSQQNmxOB7pqJjHUC4A',
           name: 'April 14 2021',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -84,7 +84,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '27Xt9YL09Y4b57jFue3azuXBGsq': {
         index: 5,
-        nft: {
+        token: {
           dbid: '27Xt9YL09Y4b57jFue3azuXBGsq',
           name: 'Living Souls',
           lastUpdated: '2022-04-09T05:40:21.603107Z',
@@ -95,7 +95,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvHIb4wy67nGX4Z4J5BKlpUY': {
         index: 6,
-        nft: {
+        token: {
           dbid: '1zsXvHIb4wy67nGX4Z4J5BKlpUY',
           name: 'Bloom 150/2000',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -106,7 +106,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvGQvA8tBm5596RM8cLzaWUo': {
         index: 7,
-        nft: {
+        token: {
           dbid: '1zsXvGQvA8tBm5596RM8cLzaWUo',
           name: 'Particle Story 001',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -117,7 +117,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvFpo5TgjWIuCMqXJD4O6BoG': {
         index: 8,
-        nft: {
+        token: {
           dbid: '1zsXvFpo5TgjWIuCMqXJD4O6BoG',
           name: 'Particle Story 003',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
@@ -128,7 +128,7 @@ describe('deduplicateObjectByOpenseaIdAndPreferEarliest', () => {
       },
       '1zsXvHA8Y3iwqq9lzorrHIhw3GU': {
         index: 9,
-        nft: {
+        token: {
           dbid: '1zsXvHA8Y3iwqq9lzorrHIhw3GU',
           name: 'Flowers #2078',
           lastUpdated: '2022-01-19T05:25:35.704518Z',
