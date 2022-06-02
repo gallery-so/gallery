@@ -10,8 +10,7 @@ import { useActiveWeb3React } from './useWeb3';
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS = '0xe01569ca9b39E55Bc7C0dFa09F05fa15CB4C7698';
 export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS = '0x989Cb023620Cec6798161EcA6C7eccFf68C0C9c3';
 
-// rinkeby
-export const GALLERY_MEMORABILIA_CONTRACT_ADDRESS = '0xe956Fe011432CD0Edbb52865c7437744bEF1508b';
+export const GALLERY_MEMORABILIA_CONTRACT_ADDRESS = '0x35ae1f85389D2bbd48113909DA6182304952f809';
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
