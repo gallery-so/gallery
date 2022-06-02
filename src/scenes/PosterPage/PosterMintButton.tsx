@@ -5,7 +5,7 @@ import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
-import { NFT_TOKEN_ID, OPENSEA_URL } from 'constants/poster';
+import { NFT_TOKEN_ID } from 'constants/poster';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useMintPosterContract } from 'hooks/useContract';
 import useMintContract from 'hooks/useMintContract';
@@ -63,9 +63,8 @@ export default function PosterMintButton({ onMintSuccess }: Props) {
         message: 'You’ve succesfully minted 2022 Community Poster.',
         autoClose: true,
       });
-      window.open(OPENSEA_URL, '_blank')?.focus;
     }
-  }, [transactionStatus, pushToast]);
+  }, [transactionStatus, pushToast, onMintSuccess]);
 
   const isButtonDisabled = useMemo(() => {
     return transactionStatus === TransactionStatus.PENDING;
