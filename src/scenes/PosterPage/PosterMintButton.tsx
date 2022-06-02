@@ -61,7 +61,7 @@ export default function PosterMintButton() {
       });
       window.open(OPENSEA_URL);
     }
-  }, [transactionStatus]);
+  }, [transactionStatus, pushToast]);
 
   const isButtonDisabled = useMemo(() => {
     // Disabled if pending && if the user already minted
