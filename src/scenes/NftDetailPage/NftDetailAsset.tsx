@@ -93,7 +93,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
       fragment NftDetailAssetFragment on CollectionToken {
         id
         token @required(action: THROW) {
-          contractAddress @required(action: NONE) {
+          contractAddress @required(action: THROW) {
             address
           }
           media @required(action: THROW) {

@@ -23,13 +23,13 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           dbid
           name
           description
-          contractAddress @required(action: NONE) {
+          contractAddress @required(action: THROW) {
             address
           }
           tokenId
           externalUrl
           collectorsNote
-          creatorAddress @required(action: NONE) {
+          creatorAddress @required(action: THROW) {
             address
           }
           openseaCollectionName

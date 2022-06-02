@@ -48,7 +48,7 @@ function NftPreview({ galleryNftRef }: Props) {
           dbid
           name
           openseaCollectionName
-          contractAddress @required(action: NONE) {
+          contractAddress @required(action: THROW) {
             address
           }
           ...getVideoOrImageUrlForNftPreviewFragment

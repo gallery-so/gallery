@@ -26,9 +26,10 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         viewer {
           ... on Viewer {
             user {
-              wallets {
-                chainAddress {
-                  address
+              wallets @required(action: THROW) {
+                dbid @required(action: THROW)
+                chainAddress @required(action: THROW) {
+                  address @required(action: THROW)
                 }
               }
             }
@@ -39,10 +40,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
     queryRef
   );
 
-  const addresses = useMemo(
-    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.chainAddress.address)),
-    [viewer?.user?.wallets]
-  );
+  const wallets = useMemo(() => removeNullValues(viewer?.user?.wallets), [viewer?.user?.wallets]);
 
   const [removedAddress, setRemovedAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -54,7 +52,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
     showAddWalletModal();
   }, [showAddWalletModal]);
 
-  const addWalletDisabled = useMemo(() => addresses.length >= MAX_ALLOWED_ADDRESSES, [addresses]);
+  const addWalletDisabled = useMemo(() => wallets.length >= MAX_ALLOWED_ADDRESSES, [wallets]);
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   useEffect(() => {
@@ -82,10 +80,11 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         </>
       )}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
-      {viewer?.user?.wallets.map((wallet) => (
+      {wallets.map((wallet) => (
         <ManageWalletsRow
-          key={wallet.chainAddress.address}
-          wallet={wallet}
+          key={wallet.dbid}
+          walletId={wallet.dbid}
+          address={wallet.chainAddress.address}
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
           setRemovedAddress={setRemovedAddress}

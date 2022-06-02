@@ -10,16 +10,16 @@ import breakpoints from 'components/core/breakpoints';
 import useRemoveWallet from 'components/WalletSelector/mutations/useRemoveWallet';
 
 type Props = {
+  walletId: string;
   address: string;
   userSigninAddress: string;
   setErrorMessage: (message: string) => void;
   setRemovedAddress: (address: string) => void;
-  // TODO: set type
-  wallet: any;
 };
 
 function ManageWalletsRow({
-  wallet,
+  walletId,
+  address,
   userSigninAddress,
   setErrorMessage,
   setRemovedAddress,
@@ -32,7 +32,7 @@ function ManageWalletsRow({
     try {
       setErrorMessage('');
       setIsDisconnecting(true);
-      await removeWallet(address);
+      await removeWallet(walletId);
       setRemovedAddress(address);
     } catch (error: unknown) {
       setIsDisconnecting(false);
@@ -42,7 +42,7 @@ function ManageWalletsRow({
 
       throw error;
     }
-  }, [setErrorMessage, address, setRemovedAddress, removeWallet]);
+  }, [setErrorMessage, removeWallet, walletId, setRemovedAddress, address]);
 
   const showDisconnectButton = useMemo(
     () => address !== userSigninAddress,

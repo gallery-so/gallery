@@ -26,15 +26,14 @@ export default function useRemoveWallet() {
   );
 
   return useCallback(
-    // TODO change to walletId
-    async (address: string) => {
-      const { removeUserAddresses } = await removeWallet({
+    async (walletId: string) => {
+      const { removeUserWallets } = await removeWallet({
         variables: {
-          addresses: [address],
+          walletIds: [walletId],
         },
       });
 
-      if (removeUserAddresses?.__typename === 'RemoveUserAddressesPayload') {
+      if (removeUserWallets?.__typename === 'RemoveUserWalletsPayload') {
         return;
       } else {
         // TODO: handle error here
