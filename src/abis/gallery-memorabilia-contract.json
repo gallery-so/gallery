@@ -5,19 +5,6 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
-    "name": "canMint",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
