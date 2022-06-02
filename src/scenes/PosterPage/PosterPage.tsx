@@ -8,8 +8,13 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { MINT_DATE } from 'constants/poster';
+import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
 import PosterMintButton from './PosterMintButton';
+import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { useEffect, useState } from 'react';
+import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -17,11 +22,34 @@ export default function PosterPage() {
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
 
   const { timestamp, hasEnded } = useTimer(MINT_DATE);
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const account = rawAccount?.toLowerCase();
+  const [isMinted, setIsMinted] = useState(false);
 
   const handleBackClick = () => {
-    // TODO: Replace with hook
     window.history.back();
   };
+
+  async function detectOwnedPosterNftFromOpensea(account: string) {
+    const response = await fetch(
+      `${OPENSEA_TESTNET_BASEURL}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMORABILIA_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
+      {}
+    );
+
+    const responseBody = await response.json();
+    return responseBody.assets.length > 0;
+  }
+
+  useEffect(() => {
+    async function checkIfMinted(account: string) {
+      const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(account);
+      setIsMinted(hasOwnedPosterNft);
+    }
+
+    if (account) {
+      checkIfMinted(account);
+    }
+  }, [account]);
 
   return (
     <StyledPage>
@@ -46,10 +74,16 @@ export default function PosterPage() {
               <BaseXL>Event has ended.</BaseXL>
             </StyledCallToAction>
           ) : (
-            <StyledCallToAction>
-              <BaseXL>{timestamp}</BaseXL>
-              <PosterMintButton></PosterMintButton>
-            </StyledCallToAction>
+            <>
+              {isMinted ? (
+                <BaseXL>You've succesfully minted this.</BaseXL>
+              ) : (
+                <StyledCallToAction>
+                  <BaseXL>{timestamp}</BaseXL>
+                  <PosterMintButton onMintSuccess={() => setIsMinted(true)}></PosterMintButton>
+                </StyledCallToAction>
+              )}
+            </>
           )}
         </StyledContent>
       </StyledWrapper>

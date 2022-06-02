@@ -15,8 +15,11 @@ import { TransactionStatus } from 'constants/transaction';
 import styled from 'styled-components';
 import { useToastActions } from 'contexts/toast/ToastContext';
 
-// TODO: Might be a great idea to encapsulated this method from mint page
-export default function PosterMintButton() {
+type Props = {
+  onMintSuccess: () => void;
+};
+
+export default function PosterMintButton({ onMintSuccess }: Props) {
   const { active } = useWeb3React<Web3Provider>();
 
   const showWalletModal = useWalletModal();
@@ -55,16 +58,16 @@ export default function PosterMintButton() {
 
   useEffect(() => {
     if (transactionStatus === TransactionStatus.SUCCESS) {
+      onMintSuccess();
       pushToast({
         message: 'You’ve succesfully minted 2022 Community Poster.',
         autoClose: true,
       });
-      window.open(OPENSEA_URL);
+      window.open(OPENSEA_URL, '_blank')?.focus;
     }
   }, [transactionStatus, pushToast]);
 
   const isButtonDisabled = useMemo(() => {
-    // Disabled if pending && if the user already minted
     return transactionStatus === TransactionStatus.PENDING;
   }, [transactionStatus]);
 
