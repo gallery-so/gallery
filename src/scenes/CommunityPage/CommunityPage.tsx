@@ -20,7 +20,10 @@ export default function CommunityPage({ queryRef }: Props) {
   const { community } = useFragment(
     graphql`
       fragment CommunityPageFragment on Query {
-        community: communityByAddress(communityAddress: $communityAddress, forceRefresh: false) {
+        community: communityByAddress(
+          communityAddress: $communityAddress
+          forceRefresh: $forceRefresh
+        ) {
           ... on ErrCommunityNotFound {
             __typename
           }
