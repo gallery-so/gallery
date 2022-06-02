@@ -44,7 +44,7 @@ export default function useCreateNonce() {
       // If this throws, we'll just let the UI handle that appropriately
       // with it's try catch
       const { getAuthNonce } = await createNonce({
-        variables: { address },
+        variables: { chainAddress: { address, chain: 'Ethereum' } },
       });
 
       // If the server didn't give us a payload for the mutation we just committed,

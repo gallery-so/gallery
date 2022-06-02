@@ -121,7 +121,10 @@ function AddWalletPendingGnosisSafe({
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
       const { signatureValid } = await addWallet({
-        address,
+        chainAddress: {
+          address,
+          chain: 'Ethereum',
+        },
         authMechanism: {
           gnosisSafe: {
             address,
