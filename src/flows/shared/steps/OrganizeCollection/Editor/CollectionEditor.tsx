@@ -50,7 +50,7 @@ function CollectionEditor({ viewerRef }: Props) {
             collections @required(action: THROW) {
               dbid
               tokens {
-                token {
+                token @required(action: THROW) {
                   dbid @required(action: THROW)
                   name @required(action: THROW)
                   lastUpdated @required(action: THROW)

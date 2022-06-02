@@ -28,6 +28,7 @@ import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graph
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
+import { removeNullValues } from 'utils/removeNullValues';
 
 // Width of draggable image for each Column # setting
 const IMAGE_SIZES: Record<number, number> = {
@@ -68,7 +69,7 @@ type Props = {
 };
 
 function StagingArea({ tokensRef, stagedItems }: Props) {
-  const tokens = useFragment(
+  const tokenss = useFragment(
     graphql`
       fragment StagingAreaFragment on Token @relay(plural: true) {
         dbid
@@ -79,6 +80,8 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
     `,
     tokensRef
   );
+
+  const tokens = removeNullValues(tokenss);
 
   const { handleSortTokens } = useCollectionEditorActions();
 

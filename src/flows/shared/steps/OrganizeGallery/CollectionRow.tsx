@@ -35,11 +35,11 @@ function CollectionRow({ collectionRef, className }: Props) {
         collectorsNote
         hidden
 
-        tokens {
-          id
-          token @required(action: NONE) {
-            contractAddress @required(action: NONE) {
-              address
+        tokens @required(action: THROW) {
+          id @required(action: THROW)
+          token @required(action: THROW) {
+            contractAddress @required(action: THROW) {
+              address @required(action: THROW)
             }
             ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
@@ -203,19 +203,13 @@ const Body = styled.div`
  * - if 5 or less NFTs, display them all in a row
  * - if more than 5 NFTs, display the first 3, then the rest in text
  */
-function CompactNfts({ nftRefs: allNftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
-  if (!allNftRefs) {
-    throw new Error('nftRefs not defined for CompactNfts');
-  }
-
-  const nftRefs = removeNullValues(allNftRefs);
-
+function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
   const tokens = useFragment(
     graphql`
       fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {
         id
-        contractAddress @required(action: NONE) {
-          address
+        contractAddress @required(action: THROW) {
+          address @required(action: THROW)
         }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
