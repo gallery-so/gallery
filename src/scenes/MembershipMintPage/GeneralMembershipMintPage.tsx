@@ -20,12 +20,11 @@ import { graphql, useFragment } from 'react-relay';
 import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__/GeneralMembershipMintPageUseAllowlistFragment.graphql';
 import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
 import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
+import { OPENSEA_API_BASEURL } from 'constants/opensea';
 
 export type AssetContract = {
   address: string;
 };
-
-const OPENSEA_API_BASEURL = process.env.NEXT_PUBLIC_OPENSEA_API_BASEURL ?? 'https://api.opensea.io';
 
 function generateMerkleProof(address: string, allowlist: string[]) {
   const merkleTree = new MerkleTree(allowlist);
