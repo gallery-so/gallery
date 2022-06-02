@@ -44,11 +44,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  return (
-    <GalleryRoute
-      element={<CommunityPageScene contractAddress={contractAddress} queryRef={query} />}
-    />
-  );
+  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

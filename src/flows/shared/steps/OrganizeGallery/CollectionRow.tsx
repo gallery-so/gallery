@@ -203,7 +203,13 @@ const Body = styled.div`
  * - if 5 or less NFTs, display them all in a row
  * - if more than 5 NFTs, display the first 3, then the rest in text
  */
-function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
+function CompactNfts({ nftRefs: allNftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
+  if (!allNftRefs) {
+    throw new Error('nftRefs not defined for CompactNfts');
+  }
+
+  const nftRefs = removeNullValues(allNftRefs);
+
   const tokens = useFragment(
     graphql`
       fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {

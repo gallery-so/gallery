@@ -33,6 +33,10 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     tokenRef
   );
 
+  if (!token) {
+    throw new Error('SortableStagedNft: token not provided');
+  }
+
   const { dbid: id } = token;
 
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({

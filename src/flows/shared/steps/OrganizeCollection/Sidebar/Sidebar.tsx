@@ -19,6 +19,7 @@ import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -26,7 +27,7 @@ type Props = {
 };
 
 function Sidebar({ tokensRef, sidebarTokens }: Props) {
-  const tokens = useFragment(
+  const allTokens = useFragment(
     graphql`
       fragment SidebarFragment on Token @relay(plural: true) {
         dbid
@@ -36,6 +37,8 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
     `,
     tokensRef
   );
+
+  const tokens = removeNullValues(allTokens);
 
   const { setTokensIsSelected, stageTokens, unstageAllItems } = useCollectionEditorActions();
 

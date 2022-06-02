@@ -21,13 +21,13 @@ export default function useRefreshTokens() {
       variables: {},
     });
 
-    if (response.refreshOpenSeaNfts?.__typename === 'ErrOpenSeaRefreshFailed') {
+    if (response.refreshTokens?.__typename === 'ErrOpenSeaRefreshFailed') {
       throw new Error(
         'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
       );
     }
     // TODO: log the user out
-    if (response.refreshOpenSeaNfts?.__typename === 'ErrNotAuthorized') {
+    if (response.refreshTokens?.__typename === 'ErrNotAuthorized') {
       throw new Error('You are not authorized!');
     }
   }, [refreshTokens]);

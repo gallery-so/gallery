@@ -11,8 +11,6 @@ import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.g
 import CommunityPageView from './CommunityPageView';
 
 type Props = {
-  // TODO: set type
-  communityAddress: any;
   queryRef: CommunityPageFragment$key;
 };
 

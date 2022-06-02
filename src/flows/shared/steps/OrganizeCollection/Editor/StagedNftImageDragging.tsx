@@ -26,6 +26,10 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
     tokenRef
   );
 
+  if (!token) {
+    throw new Error('StagedNftImageDragging: token not provided');
+  }
+
   const isMouseUp = useMouseUp();
 
   // slightly enlarge the image when dragging

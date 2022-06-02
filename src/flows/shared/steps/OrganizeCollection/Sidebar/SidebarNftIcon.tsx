@@ -28,6 +28,10 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     tokenRef
   );
 
+  if (!token) {
+    throw new Error('SidebarNftIcon: token not provided');
+  }
+
   const { isSelected, id } = EditModeToken;
 
   const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
