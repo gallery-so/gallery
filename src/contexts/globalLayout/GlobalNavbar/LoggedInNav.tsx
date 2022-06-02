@@ -88,8 +88,8 @@ function LoggedInNav({ queryRef }: Props) {
               <>
                 <Spacer height={12} />
                 <StyledNavItemContainer>
-                  <TextButton text="MINT 2022 community POSTER" onClick={handleMintPostersClick} />
                   {!isMintPosterDismissed && <StyledCircle />}
+                  <TextButton text="MINT 2022 community POSTER" onClick={handleMintPostersClick} />
                 </StyledNavItemContainer>
               </>
             )}
@@ -115,7 +115,7 @@ const StyledCircle = styled.div`
   height: 4px;
   width: 4px;
   background-color: ${colors.activeBlue};
-  margin-left: 4px;
+  margin-right: 4px;
   border-radius: 50%;
 `;
 
