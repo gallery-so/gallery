@@ -29,9 +29,10 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           tokenId
           externalUrl
           collectorsNote
-          creatorAddress @required(action: THROW) {
-            address
-          }
+          # TODO [GAL-206]: support creator address post-merge
+          # creatorAddress @required(action: THROW) {
+          #   address
+          # }
           openseaCollectionName
         }
         collection @required(action: THROW) {
@@ -78,7 +79,8 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           contractAddress={token.contractAddress.address}
           tokenId={token.tokenId}
           externalUrl={token.externalUrl}
-          creatorAddress={token.creatorAddress.address}
+          // TODO [GAL-206]: support Creator Address post-merge
+          // creatorAddress={token.creatorAddress.address}
           openseaCollectionName={token.openseaCollectionName}
         />
       </StyledContentContainer>

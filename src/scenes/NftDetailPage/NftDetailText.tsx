@@ -19,7 +19,8 @@ type Props = {
   contractAddress: string | null;
   tokenId: string | null;
   externalUrl: string | null;
-  creatorAddress: string | null;
+  // TODO [GAL-206]: support Creator Address post-merge
+  // creatorAddress: string | null;
   openseaCollectionName: string | null;
 };
 
@@ -30,13 +31,16 @@ function NftDetailText({
   contractAddress,
   tokenId,
   externalUrl,
-  creatorAddress,
+  // TODO [GAL-206]: support Creator Address post-merge
+  // creatorAddress,
   openseaCollectionName,
 }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-  const addressToUse = creatorAddress || contractAddress || '';
+  // TODO [GAL-206]: support Creator Address post-merge
+  // const addressToUse = creatorAddress || contractAddress || '';
+  const addressToUse = contractAddress || '';
 
   // useRef to prevent rendered username from briefly changing before fade transition upon route change
   const username = useRef(ownerUsername);
