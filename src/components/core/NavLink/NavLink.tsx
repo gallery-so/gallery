@@ -12,9 +12,10 @@ type Props = {
   children: ReactNode;
   dataTestId?: string;
   className?: string;
+  onClick?: () => void;
 };
 
-export default function NavLink({ to, href, children, dataTestId, className }: Props) {
+export default function NavLink({ to, href, children, dataTestId, className, onClick }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
@@ -22,6 +23,10 @@ export default function NavLink({ to, href, children, dataTestId, className }: P
       to: to || href,
     });
   }, [href, to, track]);
+
+  if (onClick) {
+    onClick();
+  }
 
   if (!to && !href) {
     console.error('no link provided for NavLink');
