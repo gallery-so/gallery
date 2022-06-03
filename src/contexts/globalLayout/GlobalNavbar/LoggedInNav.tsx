@@ -23,7 +23,10 @@ type Props = {
 function LoggedInNav({ queryRef }: Props) {
   const { showModal } = useModalActions();
   const { push } = useRouter();
-  const [isMintPosterDismissed] = usePersistedState(GALLERY_POSTER_BANNER_STORAGE_KEY, false);
+  const [isMintPosterDismissed, setMintPosterDismissed] = usePersistedState(
+    GALLERY_POSTER_BANNER_STORAGE_KEY,
+    false
+  );
 
   const query = useFragment(
     graphql`
@@ -57,6 +60,7 @@ function LoggedInNav({ queryRef }: Props) {
   }, [push]);
 
   const handleMintPostersClick = useCallback(() => {
+    setMintPosterDismissed(true);
     void push('/members/poster');
   }, [push]);
 
@@ -70,6 +74,8 @@ function LoggedInNav({ queryRef }: Props) {
 
   const username = query.viewer.user?.username;
 
+  const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT) && !isMintPosterDismissed;
+
   return username ? (
     <StyledLoggedInNav>
       <NavElement>
@@ -81,7 +87,7 @@ function LoggedInNav({ queryRef }: Props) {
       </NavElement>
       <Spacer width={24} />
       <NavElement>
-        <StyledDropdownWrapper hasNotifiction={!isMintPosterDismissed}>
+        <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
           <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
             <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
             {isFeatureEnabled(FeatureFlag.POSTER_MINT) && (

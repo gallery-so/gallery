@@ -15,13 +15,18 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useEffect, useState } from 'react';
 import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
+import Spacer from 'components/core/Spacer/Spacer';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
+  const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp, hasEnded } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DATE);
   const { account: rawAccount } = useWeb3React<Web3Provider>();
   const account = rawAccount?.toLowerCase();
   const [isMinted, setIsMinted] = useState(false);
@@ -62,21 +67,26 @@ export default function PosterPage() {
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Members celebrated our new brand by signing a
+              Thank you for being a member of Gallery. Members celebrated our{' '}
+              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
               poster.
             </BaseM>
+            <Spacer height={8} />
+            <BaseM>
+              We are making the final poster available to mint as a commemorative token for early
+              believers in our mission and product.
+            </BaseM>
+            <Spacer height={8} />
+
+            <BaseM>Limit 1 per wallet address.</BaseM>
           </StyledParagraph>
 
           {!isMobile && <HorizontalBreak />}
 
-          {hasEnded ? (
-            <StyledCallToAction hasEnded>
-              <BaseXL>Event has ended.</BaseXL>
-            </StyledCallToAction>
-          ) : (
+          {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
             <>
               {isMinted ? (
-                <BaseXL>You've succesfully minted this.</BaseXL>
+                <BaseXL>You've succesfully minted this poster.</BaseXL>
               ) : (
                 <StyledCallToAction>
                   <BaseXL>{timestamp}</BaseXL>
@@ -84,6 +94,10 @@ export default function PosterPage() {
                 </StyledCallToAction>
               )}
             </>
+          ) : (
+            <StyledCallToAction hasEnded>
+              <BaseXL>Mint opening soon.</BaseXL>
+            </StyledCallToAction>
           )}
         </StyledContent>
       </StyledWrapper>
