@@ -1,6 +1,8 @@
+import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useCallback } from 'react';
+import SecondaryLogoIcon from 'src/icons/SecondaryLogoIcon';
 import styled from 'styled-components';
 import { INVITATION, MenuState, SCHEDULE } from './EventDetailsPage';
 
@@ -19,9 +21,8 @@ export default function EventDetailsMenu({ menuState, setMenuState }: Props) {
 
   return (
     <StyledEventDetailsMenu>
-      <TitleM>
-        <strong>G</strong>
-      </TitleM>
+      <StyledSecondaryLogoIcon />
+      <Spacer height={4} />
       <TitleM>nft.nyc 2022</TitleM>
       <Spacer height={24} />
       <StyledMenuButton onClick={() => handleMenuButtonClick(INVITATION)}>
@@ -40,6 +41,12 @@ const StyledEventDetailsMenu = styled.div`
   justify-content: center;
   align-items: baseline;
   width: 300px;
+`;
+
+const StyledSecondaryLogoIcon = styled(SecondaryLogoIcon)`
+  path {
+    stroke: ${colors.offWhite};
+  }
 `;
 
 export const StyledEventText = styled(BaseM)`
