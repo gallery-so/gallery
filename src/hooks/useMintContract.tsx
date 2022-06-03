@@ -37,12 +37,7 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
-        const errorCode = error.code;
-        if (errorCode === 'UNPREDICTABLE_GAS_LIMIT') {
-          setError('Sorry, 1 poster per wallet.');
-        } else {
-          setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
-        }
+        setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
         setTransactionStatus(TransactionStatus.FAILED);
       });
 
