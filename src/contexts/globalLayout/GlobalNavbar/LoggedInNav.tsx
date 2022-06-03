@@ -58,9 +58,9 @@ function LoggedInNav({ queryRef }: Props) {
     return null;
   }
 
-  const username = query.viewer.user?.username;
+  const username = query.viewer?.user?.username;
 
-  return username ? (
+  return (
     <StyledLoggedInNav>
       <NavElement>
         <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
@@ -71,14 +71,20 @@ function LoggedInNav({ queryRef }: Props) {
       </NavElement>
       <Spacer width={24} />
       <NavElement>
-        <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
-          <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
+        {/* TODO: come up with a way for the user to finish setting up their gallery
+                  if they happen to end up on their gallery page without setting their
+                  username yet */}
+        <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
+          <TextButton
+            text="My Gallery"
+            onClick={username ? () => push(`/${username}`) : undefined}
+          />
           <Spacer height={12} />
           <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
         </Dropdown>
       </NavElement>
     </StyledLoggedInNav>
-  ) : null;
+  );
 }
 
 const StyledLoggedInNav = styled.div`
