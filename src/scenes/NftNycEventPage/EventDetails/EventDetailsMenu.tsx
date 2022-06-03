@@ -1,8 +1,6 @@
-import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useCallback } from 'react';
-import { Props } from 'relay-runtime';
 import styled from 'styled-components';
 import { INVITATION, MenuState, SCHEDULE } from './EventDetailsPage';
 
