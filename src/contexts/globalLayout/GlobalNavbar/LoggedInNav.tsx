@@ -62,7 +62,7 @@ function LoggedInNav({ queryRef }: Props) {
   const handleMintPostersClick = useCallback(() => {
     setMintPosterDismissed(true);
     void push('/members/poster');
-  }, [push]);
+  }, [push, setMintPosterDismissed]);
 
   // TODO: we shouldn't need to do this, since the parent should verify that
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
