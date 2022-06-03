@@ -122,13 +122,19 @@ function AddWalletPendingDefault({
 
         const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
         const { signatureValid } = await addWallet({
-          address,
           authMechanism: {
             eoa: {
               signature,
-              address,
               nonce,
+              chainAddress: {
+                address,
+                chain: 'Ethereum',
+              },
             },
+          },
+          chainAddress: {
+            address,
+            chain: 'Ethereum',
           },
         });
 

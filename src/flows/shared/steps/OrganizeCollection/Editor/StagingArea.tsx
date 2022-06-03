@@ -22,12 +22,13 @@ import {
 import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
 import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
-import { isEditModeNft, StagingItem } from '../types';
+import { isEditModeToken, StagingItem } from '../types';
 import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
+import { removeNullValues } from 'utils/removeNullValues';
 
 // Width of draggable image for each Column # setting
 const IMAGE_SIZES: Record<number, number> = {
@@ -63,12 +64,12 @@ const defaultDropAnimationConfig: DropAnimation = {
 const layoutMeasuring = { strategy: LayoutMeasuringStrategy.Always };
 
 type Props = {
-  nftsRef: StagingAreaFragment$key;
+  tokensRef: StagingAreaFragment$key;
   stagedItems: StagingItem[];
 };
 
-function StagingArea({ nftsRef, stagedItems }: Props) {
-  const nfts = useFragment(
+function StagingArea({ tokensRef, stagedItems }: Props) {
+  const tokenss = useFragment(
     graphql`
       fragment StagingAreaFragment on Token @relay(plural: true) {
         dbid
@@ -77,10 +78,12 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
         ...StagedItemDraggingFragment
       }
     `,
-    nftsRef
+    tokensRef
   );
 
-  const { handleSortNfts } = useCollectionEditorActions();
+  const tokens = removeNullValues(tokenss);
+
+  const { handleSortTokens } = useCollectionEditorActions();
 
   const collectionMetadata = useCollectionMetadataState();
 
@@ -94,9 +97,9 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      handleSortNfts(event);
+      handleSortTokens(event);
     },
-    [handleSortNfts]
+    [handleSortTokens]
   );
 
   // the item being dragged
@@ -105,7 +108,7 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
     [stagedItems, activeId]
   );
 
-  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', nfts), [nfts]);
+  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
 
   // fragment ref to the item being dragged
   const activeItemRef = activeId && nftFragmentsKeyedByID[activeId];
@@ -125,11 +128,11 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
             {stagedItems.map((stagedItem) => {
               const size = IMAGE_SIZES[columns];
               const stagedItemRef = nftFragmentsKeyedByID[stagedItem.id];
-              if (isEditModeNft(stagedItem) && stagedItemRef) {
+              if (isEditModeToken(stagedItem) && stagedItemRef) {
                 return (
                   <SortableStagedNft
                     key={stagedItem.id}
-                    nftRef={stagedItemRef}
+                    tokenRef={stagedItemRef}
                     size={size}
                     mini={columns > 4}
                   />
@@ -144,8 +147,8 @@ function StagingArea({ nftsRef, stagedItems }: Props) {
         <DragOverlay adjustScale dropAnimation={defaultDropAnimationConfig}>
           {activeItem && activeItemRef ? (
             <StagedItemDragging
-              nftRef={activeItemRef}
-              isEditModeNft={isEditModeNft(activeItem)}
+              tokenRef={activeItemRef}
+              isEditModeToken={isEditModeToken(activeItem)}
               size={IMAGE_SIZES[columns]}
             />
           ) : null}

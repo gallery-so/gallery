@@ -41,13 +41,13 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const nonNullWhitespace = removeNullValues(collection.layout?.whitespace);
 
   const collectionWithWhitespace = useMemo(
-    () => insertWhitespaceBlocks(collection.nfts ?? [], nonNullWhitespace),
-    [collection.nfts, nonNullWhitespace]
+    () => insertWhitespaceBlocks(collection.tokens ?? [], nonNullWhitespace),
+    [collection.tokens, nonNullWhitespace]
   );
 
   const itemsToDisplay = useMemo(
-    () => (hideWhitespace ? collection.nfts : collectionWithWhitespace),
-    [collection.nfts, collectionWithWhitespace, hideWhitespace]
+    () => (hideWhitespace ? collection.tokens : collectionWithWhitespace),
+    [collection.tokens, collectionWithWhitespace, hideWhitespace]
   );
 
   return (

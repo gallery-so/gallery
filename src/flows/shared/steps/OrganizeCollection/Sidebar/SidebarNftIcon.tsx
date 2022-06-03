@@ -6,17 +6,17 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/nft';
+import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
-import { EditModeNft } from '../types';
+import { EditModeToken } from '../types';
 
 type SidebarNftIconProps = {
-  nftRef: SidebarNftIconFragment$key;
-  editModeNft: EditModeNft;
+  tokenRef: SidebarNftIconFragment$key;
+  EditModeToken: EditModeToken;
 };
 
-function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
-  const nft = useFragment(
+function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
+  const token = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Token {
         contractAddress @required(action: NONE) {
@@ -25,21 +25,25 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
-    nftRef
+    tokenRef
   );
 
-  const { isSelected, id } = editModeNft;
+  if (!token) {
+    throw new Error('SidebarNftIcon: token not provided');
+  }
 
-  const { setNftsIsSelected, stageNfts, unstageNfts } = useCollectionEditorActions();
+  const { isSelected, id } = EditModeToken;
+
+  const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    setNftsIsSelected([id], !isSelected);
+    setTokensIsSelected([id], !isSelected);
     if (isSelected) {
-      unstageNfts([id]);
+      unstageTokens([id]);
     } else {
-      stageNfts([editModeNft]);
+      stageTokens([EditModeToken]);
     }
-  }, [setNftsIsSelected, id, isSelected, unstageNfts, stageNfts, editModeNft]);
+  }, [setTokensIsSelected, id, isSelected, unstageTokens, stageTokens, EditModeToken]);
 
   const mountRef = useRef(false);
 
@@ -54,15 +58,15 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
   }, [id, isSelected]);
 
   const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
+  const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
   if (!result || !result.urls.small) {
     reportError('Image URL not found for SidebarNftIcon');
   }
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress.address ?? ''),
-    [nft.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
+    [token.contractAddress.address]
   );
 
   return (
@@ -72,7 +76,11 @@ function SidebarNftIcon({ nftRef, editModeNft }: SidebarNftIconProps) {
         result?.type === 'video' ? (
           <StyledVideo isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} />
         ) : (
-          <StyledImage isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} alt="nft" />
+          <StyledImage
+            isSelected={isSelected}
+            src={result?.urls.small ?? FALLBACK_URL}
+            alt="token"
+          />
         )
       }
       <StyledOutline onClick={handleClick} isSelected={isSelected} />

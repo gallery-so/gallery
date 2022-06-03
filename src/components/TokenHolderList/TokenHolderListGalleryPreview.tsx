@@ -12,13 +12,13 @@ function shuffle(array: number[]) {
 }
 
 // Randomly generates positions for each nftUrl, ensuring an image will always occupy top/midle/bottom and left/middle/right.
-function getImagePositions(nftUrls: string[]) {
+function getImagePositions(tokenUrls: string[]) {
   // shuffle the offset arrays so images can end up in any combination of top/middle/bottom and left/middle/right.
   const shuffledVerticalOffset = shuffle(verticalOffset);
   const shuffledHorizontalOffset = shuffle(horizontalOffset);
 
   // offset each image by one of the three possible offset amounts and additionally randomly offset by up to 40px.
-  return nftUrls.map((url, index) => ({
+  return tokenUrls.map((url, index) => ({
     top: shuffledVerticalOffset[index] + Math.random() * 40,
     left: shuffledHorizontalOffset[index] + Math.random() * 40,
   }));
@@ -79,22 +79,25 @@ function PreviewImage({ src, top, left, movement }: PreviewImageProps) {
 
 type TokenHolderListGalleryPreviewProps = {
   direction: Directions.LEFT | Directions.RIGHT;
-  nftUrls: string[];
+  tokenUrls: string[];
   startFadeOut?: boolean;
 };
 
 function TokenHolderListGalleryPreview({
   direction,
-  nftUrls,
+  tokenUrls,
   startFadeOut,
 }: TokenHolderListGalleryPreviewProps) {
-  const animationMovements = useMemo(() => nftUrls.map(() => getAnimationMovement()), [nftUrls]);
-  const imagePositions = useMemo(() => getImagePositions(nftUrls), [nftUrls]);
+  const animationMovements = useMemo(
+    () => tokenUrls.map(() => getAnimationMovement()),
+    [tokenUrls]
+  );
+  const imagePositions = useMemo(() => getImagePositions(tokenUrls), [tokenUrls]);
 
   return (
     <StyledPreview>
       <StyledPreviewImageWrapper direction={direction} startFadeOut={startFadeOut}>
-        {nftUrls.map((url, index) => (
+        {tokenUrls.map((url, index) => (
           <PreviewImage
             key={url}
             src={url}

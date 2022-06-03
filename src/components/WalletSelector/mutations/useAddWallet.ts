@@ -32,15 +32,15 @@ export default function useAddWallet() {
   );
 
   return useCallback(
-    async ({ authMechanism, address }: useAddWalletMutation$variables) => {
-      const { addUserAddress } = await addWallet({
+    async ({ authMechanism, chainAddress }: useAddWalletMutation$variables) => {
+      const { addUserWallet } = await addWallet({
         variables: {
-          address,
+          chainAddress,
           authMechanism,
         },
       });
 
-      if (addUserAddress?.__typename === 'AddUserAddressPayload') {
+      if (addUserWallet?.__typename === 'AddUserWalletPayload') {
         return { signatureValid: true };
       } else {
         // TODO(Terence): We can probably have better error handling here.

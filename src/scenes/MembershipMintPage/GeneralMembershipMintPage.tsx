@@ -20,6 +20,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__/GeneralMembershipMintPageUseAllowlistFragment.graphql';
 import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
 import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 
 export type AssetContract = {
   address: string;
@@ -62,7 +63,7 @@ function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$ke
     return getLocalAllowlist();
   }
 
-  return new Set(data.map((entry) => entry.address));
+  return new Set(removeNullValues(data.map((entry) => entry.address)));
 }
 
 type ContentProps = {

@@ -1,5 +1,5 @@
-import { EditModeNft } from 'flows/shared/steps/OrganizeCollection/types';
-import { SidebarNftsState } from './CollectionEditorContext';
+import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
+import { SidebarTokensState } from './CollectionEditorContext';
 
 /**
  * This is a temporary solution that consolidates all NFTs that share the same
@@ -13,12 +13,12 @@ import { SidebarNftsState } from './CollectionEditorContext';
  *    wallet addresses
  */
 export default function deduplicateObjectByOpenseaIdAndPreferEarliest(
-  obj: SidebarNftsState
-): SidebarNftsState {
-  const objectByOpenseaId: Record<string, EditModeNft> = {};
+  obj: SidebarTokensState
+): SidebarTokensState {
+  const objectByOpenseaId: Record<string, EditModeToken> = {};
   for (const k in obj) {
     const v = obj[k];
-    const { openseaId } = v.nft;
+    const { openseaId } = v.token;
 
     // if the backend isn't providing openseaIds, fall back to the original
     // set of NFTs (which may contain dupes) instead of erroring
@@ -37,7 +37,7 @@ export default function deduplicateObjectByOpenseaIdAndPreferEarliest(
   }
 
   // map de-duped NFTs back into original shape
-  const newObj: SidebarNftsState = {};
+  const newObj: SidebarTokensState = {};
   for (const k in objectByOpenseaId) {
     const v = objectByOpenseaId[k];
     newObj[v.id] = v;

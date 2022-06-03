@@ -5,7 +5,7 @@ import { useCallback, useState, useMemo, useRef } from 'react';
 import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'lodash.unescape';
 import styled from 'styled-components';
-import useUpdateNft from 'hooks/api/nfts/useUpdateNft';
+import useUpdateNft from 'hooks/api/tokens/useUpdateNft';
 import Markdown from 'components/core/Markdown/Markdown';
 import breakpoints from 'components/core/breakpoints';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -17,11 +17,11 @@ const MAX_CHAR_COUNT = 1200;
 
 type NoteEditorProps = {
   nftCollectorsNote: string;
-  nftId: string;
+  tokenId: string;
   collectionId: string;
 };
 
-function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps) {
+function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProps) {
   // Generic error that doesn't belong to collector's note
   const [generalError, setGeneralError] = useState('');
 
@@ -68,7 +68,7 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
     setIsEditing(false);
 
     try {
-      await updateNft({ nftId, collectorsNote, collectionId });
+      await updateNft({ tokenId, collectorsNote, collectionId });
       track('Save NFT collectors note', {
         added_note: unescapedCollectorsNote.length > 0,
         num_chars: unescapedCollectorsNote.length,
@@ -78,7 +78,7 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
         setGeneralError(formatError(error));
       }
     }
-  }, [updateNft, nftId, collectorsNote, unescapedCollectorsNote, track, collectionId]);
+  }, [updateNft, tokenId, collectorsNote, unescapedCollectorsNote, track, collectionId]);
 
   // If the user hits cmd + ctrl enter, submit the note
   const handleKeyDown = useCallback(
@@ -182,14 +182,14 @@ function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
 
 type Props = {
   nftCollectorsNote: string;
-  nftId: string;
+  tokenId: string;
   collectionId: string;
   authenticatedUserOwnsAsset: boolean;
 };
 
 function NftDetailNote({
   nftCollectorsNote,
-  nftId,
+  tokenId,
   collectionId,
   authenticatedUserOwnsAsset,
 }: Props) {
@@ -199,7 +199,7 @@ function NftDetailNote({
       {authenticatedUserOwnsAsset ? (
         <NoteEditor
           nftCollectorsNote={nftCollectorsNote}
-          nftId={nftId}
+          tokenId={tokenId}
           collectionId={collectionId}
         />
       ) : (

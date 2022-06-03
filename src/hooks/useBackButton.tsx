@@ -25,7 +25,7 @@ export default function useBackButton({ username }: Props) {
       return true;
     }
     // disable going back to the NFT detail page
-    if (previousRoute?.pathname === '/[username]/[collectionId]/[nftId]') {
+    if (previousRoute?.pathname === '/[username]/[collectionId]/[tokenId]') {
       return true;
     }
     // disable going back to a modal

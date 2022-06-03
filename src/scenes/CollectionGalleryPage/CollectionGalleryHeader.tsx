@@ -96,7 +96,7 @@ function CollectionGalleryHeader({
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
-  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length;
+  const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');

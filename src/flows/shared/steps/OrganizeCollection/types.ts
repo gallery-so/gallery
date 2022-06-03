@@ -1,13 +1,13 @@
-export type EditModeNftChild = {
+export type EditModeTokenChild = {
   dbid: string;
   name: string;
   lastUpdated: any;
   openseaId: number;
 };
 
-export type EditModeNft = {
+export type EditModeToken = {
   id: string;
-  nft: EditModeNftChild;
+  token: EditModeTokenChild;
   isSelected?: boolean;
 };
 
@@ -18,8 +18,8 @@ export type WhitespaceBlock = {
 };
 
 // Accepted types for the Dnd Collection Editor
-export type StagingItem = EditModeNft | WhitespaceBlock;
+export type StagingItem = EditModeToken | WhitespaceBlock;
 
-export function isEditModeNft(item: StagingItem): item is EditModeNft {
-  return 'nft' in item && !!item.nft;
+export function isEditModeToken(item: StagingItem): item is EditModeToken {
+  return 'token' in item && !!item.token;
 }

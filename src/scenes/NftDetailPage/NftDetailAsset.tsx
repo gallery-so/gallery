@@ -11,17 +11,17 @@ import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAsse
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
 import { useMemo } from 'react';
-import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type NftDetailAssetComponentProps = {
-  nftRef: NftDetailAssetComponentFragment$key;
+  tokenRef: NftDetailAssetComponentFragment$key;
   maxHeight: number;
 };
 
-function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentProps) {
-  const nft = useFragment(
+function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponentProps) {
+  const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
         id
@@ -54,27 +54,27 @@ function NftDetailAssetComponent({ nftRef, maxHeight }: NftDetailAssetComponentP
         }
       }
     `,
-    nftRef
+    tokenRef
   );
 
-  switch (nft.nft.media.__typename) {
+  switch (token.token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation mediaRef={nft.nft} />;
+      return <NftDetailAnimation mediaRef={token.token} />;
     case 'VideoMedia':
-      return <NftDetailVideo mediaRef={nft.nft.media} maxHeight={maxHeight} />;
+      return <NftDetailVideo mediaRef={token.token.media} maxHeight={maxHeight} />;
     case 'AudioMedia':
-      return <NftDetailAudio nftRef={nft.nft} />;
+      return <NftDetailAudio tokenRef={token.token} />;
     case 'ImageMedia':
-      return <NftDetailImage nftRef={nft.nft} maxHeight={maxHeight} />;
+      return <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} />;
     case 'GltfMedia':
-      return <NftDetailModel mediaRef={nft.nft.media} />;
+      return <NftDetailModel mediaRef={token.token.media} />;
     default:
-      return <NftDetailAnimation mediaRef={nft.nft} />;
+      return <NftDetailAnimation mediaRef={token.token} />;
   }
 }
 
 type Props = {
-  nftRef: NftDetailAssetFragment$key;
+  tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
 };
 
@@ -87,13 +87,13 @@ if (typeof window !== 'undefined') {
     window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
 }
 
-function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
-  const nft = useFragment(
+function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
+  const token = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
         id
         token @required(action: THROW) {
-          contractAddress @required(action: NONE) {
+          contractAddress @required(action: THROW) {
             address
           }
           media @required(action: THROW) {
@@ -105,12 +105,12 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
         ...NftDetailAssetComponentFragment
       }
     `,
-    nftRef
+    tokenRef
   );
 
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.nft.contractAddress.address ?? ''),
-    [nft.nft.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(token.token.contractAddress.address ?? ''),
+    [token.token.contractAddress.address]
   );
 
   const maxHeight = Math.min(
@@ -125,7 +125,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
   const breakpoint = useBreakpoint();
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = nft.nft.media.__typename === 'HtmlMedia';
+  const isIframe = token.token.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
@@ -138,7 +138,7 @@ function NftDetailAsset({ nftRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent nftRef={nft} maxHeight={maxHeight} />
+      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} />
     </StyledAssetContainer>
   );
 }
