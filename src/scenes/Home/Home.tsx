@@ -31,6 +31,10 @@ function Home() {
         <Spacer width={8} />
         <NavLink to="/laury">Gallery of the Week</NavLink>
       </StyledLinkContainer>
+      <Spacer height={8} />
+      <StyledLinkContainer>
+        <NavLink to="/nftnyc">NFT NYC</NavLink>
+      </StyledLinkContainer>
     </StyledHomePage>
   );
 }
