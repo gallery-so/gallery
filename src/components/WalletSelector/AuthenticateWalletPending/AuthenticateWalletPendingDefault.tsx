@@ -77,7 +77,7 @@ function AuthenticateWalletPendingDefault({
         trackCreateUserSuccess();
       }
 
-      handleLogin(userId, address);
+      return await handleLogin(userId, address);
     },
     [
       trackSignInAttempt,
