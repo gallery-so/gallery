@@ -42,7 +42,8 @@ export default function NftNycIntro({ setShowDetails }: Props) {
 
   const handleMouseEnter = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     // if the cursor is not in the middle of screen, reveal the text
-    if (event.target.id !== 'boundary') {
+    const target = event.target as HTMLDivElement;
+    if (target.id !== 'boundary') {
       setRevealText(true);
       event.stopPropagation();
     }
