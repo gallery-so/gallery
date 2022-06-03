@@ -3,7 +3,6 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeToken, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
-import deduplicateObjectByOpenseaIdAndPreferEarliest from './deduplicateObjectByOpenseaIdAndPreferEarliest';
 
 export type SidebarTokensState = Record<string, EditModeToken>;
 export type StagedItemsState = StagingItem[];
@@ -94,7 +93,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   );
 
   const setSidebarTokens = useCallback((tokens: SidebarTokensState) => {
-    setSidebarTokensState(deduplicateObjectByOpenseaIdAndPreferEarliest(tokens));
+    setSidebarTokensState(tokens);
   }, []);
 
   const setTokensIsSelected = useCallback((tokenIds: string[], isSelected: boolean) => {

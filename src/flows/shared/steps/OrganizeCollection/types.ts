@@ -2,7 +2,6 @@ export type EditModeTokenChild = {
   dbid: string;
   name: string;
   lastUpdated: any;
-  openseaId: number;
 };
 
 export type EditModeToken = {

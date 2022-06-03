@@ -54,7 +54,6 @@ function CollectionEditor({ viewerRef }: Props) {
                   dbid @required(action: THROW)
                   name @required(action: THROW)
                   lastUpdated @required(action: THROW)
-                  openseaId @required(action: THROW)
                 }
               }
               layout {
@@ -68,7 +67,6 @@ function CollectionEditor({ viewerRef }: Props) {
               dbid @required(action: THROW)
               name @required(action: THROW)
               lastUpdated @required(action: THROW)
-              openseaId @required(action: THROW)
               ...SidebarFragment
               ...StagingAreaFragment
             }
