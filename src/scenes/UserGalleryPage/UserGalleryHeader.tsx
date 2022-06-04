@@ -5,6 +5,7 @@ import { BaseM, TitleL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
+import QRCode from './QRCode';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
@@ -14,6 +15,7 @@ import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFr
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
   showMobileLayoutToggle: boolean;
+  showQRCode: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
@@ -21,6 +23,7 @@ type Props = {
 function UserGalleryHeader({
   userRef,
   showMobileLayoutToggle,
+  showQRCode,
   mobileLayout,
   setMobileLayout,
 }: Props) {
@@ -40,9 +43,12 @@ function UserGalleryHeader({
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
         <StyledUsername>{user.username}</StyledUsername>
-        {showMobileLayoutToggle && (
-          <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-        )}
+        <StyledButtonsWrapper>
+          {showQRCode && <QRCode username={user.username} />}
+          {showMobileLayoutToggle && (
+            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+          )}
+        </StyledButtonsWrapper>
       </StyledUsernameWrapper>
       <Spacer height={16} />
       <StyledUserDetails>
@@ -70,6 +76,13 @@ const StyledUsernameWrapper = styled.div`
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+`;
+
+const StyledButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
 `;
 
 const StyledUserDetails = styled.div`
