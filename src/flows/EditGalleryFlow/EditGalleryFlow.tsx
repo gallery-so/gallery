@@ -44,6 +44,7 @@ function EditGalleryFlow({ queryRef }: Props) {
               <WizardFooter
                 footerButtonTextMap={footerButtonTextMap}
                 shouldHideSecondaryButton={wizardProps.step.id === 'organizeGallery'}
+                isOnboarding={false}
                 {...(wizardProps as WizardProps)}
               />
             </>

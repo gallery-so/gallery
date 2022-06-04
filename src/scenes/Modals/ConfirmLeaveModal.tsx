@@ -9,8 +9,35 @@ import useBackButton from 'hooks/useBackButton';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { ConfirmLeaveModalFragment$key } from '__generated__/ConfirmLeaveModalFragment.graphql';
+import { useRouter } from 'next/router';
 
-function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key }) {
+function Modal({ onClick }: { onClick: () => void }) {
+  return (
+    <StyledConfirmLeaveModal>
+      <LeaveWrapper>
+        <BaseM>Would you like to stop editing?</BaseM>
+        <Spacer height={28}></Spacer>
+        <StyledButton onClick={onClick} text={'Leave'} />
+      </LeaveWrapper>
+    </StyledConfirmLeaveModal>
+  );
+}
+
+// A generic modal that simply "goes back" in history after user confirms
+export function ConfirmBackModal() {
+  const { hideModal } = useModalActions();
+  const { back } = useRouter();
+
+  const goBack = useCallback(() => {
+    back();
+    hideModal();
+  }, [back, hideModal]);
+
+  return <Modal onClick={goBack} />;
+}
+
+// References the username to go back to the user's profile after user confirms
+export function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key }) {
   const user = useFragment(
     graphql`
       fragment ConfirmLeaveModalFragment on GalleryUser {
@@ -28,15 +55,7 @@ function ConfirmLeaveModal({ userRef }: { userRef: ConfirmLeaveModalFragment$key
     hideModal();
   }, [navigateBack, hideModal]);
 
-  return (
-    <StyledConfirmLeaveModal>
-      <LeaveWrapper>
-        <BaseM>Would you like to stop editing?</BaseM>
-        <Spacer height={28}></Spacer>
-        <StyledButton onClick={goBack} text={'Leave'} />
-      </LeaveWrapper>
-    </StyledConfirmLeaveModal>
-  );
+  return <Modal onClick={goBack} />;
 }
 
 const StyledConfirmLeaveModal = styled.div`
@@ -59,5 +78,3 @@ const LeaveWrapper = styled.div`
   place-items: center;
   height: 100%;
 `;
-
-export default ConfirmLeaveModal;

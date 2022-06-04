@@ -22,7 +22,7 @@ import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import useKeyDown from 'hooks/useKeyDown';
-import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
+import { ConfirmLeaveModal } from 'scenes/Modals/ConfirmLeaveModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 
 function convertNftsToEditModeNfts(nfts: EditModeNftChild[], isSelected = false): EditModeNft[] {

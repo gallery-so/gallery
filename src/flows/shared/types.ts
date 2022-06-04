@@ -15,4 +15,5 @@ export type GalleryWizardProps = WizardProps & {
   shouldHideFooter?: boolean;
   shouldHideSecondaryButton?: boolean;
   footerButtonTextMap?: Record<StepObject['id'], ButtonText>;
+  isOnboarding?: boolean;
 };
