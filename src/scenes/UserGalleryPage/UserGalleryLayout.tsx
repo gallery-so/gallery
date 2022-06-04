@@ -81,6 +81,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
+        showQRCode={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
