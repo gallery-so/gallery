@@ -49,8 +49,8 @@ export default function QRCode({ username }: { username: string }) {
       const QRCodeStyling = require('qr-code-styling');
 
       const qrCode = new QRCodeStyling({
-        width: 159,
-        height: 159,
+        width: 636, // 4 * 159px, scaled down using CSS later
+        height: 636, // 4 * 159px, scaled down using CSS later
         data: `https://gallery.so/${username}`,
         margin: 0,
         qrOptions: { typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' },
@@ -118,7 +118,7 @@ export default function QRCode({ username }: { username: string }) {
         >
           <CloseIcon />
         </StyledCloseButton>
-        <div ref={ref} />
+        <StyledQRWrapper ref={ref} />
         <Spacer height={24} />
         <StyledUsernameText>{username}</StyledUsernameText>
         <StyledHelperText>Scan to open {username}'s gallery in a new browser tab.</StyledHelperText>
@@ -151,7 +151,7 @@ const StyledFullScreenQR = styled.div<{ showQRCode: boolean }>`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: white;
   z-index: 10;
 
@@ -193,4 +193,15 @@ const StyledHelperText = styled.p`
   text-align: center;
   position: absolute;
   bottom: 32px;
+`;
+
+// In order to render the QR code at a higher quality, we render it at 10x its initial size, and then scale it down with the following CSS
+const StyledQRWrapper = styled.div`
+ height: 159px;
+  width: 159px;
+  transform: scale(0.25);
+  display: flex;
+  justify-content: center;
+  place-items: center;
+}
 `;
