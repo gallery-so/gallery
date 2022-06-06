@@ -18,7 +18,9 @@ const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   POSTER_MINT: true,
 };
 
-const EMPLOYEE_USER_IDS = new Set(['a3ff91986625382ff776067619200efe']);
+const EMPLOYEE_USER_IDS = new Set(
+  process.env.NEXT_PUBLIC_EMPLOYEE_IDS ? process.env.NEXT_PUBLIC_EMPLOYEE_IDS.split(',') : []
+);
 
 export default function isFeatureEnabled(
   flag: FeatureFlag,
