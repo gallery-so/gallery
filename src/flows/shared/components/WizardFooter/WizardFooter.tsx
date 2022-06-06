@@ -14,6 +14,7 @@ import isPromise from 'utils/isPromise';
 import { useRouter } from 'next/router';
 import { ConfirmBackModal } from 'scenes/Modals/ConfirmLeaveModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
 function WizardFooter({
   step,
@@ -23,10 +24,10 @@ function WizardFooter({
   shouldHideFooter,
   shouldHideSecondaryButton,
   footerButtonTextMap,
-  isOnboarding,
 }: GalleryWizardProps) {
   const isNextEnabled = useIsNextEnabled();
   const { onNext, onPrevious } = useWizardCallback();
+  const wizardId = useWizardId();
   const { back, query } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -91,7 +92,9 @@ function WizardFooter({
     <StyledWizardFooter>
       {shouldHideSecondaryButton ? null : (
         <ActionText color={colors.metal} onClick={handlePreviousClick}>
-          {isFirstStep || (step.id === 'organizeCollection' && !isOnboarding) ? 'Cancel' : 'Back'}
+          {isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
+            ? 'Cancel'
+            : 'Back'}
         </ActionText>
       )}
       <Spacer width={40} />

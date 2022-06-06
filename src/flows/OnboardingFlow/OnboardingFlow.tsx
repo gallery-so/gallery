@@ -42,7 +42,6 @@ function OnboardingFlow() {
                 }
                 shouldHideSecondaryButton={wizardProps.step.id === 'organizeGallery'}
                 footerButtonTextMap={footerButtonTextMap}
-                isOnboarding={true}
                 {...(wizardProps as WizardProps)}
               />
             </>
