@@ -13,12 +13,13 @@ import PosterMintButton from './PosterMintButton';
 import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { useEffect, useState } from 'react';
-import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
+import { useEffect, useState, useCallback } from 'react';
+import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import isProduction from 'utils/isProduction';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -35,15 +36,23 @@ export default function PosterPage() {
     window.history.back();
   };
 
-  async function detectOwnedPosterNftFromOpensea(account: string) {
-    const response = await fetch(
-      `${OPENSEA_TESTNET_BASEURL}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMORABILIA_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
-      {}
-    );
+  const openseaBaseUrl =
+    isProduction() && isFeatureEnabled(FeatureFlag.POSTER_MINT)
+      ? OPENSEA_API_BASEURL
+      : OPENSEA_TESTNET_API_BASEURL;
 
-    const responseBody = await response.json();
-    return responseBody.assets.length > 0;
-  }
+  const detectOwnedPosterNftFromOpensea = useCallback(
+    async (account: string) => {
+      const response = await fetch(
+        `${openseaBaseUrl}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMORABILIA_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
+        {}
+      );
+
+      const responseBody = await response.json();
+      return responseBody.assets.length > 0;
+    },
+    [openseaBaseUrl]
+  );
 
   useEffect(() => {
     async function checkIfMinted(account: string) {
@@ -54,7 +63,7 @@ export default function PosterPage() {
     if (account) {
       checkIfMinted(account);
     }
-  }, [account]);
+  }, [account, detectOwnedPosterNftFromOpensea]);
 
   return (
     <StyledPage>
