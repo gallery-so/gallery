@@ -13,8 +13,6 @@ import { contentSize } from 'components/core/breakpoints';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { FeatureFlag } from 'components/core/enums';
-import { isFeatureEnabled } from 'utils/featureFlag';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -66,9 +64,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   const { setCustomNavLeftContent } = useGlobalLayoutActions();
 
   useEffect(() => {
-    if (isFeatureEnabled(FeatureFlag.FOLLOW)) {
-      setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
-    }
+    setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
 
     return () => {
       setCustomNavLeftContent(null);
