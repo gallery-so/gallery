@@ -22,6 +22,12 @@ const EMPLOYEE_USER_IDS = new Set(
   process.env.NEXT_PUBLIC_EMPLOYEE_IDS ? process.env.NEXT_PUBLIC_EMPLOYEE_IDS.split(',') : []
 );
 
+/**
+ * Returns a boolean depending on whether a feature is enabled for a user.
+ * 1) This function will work even if the user is logged out, in which case it will default to using environment-based FF
+ * 2) If logged in, the employee-based FF will have the highest precedence. In other words, if a feature flag is enabled
+ *    on production, but explicitly disabled for employees, it will use the employee setting (disabled).
+ */
 export default function isFeatureEnabled(
   flag: FeatureFlag,
   queryRef: isFeatureEnabledFragment$key
