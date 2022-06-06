@@ -1,38 +1,60 @@
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import Button from 'components/core/Button/Button';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import PosterFigmaFrame from './PosterFigmaFrame';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { MINT_DATE } from 'constants/poster';
+import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
+import PosterMintButton from './PosterMintButton';
+import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { useEffect, useState } from 'react';
+import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
+import Spacer from 'components/core/Spacer/Spacer';
+import { isFeatureEnabled } from 'utils/featureFlag';
+import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
-  const { pushToast } = useToastActions();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp, hasEnded } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DATE);
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const account = rawAccount?.toLowerCase();
+  const [isMinted, setIsMinted] = useState(false);
 
   const handleBackClick = () => {
-    // TODO: Replace with hook
     window.history.back();
   };
 
-  const handleSignPoster = () => {
-    pushToast({
-      message: 'Thank you for participating in the (Object 006) 2022 Community Poster event.',
-      autoClose: true,
-    });
-  };
+  async function detectOwnedPosterNftFromOpensea(account: string) {
+    const response = await fetch(
+      `${OPENSEA_TESTNET_BASEURL}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMORABILIA_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
+      {}
+    );
+
+    const responseBody = await response.json();
+    return responseBody.assets.length > 0;
+  }
+
+  useEffect(() => {
+    async function checkIfMinted(account: string) {
+      const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(account);
+      setIsMinted(hasOwnedPosterNft);
+    }
+
+    if (account) {
+      checkIfMinted(account);
+    }
+  }, [account]);
 
   return (
     <StyledPage>
@@ -45,28 +67,36 @@ export default function PosterPage() {
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Celebrate our{' '}
-              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> with us by signing
-              our poster.
+              Thank you for being a member of Gallery. Members celebrated our{' '}
+              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
+              poster.
             </BaseM>
+            <Spacer height={8} />
             <BaseM>
-              The final product will be available to mint as a commemorative token for early
+              We are making the final poster available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
+            <Spacer height={8} />
+
+            <BaseM>Limit 1 per wallet address.</BaseM>
           </StyledParagraph>
 
           {!isMobile && <HorizontalBreak />}
 
-          {hasEnded ? (
-            <StyledCallToAction hasEnded>
-              <BaseXL>Event has ended.</BaseXL>
-            </StyledCallToAction>
+          {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
+            <>
+              {isMinted ? (
+                <BaseXL>You've succesfully minted this poster.</BaseXL>
+              ) : (
+                <StyledCallToAction>
+                  <BaseXL>{timestamp}</BaseXL>
+                  <PosterMintButton onMintSuccess={() => setIsMinted(true)}></PosterMintButton>
+                </StyledCallToAction>
+              )}
+            </>
           ) : (
-            <StyledCallToAction>
-              <BaseXL>{timestamp}</BaseXL>
-              <StyledAnchor href={FIGMA_URL} target="_blank">
-                <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
-              </StyledAnchor>
+            <StyledCallToAction hasEnded>
+              <BaseXL>Mint opening soon.</BaseXL>
             </StyledCallToAction>
           )}
         </StyledContent>
@@ -145,16 +175,4 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     padding: 12px 16px;
     border-top: 1px solid ${colors.porcelain};
   }
-`;
-
-const StyledAnchor = styled.a`
-  text-decoration: none;
-`;
-
-const StyledButton = styled(Button)`
-  align-self: flex-end;
-  width: 100%;
-  height: 100%;
-  padding: 12px 24px;
-  text-decoration: none;
 `;
