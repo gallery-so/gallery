@@ -14,7 +14,7 @@ import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useEffect, useState } from 'react';
-import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
+import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
 import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
@@ -39,7 +39,7 @@ export default function PosterPage() {
   const openseaBaseUrl =
     isProduction() && isFeatureEnabled(FeatureFlag.POSTER_MINT)
       ? OPENSEA_API_BASEURL
-      : OPENSEA_TESTNET_BASEURL;
+      : OPENSEA_TESTNET_API_BASEURL;
 
   async function detectOwnedPosterNftFromOpensea(account: string) {
     const response = await fetch(
