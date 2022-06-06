@@ -44,7 +44,6 @@ const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>
   border-style: none;
   cursor: pointer;
   background: none;
-  width: 100%;
   text-align: left;
 
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
