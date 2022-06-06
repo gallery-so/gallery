@@ -16,12 +16,27 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useEffect, useState, useCallback } from 'react';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
-import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import isProduction from 'utils/isProduction';
+import { graphql, useFragment } from 'react-relay';
+import { PosterPageFragment$key } from '__generated__/PosterPageFragment.graphql';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
-export default function PosterPage() {
+type Props = {
+  queryRef: PosterPageFragment$key;
+};
+
+export default function PosterPage({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment PosterPageFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
 
   const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
@@ -36,10 +51,7 @@ export default function PosterPage() {
     window.history.back();
   };
 
-  const openseaBaseUrl =
-    isProduction() && isFeatureEnabled(FeatureFlag.POSTER_MINT)
-      ? OPENSEA_API_BASEURL
-      : OPENSEA_TESTNET_API_BASEURL;
+  const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
 
   const detectOwnedPosterNftFromOpensea = useCallback(
     async (account: string) => {
@@ -92,7 +104,7 @@ export default function PosterPage() {
 
           {!isMobile && <HorizontalBreak />}
 
-          {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
+          {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) ? (
             <>
               {isMinted ? (
                 <BaseXL>You've succesfully minted this poster.</BaseXL>

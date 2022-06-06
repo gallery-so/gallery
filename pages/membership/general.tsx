@@ -13,15 +13,13 @@ export default function General() {
     graphql`
       query generalQuery {
         ...GeneralMembershipMintPageFragment
-        viewer {
-          ...isFeatureEnabledFragment
-        }
+        ...isFeatureEnabledFragment
       }
     `,
     {}
   );
 
-  if (!isFeatureEnabled(FeatureFlag.GENERAL_MEMBERSHIP_MINT, query.viewer)) {
+  if (!isFeatureEnabled(FeatureFlag.GENERAL_MEMBERSHIP_MINT, query)) {
     return <GalleryRedirect to="/" />;
   }
 

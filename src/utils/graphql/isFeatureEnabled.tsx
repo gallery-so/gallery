@@ -5,22 +5,16 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
-  MARKDOWN_SHORTCUTS: true,
-  FOLLOW: true,
   POSTER_MINT: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
-  MARKDOWN_SHORTCUTS: true,
-  FOLLOW: true,
   POSTER_MINT: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
-  MARKDOWN_SHORTCUTS: true,
-  FOLLOW: true,
   POSTER_MINT: true,
 };
 
@@ -28,28 +22,26 @@ const EMPLOYEE_USER_IDS = new Set(['a3ff91986625382ff776067619200efe']);
 
 export default function isFeatureEnabled(
   flag: FeatureFlag,
-  viewerRef: isFeatureEnabledFragment$key | null
+  queryRef: isFeatureEnabledFragment$key
 ) {
-  const isEnabledBasedOnEnvironment = isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
-
-  if (!viewerRef) {
-    return isEnabledBasedOnEnvironment;
-  }
-
   const result = readInlineData(
     graphql`
-      fragment isFeatureEnabledFragment on ViewerOrError @inline {
-        ... on Viewer {
-          user {
-            dbid
+      fragment isFeatureEnabledFragment on Query @inline {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
           }
         }
       }
     `,
-    viewerRef
+    queryRef
   );
 
-  const userId = result?.user?.dbid;
+  const userId = result?.viewer?.user?.dbid;
+
+  const isEnabledBasedOnEnvironment = isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
 
   // if the user is not logged in, determine based on environment
   if (!userId) {
