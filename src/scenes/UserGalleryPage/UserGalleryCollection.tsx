@@ -129,37 +129,40 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
           <StyledCollectorsTitle onClick={handleViewCollectionClick}>
             {unescapedCollectionName}
           </StyledCollectorsTitle>
-          <StyledSettingsDropdown>
+          <StyledOptionsContainer>
             {isHovering && (
-              <Dropdown>
-                {showEditActions && (
-                  <>
-                    <TextButton
-                      onClick={handleEditNameClick}
-                      text="EDIT NAME & DESCRIPTION"
-                      underlineOnHover
-                    />
-                    <Spacer height={8} />
-                    <TextButton
-                      text="Edit Collection"
-                      onClick={handleEditCollectionClick}
-                      underlineOnHover
-                    />
-                    <Spacer height={8} />
-                  </>
-                )}
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
-                <Spacer height={8} />
-                <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" onClick={handleShareClick} />
-                </CopyToClipboard>
-              </Dropdown>
+              <StyledCopyToClipboard textToCopy={collectionUrl}>
+                <StyledShareButton text="Share" onClick={handleShareClick} />
+              </StyledCopyToClipboard>
             )}
-          </StyledSettingsDropdown>
+            <StyledSettingsDropdown>
+              {isHovering && (
+                <Dropdown>
+                  {showEditActions && (
+                    <>
+                      <TextButton
+                        onClick={handleEditNameClick}
+                        text="EDIT NAME & DESCRIPTION"
+                        underlineOnHover
+                      />
+                      <Spacer height={8} />
+                      <TextButton
+                        text="Edit Collection"
+                        onClick={handleEditCollectionClick}
+                        underlineOnHover
+                      />
+                      <Spacer height={8} />
+                    </>
+                  )}
+                  <TextButton
+                    text="View Collection"
+                    onClick={handleViewCollectionClick}
+                    underlineOnHover
+                  />
+                </Dropdown>
+              )}
+            </StyledSettingsDropdown>
+          </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
@@ -180,6 +183,9 @@ const StyledSettingsDropdown = styled.div`
 
   background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
   height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   ${StyledDropdownButton} {
     width: 32px;
@@ -237,6 +243,28 @@ const StyledCollectorsNote = styled(BaseM)`
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }
+`;
+
+const StyledOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 24px;
+`;
+
+const StyledShareButton = styled(TextButton)`
+  font-family: ABC Diatype;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  line-height: 24px;
+`;
+
+const StyledCopyToClipboard = styled(CopyToClipboard)`
+  height: 24px !important;
 `;
 
 export default UserGalleryCollection;
