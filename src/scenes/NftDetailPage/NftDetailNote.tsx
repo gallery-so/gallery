@@ -127,24 +127,29 @@ function NoteEditor({ nftCollectorsNote, nftId, collectionId }: NoteEditorProps)
       )}
       {generalError && (
         <>
-          <Spacer height={8} />
           <ErrorText message={generalError} />
+          <Spacer height={8} />
         </>
       )}
 
-      <Spacer height={16} />
       <StyledBottomButtonContainer>
         {isEditing ? (
-          <SaveNoteButton
-            disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
-            text="Save Note"
-            onClick={handleSubmitCollectorsNote}
-          />
+          <>
+            <Spacer height={12} />
+            <SaveNoteButton
+              disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
+              text="Save Note"
+              onClick={handleSubmitCollectorsNote}
+            />
+          </>
         ) : (
-          <EditNoteButton
-            text={hasCollectorsNote ? 'Edit note' : 'Add Note'}
-            onClick={handleEditCollectorsNote}
-          />
+          <>
+            <Spacer height={hasCollectorsNote ? 8 : 0} />
+            <EditNoteButton
+              text={hasCollectorsNote ? 'Edit' : 'Add Note'}
+              onClick={handleEditCollectorsNote}
+            />
+          </>
         )}
       </StyledBottomButtonContainer>
     </div>
@@ -157,7 +162,8 @@ const StyledBottomButtonContainer = styled.div`
 `;
 
 const SaveNoteButton = styled(TextButton)`
-  align-self: end;
+  display: flex;
+  justify-content: end;
 `;
 
 const EditNoteButton = styled(TextButton)`
@@ -195,7 +201,7 @@ function NftDetailNote({
 }: Props) {
   return (
     <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
-      <Spacer height={24} />
+      <Spacer height={12} />
       {authenticatedUserOwnsAsset ? (
         <NoteEditor
           nftCollectorsNote={nftCollectorsNote}
@@ -243,7 +249,6 @@ const StyledTextAreaWithCharCount = styled(AutoResizingTextAreaWithCharCount)<Te
   scrollbar-width: none;
 
   textarea {
-    color: #808080;
     margin: 0;
     line-height: 20px;
     font-size: 14px;
@@ -265,7 +270,6 @@ type CollectorsNoteProps = {
 
 const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
   height: 100%;
-  color: #808080;
 
   :last-child {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
