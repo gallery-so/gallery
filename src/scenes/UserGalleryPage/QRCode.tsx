@@ -123,14 +123,14 @@ export default function QRCode({ username }: { username: string }) {
         <StyledUsernameText>{username}</StyledUsernameText>
         <StyledHelperText>Scan to open {username}'s gallery in a new browser tab.</StyledHelperText>
       </StyledFullScreenQR>
-      <StyledToggleButton onClick={handleClick} title="Open QR code">
+      <StyledButton onClick={handleClick} title="Open QR code">
         <QRIcon />
-      </StyledToggleButton>
+      </StyledButton>
     </>
   );
 }
 
-const StyledToggleButton = styled.button`
+const StyledButton = styled.button`
   background: none;
   border: 0;
   cursor: pointer;

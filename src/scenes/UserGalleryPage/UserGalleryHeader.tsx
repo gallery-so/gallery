@@ -6,6 +6,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import QRCode from './QRCode';
+import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
@@ -16,6 +17,7 @@ type Props = {
   userRef: UserGalleryHeaderFragment$key;
   showMobileLayoutToggle: boolean;
   showQRCode: boolean;
+  showLinkButton: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
 };
@@ -24,6 +26,7 @@ function UserGalleryHeader({
   userRef,
   showMobileLayoutToggle,
   showQRCode,
+  showLinkButton,
   mobileLayout,
   setMobileLayout,
 }: Props) {
@@ -44,6 +47,7 @@ function UserGalleryHeader({
       <StyledUsernameWrapper>
         <StyledUsername>{user.username}</StyledUsername>
         <StyledButtonsWrapper>
+          {showLinkButton && <LinkButton username={user.username} />}
           {showQRCode && <QRCode username={user.username} />}
           {showMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />

@@ -7,11 +7,16 @@ import { pause } from 'utils/time';
 type Props = {
   textToCopy: string;
   children: ReactNode;
+  successText?: string;
 };
 
 const SECTION_DURATION_MS = 400;
 
-export default function CopyToClipboard({ textToCopy, children }: Props) {
+export default function CopyToClipboard({
+  textToCopy,
+  children,
+  successText = 'Link Copied',
+}: Props) {
   // Whether node is actually on the DOM
   const [isToastMounted, setIsToastMounted] = useState(false);
   // Pseudo-state for signaling animations. this will allow us
@@ -32,7 +37,7 @@ export default function CopyToClipboard({ textToCopy, children }: Props) {
     <Container onClick={handleCopyToClipboard}>
       {isToastMounted && (
         <Toast isActive={isActive}>
-          <BaseM color={colors.white}>Link Copied</BaseM>
+          <BaseM color={colors.white}>{successText}</BaseM>
         </Toast>
       )}
       {children}
@@ -46,21 +51,32 @@ const Container = styled.span`
 `;
 
 const translateUpAndFadeIn = keyframes`
-    from { opacity: 0; transform: translateY(-14px); };
-    to { opacity: 1; transform: translateY(-28px); };
+    from { opacity: 0; transform: translateX(-50%) translateY(-14px); };
+    to { opacity: 1; transform: translateX(-50%) translateY(-28px); };
 `;
 
 const translateDownAndFadeOut = keyframes`
-    from { opacity: 1; transform: translateY(-28px); };
-    to { opacity: 0; transform: translateY(-14px); };
+    from { opacity: 1; transform: translateX(-50%) translateY(-28px); };
+    to { opacity: 0; transform: translateX(-50%) translateY(-14px); };
 `;
 
 const Toast = styled.div<{ isActive: boolean }>`
-  position: absolute;
-  background: black;
-  padding: 4px 8px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 10000;
+  background: white;
+  border: 1px solid ${colors.offBlack};
+
+  border-radius: 0px;
+  padding: 8px 16px 8px 16px;
+
   width: fit-content;
   pointer-events: none;
+
+  & p {
+    color: ${colors.offBlack};
+  }
 
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${SECTION_DURATION_MS}ms
