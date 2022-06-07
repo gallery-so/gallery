@@ -42,6 +42,5 @@ export default function FollowerListButton({ userRef, className }: Props) {
 }
 
 export const StyledFollowerListButton = styled.div`
-  opacity: 0;
   transition: opacity 0.2s ease-in-out;
 `;
