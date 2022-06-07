@@ -10,11 +10,11 @@ import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graphql';
 import styled from 'styled-components';
-import { isFeatureEnabled } from 'utils/featureFlag';
 import { FeatureFlag } from 'components/core/enums';
 import colors from 'components/core/colors';
 import usePersistedState from 'hooks/usePersistedState';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -33,6 +33,7 @@ function LoggedInNav({ queryRef }: Props) {
       fragment LoggedInNavFragment on Query {
         ...EditUserInfoModalFragment
         ...ManageWalletsModalFragment
+        ...isFeatureEnabledFragment
 
         viewer {
           ... on Viewer {
@@ -74,7 +75,7 @@ function LoggedInNav({ queryRef }: Props) {
 
   const username = query.viewer.user?.username;
 
-  const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT) && !isMintPosterDismissed;
+  const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && !isMintPosterDismissed;
 
   return username ? (
     <StyledLoggedInNav>
@@ -90,7 +91,7 @@ function LoggedInNav({ queryRef }: Props) {
         <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
           <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
             <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
-            {isFeatureEnabled(FeatureFlag.POSTER_MINT) && (
+            {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && (
               <>
                 <Spacer height={12} />
                 <StyledNavItemContainer>
