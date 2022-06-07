@@ -1,10 +1,10 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import Button from 'components/core/Button/Button';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { NFT_TOKEN_ID } from 'constants/poster';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useMintPosterContract } from 'hooks/useContract';
@@ -74,16 +74,15 @@ export default function PosterMintButton({ onMintSuccess }: Props) {
     <>
       <StyledButton onClick={handleOnClick} text={buttonText} disabled={isButtonDisabled} />
       {transactionHash && (
-        <>
-          <BaseM>
-            {transactionStatus === TransactionStatus.SUCCESS
-              ? 'Transaction successful!'
-              : 'Transaction submitted. This may take several minutes.'}
-          </BaseM>
-          <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
-            <BaseM>View on Etherscan</BaseM>
-          </GalleryLink>
-        </>
+        <BaseM>
+          {transactionStatus === TransactionStatus.SUCCESS
+            ? 'Transaction successful! '
+            : 'Transaction submitted. This may take several minutes. '}
+
+          <InteractiveLink href={`https://etherscan.io/tx/${transactionHash}`}>
+            View on Etherscan
+          </InteractiveLink>
+        </BaseM>
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (
         <>
