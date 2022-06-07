@@ -16,11 +16,17 @@ export default function Bold({
     const [start, end] = selectedRange;
     const selectedText = textArea.value.substring(start, end);
 
-    // If user is inbetween two brackets, or at the end of (https://), they probably just clicked the link button. Do nothing
-    if (
-      textArea.value.substring(start - 1, end + 1) == '[]' ||
-      textArea.value.substring(start - 1, end + 1) == '/)'
-    ) {
+    // If the user clicks an empty link, remove the [](https://)
+    if (textArea.value.substring(start - 1, end + 11) === '[](https://)') {
+      const newText =
+        textArea.value.substring(0, start - 1) +
+        textArea.value.substring(end + 11, textArea.value.length);
+      setValueAndTriggerOnChange(textArea, newText, [start - 1, start - 1]);
+      return;
+    }
+    // If user is at the end of (https://), they probably just clicked the link button.
+    // Removing the [text](https://) would be difficult because [text] can be any number of chars. For now, just return
+    if (textArea.value.substring(start - 1, end + 1) == '/)') {
       return;
     }
     if (selectedText.length > 0) {
