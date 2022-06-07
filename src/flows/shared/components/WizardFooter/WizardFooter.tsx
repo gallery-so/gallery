@@ -12,7 +12,7 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { GalleryWizardProps } from 'flows/shared/types';
 import isPromise from 'utils/isPromise';
 import { useRouter } from 'next/router';
-import { ConfirmBackModal } from 'scenes/Modals/ConfirmLeaveModal';
+import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 
@@ -71,18 +71,50 @@ function WizardFooter({
 
   const { showModal } = useModalActions();
 
+  // This triggers when a user edits a collection from /edit
   const handlePreviousClick = useCallback(() => {
-    // If there is collectionId, redirect to previous page
-    if (collectionId) {
-      showModal({ content: <ConfirmBackModal /> });
+    if (wizardId !== 'onboarding' && step.id === 'organizeCollection' && !collectionId) {
+      showModal({
+        content: (
+          <GenericActionModal
+            bodyText="Would you like to stop editing?"
+            buttonText="Leave"
+            action={() => {
+              if (onPrevious?.current) {
+                void onPrevious.current();
+              } else {
+                previous();
+              }
+            }}
+          />
+        ),
+      });
+      return;
     }
 
+    // This triggers when the user edits from the collection page directly
+    if (wizardId !== 'onboarding' && collectionId) {
+      showModal({
+        content: (
+          <GenericActionModal
+            bodyText="Would you like to stop editing?"
+            buttonText="Leave"
+            action={() => {
+              back();
+            }}
+          />
+        ),
+      });
+      return;
+    }
+
+    // If neither of the above, just go back
     if (onPrevious?.current) {
       void onPrevious.current();
     } else {
       previous();
     }
-  }, [collectionId, onPrevious, previous, showModal]);
+  }, [back, collectionId, onPrevious, previous, showModal, wizardId, step]);
 
   if (shouldHideFooter) {
     return null;
