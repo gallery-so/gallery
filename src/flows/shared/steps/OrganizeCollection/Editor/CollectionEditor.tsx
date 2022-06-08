@@ -67,7 +67,6 @@ function CollectionEditor({ viewerRef }: Props) {
               ...StagingAreaFragment
             }
           }
-          ...ConfirmLeaveModalFragment
         }
       }
     `,
