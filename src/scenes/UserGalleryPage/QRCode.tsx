@@ -2,37 +2,9 @@ import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { useCallback, useState, useRef } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
+import CloseIcon from 'src/icons/CloseIcon';
+import QRIcon from 'src/icons/QRIcon';
 // import QRCodeStyling from 'qr-code-styling';
-
-function CloseIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12.6667 3.33334L3.33333 12.6667" stroke="black" stroke-miterlimit="10" />
-      <path d="M3.33333 3.33334L12.6667 12.6667" stroke="black" stroke-miterlimit="10" />
-    </svg>
-  );
-}
-
-function QRIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22 6V2H18" stroke="black" stroke-miterlimit="10" />
-      <path d="M2 18V22H6" stroke="black" stroke-miterlimit="10" />
-      <path d="M18 22H22V18" stroke="black" stroke-miterlimit="10" />
-      <path d="M6 2H2V6" stroke="black" stroke-miterlimit="10" />
-      <path d="M10.5 5.5H5.5V10.5H10.5V5.5Z" stroke="black" stroke-miterlimit="10" />
-      <path d="M18.5 5.5H13.5V10.5H18.5V5.5Z" stroke="black" stroke-miterlimit="10" />
-      <path d="M13.5 19V16V13" stroke="black" stroke-miterlimit="10" />
-      <path d="M18.5 16V18.5H16" stroke="black" stroke-miterlimit="10" />
-      <path d="M16 13.5H19" stroke="black" stroke-miterlimit="10" />
-      <path d="M10.5 13.5H5.5V18.5H10.5V13.5Z" stroke="black" stroke-miterlimit="10" />
-      <path d="M7.5 8H8.5" stroke="black" stroke-miterlimit="10" />
-      <path d="M15.5 8H16.5" stroke="black" stroke-miterlimit="10" />
-      <path d="M7.5 16H8.5" stroke="black" stroke-miterlimit="10" />
-      <path d="M16.5 16H13.5" stroke="black" stroke-miterlimit="10" />
-    </svg>
-  );
-}
 
 export default function QRCode({ username }: { username: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -116,7 +88,7 @@ export default function QRCode({ username }: { username: string }) {
             setShowQRCode(false);
           }}
         >
-          <CloseIcon />
+          <CloseIcon isActive={true} />
         </StyledCloseButton>
         <StyledQRWrapper ref={ref} />
         <Spacer height={24} />
