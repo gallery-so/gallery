@@ -5,6 +5,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import QRIcon from 'src/icons/QRIcon';
 import FullScreenModal from 'scenes/Modals/FullScreenModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import { BaseM, TitleM } from 'components/core/Text/Text';
 
 export default function QRCode({ username }: { username: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -88,10 +89,10 @@ export default function QRCode({ username }: { username: string }) {
             <StyledFullScreenQR>
               <StyledQRWrapper ref={ref} />
               <Spacer height={24} />
-              <StyledUsernameText>{username}</StyledUsernameText>
-              <StyledHelperText>
-                Scan to open {username}'s gallery in a new browser tab.
-              </StyledHelperText>
+              <TitleM>
+                <strong>{username}</strong>
+              </TitleM>
+              <StyledBaseM>Scan to open {username}'s gallery in a new browser tab.</StyledBaseM>
             </StyledFullScreenQR>
           }
         />
@@ -139,12 +140,7 @@ const StyledUsernameText = styled.p`
   text-align: left;
 `;
 
-const StyledHelperText = styled.p`
-  font-family: ABC Diatype;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: 0px;
+const StyledBaseM = styled(BaseM)`
   text-align: center;
   position: absolute;
   bottom: 32px;
