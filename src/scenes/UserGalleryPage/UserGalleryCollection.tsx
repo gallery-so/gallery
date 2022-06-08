@@ -151,7 +151,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                   />
                 </Dropdown>
               </>
-              {/* )} */}
             </StyledSettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
