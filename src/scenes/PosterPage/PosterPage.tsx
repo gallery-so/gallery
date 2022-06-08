@@ -150,10 +150,12 @@ const StyledPosterImage = styled.img`
   border: 1px solid ${colors.porcelain};
   margin: 0 auto;
   width: 100%;
+  max-width: 100%;
+  max-height: 600px;
 
   @media only screen and ${breakpoints.tablet} {
     justify-content: flex-start;
-    height: 600px;
+
     width: initial;
   }
 `;
