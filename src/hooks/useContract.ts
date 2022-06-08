@@ -59,7 +59,6 @@ export function usePremiumMembershipCardContract() {
 }
 
 export function useGeneralMembershipCardContract() {
-  console.log(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS);
   return useContract(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS || '', GENERAL_MEMBERSHIP_CONTRACT_ABI);
 }
 
