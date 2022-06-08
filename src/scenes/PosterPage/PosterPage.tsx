@@ -7,7 +7,7 @@ import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
+import { MINT_DEADLINE, NFT_TOKEN_ID } from 'constants/poster';
 import PosterMintButton from './PosterMintButton';
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from 'hooks/useContract';
 import { useWeb3React } from '@web3-react/core';
@@ -42,7 +42,7 @@ export default function PosterPage({ queryRef }: Props) {
     'https://lh3.googleusercontent.com/Q9zjkyRRAugfSBDfqiuyoefUEglPb6Zt5kj9cn-NzavEEBx_JmCaeSdbasI6V9VlkyWtJtVm1lH3VhHBNhj5ZwzEZ6zvfxF0wnFjoQ=h1200';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DEADLINE);
   const { account: rawAccount } = useWeb3React<Web3Provider>();
   const account = rawAccount?.toLowerCase();
   const [isMinted, setIsMinted] = useState(false);
