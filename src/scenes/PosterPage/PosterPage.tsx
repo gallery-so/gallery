@@ -107,7 +107,7 @@ export default function PosterPage({ queryRef }: Props) {
           {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) ? (
             <>
               {isMinted ? (
-                <BaseXL>You've succesfully minted this poster.</BaseXL>
+                <BaseXL>You've successfully minted this poster.</BaseXL>
               ) : (
                 <StyledCallToAction>
                   <BaseXL>{timestamp}</BaseXL>

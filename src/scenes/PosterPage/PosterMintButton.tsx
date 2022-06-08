@@ -29,16 +29,11 @@ export default function PosterMintButton({ onMintSuccess }: Props) {
   const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintPosterContract();
-  const {
-    transactionHash,
-    transactionStatus,
-    buttonText,
-    error,
-    handleMintButtonClick,
-  } = useMintContract({
-    contract,
-    tokenId,
-  });
+  const { transactionHash, transactionStatus, buttonText, error, handleMintButtonClick } =
+    useMintContract({
+      contract,
+      tokenId,
+    });
 
   useEffect(() => {
     if (active) {
@@ -60,7 +55,7 @@ export default function PosterMintButton({ onMintSuccess }: Props) {
     if (transactionStatus === TransactionStatus.SUCCESS) {
       onMintSuccess();
       pushToast({
-        message: 'You’ve succesfully minted 2022 Community Poster.',
+        message: 'You’ve successfully minted 2022 Community Poster.',
         autoClose: true,
       });
     }
