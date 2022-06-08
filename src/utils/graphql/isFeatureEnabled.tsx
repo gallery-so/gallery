@@ -5,7 +5,7 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
-  POSTER_MINT: false,
+  POSTER_MINT: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
