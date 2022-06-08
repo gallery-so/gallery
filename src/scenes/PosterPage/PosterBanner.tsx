@@ -1,6 +1,6 @@
 import Banner from 'contexts/globalLayout/GlobalBanner/GlobalBanner';
 import NavLink from 'components/core/NavLink/NavLink';
-import { MINT_DATE } from 'constants/poster';
+import { MINT_DEADLINE } from 'constants/poster';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
 import { useCallback, useMemo } from 'react';
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function PosterBanner({ queryRef }: Props) {
-  const { timestamp } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DEADLINE);
 
   const countdownTimer = useMemo(() => {
     return `Ends in ${timestamp}`;
