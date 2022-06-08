@@ -131,15 +131,6 @@ const StyledFullScreenQR = styled.div`
   place-items: center;
 `;
 
-const StyledUsernameText = styled.p`
-  font-family: GT Alpina;
-  font-size: 24px;
-  font-weight: 300;
-  line-height: 28px;
-  letter-spacing: -0.04em;
-  text-align: left;
-`;
-
 const StyledBaseM = styled(BaseM)`
   text-align: center;
   position: absolute;
