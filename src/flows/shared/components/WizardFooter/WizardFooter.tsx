@@ -19,8 +19,8 @@ import useKeyDown from 'hooks/useKeyDown';
 
 function WizardFooter({
   step,
-  next,
-  previous,
+  next: goToNextStep,
+  previous: goToPreviousStep,
   history,
   shouldHideFooter,
   shouldHideSecondaryButton,
@@ -67,59 +67,62 @@ function WizardFooter({
       return;
     }
 
-    next();
-  }, [back, collectionId, next, onNext]);
+    goToNextStep();
+  }, [back, collectionId, goToNextStep, onNext]);
 
   const { showModal } = useModalActions();
 
   const handlePreviousClick = useCallback(() => {
-    // If /edit does not have a ?collectionId query param, go back to the overall /edit page
-    if (wizardId !== 'onboarding' && step.id === 'organizeCollection' && !collectionId) {
-      showModal({
-        content: (
-          <GenericActionModal
-            bodyText="Would you like to stop editing?"
-            buttonText="Leave"
-            action={() => {
-              if (onPrevious?.current) {
-                void onPrevious.current();
-              } else {
-                previous();
-              }
-            }}
-          />
-        ),
-      });
+    // If the user is onboarding, run previous callback without a modal
+    if (wizardId === 'onboarding') {
+      if (onPrevious?.current) {
+        void onPrevious.current();
+      } else {
+        goToPreviousStep();
+      }
       return;
     }
 
-    // If the user is editing from the collection page directly (has a collection ID), use back()
-    if (wizardId !== 'onboarding' && collectionId) {
-      showModal({
-        content: (
-          <GenericActionModal
-            bodyText="Would you like to stop editing?"
-            buttonText="Leave"
-            action={() => {
-              back();
-            }}
-          />
-        ),
-      });
-      return;
-    }
+    if (step.id === 'organizeCollection') {
+      // If the user is editing from the collection page directly (has a collection ID), use default back()
+      if (collectionId) {
+        showModal({
+          content: (
+            <GenericActionModal
+              bodyText="Would you like to stop editing?"
+              buttonText="Leave"
+              action={back}
+            />
+          ),
+        });
+        return;
+      }
 
-    // If the user is onboarding, run onPrevious/previous() without a modal
-    if (onPrevious?.current) {
-      void onPrevious.current();
-    } else {
-      previous();
+      // If /edit does NOT have a ?collectionId query param, go back to the overall /edit page
+      if (!collectionId) {
+        showModal({
+          content: (
+            <GenericActionModal
+              bodyText="Would you like to stop editing?"
+              buttonText="Leave"
+              action={() => {
+                if (onPrevious?.current) {
+                  void onPrevious.current();
+                } else {
+                  goToPreviousStep();
+                }
+              }}
+            />
+          ),
+        });
+        return;
+      }
     }
-  }, [back, collectionId, onPrevious, previous, step, showModal, wizardId]);
+  }, [back, collectionId, onPrevious, goToPreviousStep, step, showModal, wizardId]);
 
   // We want to do the same thing if the user clicks escape, unless they are onboarding
   const handleEscapePress = useCallback(() => {
-    if (wizardId == 'onboarding') return;
+    if (wizardId === 'onboarding') return;
     handlePreviousClick();
   }, [handlePreviousClick, wizardId]);
 
