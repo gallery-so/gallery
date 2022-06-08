@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
+import useKeyDown from 'hooks/useKeyDown';
 
 function WizardFooter({
   step,
@@ -71,8 +72,8 @@ function WizardFooter({
 
   const { showModal } = useModalActions();
 
-  // This triggers when a user edits a collection from /edit
   const handlePreviousClick = useCallback(() => {
+    // If /edit does not have a ?collectionId query param, go back to the overall /edit page
     if (wizardId !== 'onboarding' && step.id === 'organizeCollection' && !collectionId) {
       showModal({
         content: (
@@ -92,7 +93,7 @@ function WizardFooter({
       return;
     }
 
-    // This triggers when the user edits from the collection page directly
+    // If the user is editing from the collection page directly (has a collection ID), use back()
     if (wizardId !== 'onboarding' && collectionId) {
       showModal({
         content: (
@@ -108,13 +109,21 @@ function WizardFooter({
       return;
     }
 
-    // If neither of the above, just go back
+    // If the user is onboarding, run onPrevious/previous() without a modal
     if (onPrevious?.current) {
       void onPrevious.current();
     } else {
       previous();
     }
-  }, [back, collectionId, onPrevious, previous, showModal, wizardId, step]);
+  }, [back, collectionId, onPrevious, previous, step, showModal, wizardId]);
+
+  // We want to do the same thing if the user clicks escape, unless they are onboarding
+  const handleEscapePress = useCallback(() => {
+    if (wizardId == 'onboarding') return;
+    handlePreviousClick();
+  }, [handlePreviousClick, wizardId]);
+
+  useKeyDown('Escape', handleEscapePress);
 
   if (shouldHideFooter) {
     return null;
