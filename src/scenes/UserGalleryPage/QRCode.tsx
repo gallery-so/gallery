@@ -1,23 +1,18 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
-import CloseIcon from 'src/icons/CloseIcon';
 import QRIcon from 'src/icons/QRIcon';
-// import QRCodeStyling from 'qr-code-styling';
+import FullScreenModal from 'scenes/Modals/FullScreenModal';
+import { useModalActions } from 'contexts/modal/ModalContext';
 
 export default function QRCode({ username }: { username: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [showQRCode, setShowQRCode] = useState(false);
-  const [qrCodeExists, setQRCodeExists] = useState(false);
 
-  const handleClick = useCallback(() => {
-    setShowQRCode(true);
-
-    // Dynamically import qr-code-styling on the client-side, not compatible with regular Next imports
-    // https://github.com/kozakdenys/qr-code-styling/issues/38
+  // Dynamically import qr-code-styling on the client-side, not compatible with regular Next imports
+  // https://github.com/kozakdenys/qr-code-styling/issues/38
+  const renderQRCode = useCallback(() => {
     if (typeof window !== 'undefined') {
-      if (qrCodeExists) return; // Prevent duplication
       const QRCodeStyling = require('qr-code-styling');
 
       const qrCode = new QRCodeStyling({
@@ -76,29 +71,38 @@ export default function QRCode({ username }: { username: string }) {
       });
 
       qrCode.append(ref.current);
-      setQRCodeExists(true);
     }
-  }, [qrCodeExists, username]);
+  }, [ref, username]);
+
+  const { showModal } = useModalActions();
+  const handleClick = useCallback(() => {
+    // Need a brief timeout so that the modal renders before rendering QR code. Otherwise the ref will not exist and renderQRCode cannot append the ref
+    setTimeout(() => {
+      renderQRCode();
+    }, 100);
+
+    showModal({
+      content: (
+        <FullScreenModal
+          body={
+            <StyledFullScreenQR>
+              <StyledQRWrapper ref={ref} />
+              <Spacer height={24} />
+              <StyledUsernameText>{username}</StyledUsernameText>
+              <StyledHelperText>
+                Scan to open {username}'s gallery in a new browser tab.
+              </StyledHelperText>
+            </StyledFullScreenQR>
+          }
+        />
+      ),
+    });
+  }, [showModal, username, renderQRCode]);
 
   return (
-    <>
-      <StyledFullScreenQR showQRCode={showQRCode}>
-        <StyledCloseButton
-          onClick={() => {
-            setShowQRCode(false);
-          }}
-        >
-          <CloseIcon isActive={true} />
-        </StyledCloseButton>
-        <StyledQRWrapper ref={ref} />
-        <Spacer height={24} />
-        <StyledUsernameText>{username}</StyledUsernameText>
-        <StyledHelperText>Scan to open {username}'s gallery in a new browser tab.</StyledHelperText>
-      </StyledFullScreenQR>
-      <StyledButton onClick={handleClick} title="Open QR code">
-        <QRIcon />
-      </StyledButton>
-    </>
+    <StyledButton onClick={handleClick} title="Open QR code">
+      <QRIcon />
+    </StyledButton>
   );
 }
 
@@ -116,35 +120,14 @@ const StyledButton = styled.button`
   }
 `;
 
-const StyledFullScreenQR = styled.div<{ showQRCode: boolean }>`
-  pointer-events: ${({ showQRCode }) => (showQRCode ? 'all' : 'none')};
-  opacity: ${({ showQRCode }) => (showQRCode ? 1 : 0)};
-  position: fixed;
-  top: 0;
-  left: 0;
+const StyledFullScreenQR = styled.div`
   width: 100%;
   height: 100vh;
-  background: white;
-  z-index: 10;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   place-items: center;
-
-  transition: opacity 400ms ease;
-`;
-
-const StyledCloseButton = styled.button`
-  position: absolute;
-  top: 27px;
-  right: 27px;
-  font-size: 1rem;
-
-  background: none;
-  border: 0;
-  cursor: pointer;
-  padding: 0;
 `;
 
 const StyledUsernameText = styled.p`
