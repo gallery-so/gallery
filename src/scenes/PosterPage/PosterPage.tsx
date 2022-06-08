@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import { contentSize, pageGutter } from 'components/core/breakpoints';
+import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
@@ -128,7 +128,7 @@ export default function PosterPage({ queryRef }: Props) {
 
 const StyledPage = styled.div`
   min-height: 100vh;
-  padding: 20px 40px;
+  padding: 64px 16px 0px;
   display: flex;
   flex-direction: column;
 
@@ -138,17 +138,24 @@ const StyledPage = styled.div`
   margin: 0 auto;
   max-width: ${contentSize.desktop}px;
 
-  @media (max-width: ${contentSize.desktop}px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    padding: 0px 16px;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 64px 40px 20px;
   }
 `;
 
 const StyledPosterImage = styled.img`
   border: 1px solid ${colors.porcelain};
   margin: 0 auto;
-  height: 600px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    justify-content: flex-start;
+    height: 600px;
+    width: initial;
+  }
 `;
 
 const StyledPositionedBackLink = styled(StyledBackLink)`
@@ -159,11 +166,15 @@ const StyledWrapper = styled.div`
   display: grid;
   align-items: center;
   width: 100%;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  @media (max-width: ${contentSize.desktop}px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 24px;
+  padding-bottom: 100px;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-bottom: 0;
   }
 `;
 const StyledContent = styled.div`
