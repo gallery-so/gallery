@@ -28,6 +28,7 @@ import {
   useTrackAddWalletAttempt,
   useTrackAddWalletSuccess,
   useTrackAddWalletError,
+  isNotEarlyAccessError,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
 import { graphql, useFragment } from 'react-relay';
@@ -101,7 +102,9 @@ function AddWalletPendingGnosisSafe({
     (error: unknown) => {
       trackAddWalletError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
-        captureException(error.message);
+        if (!isNotEarlyAccessError(error.message)) {
+          captureException(error.message);
+        }
         setDetectedError(error);
       }
 
