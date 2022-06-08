@@ -15,7 +15,7 @@ const SECTION_DURATION_MS = 400;
 export default function CopyToClipboard({
   textToCopy,
   children,
-  successText = 'Link Copied',
+  successText = 'Copied link to clipboard',
 }: Props) {
   // Whether node is actually on the DOM
   const [isToastMounted, setIsToastMounted] = useState(false);
