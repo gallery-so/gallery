@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import PosterFigmaFrame from './PosterFigmaFrame';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -39,7 +38,8 @@ export default function PosterPage({ queryRef }: Props) {
 
   const isMobile = useIsMobileWindowWidth();
 
-  const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
+  const POSTER_IMAGE_URL =
+    'https://lh3.googleusercontent.com/Q9zjkyRRAugfSBDfqiuyoefUEglPb6Zt5kj9cn-NzavEEBx_JmCaeSdbasI6V9VlkyWtJtVm1lH3VhHBNhj5ZwzEZ6zvfxF0wnFjoQ=h1200';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
   const { timestamp } = useTimer(MINT_DATE);
@@ -83,7 +83,7 @@ export default function PosterPage({ queryRef }: Props) {
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
       <StyledWrapper>
-        <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
+        <StyledPosterImage src={POSTER_IMAGE_URL} />
         <StyledContent>
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
@@ -143,6 +143,12 @@ const StyledPage = styled.div`
     grid-template-rows: auto 1fr;
     padding: 0px 16px;
   }
+`;
+
+const StyledPosterImage = styled.img`
+  border: 1px solid ${colors.porcelain};
+  margin: 0 auto;
+  height: 600px;
 `;
 
 const StyledPositionedBackLink = styled(StyledBackLink)`
