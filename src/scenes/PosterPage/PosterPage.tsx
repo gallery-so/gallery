@@ -83,7 +83,9 @@ export default function PosterPage({ queryRef }: Props) {
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
       <StyledWrapper>
-        <StyledPosterImage src={POSTER_IMAGE_URL} />
+        <StyledImageContainer>
+          <StyledPosterImage src={POSTER_IMAGE_URL} />
+        </StyledImageContainer>
         <StyledContent>
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
@@ -146,10 +148,15 @@ const StyledPage = styled.div`
   }
 `;
 
+const StyledImageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const StyledPosterImage = styled.img`
   border: 1px solid ${colors.porcelain};
   margin: 0 auto;
-  width: 100%;
   max-width: 100%;
   max-height: 600px;
 
