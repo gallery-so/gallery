@@ -4,7 +4,7 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -77,7 +77,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     [collection.collectorsNote]
   );
 
-  const [isHovering, setIsHovering] = useState(false);
   const username = asPath.split('/')[1];
   const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
 
@@ -99,14 +98,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     track('Share Collection', { path: `/${username}/${collection.dbid}` });
   }, [collection.dbid, username, track]);
 
-  const handleMouseEnter = useCallback(() => {
-    setIsHovering(true);
-  }, []);
-
-  const handleMouseExit = useCallback(() => {
-    setIsHovering(false);
-  }, []);
-
   const handleEditNameClick = useCallback(() => {
     showModal({
       content: (
@@ -123,20 +114,19 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
-    <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+    <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <StyledCollectorsTitle onClick={handleViewCollectionClick}>
             {unescapedCollectionName}
           </StyledCollectorsTitle>
           <StyledOptionsContainer>
-            {isHovering && (
-              <StyledCopyToClipboard textToCopy={collectionUrl}>
-                <StyledShareButton text="Share" onClick={handleShareClick} />
-              </StyledCopyToClipboard>
-            )}
+            <StyledCopyToClipboard textToCopy={collectionUrl}>
+              <StyledShareButton text="Share" onClick={handleShareClick} />
+            </StyledCopyToClipboard>
+            <Spacer width={16} />
             <StyledSettingsDropdown>
-              {isHovering && (
+              <>
                 <Dropdown>
                   {showEditActions && (
                     <>
@@ -160,7 +150,8 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                     underlineOnHover
                   />
                 </Dropdown>
-              )}
+              </>
+              {/* )} */}
             </StyledSettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
@@ -182,15 +173,25 @@ const StyledSettingsDropdown = styled.div`
   transition: opacity 200ms ease-in-out;
 
   background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
+  background-position: center;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
   }
+`;
+
+const StyledShareButton = styled(TextButton)`
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+`;
+
+const StyledCopyToClipboard = styled(CopyToClipboard)`
+  height: 24px !important;
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -199,7 +200,7 @@ const StyledCollectionWrapper = styled.div`
   width: 100%;
   position: relative;
 
-  &:hover ${StyledSettingsDropdown} {
+  &:hover ${StyledSettingsDropdown}, &:hover ${StyledShareButton} {
     opacity: 1;
   }
 `;
@@ -248,23 +249,9 @@ const StyledCollectorsNote = styled(BaseM)`
 const StyledOptionsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
   height: 24px;
-`;
-
-const StyledShareButton = styled(TextButton)`
-  font-family: ABC Diatype;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: -0.01em;
-  text-align: left;
-  line-height: 24px;
-`;
-
-const StyledCopyToClipboard = styled(CopyToClipboard)`
-  height: 24px !important;
 `;
 
 export default UserGalleryCollection;
