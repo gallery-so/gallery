@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
+import QRCode from './QRCode';
+import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
@@ -16,6 +18,8 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
+  isQRCodeEnabled: boolean;
+  isMobile: boolean;
 };
 
 function UserGalleryHeader({
@@ -23,6 +27,8 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
+  isQRCodeEnabled,
+  isMobile,
 }: Props) {
   const user = useFragment(
     graphql`
@@ -39,10 +45,18 @@ function UserGalleryHeader({
   return (
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
-        <StyledUsername>{user.username}</StyledUsername>
-        {showMobileLayoutToggle && (
-          <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+        {isMobile ? (
+          <StyledUsernameMobile>{user.username}</StyledUsernameMobile>
+        ) : (
+          <StyledUsername>{user.username}</StyledUsername>
         )}
+        <StyledButtonsWrapper>
+          {isMobile && <LinkButton username={user.username} />}
+          {isMobile && isQRCodeEnabled && <QRCode username={user.username} />}
+          {showMobileLayoutToggle && (
+            <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+          )}
+        </StyledButtonsWrapper>
       </StyledUsernameWrapper>
       <Spacer height={16} />
       <StyledUserDetails>
@@ -67,9 +81,27 @@ const StyledUsernameWrapper = styled.div`
   align-items: flex-start;
 `;
 
+// FIXME: How to use styled components to render TitleM at mobile breakpoint?
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+`;
+
+const StyledUsernameMobile = styled(TitleM)`
+  font-style: normal;
+  overflow-wrap: break-word;
+  width: calc(100% - 48px);
+`;
+
+const StyledButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+
+  @media only screen and ${breakpoints.mobile} {
+    height: 28px;
+  }
 `;
 
 const StyledUserDetails = styled.div`

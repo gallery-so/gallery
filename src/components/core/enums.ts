@@ -13,4 +13,5 @@ export enum DisplayLayout {
 export enum FeatureFlag {
   GENERAL_MEMBERSHIP_MINT = 'GENERAL_MEMBERSHIP_MINT',
   POSTER_MINT = 'POSTER_MINT',
+  QR_CODE = 'QR_CODE',
 }

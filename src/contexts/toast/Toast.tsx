@@ -25,7 +25,8 @@ export function AnimatedToast({
 }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
-  const [isActive, setIsActive] = useState(false);
+  // This initializes as true so that there is not a jitter in the animation (if it were false, this would trigger the wrong CSS animation initially)
+  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
     setIsActive(true);
