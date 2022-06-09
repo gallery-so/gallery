@@ -139,7 +139,7 @@ const StyledBaseM = styled(BaseM)`
 
 // In order to render the QR code at a higher quality, we render it at 10x its initial size, and then scale it down with the following CSS
 const StyledQRWrapper = styled.div`
- height: 159px;
+  height: 159px;
   width: 159px;
   transform: scale(0.25);
   display: flex;
