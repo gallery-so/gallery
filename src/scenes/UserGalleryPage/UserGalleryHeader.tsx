@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
@@ -16,19 +16,19 @@ import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFr
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
   showMobileLayoutToggle: boolean;
-  showQRCode: boolean;
-  showLinkButton: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
+  isQRCodeEnabled: boolean;
+  isMobile: boolean;
 };
 
 function UserGalleryHeader({
   userRef,
   showMobileLayoutToggle,
-  showQRCode,
-  showLinkButton,
   mobileLayout,
   setMobileLayout,
+  isQRCodeEnabled,
+  isMobile,
 }: Props) {
   const user = useFragment(
     graphql`
@@ -45,10 +45,14 @@ function UserGalleryHeader({
   return (
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
-        <StyledUsername>{user.username}</StyledUsername>
+        {isMobile ? (
+          <StyledUsernameMobile>{user.username}</StyledUsernameMobile>
+        ) : (
+          <StyledUsername>{user.username}</StyledUsername>
+        )}
         <StyledButtonsWrapper>
-          {showLinkButton && <LinkButton username={user.username} />}
-          {showQRCode && <QRCode username={user.username} />}
+          {isMobile && <LinkButton username={user.username} />}
+          {isMobile && isQRCodeEnabled && <QRCode username={user.username} />}
           {showMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
@@ -79,6 +83,11 @@ const StyledUsernameWrapper = styled.div`
 
 // FIXME: How to use styled components to render TitleM at mobile breakpoint?
 const StyledUsername = styled(TitleL)`
+  overflow-wrap: break-word;
+  width: calc(100% - 48px);
+`;
+
+const StyledUsernameMobile = styled(TitleM)`
   font-style: normal;
   overflow-wrap: break-word;
   width: calc(100% - 48px);
@@ -89,7 +98,10 @@ const StyledButtonsWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 36px;
-  // height: 28px; // FIXME: Apply this at mobile breakpoint
+
+  @media only screen and ${breakpoints.mobile} {
+    height: 28px;
+  }
 `;
 
 const StyledUserDetails = styled.div`
