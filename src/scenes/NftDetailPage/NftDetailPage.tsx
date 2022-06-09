@@ -241,7 +241,7 @@ const _DirectionalFade = styled.div<{ visibility: string }>`
 
 const StyledNftDetailPage = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
 
   display: flex;
   justify-content: center;
@@ -274,7 +274,6 @@ function NftDetailPageWithBoundary({ username, collectionId, nftId }: Props) {
 
 const StyledNftDetailPageWithBoundary = styled.div`
   width: 100vw;
-  height: 100vh;
 `;
 
 export default NftDetailPageWithBoundary;

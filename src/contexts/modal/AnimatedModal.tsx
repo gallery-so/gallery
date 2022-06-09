@@ -109,6 +109,8 @@ const StyledContentContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  height: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     width: initial;
@@ -123,6 +125,7 @@ export const MODAL_PADDING_PX = 24;
 const StyledContent = styled.div<{ isFullPage: boolean; isPaddingDisabled: boolean }>`
   position: relative;
   background: ${colors.white};
+  height: 100%;
 
   // allows for scrolling within child components
   overflow-y: auto;
@@ -140,7 +143,7 @@ const StyledContent = styled.div<{ isFullPage: boolean; isPaddingDisabled: boole
     isFullPage
       ? `
     width: 100vw;
-    height: 100vh;
+    min-height: -webkit-fill-available;
   `
       : ''};
 `;
