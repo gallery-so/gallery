@@ -1,5 +1,4 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { MembershipMintPage } from 'scenes/MembershipMintPage/MembershipMintPage';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -21,6 +20,7 @@ import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__
 import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
 import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
 import { OPENSEA_API_BASEURL } from 'constants/opensea';
+import { CustomizedGeneralMembershipMintPage } from './CustomizedGeneralMembershipMintPage';
 
 export type AssetContract = {
   address: string;
@@ -133,7 +133,7 @@ function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
   }, [getSupply, contract]);
 
   return (
-    <MembershipMintPage
+    <CustomizedGeneralMembershipMintPage
       membershipNft={MEMBERSHIP_NFT_GENERAL}
       canMintToken={canMintToken}
       contract={contract}

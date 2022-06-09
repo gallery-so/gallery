@@ -7,7 +7,7 @@ function computeRemainingSupply(usedSupply: number, totalSupply: number) {
 
 export type MembershipMintPageState = {
   totalSupply: number;
-  remainingSupply: number;
+  remainingSupply: number | null;
   price: number;
 };
 
@@ -49,7 +49,7 @@ type Props = { children: ReactNode };
 
 const MembershipMintPageProvider = memo(({ children }: Props) => {
   const [totalSupply, setTotalSupply] = useState<number>(0);
-  const [remainingSupply, setRemainingSupply] = useState<number>(0);
+  const [remainingSupply, setRemainingSupply] = useState<number | null>(null);
   const [price, setPrice] = useState<number>(0);
 
   const state = useMemo(

@@ -122,7 +122,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
         if (isNotEarlyAccessError(detectedError.message)) {
           return {
             heading: account?.toLowerCase(),
-            body: 'Your wallet address is not on the Early Access Allowlist. To get onto the allowlist, visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba#6fa1bc2983614500a206fc14fcfd61bf) or reach out to us on [Discord](discord.gg/vBqBEH8GaM).',
+            body: 'Your wallet address is not on the **Early Access Allowlist**. To get onto the allowlist, visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba#6fa1bc2983614500a206fc14fcfd61bf) or reach out to us on [Discord](discord.gg/vBqBEH8GaM).',
           };
         }
 
