@@ -18,6 +18,7 @@ import {
   useTrackSignInSuccess,
   useTrackSignInError,
   useTrackCreateUserSuccess,
+  isNotEarlyAccessError,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
@@ -73,7 +74,9 @@ function AuthenticateWalletPendingGnosisSafe({
     (error: unknown) => {
       trackSignInError('Gnosis Safe', error);
       if (isWeb3Error(error)) {
-        captureException(error.message);
+        if (!isNotEarlyAccessError(error.message)) {
+          captureException(error.message);
+        }
         setDetectedError(error);
       }
 

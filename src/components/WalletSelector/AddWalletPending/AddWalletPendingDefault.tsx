@@ -21,6 +21,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { signMessageWithEOA } from '../walletUtils';
 import {
+  isNotEarlyAccessError,
   useTrackAddWalletAttempt,
   useTrackAddWalletError,
   useTrackAddWalletSuccess,
@@ -139,7 +140,9 @@ function AddWalletPendingDefault({
         setIsConnecting(false);
         trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {
-          captureException(error.message);
+          if (!isNotEarlyAccessError(error.message)) {
+            captureException(error.message);
+          }
           setDetectedError(error);
         }
 

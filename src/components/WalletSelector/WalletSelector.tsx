@@ -17,6 +17,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
+import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -118,7 +119,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     if (detectedError) {
       // Handle error from server
       if (detectedError.code === 'GALLERY_SERVER_ERROR') {
-        if (detectedError.message.toLowerCase().includes('required tokens not owned')) {
+        if (isNotEarlyAccessError(detectedError.message)) {
           return {
             heading: 'Authorization Error',
             body: "We weren't able to locate a Membership Card in your wallet. Gallery is in closed beta and requires one for access. You can buy one on the [secondary market](https://opensea.io/collection/gallerygeneralmembershipcards) or visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba) for more info.",
