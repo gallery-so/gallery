@@ -76,7 +76,7 @@ export default function QRCode({ username }: { username: string }) {
 
       qrCode.append(ref.current);
     }
-  }, [ref, username]);
+  }, [username]);
 
   const { showModal } = useModalActions();
   const handleClick = useCallback(() => {
