@@ -48,8 +48,8 @@ export function CustomizedGeneralMembershipMintPage({
   const { hideModal } = useModalActions();
   const [error, setError] = useState('');
 
-  const { totalSupply, price } = useMembershipMintPageState();
-  const remainingSupply = 0;
+  const { totalSupply, remainingSupply, price } = useMembershipMintPageState();
+
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [transactionHash, setTransactionHash] = useState('');
   const { getSupply } = useMembershipMintPageActions();
