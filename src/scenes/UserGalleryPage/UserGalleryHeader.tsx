@@ -77,7 +77,9 @@ const StyledUsernameWrapper = styled.div`
   align-items: flex-start;
 `;
 
+// FIXME: How to use styled components to render TitleM at mobile breakpoint?
 const StyledUsername = styled(TitleL)`
+  font-style: normal;
   overflow-wrap: break-word;
   width: calc(100% - 48px);
 `;
@@ -87,6 +89,7 @@ const StyledButtonsWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 36px;
+  // height: 28px; // FIXME: Apply this at mobile breakpoint
 `;
 
 const StyledUserDetails = styled.div`
