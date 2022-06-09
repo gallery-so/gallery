@@ -39,7 +39,7 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage, isPaddingDisa
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={hideModal} />
-      <StyledContentContainer>
+      <StyledContentContainer isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContent isFullPage={isFullPage} isPaddingDisabled={isPaddingDisabled}>
             <StyledDecoratedCloseIcon onClick={hideModal} />
@@ -104,13 +104,13 @@ const Overlay = styled.div`
   -webkit-backface-visibility: hidden;
 `;
 
-const StyledContentContainer = styled.div`
+const StyledContentContainer = styled.div<{ isFullPage: boolean }>`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  height: 100%;
+  ${({ isFullPage }) => isFullPage && `height: 100%;`}
 
   @media only screen and ${breakpoints.tablet} {
     width: initial;
@@ -125,7 +125,7 @@ export const MODAL_PADDING_PX = 24;
 const StyledContent = styled.div<{ isFullPage: boolean; isPaddingDisabled: boolean }>`
   position: relative;
   background: ${colors.white};
-  height: 100%;
+  ${({ isFullPage }) => isFullPage && `height: 100%;`}
 
   // allows for scrolling within child components
   overflow-y: auto;
