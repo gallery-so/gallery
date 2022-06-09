@@ -62,8 +62,8 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     setIsRefreshingNfts(true);
 
     try {
-      await refreshOpenseaNfts();
       loadQuery({}, { fetchPolicy: 'store-and-network' });
+      await refreshOpenseaNfts();
     } catch (error: unknown) {
       captureException(error);
       if (error instanceof Error) {
