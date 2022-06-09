@@ -16,9 +16,12 @@ export default function QRCode({ username }: { username: string }) {
     if (typeof window !== 'undefined') {
       const QRCodeStyling = require('qr-code-styling');
 
+      // We render the canvas element with a width and height of 636px (4x the initial)
+      // and then we scale it down to its proper width and height (159px) using CSS.
+      // This makes the QR appear high res
       const qrCode = new QRCodeStyling({
-        width: 636, // 4 * 159px, scaled down using CSS later
-        height: 636, // 4 * 159px, scaled down using CSS later
+        width: 636, // 4 * 159px
+        height: 636, // 4 * 159px
         data: `https://gallery.so/${username}`,
         margin: 0,
         qrOptions: { typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' },

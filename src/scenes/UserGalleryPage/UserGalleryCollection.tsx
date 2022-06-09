@@ -126,31 +126,29 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
             </StyledCopyToClipboard>
             <Spacer width={16} />
             <StyledSettingsDropdown>
-              <>
-                <Dropdown>
-                  {showEditActions && (
-                    <>
-                      <TextButton
-                        onClick={handleEditNameClick}
-                        text="EDIT NAME & DESCRIPTION"
-                        underlineOnHover
-                      />
-                      <Spacer height={8} />
-                      <TextButton
-                        text="Edit Collection"
-                        onClick={handleEditCollectionClick}
-                        underlineOnHover
-                      />
-                      <Spacer height={8} />
-                    </>
-                  )}
-                  <TextButton
-                    text="View Collection"
-                    onClick={handleViewCollectionClick}
-                    underlineOnHover
-                  />
-                </Dropdown>
-              </>
+              <Dropdown>
+                {showEditActions && (
+                  <>
+                    <TextButton
+                      onClick={handleEditNameClick}
+                      text="EDIT NAME & DESCRIPTION"
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
+                    <TextButton
+                      text="Edit Collection"
+                      onClick={handleEditCollectionClick}
+                      underlineOnHover
+                    />
+                    <Spacer height={8} />
+                  </>
+                )}
+                <TextButton
+                  text="View Collection"
+                  onClick={handleViewCollectionClick}
+                  underlineOnHover
+                />
+              </Dropdown>
             </StyledSettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
