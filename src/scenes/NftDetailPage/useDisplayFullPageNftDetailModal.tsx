@@ -18,16 +18,16 @@ export default function useDisplayFullPageNftDetailModal() {
   const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
 
   useEffect(() => {
-    if (tokenId && collectionId && !isModalOpenRef.current) {
+    if (username && tokenId && collectionId && !isModalOpenRef.current) {
       // have to do this weird check on query param types
-      if (Array.isArray(collectionId) || Array.isArray(tokenId)) {
+      if (Array.isArray(username) || Array.isArray(collectionId) || Array.isArray(tokenId)) {
         return;
       }
 
       showModal({
         content: (
           <Suspense fallback={<FullPageLoader />}>
-            <NftDetailPage collectionId={collectionId} tokenId={tokenId} />
+            <NftDetailPage username={username} collectionId={collectionId} tokenId={tokenId} />
           </Suspense>
         ),
         onClose: () =>
@@ -40,5 +40,5 @@ export default function useDisplayFullPageNftDetailModal() {
         isFullPageOverride: true,
       });
     }
-  }, [collectionId, tokenId, showModal, push, pathname, returnTo, isModalOpenRef]);
+  }, [collectionId, showModal, push, pathname, returnTo, isModalOpenRef, username, tokenId]);
 }

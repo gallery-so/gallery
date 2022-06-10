@@ -4,7 +4,7 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -77,7 +77,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     [collection.collectorsNote]
   );
 
-  const [isHovering, setIsHovering] = useState(false);
   const username = asPath.split('/')[1];
   const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
 
@@ -99,14 +98,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     track('Share Collection', { path: `/${username}/${collection.dbid}` });
   }, [collection.dbid, username, track]);
 
-  const handleMouseEnter = useCallback(() => {
-    setIsHovering(true);
-  }, []);
-
-  const handleMouseExit = useCallback(() => {
-    setIsHovering(false);
-  }, []);
-
   const handleEditNameClick = useCallback(() => {
     showModal({
       content: (
@@ -123,14 +114,18 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
-    <StyledCollectionWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+    <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <StyledCollectorsTitle onClick={handleViewCollectionClick}>
             {unescapedCollectionName}
           </StyledCollectorsTitle>
-          <StyledSettingsDropdown>
-            {isHovering && (
+          <StyledOptionsContainer>
+            <StyledCopyToClipboard textToCopy={collectionUrl}>
+              <StyledShareButton text="Share" onClick={handleShareClick} />
+            </StyledCopyToClipboard>
+            <Spacer width={16} />
+            <StyledSettingsDropdown>
               <Dropdown>
                 {showEditActions && (
                   <>
@@ -153,17 +148,12 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                   onClick={handleViewCollectionClick}
                   underlineOnHover
                 />
-                <Spacer height={8} />
-                <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" onClick={handleShareClick} />
-                </CopyToClipboard>
               </Dropdown>
-            )}
-          </StyledSettingsDropdown>
+            </StyledSettingsDropdown>
+          </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
-            <Spacer height={8} />
             <StyledCollectorsNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
@@ -180,12 +170,25 @@ const StyledSettingsDropdown = styled.div`
   transition: opacity 200ms ease-in-out;
 
   background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
+  background-position: center;
   height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
   }
+`;
+
+const StyledShareButton = styled(TextButton)`
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+`;
+
+const StyledCopyToClipboard = styled(CopyToClipboard)`
+  height: 24px !important;
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -194,7 +197,7 @@ const StyledCollectionWrapper = styled.div`
   width: 100%;
   position: relative;
 
-  &:hover ${StyledSettingsDropdown} {
+  &:hover ${StyledSettingsDropdown}, &:hover ${StyledShareButton} {
     opacity: 1;
   }
 `;
@@ -238,6 +241,14 @@ const StyledCollectorsNote = styled(BaseM)`
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }
+`;
+
+const StyledOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
 `;
 
 export default UserGalleryCollection;

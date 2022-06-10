@@ -21,9 +21,6 @@ import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import useKeyDown from 'hooks/useKeyDown';
-import ConfirmLeaveModal from 'scenes/Modals/ConfirmLeaveModal';
-import { useModalActions } from 'contexts/modal/ModalContext';
 
 function convertNftsToEditModeTokens(
   tokens: EditModeTokenChild[],
@@ -71,7 +68,6 @@ function CollectionEditor({ viewerRef }: Props) {
               ...StagingAreaFragment
             }
           }
-          ...ConfirmLeaveModalFragment
         }
       }
     `,
@@ -209,13 +205,6 @@ function CollectionEditor({ viewerRef }: Props) {
   ]);
 
   const shouldDisplayEditor = stagedNfts.length > 0;
-
-  const { showModal } = useModalActions();
-  const user = viewer.user;
-
-  useKeyDown('Escape', () => {
-    showModal({ content: <ConfirmLeaveModal userRef={user} /> });
-  });
 
   return (
     <StyledOrganizeCollection>

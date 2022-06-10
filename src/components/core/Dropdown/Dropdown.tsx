@@ -109,7 +109,6 @@ const StyledDropdownBox = styled.div<StyledDropdownProps>`
 
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
 
   margin-top: 8px;
 
@@ -120,7 +119,7 @@ const StyledDropdownBox = styled.div<StyledDropdownProps>`
 
   padding: 12px;
   border: 1px solid ${colors.metal};
-  width: auto;
+  width: max-content;
   background-color: ${colors.white};
 `;
 

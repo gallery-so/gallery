@@ -17,6 +17,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
+import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -82,7 +83,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     queryRef
   );
 
-  const { activate, deactivate, error } = useWeb3React<Web3Provider>();
+  const { activate, deactivate, error, account } = useWeb3React<Web3Provider>();
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector>();
   const [isPending, setIsPending] = useState(false);
@@ -118,10 +119,10 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     if (detectedError) {
       // Handle error from server
       if (detectedError.code === 'GALLERY_SERVER_ERROR') {
-        if (detectedError.message.toLowerCase().includes('required tokens not owned')) {
+        if (isNotEarlyAccessError(detectedError.message)) {
           return {
-            heading: 'Authorization Error',
-            body: "We weren't able to locate a Membership Card in your wallet. Gallery is in closed beta and requires one for access. You can buy one on the [secondary market](https://opensea.io/collection/gallerygeneralmembershipcards) or visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba) for more info.",
+            heading: account?.toLowerCase(),
+            body: 'Your wallet address is not on the **Early Access Allowlist**. To get onto the allowlist, visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba#6fa1bc2983614500a206fc14fcfd61bf) or reach out to us on [Discord](discord.gg/vBqBEH8GaM).',
           };
         }
 
@@ -135,7 +136,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     }
 
     return null;
-  }, [error, detectedError]);
+  }, [error, detectedError, account]);
 
   const availableWalletOptions = useMemo(() => {
     if (connectionMode === CONNECT_WALLET_ONLY) {
@@ -165,7 +166,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
         <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
-        <StyledRetryButton onClick={retryConnectWallet} text="Retry" />
+        <StyledRetryButton onClick={retryConnectWallet} text="Try Another Wallet" />
       </StyledWalletSelector>
     );
   }

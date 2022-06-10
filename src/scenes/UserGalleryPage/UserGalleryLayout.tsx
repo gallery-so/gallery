@@ -14,7 +14,7 @@ import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContex
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { FeatureFlag } from 'components/core/enums';
-import { isFeatureEnabled } from 'utils/featureFlag';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -27,10 +27,13 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
         ...NavActionFollowQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isQRCodeEnabled = isFeatureEnabled(FeatureFlag.QR_CODE, query);
 
   const user = useFragment(
     graphql`
@@ -66,9 +69,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   const { setCustomNavLeftContent } = useGlobalLayoutActions();
 
   useEffect(() => {
-    if (isFeatureEnabled(FeatureFlag.FOLLOW)) {
-      setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
-    }
+    setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
 
     return () => {
       setCustomNavLeftContent(null);
@@ -81,8 +82,10 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
+        isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
+        isQRCodeEnabled={isQRCodeEnabled}
       />
       {collectionsView}
       <Spacer height={32} />

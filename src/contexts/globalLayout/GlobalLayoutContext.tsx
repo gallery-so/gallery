@@ -30,6 +30,9 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import PosterBanner from 'scenes/PosterPage/PosterBanner';
+import { FeatureFlag } from 'components/core/enums';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -275,6 +278,7 @@ function GlobalNavbarWithFadeEnabled({
       fragment GlobalLayoutContextNavbarFragment on Query {
         ...GlobalNavbarFragment
         ...GlobalBannerFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -342,7 +346,13 @@ function GlobalNavbarWithFadeEnabled({
     >
       {
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? <Banner text="" queryRef={query} /> : null
+        isBannerVisible ? (
+          isFeatureEnabled(FeatureFlag.POSTER_MINT, query) ? (
+            <PosterBanner queryRef={query} />
+          ) : (
+            <Banner text="" queryRef={query} />
+          )
+        ) : null
       }
       <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
     </StyledGlobalNavbarWithFadeEnabled>

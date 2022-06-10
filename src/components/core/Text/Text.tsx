@@ -35,7 +35,7 @@ const Paragraph = styled.p<TextProps>`
 
 export const TitleL = styled(H1)`
   font-family: ${TITLE_FONT_FAMILY};
-  font-size: 32;
+  font-size: 32px;
   font-weight: 400;
   line-height: 36px;
   letter-spacing: 0px;

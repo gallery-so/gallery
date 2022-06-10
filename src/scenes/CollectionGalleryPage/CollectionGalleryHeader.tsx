@@ -139,21 +139,22 @@ function CollectionGalleryHeader({
 
         <StyledCollectionActions>
           {showEditActions ? (
-            <SettingsDropdown>
-              <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-              {!shouldDisplayMobileLayoutToggle && (
-                <>
-                  <Spacer height={8} />
-                  <NavElement>
-                    <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                  </NavElement>
-                </>
-              )}
-              <Spacer height={8} />
+            <>
               <CopyToClipboard textToCopy={collectionUrl}>
                 <TextButton text="Share" onClick={handleShareClick} />
               </CopyToClipboard>
-            </SettingsDropdown>
+              <SettingsDropdown>
+                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+                {!shouldDisplayMobileLayoutToggle && (
+                  <>
+                    <Spacer height={8} />
+                    <NavElement>
+                      <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                    </NavElement>
+                  </>
+                )}
+              </SettingsDropdown>
+            </>
           ) : (
             <CopyToClipboard textToCopy={collectionUrl}>
               <TextButton text="Share" onClick={handleShareClick} />

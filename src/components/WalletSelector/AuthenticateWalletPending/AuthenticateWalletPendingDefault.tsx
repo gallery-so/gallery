@@ -10,6 +10,7 @@ import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import Spacer from 'components/core/Spacer/Spacer';
 import { signMessageWithEOA } from '../walletUtils';
 import {
+  isNotEarlyAccessError,
   useTrackCreateUserSuccess,
   useTrackSignInAttempt,
   useTrackSignInError,
@@ -100,7 +101,10 @@ function AuthenticateWalletPendingDefault({
           trackSignInError(userFriendlyWalletName, error);
 
           if (isWeb3Error(error)) {
-            captureException(error.message);
+            // dont log error if because user is not early access
+            if (!isNotEarlyAccessError(error.message)) {
+              captureException(error.message);
+            }
             setDetectedError(error);
           }
 

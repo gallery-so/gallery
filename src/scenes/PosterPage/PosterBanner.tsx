@@ -1,31 +1,41 @@
 import Banner from 'contexts/globalLayout/GlobalBanner/GlobalBanner';
 import NavLink from 'components/core/NavLink/NavLink';
-import { MINT_DATE } from 'constants/poster';
+import { MINT_DEADLINE } from 'constants/poster';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import useTimer from 'hooks/useTimer';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
+import usePersistedState from 'hooks/usePersistedState';
 
 type Props = {
   queryRef: GlobalBannerFragment$key;
 };
 
 export default function PosterBanner({ queryRef }: Props) {
-  const { timestamp } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DEADLINE);
 
   const countdownTimer = useMemo(() => {
     return `Ends in ${timestamp}`;
   }, [timestamp]);
 
+  const [, setDismissed] = usePersistedState(GALLERY_POSTER_BANNER_STORAGE_KEY, false);
+  const handleMintClick = useCallback(() => {
+    setDismissed(true);
+  }, [setDismissed]);
+
   return (
     <Banner
       title={<StyledTimer>{countdownTimer}</StyledTimer>}
-      text="Thank you for being a member of Gallery. Celebrate our new brand with us by signing our 2022 Community Poster that we will mint as an NFT."
+      text="You may now mint and claim our 2022 Community Poster. Thank you for participating."
       queryRef={queryRef}
       localStorageKey={GALLERY_POSTER_BANNER_STORAGE_KEY}
       requireAuth
-      actionComponent={<NavLink to="/members/poster">Sign Poster</NavLink>}
+      actionComponent={
+        <NavLink to="/members/poster" onClick={handleMintClick}>
+          Mint
+        </NavLink>
+      }
     />
   );
 }

@@ -34,7 +34,7 @@ type Props = {
   onMintSuccess?: () => void;
 };
 
-export function MembershipMintPage({
+export function CustomizedGeneralMembershipMintPage({
   membershipNft,
   canMintToken,
   contract,
@@ -49,6 +49,7 @@ export function MembershipMintPage({
   const [error, setError] = useState('');
 
   const { totalSupply, remainingSupply, price } = useMembershipMintPageState();
+
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [transactionHash, setTransactionHash] = useState('');
   const { getSupply } = useMembershipMintPageActions();
@@ -72,11 +73,6 @@ export function MembershipMintPage({
   const isMintButtonEnabled = useMemo(
     () => (Number(price) > 0 || canMintToken) && transactionStatus !== TransactionStatus.PENDING,
     [canMintToken, price, transactionStatus]
-  );
-
-  const directUserToSecondary = useMemo(
-    () => membershipNft.tokenId === 6 || (active && !canMintToken && transactionStatus === null),
-    [active, canMintToken, membershipNft.tokenId, transactionStatus]
   );
 
   const handleConnectWalletButtonClick = useCallback(() => {
@@ -126,11 +122,46 @@ export function MembershipMintPage({
   }, [active, contract, error, getSupply, membershipNft.tokenId, mintToken, onMintSuccess]);
 
   const PrimaryButton = useMemo(() => {
-    if (directUserToSecondary) {
+    const MINT_INELIGIBLE = active && !canMintToken && transactionStatus === null;
+    const SOLD_OUT = remainingSupply === 0;
+    if (MINT_INELIGIBLE) {
       return (
-        <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
-          <TitleXS color={colors.white}>View on Secondary</TitleXS>
-        </StyledSecondaryLink>
+        <>
+          <StyledIneligibleMessageWrapper>
+            <BaseXL>You are ineligible for this mint.</BaseXL>
+
+            <Spacer width={4} />
+            <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+              <InfoCircleIcon />
+            </InteractiveLink>
+          </StyledIneligibleMessageWrapper>
+          <Spacer height={24} />
+          <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
+            <TitleXS color={colors.white}>View on Secondary</TitleXS>
+          </StyledSecondaryLink>
+        </>
+      );
+    }
+
+    if (SOLD_OUT) {
+      return (
+        <>
+          <StyledIneligibleMessageWrapper>
+            <BaseM>
+              While General Cards have completed minting, community members on the{' '}
+              <b>Early Access Allowlist</b> can still create a Gallery account.
+            </BaseM>
+
+            <Spacer width={4} />
+            <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+              <InfoCircleIcon />
+            </InteractiveLink>
+          </StyledIneligibleMessageWrapper>
+          <Spacer height={24} />
+          <StyledSecondaryLink href="/auth">
+            <Button text="Create Account" />
+          </StyledSecondaryLink>
+        </>
       );
     }
 
@@ -141,12 +172,14 @@ export function MembershipMintPage({
     );
   }, [
     active,
+    canMintToken,
+    transactionStatus,
+    remainingSupply,
     buttonText,
-    handleConnectWalletButtonClick,
-    handleMintButtonClick,
     isMintButtonEnabled,
+    handleMintButtonClick,
+    handleConnectWalletButtonClick,
     membershipNft.secondaryUrl,
-    directUserToSecondary,
   ]);
 
   // auto close the wallet modal once user connects
@@ -166,14 +199,13 @@ export function MembershipMintPage({
           <StyledNftDescription>
             <Markdown text={membershipNft.description} />
           </StyledNftDescription>
-          <Spacer height={32} />
           {Number(price) > 0 && (
             <>
               <TitleXS>Price</TitleXS>
               <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
             </>
           )}
-          {Boolean(totalSupply) && (
+          {Boolean(totalSupply) && remainingSupply !== null && (
             <>
               <Spacer height={16} />
               <TitleXS>Available</TitleXS>
@@ -190,21 +222,10 @@ export function MembershipMintPage({
               <BaseM>{account}</BaseM>
             </>
           )}
-          <Spacer height={32} />
+          <Spacer height={24} />
           <HorizontalBreak />
-          <Spacer height={32} />
-          {active && !canMintToken && transactionStatus === null && (
-            <>
-              <StyledIneligibleMessageWrapper>
-                <BaseXL>You are ineligible for this mint.</BaseXL>
-                <Spacer width={4} />
-                <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
-                  <InfoCircleIcon />
-                </InteractiveLink>
-              </StyledIneligibleMessageWrapper>
-              <Spacer height={24} />
-            </>
-          )}
+          <Spacer height={24} />
+
           {PrimaryButton}
           {transactionHash && (
             <>

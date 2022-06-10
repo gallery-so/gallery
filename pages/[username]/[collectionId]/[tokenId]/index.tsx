@@ -14,13 +14,11 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 type NftDetailPageProps = MetaTagProps & {
   tokenId: string;
   collectionId: string;
+  username: string;
 };
 
-export default function NftDetailPage({ collectionId, tokenId }: NftDetailPageProps) {
-  const {
-    query: { username },
-    push,
-  } = useRouter();
+export default function NftDetailPage({ username, collectionId, tokenId }: NftDetailPageProps) {
+  const { push } = useRouter();
 
   // the default "back" behavior from the NFT Detail Page
   // is a redirect to the Collection Page
@@ -43,7 +41,9 @@ export default function NftDetailPage({ collectionId, tokenId }: NftDetailPagePr
         <StyledDecoratedCloseIcon />
       </Link>
       <GalleryRoute
-        element={<NftDetailPageScene collectionId={collectionId} tokenId={tokenId} />}
+        element={
+          <NftDetailPageScene username={username} collectionId={collectionId} tokenId={tokenId} />
+        }
         navbar={false}
         footer={false}
       />
@@ -59,11 +59,13 @@ const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
 `;
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
-  const username = params?.username ? (params.username as string) : undefined;
-  const tokenId = params?.tokenId ? (params.tokenId as string) : '';
+  const username = params?.username ? (params.username as string) : '';
+  const tokenId = params?.nftId ? (params.nftId as string) : '';
   const collectionId = params?.collectionId ? (params.collectionId as string) : '';
+
   return {
     props: {
+      username,
       tokenId,
       collectionId,
       metaTags: tokenId

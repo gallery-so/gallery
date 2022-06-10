@@ -1,38 +1,81 @@
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
-import Button from 'components/core/Button/Button';
-import { contentSize, pageGutter } from 'components/core/breakpoints';
+import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import PosterFigmaFrame from './PosterFigmaFrame';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useToastActions } from 'contexts/toast/ToastContext';
 import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { MINT_DATE } from 'constants/poster';
+import { MINT_DEADLINE, NFT_TOKEN_ID } from 'constants/poster';
+import PosterMintButton from './PosterMintButton';
+import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from 'hooks/useContract';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { useEffect, useState, useCallback } from 'react';
+import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from 'constants/opensea';
+import Spacer from 'components/core/Spacer/Spacer';
+import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import isProduction from 'utils/isProduction';
+import { graphql, useFragment } from 'react-relay';
+import { PosterPageFragment$key } from '__generated__/PosterPageFragment.graphql';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
-export default function PosterPage() {
+type Props = {
+  queryRef: PosterPageFragment$key;
+};
+
+export default function PosterPage({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment PosterPageFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
-  const { pushToast } = useToastActions();
 
-  const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
+  const POSTER_IMAGE_URL =
+    'https://lh3.googleusercontent.com/Q9zjkyRRAugfSBDfqiuyoefUEglPb6Zt5kj9cn-NzavEEBx_JmCaeSdbasI6V9VlkyWtJtVm1lH3VhHBNhj5ZwzEZ6zvfxF0wnFjoQ=h1200';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
 
-  const { timestamp, hasEnded } = useTimer(MINT_DATE);
+  const { timestamp } = useTimer(MINT_DEADLINE);
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const account = rawAccount?.toLowerCase();
+  const [isMinted, setIsMinted] = useState(false);
 
   const handleBackClick = () => {
-    // TODO: Replace with hook
     window.history.back();
   };
 
-  const handleSignPoster = () => {
-    pushToast({
-      message: 'Thank you for participating in the (Object 006) 2022 Community Poster event.',
-      autoClose: true,
-    });
-  };
+  const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
+
+  const detectOwnedPosterNftFromOpensea = useCallback(
+    async (account: string) => {
+      const response = await fetch(
+        `${openseaBaseUrl}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
+        {}
+      );
+
+      const responseBody = await response.json();
+      return responseBody.assets.length > 0;
+    },
+    [openseaBaseUrl]
+  );
+
+  useEffect(() => {
+    async function checkIfMinted(account: string) {
+      const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(account);
+      setIsMinted(hasOwnedPosterNft);
+    }
+
+    if (account) {
+      checkIfMinted(account);
+    }
+  }, [account, detectOwnedPosterNftFromOpensea]);
 
   return (
     <StyledPage>
@@ -40,33 +83,43 @@ export default function PosterPage() {
         <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
       </StyledPositionedBackLink>
       <StyledWrapper>
-        <PosterFigmaFrame url={FIGMA_URL}></PosterFigmaFrame>
+        <StyledImageContainer>
+          <StyledPosterImage src={POSTER_IMAGE_URL} />
+        </StyledImageContainer>
         <StyledContent>
           <TitleM>2022 Community Poster</TitleM>
           <StyledParagraph>
             <BaseM>
-              Thank you for being a member of Gallery. Celebrate our{' '}
-              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> with us by signing
-              our poster.
+              Thank you for being a member of Gallery. Members celebrated our{' '}
+              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
+              poster.
             </BaseM>
+            <Spacer height={8} />
             <BaseM>
-              The final product will be available to mint as a commemorative token for early
+              We are making the final poster available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
+            <Spacer height={8} />
+
+            <BaseM>Limit 1 per wallet address.</BaseM>
           </StyledParagraph>
 
           {!isMobile && <HorizontalBreak />}
 
-          {hasEnded ? (
-            <StyledCallToAction hasEnded>
-              <BaseXL>Event has ended.</BaseXL>
-            </StyledCallToAction>
+          {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) ? (
+            <>
+              {isMinted ? (
+                <BaseXL>You've successfully minted this poster.</BaseXL>
+              ) : (
+                <StyledCallToAction>
+                  <BaseXL>{timestamp}</BaseXL>
+                  <PosterMintButton onMintSuccess={() => setIsMinted(true)}></PosterMintButton>
+                </StyledCallToAction>
+              )}
+            </>
           ) : (
-            <StyledCallToAction>
-              <BaseXL>{timestamp}</BaseXL>
-              <StyledAnchor href={FIGMA_URL} target="_blank">
-                <StyledButton onClick={handleSignPoster} text="Sign Poster"></StyledButton>
-              </StyledAnchor>
+            <StyledCallToAction hasEnded>
+              <BaseXL>Mint opening soon.</BaseXL>
             </StyledCallToAction>
           )}
         </StyledContent>
@@ -77,7 +130,7 @@ export default function PosterPage() {
 
 const StyledPage = styled.div`
   min-height: 100vh;
-  padding: 20px 40px;
+  padding: 64px 16px 0px;
   display: flex;
   flex-direction: column;
 
@@ -87,10 +140,30 @@ const StyledPage = styled.div`
   margin: 0 auto;
   max-width: ${contentSize.desktop}px;
 
-  @media (max-width: ${contentSize.desktop}px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    padding: 0px 16px;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 64px 40px 20px;
+  }
+`;
+
+const StyledImageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const StyledPosterImage = styled.img`
+  border: 1px solid ${colors.porcelain};
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 600px;
+
+  @media only screen and ${breakpoints.tablet} {
+    justify-content: flex-start;
+
+    width: initial;
   }
 `;
 
@@ -102,11 +175,15 @@ const StyledWrapper = styled.div`
   display: grid;
   align-items: center;
   width: 100%;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  @media (max-width: ${contentSize.desktop}px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 24px;
+  padding-bottom: 100px;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-bottom: 0;
   }
 `;
 const StyledContent = styled.div`
@@ -145,16 +222,4 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     padding: 12px 16px;
     border-top: 1px solid ${colors.porcelain};
   }
-`;
-
-const StyledAnchor = styled.a`
-  text-decoration: none;
-`;
-
-const StyledButton = styled(Button)`
-  align-self: flex-end;
-  width: 100%;
-  height: 100%;
-  padding: 12px 24px;
-  text-decoration: none;
 `;
