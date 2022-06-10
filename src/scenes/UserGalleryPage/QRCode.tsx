@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useCallback, useRef } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import QRIcon from 'src/icons/QRIcon';
-import FullScreenModal from 'scenes/Modals/FullScreenModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 
@@ -87,19 +86,16 @@ export default function QRCode({ username }: { username: string }) {
 
     showModal({
       content: (
-        <FullScreenModal
-          body={
-            <StyledFullScreenQR>
-              <StyledQRWrapper ref={ref} />
-              <Spacer height={24} />
-              <TitleM>
-                <strong>{username}</strong>
-              </TitleM>
-              <StyledBaseM>Scan to open {username}'s gallery in a new browser tab.</StyledBaseM>
-            </StyledFullScreenQR>
-          }
-        />
+        <StyledFullScreenQR>
+          <StyledQRWrapper ref={ref} />
+          <Spacer height={24} />
+          <TitleM>
+            <strong>{username}</strong>
+          </TitleM>
+          <StyledBaseM>Scan to open {username}'s gallery in a new browser tab.</StyledBaseM>
+        </StyledFullScreenQR>
       ),
+      isFullPageOverride: true,
     });
   }, [showModal, username, renderQRCode]);
 
@@ -126,7 +122,7 @@ const StyledButton = styled.button`
 
 const StyledFullScreenQR = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
