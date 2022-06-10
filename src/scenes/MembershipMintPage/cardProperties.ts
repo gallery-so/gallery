@@ -11,8 +11,7 @@ const DESCRIPTION_GENERAL = `Become a member of Gallery.\n
 Holding this grants you the ability to sign up as a new user and access the Gallery beta. You must be holding a membership card at all times in order to continue updating your gallery.\n
 We’re partnering with vision-aligned communities to distribute these cards and onboard our next cohort of collectors, curators, and tastemakers.\n
 [Learn more here.](https://gallery-so.notion.site/Gallery-x-Partners-b00e9a16001b498bb1ee393fde7f3dab)\n
-Limit 1 per wallet address.\n
-Connect your wallet to see if you're eligible to mint.`;
+Limit 1 per wallet address.`;
 
 const DESCRIPTION_GOLD = `Become a member of Gallery.\n
 Holding this grants you the ability to sign up as a new user and access the Gallery beta. You must be holding a membership card at all times in order to continue updating your gallery.\n
