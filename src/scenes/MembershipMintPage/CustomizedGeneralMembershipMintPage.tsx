@@ -149,7 +149,7 @@ export function CustomizedGeneralMembershipMintPage({
           <StyledIneligibleMessageWrapper>
             <BaseM>
               While General Cards have completed minting, community members on the{' '}
-              <b>Early Access Allowlist</b> can still create an account.
+              <b>Early Access Allowlist</b> can still create a Gallery account.
             </BaseM>
 
             <Spacer width={4} />
@@ -174,6 +174,7 @@ export function CustomizedGeneralMembershipMintPage({
     active,
     canMintToken,
     transactionStatus,
+    remainingSupply,
     buttonText,
     isMintButtonEnabled,
     handleMintButtonClick,

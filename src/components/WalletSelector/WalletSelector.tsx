@@ -166,7 +166,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
         <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
-        <StyledRetryButton onClick={retryConnectWallet} text="Sign In" />
+        <StyledRetryButton onClick={retryConnectWallet} text="Try Another Wallet" />
       </StyledWalletSelector>
     );
   }
