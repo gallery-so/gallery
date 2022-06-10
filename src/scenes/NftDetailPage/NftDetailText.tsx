@@ -21,7 +21,7 @@ type Props = {
   externalUrl: string | null;
   // TODO [GAL-206]: support Creator Address post-merge
   // creatorAddress: string | null;
-  openseaCollectionName: string | null;
+  contractName: string | null;
 };
 
 function NftDetailText({
@@ -33,7 +33,7 @@ function NftDetailText({
   externalUrl,
   // TODO [GAL-206]: support Creator Address post-merge
   // creatorAddress,
-  openseaCollectionName,
+  contractName,
 }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const breakpoint = useBreakpoint();
@@ -58,12 +58,10 @@ function NftDetailText({
           <Spacer height={4} />
         </>
       )}
-      {openseaCollectionName && showCommunityLink ? (
-        <InteractiveLink to={`/community/${contractAddress}`}>
-          {openseaCollectionName}
-        </InteractiveLink>
+      {contractName && showCommunityLink ? (
+        <InteractiveLink to={`/community/${contractAddress}`}>{contractName}</InteractiveLink>
       ) : (
-        <BaseM>{openseaCollectionName}</BaseM>
+        <BaseM>{contractName}</BaseM>
       )}
       <Spacer height={isMobile ? 32 : 24} />
       {description && (

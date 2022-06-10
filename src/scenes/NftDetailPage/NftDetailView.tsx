@@ -23,8 +23,11 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           dbid
           name
           description
-          contractAddress @required(action: THROW) {
-            address
+          contract {
+            name
+            contractAddress {
+              address
+            }
           }
           tokenId
           externalUrl
@@ -33,7 +36,6 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           # creatorAddress @required(action: THROW) {
           #   address
           # }
-          openseaCollectionName
         }
         collection @required(action: THROW) {
           dbid
@@ -76,12 +78,12 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           name={token.name}
           description={token.description}
           ownerUsername={username}
-          contractAddress={token.contractAddress.address}
+          contractAddress={token.contract?.contractAddress?.address ?? ''}
           tokenId={token.tokenId}
           externalUrl={token.externalUrl}
           // TODO [GAL-206]: support Creator Address post-merge
           // creatorAddress={token.creatorAddress.address}
-          openseaCollectionName={token.openseaCollectionName}
+          contractName={token.contract?.name}
         />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}

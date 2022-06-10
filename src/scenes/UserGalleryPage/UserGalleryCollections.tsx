@@ -43,6 +43,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
           hidden
           tokens {
             __typename
+            id
           }
           ...UserGalleryCollectionFragment
         }

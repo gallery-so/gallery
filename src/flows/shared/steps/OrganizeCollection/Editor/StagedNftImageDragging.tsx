@@ -17,8 +17,10 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageDraggingFragment on Token {
-        contractAddress @required(action: NONE) {
-          address
+        contract {
+          contractAddress {
+            address
+          }
         }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
@@ -42,9 +44,11 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
     reportError('Image URL not found for StagedNftImageDragging');
   }
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
-    [token.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   return result?.type === 'video' ? (

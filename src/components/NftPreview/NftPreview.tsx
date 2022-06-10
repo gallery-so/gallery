@@ -47,9 +47,11 @@ function NftPreview({ galleryNftRef }: Props) {
         token @required(action: THROW) {
           dbid
           name
-          openseaCollectionName
-          contractAddress @required(action: THROW) {
-            address
+          contract {
+            name
+            contractAddress {
+              address
+            }
           }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
@@ -106,9 +108,11 @@ function NftPreview({ galleryNftRef }: Props) {
     return 'auto';
   }, [columns, result?.urls?.large]);
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
-    [token.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   const {
@@ -147,8 +151,8 @@ function NftPreview({ galleryNftRef }: Props) {
           <StyledNftFooter>
             <StyledNftLabel
               title={token.name}
-              collectionName={token.openseaCollectionName}
-              contractAddress={token.contractAddress.address}
+              collectionName={token.contract?.name}
+              contractAddress={contractAddress}
             />
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>

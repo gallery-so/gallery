@@ -93,8 +93,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       fragment NftDetailAssetFragment on CollectionToken {
         id
         token @required(action: THROW) {
-          contractAddress @required(action: THROW) {
-            address
+          contract {
+            contractAddress {
+              address
+            }
           }
           media @required(action: THROW) {
             ... on HtmlMedia {
@@ -108,9 +110,11 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     tokenRef
   );
 
+  const contractAddress = token.token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(token.token.contractAddress.address ?? ''),
-    [token.token.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   const maxHeight = Math.min(

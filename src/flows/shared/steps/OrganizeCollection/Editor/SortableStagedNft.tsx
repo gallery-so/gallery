@@ -24,8 +24,10 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     graphql`
       fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
-        contractAddress @required(action: NONE) {
-          address
+        contract {
+          contractAddress {
+            address
+          }
         }
         ...StagedNftImageFragment
       }
@@ -52,9 +54,11 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [isDragging, transform, transition]
   );
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
-    [token.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   return (

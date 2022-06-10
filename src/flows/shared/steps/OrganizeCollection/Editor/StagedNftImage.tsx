@@ -19,7 +19,9 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
     graphql`
       fragment StagedNftImageFragment on Token {
         name
-        openseaCollectionName
+        contract {
+          name
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -37,7 +39,7 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
       {hideLabel ? null : (
-        <StyledNftPreviewLabel title={token.name} collectionName={token.openseaCollectionName} />
+        <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
       )}
     </VideoContainer>
   ) : (
@@ -48,7 +50,7 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
       {...props}
     >
       {hideLabel ? null : (
-        <StyledNftPreviewLabel title={token.name} collectionName={token.openseaCollectionName} />
+        <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
       )}
     </StyledGridImage>
   );

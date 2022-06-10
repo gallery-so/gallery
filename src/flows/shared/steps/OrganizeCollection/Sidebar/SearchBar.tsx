@@ -17,7 +17,9 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
       fragment SearchBarFragment on Token @relay(plural: true) {
         dbid
         name
-        openseaCollectionName
+        contract {
+          name
+        }
       }
     `,
     tokensRef
@@ -43,7 +45,7 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
           return true;
         }
 
-        if (token.openseaCollectionName?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 

@@ -19,8 +19,10 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Token {
-        contractAddress @required(action: NONE) {
-          address
+        contract {
+          contractAddress {
+            address
+          }
         }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
@@ -64,9 +66,11 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     reportError('Image URL not found for SidebarNftIcon');
   }
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(token.contractAddress.address ?? ''),
-    [token.contractAddress.address]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   return (

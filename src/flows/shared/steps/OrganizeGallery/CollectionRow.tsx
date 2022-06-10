@@ -38,8 +38,10 @@ function CollectionRow({ collectionRef, className }: Props) {
         tokens @required(action: THROW) {
           id @required(action: THROW)
           token @required(action: THROW) {
-            contractAddress @required(action: THROW) {
-              address @required(action: THROW)
+            contract {
+              contractAddress {
+                address
+              }
             }
             ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
@@ -108,7 +110,7 @@ function CollectionRow({ collectionRef, className }: Props) {
                 <BigNftImagePreview
                   src={imageUrl}
                   backgroundColorOverride={getBackgroundColorOverrideForContract(
-                    token.token.contractAddress.address ?? ''
+                    token.token.contract?.contractAddress?.address ?? ''
                   )}
                 />
               )}
@@ -208,8 +210,10 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
     graphql`
       fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {
         id
-        contractAddress @required(action: THROW) {
-          address @required(action: THROW)
+        contract {
+          contractAddress {
+            address
+          }
         }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
@@ -254,7 +258,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                     <SmolNftImagePreview
                       src={imageUrl}
                       backgroundColorOverride={getBackgroundColorOverrideForContract(
-                        token.contractAddress.address ?? ''
+                        token.contractAddress?.address ?? ''
                       )}
                     />
                   )}
