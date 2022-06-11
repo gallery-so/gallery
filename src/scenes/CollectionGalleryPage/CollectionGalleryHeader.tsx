@@ -20,6 +20,7 @@ import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
+import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
@@ -140,29 +141,42 @@ function CollectionGalleryHeader({
         <StyledCollectionActions>
           {showEditActions ? (
             <>
-              <CopyToClipboard textToCopy={collectionUrl}>
-                <TextButton text="Share" onClick={handleShareClick} />
-              </CopyToClipboard>
-              <SettingsDropdown>
-                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-                {!shouldDisplayMobileLayoutToggle && (
-                  <>
-                    <Spacer height={8} />
-                    <NavElement>
-                      <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                    </NavElement>
-                  </>
-                )}
-              </SettingsDropdown>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+              {/* On mobile, we show these options in the navbar, not in header */}
+              {!isMobile && (
+                <SettingsDropdown>
+                  <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+                  {!shouldDisplayMobileLayoutToggle && (
+                    <>
+                      <Spacer height={8} />
+                      <NavElement>
+                        <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                      </NavElement>
+                    </>
+                  )}
+                </SettingsDropdown>
+              )}
             </>
           ) : (
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
-            </CopyToClipboard>
+            <>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+            </>
           )}
           {shouldDisplayMobileLayoutToggle && (
             <>
-              <Spacer width={16} />
+              <Spacer width={8} />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
             </>
           )}
