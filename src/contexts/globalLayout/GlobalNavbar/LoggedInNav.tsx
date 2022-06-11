@@ -48,6 +48,8 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
+  // FIXME: GraphQL work goes here to get collection ID, if any (so that we can render separate options in navbar)
+
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
   }, [query, showModal]);
@@ -80,10 +82,10 @@ function LoggedInNav({ queryRef }: Props) {
   return username ? (
     <StyledLoggedInNav>
       <NavElement>
-        <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
-          <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
+        <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
+          <TextButton text="Gallery Design" onClick={handleEditGalleryClick} />
           <Spacer height={12} />
-          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} />
+          <TextButton text="Name & Bio" onClick={handleEditNameClick} />
         </Dropdown>
       </NavElement>
       <Spacer width={24} />
