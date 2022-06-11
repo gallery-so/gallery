@@ -53,6 +53,12 @@ type GalleryUser implements Node {
     dbid: DBID!
     username: String
     bio: String
+
+    # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
+    # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
+    # that appears in more than one of the user's wallets.
+    tokens: [Token] @goField(forceResolver: true)
+
     wallets: [Wallet] @goField(forceResolver: true)
     galleries: [Gallery] @goField(forceResolver: true)
     isAuthenticatedUser: Boolean
@@ -237,7 +243,7 @@ type Token implements Node {
     ownedByWallets: [Wallet] @goField(forceResolver: true)
     ownershipHistory: [OwnerAtBlock]
     tokenMetadata: String # source is map[string]interface{} on backend, not sure what best format is here
-    contractAddress: ChainAddress
+    contract: Contract @goField(forceResolver: true)
     externalUrl: String
     blockNumber: String # source is uint64
     # These are subject to change; unlike the other fields, they aren't present on the current persist.Token
@@ -317,6 +323,18 @@ type Community implements Node @goGqlId(fields: ["contractAddress", "chain"]) {
     owners: [TokenHolder]
 }
 
+type Contract implements Node {
+    id: ID!
+    dbid: DBID!
+
+    lastUpdated: Time
+
+    contractAddress: ChainAddress
+    creatorAddress: ChainAddress
+    chain: Chain
+    name: String
+}
+
 # We have this extra type in case we need to stick authed data
 # in here one day.
 type ViewerGallery {
@@ -350,7 +368,7 @@ union CollectionTokenByIdOrError =
     | ErrCollectionNotFound
     | ErrTokenNotFound
 
-union CommunityByAddressOrError = Community | ErrCommunityNotFound
+union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
 type Query {
     node(id: ID!): Node
@@ -478,6 +496,7 @@ union AddUserWalletPayloadOrError =
     | ErrAuthenticationFailed
     | ErrNotAuthorized
     | ErrInvalidInput
+    | ErrAddressOwnedByUser
 
 type AddUserWalletPayload {
     viewer: Viewer
@@ -528,6 +547,10 @@ type ErrAuthenticationFailed implements Error {
 }
 
 type ErrUserAlreadyExists implements Error {
+    message: String!
+}
+
+type ErrAddressOwnedByUser implements Error {
     message: String!
 }
 

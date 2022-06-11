@@ -258,7 +258,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                     <SmolNftImagePreview
                       src={imageUrl}
                       backgroundColorOverride={getBackgroundColorOverrideForContract(
-                        token.contractAddress?.address ?? ''
+                        token.contract?.contractAddress?.address ?? ''
                       )}
                     />
                   )}
@@ -289,7 +289,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                   <SmolNftImagePreview
                     src={imageUrl}
                     backgroundColorOverride={getBackgroundColorOverrideForContract(
-                      token.contractAddress.address ?? ''
+                      token.contract?.contractAddress?.address ?? ''
                     )}
                   />
                 )}

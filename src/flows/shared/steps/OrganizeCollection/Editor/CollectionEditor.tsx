@@ -59,14 +59,12 @@ function CollectionEditor({ viewerRef }: Props) {
               }
             }
           }
-          wallets @required(action: THROW) {
-            tokens @required(action: THROW) {
-              dbid @required(action: THROW)
-              name @required(action: THROW)
-              lastUpdated @required(action: THROW)
-              ...SidebarFragment
-              ...StagingAreaFragment
-            }
+          tokens {
+            dbid @required(action: THROW)
+            name @required(action: THROW)
+            lastUpdated @required(action: THROW)
+            ...SidebarFragment
+            ...StagingAreaFragment
           }
         }
       }
@@ -132,8 +130,8 @@ function CollectionEditor({ viewerRef }: Props) {
   }, [sidebarTokens]);
 
   const allNfts = useMemo(() => {
-    return removeNullValues(viewer.user.wallets.flatMap((wallet) => wallet?.tokens));
-  }, [viewer.user.wallets]);
+    return removeNullValues(viewer.user.tokens ?? []);
+  }, [viewer.user.tokens]);
 
   // stabilize `allNfts` since SWR middleware can make it referentially unstable
   const allNftsCacheKey = useMemo(
