@@ -237,12 +237,8 @@ const StyledCollectionName = styled.div`
 
 const StyledSeparator = styled.div`
   margin: 0 10px;
-  display: none;
+  display: block;
   color: ${colors.metal};
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    display: block;
-  }
 `;
 
 const StyledUsername = styled.span`
