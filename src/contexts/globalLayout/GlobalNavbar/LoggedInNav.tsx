@@ -48,7 +48,8 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
-  // FIXME: GraphQL work goes here to get collection ID, if any (so that we can render separate options in navbar)
+  const { query: routerQuery } = useRouter();
+  // if collectionId is present, it means that we're on a collection page
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
@@ -58,9 +59,13 @@ function LoggedInNav({ queryRef }: Props) {
     showModal({ content: <EditUserInfoModal queryRef={query} /> });
   }, [query, showModal]);
 
-  const handleEditGalleryClick = useCallback(() => {
-    void push('/edit');
-  }, [push]);
+  const handleEditDesignClick = useCallback(() => {
+    if (routerQuery?.collectionId) {
+      void push(`/edit?collectionId=${routerQuery.collectionId}`);
+    } else {
+      void push('/edit');
+    }
+  }, [push, routerQuery]);
 
   const handleMintPostersClick = useCallback(() => {
     setMintPosterDismissed(true);
@@ -83,7 +88,10 @@ function LoggedInNav({ queryRef }: Props) {
     <StyledLoggedInNav>
       <NavElement>
         <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
-          <TextButton text="Gallery Design" onClick={handleEditGalleryClick} />
+          <TextButton
+            text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
+            onClick={handleEditDesignClick}
+          />
           <Spacer height={12} />
           <TextButton text="Name & Bio" onClick={handleEditNameClick} />
         </Dropdown>
