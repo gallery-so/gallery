@@ -207,7 +207,7 @@ const StyledHeaderWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-start;
 `;
 
 const BreadcrumbsWrapperWidth = 80;
@@ -238,7 +238,7 @@ const StyledCollectionName = styled.div`
 const StyledSeparator = styled.div`
   margin: 0 10px;
   display: block;
-  color: ${colors.metal};
+  color: ${colors.offBlack};
 `;
 
 const StyledUsername = styled.span`
