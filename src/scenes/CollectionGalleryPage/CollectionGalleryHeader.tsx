@@ -183,12 +183,13 @@ function CollectionGalleryHeader({
         </StyledCollectionActions>
       </StyledHeaderWrapper>
 
-      <Spacer height={16} />
-
       {unescapedCollectorsNote && (
-        <StyledCollectionNote>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
+        <>
+          <Spacer height={16} />
+          <StyledCollectionNote>
+            <Markdown text={unescapedCollectorsNote} />
+          </StyledCollectionNote>
+        </>
       )}
 
       <Spacer height={80} />
