@@ -1,4 +1,4 @@
-import { FC, ComponentType } from 'react';
+import { FC, ComponentType, useEffect } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -11,6 +11,8 @@ import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import welcomeDoormat from 'utils/welcomeDoormat';
+import isProduction from 'utils/isProduction';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -34,6 +36,10 @@ const App: FC<{
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
 
   const locationKey = useStabilizedRouteTransitionKey();
+
+  useEffect(() => {
+    if (isProduction()) welcomeDoormat();
+  }, []);
 
   return (
     <>
