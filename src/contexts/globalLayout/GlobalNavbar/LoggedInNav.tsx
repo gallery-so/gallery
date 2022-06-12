@@ -49,7 +49,8 @@ function LoggedInNav({ queryRef }: Props) {
   );
 
   const { query: routerQuery } = useRouter();
-  // if collectionId is present, it means that we're on a collection page
+  const userOwnsCollectionOrGallery = routerQuery?.username === query?.viewer?.user?.username;
+  console.log(userOwnsCollectionOrGallery);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
@@ -86,16 +87,18 @@ function LoggedInNav({ queryRef }: Props) {
 
   return username ? (
     <StyledLoggedInNav>
-      <NavElement>
-        <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
-          <TextButton
-            text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
-            onClick={handleEditDesignClick}
-          />
-          <Spacer height={12} />
-          <TextButton text="Name & Bio" onClick={handleEditNameClick} />
-        </Dropdown>
-      </NavElement>
+      {userOwnsCollectionOrGallery && (
+        <NavElement>
+          <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
+            <TextButton
+              text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
+              onClick={handleEditDesignClick}
+            />
+            <Spacer height={12} />
+            <TextButton text="Name & Bio" onClick={handleEditNameClick} />
+          </Dropdown>
+        </NavElement>
+      )}
       <Spacer width={24} />
       <NavElement>
         <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
