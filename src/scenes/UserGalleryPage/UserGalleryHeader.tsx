@@ -55,12 +55,12 @@ function UserGalleryHeader({
             <>
               <LinkButton textToCopy={`https://gallery.so/${user.username}`} />
               <Spacer width={8} />
-            </>
-          )}
-          {isMobile && isQRCodeEnabled && (
-            <>
-              <QRCode username={user.username} />
-              <Spacer width={8} />
+              {isQRCodeEnabled && (
+                <>
+                  <QRCode username={user.username} />
+                  <Spacer width={8} />
+                </>
+              )}
             </>
           )}
           {showMobileLayoutToggle && (
