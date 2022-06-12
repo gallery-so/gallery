@@ -49,8 +49,6 @@ function LoggedInNav({ queryRef }: Props) {
   );
 
   const { query: routerQuery } = useRouter();
-  const userOwnsCollectionOrGallery = routerQuery?.username === query?.viewer?.user?.username;
-  console.log(userOwnsCollectionOrGallery);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
@@ -82,6 +80,7 @@ function LoggedInNav({ queryRef }: Props) {
   }
 
   const username = query.viewer.user?.username;
+  const userOwnsCollectionOrGallery = routerQuery?.username === username;
 
   const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && !isMintPosterDismissed;
 
