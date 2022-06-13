@@ -5,6 +5,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import QRIcon from 'src/icons/QRIcon';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { BaseM, TitleM } from 'components/core/Text/Text';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 export default function QRCode({ username }: { username: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -78,7 +79,11 @@ export default function QRCode({ username }: { username: string }) {
   }, [username]);
 
   const { showModal } = useModalActions();
+  const track = useTrack();
+
   const handleClick = useCallback(() => {
+    track('Profile QR Code Click', { username });
+
     // Need a brief timeout so that the modal renders before rendering QR code. Otherwise the ref will not exist and renderQRCode cannot append the ref
     setTimeout(() => {
       renderQRCode();
@@ -97,7 +102,7 @@ export default function QRCode({ username }: { username: string }) {
       ),
       isFullPageOverride: true,
     });
-  }, [showModal, username, renderQRCode]);
+  }, [track, username, showModal, renderQRCode]);
 
   return (
     <StyledButton onClick={handleClick} title="Open QR code">
