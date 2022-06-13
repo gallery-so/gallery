@@ -20,6 +20,7 @@ import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
+import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
@@ -140,41 +141,55 @@ function CollectionGalleryHeader({
         <StyledCollectionActions>
           {showEditActions ? (
             <>
-              <CopyToClipboard textToCopy={collectionUrl}>
-                <TextButton text="Share" onClick={handleShareClick} />
-              </CopyToClipboard>
-              <SettingsDropdown>
-                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-                {!shouldDisplayMobileLayoutToggle && (
-                  <>
-                    <Spacer height={8} />
-                    <NavElement>
-                      <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                    </NavElement>
-                  </>
-                )}
-              </SettingsDropdown>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+              {/* On mobile, we show these options in the navbar, not in header */}
+              {!isMobile && (
+                <SettingsDropdown>
+                  <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+                  {!shouldDisplayMobileLayoutToggle && (
+                    <>
+                      <Spacer height={8} />
+                      <NavElement>
+                        <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                      </NavElement>
+                    </>
+                  )}
+                </SettingsDropdown>
+              )}
             </>
           ) : (
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
-            </CopyToClipboard>
+            <>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+            </>
           )}
           {shouldDisplayMobileLayoutToggle && (
             <>
-              <Spacer width={16} />
+              <Spacer width={8} />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
             </>
           )}
         </StyledCollectionActions>
       </StyledHeaderWrapper>
 
-      <Spacer height={16} />
-
       {unescapedCollectorsNote && (
-        <StyledCollectionNote>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
+        <>
+          <Spacer height={16} />
+          <StyledCollectionNote>
+            <Markdown text={unescapedCollectorsNote} />
+          </StyledCollectionNote>
+        </>
       )}
 
       <Spacer height={80} />
@@ -193,7 +208,7 @@ const StyledHeaderWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-start;
 `;
 
 const BreadcrumbsWrapperWidth = 80;
@@ -223,12 +238,8 @@ const StyledCollectionName = styled.div`
 
 const StyledSeparator = styled.div`
   margin: 0 10px;
-  display: none;
-  color: ${colors.metal};
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    display: block;
-  }
+  display: block;
+  color: ${colors.offBlack};
 `;
 
 const StyledUsername = styled.span`

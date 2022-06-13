@@ -113,7 +113,6 @@ const StyledButton = styled.button`
   padding: 0;
   height: 24px;
   width: 24px;
-  margin-right: 8px;
 
   & svg path {
     stroke: ${colors.offBlack};

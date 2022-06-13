@@ -48,6 +48,8 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
+  const { query: routerQuery } = useRouter();
+
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
   }, [query, showModal]);
@@ -56,9 +58,13 @@ function LoggedInNav({ queryRef }: Props) {
     showModal({ content: <EditUserInfoModal queryRef={query} /> });
   }, [query, showModal]);
 
-  const handleEditGalleryClick = useCallback(() => {
-    void push('/edit');
-  }, [push]);
+  const handleEditDesignClick = useCallback(() => {
+    if (routerQuery?.collectionId) {
+      void push(`/edit?collectionId=${routerQuery.collectionId}`);
+    } else {
+      void push('/edit');
+    }
+  }, [push, routerQuery]);
 
   const handleMintPostersClick = useCallback(() => {
     setMintPosterDismissed(true);
@@ -74,18 +80,24 @@ function LoggedInNav({ queryRef }: Props) {
   }
 
   const username = query.viewer.user?.username;
+  const userOwnsCollectionOrGallery = routerQuery?.username === username;
 
   const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && !isMintPosterDismissed;
 
   return username ? (
     <StyledLoggedInNav>
-      <NavElement>
-        <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
-          <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
-          <Spacer height={12} />
-          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} />
-        </Dropdown>
-      </NavElement>
+      {userOwnsCollectionOrGallery && (
+        <NavElement>
+          <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
+            <TextButton
+              text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
+              onClick={handleEditDesignClick}
+            />
+            <Spacer height={12} />
+            <TextButton text="Name & Bio" onClick={handleEditNameClick} />
+          </Dropdown>
+        </NavElement>
+      )}
       <Spacer width={24} />
       <NavElement>
         <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
