@@ -3,7 +3,6 @@
  */
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import ActionText from 'components/core/ActionText/ActionText';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -135,14 +134,18 @@ function WizardFooter({
   return (
     <StyledWizardFooter>
       {shouldHideSecondaryButton ? null : (
-        <ActionText color={colors.metal} onClick={handlePreviousClick}>
-          {isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
-            ? 'Cancel'
-            : 'Back'}
-        </ActionText>
+        <Button
+          text={
+            isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
+              ? 'Cancel'
+              : 'Back'
+          }
+          onClick={handlePreviousClick}
+          type="secondary"
+        />
       )}
       <Spacer width={40} />
-      <StyledButton
+      <Button
         text={buttonText}
         onClick={handleNextClick}
         disabled={!isNextEnabled || isLoading}
@@ -171,11 +174,6 @@ const StyledWizardFooter = styled.div`
 
   border-top: 1px solid ${colors.porcelain};
   background: ${colors.white};
-`;
-
-const StyledButton = styled(Button)`
-  min-width: 192px;
-  padding: 0px 32px;
 `;
 
 export default memo(WizardFooter);
