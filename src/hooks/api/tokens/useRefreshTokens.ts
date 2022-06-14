@@ -11,6 +11,25 @@ export default function useRefreshTokens() {
       mutation useRefreshTokensMutation {
         refreshTokens {
           __typename
+          ... on RefreshTokensPayload {
+            viewer {
+              user {
+                tokens {
+                  dbid @required(action: THROW)
+                  name @required(action: THROW)
+                  lastUpdated @required(action: THROW)
+                  ...SidebarFragment
+                  ...StagingAreaFragment
+                }
+              }
+            }
+          }
+          ... on ErrNotAuthorized {
+            message
+          }
+          ... on ErrOpenSeaRefreshFailed {
+            message
+          }
         }
       }
     `
