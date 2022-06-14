@@ -63,8 +63,6 @@ test.only('it works', async () => {
             username: 'some username',
             dbid: 'some_follower_user_dbid',
             bio: 'soem value',
-
-            // @ts-expect-error
             id: 'some_follower_user_id',
           },
         ],
@@ -78,7 +76,7 @@ test.only('it works', async () => {
           },
         ],
       },
-
+      // @ts-expect-error
       id: 'some_viewer_id',
     },
   };
