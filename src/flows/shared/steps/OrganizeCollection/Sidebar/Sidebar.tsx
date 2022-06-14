@@ -45,10 +45,7 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
-  const sidebarTokensAsArray = useMemo(
-    () => convertObjectToArray(sidebarTokens).reverse(),
-    [sidebarTokens]
-  );
+  const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
   const tokensToDisplayInSidebar = useMemo(() => {
     if (debouncedSearchQuery) {
