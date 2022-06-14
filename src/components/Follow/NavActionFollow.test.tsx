@@ -47,7 +47,7 @@ const Fixture = () => {
   return <NavActionFollow userRef={query.viewer.user} queryRef={query} />;
 };
 
-test.only('it works', async () => {
+test.only('it renders the Follow button', async () => {
   const response: NavActionFollowTestQueryQuery = {
     __typename: 'Query',
     viewer: {
@@ -63,6 +63,7 @@ test.only('it works', async () => {
             username: 'some username',
             dbid: 'some_follower_user_dbid',
             bio: 'soem value',
+
             id: 'some_follower_user_id',
           },
         ],

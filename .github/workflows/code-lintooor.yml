@@ -43,5 +43,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn install
+      - name: Generate relay files
+        run: yarn relay
       - name: Run unit tests
         run: yarn jest
