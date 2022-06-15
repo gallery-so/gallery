@@ -15,6 +15,7 @@ import colors from 'components/core/colors';
 import usePersistedState from 'hooks/usePersistedState';
 import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { useAuthActions } from 'contexts/auth/AuthContext';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -71,6 +72,11 @@ function LoggedInNav({ queryRef }: Props) {
     void push('/members/poster');
   }, [push, setMintPosterDismissed]);
 
+  const { handleLogout } = useAuthActions();
+  const handleSignOutClick = useCallback(() => {
+    void handleLogout();
+  }, [handleLogout]);
+
   // TODO: we shouldn't need to do this, since the parent should verify that
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
   // causes this component to freak out before the parent realizes it shouldn't
@@ -114,6 +120,8 @@ function LoggedInNav({ queryRef }: Props) {
             )}
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+            <Spacer height={12} />
+            <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>
       </NavElement>
