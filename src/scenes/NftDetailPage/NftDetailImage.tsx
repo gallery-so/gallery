@@ -22,10 +22,7 @@ function NftDetailImage({ tokenRef, maxHeight }: Props) {
         media @required(action: THROW) {
           ... on ImageMedia {
             __typename
-            contentRenderURLs @required(action: THROW) {
-              raw @required(action: THROW)
-              large
-            }
+            contentRenderURL
           }
         }
       }
@@ -36,7 +33,7 @@ function NftDetailImage({ tokenRef, maxHeight }: Props) {
 
   const contentRenderURL = useMemo(() => {
     if (token.media.__typename === 'ImageMedia') {
-      return token.media.contentRenderURLs.large || token.media.contentRenderURLs.raw;
+      return token.media.contentRenderURL;
     }
 
     return '';
