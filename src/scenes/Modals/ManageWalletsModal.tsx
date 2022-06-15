@@ -1,10 +1,6 @@
-import ActionText from 'components/core/ActionText/ActionText';
 import breakpoints from 'components/core/breakpoints';
 import Spacer from 'components/core/Spacer/Spacer';
 import ManageWallets from 'components/ManageWallets/ManageWallets';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { ManageWalletsModalFragment$key } from '__generated__/ManageWalletsModalFragment.graphql';
