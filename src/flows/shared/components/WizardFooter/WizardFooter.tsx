@@ -15,6 +15,7 @@ import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useKeyDown from 'hooks/useKeyDown';
+import ActionText from 'components/core/ActionText/ActionText';
 
 function WizardFooter({
   step,
@@ -134,15 +135,11 @@ function WizardFooter({
   return (
     <StyledWizardFooter>
       {shouldHideSecondaryButton ? null : (
-        <Button
-          text={
-            isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
-              ? 'Cancel'
-              : 'Back'
-          }
-          onClick={handlePreviousClick}
-          type="secondary"
-        />
+        <ActionText color={colors.metal} onClick={handlePreviousClick}>
+          {isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
+            ? 'Cancel'
+            : 'Back'}
+        </ActionText>
       )}
       <Spacer width={40} />
       <Button
