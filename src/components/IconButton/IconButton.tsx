@@ -68,7 +68,7 @@ export default function IconButton({
 
   return (
     <StyledButtonWrapper>
-      <StyledButton disabled={disabled} onClick={handleClick}>
+      <StyledButton disabled={disabled} onClick={handleClick} data-testid="follow-button">
         <CircleSvgWrapper>
           <circle
             onMouseEnter={handleMouseEnter}
@@ -88,7 +88,11 @@ export default function IconButton({
           <HoverIcon />
         </StyledHoverIconWrapper>
       </StyledButton>
-      <StyledTooltip text={tooltipText} showTooltip={!isAuthenticatedUsersPage && showTooltip} />
+      <StyledTooltip
+        text={tooltipText}
+        showTooltip={!isAuthenticatedUsersPage && showTooltip}
+        dataTestId="follow-button-tooltip"
+      />
     </StyledButtonWrapper>
   );
 }

@@ -26,6 +26,16 @@ const moduleExports = {
     scrollRestoration: true,
     relay: relayConfig,
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/careers',
+        destination: 'https://gallery-so.notion.site/Careers-e8d78dea54834630928f075f4a4ccdba',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const sentryWebpackPluginOptions = {

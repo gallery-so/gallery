@@ -3,12 +3,9 @@ import styled from 'styled-components';
 
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 
-export default function LinkButton({ username }: { username: string }) {
+export default function LinkButton({ textToCopy }: { textToCopy: string }) {
   return (
-    <CopyToClipboard
-      textToCopy={`https://gallery.so/${username}`}
-      successText={'Copied link to clipboard'}
-    >
+    <CopyToClipboard textToCopy={textToCopy} successText={'Copied link to clipboard'}>
       <StyledButton>
         <svg
           width="24"
@@ -39,7 +36,6 @@ const StyledButton = styled.button`
   padding: 0;
   height: 24px;
   width: 24px;
-  margin-right: 8px;
 
   & svg path {
     stroke: ${colors.offBlack};

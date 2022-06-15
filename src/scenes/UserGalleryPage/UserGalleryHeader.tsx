@@ -51,8 +51,18 @@ function UserGalleryHeader({
           <StyledUsername>{user.username}</StyledUsername>
         )}
         <StyledButtonsWrapper>
-          {isMobile && <LinkButton username={user.username} />}
-          {isMobile && isQRCodeEnabled && <QRCode username={user.username} />}
+          {isMobile && (
+            <>
+              <LinkButton textToCopy={`https://gallery.so/${user.username}`} />
+              <Spacer width={8} />
+              {isQRCodeEnabled && (
+                <>
+                  <QRCode username={user.username} />
+                  <Spacer width={8} />
+                </>
+              )}
+            </>
+          )}
           {showMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
