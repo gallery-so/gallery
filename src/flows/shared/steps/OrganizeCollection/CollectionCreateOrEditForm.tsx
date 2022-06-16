@@ -171,7 +171,7 @@ function CollectionCreateOrEditForm({
       )}
       <Spacer height={20} />
       <ButtonContainer>
-        <StyledButton
+        <Button
           mini
           text={buttonText}
           onClick={handleClick}
@@ -201,10 +201,6 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-`;
-
-const StyledButton = styled(Button)`
-  width: 90px;
 `;
 
 export default CollectionCreateOrEditForm;

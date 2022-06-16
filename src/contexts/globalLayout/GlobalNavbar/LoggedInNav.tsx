@@ -11,6 +11,7 @@ import { graphql, useFragment } from 'react-relay';
 import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graphql';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
+import { useAuthActions } from 'contexts/auth/AuthContext';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -58,6 +59,11 @@ function LoggedInNav({ queryRef }: Props) {
     }
   }, [push, routerQuery]);
 
+  const { handleLogout } = useAuthActions();
+  const handleSignOutClick = useCallback(() => {
+    void handleLogout();
+  }, [handleLogout]);
+
   // TODO: we shouldn't need to do this, since the parent should verify that
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
   // causes this component to freak out before the parent realizes it shouldn't
@@ -90,6 +96,8 @@ function LoggedInNav({ queryRef }: Props) {
             <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+            <Spacer height={12} />
+            <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>
       </NavElement>
