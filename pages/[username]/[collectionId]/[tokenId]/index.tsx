@@ -60,7 +60,7 @@ const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : '';
-  const tokenId = params?.nftId ? (params.nftId as string) : '';
+  const tokenId = params?.tokenId ? (params.tokenId as string) : '';
   const collectionId = params?.collectionId ? (params.collectionId as string) : '';
 
   return {
