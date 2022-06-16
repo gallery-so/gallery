@@ -23,7 +23,6 @@ function ManageWalletsModal({ newAddress, queryRef }: Props) {
   return (
     <StyledManageWalletsModal>
       <ManageWallets queryRef={query} newAddress={newAddress} />
-      <Spacer height={24}></Spacer>
     </StyledManageWalletsModal>
   );
 }
