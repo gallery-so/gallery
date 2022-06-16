@@ -10,11 +10,7 @@ import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graphql';
 import styled from 'styled-components';
-import { FeatureFlag } from 'components/core/enums';
 import colors from 'components/core/colors';
-import usePersistedState from 'hooks/usePersistedState';
-import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -23,10 +19,6 @@ type Props = {
 function LoggedInNav({ queryRef }: Props) {
   const { showModal } = useModalActions();
   const { push } = useRouter();
-  const [isMintPosterDismissed, setMintPosterDismissed] = usePersistedState(
-    GALLERY_POSTER_BANNER_STORAGE_KEY,
-    false
-  );
 
   const query = useFragment(
     graphql`
@@ -66,11 +58,6 @@ function LoggedInNav({ queryRef }: Props) {
     }
   }, [push, routerQuery]);
 
-  const handleMintPostersClick = useCallback(() => {
-    setMintPosterDismissed(true);
-    void push('/members/poster');
-  }, [push, setMintPosterDismissed]);
-
   // TODO: we shouldn't need to do this, since the parent should verify that
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
   // causes this component to freak out before the parent realizes it shouldn't
@@ -81,8 +68,6 @@ function LoggedInNav({ queryRef }: Props) {
 
   const username = query.viewer.user?.username;
   const userOwnsCollectionOrGallery = routerQuery?.username === username;
-
-  const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && !isMintPosterDismissed;
 
   return username ? (
     <StyledLoggedInNav>
@@ -100,18 +85,9 @@ function LoggedInNav({ queryRef }: Props) {
       )}
       <Spacer width={24} />
       <NavElement>
-        <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
+        <StyledDropdownWrapper>
           <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
             <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
-            {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && (
-              <>
-                <Spacer height={12} />
-                <StyledNavItemContainer>
-                  <TextButton text="MINT 2022 community POSTER" onClick={handleMintPostersClick} />
-                  {!isMintPosterDismissed && <StyledCircle />}
-                </StyledNavItemContainer>
-              </>
-            )}
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
           </Dropdown>
@@ -125,18 +101,14 @@ const StyledLoggedInNav = styled.div`
   display: flex;
 `;
 
-const StyledNavItemContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledCircle = styled.div`
-  height: 4px;
-  width: 4px;
-  background-color: ${colors.activeBlue};
-  margin-left: 4px;
-  border-radius: 50%;
-`;
+// Notification blue dot, to be used in the future
+// const StyledCircle = styled.div`
+//   height: 4px;
+//   width: 4px;
+//   background-color: ${colors.activeBlue};
+//   margin-left: 4px;
+//   border-radius: 50%;
+// `;
 
 const StyledDropdownWrapper = styled.div<{ hasNotifiction?: boolean }>`
   position: relative;
