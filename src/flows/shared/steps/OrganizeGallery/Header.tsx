@@ -1,15 +1,11 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import Button from 'components/core/Button/Button';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
+import TextButton from 'components/core/Button/TextButton';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
-  // Const handleGalleryPreview = useCallback(() => {
-  //   alert('TODO - go to gallery preview');
-  // }, []);
-
   const handleAddCollection = useCallback(() => {
     push('organizeCollection');
   }, [push]);
@@ -22,10 +18,8 @@ function Header({ wizard: { push } }: WizardComponentProps) {
         <BaseM>Drag and drop to reorder your collection</BaseM>
       </TitleContainer>
       <OptionsContainer>
-        {/* TODO: support gallery preview
-        <TextButton text="Preview Gallery" onClick={handleGalleryPreview} /> */}
         <Spacer width={16} />
-        <StyledButton type="secondary" text="+ Add Collection" onClick={handleAddCollection} />
+        <TextButton text="+ Add Collection" onClick={handleAddCollection}></TextButton>
       </OptionsContainer>
     </StyledHeader>
   );
@@ -49,10 +43,6 @@ const OptionsContainer = styled.div`
   align-items: center;
 
   text-transform: uppercase;
-`;
-
-const StyledButton = styled(Button)`
-  padding: 10px 16px;
 `;
 
 export default withWizard(Header);
