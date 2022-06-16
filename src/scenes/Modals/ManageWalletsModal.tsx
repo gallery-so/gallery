@@ -1,5 +1,4 @@
 import breakpoints from 'components/core/breakpoints';
-import Spacer from 'components/core/Spacer/Spacer';
 import ManageWallets from 'components/ManageWallets/ManageWallets';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
