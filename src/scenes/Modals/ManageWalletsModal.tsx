@@ -37,9 +37,4 @@ const StyledManageWalletsModal = styled.div`
   }
 `;
 
-const SignOutWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 export default ManageWalletsModal;

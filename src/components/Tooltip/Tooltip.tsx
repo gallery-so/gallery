@@ -5,11 +5,12 @@ import styled from 'styled-components';
 type Props = {
   text: string;
   className?: string;
+  dataTestId?: string;
 };
 
-export default function Tooltip({ text, className }: Props) {
+export default function Tooltip({ text, className, dataTestId }: Props) {
   return (
-    <StyledTooltip className={className}>
+    <StyledTooltip className={className} data-testid={dataTestId}>
       <StyledBaseS color={colors.white}>{text}</StyledBaseS>
     </StyledTooltip>
   );
