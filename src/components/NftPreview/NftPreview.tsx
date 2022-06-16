@@ -102,7 +102,7 @@ function NftPreview({ galleryNftRef }: Props) {
     // in the preview label appearing stretched beneath the image, since
     // we cap the max height to 80vh when column = 1; so this is disabled
     // in those cases for now.
-    if (columns > 1 && result?.urls?.large?.endsWith('.svg')) {
+    if (columns > 1 && result?.urls?.large?.includes('.svg')) {
       return '100%';
     }
     return 'auto';
