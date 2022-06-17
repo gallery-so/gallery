@@ -52,8 +52,12 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <StyledNavActionFollow isLoggedIn={isLoggedIn}>
-      <FollowButton userRef={user} isFollowing={isFollowing} loggedInUserId={loggedInUserId} />
-      <Spacer width={4} />
+      {isLoggedIn ? (
+        <>
+          <FollowButton userRef={user} isFollowing={isFollowing} loggedInUserId={loggedInUserId} />
+          <Spacer width={4} />
+        </>
+      ) : null}
       <FollowerListButton userRef={user}></FollowerListButton>
     </StyledNavActionFollow>
   );
