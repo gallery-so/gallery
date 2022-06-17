@@ -23,6 +23,7 @@ export default function OpenGraphUserPage() {
             bio
             galleries {
               collections {
+                hidden
                 nfts {
                   nft {
                     ...getVideoOrImageUrlForNftPreviewFragment
@@ -45,7 +46,8 @@ export default function OpenGraphUserPage() {
 
   const imageUrls = removeNullValues(
     user.galleries?.[0]?.collections
-      ?.flatMap((collection) => collection?.nfts)
+      ?.filter((collection) => !collection?.hidden)
+      .flatMap((collection) => collection?.nfts)
       .map((galleryNft) => {
         return galleryNft?.nft ? getVideoOrImageUrlForNftPreview(galleryNft.nft) : null;
       })
