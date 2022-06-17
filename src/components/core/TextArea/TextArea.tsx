@@ -173,7 +173,7 @@ export function AutoResizingTextAreaWithCharCount({
 
 const StyledTextAreaWithCharCount = styled.div`
   position: relative;
-  background: ${colors.offWhite};
+  background: ${colors.faint};
   padding-bottom: 1px; /* This fixes a FF bug where the bottom border does not appear */
 `;
 
