@@ -121,8 +121,6 @@ const StyledEditUserInfoModal = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  height: 40px;
-  width: 150px;
   align-self: flex-end;
 `;
 

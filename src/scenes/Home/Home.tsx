@@ -20,7 +20,7 @@ function Home() {
     <StyledHomePage>
       <GalleryIntro />
       <Spacer height={24} />
-      <StyledButton text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
+      <Button text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
       <Spacer height={24} />
       <StyledLinkContainer>
         <NavLink to="/members" dataTestId="explore-button">
@@ -42,10 +42,6 @@ const StyledHomePage = styled.div`
   flex-direction: column;
 
   height: 100vh;
-`;
-
-const StyledButton = styled(Button)`
-  width: 150px;
 `;
 
 const StyledLinkContainer = styled.div`

@@ -102,9 +102,7 @@ const StyledManageWallets = styled.div`
 
 const StyledButton = styled(Button)`
   align-self: flex-end;
-  padding: 16px;
   width: 100%;
-  height: 100%;
 `;
 
 const StyledErrorText = styled(ErrorText)`
