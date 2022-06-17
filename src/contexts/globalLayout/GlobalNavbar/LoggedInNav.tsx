@@ -48,7 +48,10 @@ function LoggedInNav({ queryRef }: Props) {
   }, [query, showModal]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal({ content: <EditUserInfoModal queryRef={query} /> });
+    showModal({
+      content: <EditUserInfoModal queryRef={query} />,
+      headerText: 'Edit username and bio',
+    });
   }, [query, showModal]);
 
   const handleEditDesignClick = useCallback(() => {

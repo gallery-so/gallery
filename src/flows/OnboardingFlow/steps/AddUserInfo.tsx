@@ -76,6 +76,7 @@ function AddUserInfo({ next }: WizardContext) {
   return (
     <FullPageCenteredStep withFooter>
       <StyledUserInfoForm
+        mode="Add"
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}

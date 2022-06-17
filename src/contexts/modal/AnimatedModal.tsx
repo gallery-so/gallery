@@ -8,6 +8,7 @@ import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
 import { MODAL_PADDING_PX } from './constants';
+import { TitleS } from 'components/core/Text/Text';
 
 type Props = {
   isActive: boolean;
@@ -16,6 +17,7 @@ type Props = {
   isFullPage: boolean;
   isMobile: boolean;
   isPaddingDisabled: boolean;
+  headerText: string;
 };
 
 function AnimatedModal({
@@ -25,6 +27,7 @@ function AnimatedModal({
   isFullPage,
   isMobile,
   isPaddingDisabled,
+  headerText,
 }: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
@@ -49,7 +52,7 @@ function AnimatedModal({
     if (isFullPage || isPaddingDisabled) {
       return '0px';
     }
-    return `${MODAL_PADDING_PX}px`;
+    return `${MODAL_PADDING_PX}px ${MODAL_PADDING_PX}px 12px`;
   }, [isFullPage, isPaddingDisabled]);
 
   const maxWidth = useMemo(() => {
@@ -73,7 +76,10 @@ function AnimatedModal({
             maxWidth={maxWidth}
             padding={padding}
           >
-            <StyledDecoratedCloseIcon onClick={hideModal} />
+            <StyledHeader>
+              {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
+              <StyledDecoratedCloseIcon onClick={hideModal} />
+            </StyledHeader>
             {content}
           </StyledContent>
         </_ToggleTranslate>
@@ -149,6 +155,16 @@ const StyledContentContainer = styled.div<{ isFullPage: boolean }>`
 
   // should appear above the overlay
   z-index: 2;
+`;
+
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: ${MODAL_PADDING_PX};
+`;
+
+const StyledTitleS = styled(TitleS)`
+  padding-bottom: ${MODAL_PADDING_PX}px;
 `;
 
 const StyledContent = styled.div<{

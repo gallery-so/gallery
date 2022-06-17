@@ -35,6 +35,7 @@ export const useModalState = (): ModalState => {
 
 type ShowModalFnProps = {
   content: ReactElement;
+  headerText?: string;
   onClose?: () => void;
   isFullPage?: boolean;
   isPaddingDisabled?: boolean;
@@ -71,6 +72,8 @@ function ModalProvider({ children }: Props) {
   const [isFullPage, setIsFullPage] = useState<boolean>(false);
   // Whether to disable default padding
   const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
+  // Header text
+  const [headerText, setHeaderText] = useState('');
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -84,8 +87,15 @@ function ModalProvider({ children }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const showModal = useCallback(
-    ({ content, onClose = noop, isFullPage = false, isPaddingDisabled = false }) => {
+    ({
+      content,
+      headerText = '',
+      onClose = noop,
+      isFullPage = false,
+      isPaddingDisabled = false,
+    }) => {
       setIsActive(true);
+      setHeaderText(headerText);
       isModalOpenRef.current = true;
       setIsMounted(true);
       setIsFullPage(isFullPage);
@@ -112,6 +122,7 @@ function ModalProvider({ children }: Props) {
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
+      setHeaderText('');
       setIsFullPage(false);
       setIsPaddingDisabled(false);
       onCloseRef.current = noop;
@@ -150,6 +161,7 @@ function ModalProvider({ children }: Props) {
             isActive={isActive}
             hideModal={hideModal}
             content={content}
+            headerText={headerText}
             isFullPage={isFullPage}
             isMobile={isMobile}
             isPaddingDisabled={isPaddingDisabled}

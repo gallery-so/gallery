@@ -6,6 +6,7 @@ import { TitleS } from 'components/core/Text/Text';
 import BigInput from 'components/core/BigInput/BigInput';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
+import { MODAL_PADDING_PX } from 'contexts/modal/constants';
 
 type Props = {
   className?: string;
@@ -30,7 +31,7 @@ function UserInfoForm({
   onUsernameChange,
   bio,
   onBioChange,
-  mode = 'Add',
+  mode,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -75,8 +76,8 @@ function UserInfoForm({
 
   return (
     <StyledForm className={className} onSubmit={handleSubmit}>
-      <StyledTitleS>{`${mode} username and bio`}</StyledTitleS>
-      <Spacer height={8} />
+      {mode === 'Add' ? <StyledTitleS>Add username and bio</StyledTitleS> : null}
+      <Spacer height={16} />
       <BigInput
         onChange={handleUsernameChange}
         placeholder="Username"
@@ -105,7 +106,7 @@ const StyledForm = styled.form`
 `;
 
 const StyledTitleS = styled(TitleS)`
-  padding-left: 4px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
 `;
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`

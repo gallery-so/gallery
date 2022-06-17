@@ -82,7 +82,6 @@ function EditUserInfoModal({ queryRef }: Props) {
   return (
     <StyledEditUserInfoModal>
       <UserInfoForm
-        mode="Edit"
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}
@@ -98,6 +97,9 @@ function EditUserInfoModal({ queryRef }: Props) {
         </>
       )}
       <Spacer height={16} />
+
+      {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
+      <Spacer height={12} />
       <StyledButton
         mini
         text="Save"
