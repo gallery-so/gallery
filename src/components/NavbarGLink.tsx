@@ -1,9 +1,20 @@
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 import SecondaryGLogoIcon from 'src/icons/SecondaryGLogoIcon';
 import styled from 'styled-components';
 
 export default function NavbarGLink() {
+  const { push } = useRouter();
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      void push('/home');
+    },
+    [push]
+  );
+
   return (
-    <StyledNavbarGLink href="/home">
+    <StyledNavbarGLink href="/home" onClick={handleClick}>
       <StyledSecondaryGLogoIcon />
     </StyledNavbarGLink>
   );

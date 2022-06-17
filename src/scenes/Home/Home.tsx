@@ -1,4 +1,5 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import Feed from 'components/Feed/Feed';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import Head from 'next/head';
 import styled from 'styled-components';
@@ -9,7 +10,9 @@ export default function Home() {
       <Head>
         <title>Gallery - Home</title>
       </Head>
-      <StyledPage>Feed</StyledPage>
+      <StyledPage>
+        <Feed />
+      </StyledPage>
     </>
   );
 }
