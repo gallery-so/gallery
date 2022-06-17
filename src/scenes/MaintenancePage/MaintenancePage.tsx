@@ -4,7 +4,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
-import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
+import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 
 function MaintenancePage() {
   return (
@@ -37,8 +37,8 @@ const StyledMaintenancePage = styled.div`
   align-items: center;
   flex-direction: column;
 
-  padding-top: ${FOOTER_HEIGHT}px;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  padding-top: ${GLOBAL_FOOTER_HEIGHT}px;
+  height: calc(100vh - ${GLOBAL_FOOTER_HEIGHT}px);
 `;
 
 const StyledLinkContainer = styled.div`
