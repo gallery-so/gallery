@@ -4,7 +4,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
+import { MODAL_PADDING_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';

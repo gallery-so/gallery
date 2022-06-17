@@ -7,6 +7,7 @@ import transitions, {
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
+import { MODAL_PADDING_PX } from './constants';
 
 type Props = {
   isActive: boolean;
@@ -16,9 +17,6 @@ type Props = {
   isMobile: boolean;
   isPaddingDisabled: boolean;
 };
-
-export const MODAL_PADDING_PX = 24;
-export const MODAL_PADDING_MOBILE_PX = 16;
 
 function AnimatedModal({
   isActive,
@@ -51,18 +49,15 @@ function AnimatedModal({
     if (isFullPage || isPaddingDisabled) {
       return '0px';
     }
-    if (isMobile) {
-      return `${MODAL_PADDING_MOBILE_PX}px`;
-    }
     return `${MODAL_PADDING_PX}px`;
-  }, [isFullPage, isMobile, isPaddingDisabled]);
+  }, [isFullPage, isPaddingDisabled]);
 
   const maxWidth = useMemo(() => {
     if (isFullPage) {
       return '100vw';
     }
     if (isMobile) {
-      return `calc(100vw - ${MODAL_PADDING_MOBILE_PX * 2}px)`;
+      return `calc(100vw - ${MODAL_PADDING_PX * 2}px)`;
     }
     return `calc(100vw - ${MODAL_PADDING_PX}px)`;
   }, [isFullPage, isMobile]);
