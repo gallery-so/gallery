@@ -91,7 +91,6 @@ const StyledUsernameWrapper = styled.div`
   align-items: flex-start;
 `;
 
-// FIXME: How to use styled components to render TitleM at mobile breakpoint?
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);

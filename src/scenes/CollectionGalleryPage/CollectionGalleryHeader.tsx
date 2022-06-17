@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -128,15 +128,27 @@ function CollectionGalleryHeader({
   return (
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
-        <StyledBreadcrumbsWrapper>
-          <StyledUsernameWrapper>
-            <StyledUsernameAndSeparatorWrapper>
-              <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
-              {collection.name && <StyledSeparator>/</StyledSeparator>}
-            </StyledUsernameAndSeparatorWrapper>
-          </StyledUsernameWrapper>
-          <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
-        </StyledBreadcrumbsWrapper>
+        {isMobile ? (
+          <StyledBreadcrumbsWrapper>
+            <StyledUsernameWrapper>
+              <StyledUsernameAndSeparatorWrapper>
+                <StyledUsernameMobile onClick={handleBackClick}>{username}</StyledUsernameMobile>
+                {collection.name && <StyledSeparatorMobile>/</StyledSeparatorMobile>}
+              </StyledUsernameAndSeparatorWrapper>
+            </StyledUsernameWrapper>
+            <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
+          </StyledBreadcrumbsWrapper>
+        ) : (
+          <StyledBreadcrumbsWrapper>
+            <StyledUsernameWrapper>
+              <StyledUsernameAndSeparatorWrapper>
+                <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
+                {collection.name && <StyledSeparator>/</StyledSeparator>}
+              </StyledUsernameAndSeparatorWrapper>
+            </StyledUsernameWrapper>
+            <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
+          </StyledBreadcrumbsWrapper>
+        )}
 
         <StyledCollectionActions>
           {showEditActions ? (
@@ -185,7 +197,7 @@ function CollectionGalleryHeader({
 
       {unescapedCollectorsNote && (
         <>
-          <Spacer height={16} />
+          <Spacer height={isMobile ? 4 : 16} />
           <StyledCollectionNote>
             <Markdown text={unescapedCollectorsNote} />
           </StyledCollectionNote>
@@ -213,7 +225,7 @@ const StyledHeaderWrapper = styled.div`
 
 const BreadcrumbsWrapperWidth = 80;
 
-const StyledBreadcrumbsWrapper = styled(TitleL)`
+const StyledBreadcrumbsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: calc(100% - ${BreadcrumbsWrapperWidth}px);
@@ -232,17 +244,39 @@ const StyledUsernameAndSeparatorWrapper = styled.div`
   display: flex;
 `;
 
-const StyledCollectionName = styled.div`
+const StyledCollectionName = styled(TitleL)`
   word-break: break-word;
 `;
 
-const StyledSeparator = styled.div`
+const StyledCollectionNameMobile = styled(TitleM)`
+  font-style: normal;
+  word-break: break-word;
+`;
+
+const StyledSeparator = styled(TitleL)`
   margin: 0 10px;
   display: block;
   color: ${colors.offBlack};
 `;
 
-const StyledUsername = styled.span`
+const StyledSeparatorMobile = styled(TitleM)`
+  font-style: normal;
+  margin: 0 4px;
+  display: block;
+  color: ${colors.offBlack};
+`;
+
+const StyledUsername = styled(TitleL)`
+  cursor: pointer;
+  color: ${colors.metal};
+  display: flex;
+  &:hover {
+    color: ${colors.shadow};
+  }
+`;
+
+const StyledUsernameMobile = styled(TitleM)`
+  font-style: normal;
   cursor: pointer;
   color: ${colors.metal};
   display: flex;
