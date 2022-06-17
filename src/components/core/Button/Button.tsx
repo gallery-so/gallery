@@ -89,6 +89,9 @@ const StyledPrimaryButton = styled(StyledButton)`
 const StyledSecondaryButton = styled(StyledButton)`
   border: 1px solid ${colors.porcelain};
   background: ${colors.white};
+  // secondary button has 1px less padding to account for border
+  padding: 0 23px;
+
   ${TitleXS} {
     transition: color ${transitions.cubic};
   }

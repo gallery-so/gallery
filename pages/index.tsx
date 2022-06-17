@@ -1,6 +1,6 @@
-import HomeScene from 'scenes/Home/Home';
+import LandingPageScene from 'scenes/LandingPage/LandingPage';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function Index() {
-  return <GalleryRoute element={<HomeScene />} navbar={false} />;
+  return <GalleryRoute element={<LandingPageScene />} navbar={false} />;
 }

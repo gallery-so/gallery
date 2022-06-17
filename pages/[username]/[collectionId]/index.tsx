@@ -6,6 +6,9 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import useAddFeedLinkToNavbar from 'hooks/useAddFeedLinkToNavbar';
+import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
+import NavbarGLink from 'components/NavbarGLink';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;

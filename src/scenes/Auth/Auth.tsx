@@ -50,7 +50,7 @@ function Auth({ queryRef }: Props) {
   if (viewer?.__typename === 'Viewer') {
     // If user exists in DB, send them to their profile
     if (viewer.user?.username) {
-      return <GalleryRedirect to={`/${viewer.user.username}`} />;
+      return <GalleryRedirect to="/home" />;
     }
 
     // If user is authenticated but hasn't set their username yet.

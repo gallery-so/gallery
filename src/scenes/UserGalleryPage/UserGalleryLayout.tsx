@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import useAddFeedLinkToNavbar from 'hooks/useAddFeedLinkToNavbar';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
