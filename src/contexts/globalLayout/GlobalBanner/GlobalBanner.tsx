@@ -1,5 +1,6 @@
 import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
+import Markdown from 'components/core/Markdown/Markdown';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
@@ -51,10 +52,10 @@ export default function Banner({
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
-        <StyledContent>
-          {title && <StyledTitle>{title}</StyledTitle>}
-          <StyledText color={colors.offBlack}>{text}</StyledText>
-        </StyledContent>
+        {title && <StyledTitle>{title}</StyledTitle>}
+        <BaseM>
+          <Markdown text={text} />
+        </BaseM>
         <StyledAction>
           {actionComponent}
           <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
@@ -109,18 +110,8 @@ const StyledClose = styled.span`
   }
 `;
 
-const StyledContent = styled.div`
-  @media (max-width: ${contentSize.desktop}px) {
-    margin-bottom: 12px;
-  }
-`;
-
 const StyledTitle = styled(TitleS)`
   display: inline-block;
-`;
-
-const StyledText = styled(BaseM)`
-  display: inline;
 `;
 
 const StyledAction = styled.div`
