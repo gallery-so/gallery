@@ -81,7 +81,7 @@ function LoggedInNav({ queryRef }: Props) {
         <NavElement>
           <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
             <TextButton
-              text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
+              text={routerQuery?.collectionId ? 'Edit Collection' : 'Edit Gallery'}
               onClick={handleEditDesignClick}
             />
             <Spacer height={12} />

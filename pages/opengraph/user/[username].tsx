@@ -23,6 +23,7 @@ export default function OpenGraphUserPage() {
             bio
             galleries {
               collections {
+                hidden
                 tokens {
                   token {
                     ...getVideoOrImageUrlForNftPreviewFragment
@@ -45,7 +46,8 @@ export default function OpenGraphUserPage() {
 
   const imageUrls = removeNullValues(
     user.galleries?.[0]?.collections
-      ?.flatMap((collection) => collection?.tokens)
+      ?.filter((collection) => !collection?.hidden)
+      .flatMap((collection) => collection?.tokens)
       .map((galleryToken) => {
         return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
       })

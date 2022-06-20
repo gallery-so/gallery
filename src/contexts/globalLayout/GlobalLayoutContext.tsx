@@ -343,7 +343,13 @@ function GlobalNavbarWithFadeEnabled({
     >
       {
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? <Banner text="" queryRef={query} /> : null
+        isBannerVisible ? (
+          <Banner
+            text="Gallery will be undergoing planned maintenance on **Monday, June 20th** from **9pm – 11:59pm EST** as we upgrade our infrastructure. The site will not be usable during this period."
+            queryRef={query}
+            localStorageKey="MAINTENANCE_BANNER_6_18_STORAGE_KEY"
+          />
+        ) : null
       }
       <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
     </StyledGlobalNavbarWithFadeEnabled>
