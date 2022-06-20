@@ -92,7 +92,7 @@ export default function QRCode({ username }: { username: string }) {
     // Need a brief timeout so that the modal renders before rendering QR code. Otherwise the ref will not exist and renderQRCode cannot append the ref
     setTimeout(() => {
       renderQRCode();
-    }, 100);
+    }, 200);
 
     showModal({
       content: (
