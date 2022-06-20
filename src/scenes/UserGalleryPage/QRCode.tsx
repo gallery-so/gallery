@@ -25,12 +25,7 @@ export default function QRCode({ username }: { username: string }) {
         data: `https://gallery.so/${username}`,
         margin: 0,
         qrOptions: { typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' },
-        imageOptions: {
-          hideBackgroundDots: true,
-          imageSize: 0.4,
-          margin: 0,
-          crossOrigin: 'anonymous',
-        },
+        imageOptions: { hideBackgroundDots: true, imageSize: 0.4, margin: 0 },
         dotsOptions: { type: 'square', color: '#000000', gradient: null },
         backgroundOptions: { color: '#ffffff', gradient: null },
         image:
@@ -92,7 +87,7 @@ export default function QRCode({ username }: { username: string }) {
     // Need a brief timeout so that the modal renders before rendering QR code. Otherwise the ref will not exist and renderQRCode cannot append the ref
     setTimeout(() => {
       renderQRCode();
-    }, 200);
+    }, 1000);
 
     showModal({
       content: (
