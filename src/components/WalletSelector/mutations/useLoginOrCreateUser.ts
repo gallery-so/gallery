@@ -19,6 +19,18 @@ export default function useLoginOrCreateUser() {
 
           ... on LoginPayload {
             userId @required(action: THROW)
+            viewer {
+              ... on Viewer {
+                user {
+                  wallets @required(action: THROW) {
+                    dbid @required(action: THROW)
+                    chainAddress @required(action: THROW) {
+                      address @required(action: THROW)
+                    }
+                  }
+                }
+              }
+            }
           }
           ... on ErrUserNotFound {
             message
