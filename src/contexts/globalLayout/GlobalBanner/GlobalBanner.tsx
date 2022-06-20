@@ -5,6 +5,7 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import styled from 'styled-components';
 import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
 import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
@@ -58,7 +59,7 @@ export default function Banner({
         </BaseM>
         <StyledAction>
           {actionComponent}
-          <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
+          <StyledClose onClick={hideBanner} />
         </StyledAction>
       </StyledBanner>
     </StyledContainer>
@@ -99,14 +100,17 @@ const StyledBanner = styled.div`
   }
 `;
 
-const StyledClose = styled.span`
-  cursor: pointer;
-  color: #141414;
+const StyledClose = styled(DecoratedCloseIcon)`
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 0;
 
   @media (max-width: ${contentSize.desktop}px) {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 0;
   }
 `;
 
