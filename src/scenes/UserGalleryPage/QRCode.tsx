@@ -25,7 +25,12 @@ export default function QRCode({ username }: { username: string }) {
         data: `https://gallery.so/${username}`,
         margin: 0,
         qrOptions: { typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' },
-        imageOptions: { hideBackgroundDots: true, imageSize: 0.4, margin: 0 },
+        imageOptions: {
+          hideBackgroundDots: true,
+          imageSize: 0.4,
+          margin: 0,
+          crossOrigin: 'anonymous',
+        },
         dotsOptions: { type: 'square', color: '#000000', gradient: null },
         backgroundOptions: { color: '#ffffff', gradient: null },
         image:
