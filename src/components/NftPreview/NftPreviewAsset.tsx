@@ -1,5 +1,5 @@
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
+import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
@@ -28,14 +28,14 @@ function UnrenderedPreviewAsset({ id, assetType }: UnrenderedPreviewAssetProps) 
 }
 
 type Props = {
-  nftRef: NftPreviewAssetFragment$key;
+  tokenRef: NftPreviewAssetFragment$key;
   size: number;
 };
 
-function NftPreviewAsset({ nftRef, size }: Props) {
-  const nft = useFragment(
+function NftPreviewAsset({ tokenRef, size }: Props) {
+  const token = useFragment(
     graphql`
-      fragment NftPreviewAssetFragment on Nft {
+      fragment NftPreviewAssetFragment on Token {
         dbid
         name
         media {
@@ -74,18 +74,18 @@ function NftPreviewAsset({ nftRef, size }: Props) {
         }
       }
     `,
-    nftRef
+    tokenRef
   );
 
   if (
-    nft.media?.__typename === 'VideoMedia' ||
-    nft.media?.__typename === 'ImageMedia' ||
-    nft.media?.__typename === 'HtmlMedia' ||
-    nft.media?.__typename === 'AudioMedia' ||
-    nft.media?.__typename === 'GltfMedia' ||
-    nft.media?.__typename === 'UnknownMedia'
+    token.media?.__typename === 'VideoMedia' ||
+    token.media?.__typename === 'ImageMedia' ||
+    token.media?.__typename === 'HtmlMedia' ||
+    token.media?.__typename === 'AudioMedia' ||
+    token.media?.__typename === 'GltfMedia' ||
+    token.media?.__typename === 'UnknownMedia'
   ) {
-    const src = graphqlGetResizedNftImageUrlWithFallback(nft.media?.previewURLs.large, size);
+    const src = graphqlGetResizedNftImageUrlWithFallback(token.media?.previewURLs.large, size);
 
     // TODO: this is a hack to handle videos that are returned by OS as images.
     // i.e., assets that do not have animation_urls, and whose image_urls all contain
@@ -98,14 +98,14 @@ function NftPreviewAsset({ nftRef, size }: Props) {
       <ImageWithLoading
         src={src}
         heightType="inherit"
-        widthType={src.endsWith('svg') ? 'fullWidth' : 'maxWidth'}
-        alt={nft.name ?? ''}
+        widthType={src.includes('svg') ? 'fullWidth' : 'maxWidth'}
+        alt={token.name ?? ''}
       />
     );
   }
 
   // TODO: instead of rendering this, just throw to an error boundary and have that report to sentry
-  return <UnrenderedPreviewAsset id={nft.dbid} assetType={nft.media?.__typename ?? ''} />;
+  return <UnrenderedPreviewAsset id={token.dbid} assetType={token.media?.__typename ?? ''} />;
 }
 
 export default NftPreviewAsset;

@@ -19,6 +19,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__/GeneralMembershipMintPageUseAllowlistFragment.graphql';
 import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
 import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
+import { removeNullValues } from 'utils/removeNullValues';
 import { OPENSEA_API_BASEURL } from 'constants/opensea';
 import { CustomizedGeneralMembershipMintPage } from './CustomizedGeneralMembershipMintPage';
 
@@ -45,7 +46,9 @@ function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$ke
   const query = useFragment(
     graphql`
       fragment GeneralMembershipMintPageUseAllowlistFragment on Query {
-        generalAllowlist
+        generalAllowlist @required(action: THROW) {
+          address
+        }
       }
     `,
     queryRef
@@ -59,7 +62,7 @@ function useAllowlist(queryRef: GeneralMembershipMintPageUseAllowlistFragment$ke
     return getLocalAllowlist();
   }
 
-  return new Set(data);
+  return new Set(removeNullValues(data.map((entry) => entry.address)));
 }
 
 type ContentProps = {

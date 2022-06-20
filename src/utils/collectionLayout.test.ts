@@ -1,10 +1,10 @@
-import { EditModeNft, EditModeNftChild } from 'flows/shared/steps/OrganizeCollection/types';
+import { EditModeToken, EditModeTokenChild } from 'flows/shared/steps/OrganizeCollection/types';
 import { getWhitespacePositionsFromStagedItems, insertWhitespaceBlocks } from './collectionLayout';
 
-function generateTestNft(): EditModeNft {
+function generateTestNft(): EditModeToken {
   return {
     id: '123',
-    nft: {} as EditModeNftChild, // This is wrong but our test doesn't actually need the data inside the NFT,
+    token: {} as EditModeTokenChild, // This is wrong but our test doesn't actually need the data inside the NFT,
   };
 }
 
@@ -28,8 +28,8 @@ describe.skip('getWhitespacePositionsFromStagedItems', () => {
 });
 
 describe.skip('insertWhitespaceBlocks', () => {
-  it('inserts white spaces into a list of nfts accordingly', () => {
-    const nfts = [
+  it('inserts white spaces into a list of tokens accordingly', () => {
+    const tokens = [
       generateTestNft(),
       generateTestNft(),
       generateTestNft(),
@@ -37,8 +37,8 @@ describe.skip('insertWhitespaceBlocks', () => {
       generateTestNft(),
     ];
     const whitespaceList = [0, 0, 1, 4, 5];
-    const whitespacesAndNfts = insertWhitespaceBlocks(nfts, whitespaceList);
+    const whitespacesAndNfts = insertWhitespaceBlocks(tokens, whitespaceList);
     expect(whitespacesAndNfts.length).toEqual(10);
-    expect(whitespacesAndNfts[2].id).toEqual(nfts[0].id);
+    expect(whitespacesAndNfts[2].id).toEqual(tokens[0].id);
   });
 });

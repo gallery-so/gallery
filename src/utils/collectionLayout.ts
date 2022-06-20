@@ -1,6 +1,6 @@
 import {
-  EditModeNftChild,
-  isEditModeNft,
+  EditModeTokenChild,
+  isEditModeToken,
   StagingItem,
   WhitespaceBlock,
 } from 'flows/shared/steps/OrganizeCollection/types';
@@ -13,12 +13,12 @@ import {
 // The whitespace list would be : [0, 0, 1, 4, 5]
 
 export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]): number[] {
-  // For every nft we encounter in stagedItems, increment a counter to track its position in the list of nfts.
+  // For every token we encounter in stagedItems, increment a counter to track its position in the list of tokens.
   // For every whitespace we encounter, add the counter's value to the list of whitespace positions.
   let nftIndex = 0;
   const result: number[] = [];
   stagedItems.forEach((stagedItem) => {
-    if (isEditModeNft(stagedItem)) {
+    if (isEditModeToken(stagedItem)) {
       nftIndex++;
     } else {
       // is whitespace
@@ -33,11 +33,11 @@ export function generate12DigitId() {
   return Math.round(Math.random() * 1000000000000);
 }
 
-// filter whitespaces from stagedItems and map each EditModeNft -> Nft
+// filter whitespaces from stagedItems and map each EditModeToken -> Nft
 export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
-  return stagedItems.reduce((filtered: EditModeNftChild[], item) => {
-    if (isEditModeNft(item)) {
-      filtered.push(item.nft);
+  return stagedItems.reduce((filtered: EditModeTokenChild[], item) => {
+    if (isEditModeToken(item)) {
+      filtered.push(item.token);
     }
 
     return filtered;

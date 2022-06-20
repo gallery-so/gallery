@@ -24,8 +24,8 @@ export default function OpenGraphUserPage() {
             galleries {
               collections {
                 hidden
-                nfts {
-                  nft {
+                tokens {
+                  token {
                     ...getVideoOrImageUrlForNftPreviewFragment
                   }
                 }
@@ -47,11 +47,11 @@ export default function OpenGraphUserPage() {
   const imageUrls = removeNullValues(
     user.galleries?.[0]?.collections
       ?.filter((collection) => !collection?.hidden)
-      .flatMap((collection) => collection?.nfts)
-      .map((galleryNft) => {
-        return galleryNft?.nft ? getVideoOrImageUrlForNftPreview(galleryNft.nft) : null;
+      .flatMap((collection) => collection?.tokens)
+      .map((galleryToken) => {
+        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
       })
-      .map((nft) => nft?.urls.large)
+      .map((token) => token?.urls.large)
   ).slice(0, 4);
 
   const width = parseInt(query.width as string) || 600;

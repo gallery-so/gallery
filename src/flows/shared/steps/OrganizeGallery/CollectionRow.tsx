@@ -7,7 +7,7 @@ import colors from 'components/core/colors';
 import {
   getBackgroundColorOverrideForContract,
   graphqlGetResizedNftImageUrlWithFallback,
-} from 'utils/nft';
+} from 'utils/token';
 import Markdown from 'components/core/Markdown/Markdown';
 import Settings from 'public/icons/ellipses.svg';
 import { graphql, useFragment } from 'react-relay';
@@ -35,10 +35,14 @@ function CollectionRow({ collectionRef, className }: Props) {
         collectorsNote
         hidden
 
-        nfts {
-          id
-          nft @required(action: NONE) {
-            contractAddress
+        tokens @required(action: THROW) {
+          id @required(action: THROW)
+          token @required(action: THROW) {
+            contract {
+              contractAddress {
+                address
+              }
+            }
             ...getVideoOrImageUrlForNftPreviewFragment
             ...CollectionRowCompactNftsFragment
           }
@@ -49,13 +53,13 @@ function CollectionRow({ collectionRef, className }: Props) {
   );
 
   const { name, collectorsNote, hidden } = collection;
-  const nfts = useMemo(() => removeNullValues(collection.nfts), [collection]);
+  const tokens = useMemo(() => removeNullValues(collection.tokens), [collection]);
 
   const unescapedCollectionName = useMemo(() => unescape(name ?? ''), [name]);
   const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote ?? ''), [collectorsNote]);
 
-  const firstThreeNfts = useMemo(() => nfts.slice(0, 3), [nfts]);
-  const remainingNfts = useMemo(() => nfts.slice(3), [nfts]);
+  const firstThreeNfts = useMemo(() => tokens.slice(0, 3), [tokens]);
+  const remainingNfts = useMemo(() => tokens.slice(3), [tokens]);
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
@@ -86,8 +90,8 @@ function CollectionRow({ collectionRef, className }: Props) {
       </Header>
       <Spacer height={12} />
       <Body>
-        {firstThreeNfts.map((nft) => {
-          const result = getVideoOrImageUrlForNftPreview(nft.nft);
+        {firstThreeNfts.map((token) => {
+          const result = getVideoOrImageUrlForNftPreview(token.token);
 
           if (!result) {
             return null;
@@ -99,14 +103,14 @@ function CollectionRow({ collectionRef, className }: Props) {
           );
 
           return (
-            <BigNftContainer key={nft.id}>
+            <BigNftContainer key={token.id}>
               {result.type === 'video' ? (
                 <BigNftVideoPreview src={imageUrl} />
               ) : (
                 <BigNftImagePreview
                   src={imageUrl}
                   backgroundColorOverride={getBackgroundColorOverrideForContract(
-                    nft.nft.contractAddress ?? ''
+                    token.token.contract?.contractAddress?.address ?? ''
                   )}
                 />
               )}
@@ -114,7 +118,7 @@ function CollectionRow({ collectionRef, className }: Props) {
           );
         })}
         {remainingNfts.length > 0 ? (
-          <CompactNfts nftRefs={remainingNfts.map((it) => it.nft)} />
+          <CompactNfts nftRefs={remainingNfts.map((it) => it.token)} />
         ) : null}
       </Body>
       {isHidden && <StyledHiddenLabel caps>Hidden</StyledHiddenLabel>}
@@ -202,18 +206,22 @@ const Body = styled.div`
  * - if more than 5 NFTs, display the first 3, then the rest in text
  */
 function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$key }) {
-  const nfts = useFragment(
+  const tokens = useFragment(
     graphql`
-      fragment CollectionRowCompactNftsFragment on Nft @relay(plural: true) {
+      fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {
         id
-        contractAddress
+        contract {
+          contractAddress {
+            address
+          }
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     nftRefs
   );
 
-  const nonNullNfts = removeNullValues(nfts);
+  const nonNullNfts = removeNullValues(tokens);
 
   const firstThreeNfts = useMemo(() => nonNullNfts.slice(0, 3), [nonNullNfts]);
   const firstFiveNfts = useMemo(() => nonNullNfts.slice(0, 5), [nonNullNfts]);
@@ -230,8 +238,8 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
       <Content>
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
-            {firstThreeNfts.map((nft) => {
-              const result = getVideoOrImageUrlForNftPreview(nft);
+            {firstThreeNfts.map((token) => {
+              const result = getVideoOrImageUrlForNftPreview(token);
 
               if (!result) {
                 return null;
@@ -243,14 +251,14 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
               );
 
               return (
-                <SmolNftContainer key={nft.id}>
+                <SmolNftContainer key={token.id}>
                   {result.type === 'video' ? (
                     <SmolNftVideoPreview src={imageUrl} />
                   ) : (
                     <SmolNftImagePreview
                       src={imageUrl}
                       backgroundColorOverride={getBackgroundColorOverrideForContract(
-                        nft.contractAddress ?? ''
+                        token.contract?.contractAddress?.address ?? ''
                       )}
                     />
                   )}
@@ -261,8 +269,8 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
             <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
-          firstFiveNfts.map((nft) => {
-            const result = getVideoOrImageUrlForNftPreview(nft);
+          firstFiveNfts.map((token) => {
+            const result = getVideoOrImageUrlForNftPreview(token);
 
             if (!result) {
               return null;
@@ -274,14 +282,14 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
             );
 
             return (
-              <SmolNftContainer key={nft.id}>
+              <SmolNftContainer key={token.id}>
                 {result.type === 'video' ? (
                   <SmolNftVideoPreview src={imageUrl} />
                 ) : (
                   <SmolNftImagePreview
                     src={imageUrl}
                     backgroundColorOverride={getBackgroundColorOverrideForContract(
-                      nft.contractAddress ?? ''
+                      token.contract?.contractAddress?.address ?? ''
                     )}
                   />
                 )}

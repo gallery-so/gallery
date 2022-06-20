@@ -7,23 +7,23 @@ import { StagedItemDraggingFragment$key } from '__generated__/StagedItemDragging
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  nftRef: StagedItemDraggingFragment$key;
-  isEditModeNft: boolean;
+  tokenRef: StagedItemDraggingFragment$key;
+  isEditModeToken: boolean;
   size: number;
 };
 
-function StagedItemDragging({ nftRef, isEditModeNft, size }: Props) {
-  const nft = useFragment(
+function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
+  const token = useFragment(
     graphql`
-      fragment StagedItemDraggingFragment on Nft {
+      fragment StagedItemDraggingFragment on Token {
         ...StagedNftImageDraggingFragment
       }
     `,
-    nftRef
+    tokenRef
   );
 
-  if (isEditModeNft) {
-    return <StagedNftImageDragging nftRef={nft} size={size} />;
+  if (isEditModeToken) {
+    return <StagedNftImageDragging tokenRef={token} size={size} />;
   }
 
   return (
