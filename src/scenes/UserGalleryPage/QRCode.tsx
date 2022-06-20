@@ -87,6 +87,8 @@ export default function QRCode({ username }: { username: string }) {
   const { showModal } = useModalActions();
   const track = useTrack();
 
+  // The Gallery logo does not appear the first time that the QR code loads. It does appear every time afterward.
+  // Here, we instantiate the StyledQRWrapper briefly on page load (but it is visually hidden), so that the first time the user clicks the icon is actually render #2.
   const [dummyQR, setDummyQR] = useState(false);
   useEffect(() => {
     setDummyQR(true);
