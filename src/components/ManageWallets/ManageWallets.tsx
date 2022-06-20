@@ -26,7 +26,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         viewer {
           ... on Viewer {
             user {
-              wallets @required(action: THROW) {
+              wallets {
                 dbid @required(action: THROW)
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
