@@ -6,7 +6,13 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import QRCodePopover from 'scenes/Modals/QRCodePopover';
 
-export default function QRCode({ username }: { username: string }) {
+export default function QRCode({
+  username,
+  styledQrCode,
+}: {
+  username: string;
+  styledQrCode: any;
+}) {
   const { showModal } = useModalActions();
   const track = useTrack();
 
@@ -14,10 +20,10 @@ export default function QRCode({ username }: { username: string }) {
     track('Profile QR Code Click', { username });
 
     showModal({
-      content: <QRCodePopover username={username} />,
+      content: <QRCodePopover username={username} styledQrCode={styledQrCode} />,
       isFullPageOverride: true,
     });
-  }, [track, username, showModal]);
+  }, [track, username, showModal, styledQrCode]);
 
   return (
     <StyledButton onClick={handleClick} title="Open QR code">
