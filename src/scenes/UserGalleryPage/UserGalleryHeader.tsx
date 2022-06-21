@@ -5,7 +5,7 @@ import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
-import QRCode from './QRCode';
+import QRCodeButton from './QRCodeButton';
 import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
@@ -57,7 +57,7 @@ function UserGalleryHeader({
               <Spacer width={8} />
               {isQRCodeEnabled && (
                 <>
-                  <QRCode username={user.username} />
+                  <QRCodeButton username={user.username} />
                   <Spacer width={8} />
                 </>
               )}
