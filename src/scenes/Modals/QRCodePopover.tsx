@@ -79,7 +79,7 @@ export default function QRCodePopover({
     // Calling update() refreshes the canvas content, which fixes the issue.
     styledQrCode.update({ data: `https://gallery.so/${username}` });
     styledQrCode.append(ref.current);
-  });
+  }, [styledQrCode, username]);
 
   return (
     <StyledQRCodePopover>
