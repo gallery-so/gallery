@@ -4,13 +4,13 @@ import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
 
 type Props = {
-  nftRef: NftDetailAudioFragment$key;
+  tokenRef: NftDetailAudioFragment$key;
 };
 
-function NftDetailAudio({ nftRef }: Props) {
-  const nft = useFragment(
+function NftDetailAudio({ tokenRef }: Props) {
+  const token = useFragment(
     graphql`
-      fragment NftDetailAudioFragment on Nft {
+      fragment NftDetailAudioFragment on Token {
         name
         media @required(action: THROW) {
           ... on AudioMedia {
@@ -23,22 +23,22 @@ function NftDetailAudio({ nftRef }: Props) {
         }
       }
     `,
-    nftRef
+    tokenRef
   );
 
-  if (nft.media.__typename !== 'AudioMedia') {
+  if (token.media.__typename !== 'AudioMedia') {
     throw new Error('Using an NftDetailAudio component without an audio media type');
   }
 
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={nft.media?.previewURLs.large} alt={nft.name ?? ''} />
+      <ImageWithLoading src={token.media?.previewURLs.large} alt={token.name ?? ''} />
       <StyledAudio
         controls
         loop
         controlsList="nodownload"
         preload="none"
-        src={nft.media.contentRenderURL}
+        src={token.media.contentRenderURL}
       />
     </StyledAudioContainer>
   );

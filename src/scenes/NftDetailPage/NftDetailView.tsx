@@ -18,17 +18,24 @@ type Props = {
 export default function NftDetailView({ username, authenticatedUserOwnsAsset, queryRef }: Props) {
   const collectionNft = useFragment(
     graphql`
-      fragment NftDetailViewFragment on CollectionNft {
-        nft @required(action: THROW) {
+      fragment NftDetailViewFragment on CollectionToken {
+        token @required(action: THROW) {
           dbid
           name
           description
-          contractAddress
+          contract {
+            name
+            contractAddress {
+              address
+            }
+          }
           tokenId
           externalUrl
           collectorsNote
-          creatorAddress
-          openseaCollectionName
+          # TODO [GAL-206]: support creator address post-merge
+          # creatorAddress @required(action: THROW) {
+          #   address
+          # }
         }
         collection @required(action: THROW) {
           dbid
@@ -41,9 +48,9 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
-  const { nft, collection } = collectionNft;
+  const { token, collection } = collectionNft;
 
-  const assetHasNote = !!nft.collectorsNote;
+  const assetHasNote = !!token.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
   return (
@@ -53,29 +60,30 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
         <StyledAssetAndNoteContainer>
           <ShimmerProvider>
             <NftDetailAsset
-              nftRef={collectionNft}
+              tokenRef={collectionNft}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
           </ShimmerProvider>
           {showCollectorsNoteComponent && (
             <NftDetailNote
-              nftId={nft.dbid}
+              tokenId={token.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              nftCollectorsNote={nft.collectorsNote ?? ''}
+              nftCollectorsNote={token.collectorsNote ?? ''}
               collectionId={collection.dbid}
             />
           )}
         </StyledAssetAndNoteContainer>
 
         <NftDetailText
-          name={nft.name}
-          description={nft.description}
+          name={token.name}
+          description={token.description}
           ownerUsername={username}
-          contractAddress={nft.contractAddress}
-          tokenId={nft.tokenId}
-          externalUrl={nft.externalUrl}
-          creatorAddress={nft.creatorAddress}
-          openseaCollectionName={nft.openseaCollectionName}
+          contractAddress={token.contract?.contractAddress?.address ?? ''}
+          tokenId={token.tokenId}
+          externalUrl={token.externalUrl}
+          // TODO [GAL-206]: support Creator Address post-merge
+          // creatorAddress={token.creatorAddress.address}
+          contractName={token.contract?.name ?? ''}
         />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}

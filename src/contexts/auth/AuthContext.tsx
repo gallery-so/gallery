@@ -24,6 +24,7 @@ import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutati
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import { isWeb3Error, Web3Error } from 'types/Error';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -77,6 +78,9 @@ const useImperativelyFetchUser = () => {
               __typename
               cause {
                 ... on ErrInvalidToken {
+                  __typename
+                }
+                ... on ErrDoesNotOwnRequiredToken {
                   __typename
                 }
               }
@@ -179,8 +183,24 @@ const AuthProvider = memo(({ children }: Props) => {
           pushToast({ message: EXPIRED_SESSION_MESSAGE });
         }
 
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrDoesNotOwnRequiredToken'
+        ) {
+          const errorWithCode: Web3Error = {
+            name: 'ErrNotAuthorized',
+            code: 'GALLERY_SERVER_ERROR',
+            message: 'required tokens not owned',
+          };
+
+          throw errorWithCode;
+        }
+
         transaction.finish();
       } catch (error: unknown) {
+        if (isWeb3Error(error)) {
+          throw error;
+        }
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setLoggedOut();
         throw new Error('Authorization failed! ' + errorMessage);

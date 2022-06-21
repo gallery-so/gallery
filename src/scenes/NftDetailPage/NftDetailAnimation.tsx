@@ -11,9 +11,9 @@ type Props = {
 };
 
 function NftDetailAnimation({ mediaRef }: Props) {
-  const nft = useFragment(
+  const token = useFragment(
     graphql`
-      fragment NftDetailAnimationFragment on Nft {
+      fragment NftDetailAnimationFragment on Token {
         media @required(action: THROW) {
           ... on HtmlMedia {
             __typename
@@ -32,12 +32,12 @@ function NftDetailAnimation({ mediaRef }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
 
   const contentRenderURL = useMemo(() => {
-    if (nft.media.__typename === 'HtmlMedia' || nft.media.__typename === 'UnknownMedia') {
-      return nft.media.contentRenderURL;
+    if (token.media.__typename === 'HtmlMedia' || token.media.__typename === 'UnknownMedia') {
+      return token.media.contentRenderURL;
     }
 
     return '';
-  }, [nft.media]);
+  }, [token.media]);
 
   return (
     <StyledNftDetailAnimation>

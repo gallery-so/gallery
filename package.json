@@ -5,7 +5,7 @@
     "build": "yarn relay && next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "graphql-codegen; tsc --noEmit",
     "relay": "mkdir __generated__; relay-compiler",
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open --configFile cypress.json",

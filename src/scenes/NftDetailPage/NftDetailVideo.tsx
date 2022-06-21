@@ -10,7 +10,7 @@ type Props = {
 };
 
 function NftDetailVideo({ mediaRef, maxHeight }: Props) {
-  const nft = useFragment(
+  const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
         contentRenderURLs @required(action: THROW) {
@@ -25,7 +25,7 @@ function NftDetailVideo({ mediaRef, maxHeight }: Props) {
 
   return (
     <StyledVideo
-      src={nft.contentRenderURLs.large}
+      src={token.contentRenderURLs.large}
       muted
       autoPlay
       loop

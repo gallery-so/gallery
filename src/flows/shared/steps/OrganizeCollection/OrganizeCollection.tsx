@@ -7,7 +7,7 @@ import CollectionEditorProvider, {
   useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import useUpdateCollectionNfts from 'hooks/api/collections/useUpdateCollectionNfts';
+import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import {
   useCollectionWizardActions,
   useCollectionWizardState,
@@ -31,7 +31,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
 
   const stagedItems = useStagedItemsState();
 
-  const updateCollection = useUpdateCollectionNfts();
+  const updateCollection = useUpdateCollectionTokens();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 

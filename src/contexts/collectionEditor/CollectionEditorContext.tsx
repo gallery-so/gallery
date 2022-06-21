@@ -1,16 +1,15 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
-import { EditModeNft, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import { UpdateCollectionNftsInput } from '__generated__/useUpdateCollectionNftsMutation.graphql';
-import deduplicateObjectByOpenseaIdAndPreferEarliest from './deduplicateObjectByOpenseaIdAndPreferEarliest';
+import { EditModeToken, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
+import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 
-export type SidebarNftsState = Record<string, EditModeNft>;
+export type SidebarTokensState = Record<string, EditModeToken>;
 export type StagedItemsState = StagingItem[];
-export type CollectionMetadataState = Pick<UpdateCollectionNftsInput, 'layout'>;
+export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'>;
 
 export type CollectionEditorState = {
-  sidebarNfts: SidebarNftsState;
+  sidebarTokens: SidebarTokensState;
   stagedItems: StagedItemsState;
   collectionMetadata: CollectionMetadataState;
 };
@@ -18,18 +17,18 @@ export type CollectionEditorState = {
 const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3, whitespace: [] } };
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  sidebarNfts: {},
+  sidebarTokens: {},
   stagedItems: [],
   collectionMetadata: DEFAULT_COLLECTION_METADATA,
 });
 
-export const useSidebarNftsState = (): SidebarNftsState => {
+export const useSidebarTokensState = (): SidebarTokensState => {
   const context = useContext(CollectionEditorStateContext);
   if (!context) {
     throw new Error('Attempted to use CollectionEditorStateContext without a provider');
   }
 
-  return context.sidebarNfts;
+  return context.sidebarTokens;
 };
 
 export const useStagedItemsState = (): StagedItemsState => {
@@ -51,12 +50,12 @@ export const useCollectionMetadataState = (): CollectionMetadataState => {
 };
 
 type CollectionEditorActions = {
-  setSidebarNfts: (nfts: Record<string, EditModeNft>) => void;
-  setNftsIsSelected: (nfts: string[], isSelected: boolean) => void;
-  stageNfts: (nfts: StagingItem[]) => void;
-  unstageNfts: (ids: string[]) => void;
+  setSidebarTokens: (tokens: Record<string, EditModeToken>) => void;
+  setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
+  stageTokens: (tokens: StagingItem[]) => void;
+  unstageTokens: (ids: string[]) => void;
   unstageAllItems: () => void;
-  handleSortNfts: (event: DragEndEvent) => void;
+  handleSortTokens: (event: DragEndEvent) => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
   setColumns: (columns: number) => void;
@@ -78,7 +77,7 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
 type Props = { children: ReactNode };
 
 const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [sidebarNftsState, setSidebarNftsState] = useState<SidebarNftsState>({});
+  const [sidebarTokensState, setSidebarTokensState] = useState<SidebarTokensState>({});
   const [stagedItemsState, setStagedItemsState] = useState<StagedItemsState>([]);
   const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(
     DEFAULT_COLLECTION_METADATA
@@ -86,24 +85,24 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const collectionEditorState = useMemo(
     () => ({
-      sidebarNfts: sidebarNftsState,
+      sidebarTokens: sidebarTokensState,
       stagedItems: stagedItemsState,
       collectionMetadata: collectionMetadataState,
     }),
-    [sidebarNftsState, stagedItemsState, collectionMetadataState]
+    [sidebarTokensState, stagedItemsState, collectionMetadataState]
   );
 
-  const setSidebarNfts = useCallback((nfts: SidebarNftsState) => {
-    setSidebarNftsState(deduplicateObjectByOpenseaIdAndPreferEarliest(nfts));
+  const setSidebarTokens = useCallback((tokens: SidebarTokensState) => {
+    setSidebarTokensState(tokens);
   }, []);
 
-  const setNftsIsSelected = useCallback((nftIds: string[], isSelected: boolean) => {
-    setSidebarNftsState((previous) => {
+  const setTokensIsSelected = useCallback((tokenIds: string[], isSelected: boolean) => {
+    setSidebarTokensState((previous) => {
       const next = { ...previous };
-      for (const nftId of nftIds) {
-        const selectedNft = next[nftId];
+      for (const tokenId of tokenIds) {
+        const selectedNft = next[tokenId];
         if (selectedNft) {
-          next[nftId] = { ...selectedNft, isSelected };
+          next[tokenId] = { ...selectedNft, isSelected };
         }
       }
 
@@ -111,11 +110,11 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
-  const stageNfts = useCallback((nfts: StagingItem[]) => {
-    setStagedItemsState((previous) => [...previous, ...nfts]);
+  const stageTokens = useCallback((tokens: StagingItem[]) => {
+    setStagedItemsState((previous) => [...previous, ...tokens]);
   }, []);
 
-  const unstageNfts = useCallback((ids: string[]) => {
+  const unstageTokens = useCallback((ids: string[]) => {
     setStagedItemsState((previous) =>
       previous.filter((stagingItem) => !ids.includes(stagingItem.id))
     );
@@ -125,7 +124,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setStagedItemsState([]);
   }, []);
 
-  const handleSortNfts = useCallback((event: DragEndEvent) => {
+  const handleSortTokens = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
       setStagedItemsState((previous) => {
@@ -159,23 +158,23 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
-      setSidebarNfts,
-      setNftsIsSelected,
-      stageNfts,
-      unstageNfts,
+      setSidebarTokens,
+      setTokensIsSelected,
+      stageTokens,
+      unstageTokens,
       unstageAllItems,
-      handleSortNfts,
+      handleSortTokens,
       incrementColumns,
       decrementColumns,
       setColumns,
     }),
     [
-      setSidebarNfts,
-      setNftsIsSelected,
-      stageNfts,
-      unstageNfts,
+      setSidebarTokens,
+      setTokensIsSelected,
+      stageTokens,
+      unstageTokens,
       unstageAllItems,
-      handleSortNfts,
+      handleSortTokens,
       incrementColumns,
       decrementColumns,
       setColumns,

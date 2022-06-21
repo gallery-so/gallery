@@ -67,7 +67,9 @@ function AuthenticateWalletPendingDefault({
 
       const { userId } = await loginOrCreateUser({
         userExists,
-        variables: { mechanism: { ethereumEoa: { address, nonce, signature } } },
+        variables: {
+          mechanism: { eoa: { chainAddress: { address, chain: 'Ethereum' }, nonce, signature } },
+        },
       });
 
       if (userExists) {
@@ -76,7 +78,7 @@ function AuthenticateWalletPendingDefault({
         trackCreateUserSuccess();
       }
 
-      handleLogin(userId, address);
+      return await handleLogin(userId, address);
     },
     [
       trackSignInAttempt,
