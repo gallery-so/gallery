@@ -17,7 +17,7 @@ function MaintenancePage() {
       <Spacer height={8} />
       <StyledBaseM>
         Gallery is currently undergoing planned maintenance until{' '}
-        <strong>Monday June 20th, 11:59am EST</strong> and is not usable at this time. Keep up to
+        <strong>Monday June 20th, 11:59pm EST</strong> and is not usable at this time. Keep up to
         date on our socials.
       </StyledBaseM>
       <Spacer height={24} />
