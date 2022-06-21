@@ -10,7 +10,6 @@ import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigation
 import { RelayProvider } from 'contexts/relay/RelayProvider';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
-import MaintenancePage from 'scenes/MaintenancePage/MaintenancePage';
 
 type Props = {
   children: React.ReactNode;
@@ -18,7 +17,6 @@ type Props = {
 };
 
 export default function AppProvider({ children, relayCache }: Props) {
-  return <MaintenancePage />;
   return (
     <Boundary>
       <ToastProvider>
