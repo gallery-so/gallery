@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import QRCodePopover from 'scenes/Modals/QRCodePopover';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -79,6 +80,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   return (
     <StyledUserGalleryLayout>
       <Spacer height={isMobile ? 48 : 80} />
+      <QRCodePopover username="aaa" />
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
