@@ -11,7 +11,6 @@ import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.g
 import CommunityPageView from './CommunityPageView';
 
 type Props = {
-  contractAddress: string;
   queryRef: CommunityPageFragment$key;
 };
 
@@ -19,7 +18,10 @@ export default function CommunityPage({ queryRef }: Props) {
   const { community } = useFragment(
     graphql`
       fragment CommunityPageFragment on Query {
-        community: communityByAddress(contractAddress: $contractAddress, forceRefresh: false) {
+        community: communityByAddress(
+          communityAddress: $communityAddress
+          forceRefresh: $forceRefresh
+        ) {
           ... on ErrCommunityNotFound {
             __typename
           }

@@ -30,7 +30,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
         user @required(action: THROW) {
           username @required(action: THROW)
         }
-        previewNfts
+        previewTokens
       }
     `,
     tokenHolderRef
@@ -80,9 +80,9 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     [breakpoint]
   );
 
-  const previewNfts = useMemo(
-    () => (owner.previewNfts ? removeNullValues(owner.previewNfts) : null),
-    [owner.previewNfts]
+  const previewTokens = useMemo(
+    () => (owner.previewTokens ? removeNullValues(owner.previewTokens) : null),
+    [owner.previewTokens]
   );
 
   return (
@@ -96,10 +96,10 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
           <StyledUsername>{owner.user.username}</StyledUsername>
         </StyledGalleryLink>
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && previewNfts && (
+      {isDesktop && showPreview && previewTokens && (
         <MemberListGalleryPreview
           direction={direction}
-          nftUrls={previewNfts}
+          tokenUrls={previewTokens}
           startFadeOut={startFadeOut}
         />
       )}

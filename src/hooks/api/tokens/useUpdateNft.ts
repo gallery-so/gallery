@@ -2,17 +2,17 @@ import { useCallback } from 'react';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
 import {
-  UpdateNftInfoInput,
+  UpdateTokenInfoInput,
   useUpdateNftMutation,
 } from '__generated__/useUpdateNftMutation.graphql';
 
 export default function useUpdateNft() {
   const [updateNft] = usePromisifiedMutation<useUpdateNftMutation>(
     graphql`
-      mutation useUpdateNftMutation($input: UpdateNftInfoInput!) {
-        updateNftInfo(input: $input) {
-          ... on UpdateNftInfoPayload {
-            nft {
+      mutation useUpdateNftMutation($input: UpdateTokenInfoInput!) {
+        updateTokenInfo(input: $input) {
+          ... on UpdateTokenInfoPayload {
+            token {
               collectorsNote
             }
           }
@@ -22,7 +22,7 @@ export default function useUpdateNft() {
   );
 
   return useCallback(
-    async (input: UpdateNftInfoInput) => {
+    async (input: UpdateTokenInfoInput) => {
       await updateNft({ variables: { input } });
 
       // TODO: handle error cases

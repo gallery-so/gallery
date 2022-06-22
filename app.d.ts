@@ -9,4 +9,8 @@ declare module '*.svg' {
   export default SVG;
 }
 
+declare module 'babel-plugin-relay/macro' {
+  export { graphql } from 'react-relay';
+}
+
 declare module 'ethereumjs-util';

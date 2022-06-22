@@ -27,7 +27,10 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           ... on Viewer {
             user {
               wallets {
-                address
+                dbid @required(action: THROW)
+                chainAddress @required(action: THROW) {
+                  address @required(action: THROW)
+                }
               }
             }
           }
@@ -37,10 +40,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
     queryRef
   );
 
-  const addresses = useMemo(
-    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
-    [viewer?.user?.wallets]
-  );
+  const wallets = useMemo(() => removeNullValues(viewer?.user?.wallets), [viewer?.user?.wallets]);
 
   const [removedAddress, setRemovedAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -52,7 +52,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
     showAddWalletModal();
   }, [showAddWalletModal]);
 
-  const addWalletDisabled = useMemo(() => addresses.length >= MAX_ALLOWED_ADDRESSES, [addresses]);
+  const addWalletDisabled = useMemo(() => wallets.length >= MAX_ALLOWED_ADDRESSES, [wallets]);
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   useEffect(() => {
@@ -80,10 +80,11 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         </>
       )}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
-      {addresses.map((address) => (
+      {wallets.map((wallet) => (
         <ManageWalletsRow
-          key={address}
-          address={address}
+          key={wallet.dbid}
+          walletId={wallet.dbid}
+          address={wallet.chainAddress.address}
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
           setRemovedAddress={setRemovedAddress}
@@ -101,9 +102,7 @@ const StyledManageWallets = styled.div`
 
 const StyledButton = styled(Button)`
   align-self: flex-end;
-  padding: 16px;
   width: 100%;
-  height: 100%;
 `;
 
 const StyledErrorText = styled(ErrorText)`

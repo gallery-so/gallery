@@ -66,7 +66,9 @@ function AddWalletPendingDefault({
           ... on Viewer {
             user {
               wallets {
-                address
+                chainAddress @required(action: NONE) {
+                  address
+                }
               }
             }
           }
@@ -81,7 +83,7 @@ function AddWalletPendingDefault({
   const { viewer } = query;
 
   const authenticatedUserAddresses = useMemo(
-    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
+    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.chainAddress.address)),
     [viewer?.user?.wallets]
   );
 
@@ -121,13 +123,19 @@ function AddWalletPendingDefault({
 
         const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
         const { signatureValid } = await addWallet({
-          address,
           authMechanism: {
-            ethereumEoa: {
+            eoa: {
               signature,
-              address,
               nonce,
+              chainAddress: {
+                address,
+                chain: 'Ethereum',
+              },
             },
+          },
+          chainAddress: {
+            address,
+            chain: 'Ethereum',
           },
         });
 

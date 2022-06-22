@@ -7,9 +7,9 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import TextButton from 'components/core/Button/TextButton';
 import {
   useCollectionEditorActions,
-  SidebarNftsState,
+  SidebarTokensState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { EditModeNft } from '../types';
+import { EditModeToken } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
@@ -19,93 +19,93 @@ import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
-  sidebarNfts: SidebarNftsState;
-  nftsRef: SidebarFragment$key;
+  sidebarTokens: SidebarTokensState;
+  tokensRef: SidebarFragment$key;
 };
 
-function Sidebar({ nftsRef, sidebarNfts }: Props) {
-  const nfts = useFragment(
+function Sidebar({ tokensRef, sidebarTokens }: Props) {
+  const allTokens = useFragment(
     graphql`
-      fragment SidebarFragment on Nft @relay(plural: true) {
+      fragment SidebarFragment on Token @relay(plural: true) {
         dbid
         ...SidebarNftIconFragment
         ...SearchBarFragment
       }
     `,
-    nftsRef
+    tokensRef
   );
 
-  const { setNftsIsSelected, stageNfts, unstageAllItems } = useCollectionEditorActions();
+  const tokens = removeNullValues(allTokens);
+
+  const { setTokensIsSelected, stageTokens, unstageAllItems } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
-  const sidebarNftsAsArray = useMemo(
-    () => convertObjectToArray(sidebarNfts).reverse(),
-    [sidebarNfts]
-  );
+  const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  const nftsToDisplayInSidebar = useMemo(() => {
+  const tokensToDisplayInSidebar = useMemo(() => {
     if (debouncedSearchQuery) {
       const searchResultNfts = [];
       for (const resultId of searchResults) {
-        if (sidebarNfts[resultId]) {
-          searchResultNfts.push(sidebarNfts[resultId]);
+        if (sidebarTokens[resultId]) {
+          searchResultNfts.push(sidebarTokens[resultId]);
         }
       }
 
       return searchResultNfts;
     }
 
-    return sidebarNftsAsArray;
-  }, [debouncedSearchQuery, searchResults, sidebarNfts, sidebarNftsAsArray]);
+    return sidebarTokensAsArray;
+  }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
   const isAllNftsSelected = useMemo(
-    () => !nftsToDisplayInSidebar.some((nft: EditModeNft) => !nft.isSelected),
-    [nftsToDisplayInSidebar]
+    () => !tokensToDisplayInSidebar.some((token: EditModeToken) => !token.isSelected),
+    [tokensToDisplayInSidebar]
   );
 
   const handleSelectAllClick = useCallback(() => {
-    // Stage all nfts that are !isSelected
-    const nftsToStage = nftsToDisplayInSidebar.filter((nft) => !nft.isSelected);
-    if (nftsToStage.length === 0) {
+    // Stage all tokens that are !isSelected
+    const tokensToStage = tokensToDisplayInSidebar.filter((token) => !token.isSelected);
+    if (tokensToStage.length === 0) {
       return;
     }
 
-    stageNfts(nftsToStage);
-    setNftsIsSelected(
-      nftsToStage.map((nft) => nft.id),
+    stageTokens(tokensToStage);
+    setTokensIsSelected(
+      tokensToStage.map((token) => token.id),
       true
     );
-  }, [nftsToDisplayInSidebar, stageNfts, setNftsIsSelected]);
+  }, [tokensToDisplayInSidebar, stageTokens, setTokensIsSelected]);
 
   const handleDeselectAllClick = useCallback(() => {
-    // deselect all nfts in sidebar
-    const nftIdsToUnstage = nftsToDisplayInSidebar.map((nft) => nft.id);
-    if (nftIdsToUnstage.length === 0) {
+    // deselect all tokens in sidebar
+    const tokenIdsToUnstage = tokensToDisplayInSidebar.map((token) => token.id);
+    if (tokenIdsToUnstage.length === 0) {
       return;
     }
 
-    setNftsIsSelected(nftIdsToUnstage, false);
+    setTokensIsSelected(tokenIdsToUnstage, false);
 
     // Unstage all items from the DND
     unstageAllItems();
-  }, [nftsToDisplayInSidebar, setNftsIsSelected, unstageAllItems]);
+  }, [tokensToDisplayInSidebar, setTokensIsSelected, unstageAllItems]);
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
-    stageNfts([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging nfts
+    stageTokens([{ id, whitespace: 'whitespace' }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
-  }, [stageNfts]);
+  }, [stageTokens]);
 
   const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
 
-  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', nfts), [nfts]);
+  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
 
   return (
     <StyledSidebar>
@@ -119,7 +119,7 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
       </Header>
       <Spacer height={16} />
       <SearchBar
-        nftsRef={nfts}
+        tokensRef={tokens}
         setSearchResults={setSearchResults}
         setDebouncedSearchQuery={setDebouncedSearchQuery}
       />
@@ -127,12 +127,12 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
       <StyledSelectButtonWrapper>
         {isAllNftsSelected ? (
           <TextButton
-            text={`Deselect All (${nftsToDisplayInSidebar.length})`}
+            text={`Deselect All (${tokensToDisplayInSidebar.length})`}
             onClick={handleDeselectAllClick}
           />
         ) : (
           <TextButton
-            text={`Select All (${nftsToDisplayInSidebar.length})`}
+            text={`Select All (${tokensToDisplayInSidebar.length})`}
             onClick={handleSelectAllClick}
           />
         )}
@@ -142,13 +142,13 @@ function Sidebar({ nftsRef, sidebarNfts }: Props) {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {nftsToDisplayInSidebar
-          .filter((editModeNft) => Boolean(nftFragmentsKeyedByID[editModeNft.id]))
-          .map((editModeNft) => (
+        {tokensToDisplayInSidebar
+          .filter((EditModeToken) => Boolean(nftFragmentsKeyedByID[EditModeToken.id]))
+          .map((EditModeToken) => (
             <SidebarNftIcon
-              key={editModeNft.id}
-              nftRef={nftFragmentsKeyedByID[editModeNft.id]}
-              editModeNft={editModeNft}
+              key={EditModeToken.id}
+              tokenRef={nftFragmentsKeyedByID[EditModeToken.id]}
+              EditModeToken={EditModeToken}
             />
           ))}
       </Selection>

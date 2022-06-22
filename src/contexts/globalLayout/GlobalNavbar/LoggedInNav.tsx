@@ -10,11 +10,8 @@ import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graphql';
 import styled from 'styled-components';
-import { FeatureFlag } from 'components/core/enums';
 import colors from 'components/core/colors';
-import usePersistedState from 'hooks/usePersistedState';
-import { GALLERY_POSTER_BANNER_STORAGE_KEY } from 'constants/storageKeys';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { useAuthActions } from 'contexts/auth/AuthContext';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -23,10 +20,6 @@ type Props = {
 function LoggedInNav({ queryRef }: Props) {
   const { showModal } = useModalActions();
   const { push } = useRouter();
-  const [isMintPosterDismissed, setMintPosterDismissed] = usePersistedState(
-    GALLERY_POSTER_BANNER_STORAGE_KEY,
-    false
-  );
 
   const query = useFragment(
     graphql`
@@ -48,6 +41,8 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
+  const { query: routerQuery } = useRouter();
+
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} /> });
   }, [query, showModal]);
@@ -56,14 +51,18 @@ function LoggedInNav({ queryRef }: Props) {
     showModal({ content: <EditUserInfoModal queryRef={query} /> });
   }, [query, showModal]);
 
-  const handleEditGalleryClick = useCallback(() => {
-    void push('/edit');
-  }, [push]);
+  const handleEditDesignClick = useCallback(() => {
+    if (routerQuery?.collectionId) {
+      void push(`/edit?collectionId=${routerQuery.collectionId}`);
+    } else {
+      void push('/edit');
+    }
+  }, [push, routerQuery]);
 
-  const handleMintPostersClick = useCallback(() => {
-    setMintPosterDismissed(true);
-    void push('/members/poster');
-  }, [push, setMintPosterDismissed]);
+  const { handleLogout } = useAuthActions();
+  const handleSignOutClick = useCallback(() => {
+    void handleLogout();
+  }, [handleLogout]);
 
   // TODO: we shouldn't need to do this, since the parent should verify that
   // `viewer` exists. however, the logout action that dismounts client:root:viewer
@@ -74,63 +73,59 @@ function LoggedInNav({ queryRef }: Props) {
   }
 
   const username = query.viewer.user?.username;
+  const userOwnsCollectionOrGallery = routerQuery?.username === username;
 
-  const hasNotifiction = isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && !isMintPosterDismissed;
-
-  return username ? (
+  return (
     <StyledLoggedInNav>
-      <NavElement>
-        <Dropdown mainText="Edit Profile" shouldCloseOnMenuItemClick>
-          <TextButton text="Edit name & Bio" onClick={handleEditNameClick} />
-          <Spacer height={12} />
-          <TextButton text="Edit Gallery" onClick={handleEditGalleryClick} />
-        </Dropdown>
-      </NavElement>
+      {userOwnsCollectionOrGallery && (
+        <NavElement>
+          <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
+            <TextButton
+              text={routerQuery?.collectionId ? 'Edit Collection' : 'Edit Gallery'}
+              onClick={handleEditDesignClick}
+            />
+            <Spacer height={12} />
+            <TextButton text="Name & Bio" onClick={handleEditNameClick} />
+          </Dropdown>
+        </NavElement>
+      )}
       <Spacer width={24} />
       <NavElement>
-        <StyledDropdownWrapper hasNotifiction={hasNotifiction}>
-          <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
-            <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
-            {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) && (
-              <>
-                <Spacer height={12} />
-                <StyledNavItemContainer>
-                  <TextButton text="MINT 2022 community POSTER" onClick={handleMintPostersClick} />
-                  {!isMintPosterDismissed && <StyledCircle />}
-                </StyledNavItemContainer>
-              </>
-            )}
+        <StyledDropdownWrapper hasNotification={false}>
+          <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
+            <TextButton
+              text="My Gallery"
+              onClick={username ? () => push(`/${username}`) : undefined}
+            />
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+            <Spacer height={12} />
+            <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>
       </NavElement>
     </StyledLoggedInNav>
-  ) : null;
+  );
 }
 
 const StyledLoggedInNav = styled.div`
   display: flex;
 `;
 
-const StyledNavItemContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// Notification blue dot, to be used in the future
+// const StyledCircle = styled.div`
+//   height: 4px;
+//   width: 4px;
+//   background-color: ${colors.activeBlue};
+//   margin-left: 4px;
+//   border-radius: 50%;
+// `;
 
-const StyledCircle = styled.div`
-  height: 4px;
-  width: 4px;
-  background-color: ${colors.activeBlue};
-  margin-left: 4px;
-  border-radius: 50%;
-`;
-
-const StyledDropdownWrapper = styled.div<{ hasNotifiction?: boolean }>`
+const StyledDropdownWrapper = styled.div<{ hasNotification?: boolean }>`
   position: relative;
 
-  ${({ hasNotifiction }) =>
-    hasNotifiction &&
+  ${({ hasNotification }) =>
+    hasNotification &&
     `&:after {
       position: absolute;
       top: 5px;

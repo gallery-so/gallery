@@ -19,8 +19,9 @@ type Props = {
   contractAddress: string | null;
   tokenId: string | null;
   externalUrl: string | null;
-  creatorAddress: string | null;
-  openseaCollectionName: string | null;
+  // TODO [GAL-206]: support Creator Address post-merge
+  // creatorAddress: string | null;
+  contractName: string | null;
 };
 
 function NftDetailText({
@@ -30,13 +31,16 @@ function NftDetailText({
   contractAddress,
   tokenId,
   externalUrl,
-  creatorAddress,
-  openseaCollectionName,
+  // TODO [GAL-206]: support Creator Address post-merge
+  // creatorAddress,
+  contractName,
 }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-  const addressToUse = creatorAddress || contractAddress || '';
+  // TODO [GAL-206]: support Creator Address post-merge
+  // const addressToUse = creatorAddress || contractAddress || '';
+  const addressToUse = contractAddress || '';
 
   // useRef to prevent rendered username from briefly changing before fade transition upon route change
   const username = useRef(ownerUsername);
@@ -54,12 +58,10 @@ function NftDetailText({
           <Spacer height={4} />
         </>
       )}
-      {openseaCollectionName && showCommunityLink ? (
-        <InteractiveLink to={`/community/${contractAddress}`}>
-          {openseaCollectionName}
-        </InteractiveLink>
+      {contractName && showCommunityLink ? (
+        <InteractiveLink to={`/community/${contractAddress}`}>{contractName}</InteractiveLink>
       ) : (
-        <BaseM>{openseaCollectionName}</BaseM>
+        <BaseM>{contractName}</BaseM>
       )}
       <Spacer height={isMobile ? 32 : 24} />
       {description && (

@@ -1,81 +1,26 @@
 import styled from 'styled-components';
-import { BaseM, BaseXL, TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import useTimer from 'hooks/useTimer';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { MINT_DEADLINE, NFT_TOKEN_ID } from 'constants/poster';
-import PosterMintButton from './PosterMintButton';
-import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from 'hooks/useContract';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import { useEffect, useState, useCallback } from 'react';
-import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
-import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import isProduction from 'utils/isProduction';
-import { graphql, useFragment } from 'react-relay';
-import { PosterPageFragment$key } from '__generated__/PosterPageFragment.graphql';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
-type Props = {
-  queryRef: PosterPageFragment$key;
-};
-
-export default function PosterPage({ queryRef }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment PosterPageFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
+export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
 
   const POSTER_IMAGE_URL =
     'https://lh3.googleusercontent.com/Q9zjkyRRAugfSBDfqiuyoefUEglPb6Zt5kj9cn-NzavEEBx_JmCaeSdbasI6V9VlkyWtJtVm1lH3VhHBNhj5ZwzEZ6zvfxF0wnFjoQ=h1200';
   const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
-
-  const { timestamp } = useTimer(MINT_DEADLINE);
-  const { account: rawAccount } = useWeb3React<Web3Provider>();
-  const account = rawAccount?.toLowerCase();
-  const [isMinted, setIsMinted] = useState(false);
+  const POSTER_SECONDARY_URL =
+    'https://opensea.io/assets/ethereum/0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b/0';
 
   const handleBackClick = () => {
     window.history.back();
   };
-
-  const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
-
-  const detectOwnedPosterNftFromOpensea = useCallback(
-    async (account: string) => {
-      const response = await fetch(
-        `${openseaBaseUrl}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
-        {}
-      );
-
-      const responseBody = await response.json();
-      return responseBody.assets.length > 0;
-    },
-    [openseaBaseUrl]
-  );
-
-  useEffect(() => {
-    async function checkIfMinted(account: string) {
-      const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(account);
-      setIsMinted(hasOwnedPosterNft);
-    }
-
-    if (account) {
-      checkIfMinted(account);
-    }
-  }, [account, detectOwnedPosterNftFromOpensea]);
 
   return (
     <StyledPage>
@@ -96,32 +41,21 @@ export default function PosterPage({ queryRef }: Props) {
             </BaseM>
             <Spacer height={8} />
             <BaseM>
-              We are making the final poster available to mint as a commemorative token for early
+              We made the final poster available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
             <Spacer height={8} />
 
-            <BaseM>Limit 1 per wallet address.</BaseM>
+            <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM>
           </StyledParagraph>
 
           {!isMobile && <HorizontalBreak />}
 
-          {isFeatureEnabled(FeatureFlag.POSTER_MINT, query) ? (
-            <>
-              {isMinted ? (
-                <BaseXL>You've successfully minted this poster.</BaseXL>
-              ) : (
-                <StyledCallToAction>
-                  <BaseXL>{timestamp}</BaseXL>
-                  <PosterMintButton onMintSuccess={() => setIsMinted(true)}></PosterMintButton>
-                </StyledCallToAction>
-              )}
-            </>
-          ) : (
-            <StyledCallToAction hasEnded>
-              <BaseXL>Mint opening soon.</BaseXL>
-            </StyledCallToAction>
-          )}
+          <StyledCallToAction>
+            <StyledSecondaryLink href={POSTER_SECONDARY_URL} target="_blank">
+              <TitleXS color={colors.white}>View on Secondary</TitleXS>
+            </StyledSecondaryLink>
+          </StyledCallToAction>
         </StyledContent>
       </StyledWrapper>
     </StyledPage>
@@ -221,5 +155,17 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     background-color: ${colors.white};
     padding: 12px 16px;
     border-top: 1px solid ${colors.porcelain};
+  }
+`;
+const StyledSecondaryLink = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${colors.offBlack};
+  cursor: pointer;
+  height: 40px;
+  text-decoration: none;
+  &:hover {
+    opacity: 0.8;
   }
 `;

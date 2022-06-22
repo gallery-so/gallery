@@ -20,20 +20,20 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 type Props = {
   username: string;
-  nftId: string;
+  tokenId: string;
   collectionId: string;
 };
 
 function NftDetailPage({
-  nftId: initialNftId,
-  collectionId: initialCollectionId,
   username,
+  tokenId: initialNftId,
+  collectionId: initialCollectionId,
 }: Props) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      query NftDetailPageQuery($nftId: DBID!, $collectionId: DBID!) {
-        collectionNft: collectionNftById(nftId: $nftId, collectionId: $collectionId) {
-          ... on ErrNftNotFound {
+      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!) {
+        collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
+          ... on ErrTokenNotFound {
             __typename
           }
 
@@ -41,15 +41,15 @@ function NftDetailPage({
             __typename
           }
 
-          ... on CollectionNft {
+          ... on CollectionToken {
             __typename
-            nft {
+            token {
               dbid
               name
             }
             collection {
-              nfts {
-                nft @required(action: THROW) {
+              tokens {
+                token @required(action: THROW) {
                   dbid
                   name
                 }
@@ -69,35 +69,35 @@ function NftDetailPage({
         }
       }
     `,
-    { nftId: initialNftId, collectionId: initialCollectionId }
+    { tokenId: initialNftId, collectionId: initialCollectionId }
   );
 
   const { collectionNft: initialCollectionNft, viewer } = query;
 
-  const [nftId, setNftId] = useState(initialNftId);
+  const [tokenId, setNftId] = useState(initialNftId);
 
   const track = useTrack();
   useEffect(() => {
-    track('Page View: NFT Detail', { nftId });
-  }, [nftId, track]);
+    track('Page View: NFT Detail', { tokenId });
+  }, [tokenId, track]);
 
-  if (initialCollectionNft?.__typename !== 'CollectionNft') {
-    throw new Error('NftDetailPage: CollectionNft for requested NFT not found');
+  if (initialCollectionNft?.__typename !== 'CollectionToken') {
+    throw new Error('NftDetailPage: CollectionToken for requested NFT not found');
   }
 
-  const collection = removeNullValues(initialCollectionNft.collection?.nfts);
+  const collection = removeNullValues(initialCollectionNft.collection?.tokens);
 
   if (!collection) {
     throw new Error('NftDetailPage: Collection of NFTs not found');
   }
 
   const { selectedNftIndex, selectedNft } = useMemo(() => {
-    const index = collection.findIndex(({ nft }) => nft.dbid === nftId);
+    const index = collection.findIndex(({ token }) => token.dbid === tokenId);
     if (index === -1) {
       throw new Error('NFT Detail Page: NFT index not found within collection');
     }
     return { selectedNftIndex: index, selectedNft: collection[index] };
-  }, [nftId, collection]);
+  }, [tokenId, collection]);
 
   const { query: urlQuery, push, pathname } = useRouter();
 
@@ -105,7 +105,7 @@ function NftDetailPage({
     throw new Error('NFT Detail Page: username not found in page query params');
   }
 
-  const headTitle = `${selectedNft?.nft?.name} - ${username} | Gallery`;
+  const headTitle = `${selectedNft?.token?.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
     viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
@@ -134,17 +134,17 @@ function NftDetailPage({
    */
   const [mountedNfts, setMountedNfts] = useState<MountedNft<typeof prevNft>[]>(
     removeNullValues([
-      prevNft ? { nft: prevNft, visibility: 'hidden-left' } : null,
-      { nft: selectedNft, visibility: 'visible' },
-      nextNft ? { nft: nextNft, visibility: 'hidden-right' } : null,
+      prevNft ? { token: prevNft, visibility: 'hidden-left' } : null,
+      { token: selectedNft, visibility: 'visible' },
+      nextNft ? { token: nextNft, visibility: 'hidden-right' } : null,
     ])
   );
 
   // Redirects user to view an adjacent NFT
   const pushToNftById = useCallback(
-    (nftId: string) => {
+    (tokenId: string) => {
       // TODO: this attempts to fix a suspense call that gets triggered when moving between
-      // NFTs after a user arrives directly at an NFT detail page /[username]/[collectionId]/[nftId].
+      // NFTs after a user arrives directly at an NFT detail page /[username]/[collectionId]/[tokenId].
       // stabiliizing someone works, but it still calls the collection data.
       //
       // possible solution 1: pre-load the Collection Page data if a user arrives directly
@@ -153,7 +153,7 @@ function NftDetailPage({
       // possible solution 2: figure out why the page is making an imperative request for data
       // that should technically be in the cache. ask terence?!
       //
-      // const stabilizedPathname = pathname.includes('[nftId]')
+      // const stabilizedPathname = pathname.includes('[tokenId]')
       //   ? '/[username]/[collectionId]'
       //   : pathname;
       //-------------–––----------------
@@ -165,7 +165,7 @@ function NftDetailPage({
         // and not navigating between pages (even while the URL is changing).
         currentLocation,
         // This `as` param is purely cosmetic and determines what users will see in the address bar.
-        `/${username}/${initialCollectionId}/${nftId}`,
+        `/${username}/${initialCollectionId}/${tokenId}`,
         // Prevent scroll-to-top when navigating
         { scroll: false }
       );
@@ -175,7 +175,7 @@ function NftDetailPage({
 
   const handleNextPress = useCallback(() => {
     if (nextNft) {
-      const nextNftId = nextNft.nft.dbid;
+      const nextNftId = nextNft.token.dbid;
       setNftId(nextNftId);
       setMountedNfts((prevMountedNfts) => {
         return shiftNftCarousel(Directions.RIGHT, prevMountedNfts, selectedNftIndex, collection);
@@ -186,7 +186,7 @@ function NftDetailPage({
 
   const handlePrevPress = useCallback(() => {
     if (prevNft) {
-      const prevNftId = prevNft.nft.dbid;
+      const prevNftId = prevNft.token.dbid;
       setNftId(prevNftId);
       setMountedNfts((prevMountedNfts) => {
         return shiftNftCarousel(Directions.LEFT, prevMountedNfts, selectedNftIndex, collection);
@@ -205,12 +205,12 @@ function NftDetailPage({
       </Head>
       <StyledNftDetailPage>
         {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
-        {mountedNfts.map(({ nft, visibility }) => (
-          <_DirectionalFade key={nft.nft.dbid} visibility={visibility}>
+        {mountedNfts.map(({ token, visibility }) => (
+          <_DirectionalFade key={token.token.dbid} visibility={visibility}>
             <NftDetailView
               username={username}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              queryRef={nft}
+              queryRef={token}
             />
           </_DirectionalFade>
         ))}
@@ -260,12 +260,12 @@ const StyledNftDetailPage = styled.div`
   }
 `;
 
-function NftDetailPageWithBoundary({ username, collectionId, nftId }: Props) {
+function NftDetailPageWithBoundary({ username, collectionId, tokenId }: Props) {
   return (
     <StyledNftDetailPageWithBoundary>
       <Suspense fallback={<FullPageLoader />}>
         <ErrorBoundary>
-          <NftDetailPage username={username} collectionId={collectionId} nftId={nftId} />
+          <NftDetailPage username={username} collectionId={collectionId} tokenId={tokenId} />
         </ErrorBoundary>
       </Suspense>
     </StyledNftDetailPageWithBoundary>

@@ -3,7 +3,6 @@
  */
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import ActionText from 'components/core/ActionText/ActionText';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
@@ -16,6 +15,7 @@ import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useKeyDown from 'hooks/useKeyDown';
+import ActionText from 'components/core/ActionText/ActionText';
 
 function WizardFooter({
   step,
@@ -142,7 +142,7 @@ function WizardFooter({
         </ActionText>
       )}
       <Spacer width={40} />
-      <StyledButton
+      <Button
         text={buttonText}
         onClick={handleNextClick}
         disabled={!isNextEnabled || isLoading}
@@ -171,11 +171,6 @@ const StyledWizardFooter = styled.div`
 
   border-top: 1px solid ${colors.porcelain};
   background: ${colors.white};
-`;
-
-const StyledButton = styled(Button)`
-  min-width: 192px;
-  padding: 0px 32px;
 `;
 
 export default memo(WizardFooter);

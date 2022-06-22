@@ -6,19 +6,19 @@ import {
 } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
-import { useUpdateCollectionNftsRefresherQuery } from '__generated__/useUpdateCollectionNftsRefresherQuery.graphql';
+import { useUpdateCollectionTokensRefresherQuery } from '__generated__/useUpdateCollectionTokensRefresherQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import {
-  UpdateCollectionNftsInput,
-  useUpdateCollectionNftsMutation,
-} from '__generated__/useUpdateCollectionNftsMutation.graphql';
+  UpdateCollectionTokensInput,
+  useUpdateCollectionTokensMutation,
+} from '__generated__/useUpdateCollectionTokensMutation.graphql';
 
-export default function useUpdateCollectionNfts() {
+export default function useUpdateCollectionTokens() {
   const relayEnvironment = useRelayEnvironment();
-  const [updateCollectionNfts] = usePromisifiedMutation<useUpdateCollectionNftsMutation>(
+  const [updateCollectionTokens] = usePromisifiedMutation<useUpdateCollectionTokensMutation>(
     graphql`
-      mutation useUpdateCollectionNftsMutation($input: UpdateCollectionNftsInput!) {
-        updateCollectionNfts(input: $input) {
+      mutation useUpdateCollectionTokensMutation($input: UpdateCollectionTokensInput!) {
+        updateCollectionTokens(input: $input) {
           __typename
         }
       }
@@ -29,20 +29,20 @@ export default function useUpdateCollectionNfts() {
     async (
       collectionId: string,
       stagedNfts: StagingItem[],
-      collectionLayout: UpdateCollectionNftsInput['layout']
+      collectionLayout: UpdateCollectionTokensInput['layout']
     ) => {
       const layout = {
         ...collectionLayout,
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
-      const nfts = removeWhitespacesFromStagedItems(stagedNfts);
-      const nftIds = nfts.map((nft) => nft.dbid);
+      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
+      const tokenIds = tokens.map((token) => token.dbid);
 
-      await updateCollectionNfts({
+      await updateCollectionTokens({
         variables: {
           input: {
             collectionId,
-            nfts: nftIds,
+            tokens: tokenIds,
             layout,
           },
         },
@@ -64,13 +64,13 @@ export default function useUpdateCollectionNfts() {
       //
       // In other places, we can do an optimistic update since
       // there's not much data to update (hidden, collectorsNote, etc).
-      // Here, we'd have to optimistically update a bunch of nfts which
+      // Here, we'd have to optimistically update a bunch of tokens which
       // is more risky since that mapping logic might get out of hand.
       // The safer approach here is to just refetch the data.
-      await fetchQuery<useUpdateCollectionNftsRefresherQuery>(
+      await fetchQuery<useUpdateCollectionTokensRefresherQuery>(
         relayEnvironment,
         graphql`
-          query useUpdateCollectionNftsRefresherQuery($id: DBID!) {
+          query useUpdateCollectionTokensRefresherQuery($id: DBID!) {
             collectionById(id: $id) {
               ...NftGalleryFragment
               ...CollectionRowFragment
@@ -91,6 +91,6 @@ export default function useUpdateCollectionNfts() {
         }
       ).toPromise();
     },
-    [relayEnvironment, updateCollectionNfts]
+    [relayEnvironment, updateCollectionTokens]
   );
 }

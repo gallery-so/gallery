@@ -22,11 +22,17 @@ export const DISABLED_CONTRACTS = [
 export default function CommunityPage({ contractAddress }: CommunityPageProps) {
   const query = useLazyLoadQuery<ContractAddressQuery>(
     graphql`
-      query ContractAddressQuery($contractAddress: Address!) {
+      query ContractAddressQuery($communityAddress: ChainAddressInput!, $forceRefresh: Boolean) {
         ...CommunityPageFragment
       }
     `,
-    { contractAddress }
+    {
+      communityAddress: {
+        address: contractAddress,
+        chain: 'Ethereum',
+      },
+      forceRefresh: false,
+    }
   );
 
   if (!contractAddress) {
@@ -38,11 +44,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to="/" />;
   }
 
-  return (
-    <GalleryRoute
-      element={<CommunityPageScene contractAddress={contractAddress} queryRef={query} />}
-    />
-  );
+  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

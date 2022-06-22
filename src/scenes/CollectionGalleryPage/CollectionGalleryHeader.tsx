@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -20,6 +20,7 @@ import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
+import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
@@ -68,7 +69,7 @@ function CollectionGalleryHeader({
           dbid @required(action: THROW)
         }
 
-        nfts {
+        tokens {
           __typename
         }
       }
@@ -96,7 +97,7 @@ function CollectionGalleryHeader({
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
-  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length;
+  const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');
@@ -127,54 +128,80 @@ function CollectionGalleryHeader({
   return (
     <StyledCollectionGalleryHeaderWrapper>
       <StyledHeaderWrapper>
-        <StyledBreadcrumbsWrapper>
-          <StyledUsernameWrapper>
-            <StyledUsernameAndSeparatorWrapper>
-              <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
-              {collection.name && <StyledSeparator>/</StyledSeparator>}
-            </StyledUsernameAndSeparatorWrapper>
-          </StyledUsernameWrapper>
-          <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
-        </StyledBreadcrumbsWrapper>
+        {isMobile ? (
+          <StyledBreadcrumbsWrapper>
+            <StyledUsernameWrapper>
+              <StyledUsernameAndSeparatorWrapper>
+                <StyledUsernameMobile onClick={handleBackClick}>{username}</StyledUsernameMobile>
+                {collection.name && <StyledSeparatorMobile>/</StyledSeparatorMobile>}
+              </StyledUsernameAndSeparatorWrapper>
+            </StyledUsernameWrapper>
+            <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
+          </StyledBreadcrumbsWrapper>
+        ) : (
+          <StyledBreadcrumbsWrapper>
+            <StyledUsernameWrapper>
+              <StyledUsernameAndSeparatorWrapper>
+                <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
+                {collection.name && <StyledSeparator>/</StyledSeparator>}
+              </StyledUsernameAndSeparatorWrapper>
+            </StyledUsernameWrapper>
+            <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
+          </StyledBreadcrumbsWrapper>
+        )}
 
         <StyledCollectionActions>
           {showEditActions ? (
             <>
-              <CopyToClipboard textToCopy={collectionUrl}>
-                <TextButton text="Share" onClick={handleShareClick} />
-              </CopyToClipboard>
-              <SettingsDropdown>
-                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-                {!shouldDisplayMobileLayoutToggle && (
-                  <>
-                    <Spacer height={8} />
-                    <NavElement>
-                      <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
-                    </NavElement>
-                  </>
-                )}
-              </SettingsDropdown>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+              {/* On mobile, we show these options in the navbar, not in header */}
+              {!isMobile && (
+                <SettingsDropdown>
+                  <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+                  {!shouldDisplayMobileLayoutToggle && (
+                    <>
+                      <Spacer height={8} />
+                      <NavElement>
+                        <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                      </NavElement>
+                    </>
+                  )}
+                </SettingsDropdown>
+              )}
             </>
           ) : (
-            <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
-            </CopyToClipboard>
+            <>
+              {isMobile ? (
+                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+              ) : (
+                <CopyToClipboard textToCopy={collectionUrl}>
+                  <TextButton text="Share" onClick={handleShareClick} />
+                </CopyToClipboard>
+              )}
+            </>
           )}
           {shouldDisplayMobileLayoutToggle && (
             <>
-              <Spacer width={16} />
+              <Spacer width={8} />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
             </>
           )}
         </StyledCollectionActions>
       </StyledHeaderWrapper>
 
-      <Spacer height={16} />
-
       {unescapedCollectorsNote && (
-        <StyledCollectionNote>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
+        <>
+          <Spacer height={isMobile ? 4 : 16} />
+          <StyledCollectionNote>
+            <Markdown text={unescapedCollectorsNote} />
+          </StyledCollectionNote>
+        </>
       )}
 
       <Spacer height={80} />
@@ -193,12 +220,12 @@ const StyledHeaderWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-start;
 `;
 
 const BreadcrumbsWrapperWidth = 80;
 
-const StyledBreadcrumbsWrapper = styled(TitleL)`
+const StyledBreadcrumbsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: calc(100% - ${BreadcrumbsWrapperWidth}px);
@@ -217,21 +244,39 @@ const StyledUsernameAndSeparatorWrapper = styled.div`
   display: flex;
 `;
 
-const StyledCollectionName = styled.div`
+const StyledCollectionName = styled(TitleL)`
   word-break: break-word;
 `;
 
-const StyledSeparator = styled.div`
-  margin: 0 10px;
-  display: none;
-  color: ${colors.metal};
+const StyledCollectionNameMobile = styled(TitleM)`
+  font-style: normal;
+  word-break: break-word;
+`;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    display: block;
+const StyledSeparator = styled(TitleL)`
+  margin: 0 10px;
+  display: block;
+  color: ${colors.offBlack};
+`;
+
+const StyledSeparatorMobile = styled(TitleM)`
+  font-style: normal;
+  margin: 0 4px;
+  display: block;
+  color: ${colors.offBlack};
+`;
+
+const StyledUsername = styled(TitleL)`
+  cursor: pointer;
+  color: ${colors.metal};
+  display: flex;
+  &:hover {
+    color: ${colors.shadow};
   }
 `;
 
-const StyledUsername = styled.span`
+const StyledUsernameMobile = styled(TitleM)`
+  font-style: normal;
   cursor: pointer;
   color: ${colors.metal};
   display: flex;

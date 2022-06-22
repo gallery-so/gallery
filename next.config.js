@@ -26,6 +26,21 @@ const moduleExports = {
     scrollRestoration: true,
     relay: relayConfig,
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/careers',
+        destination: 'https://gallery-so.notion.site/Careers-e8d78dea54834630928f075f4a4ccdba',
+        permanent: false,
+      },
+      process.env.MAINTENANCE_MODE === '1'
+        ? // Redirect all non-maintenance routes to /maintenance.
+          // Also ignore /icons so that assets properly load on that page.
+          { source: '/((?!maintenance|icons).*)', destination: '/maintenance', permanent: false }
+        : null,
+    ].filter(Boolean);
+  },
 };
 
 const sentryWebpackPluginOptions = {

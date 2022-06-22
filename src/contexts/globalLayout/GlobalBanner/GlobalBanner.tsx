@@ -1,9 +1,11 @@
 import { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
+import Markdown from 'components/core/Markdown/Markdown';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import styled from 'styled-components';
 import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
 import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
@@ -51,13 +53,13 @@ export default function Banner({
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
-        <StyledContent>
-          {title && <StyledTitle>{title}</StyledTitle>}
-          <StyledText color={colors.offBlack}>{text}</StyledText>
-        </StyledContent>
+        {title && <StyledTitle>{title}</StyledTitle>}
+        <BaseM>
+          <Markdown text={text} />
+        </BaseM>
         <StyledAction>
           {actionComponent}
-          <StyledClose onClick={hideBanner}>&#x2715;</StyledClose>
+          <StyledClose onClick={hideBanner} />
         </StyledAction>
       </StyledBanner>
     </StyledContainer>
@@ -98,29 +100,22 @@ const StyledBanner = styled.div`
   }
 `;
 
-const StyledClose = styled.span`
-  cursor: pointer;
-  color: #141414;
+const StyledClose = styled(DecoratedCloseIcon)`
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 0;
 
   @media (max-width: ${contentSize.desktop}px) {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
-`;
-
-const StyledContent = styled.div`
-  @media (max-width: ${contentSize.desktop}px) {
-    margin-bottom: 12px;
+    top: 0;
   }
 `;
 
 const StyledTitle = styled(TitleS)`
   display: inline-block;
-`;
-
-const StyledText = styled(BaseM)`
-  display: inline;
 `;
 
 const StyledAction = styled.div`
