@@ -45,7 +45,11 @@ export default function CommunityPage({ queryRef }: Props) {
   }, [community, track]);
 
   if (!community || community.__typename !== 'Community') {
-    return <NotFound resource="community" />;
+    return (
+      <StyledNotFoundPage>
+        <NotFound resource="community" />
+      </StyledNotFoundPage>
+    );
   }
 
   const headTitle = community.name ? `${community.name} | Gallery` : 'Gallery';
@@ -84,4 +88,9 @@ const StyledPage = styled.div`
     margin: 0 auto;
     padding: ${GLOBAL_NAVBAR_HEIGHT}px 32px 0;
   }
+`;
+
+const StyledNotFoundPage = styled(StyledPage)`
+  align-items: center;
+  justify-content: center;
 `;
