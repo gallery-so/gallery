@@ -27,6 +27,7 @@ const StyledPage = styled.div`
   margin-left: ${pageGutter.mobile}px;
   margin-right: ${pageGutter.mobile}px;
   justify-content: flex-start;
+  align-items: center;
   max-width: 100vw;
 
   @media only screen and ${breakpoints.tablet} {

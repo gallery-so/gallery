@@ -8,6 +8,8 @@ import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContex
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import GlobalFeed from './GlobalFeed';
+import ViewerFeed from './ViewerFeed';
 
 export const FOLLOWING = Symbol('FOLLOWING');
 export const WORLDWIDE = Symbol('WORLDWIDE');
@@ -109,9 +111,15 @@ export default function Feed() {
   }, [setCustomNavCenterContent]);
 
   return (
-    <div>
-      <div>Feed</div>
+    <StyledFeed>
+      <Spacer height={24} />
+      {feedMode === FOLLOWING && <ViewerFeed />}
+      {feedMode === WORLDWIDE && <GlobalFeed />}
       <div>{feedMode.toString()}</div>
-    </div>
+    </StyledFeed>
   );
 }
+
+const StyledFeed = styled.div`
+  width: 842px;
+`;
