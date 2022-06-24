@@ -62,18 +62,20 @@ export default function CollectionCreatedEvent({ eventRef }: Props) {
     <StyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
         <StyledEventHeader>
+          {/* <span> */}
+          <InteractiveLink to={`/${event.owner.username}`}>
+            {event.owner.username}
+          </InteractiveLink>{' '}
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
             added {event.collection.tokens.length}{' '}
             {pluralize(event.collection.tokens.length, 'piece')} to their new collection,{' '}
-            <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
-              {event.collection.name}
-            </InteractiveLink>
           </BaseM>
+          <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
+            {event.collection.name}
+          </InteractiveLink>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+          {/* </span> */}
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />

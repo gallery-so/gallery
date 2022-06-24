@@ -43,11 +43,12 @@ export default function UserFollowedUsersEvent({ eventRef }: Props) {
 
   const isSingleFollow = event.followed.length === 1;
   const handleClick = useCallback(() => {
-    console.log('eeee');
     void push(`/${event.followed[0].user.username}`);
   }, [event.followed, push]);
 
   return (
+    // todo: show href for single, no href for multipel follows
+    // todo: open follower list for multiple
     <StyledEvent onClick={handleClick}>
       <StyledEventHeader>
         <BaseM>

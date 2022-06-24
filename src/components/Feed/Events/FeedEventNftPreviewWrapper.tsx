@@ -31,7 +31,11 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
   );
 
   return (
-    <StyledNftPreviewWrapper maxWidth={maxWidth} maxHeight={maxHeight}>
+    <StyledNftPreviewWrapper
+      maxWidth={maxWidth}
+      maxHeight={maxHeight}
+      onClick={(e) => e.stopPropagation()}
+    >
       <NftPreview tokenRef={token} nftPreviewWidth={'100%'} previewSize={maxWidth} />
     </StyledNftPreviewWrapper>
   );
@@ -40,10 +44,10 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
 const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number }>`
   ${StyledImageWithLoading} {
     max-height: calc((100vw - 64px) / 3);
-    @media only screen and ${breakpoints.desktop} {
-      max-width: ${({ maxWidth }) => maxWidth}px;
-      max-height: ${({ maxHeight }) => maxHeight}px;
-    }
+    // @media only screen and ${breakpoints.desktop} {
+    max-width: ${({ maxWidth }) => maxWidth}px;
+    max-height: ${({ maxHeight }) => maxHeight}px;
+    // }
   }
 `;
 

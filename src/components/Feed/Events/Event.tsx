@@ -1,4 +1,5 @@
 import colors from 'components/core/colors';
+import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import styled from 'styled-components';
@@ -14,13 +15,23 @@ export const StyledEvent = styled.div`
 `;
 
 export const StyledEventHeader = styled.div`
-  display: flex;
+  display: inline;
   width: 100%;
+
+  p {
+    display: inline;
+  }
+
+  ${Spacer} {
+    display: inline-block;
+  }
 `;
 
 export const StyledTime = styled(BaseS)`
   color: ${colors.metal};
   align-self: flex-end;
+  display: inline;
+  vertical-align: bottom;
 `;
 
 export const StyledClickHandler = styled.a`
