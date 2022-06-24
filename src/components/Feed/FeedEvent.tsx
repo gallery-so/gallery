@@ -29,9 +29,7 @@ export default function FeedEvent({ queryRef }: Props) {
         __typename
         dbid
         eventTime
-        owner {
-          dbid
-        }
+
         action
       }
     `,

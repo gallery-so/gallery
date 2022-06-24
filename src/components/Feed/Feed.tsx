@@ -1,4 +1,5 @@
 import ActionText from 'components/core/ActionText/ActionText';
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import { fadeIn } from 'components/core/keyframes';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -121,5 +122,8 @@ export default function Feed() {
 }
 
 const StyledFeed = styled.div`
-  width: 842px;
+  width: 100vw;
+  @media only screen and ${breakpoints.desktop} {
+    width: 842px;
+  }
 `;

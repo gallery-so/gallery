@@ -24,8 +24,8 @@ export default function CollectorsNoteAddedToTokenEvent({ eventRef }: Props) {
         token {
           token {
             name
-            ...EventMediaFragment
           }
+          ...EventMediaFragment
         }
       }
     `,
@@ -48,7 +48,7 @@ export default function CollectorsNoteAddedToTokenEvent({ eventRef }: Props) {
       </StyledEventHeader>
       <Spacer height={16} />
       <StyledContent>
-        <EventMedia tokenRef={event.token.token} />
+        <EventMedia tokenRef={event.token} />
         <StyledNoteWrapper>
           <TitleM>{event.newCollectorsNote}</TitleM>
         </StyledNoteWrapper>

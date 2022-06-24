@@ -2,39 +2,38 @@ import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import FeedEventNftPreviewWrapper from './FeedEventNftPreviewWrapper';
 
 type Props = {
   tokenRef: any;
+  showSmallerPreview: boolean;
 };
 
-export default function EventMedia({ tokenRef }: Props) {
+const DEFAULT_DIMENSIONS_DESKTOP = 259.33;
+const SMALL_DIMENSIONS_DESKTOP = 190.5;
+// const DEFAULT_DIMENSIONS_MOBILE = 259.33;
+
+export default function EventMedia({ tokenRef, showSmallerPreview }: Props) {
   const token = useFragment(
     graphql`
-      fragment EventMediaFragment on Token {
-        name
-        media {
-          ... on Media {
-            previewURLs {
-              medium
-              # srcSet
-            }
-          }
-        }
+      fragment EventMediaFragment on CollectionToken {
+        ...FeedEventNftPreviewWrapperFragment
       }
     `,
     tokenRef
   );
-  console.log(token);
+
+  const maxWidth = showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
+  const maxHeight = showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
+
   return (
-    <StyledEventMedia>
-      <ShimmerProvider>
-        <ImageWithLoading src={token.media.previewURLs.medium} alt={token.name ?? ''} />
-      </ShimmerProvider>
+    <StyledEventMedia width={maxWidth}>
+      <FeedEventNftPreviewWrapper tokenRef={token} maxWidth={maxWidth} maxHeight={maxHeight} />
     </StyledEventMedia>
   );
 }
 
-const StyledEventMedia = styled.div`
-  max-height: 259.33px;
+const StyledEventMedia = styled.div<{ width: number }>`
   display: flex;
+  width: ${({ width }) => width}px;
 `;

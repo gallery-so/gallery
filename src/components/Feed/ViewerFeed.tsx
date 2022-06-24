@@ -1,20 +1,22 @@
+import Spacer from 'components/core/Spacer/Spacer';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
+import FeedEvent from './FeedEvent';
 
 export default function ViewerFeed() {
-  const query = useLazyLoadQuery<ViewerFeedQuery>(
+  const pagination = {
+    // token: '2AyjfivgDr915AvmMsIqPR5Q1BB'
+    // limit: 4,
+  };
+  const { viewerFeed } = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
       query ViewerFeedQuery($page: Pagination) {
         viewerFeed: viewerFeed(page: $page) {
           ... on Feed {
             events {
               dbid
-              eventTime
-              owner {
-                dbid
-              }
-              action
+              ...FeedEventFragment
             }
             pageInfo {
               hasNextPage
@@ -31,13 +33,11 @@ export default function ViewerFeed() {
       }
     `,
     {
-      page: {
-        limit: 10,
-      },
+      page: pagination,
     }
   );
 
-  console.log('query', query);
+  console.log('viewerFeed', viewerFeed);
   // const { feed } = useFragment(graphql`
   //   fragment ViewerFeedFragment on Query {
   //     viewerFeed: viewerFeed(page: 0) {
@@ -49,7 +49,19 @@ export default function ViewerFeed() {
   //     }
   //   }
   // `);
-  return <StyledViewerFeed>Viewer</StyledViewerFeed>;
+  return (
+    <StyledViewerFeed>
+      {viewerFeed.events.map((event) => (
+        <>
+          <FeedEvent queryRef={event} key={event.dbid} />
+          <Spacer height={12} />
+        </>
+      ))}
+    </StyledViewerFeed>
+  );
 }
 
-const StyledViewerFeed = styled.div``;
+const StyledViewerFeed = styled.div`
+  display: flex;
+  flex-direction: column;
+`;

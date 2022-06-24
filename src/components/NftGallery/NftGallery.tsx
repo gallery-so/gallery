@@ -9,6 +9,7 @@ import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { removeNullValues } from 'utils/removeNullValues';
+import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
@@ -26,7 +27,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
         }
         tokens {
           id
-          ...NftPreviewFragment
+          ...GalleryNftPreviewWrapperFragment
         }
 
         ...useCollectionColumnsFragment
@@ -61,7 +62,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
           return <StyledWhitespaceBlock key={galleryNft.id} />;
         }
 
-        return <NftPreview key={galleryNft.id} galleryNftRef={galleryNft} />;
+        return <NftPreviewWrapper key={galleryNft.id} galleryNftRef={galleryNft} />;
       })}
     </StyledCollectionNfts>
   );

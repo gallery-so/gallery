@@ -30,13 +30,13 @@ export default function ImageWithLoading({
       return 'min(100%, 80vh)';
     }
     if (heightType === 'inherit') {
-      return 'inherit';
+      return '100%';
     }
     return '100%';
   }, [heightType]);
 
   return (
-    <StyledImg
+    <StyledImageWithLoading
       className={className}
       maxHeight={maxHeight}
       widthType={widthType}
@@ -48,12 +48,12 @@ export default function ImageWithLoading({
   );
 }
 
-type StyledImgProps = {
+type StyledImageWithLoadingProps = {
   maxHeight: string;
   widthType: ContentWidthType;
 };
 
-const StyledImg = styled.img<StyledImgProps>`
+export const StyledImageWithLoading = styled.img<StyledImageWithLoadingProps>`
   display: block;
   max-height: ${({ maxHeight }) => maxHeight};
   ${({ widthType }) => (widthType === 'fullWidth' ? 'width' : 'max-width')}: 100%;
