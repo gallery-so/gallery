@@ -1,17 +1,15 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useRefreshTokensMutation } from '__generated__/useRefreshTokensMutation.graphql';
+import { useSyncTokensMutation } from '__generated__/useSyncTokensMutation.graphql';
 
-// this will be deprecated once we're off opensea
-// TODO replace with refreshTokens
-export default function useRefreshTokens() {
-  const [refreshTokens] = usePromisifiedMutation<useRefreshTokensMutation>(
+export default function useSyncTokens() {
+  const [syncTokens] = usePromisifiedMutation<useSyncTokensMutation>(
     graphql`
-      mutation useRefreshTokensMutation {
-        refreshTokens {
+      mutation useSyncTokensMutation {
+        syncTokens {
           __typename
-          ... on RefreshTokensPayload {
+          ... on SyncTokensPayload {
             viewer {
               user {
                 tokens {
@@ -36,18 +34,18 @@ export default function useRefreshTokens() {
   );
 
   return useCallback(async () => {
-    const response = await refreshTokens({
+    const response = await syncTokens({
       variables: {},
     });
 
-    if (response.refreshTokens?.__typename === 'ErrOpenSeaRefreshFailed') {
+    if (response.syncTokens?.__typename === 'ErrOpenSeaRefreshFailed') {
       throw new Error(
         'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
       );
     }
     // TODO: log the user out
-    if (response.refreshTokens?.__typename === 'ErrNotAuthorized') {
+    if (response.syncTokens?.__typename === 'ErrNotAuthorized') {
       throw new Error('You are not authorized!');
     }
-  }, [refreshTokens]);
+  }, [syncTokens]);
 }
