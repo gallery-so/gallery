@@ -204,7 +204,7 @@ function CollectionGalleryHeader({
         </>
       )}
 
-      <Spacer height={80} />
+      <Spacer height={isMobile ? 48 : 80} />
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
