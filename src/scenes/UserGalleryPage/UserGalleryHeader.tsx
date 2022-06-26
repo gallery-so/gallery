@@ -5,13 +5,14 @@ import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
-import QRCode from './QRCode';
+import QRCodeButton from './QRCodeButton';
 import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
+import { useQrCode } from 'scenes/Modals/QRCodePopover';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -42,6 +43,8 @@ function UserGalleryHeader({
 
   const unescapedBio = useMemo(() => (user.bio ? unescape(user.bio) : ''), [user.bio]);
 
+  const styledQrCode = useQrCode();
+
   return (
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
@@ -57,7 +60,7 @@ function UserGalleryHeader({
               <Spacer width={8} />
               {isQRCodeEnabled && (
                 <>
-                  <QRCode username={user.username} />
+                  <QRCodeButton username={user.username} styledQrCode={styledQrCode} />
                   <Spacer width={8} />
                 </>
               )}

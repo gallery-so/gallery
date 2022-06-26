@@ -6,21 +6,23 @@ import { graphql, useFragment } from 'react-relay';
 import { SearchBarFragment$key } from '__generated__/SearchBarFragment.graphql';
 
 type Props = {
-  nftsRef: SearchBarFragment$key;
+  tokensRef: SearchBarFragment$key;
   setSearchResults: Dispatch<SetStateAction<string[]>>;
   setDebouncedSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
-function SearchBar({ nftsRef, setSearchResults, setDebouncedSearchQuery }: Props) {
-  const nfts = useFragment(
+function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Props) {
+  const tokens = useFragment(
     graphql`
-      fragment SearchBarFragment on Nft @relay(plural: true) {
+      fragment SearchBarFragment on Token @relay(plural: true) {
         dbid
         name
-        openseaCollectionName
+        contract {
+          name
+        }
       }
     `,
-    nftsRef
+    tokensRef
   );
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,23 +39,23 @@ function SearchBar({ nftsRef, setSearchResults, setDebouncedSearchQuery }: Props
   useEffect(() => {
     const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
 
-    const searchResults = nfts
-      .filter((nft) => {
-        if (nft.name?.toLowerCase().includes(lowerCaseQuery)) {
+    const searchResults = tokens
+      .filter((token) => {
+        if (token.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 
-        if (nft.openseaCollectionName?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 
         return false;
       })
-      .map((nft) => nft.dbid);
+      .map((token) => token.dbid);
 
     setDebouncedSearchQuery(debouncedSearchQuery);
     setSearchResults(searchResults);
-  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, nfts]);
+  }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, tokens]);
 
   return (
     <StyledSearchBar>

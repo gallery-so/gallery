@@ -6,14 +6,16 @@ import { useRemoveWalletMutation } from '__generated__/useRemoveWalletMutation.g
 export default function useRemoveWallet() {
   const [removeWallet] = usePromisifiedMutation<useRemoveWalletMutation>(
     graphql`
-      mutation useRemoveWalletMutation($addresses: [Address!]!) {
-        removeUserAddresses(addresses: $addresses) {
-          ... on RemoveUserAddressesPayload {
+      mutation useRemoveWalletMutation($walletIds: [DBID!]!) {
+        removeUserWallets(walletIds: $walletIds) {
+          ... on RemoveUserWalletsPayload {
             __typename
             viewer {
               user {
                 wallets {
-                  address
+                  chainAddress {
+                    address
+                  }
                 }
               }
             }
@@ -24,14 +26,14 @@ export default function useRemoveWallet() {
   );
 
   return useCallback(
-    async (address: string) => {
-      const { removeUserAddresses } = await removeWallet({
+    async (walletId: string) => {
+      const { removeUserWallets } = await removeWallet({
         variables: {
-          addresses: [address],
+          walletIds: [walletId],
         },
       });
 
-      if (removeUserAddresses?.__typename === 'RemoveUserAddressesPayload') {
+      if (removeUserWallets?.__typename === 'RemoveUserWalletsPayload') {
         return;
       } else {
         // TODO: handle error here

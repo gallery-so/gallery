@@ -12,12 +12,12 @@ import { useCallback } from 'react';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
-  nftId: string;
+  tokenId: string;
   collectionId: string;
   username: string;
 };
 
-export default function NftDetailPage({ username, collectionId, nftId }: NftDetailPageProps) {
+export default function NftDetailPage({ username, collectionId, tokenId }: NftDetailPageProps) {
   const { push } = useRouter();
 
   // the default "back" behavior from the NFT Detail Page
@@ -30,7 +30,7 @@ export default function NftDetailPage({ username, collectionId, nftId }: NftDeta
 
   useKeyDown('Escape', handleReturnToCollectionPage);
 
-  if (!nftId) {
+  if (!tokenId) {
     // Something went horribly wrong
     return <GalleryRedirect to="/" />;
   }
@@ -42,7 +42,7 @@ export default function NftDetailPage({ username, collectionId, nftId }: NftDeta
       </Link>
       <GalleryRoute
         element={
-          <NftDetailPageScene username={username} collectionId={collectionId} nftId={nftId} />
+          <NftDetailPageScene username={username} collectionId={collectionId} tokenId={tokenId} />
         }
         navbar={false}
         footer={false}
@@ -60,18 +60,18 @@ const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
 
 export const getServerSideProps: GetServerSideProps<NftDetailPageProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : '';
-  const nftId = params?.nftId ? (params.nftId as string) : '';
+  const tokenId = params?.tokenId ? (params.tokenId as string) : '';
   const collectionId = params?.collectionId ? (params.collectionId as string) : '';
 
   return {
     props: {
       username,
-      nftId,
+      tokenId,
       collectionId,
-      metaTags: nftId
+      metaTags: tokenId
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/nft/${nftId}`,
+            previewPath: `/opengraph/nft/${tokenId}`,
           })
         : null,
     },

@@ -66,7 +66,9 @@ function AddWalletPendingGnosisSafe({
           ... on Viewer {
             user {
               wallets {
-                address
+                chainAddress @required(action: NONE) {
+                  address
+                }
               }
             }
           }
@@ -81,7 +83,7 @@ function AddWalletPendingGnosisSafe({
   const { viewer } = query;
 
   const authenticatedUserAddresses = useMemo(
-    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.address)),
+    () => removeNullValues(viewer?.user?.wallets?.map((wallet) => wallet?.chainAddress.address)),
     [viewer?.user?.wallets]
   );
 
@@ -122,7 +124,10 @@ function AddWalletPendingGnosisSafe({
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
       const { signatureValid } = await addWallet({
-        address,
+        chainAddress: {
+          address,
+          chain: 'Ethereum',
+        },
         authMechanism: {
           gnosisSafe: {
             address,

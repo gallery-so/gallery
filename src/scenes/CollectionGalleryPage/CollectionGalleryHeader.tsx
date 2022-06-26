@@ -69,7 +69,7 @@ function CollectionGalleryHeader({
           dbid @required(action: THROW)
         }
 
-        nfts {
+        tokens {
           __typename
         }
       }
@@ -97,7 +97,7 @@ function CollectionGalleryHeader({
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
-  const shouldDisplayMobileLayoutToggle = isMobile && collection?.nfts?.length;
+  const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');
@@ -204,7 +204,7 @@ function CollectionGalleryHeader({
         </>
       )}
 
-      <Spacer height={80} />
+      <Spacer height={isMobile ? 48 : 80} />
     </StyledCollectionGalleryHeaderWrapper>
   );
 }

@@ -11,7 +11,6 @@ import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.g
 import CommunityPageView from './CommunityPageView';
 
 type Props = {
-  contractAddress: string;
   queryRef: CommunityPageFragment$key;
 };
 
@@ -19,7 +18,10 @@ export default function CommunityPage({ queryRef }: Props) {
   const { community } = useFragment(
     graphql`
       fragment CommunityPageFragment on Query {
-        community: communityByAddress(contractAddress: $contractAddress, forceRefresh: false) {
+        community: communityByAddress(
+          communityAddress: $communityAddress
+          forceRefresh: $forceRefresh
+        ) {
           ... on ErrCommunityNotFound {
             __typename
           }
@@ -43,7 +45,11 @@ export default function CommunityPage({ queryRef }: Props) {
   }, [community, track]);
 
   if (!community || community.__typename !== 'Community') {
-    return <NotFound resource="community" />;
+    return (
+      <StyledNotFoundPage>
+        <NotFound resource="community" />
+      </StyledNotFoundPage>
+    );
   }
 
   const headTitle = community.name ? `${community.name} | Gallery` : 'Gallery';
@@ -82,4 +88,9 @@ const StyledPage = styled.div`
     margin: 0 auto;
     padding: ${GLOBAL_NAVBAR_HEIGHT}px 32px 0;
   }
+`;
+
+const StyledNotFoundPage = styled(StyledPage)`
+  align-items: center;
+  justify-content: center;
 `;

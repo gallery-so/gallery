@@ -1,19 +1,19 @@
 import { useRouter } from 'next/router';
 import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { NftIdOpengraphQuery } from '__generated__/NftIdOpengraphQuery.graphql';
+import { TokenIdOpengraphQuery } from '__generated__/TokenIdOpengraphQuery.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
-  const queryResponse = useLazyLoadQuery<NftIdOpengraphQuery>(
+  const queryResponse = useLazyLoadQuery<TokenIdOpengraphQuery>(
     graphql`
-      query NftIdOpengraphQuery($nftId: DBID!) {
-        nft: nftById(id: $nftId) {
-          ... on ErrNftNotFound {
+      query TokenIdOpengraphQuery($tokenId: DBID!) {
+        token: tokenById(id: $tokenId) {
+          ... on ErrTokenNotFound {
             __typename
           }
-          ... on Nft {
+          ... on Token {
             __typename
 
             name
@@ -24,16 +24,16 @@ export default function OpenGraphCollectionPage() {
         }
       }
     `,
-    { nftId: query.nftId as string }
+    { tokenId: query.tokenId as string }
   );
 
-  if (queryResponse.nft?.__typename !== 'Nft') {
+  if (queryResponse.token?.__typename !== 'Token') {
     return null;
   }
 
-  const { nft } = queryResponse;
+  const { token } = queryResponse;
 
-  const media = getVideoOrImageUrlForNftPreview(nft);
+  const media = getVideoOrImageUrlForNftPreview(token);
 
   const width = parseInt(query.width as string) || 600;
   const height = parseInt(query.height as string) || 300;
@@ -42,10 +42,10 @@ export default function OpenGraphCollectionPage() {
     <>
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
-          {nft && (
+          {token && (
             <OpenGraphPreview
-              title={nft.name ?? ''}
-              description={(nft.collectorsNote || nft.description) ?? ''}
+              title={token.name ?? ''}
+              description={(token.collectorsNote || token.description) ?? ''}
               imageUrls={media?.urls.large ? [media.urls.large] : []}
             />
           )}

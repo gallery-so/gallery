@@ -9,7 +9,7 @@ import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
-import { getBackgroundColorOverrideForContract } from 'utils/nft';
+import { getBackgroundColorOverrideForContract } from 'utils/token';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -41,14 +41,18 @@ function NftPreviewWithShimmer(props: Props) {
 }
 
 function NftPreview({ galleryNftRef }: Props) {
-  const { nft, collection } = useFragment(
+  const { token, collection } = useFragment(
     graphql`
-      fragment NftPreviewFragment on CollectionNft {
-        nft @required(action: THROW) {
+      fragment NftPreviewFragment on CollectionToken {
+        token @required(action: THROW) {
           dbid
           name
-          openseaCollectionName
-          contractAddress
+          contract {
+            name
+            contractAddress {
+              address
+            }
+          }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
         }
@@ -88,7 +92,7 @@ function NftPreview({ galleryNftRef }: Props) {
     }
   }, [columns, aspectRatioType, isMobile]);
 
-  const result = getVideoOrImageUrlForNftPreview(nft);
+  const result = getVideoOrImageUrlForNftPreview(token);
 
   const nftPreviewWidth = useMemo(() => {
     // this allows SVGs to stretch to fit its container, fixing images
@@ -98,15 +102,17 @@ function NftPreview({ galleryNftRef }: Props) {
     // in the preview label appearing stretched beneath the image, since
     // we cap the max height to 80vh when column = 1; so this is disabled
     // in those cases for now.
-    if (columns > 1 && result?.urls?.large?.endsWith('.svg')) {
+    if (columns > 1 && result?.urls?.large?.includes('.svg')) {
       return '100%';
     }
     return 'auto';
   }, [columns, result?.urls?.large]);
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   const {
@@ -120,12 +126,12 @@ function NftPreview({ galleryNftRef }: Props) {
   return (
     <Link
       // path that will be shown in the browser URL bar
-      as={`/${username}/${collection.dbid}/${nft.dbid}`}
+      as={`/${username}/${collection.dbid}/${token.dbid}`}
       // query params purely for internal tracking. this will NOT be displayed in URL bar.
       // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
       // appropriate query params attached. this allows the app to stay on the current page,
       // while also feeding the modal the necessary data to display an NFT in detail.
-      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&nftId=${nft.dbid}&originPage=${originPage}&modal=true`}
+      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&tokenId=${token.dbid}&originPage=${originPage}&modal=true`}
       // disable scroll-to-top when the modal opens
       scroll={false}
     >
@@ -138,15 +144,15 @@ function NftPreview({ galleryNftRef }: Props) {
           backgroundColorOverride={backgroundColorOverride}
         >
           <NftPreviewAsset
-            nftRef={nft}
+            tokenRef={token}
             // we'll request images at double the size of the element so that it looks sharp on retina
             size={previewSize * 2}
           />
           <StyledNftFooter>
             <StyledNftLabel
-              title={nft.name}
-              collectionName={nft.openseaCollectionName}
-              contractAddress={nft.contractAddress}
+              title={token.name}
+              collectionName={token.contract?.name}
+              contractAddress={contractAddress}
             />
             <StyledGradient type="bottom" direction="down" />
           </StyledNftFooter>

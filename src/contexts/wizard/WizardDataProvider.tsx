@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
-import useRefreshOpenseaNfts from 'hooks/api/nfts/useRefreshOpenseaNfts';
+import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 import {
   ReactNode,
   createContext,
@@ -54,7 +54,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
 
   const [isRefreshingNfts, setIsRefreshingNfts] = useState(false);
 
-  const refreshOpenseaNfts = useRefreshOpenseaNfts();
+  const syncTokens = useSyncTokens();
 
   const { pushToast } = useToastActions();
 
@@ -63,7 +63,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
 
     try {
       loadQuery({}, { fetchPolicy: 'store-and-network' });
-      await refreshOpenseaNfts();
+      await syncTokens();
     } catch (error: unknown) {
       captureException(error);
       if (error instanceof Error) {
@@ -72,7 +72,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
     }
 
     setIsRefreshingNfts(false);
-  }, [loadQuery, pushToast, refreshOpenseaNfts]);
+  }, [loadQuery, pushToast, syncTokens]);
 
   useEffect(() => {
     if (id === 'onboarding') {

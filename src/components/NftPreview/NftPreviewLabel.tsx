@@ -19,6 +19,7 @@ function NftPreviewLabel({ className, title, collectionName, contractAddress }: 
     () => !!contractAddress && !DISABLED_CONTRACTS.includes(contractAddress),
     [contractAddress]
   );
+
   return (
     <StyledNftPreviewLabel className={className}>
       {title && (

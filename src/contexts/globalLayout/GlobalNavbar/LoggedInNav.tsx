@@ -78,13 +78,13 @@ function LoggedInNav({ queryRef }: Props) {
   const username = query.viewer.user?.username;
   const userOwnsCollectionOrGallery = routerQuery?.username === username;
 
-  return username ? (
+  return (
     <StyledLoggedInNav>
       {userOwnsCollectionOrGallery && (
         <NavElement>
           <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
             <TextButton
-              text={routerQuery?.collectionId ? 'Collection Design' : 'Gallery Design'}
+              text={routerQuery?.collectionId ? 'Edit Collection' : 'Edit Gallery'}
               onClick={handleEditDesignClick}
             />
             <Spacer height={12} />
@@ -94,9 +94,12 @@ function LoggedInNav({ queryRef }: Props) {
       )}
       <Spacer width={24} />
       <NavElement>
-        <StyledDropdownWrapper>
-          <Dropdown mainText={query.viewer.user.username} shouldCloseOnMenuItemClick>
-            <TextButton text="My Gallery" onClick={() => push(`/${username}`)} />
+        <StyledDropdownWrapper hasNotification={false}>
+          <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
+            <TextButton
+              text="My Gallery"
+              onClick={username ? () => push(`/${username}`) : undefined}
+            />
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
             <Spacer height={12} />
@@ -105,7 +108,7 @@ function LoggedInNav({ queryRef }: Props) {
         </StyledDropdownWrapper>
       </NavElement>
     </StyledLoggedInNav>
-  ) : null;
+  );
 }
 
 const StyledLoggedInNav = styled.div`
@@ -121,11 +124,11 @@ const StyledLoggedInNav = styled.div`
 //   border-radius: 50%;
 // `;
 
-const StyledDropdownWrapper = styled.div<{ hasNotifiction?: boolean }>`
+const StyledDropdownWrapper = styled.div<{ hasNotification?: boolean }>`
   position: relative;
 
-  ${({ hasNotifiction }) =>
-    hasNotifiction &&
+  ${({ hasNotification }) =>
+    hasNotification &&
     `&:after {
       position: absolute;
       top: 5px;

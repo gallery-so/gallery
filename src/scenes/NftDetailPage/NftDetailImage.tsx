@@ -1,6 +1,6 @@
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { useFragment } from 'react-relay';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/nft';
+import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
 import { graphql } from 'relay-runtime';
 import { size } from 'components/core/breakpoints';
 import { useBreakpoint } from 'hooks/useWindowSize';
@@ -10,37 +10,34 @@ import { StyledVideo } from './NftDetailVideo';
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
-  nftRef: NftDetailImageFragment$key;
+  tokenRef: NftDetailImageFragment$key;
   maxHeight: number;
 };
 
-function NftDetailImage({ nftRef, maxHeight }: Props) {
-  const nft = useFragment(
+function NftDetailImage({ tokenRef, maxHeight }: Props) {
+  const token = useFragment(
     graphql`
-      fragment NftDetailImageFragment on Nft {
+      fragment NftDetailImageFragment on Token {
         name
         media @required(action: THROW) {
           ... on ImageMedia {
             __typename
-            contentRenderURLs @required(action: THROW) {
-              raw @required(action: THROW)
-              large
-            }
+            contentRenderURL
           }
         }
       }
     `,
-    nftRef
+    tokenRef
   );
   const breakpoint = useBreakpoint();
 
   const contentRenderURL = useMemo(() => {
-    if (nft.media.__typename === 'ImageMedia') {
-      return nft.media.contentRenderURLs.large || nft.media.contentRenderURLs.raw;
+    if (token.media.__typename === 'ImageMedia') {
+      return token.media.contentRenderURL;
     }
 
     return '';
-  }, [nft.media]);
+  }, [token.media]);
 
   const src = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
 
@@ -66,7 +63,7 @@ function NftDetailImage({ nftRef, maxHeight }: Props) {
   return (
     <ImageWithLoading
       src={graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200)}
-      alt={nft.name ?? ''}
+      alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightScreen' : undefined}
     />
   );

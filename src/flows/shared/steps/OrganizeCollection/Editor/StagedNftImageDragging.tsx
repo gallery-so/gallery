@@ -5,24 +5,32 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/nft';
+import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 
 type Props = {
-  nftRef: StagedNftImageDraggingFragment$key;
+  tokenRef: StagedNftImageDraggingFragment$key;
   size: number;
 };
 
-function StagedNftImageDragging({ nftRef, size }: Props) {
-  const nft = useFragment(
+function StagedNftImageDragging({ tokenRef, size }: Props) {
+  const token = useFragment(
     graphql`
-      fragment StagedNftImageDraggingFragment on Nft {
-        contractAddress
+      fragment StagedNftImageDraggingFragment on Token {
+        contract {
+          contractAddress {
+            address
+          }
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
-    nftRef
+    tokenRef
   );
+
+  if (!token) {
+    throw new Error('StagedNftImageDragging: token not provided');
+  }
 
   const isMouseUp = useMouseUp();
 
@@ -30,15 +38,17 @@ function StagedNftImageDragging({ nftRef, size }: Props) {
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
   const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview(nft, reportError);
+  const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
   if (!result || !result.urls.large) {
     reportError('Image URL not found for StagedNftImageDragging');
   }
 
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+
   const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(nft.contractAddress ?? ''),
-    [nft.contractAddress]
+    () => getBackgroundColorOverrideForContract(contractAddress),
+    [contractAddress]
   );
 
   return result?.type === 'video' ? (

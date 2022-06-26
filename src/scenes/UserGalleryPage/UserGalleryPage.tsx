@@ -48,7 +48,6 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 const StyledUserGalleryPage = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
   min-height: 100vh;
 

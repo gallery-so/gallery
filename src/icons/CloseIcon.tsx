@@ -11,12 +11,12 @@ export default function CloseIcon({ isActive }: Props) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
-        d="M12.6666 3.33334L3.33331 12.6667"
+        d="M12.6667 3.33333L3.33333 12.6667"
         stroke={isActive ? colors.offBlack : colors.shadow}
         stroke-miterlimit="10"
       />
       <path
-        d="M3.33331 3.33334L12.6666 12.6667"
+        d="M3.33333 3.33333L12.6667 12.6667"
         stroke={isActive ? colors.offBlack : colors.shadow}
         stroke-miterlimit="10"
       />
