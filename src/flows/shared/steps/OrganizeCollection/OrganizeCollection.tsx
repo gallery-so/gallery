@@ -75,6 +75,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
             layout={collectionMetadata.layout}
           />
         ),
+        headerText: 'Name and describe your collection',
       });
     });
 

@@ -61,6 +61,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
           collectionCollectorsNote={collectorsNote ?? ''}
         />
       ),
+      headerText: 'Name and describe your collection',
     });
   }, [collectorsNote, dbid, gallery.dbid, name, showModal]);
 
