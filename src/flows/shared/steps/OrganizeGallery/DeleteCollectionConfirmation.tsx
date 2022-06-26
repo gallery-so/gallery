@@ -41,10 +41,9 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
 
   return (
     <StyledConfirmation>
-      <TitleS>Are you sure you want to delete your collection?</TitleS>
-      <Spacer height={48} />
+      <Spacer height={16} />
       <ButtonContainer>
-        <StyledCancelButton mini text="Nevermind" type="secondary" onClick={hideModal} />
+        <StyledCancelButton mini text="Cancel" type="secondary" onClick={hideModal} />
         <StyledButton
           mini
           text="Delete"
@@ -68,13 +67,13 @@ const ButtonContainer = styled.div`
 
 const StyledCancelButton = styled(Button)`
   border: none;
-  width: 125px;
+  width: 80px;
   margin-right: 8px;
   color: ${colors.metal};
 `;
 
 const StyledButton = styled(Button)`
-  width: 125px;
+  width: 80px;
 `;
 
 export default DeleteCollectionConfirmation;
