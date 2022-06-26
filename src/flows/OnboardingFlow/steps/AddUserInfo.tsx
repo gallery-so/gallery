@@ -11,6 +11,7 @@ import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { AddUserInfoQuery } from '__generated__/AddUserInfoQuery.graphql';
+import breakpoints from 'components/core/breakpoints';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -94,11 +95,15 @@ function AddUserInfo({ next }: WizardContext) {
 }
 
 const StyledUserInfoForm = styled(UserInfoForm)`
-  width: 600px;
+  @media only screen and ${breakpoints.tablet} {
+    width: 600px;
+  }
 `;
 
 const ErrorContainer = styled.div`
-  width: 600px;
+  @media only screen and ${breakpoints.tablet} {
+    width: 600px;
+  }
 `;
 
 export default AddUserInfo;
