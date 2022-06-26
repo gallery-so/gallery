@@ -93,7 +93,7 @@ function AddWalletPendingDefault({
     (address: string) => {
       showModal({
         content: <ManageWalletsModal queryRef={query} newAddress={address} />,
-        headerText: 'Connect with MetaMask',
+        headerText: 'Connect your wallet',
       });
     },
     [showModal, query]
