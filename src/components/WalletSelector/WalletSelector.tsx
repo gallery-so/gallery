@@ -249,7 +249,7 @@ const StyledBody = styled(BaseM)`
 `;
 
 const StyledRetryButton = styled(Button)`
-  width: 50%;
+  width: 200px;
   align-self: center;
 `;
 
