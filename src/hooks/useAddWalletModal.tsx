@@ -43,7 +43,7 @@ export default function useAddWalletModal() {
   );
 
   return useCallback(() => {
-    showModal({ content: <AddWalletModal queryRef={query} /> });
+    showModal({ content: <AddWalletModal queryRef={query} />, headerText: 'Connect your wallet' });
   }, [query, showModal]);
 }
 
@@ -54,9 +54,4 @@ const Container = styled.div`
 
   min-height: 280px;
   height: 100%;
-
-  padding: 48px 24px;
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0;
-  }
 `;

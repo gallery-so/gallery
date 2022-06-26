@@ -55,13 +55,8 @@ const Container = styled.div`
 
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
-  min-height: 360px;
+  min-height: 320px;
   height: 100%;
-
-  padding: 48px 24px;
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0;
-  }
 `;
 
 export default function useAuthModal() {
@@ -77,6 +72,6 @@ export default function useAuthModal() {
   );
 
   return useCallback(() => {
-    showModal({ content: <AuthModal queryRef={query} /> });
+    showModal({ content: <AuthModal queryRef={query} />, headerText: 'Connect your wallet' });
   }, [query, showModal]);
 }
