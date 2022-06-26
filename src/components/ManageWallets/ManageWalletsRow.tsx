@@ -1,4 +1,3 @@
-import colors from 'components/core/colors';
 import TextButton from 'components/core/Button/TextButton';
 import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useMemo, useState } from 'react';
@@ -74,9 +73,7 @@ export default ManageWalletsRow;
 
 const StyledWalletRow = styled.div`
   display: flex;
-  border: 1px solid ${colors.offBlack};
-  padding: 16px;
-  margin-bottom: 8px;
+  padding: 8px 0px;
   justify-content: space-between;
   flex-direction: column;
 

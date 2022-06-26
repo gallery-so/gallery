@@ -116,7 +116,6 @@ const StyledEditUserInfoModal = styled.div`
   flex-direction: column;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0px;
     width: 480px;
   }
 `;

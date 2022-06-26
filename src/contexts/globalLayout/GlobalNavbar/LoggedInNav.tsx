@@ -44,7 +44,7 @@ function LoggedInNav({ queryRef }: Props) {
   const { query: routerQuery } = useRouter();
 
   const handleManageWalletsClick = useCallback(() => {
-    showModal({ content: <ManageWalletsModal queryRef={query} /> });
+    showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
   }, [query, showModal]);
 
   const handleEditNameClick = useCallback(() => {
