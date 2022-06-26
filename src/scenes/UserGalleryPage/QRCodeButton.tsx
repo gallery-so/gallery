@@ -21,7 +21,7 @@ export default function QRCode({
 
     showModal({
       content: <QRCodePopover username={username} styledQrCode={styledQrCode} />,
-      isFullPageOverride: true,
+      isFullPage: true,
     });
   }, [track, username, showModal, styledQrCode]);
 
