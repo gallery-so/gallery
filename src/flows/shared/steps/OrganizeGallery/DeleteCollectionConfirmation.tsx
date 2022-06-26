@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { TitleS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Button from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
