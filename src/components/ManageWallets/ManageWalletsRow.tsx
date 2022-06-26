@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
 import ReactTooltip from 'react-tooltip';
-import breakpoints from 'components/core/breakpoints';
 import useRemoveWallet from 'components/WalletSelector/mutations/useRemoveWallet';
 
 type Props = {
@@ -75,9 +74,5 @@ const StyledWalletRow = styled.div`
   display: flex;
   padding: 8px 0px;
   justify-content: space-between;
-  flex-direction: column;
-
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-  }
+  flex-direction: row;
 `;
