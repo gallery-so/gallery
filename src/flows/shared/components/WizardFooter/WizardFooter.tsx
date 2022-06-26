@@ -72,53 +72,35 @@ function WizardFooter({
 
   const { showModal } = useModalActions();
 
+  const handlePreviousNavigation = useCallback(() => {
+    if (onPrevious?.current) {
+      void onPrevious.current();
+    } else {
+      goToPreviousStep();
+    }
+  }, [goToPreviousStep, onPrevious]);
+
   const handlePreviousClick = useCallback(() => {
     // If the user is onboarding, run previous callback without a modal
     if (wizardId === 'onboarding') {
-      if (onPrevious?.current) {
-        void onPrevious.current();
-      } else {
-        goToPreviousStep();
-      }
+      handlePreviousNavigation();
       return;
     }
 
     if (step.id === 'organizeCollection') {
       // If the user is editing from the collection page directly (has a collection ID), use default back()
-      if (collectionId) {
-        showModal({
-          content: (
-            <GenericActionModal
-              bodyText="Would you like to stop editing?"
-              buttonText="Leave"
-              action={back}
-            />
-          ),
-        });
-        return;
-      }
-
-      // If /edit does NOT have a ?collectionId query param, go back to the overall /edit page
-      if (!collectionId) {
-        showModal({
-          content: (
-            <GenericActionModal
-              bodyText="Would you like to stop editing?"
-              buttonText="Leave"
-              action={() => {
-                if (onPrevious?.current) {
-                  void onPrevious.current();
-                } else {
-                  goToPreviousStep();
-                }
-              }}
-            />
-          ),
-        });
-        return;
-      }
+      showModal({
+        content: (
+          <GenericActionModal
+            buttonText="Leave"
+            action={collectionId ? back : handlePreviousNavigation}
+          />
+        ),
+        headerText: 'Would you like to stop editing?',
+      });
+      return;
     }
-  }, [back, collectionId, onPrevious, goToPreviousStep, step, showModal, wizardId]);
+  }, [wizardId, step.id, handlePreviousNavigation, collectionId, showModal, back]);
 
   // We want to do the same thing if the user clicks escape, unless they are onboarding
   const handleEscapePress = useCallback(() => {
@@ -160,7 +142,7 @@ const StyledWizardFooter = styled.div`
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 50;
+  z-index: 1;
 
   display: flex;
   align-items: center;

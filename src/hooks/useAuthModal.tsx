@@ -5,7 +5,6 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
-import breakpoints from 'components/core/breakpoints';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
