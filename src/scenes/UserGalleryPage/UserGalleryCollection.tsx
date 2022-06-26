@@ -110,6 +110,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
           collectionCollectorsNote={collection.collectorsNote ?? ''}
         />
       ),
+      headerText: 'Name and describe your collection',
     });
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 

@@ -116,6 +116,7 @@ function CollectionGalleryHeader({
           collectionCollectorsNote={collection.collectorsNote ?? undefined}
         />
       ),
+      headerText: 'Name and describe your collection',
     });
   }, [
     collection.collectorsNote,
