@@ -71,7 +71,7 @@ function UserGalleryHeader({
           )}
         </StyledButtonsWrapper>
       </StyledUsernameWrapper>
-      <Spacer height={16} />
+      <Spacer height={2} />
       <StyledUserDetails>
         <BaseM>
           <Markdown text={unescapedBio} />
