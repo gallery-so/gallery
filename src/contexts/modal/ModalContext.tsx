@@ -16,6 +16,7 @@ import {
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
+import { ModalPaddingVariant } from './constants';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
@@ -35,13 +36,15 @@ export const useModalState = (): ModalState => {
 
 type ShowModalFnProps = {
   content: ReactElement;
+  headerText?: string;
+  headerVariant?: ModalPaddingVariant;
   onClose?: () => void;
-  isFullPageOverride?: boolean;
+  isFullPage?: boolean;
   isPaddingDisabled?: boolean;
 };
 
 type ModalActions = {
-  showModal: ({ content, onClose, isFullPageOverride }: ShowModalFnProps) => void;
+  showModal: ({ content, onClose, isFullPage }: ShowModalFnProps) => void;
   hideModal: () => void;
 };
 
@@ -68,9 +71,13 @@ function ModalProvider({ children }: Props) {
   // conditions within side-effects that look up this state
   const isModalOpenRef = useRef(false);
   // Whether the modal should take up the entire page.
-  const [isFullPageOverride, setIsFullPageOverride] = useState<boolean | null>(null);
+  const [isFullPage, setIsFullPage] = useState<boolean>(false);
   // Whether to disable default padding
   const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
+  // Header text
+  const [headerText, setHeaderText] = useState('');
+  // Header variant
+  const [headerVariant, setHeaderVariant] = useState<ModalPaddingVariant>('standard');
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -83,21 +90,21 @@ function ModalProvider({ children }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  // Default behavior is to display full-page on mobile,
-  // but this can be overridden.
-  const isFullPage = useMemo(() => {
-    if (isFullPageOverride !== null) {
-      return isFullPageOverride;
-    }
-    return isMobile;
-  }, [isFullPageOverride, isMobile]);
-
   const showModal = useCallback(
-    ({ content, onClose = noop, isFullPageOverride = null, isPaddingDisabled = false }) => {
+    ({
+      content,
+      headerText = '',
+      headerVariant = 'standard',
+      onClose = noop,
+      isFullPage = false,
+      isPaddingDisabled = false,
+    }) => {
       setIsActive(true);
+      setHeaderText(headerText);
+      setHeaderVariant(headerVariant);
       isModalOpenRef.current = true;
       setIsMounted(true);
-      setIsFullPageOverride(isFullPageOverride);
+      setIsFullPage(isFullPage);
       setIsPaddingDisabled(isPaddingDisabled);
       setContent(content);
       onCloseRef.current = onClose;
@@ -121,7 +128,9 @@ function ModalProvider({ children }: Props) {
     setTimeout(() => {
       setIsMounted(false);
       setContent(null);
-      setIsFullPageOverride(null);
+      setHeaderText('');
+      setHeaderVariant('standard');
+      setIsFullPage(false);
       setIsPaddingDisabled(false);
       onCloseRef.current = noop;
 
@@ -159,8 +168,11 @@ function ModalProvider({ children }: Props) {
             isActive={isActive}
             hideModal={hideModal}
             content={content}
+            headerText={headerText}
             isFullPage={isFullPage}
+            isMobile={isMobile}
             isPaddingDisabled={isPaddingDisabled}
+            headerVariant={headerVariant}
           />
         )}
       </ModalActionsContext.Provider>

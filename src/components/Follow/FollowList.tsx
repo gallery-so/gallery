@@ -4,7 +4,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { MODAL_PADDING_PX } from 'contexts/modal/AnimatedModal';
+import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -92,11 +92,11 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_PX}px 8px;
+  padding: ${MODAL_PADDING_THICC_PX}px 8px;
 `;
 
 const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_PX}px;
+  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
 
   display: flex;
   justify-content: center;

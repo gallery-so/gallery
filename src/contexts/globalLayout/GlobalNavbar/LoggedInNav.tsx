@@ -44,11 +44,14 @@ function LoggedInNav({ queryRef }: Props) {
   const { query: routerQuery } = useRouter();
 
   const handleManageWalletsClick = useCallback(() => {
-    showModal({ content: <ManageWalletsModal queryRef={query} /> });
+    showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
   }, [query, showModal]);
 
   const handleEditNameClick = useCallback(() => {
-    showModal({ content: <EditUserInfoModal queryRef={query} /> });
+    showModal({
+      content: <EditUserInfoModal queryRef={query} />,
+      headerText: 'Edit username and bio',
+    });
   }, [query, showModal]);
 
   const handleEditDesignClick = useCallback(() => {

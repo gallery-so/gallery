@@ -50,7 +50,7 @@ const StyledBigInput = styled.input`
   font-family: 'GT Alpina';
   line-height: 36px;
   letter-spacing: -0.03em;
-  background: ${colors.offWhite};
+  background: ${colors.faint};
   color: ${colors.offBlack};
 
   ::placeholder {

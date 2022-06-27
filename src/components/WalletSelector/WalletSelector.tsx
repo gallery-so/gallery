@@ -215,8 +215,6 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      <StyledTitleS>Connect your wallet</StyledTitleS>
-      <Spacer height={16} />
       {availableWalletOptions.map((walletName) => (
         <WalletButton
           key={walletName}
@@ -226,7 +224,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
           setToPendingState={setToPendingState}
         />
       ))}
-      <Spacer height={8} />
+      <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );
@@ -245,17 +243,13 @@ const StyledWalletSelector = styled.div`
   }
 `;
 
-const StyledTitleS = styled(TitleS)`
-  text-align: left;
-`;
-
 const StyledBody = styled(BaseM)`
   margin-bottom: 30px;
   white-space: pre-wrap;
 `;
 
 const StyledRetryButton = styled(Button)`
-  width: 50%;
+  width: 200px;
   align-self: center;
 `;
 

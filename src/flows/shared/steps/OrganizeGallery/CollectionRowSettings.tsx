@@ -61,6 +61,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
           collectionCollectorsNote={collectorsNote ?? ''}
         />
       ),
+      headerText: 'Name and describe your collection',
     });
   }, [collectorsNote, dbid, gallery.dbid, name, showModal]);
 
@@ -75,7 +76,10 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
   const handleDeleteClick = useCallback(() => {
     track('Delete collection button clicked');
-    showModal({ content: <DeleteCollectionConfirmation collectionRef={collection} /> });
+    showModal({
+      content: <DeleteCollectionConfirmation collectionRef={collection} />,
+      headerText: 'Are you sure you want to delete your collection?',
+    });
   }, [collection, showModal, track]);
 
   return (

@@ -12,7 +12,7 @@ export default function GenericActionModal({
   buttonText,
 }: {
   action: () => void;
-  bodyText: string;
+  bodyText?: string;
   buttonText: string;
 }) {
   const { hideModal } = useModalActions();
@@ -26,7 +26,7 @@ export default function GenericActionModal({
     <StyledModal>
       <LeaveWrapper>
         <BaseM>{bodyText}</BaseM>
-        <Spacer height={28}></Spacer>
+        <Spacer height={16} />
         <StyledButton onClick={handleClick} text={buttonText} />
       </LeaveWrapper>
     </StyledModal>
@@ -35,6 +35,7 @@ export default function GenericActionModal({
 
 const StyledModal = styled.div`
   height: 100%;
+  width: 300px;
   @media only screen and ${breakpoints.tablet} {
     width: 480px;
   }
@@ -43,6 +44,7 @@ const StyledModal = styled.div`
 const StyledButton = styled(Button)`
   padding: 0px 12px;
   height: 30px;
+  align-self: flex-end;
 `;
 
 const LeaveWrapper = styled.div`

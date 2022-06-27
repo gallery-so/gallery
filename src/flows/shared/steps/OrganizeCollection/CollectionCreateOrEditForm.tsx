@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Button from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
@@ -143,9 +142,6 @@ function CollectionCreateOrEditForm({
 
   return (
     <StyledCollectionEditInfoForm>
-      <TitleS>Give your collection a name and description</TitleS>
-      <Spacer height={4} />
-      <BaseM>You can always add a collection name and description later.</BaseM>
       <Spacer height={16} />
       <BigInput
         onChange={handleNameChange}
@@ -153,7 +149,7 @@ function CollectionCreateOrEditForm({
         placeholder="Collection name"
         autoFocus
       />
-      <Spacer height={24} />
+      <Spacer height={16} />
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
@@ -169,7 +165,10 @@ function CollectionCreateOrEditForm({
           <ErrorText message={generalError} />
         </>
       )}
-      <Spacer height={20} />
+      <Spacer height={16} />
+
+      {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
+      <Spacer height={12} />
       <ButtonContainer>
         <Button
           mini
@@ -186,8 +185,6 @@ function CollectionCreateOrEditForm({
 const StyledCollectionEditInfoForm = styled.div`
   display: flex;
   flex-direction: column;
-
-  padding: 48px 24px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0px;

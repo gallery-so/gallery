@@ -91,7 +91,10 @@ function AddWalletPendingDefault({
 
   const openManageWalletsModal = useCallback(
     (address: string) => {
-      showModal({ content: <ManageWalletsModal queryRef={query} newAddress={address} /> });
+      showModal({
+        content: <ManageWalletsModal queryRef={query} newAddress={address} />,
+        headerText: 'Connect your wallet',
+      });
     },
     [showModal, query]
   );

@@ -1,7 +1,7 @@
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
 import useAddWalletModal from 'hooks/useAddWalletModal';
 import usePersistedState from 'hooks/usePersistedState';
@@ -69,8 +69,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
 
   return (
     <StyledManageWallets>
-      <TitleS>Manage Accounts</TitleS>
-      <Spacer height={8} />
+      <Spacer height={16} />
       <BaseM>Add more wallets to access your other NFTs.</BaseM>
       <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
       {notification && (
@@ -90,7 +89,8 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           setRemovedAddress={setRemovedAddress}
         />
       ))}
-      <StyledButton text="+ Add new wallet" onClick={handleSubmit} disabled={addWalletDisabled} />
+      <Spacer height={16} />
+      <StyledButton text="Add new wallet" onClick={handleSubmit} disabled={addWalletDisabled} />
     </StyledManageWallets>
   );
 }

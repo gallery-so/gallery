@@ -27,10 +27,9 @@ function ManageWalletsModal({ newAddress, queryRef }: Props) {
 }
 
 const StyledManageWalletsModal = styled.div`
-  padding: 48px 24px;
+  width: 300px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0;
     width: 480px;
   }
 `;
