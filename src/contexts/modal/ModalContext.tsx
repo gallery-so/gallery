@@ -38,6 +38,7 @@ type ShowModalFnProps = {
   headerText?: string;
   onClose?: () => void;
   isFullPage?: boolean;
+  isPaddingDisabled?: boolean;
 };
 
 type ModalActions = {
@@ -69,6 +70,8 @@ function ModalProvider({ children }: Props) {
   const isModalOpenRef = useRef(false);
   // Whether the modal should take up the entire page.
   const [isFullPage, setIsFullPage] = useState<boolean>(false);
+  // Whether to disable default padding
+  const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
   // Header text
   const [headerText, setHeaderText] = useState('');
   // Content to be displayed within the modal
@@ -84,12 +87,19 @@ function ModalProvider({ children }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const showModal = useCallback(
-    ({ content, headerText = '', onClose = noop, isFullPage = false }) => {
+    ({
+      content,
+      headerText = '',
+      onClose = noop,
+      isFullPage = false,
+      isPaddingDisabled = false,
+    }) => {
       setIsActive(true);
       setHeaderText(headerText);
       isModalOpenRef.current = true;
       setIsMounted(true);
       setIsFullPage(isFullPage);
+      setIsPaddingDisabled(isPaddingDisabled);
       setContent(content);
       onCloseRef.current = onClose;
 
@@ -114,6 +124,7 @@ function ModalProvider({ children }: Props) {
       setContent(null);
       setHeaderText('');
       setIsFullPage(false);
+      setIsPaddingDisabled(false);
       onCloseRef.current = noop;
 
       // enable scrolling again
@@ -153,6 +164,7 @@ function ModalProvider({ children }: Props) {
             headerText={headerText}
             isFullPage={isFullPage}
             isMobile={isMobile}
+            isPaddingDisabled={isPaddingDisabled}
           />
         )}
       </ModalActionsContext.Provider>

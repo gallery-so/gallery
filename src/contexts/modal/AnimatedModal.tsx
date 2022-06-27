@@ -16,10 +16,19 @@ type Props = {
   content: ReactElement;
   isFullPage: boolean;
   isMobile: boolean;
+  isPaddingDisabled: boolean;
   headerText: string;
 };
 
-function AnimatedModal({ isActive, hideModal, content, isFullPage, isMobile, headerText }: Props) {
+function AnimatedModal({
+  isActive,
+  hideModal,
+  content,
+  isFullPage,
+  isMobile,
+  isPaddingDisabled,
+  headerText,
+}: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
     function handlePopState() {
@@ -40,11 +49,11 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage, isMobile, hea
   useKeyDown('Escape', delayedHideModal);
 
   const padding = useMemo(() => {
-    if (isFullPage) {
+    if (isFullPage || isPaddingDisabled) {
       return '0px';
     }
     return `${MODAL_PADDING_PX}px ${MODAL_PADDING_PX}px 12px`;
-  }, [isFullPage]);
+  }, [isFullPage, isPaddingDisabled]);
 
   const maxWidth = useMemo(() => {
     if (isFullPage) {
@@ -61,7 +70,12 @@ function AnimatedModal({ isActive, hideModal, content, isFullPage, isMobile, hea
       <Overlay onClick={hideModal} />
       <StyledContentContainer isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent isFullPage={isFullPage} maxWidth={maxWidth} padding={padding}>
+          <StyledContent
+            isFullPage={isFullPage}
+            isPaddingDisabled={isPaddingDisabled}
+            maxWidth={maxWidth}
+            padding={padding}
+          >
             <StyledHeader>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
               <StyledDecoratedCloseIcon onClick={hideModal} />
@@ -155,6 +169,7 @@ const StyledTitleS = styled(TitleS)`
 
 const StyledContent = styled.div<{
   isFullPage: boolean;
+  isPaddingDisabled: boolean;
   maxWidth: string;
   padding: string;
 }>`
