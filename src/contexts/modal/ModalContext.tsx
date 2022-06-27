@@ -16,6 +16,7 @@ import {
 } from 'react';
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
+import { ModalPaddingVariant } from './constants';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
@@ -36,6 +37,7 @@ export const useModalState = (): ModalState => {
 type ShowModalFnProps = {
   content: ReactElement;
   headerText?: string;
+  headerVariant?: ModalPaddingVariant;
   onClose?: () => void;
   isFullPage?: boolean;
   isPaddingDisabled?: boolean;
@@ -74,6 +76,8 @@ function ModalProvider({ children }: Props) {
   const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
   // Header text
   const [headerText, setHeaderText] = useState('');
+  // Header variant
+  const [headerVariant, setHeaderVariant] = useState<ModalPaddingVariant>('standard');
   // Content to be displayed within the modal
   const [content, setContent] = useState<ReactElement | null>(null);
   // Callback to trigger when the modal is closed
@@ -90,12 +94,14 @@ function ModalProvider({ children }: Props) {
     ({
       content,
       headerText = '',
+      headerVariant = 'standard',
       onClose = noop,
       isFullPage = false,
       isPaddingDisabled = false,
     }) => {
       setIsActive(true);
       setHeaderText(headerText);
+      setHeaderVariant(headerVariant);
       isModalOpenRef.current = true;
       setIsMounted(true);
       setIsFullPage(isFullPage);
@@ -123,6 +129,7 @@ function ModalProvider({ children }: Props) {
       setIsMounted(false);
       setContent(null);
       setHeaderText('');
+      setHeaderVariant('standard');
       setIsFullPage(false);
       setIsPaddingDisabled(false);
       onCloseRef.current = noop;
@@ -165,6 +172,7 @@ function ModalProvider({ children }: Props) {
             isFullPage={isFullPage}
             isMobile={isMobile}
             isPaddingDisabled={isPaddingDisabled}
+            headerVariant={headerVariant}
           />
         )}
       </ModalActionsContext.Provider>

@@ -7,7 +7,7 @@ import transitions, {
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import useKeyDown from 'hooks/useKeyDown';
-import { MODAL_PADDING_PX } from './constants';
+import { ModalPaddingVariant, MODAL_PADDING_PX } from './constants';
 import { TitleS } from 'components/core/Text/Text';
 
 type Props = {
@@ -18,6 +18,7 @@ type Props = {
   isMobile: boolean;
   isPaddingDisabled: boolean;
   headerText: string;
+  headerVariant: ModalPaddingVariant;
 };
 
 function AnimatedModal({
@@ -28,6 +29,7 @@ function AnimatedModal({
   isMobile,
   isPaddingDisabled,
   headerText,
+  headerVariant,
 }: Props) {
   // hide modal if user clicks Back
   useEffect(() => {
@@ -78,7 +80,7 @@ function AnimatedModal({
           >
             <StyledHeader>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
-              <StyledDecoratedCloseIcon onClick={hideModal} />
+              <StyledDecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
             </StyledHeader>
             {content}
           </StyledContent>

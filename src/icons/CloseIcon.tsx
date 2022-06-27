@@ -1,5 +1,9 @@
 import colors from 'components/core/colors';
-import { MODAL_PADDING_PX } from 'contexts/modal/constants';
+import {
+  ModalPaddingVariant,
+  MODAL_PADDING_PX,
+  MODAL_PADDING_THICC_PX,
+} from 'contexts/modal/constants';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
@@ -27,9 +31,14 @@ export default function CloseIcon({ isActive }: Props) {
 type DecoratedCloseIconProps = {
   className?: string;
   onClick?: () => void;
+  variant?: ModalPaddingVariant;
 };
 
-export function DecoratedCloseIcon({ className, onClick }: DecoratedCloseIconProps) {
+export function DecoratedCloseIcon({
+  className,
+  onClick,
+  variant = 'standard',
+}: DecoratedCloseIconProps) {
   const [isHoveringOverCloseIcon, setIsHoveringOverCloseIcon] = useState(false);
 
   const handleCloseHover = useCallback(() => {
@@ -46,13 +55,15 @@ export function DecoratedCloseIcon({ className, onClick }: DecoratedCloseIconPro
       onClick={onClick}
       onMouseEnter={handleCloseHover}
       onMouseLeave={handleCloseLeave}
+      variant={variant}
     >
       <CloseIcon isActive={isHoveringOverCloseIcon} />
     </StyledDecoratedCloseIcon>
   );
 }
 
-const StyledDecoratedCloseIcon = styled.div`
+const StyledDecoratedCloseIcon = styled.div<{ variant: DecoratedCloseIconProps['variant'] }>`
   cursor: pointer;
-  padding: ${MODAL_PADDING_PX}px;
+  padding: ${({ variant }) =>
+    variant === 'standard' ? MODAL_PADDING_PX : MODAL_PADDING_THICC_PX}px;
 `;
