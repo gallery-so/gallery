@@ -3,7 +3,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
@@ -15,11 +16,10 @@ type Props = {
   eventRef: any;
 };
 
-export default function CollectionCreatedEvent({ eventRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment CollectionCreatedEventFragment on CollectionCreatedEvent {
-        dbid
+      fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEvent {
         eventTime
         owner {
           username
@@ -27,17 +27,12 @@ export default function CollectionCreatedEvent({ eventRef }: Props) {
         collection {
           dbid
           name
-          tokens {
-            token {
-              dbid
-              #     media {
-              #       previewUrls {
-              #         medium
-              #       }
-              #     }
-            }
-            ...EventMediaFragment
+        }
+        newTokens {
+          token {
+            dbid
           }
+          ...EventMediaFragment
         }
       }
     `,
@@ -46,8 +41,8 @@ export default function CollectionCreatedEvent({ eventRef }: Props) {
   const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
-    return event.collection.tokens.slice(0, 4);
-  }, [event.collection.tokens]);
+    return event.newTokens.slice(0, 4);
+  }, [event.newTokens]);
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const handleEventClick = useCallback(
@@ -62,20 +57,15 @@ export default function CollectionCreatedEvent({ eventRef }: Props) {
     <StyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
         <StyledEventHeader>
-          {/* <span> */}
-          <InteractiveLink to={`/${event.owner.username}`}>
-            {event.owner.username}
-          </InteractiveLink>{' '}
           <BaseM>
-            added {event.collection.tokens.length}{' '}
-            {pluralize(event.collection.tokens.length, 'piece')} to their new collection,{' '}
+            <InteractiveLink to={`/${event.owner.username}`}>
+              {event.owner.username}
+            </InteractiveLink>{' '}
+            added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to{' '}
+            <InteractiveLink to={collectionPagePath}>{event.collection.name}</InteractiveLink>
           </BaseM>
-          <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
-            {event.collection.name}
-          </InteractiveLink>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-          {/* </span> */}
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />

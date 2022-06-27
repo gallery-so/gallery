@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
-import CollectionCreatedEvent from './Events/CollectionCreatedEvent';
-import CollectorsNoteAddedToTokenEvent from './Events/CollectorsNoteAddedToTokenEvent';
-import TokensAddedToCollectionEvent from './Events/TokensAddedToCollectionEvent';
-import UserFollowedUsersEvent from './Events/UserFollowedUsersEvent';
+import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
+import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
+import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
+import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 
 type Props = {
   queryRef: any;
@@ -11,18 +11,18 @@ type Props = {
 export default function FeedEvent({ queryRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on Event {
-        ... on CollectionCreatedEvent {
-          ...CollectionCreatedEventFragment
+      fragment FeedEventFragment on FeedEvent {
+        ... on CollectionCreatedFeedEvent {
+          ...CollectionCreatedFeedEventFragment
         }
-        ... on CollectorsNoteAddedToTokenEvent {
-          ...CollectorsNoteAddedToTokenEventFragment
+        ... on CollectorsNoteAddedToTokenFeedEvent {
+          ...CollectorsNoteAddedToTokenFeedEventFragment
         }
-        ... on UserFollowedUsersEvent {
-          ...UserFollowedUsersEventFragment
+        ... on UserFollowedUsersFeedEvent {
+          ...UserFollowedUsersFeedEventFragment
         }
-        ... on TokensAddedToCollectionEvent {
-          ...TokensAddedToCollectionEventFragment
+        ... on TokensAddedToCollectionFeedEvent {
+          ...TokensAddedToCollectionFeedEventFragment
         }
         # UserCreatedEvent
         # CollectorsNoteAddedToCollectionEvent
@@ -38,14 +38,14 @@ export default function FeedEvent({ queryRef }: Props) {
   console.log('event', event);
 
   switch (event.__typename) {
-    case 'TokensAddedToCollectionEvent':
-      return <TokensAddedToCollectionEvent eventRef={event} />;
-    case 'CollectionCreatedEvent':
-      return <CollectionCreatedEvent eventRef={event} />;
-    case 'CollectorsNoteAddedToTokenEvent':
-      return <CollectorsNoteAddedToTokenEvent eventRef={event} />;
-    case 'UserFollowedUsersEvent':
-      return <UserFollowedUsersEvent eventRef={event} />;
+    case 'TokensAddedToCollectionFeedEvent':
+      return <TokensAddedToCollectionFeedEvent eventRef={event} />;
+    case 'CollectionCreatedFeedEvent':
+      return <CollectionCreatedFeedEvent eventRef={event} />;
+    case 'CollectorsNoteAddedToTokenFeedEvent':
+      return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
+    case 'UserFollowedUsersFeedEvent':
+      return <UserFollowedUsersFeedEvent eventRef={event} />;
     //   case 'VideoMedia':
     //     return <NftDetailVideo mediaRef={token.token.media} maxHeight={maxHeight} />;
     //   case 'AudioMedia':

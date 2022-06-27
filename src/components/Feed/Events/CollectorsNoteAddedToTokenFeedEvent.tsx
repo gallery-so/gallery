@@ -18,10 +18,10 @@ type Props = {
 const MARGIN = 16;
 const MIDDLE_GAP = 24;
 
-export default function CollectorsNoteAddedToTokenEvent({ eventRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment CollectorsNoteAddedToTokenEventFragment on CollectorsNoteAddedToTokenEvent {
+      fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEvent {
         dbid
         eventTime
         owner {

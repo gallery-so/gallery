@@ -13,10 +13,10 @@ type Props = {
   eventRef: any;
 };
 
-export default function UserFollowedUsersEvent({ eventRef }: Props) {
+export default function UserFollowedUsersFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment UserFollowedUsersEventFragment on UserFollowedUsersEvent {
+      fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEvent {
         dbid
         eventTime
         owner {

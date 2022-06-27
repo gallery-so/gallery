@@ -11,26 +11,26 @@ export default function GlobalFeed() {
   };
   const { globalFeed } = useLazyLoadQuery<GlobalFeedQuery>(
     graphql`
-      query GlobalFeedQuery($page: Pagination) {
-        globalFeed: globalFeed(page: $page) {
-          ... on Feed {
-            events {
-              dbid
-
-              ...FeedEventFragment
+      query GlobalFeedQuery($before: String, $after: String, $first: Int, $last: Int) {
+        globalFeed: globalFeed(before: $before, after: $after, first: $first, last: $last) {
+          ... on FeedConnection {
+            edges {
+              node {
+                ... on FeedEvent {
+                  dbid
+                  ...FeedEventFragment
+                }
+              }
             }
             pageInfo {
               hasNextPage
               size
-              nextToken
             }
           }
         }
       }
     `,
-    {
-      page: pagination,
-    }
+    {}
   );
   console.log('globalFeed', globalFeed);
   // if hasNextPage show button

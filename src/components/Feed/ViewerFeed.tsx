@@ -9,35 +9,35 @@ export default function ViewerFeed() {
     // token: '2AyjfivgDr915AvmMsIqPR5Q1BB'
     // limit: 4,
   };
-  const { viewerFeed } = useLazyLoadQuery<ViewerFeedQuery>(
-    graphql`
-      query ViewerFeedQuery($page: Pagination) {
-        viewerFeed: viewerFeed(page: $page) {
-          ... on Feed {
-            events {
-              dbid
-              ...FeedEventFragment
-            }
-            pageInfo {
-              hasNextPage
-              size
-              nextToken
-            }
-            viewer {
-              user {
-                dbid
-              }
-            }
-          }
-        }
-      }
-    `,
-    {
-      page: pagination,
-    }
-  );
+  // const { viewerFeed } = useLazyLoadQuery<ViewerFeedQuery>(
+  //   graphql`
+  //     query ViewerFeedQuery($page: Pagination) {
+  //       viewerFeed: viewerFeed(page: $page) {
+  //         ... on Feed {
+  //           events {
+  //             dbid
+  //             ...FeedEventFragment
+  //           }
+  //           pageInfo {
+  //             hasNextPage
+  //             size
+  //             nextToken
+  //           }
+  //           viewer {
+  //             user {
+  //               dbid
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `,
+  //   {
+  //     page: pagination,
+  //   }
+  // );
 
-  console.log('viewerFeed', viewerFeed);
+  // console.log('viewerFeed', viewerFeed);
   // const { feed } = useFragment(graphql`
   //   fragment ViewerFeedFragment on Query {
   //     viewerFeed: viewerFeed(page: 0) {
@@ -51,12 +51,12 @@ export default function ViewerFeed() {
   // `);
   return (
     <StyledViewerFeed>
-      {viewerFeed.events.map((event) => (
+      {/* {viewerFeed.events.map((event) => (
         <>
           <FeedEvent queryRef={event} key={event.dbid} />
           <Spacer height={12} />
         </>
-      ))}
+      ))} */}
     </StyledViewerFeed>
   );
 }
