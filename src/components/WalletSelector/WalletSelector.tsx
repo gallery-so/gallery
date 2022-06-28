@@ -158,7 +158,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     deactivate();
   }, [deactivate]);
 
-  const handleSwitchNetwork = async () => {
+  const handleSwitchNetwork = useCallback(async () => {
     const provider = await injected.getProvider();
     provider.request({
       method: 'wallet_switchEthereumChain',
@@ -168,7 +168,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
         },
       ],
     });
-  };
+  }, []);
 
   if (displayedError) {
     return (
