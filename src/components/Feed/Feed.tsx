@@ -120,6 +120,9 @@ export default function Feed() {
 
 const StyledFeed = styled.div`
   width: 100vw;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   @media only screen and ${breakpoints.desktop} {
     width: 842px;
   }
