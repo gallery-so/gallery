@@ -60,11 +60,15 @@ export default function IconButton({
     return isFollowing ? 'Unfollow' : 'Follow';
   }, [clickedAndStillHovering, isFollowing, isSignedIn]);
 
-  const handleClick = useCallback(() => {
-    setShowTooltip(false);
-    setClickedAndStillHovering(true);
-    onClick();
-  }, [onClick]);
+  const handleClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      setShowTooltip(false);
+      setClickedAndStillHovering(true);
+      onClick();
+    },
+    [onClick]
+  );
 
   return (
     <StyledButtonWrapper>
@@ -79,7 +83,7 @@ export default function IconButton({
             fill="blue"
             fillOpacity={0}
             style={{ pointerEvents: 'initial' }}
-          ></circle>
+          />
         </CircleSvgWrapper>
         <StyledDefaultIconWrapper>
           <DisplayedIcon />
