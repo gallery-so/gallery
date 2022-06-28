@@ -30,6 +30,7 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import { useGlobalAnnouncementPopover } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -332,6 +333,8 @@ function GlobalNavbarWithFadeEnabled({
     () => handleFadeNavbarOnHover(false),
     [handleFadeNavbarOnHover]
   );
+
+  useGlobalAnnouncementPopover();
 
   return (
     <StyledGlobalNavbarWithFadeEnabled
