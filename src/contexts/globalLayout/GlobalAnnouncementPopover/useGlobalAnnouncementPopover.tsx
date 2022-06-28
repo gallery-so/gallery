@@ -18,6 +18,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
             }
           }
         }
+        ...GlobalAnnouncementPopover
       }
     `,
     queryRef
@@ -34,10 +35,10 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
     setTimeout(() => {
       showModal({
-        content: <GlobalAnnouncementPopover />,
+        content: <GlobalAnnouncementPopover queryRef={query} />,
         isFullPage: true,
         headerVariant: 'thicc',
       });
     }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
-  }, [isAuthenticated, showModal]);
+  }, [isAuthenticated, showModal, query]);
 }

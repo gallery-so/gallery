@@ -3,55 +3,224 @@ import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleM } from 'components/core/Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import Link from 'next/link';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from 'utils/removeNullValues';
+import { GlobalAnnouncementPopover$key } from '__generated__/GlobalAnnouncementPopover.graphql';
 
-// NOTE: to toggle whether the modal should appear for authenticated users only,
+type Props = {
+  queryRef: GlobalAnnouncementPopover$key;
+};
+
+// NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
-export default function GlobalAnnouncementPopover() {
+export default function GlobalAnnouncementPopover({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GlobalAnnouncementPopover on Query {
+        galleryOfTheWeekWinners @required(action: LOG) {
+          username
+          galleries {
+            collections {
+              hidden
+              tokens {
+                token {
+                  ...getVideoOrImageUrlForNftPreviewFragment
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const { galleryOfTheWeekWinners } = query;
+
+  console.log(galleryOfTheWeekWinners);
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <StyledGlobalAnnouncementPopover>
-      <Spacer height={92} />
-      <HeaderContainer>
-        <IntroText>
-          A new way to <i>connect</i> with collectors
-        </IntroText>
-        <Spacer height={32} />
-        <DescriptionText>
-          Collectors are looking for ways to connect with each other. To help them stay up to date
-          with their favorite collectors on Gallery, we’re introducing our biggest change thus far—
-        </DescriptionText>
-        <DescriptionTextItalic>a social feed.</DescriptionTextItalic>
-        <Spacer height={32} />
-        <ButtonContainer>
-          <Button text="Start Browsing" />
-          <Spacer width={32} />
-          <TextButton text="Galleries To Follow ↓" />
-        </ButtonContainer>
-      </HeaderContainer>
-      <Spacer height={64} />
-      {/* TODO: replace this with recorded video */}
-      <img src="./temp-asset.jpg" />
-      <Spacer height={64} />
-      <SecondaryHeaderContainer>
-        <StyledSecondaryTitleL>Featured galleries to follow</StyledSecondaryTitleL>
-        <Spacer height={12} />
-        <DescriptionText>
-          To get you started, you can follow some of our past{' '}
-          <DescriptionTextItalic>Gallery of the Week</DescriptionTextItalic> winners, as voted by
-          our community.
-        </DescriptionText>
-      </SecondaryHeaderContainer>
-      <Spacer height={64} />
-      <GalleryOfTheWeekContainer>
-        <StyledPlaceholder />
-        <StyledPlaceholder />
-        <StyledPlaceholder />
-        <StyledPlaceholder />
-      </GalleryOfTheWeekContainer>
-      <Spacer height={80} />
+      {
+        // A note on the architecture:
+        // Although desktop and mobile views are similar, they're sufficiently different such that they warrant
+        // different sets of components entirely. The alternative would be to litter this file with ternaries
+        // and CSS params
+        isMobile ? (
+          <>
+            <Spacer height={92} />
+            <DesktopHeaderContainer>
+              <DesktopIntroText>
+                A new way to <i>connect</i> with collectors
+              </DesktopIntroText>
+              <Spacer height={32} />
+              <DesktopDescriptionText>
+                Collectors are looking for ways to connect with each other. To help them stay up to
+                date with their favorite collectors on Gallery, we’re introducing our biggest change
+                thus far—
+              </DesktopDescriptionText>
+              <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
+              <Spacer height={32} />
+              <ButtonContainer>
+                <Button text="Start Browsing" />
+                <Spacer width={32} />
+                <TextButton text="Galleries To Follow ↓" />
+              </ButtonContainer>
+            </DesktopHeaderContainer>
+            <Spacer height={64} />
+            {/* TODO: replace this with recorded video */}
+            <img src="./temp-asset.jpg" />
+            <Spacer height={64} />
+            <DesktopSecondaryHeaderContainer>
+              <DesktopStyledSecondaryTitleL>
+                Featured galleries to follow
+              </DesktopStyledSecondaryTitleL>
+              <Spacer height={12} />
+              <DesktopDescriptionText>
+                To get you started, you can follow some of our past{' '}
+                <DesktopDescriptionTextItalic>Gallery of the Week</DesktopDescriptionTextItalic>{' '}
+                winners, as voted by our community.
+              </DesktopDescriptionText>
+            </DesktopSecondaryHeaderContainer>
+            <Spacer height={64} />
+            <DesktopGalleryOfTheWeekContainer>
+              <DesktopGotwContainer />
+              <DesktopGotwContainer />
+              <DesktopGotwContainer />
+              <DesktopGotwContainer />
+            </DesktopGalleryOfTheWeekContainer>
+            <Spacer height={80} />
+          </>
+        ) : (
+          <>
+            <Spacer height={92} />
+            <DesktopHeaderContainer>
+              <DesktopIntroText>
+                A new way to <i>connect</i> with collectors
+              </DesktopIntroText>
+              <Spacer height={32} />
+              <DesktopDescriptionText>
+                Collectors are looking for ways to connect with each other. To help them stay up to
+                date with their favorite collectors on Gallery, we’re introducing our biggest change
+                thus far—
+              </DesktopDescriptionText>
+              <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
+              <Spacer height={32} />
+              <ButtonContainer>
+                <Button text="Start Browsing" />
+                <Spacer width={32} />
+                <TextButton text="Galleries To Follow ↓" />
+              </ButtonContainer>
+            </DesktopHeaderContainer>
+            <Spacer height={64} />
+            {/* TODO: replace this with recorded video */}
+            <img src="./temp-asset.jpg" />
+            <Spacer height={64} />
+            <DesktopSecondaryHeaderContainer>
+              <DesktopStyledSecondaryTitleL>
+                Featured galleries to follow
+              </DesktopStyledSecondaryTitleL>
+              <Spacer height={12} />
+              <DesktopDescriptionText>
+                To get you started, you can follow some of our past{' '}
+                <DesktopDescriptionTextItalic>Gallery of the Week</DesktopDescriptionTextItalic>{' '}
+                winners, as voted by our community.
+              </DesktopDescriptionText>
+            </DesktopSecondaryHeaderContainer>
+            <Spacer height={64} />
+            <DesktopGalleryOfTheWeekContainer>
+              {galleryOfTheWeekWinners.map((user) => (
+                <GalleryOfTheWeekCard key={user.username} user={user} />
+              ))}
+            </DesktopGalleryOfTheWeekContainer>
+            <Spacer height={80} />
+          </>
+        )
+      }
     </StyledGlobalAnnouncementPopover>
   );
 }
+
+const GalleryOfTheWeekCard = ({ user }) => {
+  const imageUrls = removeNullValues(
+    user.galleries?.[0]?.collections
+      ?.filter((collection) => !collection?.hidden)
+      .flatMap((collection) => collection?.tokens)
+      .map((galleryToken) => {
+        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
+      })
+      .map((token) => token?.urls.large)
+  ).slice(0, 4);
+
+  return (
+    <Link href={`/${user.username}`} passHref>
+      <StyledAnchor target="_blank" rel="noopener noreferrer">
+        <DesktopGotwContainer>
+          <GotwHeader>
+            <Spacer width={8} />
+            <DesktopDescriptionText>{user.username}</DesktopDescriptionText>
+          </GotwHeader>
+          <Spacer height={32} />
+          <GotwBody>
+            {imageUrls.map((url) => (
+              <GotwImageContainer key={url}>
+                <GotwImage src={url} />
+              </GotwImageContainer>
+            ))}
+          </GotwBody>
+        </DesktopGotwContainer>
+      </StyledAnchor>
+    </Link>
+  );
+};
+
+const StyledAnchor = styled.a`
+  text-decoration: none;
+`;
+
+const DesktopGotwContainer = styled.div`
+  width: 506px;
+  height: 506px;
+  padding: 16px;
+  background: ${colors.white};
+
+  border: 1px solid;
+  border-color: ${colors.white};
+  cursor: pointer;
+  &:hover {
+    border-color: ${colors.offBlack};
+  }
+`;
+
+const GotwHeader = styled.div``;
+
+const GotwBody = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  grid-gap: 24px;
+`;
+
+const GotwImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 190px;
+  width: 220px;
+`;
+
+const GotwImage = styled.img`
+  max-height: 100%;
+  max-width: 100%;
+`;
+
+/////
 
 const StyledGlobalAnnouncementPopover = styled.div`
   display: flex;
@@ -60,12 +229,12 @@ const StyledGlobalAnnouncementPopover = styled.div`
   background: ${colors.offWhite};
 `;
 
-const HeaderContainer = styled.div`
+const DesktopHeaderContainer = styled.div`
   width: 580px;
   text-align: center;
 `;
 
-const IntroText = styled.span`
+const DesktopIntroText = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-weight: 300;
@@ -74,11 +243,11 @@ const IntroText = styled.span`
   letter-spacing: -0.05em;
 `;
 
-const DescriptionText = styled(TitleM)`
+const DesktopDescriptionText = styled(TitleM)`
   font-style: normal;
 `;
 
-const DescriptionTextItalic = styled.span`
+const DesktopDescriptionTextItalic = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 24px;
@@ -91,12 +260,12 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const SecondaryHeaderContainer = styled.div`
+const DesktopSecondaryHeaderContainer = styled.div`
   width: 526px;
   text-align: center;
 `;
 
-const StyledSecondaryTitleL = styled.span`
+const DesktopStyledSecondaryTitleL = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 42px;
@@ -105,16 +274,10 @@ const StyledSecondaryTitleL = styled.span`
   letter-spacing: -0.05em;
 `;
 
-const GalleryOfTheWeekContainer = styled.div`
+const DesktopGalleryOfTheWeekContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   grid-gap: 24px;
   max-width: 1040px;
-`;
-
-const StyledPlaceholder = styled.div`
-  width: 506px;
-  height: 506px;
-  background: ${colors.porcelain};
 `;
