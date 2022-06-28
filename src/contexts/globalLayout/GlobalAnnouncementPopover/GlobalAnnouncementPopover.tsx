@@ -1,18 +1,5 @@
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useEffect } from 'react';
-
+// NOTE: to toggle whether the modal should appear for authenticated users only,
+// refer to `useGlobalAnnouncementPopover.tsx`
 export default function GlobalAnnouncementPopover() {
   return <>hi</>;
-}
-
-const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 400;
-
-export function useGlobalAnnouncementPopover() {
-  const { showModal } = useModalActions();
-
-  useEffect(() => {
-    setTimeout(() => {
-      showModal({ content: <GlobalAnnouncementPopover />, isFullPage: true });
-    }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
-  }, [showModal]);
 }
