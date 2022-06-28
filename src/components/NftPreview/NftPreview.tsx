@@ -1,5 +1,5 @@
 import transitions from 'components/core/transitions';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import NftPreviewAsset from './NftPreviewAsset';
@@ -20,9 +20,17 @@ type Props = {
   nftPreviewMaxWidth?: string;
   nftPreviewWidth: string;
   previewSize: number;
+  ownerUsername?: string;
+  onClick?: () => void;
 };
 
-function NftPreview({ tokenRef, nftPreviewMaxWidth, nftPreviewWidth, previewSize }: Props) {
+function NftPreview({
+  tokenRef,
+  nftPreviewMaxWidth,
+  nftPreviewWidth,
+  previewSize,
+  onClick,
+}: Props) {
   const { token, collection } = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
@@ -61,7 +69,16 @@ function NftPreview({ tokenRef, nftPreviewMaxWidth, nftPreviewWidth, previewSize
   } = useRouter();
 
   // whether the user is on a gallery page or collection page prior to clicking on an NFT
-  const originPage = collectionId ? 'collection' : 'gallery';
+  const originPage = collectionId ? 'home' : 'gallery';
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (onClick) {
+        event.preventDefault();
+        onClick();
+      }
+    },
+    [onClick]
+  );
 
   return (
     <Link
@@ -77,7 +94,7 @@ function NftPreview({ tokenRef, nftPreviewMaxWidth, nftPreviewWidth, previewSize
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-      <StyledA>
+      <StyledA onClick={handleClick}>
         <StyledNftPreview
           maxWidth={nftPreviewMaxWidth}
           width={nftPreviewWidth}

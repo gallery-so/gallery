@@ -2,10 +2,12 @@ import breakpoints from 'components/core/breakpoints';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
@@ -21,8 +23,7 @@ const MIDDLE_GAP = 24;
 export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEvent {
-        dbid
+      fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
         eventTime
         owner {
           username
@@ -37,6 +38,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
             dbid
           }
           ...EventMediaFragment
+          ...NftDetailViewFragment
         }
       }
     `,
@@ -44,32 +46,41 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
   );
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
-  const { push } = useRouter();
+  // const { push } = useRouter();
+  const { showModal } = useModalActions();
 
   // values taken from figma
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : 269;
 
   const nftDetailPath = `/${event.owner.username}/${event.token.collection.dbid}/${event.token.token.dbid}`;
 
-  const handleEventClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      void push(nftDetailPath);
-    },
-    [nftDetailPath, push]
-  );
+  const handleEventClick = useCallback(() => {
+    showModal({
+      content: (
+        <StyledNftDetailViewPopover>
+          <NftDetailView
+            username={'kaito'}
+            authenticatedUserOwnsAsset={false}
+            queryRef={event.token}
+          />
+        </StyledNftDetailViewPopover>
+      ),
+      isFullPageOverride: true,
+    });
+  }, [event, showModal]);
 
   return (
     <StyledEvent>
-      <StyledClickHandler href={nftDetailPath} onClick={handleEventClick}>
+      <StyledClickHandler>
         <StyledEventHeader>
           <BaseM>
             <InteractiveLink to={`/${event.owner.username}`}>
               {event.owner.username}
             </InteractiveLink>{' '}
             added a collector's note to{' '}
-            <InteractiveLink to={`/${event.owner.username}/${event.token.dbid}`}>
-              {/* TODO FIX URL */}
+            <InteractiveLink
+              to={`/${event.owner.username}/${event.token.collection.dbid}/${event.token.token.dbid}`}
+            >
               {event.token.token.name}
             </InteractiveLink>
           </BaseM>
@@ -117,4 +128,15 @@ const StyledContent = styled.div`
 
 const StyledNoteWrapper = styled.div`
   width: 50%;
+`;
+
+const StyledNftDetailViewPopover = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding: 80px 0;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0;
+  }
 `;

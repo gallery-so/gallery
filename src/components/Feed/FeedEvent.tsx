@@ -11,23 +11,22 @@ type Props = {
 export default function FeedEvent({ queryRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on FeedEvent {
-        ... on CollectionCreatedFeedEvent {
+      fragment FeedEventFragment on FeedEventData {
+        ... on CollectionCreatedFeedEventData {
           ...CollectionCreatedFeedEventFragment
         }
-        ... on CollectorsNoteAddedToTokenFeedEvent {
+        ... on CollectorsNoteAddedToTokenFeedEventData {
           ...CollectorsNoteAddedToTokenFeedEventFragment
         }
-        ... on UserFollowedUsersFeedEvent {
+        ... on UserFollowedUsersFeedEventData {
           ...UserFollowedUsersFeedEventFragment
         }
-        ... on TokensAddedToCollectionFeedEvent {
+        ... on TokensAddedToCollectionFeedEventData {
           ...TokensAddedToCollectionFeedEventFragment
         }
         # UserCreatedEvent
         # CollectorsNoteAddedToCollectionEvent
         __typename
-        dbid
         eventTime
 
         action
@@ -35,25 +34,19 @@ export default function FeedEvent({ queryRef }: Props) {
     `,
     queryRef
   );
+
   console.log('event', event);
 
   switch (event.__typename) {
-    case 'TokensAddedToCollectionFeedEvent':
+    case 'TokensAddedToCollectionFeedEventData':
       return <TokensAddedToCollectionFeedEvent eventRef={event} />;
-    case 'CollectionCreatedFeedEvent':
+    case 'CollectionCreatedFeedEventData':
       return <CollectionCreatedFeedEvent eventRef={event} />;
-    case 'CollectorsNoteAddedToTokenFeedEvent':
+    case 'CollectorsNoteAddedToTokenFeedEventData':
       return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
-    case 'UserFollowedUsersFeedEvent':
+    case 'UserFollowedUsersFeedEventData':
       return <UserFollowedUsersFeedEvent eventRef={event} />;
-    //   case 'VideoMedia':
-    //     return <NftDetailVideo mediaRef={token.token.media} maxHeight={maxHeight} />;
-    //   case 'AudioMedia':
-    //     return <NftDetailAudio tokenRef={token.token} />;
-    //   case 'ImageMedia':
-    //     return <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} />;
-    //   case 'GltfMedia':
-    //     return <NftDetailModel mediaRef={token.token.media} />;
+
     default:
       //     return <NftDetailAnimation mediaRef={token.token} />;
       // }

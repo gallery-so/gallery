@@ -1,47 +1,69 @@
+import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useCallback } from 'react';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import styled from 'styled-components';
 import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
 import FeedEvent from './FeedEvent';
 
 export default function GlobalFeed() {
   const pagination = {
-    // token: '2AyjfivgDr915AvmMsIqPR5Q1BB'
     // limit: 4,
   };
-  const { globalFeed } = useLazyLoadQuery<GlobalFeedQuery>(
+  const first = 10;
+  const query = useLazyLoadQuery<GlobalFeedQuery>(
     graphql`
-      query GlobalFeedQuery($before: String, $after: String, $first: Int, $last: Int) {
-        globalFeed: globalFeed(before: $before, after: $after, first: $first, last: $last) {
-          ... on FeedConnection {
-            edges {
-              node {
-                ... on FeedEvent {
-                  dbid
+      query GlobalFeedQuery($after: String, $first: Int) {
+        ...GlobalFeedFragment
+      }
+    `,
+    {
+      first: first,
+    }
+  );
+
+  const { data, loadNext, hasNext } = usePaginationFragment<GlobalFeedQuery, _>(
+    graphql`
+      fragment GlobalFeedFragment on Query @refetchable(queryName: "GlobalFeedPaginationQuery") {
+        globalFeed(after: $after, first: $first) @connection(key: "GlobalFeed_globalFeed") {
+          edges {
+            node {
+              ... on FeedEvent {
+                dbid
+                eventData {
                   ...FeedEventFragment
                 }
               }
             }
-            pageInfo {
-              hasNextPage
-              size
-            }
+            cursor
+          }
+          pageInfo {
+            hasNextPage
+            size
           }
         }
       }
     `,
-    {}
+    query
   );
-  console.log('globalFeed', globalFeed);
+
+  console.log('globalFeed', data, loadNext);
+  useDisplayFullPageNftDetailModal();
+
+  const handleClick = useCallback(() => {
+    loadNext(10);
+  }, [loadNext]);
   // if hasNextPage show button
   return (
     <StyledGlobalFeed>
-      {globalFeed.events.map((event) => (
+      {data.globalFeed.edges.map((eventEdge) => (
         <>
-          <FeedEvent queryRef={event} key={event.dbid} />
+          <FeedEvent queryRef={eventEdge.node.eventData} key={eventEdge.node.dbid} />
           <Spacer height={12} />
         </>
       ))}
+      {hasNext && <Button text="More" onClick={handleClick} />}
     </StyledGlobalFeed>
   );
 }

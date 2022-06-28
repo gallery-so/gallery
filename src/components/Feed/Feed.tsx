@@ -8,6 +8,7 @@ import NavbarGLink from 'components/NavbarGLink';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import styled from 'styled-components';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
@@ -26,9 +27,6 @@ function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
 
   const { pathname } = useRouter();
-  useEffect(() => {
-    console.log(pathname);
-  }, [pathname]);
 
   const handleFollowingModeClick = useCallback(() => {
     setFeedMode(FOLLOWING);
@@ -116,7 +114,6 @@ export default function Feed() {
       <Spacer height={24} />
       {feedMode === FOLLOWING && <ViewerFeed />}
       {feedMode === WORLDWIDE && <GlobalFeed />}
-      <div>{feedMode.toString()}</div>
     </StyledFeed>
   );
 }

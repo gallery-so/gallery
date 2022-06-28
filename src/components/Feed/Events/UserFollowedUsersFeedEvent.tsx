@@ -16,8 +16,7 @@ type Props = {
 export default function UserFollowedUsersFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEvent {
-        dbid
+      fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
         eventTime
         owner {
           username
@@ -34,12 +33,6 @@ export default function UserFollowedUsersFeedEvent({ eventRef }: Props) {
     eventRef
   );
   const { push } = useRouter();
-
-  // question: if followed 1 collector, should we just show name
-  // shoudld # collectors be clickable instead of "see all"
-  // const copy = event.followed.length > 1 ?
-
-  // console.log('followevent', event);`followed ${event.followed.length} collectors.` : `followed `
 
   const isSingleFollow = event.followed.length === 1;
   const handleClick = useCallback(() => {

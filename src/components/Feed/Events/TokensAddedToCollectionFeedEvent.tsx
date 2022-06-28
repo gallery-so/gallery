@@ -1,6 +1,9 @@
+import breakpoints from 'components/core/breakpoints';
+import Button from 'components/core/Button/Button';
+import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -19,7 +22,7 @@ type Props = {
 export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEvent {
+      fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
         eventTime
         owner {
           username
@@ -53,8 +56,10 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     [collectionPagePath, push]
   );
 
+  const showSeeAllButton = event.newTokens.length > 4;
+
   return (
-    <StyledEvent>
+    <CustomStyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
         <StyledEventHeader>
           <BaseM>
@@ -69,7 +74,30 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+        {showSeeAllButton && (
+          <>
+            <Spacer height={16} />
+            <StyledSecondaryButton text="See All" type="secondary" />
+          </>
+        )}
       </StyledClickHandler>
-    </StyledEvent>
+    </CustomStyledEvent>
   );
 }
+const StyledSecondaryButton = styled(Button)`
+  @media only screen and ${breakpoints.desktop} {
+    width: fit-content;
+    align-self: end;
+  }
+`;
+
+const CustomStyledEvent = styled(StyledEvent)`
+  &:hover {
+    ${StyledSecondaryButton} {
+      ${TitleXS} {
+        color: ${colors.offBlack};
+      }
+      border: 1px solid ${colors.offBlack};
+    }
+  }
+`;
