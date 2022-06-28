@@ -5,7 +5,7 @@ import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 
 const AUTH_REQUIRED = true;
-const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 400;
+const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 1000;
 
 export default function useGlobalAnnouncementPopover(queryRef: any) {
   const query = useFragment(
@@ -28,11 +28,16 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
   const { showModal } = useModalActions();
 
   useEffect(() => {
+    if (AUTH_REQUIRED && !isAuthenticated) {
+      return;
+    }
+
     setTimeout(() => {
-      if (AUTH_REQUIRED && !isAuthenticated) {
-        return;
-      }
-      showModal({ content: <GlobalAnnouncementPopover />, isFullPage: true });
+      showModal({
+        content: <GlobalAnnouncementPopover />,
+        isFullPage: true,
+        headerVariant: 'thicc',
+      });
     }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
   }, [isAuthenticated, showModal]);
 }
