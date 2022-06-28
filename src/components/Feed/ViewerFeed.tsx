@@ -1,8 +1,9 @@
-import Spacer from 'components/core/Spacer/Spacer';
+import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
-import FeedEvent from './FeedEvent';
+
+import FeedList from './FeedList';
 
 export default function ViewerFeed() {
   const { viewer } = useLazyLoadQuery<Viewer>(
@@ -34,9 +35,7 @@ export default function ViewerFeed() {
     }
   );
 
-  //     # @argumentDefinitions(first: { type: Int, defaultValue: 5 }, after: { type: String })
   const { data, loadNext, hasNext } = usePaginationFragment(
-    // const result = useFragment(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         feedByUserId(userId: $userId, after: $after, first: $first)
@@ -62,15 +61,13 @@ export default function ViewerFeed() {
     query
   );
 
-  console.log('data', data);
+  const onLoadNext = useCallback(() => {
+    loadNext(10);
+  }, [loadNext]);
+
   return (
     <StyledViewerFeed>
-      {data.feedByUserId.edges.map((eventEdge) => (
-        <>
-          <FeedEvent queryRef={eventEdge.node.eventData} key={eventEdge.node.dbid} />
-          <Spacer height={12} />
-        </>
-      ))}
+      <FeedList feedData={data.feedByUserId} onLoadNext={onLoadNext} hasNext={hasNext} />
     </StyledViewerFeed>
   );
 }
