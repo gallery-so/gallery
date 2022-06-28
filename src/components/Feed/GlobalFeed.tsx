@@ -1,58 +1,58 @@
 import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
-import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import styled from 'styled-components';
 import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
 
 import FeedList from './FeedList';
 
 export default function GlobalFeed() {
-  const first = 10;
+  const last = 10;
   const query = useLazyLoadQuery<GlobalFeedQuery>(
     graphql`
-      query GlobalFeedQuery($after: String, $first: Int) {
+      query GlobalFeedQuery($before: String, $last: Int) {
         ...GlobalFeedFragment
       }
     `,
     {
-      first: first,
+      last: last,
     }
   );
 
-  const { data, loadNext, hasNext } = usePaginationFragment<GlobalFeedQuery, _>(
-    graphql`
-      fragment GlobalFeedFragment on Query @refetchable(queryName: "GlobalFeedPaginationQuery") {
-        globalFeed(after: $after, first: $first) @connection(key: "GlobalFeed_globalFeed") {
-          edges {
-            node {
-              ... on FeedEvent {
-                dbid
-                eventData {
-                  ...FeedEventFragment
+  const { data, loadNext, hasNext, hasPrevious, loadPrevious, isLoadingPrevious } =
+    usePaginationFragment<GlobalFeedQuery, _>(
+      graphql`
+        fragment GlobalFeedFragment on Query @refetchable(queryName: "GlobalFeedPaginationQuery") {
+          globalFeed(before: $before, last: $last) @connection(key: "GlobalFeed_globalFeed") {
+            edges {
+              node {
+                ... on FeedEvent {
+                  dbid
+                  eventData {
+                    eventTime
+                    ...FeedEventFragment
+                  }
                 }
               }
+              cursor
             }
-            cursor
-          }
-          pageInfo {
-            hasNextPage
-            size
+            pageInfo {
+              hasNextPage
+              size
+            }
           }
         }
-      }
-    `,
-    query
-  );
-
-  useDisplayFullPageNftDetailModal();
+      `,
+      query
+    );
+  // console.log('data, data', data.globalFeed.node.eventData);
 
   const onLoadNext = useCallback(() => {
-    loadNext(10);
-  }, [loadNext]);
+    loadPrevious(10);
+  }, [loadPrevious]);
 
   return (
     <StyledGlobalFeed>
-      <FeedList feedData={data.globalFeed} onLoadNext={onLoadNext} hasNext={hasNext} />
+      <FeedList feedData={data.globalFeed} onLoadNext={onLoadNext} hasNext={hasPrevious} />
     </StyledGlobalFeed>
   );
 }

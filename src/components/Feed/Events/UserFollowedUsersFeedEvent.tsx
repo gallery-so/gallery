@@ -39,6 +39,8 @@ export default function UserFollowedUsersFeedEvent({ eventRef }: Props) {
     void push(`/${event.followed[0].user.username}`);
   }, [event.followed, push]);
 
+  console.log(event);
+
   return (
     // todo: show href for single, no href for multipel follows
     // todo: open follower list for multiple

@@ -24,7 +24,7 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
   }, []);
 
   // Every row is loaded except for our loading indicator row.
-  const isRowLoaded = ({ index }) => !hasNext || index < feedData.edges.size;
+  const isRowLoaded = ({ index }) => !hasNext;
 
   //Render a list item or a loading indicator.
   const rowRenderer = ({
@@ -42,7 +42,8 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
     if (!isRowLoaded({ index })) {
       return <div></div>;
     } else {
-      content = feedData.edges[index];
+      content = feedData.edges[feedData.edges.length - index - 1];
+      console.log(feedData.edges[index].node.eventData);
       return (
         <CellMeasurer
           cache={measurerCache}

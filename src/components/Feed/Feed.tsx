@@ -6,10 +6,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 import transitions from 'components/core/transitions';
 import NavbarGLink from 'components/NavbarGLink';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import styled from 'styled-components';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
@@ -39,8 +37,6 @@ function FeedNavbarControl({ setFeedMode, initialFeedMode, viewerQuery }: Contro
   console.log('navbarviewer', viewer);
   // internally track the feed mode state so we can avoid adding it to the dep array
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
-
-  const { pathname } = useRouter();
 
   const handleFollowingModeClick = useCallback(() => {
     setFeedMode(FOLLOWING);
@@ -101,8 +97,6 @@ const StyledFeedNavbarControl = styled.div`
   justify-content: center;
   width: 100%;
 `;
-
-// - signing out should remove "Following/Worldwide" from the navbar
 
 export default function Feed() {
   const { viewer } = useLazyLoadQuery<Viewer>(
