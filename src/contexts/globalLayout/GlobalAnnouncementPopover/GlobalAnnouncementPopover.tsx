@@ -3,6 +3,7 @@ import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleM } from 'components/core/Text/Text';
+import FollowButton from 'components/Follow/FollowButton';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
@@ -10,6 +11,8 @@ import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from 'utils/removeNullValues';
 import { GlobalAnnouncementPopover$key } from '__generated__/GlobalAnnouncementPopover.graphql';
+import { GlobalAnnouncementPopoverGotwQueryFragment$key } from '__generated__/GlobalAnnouncementPopoverGotwQueryFragment.graphql';
+import { GlobalAnnouncementPopoverGotwUserFragment$key } from '__generated__/GlobalAnnouncementPopoverGotwUserFragment.graphql';
 
 type Props = {
   queryRef: GlobalAnnouncementPopover$key;
@@ -21,28 +24,23 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GlobalAnnouncementPopover on Query {
+        ...GlobalAnnouncementPopoverGotwQueryFragment
+
         galleryOfTheWeekWinners @required(action: LOG) {
-          username
-          galleries {
-            collections {
-              hidden
-              tokens {
-                token {
-                  ...getVideoOrImageUrlForNftPreviewFragment
-                }
-              }
-            }
-          }
+          dbid
+          ...GlobalAnnouncementPopoverGotwUserFragment
         }
       }
     `,
     queryRef
   );
 
-  // @ts-expect-error: FIX BEFORE MERGING
-  const { galleryOfTheWeekWinners } = query;
+  if (query === null) {
+    throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
+  }
 
-  console.log(galleryOfTheWeekWinners);
+  const { galleryOfTheWeekWinners: rawData } = query;
+  const galleryOfTheWeekWinners = removeNullValues(rawData);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -136,12 +134,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             </DesktopSecondaryHeaderContainer>
             <Spacer height={64} />
             <DesktopGalleryOfTheWeekContainer>
-              {
-                // @ts-expect-error: FIX BEFORE MERGING
-                galleryOfTheWeekWinners.map((user) => (
-                  <GalleryOfTheWeekCard key={user.username} user={user} />
-                ))
-              }
+              {galleryOfTheWeekWinners.map((userRef) => (
+                <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
+              ))}
             </DesktopGalleryOfTheWeekContainer>
             <Spacer height={80} />
           </>
@@ -151,19 +146,48 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   );
 }
 
-// @ts-expect-error: FIX BEFORE MERGING
-const GalleryOfTheWeekCard = ({ user }) => {
+type GalleryOfTheWeekCardProps = {
+  queryRef: GlobalAnnouncementPopoverGotwQueryFragment$key;
+  userRef: GlobalAnnouncementPopoverGotwUserFragment$key;
+};
+
+const GalleryOfTheWeekCard = ({ queryRef, userRef }: GalleryOfTheWeekCardProps) => {
+  const query = useFragment(
+    graphql`
+      fragment GlobalAnnouncementPopoverGotwQueryFragment on Query {
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const user = useFragment(
+    graphql`
+      fragment GlobalAnnouncementPopoverGotwUserFragment on GalleryUser {
+        username
+        galleries {
+          collections {
+            hidden
+            tokens {
+              token {
+                ...getVideoOrImageUrlForNftPreviewFragment
+              }
+            }
+          }
+        }
+        ...FollowButtonUserFragment
+      }
+    `,
+    userRef
+  );
+
   const imageUrls = removeNullValues(
     user.galleries?.[0]?.collections
-      // @ts-expect-error: FIX BEFORE MERGING
       ?.filter((collection) => !collection?.hidden)
-      // @ts-expect-error: FIX BEFORE MERGING
       .flatMap((collection) => collection?.tokens)
-      // @ts-expect-error: FIX BEFORE MERGING
       .map((galleryToken) => {
         return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
       })
-      // @ts-expect-error: FIX BEFORE MERGING
       .map((token) => token?.urls.large)
   ).slice(0, 4);
 
@@ -172,20 +196,15 @@ const GalleryOfTheWeekCard = ({ user }) => {
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <DesktopGotwContainer>
           <GotwHeader>
+            <FollowButton queryRef={query} userRef={user} />
             <Spacer width={8} />
             <DesktopDescriptionText>{user.username}</DesktopDescriptionText>
           </GotwHeader>
           <Spacer height={32} />
           <GotwBody>
             {imageUrls.map((url) => (
-              <GotwImageContainer
-                // @ts-expect-error: FIX BEFORE MERGING
-                key={url}
-              >
-                <GotwImage
-                  // @ts-expect-error: FIX BEFORE MERGING
-                  src={url}
-                />
+              <GotwImageContainer key={url}>
+                <GotwImage src={url} />
               </GotwImageContainer>
             ))}
           </GotwBody>
@@ -213,7 +232,10 @@ const DesktopGotwContainer = styled.div`
   }
 `;
 
-const GotwHeader = styled.div``;
+const GotwHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const GotwBody = styled.div`
   display: flex;
