@@ -39,6 +39,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     queryRef
   );
 
+  // @ts-expect-error: FIX BEFORE MERGING
   const { galleryOfTheWeekWinners } = query;
 
   console.log(galleryOfTheWeekWinners);
@@ -135,9 +136,12 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             </DesktopSecondaryHeaderContainer>
             <Spacer height={64} />
             <DesktopGalleryOfTheWeekContainer>
-              {galleryOfTheWeekWinners.map((user) => (
-                <GalleryOfTheWeekCard key={user.username} user={user} />
-              ))}
+              {
+                // @ts-expect-error: FIX BEFORE MERGING
+                galleryOfTheWeekWinners.map((user) => (
+                  <GalleryOfTheWeekCard key={user.username} user={user} />
+                ))
+              }
             </DesktopGalleryOfTheWeekContainer>
             <Spacer height={80} />
           </>
@@ -147,14 +151,19 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   );
 }
 
+// @ts-expect-error: FIX BEFORE MERGING
 const GalleryOfTheWeekCard = ({ user }) => {
   const imageUrls = removeNullValues(
     user.galleries?.[0]?.collections
+      // @ts-expect-error: FIX BEFORE MERGING
       ?.filter((collection) => !collection?.hidden)
+      // @ts-expect-error: FIX BEFORE MERGING
       .flatMap((collection) => collection?.tokens)
+      // @ts-expect-error: FIX BEFORE MERGING
       .map((galleryToken) => {
         return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
       })
+      // @ts-expect-error: FIX BEFORE MERGING
       .map((token) => token?.urls.large)
   ).slice(0, 4);
 
@@ -169,8 +178,14 @@ const GalleryOfTheWeekCard = ({ user }) => {
           <Spacer height={32} />
           <GotwBody>
             {imageUrls.map((url) => (
-              <GotwImageContainer key={url}>
-                <GotwImage src={url} />
+              <GotwImageContainer
+                // @ts-expect-error: FIX BEFORE MERGING
+                key={url}
+              >
+                <GotwImage
+                  // @ts-expect-error: FIX BEFORE MERGING
+                  src={url}
+                />
               </GotwImageContainer>
             ))}
           </GotwBody>
@@ -237,7 +252,6 @@ const DesktopHeaderContainer = styled.div`
 const DesktopIntroText = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
-  font-weight: 300;
   font-size: 84px;
   line-height: 69px;
   letter-spacing: -0.05em;
@@ -269,7 +283,6 @@ const DesktopStyledSecondaryTitleL = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 42px;
-  font-weight: 300;
   line-height: 48px;
   letter-spacing: -0.05em;
 `;
