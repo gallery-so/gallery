@@ -35,8 +35,6 @@ export default function FeedEvent({ queryRef }: Props) {
     queryRef
   );
 
-  console.log('event', event);
-
   switch (event.__typename) {
     case 'TokensAddedToCollectionFeedEventData':
       return <TokensAddedToCollectionFeedEvent eventRef={event} />;

@@ -5,24 +5,24 @@ import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
 
 import FeedList from './FeedList';
 
-export default function ViewerFeed() {
-  const { viewer } = useLazyLoadQuery<Viewer>(
-    graphql`
-      query ViewerFeedViewerQuery {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
+export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
+  // const { viewer } = useLazyLoadQuery<Viewer>(
+  //   graphql`
+  //     query ViewerFeedViewerQuery {
+  //       viewer {
+  //         ... on Viewer {
+  //           user {
+  //             dbid
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `,
+  //   {}
+  // );
 
   const first = 10;
-  const userId = viewer.user.dbid;
+  // const userId = viewer.user.dbid;
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
       query ViewerFeedQuery($userId: DBID!, $after: String, $first: Int) {
@@ -31,7 +31,7 @@ export default function ViewerFeed() {
     `,
     {
       first: first,
-      userId,
+      userId: viewerUserId,
     }
   );
 

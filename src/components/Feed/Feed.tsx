@@ -8,6 +8,7 @@ import NavbarGLink from 'components/NavbarGLink';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import styled from 'styled-components';
 import GlobalFeed from './GlobalFeed';
@@ -20,9 +21,22 @@ export type FeedMode = typeof FOLLOWING | typeof WORLDWIDE;
 type ControlProps = {
   setFeedMode: (mode: FeedMode) => void;
   initialFeedMode: FeedMode;
+  viewerQuery: any;
 };
 
-function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
+function FeedNavbarControl({ setFeedMode, initialFeedMode, viewerQuery }: ControlProps) {
+  const viewer = useFragment(
+    graphql`
+      fragment FeedNavbarViewerFragment on Viewer {
+        user {
+          dbid
+        }
+      }
+    `,
+    viewerQuery
+  );
+
+  console.log('navbarviewer', viewer);
   // internally track the feed mode state so we can avoid adding it to the dep array
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
 
@@ -91,28 +105,58 @@ const StyledFeedNavbarControl = styled.div`
 // - signing out should remove "Following/Worldwide" from the navbar
 
 export default function Feed() {
-  const [feedMode, setFeedMode] = useState<FeedMode>(WORLDWIDE);
-  // const [startFadeOut, setStartFadeout] = useState(false);
+  const { viewer } = useLazyLoadQuery<Viewer>(
+    graphql`
+      query FeedViewerQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+            ...FeedNavbarViewerFragment
+          }
+        }
+      }
+    `,
+    {}
+  );
+  const viewerUserId = (viewer?.user?.dbid ?? '') as string;
+  const defaultFeedMode = viewerUserId ? FOLLOWING : WORLDWIDE;
 
+  const [feedMode, setFeedMode] = useState<FeedMode>(defaultFeedMode);
   const { setCustomNavCenterContent } = useGlobalLayoutActions();
-  useEffect(() => {
-    setCustomNavCenterContent(
-      <FeedNavbarControl setFeedMode={setFeedMode} initialFeedMode={feedMode} />
-    );
 
+  // This effect handles removing the Feed controls on the navbar when the Feed unmounts, so that it is not visible when navigating to a different page.
+  useEffect(() => {
     return () => {
       setTimeout(() => {
         setCustomNavCenterContent(null);
       }, 200);
     };
+  }, [setCustomNavCenterContent]);
+
+  // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
+  useEffect(() => {
+    if (!viewerUserId) {
+      setFeedMode(WORLDWIDE);
+      setCustomNavCenterContent(null);
+    } else {
+      setCustomNavCenterContent(
+        <FeedNavbarControl
+          setFeedMode={setFeedMode}
+          initialFeedMode={feedMode}
+          viewerQuery={viewer}
+        />
+      );
+    }
     // don't add feedMode to the dep array. we only pass it in to set the initial state for the nav control, so we don't call setCustomNavCenterContent every time the feed mode changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setCustomNavCenterContent]);
+  }, [setCustomNavCenterContent, viewerUserId]);
 
   return (
     <StyledFeed>
       <Spacer height={24} />
-      {feedMode === FOLLOWING && <ViewerFeed />}
+      {viewerUserId && feedMode === FOLLOWING && <ViewerFeed viewerUserId={viewerUserId} />}
       {feedMode === WORLDWIDE && <GlobalFeed />}
     </StyledFeed>
   );

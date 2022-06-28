@@ -42,7 +42,6 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
     if (!isRowLoaded({ index })) {
       return <div></div>;
     } else {
-      console.log('index', index, feedData.edges);
       content = feedData.edges[index];
       return (
         <CellMeasurer
@@ -91,7 +90,6 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
                   rowCount={rowCount}
                   rowHeight={measurerCache.rowHeight}
                   scrollTop={scrollTop}
-                  // {...listProps}
                 />
               )}
             </AutoSizer>
