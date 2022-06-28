@@ -158,6 +158,18 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     deactivate();
   }, [deactivate]);
 
+  const handleSwitchNetwork = async () => {
+    const provider = await injected.getProvider();
+    provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [
+        {
+          chainId: '0x1', // Mainnet
+        },
+      ],
+    });
+  };
+
   if (displayedError) {
     return (
       <StyledWalletSelector>
@@ -166,7 +178,11 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
         <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
-        <StyledRetryButton onClick={retryConnectWallet} text="Try Another Wallet" />
+        {error instanceof UnsupportedChainIdError ? (
+          <StyledRetryButton onClick={handleSwitchNetwork} text="Switch Network" />
+        ) : (
+          <StyledRetryButton onClick={retryConnectWallet} text="Try Another Wallet" />
+        )}
       </StyledWalletSelector>
     );
   }
