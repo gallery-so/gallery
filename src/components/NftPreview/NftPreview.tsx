@@ -155,8 +155,6 @@ const StyledNftPreview = styled.div<{
   justify-content: center;
   align-items: center;
   position: relative;
-  // height: fit-content;
-  // height: 100%;
   overflow: hidden;
 
   ${({ backgroundColorOverride }) =>

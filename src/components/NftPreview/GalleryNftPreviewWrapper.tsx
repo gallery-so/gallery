@@ -96,14 +96,12 @@ function GalleryNftPreviewWrapper({ galleryNftRef }: Props) {
   }, [columns, result?.urls?.large]);
 
   return (
-    // <ShimmerProvider>
     <NftPreview
       tokenRef={collectionTokenRef}
       nftPreviewMaxWidth={nftPreviewMaxWidth}
       nftPreviewWidth={nftPreviewWidth}
       previewSize={previewSize}
     />
-    // </ShimmerProvider>
   );
 }
 

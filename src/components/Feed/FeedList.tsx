@@ -52,7 +52,7 @@ export default function FeedList({
     parent: MeasuredCellParent;
   }) => {
     if (!isRowLoaded({ index })) {
-      return <div></div>;
+      return <div />;
     }
     // graphql returns the oldest event at the top of the list, so display in opposite order
     const content = feedData.edges[feedData.edges.length - index - 1];

@@ -12,7 +12,7 @@ import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { CollectionCreatedFeedEventFragment$key } from '__generated__/CollectionCreatedFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
+import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   eventRef: CollectionCreatedFeedEventFragment$key;
@@ -61,10 +61,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     <CustomStyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
         <StyledEventHeader>
-          {/* <span> */}
-          <InteractiveLink to={`/${event.owner.username}`}>
-            {event.owner.username}
-          </InteractiveLink>{' '}
+          <InteractiveLink to={`/${event.owner.username}`}>{event.owner.username}</InteractiveLink>{' '}
           <BaseM>
             added {event.collection.tokens.length}{' '}
             {pluralize(event.collection.tokens.length, 'piece')} to their new collection,{' '}
@@ -74,7 +71,6 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
           </InteractiveLink>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-          {/* </span> */}
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />

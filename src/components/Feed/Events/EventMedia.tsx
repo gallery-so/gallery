@@ -9,6 +9,7 @@ type Props = {
   maxHeight: number;
 };
 
+// Renders each NFT preview in an event feed row within the given dimensions
 export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`

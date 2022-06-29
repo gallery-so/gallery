@@ -35,10 +35,7 @@ export default function FollowListUsers({
       ))}
       {userList.length === 0 && (
         <StyledEmptyList>
-          <BaseM>
-            {emptyListText}
-            {/* {displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'} */}
-          </BaseM>
+          <BaseM>{emptyListText}</BaseM>
           <Spacer height={48} />
         </StyledEmptyList>
       )}

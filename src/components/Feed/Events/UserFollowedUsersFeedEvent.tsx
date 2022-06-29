@@ -16,7 +16,7 @@ import { getTimeSince } from 'utils/time';
 import { UserFollowedUsersFeedEventFragment$key } from '__generated__/UserFollowedUsersFeedEventFragment.graphql';
 import { UserFollowedUsersFeedEventQueryFragment$key } from '__generated__/UserFollowedUsersFeedEventQueryFragment.graphql';
 import { FeedMode, WORLDWIDE } from '../Feed';
-import { StyledEvent, StyledEventHeader, StyledTime } from './Event';
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 
 type Props = {
@@ -75,10 +75,10 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
     void push(`/${firstFolloweeUsername}`);
   }, [firstFolloweeUsername, push]);
 
-  // a single Follow event can contain multiple follow actions taken by a user within a window of time.
+  // a single Follow feed event can contain multiple follow actions taken by a user within a window of time.
   // We want to display "Followed you" and "Followed you back" actions as distinct events from "Followed x, y, z", so for now the front end will be responsible for splitting these events.
 
-  // Try to find a follow action on the event where the followee id is the viewer id
+  // Try to find a follow action on the event where the followee id is the viewer id (ie the user in the event followed the viewer)
   const followedYouAction = useMemo(() => {
     if (feedMode === WORLDWIDE) {
       return null;
@@ -86,7 +86,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
     return event.followed.find((followInfo) => followInfo?.user?.dbid === viewerUserId);
   }, [event.followed, feedMode, viewerUserId]);
 
-  // All follow actions except Followed You action
+  // All follow actions included in the feed event *except* Followed You action
   const genericFollows = useMemo(() => {
     if (feedMode === WORLDWIDE) {
       return event.followed;

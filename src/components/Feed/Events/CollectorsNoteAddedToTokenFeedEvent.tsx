@@ -10,7 +10,7 @@ import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
+import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import EventMedia from './EventMedia';
 
 type Props = {
@@ -19,6 +19,8 @@ type Props = {
 
 const MARGIN = 16;
 const MIDDLE_GAP = 24;
+// images will be rendered within a square of this size
+const IMAGE_SPACE_SIZE = 269;
 
 export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props) {
   const event = useFragment(
@@ -46,11 +48,9 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
   );
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
-  // const { push } = useRouter();
   const { showModal } = useModalActions();
 
-  // values taken from figma
-  const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : 269;
+  const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
 
   const nftDetailPath = `/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`;
 
@@ -92,7 +92,6 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
           <StyledMediaWrapper>
             <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
           </StyledMediaWrapper>
-          {/* <FeedEventTokenPreviews tokensToPreview={[event.token]} /> */}
           <Spacer width={MIDDLE_GAP} />
           <StyledNoteWrapper>
             <StyledNote>{event.newCollectorsNote}</StyledNote>

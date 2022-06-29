@@ -29,16 +29,9 @@ export const getISODate = () => new Date().toISOString();
 
 export const getTimeFromISOString = (timestamp: string | number) => new Date(timestamp).getTime();
 
-// const SECOND = 1;
-// const MINUTE = 60;
-// const HOUR = 3600;
-// const DAY = 86400;
-
+// given a timestamp, returns an abbreviated string of how long it has been since. ie "12s", "4d", etc
 export const getTimeSince = (time: string) => {
-  // const differenceMs = Date.now() - new Date(time).getTime();
   const interval = Math.floor(Date.now() - new Date(time).getTime());
-  // 30s
-  // let result;
 
   if (interval < MINUTE) {
     return `${Math.floor(interval / SECOND)}s`;
@@ -53,6 +46,8 @@ export const getTimeSince = (time: string) => {
     return `${Math.floor(interval / DAY)}d`;
   }
   if (interval < YEAR) {
-    return `${Math.floor(interval / MONTH)}d`;
+    return `${Math.floor(interval / MONTH)}m`;
   }
+
+  return `${Math.floor(interval / YEAR)}y`;
 };

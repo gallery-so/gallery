@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
 import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
-import { StyledEvent, StyledEventHeader, StyledTime } from './Event';
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   username: string;

@@ -20,11 +20,10 @@ export type FeedMode = typeof FOLLOWING | typeof WORLDWIDE;
 type ControlProps = {
   setFeedMode: (mode: FeedMode) => void;
   initialFeedMode: FeedMode;
-  // viewerQuery: any;
 };
 
 function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
-  // internally track the feed mode state so we can avoid adding it to the dep array
+  // Internally mirror the feed mode state so that we can avoid adding it to the dep array, and avoid re-adding these controls to the navbar when the user switches from Following to Worldwide feed
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
 
   const handleFollowingModeClick = useCallback(() => {
@@ -67,8 +66,6 @@ const StyledNavControlText = styled(ActionText)<{ focused: boolean }>`
   color: ${({ focused }) => (focused ? colors.offBlack : colors.metal)};
 
   opacity: 0;
-
-  // transition: opacity ${transitions.cubic} ease-in-out;
 `;
 
 const StyledTextWrapper = styled.div`
@@ -110,7 +107,7 @@ export default function Feed() {
   const [feedMode, setFeedMode] = useState<FeedMode>(defaultFeedMode);
   const { setCustomNavCenterContent } = useGlobalLayoutActions();
 
-  // This effect handles removing the Feed controls on the navbar when the Feed unmounts, so that it is not visible when navigating to a different page.
+  // This effect ensures the Feed controls on the navbar are removed when the Feed unmounts, so that it is not visible when navigating to a different page.
   useEffect(() => {
     return () => {
       setTimeout(() => {

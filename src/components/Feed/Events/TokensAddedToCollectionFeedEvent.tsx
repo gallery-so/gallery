@@ -13,7 +13,7 @@ import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
+import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
