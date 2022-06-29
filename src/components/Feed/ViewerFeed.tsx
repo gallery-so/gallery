@@ -6,31 +6,16 @@ import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
 import FeedList from './FeedList';
 
 export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
-  // const { viewer } = useLazyLoadQuery<Viewer>(
-  //   graphql`
-  //     query ViewerFeedViewerQuery {
-  //       viewer {
-  //         ... on Viewer {
-  //           user {
-  //             dbid
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `,
-  //   {}
-  // );
-
-  const first = 10;
+  const last = 10;
   // const userId = viewer.user.dbid;
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
-      query ViewerFeedQuery($userId: DBID!, $after: String, $first: Int) {
+      query ViewerFeedQuery($userId: DBID!, $before: String, $last: Int) {
         ...ViewerFeedFragment
       }
     `,
     {
-      first: first,
+      last: last,
       userId: viewerUserId,
     }
   );
@@ -38,7 +23,7 @@ export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
-        feedByUserId(userId: $userId, after: $after, first: $first)
+        feedByUserId(id: $userId, before: $before, last: $last)
           @connection(key: "FeedByUserId_feedByUserId") {
           edges {
             node {

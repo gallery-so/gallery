@@ -467,9 +467,9 @@ type FeedEdge {
     cursor: String!
 }
 
-type FeedConnection {
+type FeedConnection @goEmbedHelper {
     edges: [FeedEdge]
-    pageInfo: PageInfo!
+    pageInfo: PageInfo! @goField(forceResolver: true)
 }
 
 type Query {
@@ -484,7 +484,7 @@ type Query {
     communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
-    feedByUserId(userId: DBID!, before: String, after: String, first: Int, last: Int): FeedConnection
+    feedByUserId(id: DBID!, before: String, after: String, first: Int, last: Int): FeedConnection
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
     feedEventById(id: DBID!): FeedEventByIdOrError
 }
