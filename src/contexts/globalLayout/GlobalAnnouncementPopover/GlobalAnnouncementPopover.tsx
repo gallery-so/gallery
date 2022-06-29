@@ -182,7 +182,7 @@ const MobileHeaderContainer = styled.div`
 `;
 
 const MobileIntroTextContainer = styled.div`
-  width: 245px;
+  width: 220px;
   text-align: center;
 `;
 
