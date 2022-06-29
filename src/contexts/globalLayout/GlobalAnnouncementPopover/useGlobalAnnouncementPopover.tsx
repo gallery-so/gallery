@@ -1,5 +1,7 @@
 import { FeatureFlag } from 'components/core/enums';
+import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import usePersistedState from 'hooks/usePersistedState';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -31,7 +33,10 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
   const { showModal } = useModalActions();
 
+  const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
+
   useEffect(() => {
+    if (dismissed) return;
     if (AUTH_REQUIRED && !isAuthenticated) return;
     if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
 
@@ -41,6 +46,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
         isFullPage: true,
         headerVariant: 'thicc',
       });
+      setDismissed(true);
     }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
-  }, [isAuthenticated, showModal, query]);
+  }, [isAuthenticated, showModal, query, dismissed, setDismissed]);
 }
