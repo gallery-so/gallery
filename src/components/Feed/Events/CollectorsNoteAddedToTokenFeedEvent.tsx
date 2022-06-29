@@ -4,7 +4,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';

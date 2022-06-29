@@ -13,7 +13,6 @@ import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
-import EventMedia from './EventMedia';
 
 type Props = {
   eventRef: any;

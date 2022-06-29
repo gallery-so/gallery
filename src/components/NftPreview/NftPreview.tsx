@@ -1,16 +1,12 @@
 import transitions from 'components/core/transitions';
 import { useCallback, useMemo } from 'react';
-import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';

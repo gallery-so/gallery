@@ -1,5 +1,3 @@
-import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import FeedEventNftPreviewWrapper from './FeedEventNftPreviewWrapper';

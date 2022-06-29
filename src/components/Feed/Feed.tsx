@@ -7,7 +7,7 @@ import transitions from 'components/core/transitions';
 import NavbarGLink from 'components/NavbarGLink';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useCallback, useEffect, useState } from 'react';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';

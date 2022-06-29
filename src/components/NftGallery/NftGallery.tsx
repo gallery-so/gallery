@@ -1,6 +1,5 @@
 import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
-import NftPreview from 'components/NftPreview/NftPreview';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
