@@ -1,7 +1,9 @@
+import { FeatureFlag } from 'components/core/enums';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 
 const AUTH_REQUIRED = true;
@@ -19,6 +21,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
           }
         }
         ...GlobalAnnouncementPopover
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -29,9 +32,8 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
   const { showModal } = useModalActions();
 
   useEffect(() => {
-    if (AUTH_REQUIRED && !isAuthenticated) {
-      return;
-    }
+    if (AUTH_REQUIRED && !isAuthenticated) return;
+    if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
 
     setTimeout(() => {
       showModal({
