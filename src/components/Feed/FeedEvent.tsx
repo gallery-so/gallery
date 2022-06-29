@@ -19,15 +19,29 @@ export default function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
       fragment FeedEventFragment on FeedEventData {
         ... on CollectionCreatedFeedEventData {
           ...CollectionCreatedFeedEventFragment
+          collection {
+            dbid
+          }
         }
         ... on CollectorsNoteAddedToTokenFeedEventData {
           ...CollectorsNoteAddedToTokenFeedEventFragment
-        }
-        ... on UserFollowedUsersFeedEventData {
-          ...UserFollowedUsersFeedEventFragment
+          token {
+            id
+          }
         }
         ... on TokensAddedToCollectionFeedEventData {
           ...TokensAddedToCollectionFeedEventFragment
+          collection {
+            dbid
+          }
+        }
+        ... on UserFollowedUsersFeedEventData {
+          ...UserFollowedUsersFeedEventFragment
+          followed {
+            user {
+              dbid
+            }
+          }
         }
         __typename
         eventTime
@@ -48,13 +62,25 @@ export default function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
   );
 
   switch (event.__typename) {
-    case 'TokensAddedToCollectionFeedEventData':
-      return <TokensAddedToCollectionFeedEvent eventRef={event} />;
     case 'CollectionCreatedFeedEventData':
+      if (!event.collection) {
+        return null;
+      }
       return <CollectionCreatedFeedEvent eventRef={event} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
+      if (!event.token) {
+        return null;
+      }
       return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
+    case 'TokensAddedToCollectionFeedEventData':
+      if (!event.collection) {
+        return null;
+      }
+      return <TokensAddedToCollectionFeedEvent eventRef={event} />;
     case 'UserFollowedUsersFeedEventData':
+      if (!event.followed) {
+        return null;
+      }
       return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':
