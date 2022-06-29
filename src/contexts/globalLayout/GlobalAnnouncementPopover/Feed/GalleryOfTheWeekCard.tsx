@@ -2,6 +2,7 @@ import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleM } from 'components/core/Text/Text';
+import transitions from 'components/core/transitions';
 import FollowButton from 'components/Follow/FollowButton';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
@@ -90,8 +91,10 @@ const StyledAnchor = styled.a`
 const GotwContainer = styled.div`
   background: ${colors.white};
   border: 1px solid;
-  border-color: ${colors.white};
   cursor: pointer;
+
+  border-color: ${colors.white};
+  transition: border ${transitions.cubic};
   &:hover {
     border-color: ${colors.offBlack};
   }

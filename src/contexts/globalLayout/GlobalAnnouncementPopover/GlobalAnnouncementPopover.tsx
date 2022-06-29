@@ -4,6 +4,7 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -66,15 +67,22 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </MobileDescriptionTextContainer>
               <Spacer height={24} />
               <MobileButtonContainer>
-                <StyledMobileButton text="Start Browsing" />
+                <Link href="/home">
+                  <StyledMobileButton text="Start Browsing" />
+                </Link>
                 <Spacer height={16} />
-                <TextButton text="Galleries To Follow ↓" />
+                {/* TODO: replace this with blog post link */}
+                <Link href="https://google.com" passHref>
+                  <StyledAnchor target="_blank" rel="noopener noreferrer">
+                    <TextButton text="Read the blog post" />
+                  </StyledAnchor>
+                </Link>
               </MobileButtonContainer>
             </MobileHeaderContainer>
             <Spacer height={24} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
-            <Spacer height={24} />
+            <Spacer height={80} />
             <MobileSecondaryHeaderContainer>
               <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
               <Spacer height={12} />
@@ -109,15 +117,22 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
               <DesktopButtonContainer>
-                <Button text="Start Browsing" />
+                <Link href="/home">
+                  <Button text="Start Browsing" />
+                </Link>
                 <Spacer width={32} />
-                <TextButton text="Galleries To Follow ↓" />
+                {/* TODO: replace this with blog post link */}
+                <Link href="https://google.com" passHref>
+                  <StyledAnchor target="_blank" rel="noopener noreferrer">
+                    <TextButton text="Read the blog post" />
+                  </StyledAnchor>
+                </Link>
               </DesktopButtonContainer>
             </DesktopHeaderContainer>
             <Spacer height={64} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
-            <Spacer height={64} />
+            <Spacer height={120} />
             <DesktopSecondaryHeaderContainer>
               <DesktopStyledSecondaryTitle>
                 Featured galleries to follow
@@ -151,6 +166,12 @@ const StyledGlobalAnnouncementPopover = styled.div`
   padding: 0px 16px;
 `;
 
+const StyledAnchor = styled.a`
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+`;
+
 ////////////////////////// MOBILE //////////////////////////
 const MobileHeaderContainer = styled.div`
   display: flex;
@@ -159,7 +180,7 @@ const MobileHeaderContainer = styled.div`
 `;
 
 const MobileIntroTextContainer = styled.div`
-  width: 245px;
+  width: 220px;
   text-align: center;
 `;
 
@@ -189,8 +210,8 @@ const StyledMobileButton = styled(Button)`
 const MobileStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
-  font-size: 24px;
-  line-height: 24px;
+  font-size: 32px;
+  line-height: 32px;
   letter-spacing: -0.05em;
 `;
 
@@ -222,7 +243,6 @@ const DesktopDescriptionTextItalic = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 24px;
-  font-weight: 800;
   font-style: italic;
 `;
 

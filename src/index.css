@@ -19,12 +19,14 @@
 }
 
 @font-face {
+  font-display: block;
   font-family: 'GT Alpina Condensed';
   src: url('/fonts/GT-Alpina-Condensed-Light.otf') format('opentype'),
     url('/fonts/GT-Alpina-Condensed-Light.ttf') format('truetype');
 }
 
 @font-face {
+  font-display: block;
   font-family: 'GT Alpina Condensed';
   src: url('/fonts/GT-Alpina-Condensed-Light-Italic.otf') format('opentype'),
     url('/fonts/GT-Alpina-Condensed-Light-Italic.ttf') format('truetype');
@@ -32,6 +34,7 @@
 }
 
 @font-face {
+  font-display: block;
   font-family: 'GT Alpina Condensed';
   src: url('/fonts/GT-Alpina-Condensed-Medium.otf') format('opentype'),
     url('/fonts/GT-Alpina-Condensed-Medium.ttf') format('truetype');
@@ -39,6 +42,7 @@
 }
 
 @font-face {
+  font-display: block;
   font-family: 'GT Alpina Condensed';
   src: url('/fonts/GT-Alpina-Condensed-Medium-Italic.otf') format('opentype'),
     url('/fonts/GT-Alpina-Condensed-Medium-Italic.ttf') format('truetype');
@@ -47,6 +51,7 @@
 }
 
 @font-face {
+  font-display: block;
   font-family: 'GT Alpina Condensed';
   src: url('/fonts/GT-Alpina-Condensed-Bold-Italic.otf') format('opentype'),
     url('/fonts/GT-Alpina-Condensed-Bold-Italic.ttf') format('truetype');
