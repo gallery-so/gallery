@@ -11,11 +11,12 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
-import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
+import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
+import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
 
 type Props = {
-  eventRef: any;
+  eventRef: TokensAddedToCollectionFeedEventFragment$key;
 };
 
 export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
@@ -23,14 +24,14 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
         eventTime
-        owner {
+        owner @required(action: THROW) {
           username
         }
-        collection {
+        collection @required(action: THROW) {
           dbid
           name
         }
-        newTokens {
+        newTokens @required(action: THROW) {
           token {
             dbid
           }
@@ -43,8 +44,8 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
-    return event.newTokens.slice(0, 4);
-  }, [event.newTokens]);
+    return event.newTokens.filter((n) => !!n).slice(0, 4);
+  }, [event.newTokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const handleEventClick = useCallback(

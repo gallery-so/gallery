@@ -10,11 +10,12 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
-import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
+import { CollectionCreatedFeedEventFragment$key } from '__generated__/CollectionCreatedFeedEventFragment.graphql';
+import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
 
 type Props = {
-  eventRef: any;
+  eventRef: CollectionCreatedFeedEventFragment$key;
 };
 
 export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
@@ -22,13 +23,13 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
         eventTime
-        owner {
+        owner @required(action: THROW) {
           username
         }
-        collection {
+        collection @required(action: THROW) {
           dbid
           name
-          tokens {
+          tokens @required(action: THROW) {
             token {
               dbid
             }
@@ -42,8 +43,8 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
   const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
-    return event.collection.tokens.slice(0, 4);
-  }, [event.collection.tokens]);
+    return event.collection.tokens.filter((n) => !!n).slice(0, 4);
+  }, [event.collection.tokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const handleEventClick = useCallback(

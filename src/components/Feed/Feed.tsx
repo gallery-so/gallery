@@ -9,6 +9,7 @@ import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContex
 import { useCallback, useEffect, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+import { FeedViewerQuery } from '__generated__/FeedViewerQuery.graphql';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 
@@ -87,7 +88,7 @@ const StyledFeedNavbarControl = styled.div`
 `;
 
 export default function Feed() {
-  const query = useLazyLoadQuery<Viewer>(
+  const query = useLazyLoadQuery<FeedViewerQuery>(
     graphql`
       query FeedViewerQuery {
         viewer {

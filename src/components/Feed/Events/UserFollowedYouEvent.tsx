@@ -4,12 +4,14 @@ import { BaseM } from 'components/core/Text/Text';
 import FollowButton from 'components/Follow/FollowButton';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
+import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
+import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
 import { StyledEvent, StyledEventHeader, StyledTime } from './Event';
 
 type Props = {
   username: string;
-  queryRef: any;
-  userRef: any;
+  queryRef: FollowButtonQueryFragment$key;
+  userRef: FollowButtonUserFragment$key;
   followInfo: any;
 };
 

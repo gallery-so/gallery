@@ -13,24 +13,28 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
+import { UserFollowedUsersFeedEventFragment$key } from '__generated__/UserFollowedUsersFeedEventFragment.graphql';
+import { UserFollowedUsersFeedEventQueryFragment$key } from '__generated__/UserFollowedUsersFeedEventQueryFragment.graphql';
+import { FeedMode, WORLDWIDE } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledTime } from './Event';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 
 type Props = {
-  eventRef: any;
-  queryRef?: any;
+  eventRef: UserFollowedUsersFeedEventFragment$key;
+  queryRef: UserFollowedUsersFeedEventQueryFragment$key;
+  feedMode: FeedMode;
 };
 
-export default function UserFollowedUsersFeedEvent({ eventRef, queryRef }: Props) {
+export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
         eventTime
-        owner {
-          username
+        owner @required(action: THROW) {
+          username @required(action: THROW)
           ...FollowButtonUserFragment
         }
-        followed {
+        followed @required(action: THROW) {
           user {
             username
             dbid
@@ -62,58 +66,36 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef }: Props
 
   const { push } = useRouter();
 
-  const viewerUserId = query?.viewer?.user.dbid;
+  const viewerUserId = query?.viewer?.user?.dbid;
 
-  // const followEventMock = {
-  //   owner: {
-  //     username: 'ronald',
-  //   },
-  //   followed: [
-  //     {
-  //       followedBack: false,
-  //       user: {
-  //         username: 'Benny',
-  //         dbid: '1234',
-  //       },
-  //     },
-  //     {
-  //       followedBack: false,
-  //       user: {
-  //         username: 'Kaito',
-  //         dbid: '2AvDukjqIjU6H92ECmiUfXal1x1',
-  //       },
-  //     },
-  //     {
-  //       followedBack: true,
-  //       user: {
-  //         username: 'Robin',
-  //         dbid: '423',
-  //       },
-  //     },
-  //   ],
-  // };
+  // cache first username in followed list, to be displayed when user followed only 1 collector
+  const firstFolloweeUsername = event.followed[0]?.user?.username;
 
   const handleSeeFollowedUserClick = useCallback(() => {
-    void push(`/${event.followed[0].user.username}`);
-  }, [event.followed, push]);
-
-  // const;
+    void push(`/${firstFolloweeUsername}`);
+  }, [firstFolloweeUsername, push]);
 
   // a single Follow event can contain multiple follow actions taken by a user within a window of time.
   // We want to display "Followed you" and "Followed you back" actions as distinct events from "Followed x, y, z", so for now the front end will be responsible for splitting these events.
 
   // Try to find a follow action on the event where the followee id is the viewer id
   const followedYouAction = useMemo(() => {
-    return event.followed.find((followInfo) => followInfo.user.dbid === viewerUserId);
-  }, [event.followed, viewerUserId]);
+    if (feedMode === WORLDWIDE) {
+      return null;
+    }
+    return event.followed.find((followInfo) => followInfo?.user?.dbid === viewerUserId);
+  }, [event.followed, feedMode, viewerUserId]);
 
   // All follow actions except Followed You action
   const genericFollows = useMemo(() => {
-    return event.followed.filter((followInfo) => followInfo.user.dbid !== viewerUserId);
-  }, [event.followed, viewerUserId]);
+    if (feedMode === WORLDWIDE) {
+      return event.followed;
+    }
+    return event.followed.filter((followInfo) => followInfo?.user?.dbid !== viewerUserId);
+  }, [event.followed, feedMode, viewerUserId]);
 
   const flattenedGenericFollows = useMemo(() => {
-    return genericFollows.map((followInfo) => followInfo.user);
+    return genericFollows.map((followInfo) => followInfo?.user);
   }, [genericFollows]);
 
   const { showModal } = useModalActions();
@@ -158,8 +140,8 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef }: Props
                   {event.owner.username}
                 </InteractiveLink>{' '}
                 followed{' '}
-                <InteractiveLink to={`/${event.followed[0].user.username}`}>
-                  {event.followed[0].user.username}
+                <InteractiveLink to={`/${firstFolloweeUsername}`}>
+                  {firstFolloweeUsername}
                 </InteractiveLink>
               </BaseM>
               <Spacer width={4} />

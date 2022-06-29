@@ -1,16 +1,13 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { EventMediaFragment$key } from '__generated__/EventMediaFragment.graphql';
 import FeedEventNftPreviewWrapper from './FeedEventNftPreviewWrapper';
 
 type Props = {
-  tokenRef: any;
+  tokenRef: EventMediaFragment$key;
   maxWidth: number;
   maxHeight: number;
 };
-
-// const DEFAULT_DIMENSIONS_DESKTOP = 259.33;
-// const SMALL_DIMENSIONS_DESKTOP = 190.5;
-// const DEFAULT_DIMENSIONS_MOBILE = 259.33;
 
 export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
@@ -21,9 +18,6 @@ export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
     `,
     tokenRef
   );
-
-  // const maxWidth = showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
-  // const maxHeight = showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
 
   return (
     <StyledEventMedia width={maxWidth} height={maxHeight}>

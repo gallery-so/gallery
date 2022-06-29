@@ -1,11 +1,17 @@
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import { EventMediaFragment$key } from '__generated__/EventMediaFragment.graphql';
 import EventMedia from './Events/EventMedia';
 
-type Props = {
-  tokensToPreview: any;
+export type TokenToPreview = EventMediaFragment$key & {
+  token: { dbid: string };
 };
+
+type Props = {
+  tokensToPreview: TokenToPreview[];
+};
+
 const DEFAULT_DIMENSIONS_DESKTOP = 259.33;
 const SMALL_DIMENSIONS_DESKTOP = 190.5;
 const MARGIN = 16;
@@ -34,7 +40,6 @@ export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
         <EventMedia
           tokenRef={collectionToken}
           key={collectionToken.token.dbid}
-          // showSmallerPreview={showSmallerPreview}
           maxWidth={size}
           maxHeight={size}
         />

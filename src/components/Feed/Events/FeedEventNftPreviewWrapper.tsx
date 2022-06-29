@@ -7,9 +7,10 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
+import { FeedEventNftPreviewWrapperFragment$key } from '__generated__/FeedEventNftPreviewWrapperFragment.graphql';
 
 type Props = {
-  tokenRef: any;
+  tokenRef: FeedEventNftPreviewWrapperFragment$key;
   maxWidth: number;
   maxHeight: number;
 };
@@ -26,7 +27,6 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
-        # dbid
         ...NftPreviewFragment
         ...NftDetailViewFragment
       }
@@ -43,7 +43,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
           <NftDetailView username={'kaito'} authenticatedUserOwnsAsset={false} queryRef={token} />
         </StyledNftDetailViewPopover>
       ),
-      isFullPageOverride: true,
+      isFullPage: true,
     });
   }, [showModal, token]);
 

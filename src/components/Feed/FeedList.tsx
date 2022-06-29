@@ -7,25 +7,37 @@ import {
   List,
   WindowScroller,
 } from 'react-virtualized';
+import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
+import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
+import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
 
 type Props = {
   feedData: any;
   onLoadNext: () => void;
   hasNext: boolean;
-  queryRef: any;
+  queryRef: FeedEventQueryFragment$key;
+  isNextPageLoading: boolean;
+  feedMode: FeedMode;
 };
 
-export default function FeedList({ feedData, onLoadNext, hasNext, queryRef }: Props) {
+export default function FeedList({
+  feedData,
+  onLoadNext,
+  hasNext,
+  queryRef,
+  isNextPageLoading,
+  feedMode,
+}: Props) {
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
-      minHeight: 50,
+      minHeight: 0,
     });
   }, []);
 
-  // Every row is loaded except for our loading indicator row.
-  const isRowLoaded = ({ index }) => !hasNext;
+  // Function responsible for tracking the loaded state of each row.
+  const isRowLoaded = ({ index }: { index: number }) => !hasNext || !!feedData.edges[index];
 
   //Render a list item or a loading indicator.
   const rowRenderer = ({
@@ -36,50 +48,53 @@ export default function FeedList({ feedData, onLoadNext, hasNext, queryRef }: Pr
   }: {
     index: number;
     key: string;
-    style: string;
+    style: React.CSSProperties;
+    parent: MeasuredCellParent;
   }) => {
-    let content;
-
     if (!isRowLoaded({ index })) {
       return <div></div>;
-    } else {
-      // graphql returns the oldest event at the top of the list, so display in opposite order
-      content = feedData.edges[feedData.edges.length - index - 1];
-      return (
-        <CellMeasurer
-          cache={measurerCache}
-          columnIndex={0}
-          rowIndex={index}
-          key={key}
-          parent={parent}
-        >
-          {({ measure, registerChild }) => (
-            <div ref={registerChild} style={style}>
-              <FeedEvent
-                eventRef={content.node.eventData}
-                key={content.node.dbid}
-                queryRef={queryRef}
-              />
-            </div>
-          )}
-        </CellMeasurer>
-      );
     }
+    // graphql returns the oldest event at the top of the list, so display in opposite order
+    const content = feedData.edges[feedData.edges.length - index - 1];
+
+    return (
+      <CellMeasurer
+        cache={measurerCache}
+        columnIndex={0}
+        rowIndex={index}
+        key={key}
+        parent={parent}
+      >
+        {({ registerChild }) => (
+          // this is the suggested usage of registerChild
+          //@ts-ignore
+          <div ref={registerChild} style={style}>
+            <FeedEvent
+              eventRef={content.node.eventData}
+              key={content.node.dbid}
+              queryRef={queryRef}
+              feedMode={feedMode}
+            />
+          </div>
+        )}
+      </CellMeasurer>
+    );
   };
 
-  // If there are more items to be loaded then add an extra row to hold a loading indicator.
-  const rowCount = hasNext ? feedData.edges.length + 10 : feedData.edges.length;
+  // If there are more items to be loaded then add extra rows
+  const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const isNextPageLoading = false;
   const loadMoreRows = isNextPageLoading ? () => {} : onLoadNext;
 
   return (
     <InfiniteLoader
       isRowLoaded={isRowLoaded}
+      // loadMoreRows type expects a function that returns a promise, but react-virtualized docs suggest passing an empty callback in some scenarios
+      //@ts-ignore
       loadMoreRows={loadMoreRows}
       rowCount={rowCount}
-      threshold={5}
+      threshold={2}
     >
       {({ onRowsRendered, registerChild }) => (
         <WindowScroller>

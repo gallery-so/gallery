@@ -9,11 +9,12 @@ import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
+import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './Event';
 import EventMedia from './EventMedia';
 
 type Props = {
-  eventRef: any;
+  eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
 };
 
 const MARGIN = 16;
@@ -24,12 +25,12 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
         eventTime
-        owner {
+        owner @required(action: THROW) {
           username
         }
         newCollectorsNote
-        token {
-          token {
+        token @required(action: THROW) {
+          token @required(action: THROW) {
             dbid
             name
           }
@@ -51,7 +52,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
   // values taken from figma
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : 269;
 
-  const nftDetailPath = `/${event.owner.username}/${event.token.collection.dbid}/${event.token.token.dbid}`;
+  const nftDetailPath = `/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`;
 
   const handleEventClick = useCallback(() => {
     showModal({
@@ -64,7 +65,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
           />
         </StyledNftDetailViewPopover>
       ),
-      isFullPageOverride: true,
+      isFullPage: true,
     });
   }, [event, showModal]);
 
@@ -78,9 +79,9 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
             </InteractiveLink>{' '}
             added a collector's note to{' '}
             <InteractiveLink
-              to={`/${event.owner.username}/${event.token.collection.dbid}/${event.token.token.dbid}`}
+              to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
             >
-              {event.token.token.name}
+              {event.token.token?.name}
             </InteractiveLink>
           </BaseM>
           <Spacer width={4} />

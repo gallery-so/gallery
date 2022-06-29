@@ -1,15 +1,19 @@
 import { graphql, useFragment } from 'react-relay';
+import { FeedEventFragment$key } from '__generated__/FeedEventFragment.graphql';
+import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
+import { FeedMode } from './Feed';
 
 type Props = {
-  eventRef: any;
-  queryRef: any;
+  eventRef: FeedEventFragment$key;
+  queryRef: FeedEventQueryFragment$key;
+  feedMode: FeedMode;
 };
 
-export default function FeedEvent({ eventRef, queryRef }: Props) {
+export default function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEventData {
@@ -25,8 +29,6 @@ export default function FeedEvent({ eventRef, queryRef }: Props) {
         ... on TokensAddedToCollectionFeedEventData {
           ...TokensAddedToCollectionFeedEventFragment
         }
-        # UserCreatedEvent
-        # CollectorsNoteAddedToCollectionEvent
         __typename
         eventTime
 
@@ -53,12 +55,12 @@ export default function FeedEvent({ eventRef, queryRef }: Props) {
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
     case 'UserFollowedUsersFeedEventData':
-      return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} />;
+      return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
+    // These event types are returned by the backend but are not currently spec'd to be displayed
+    // case 'UserCreatedFeedEventData':
+    // case 'CollectorsNoteAddedToCollectionFeedEventData':
 
     default:
-      //     return <NftDetailAnimation mediaRef={token.token} />;
-      // }
       return null;
-      return <div>Event {event.__typename}</div>;
   }
 }
