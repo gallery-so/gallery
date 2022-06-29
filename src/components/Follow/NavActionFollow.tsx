@@ -1,6 +1,5 @@
 import Spacer from 'components/core/Spacer/Spacer';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
@@ -17,12 +16,8 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment NavActionFollowUserFragment on GalleryUser {
-        id
-        followers @required(action: THROW) {
-          id @required(action: THROW)
-        }
+        ...FollowButtonUserFragment
         ...FollowerListButtonFragment
-        ...FollowButtonFragment
       }
     `,
     userRef
@@ -31,6 +26,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment NavActionFollowQueryFragment on Query {
+        ...FollowButtonQueryFragment
         ...useLoggedInUserIdFragment
       }
     `,
@@ -40,25 +36,15 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
   const isLoggedIn = !!loggedInUserId;
 
-  const followerIds = useMemo(
-    () => user.followers.map((follower: { id: string } | null) => follower?.id),
-    [user.followers]
-  );
-
-  const isFollowing = useMemo(
-    () => !!loggedInUserId && followerIds.indexOf(loggedInUserId) > -1,
-    [followerIds, loggedInUserId]
-  );
-
   return (
     <StyledNavActionFollow isLoggedIn={isLoggedIn}>
       {isLoggedIn ? (
         <>
-          <FollowButton userRef={user} isFollowing={isFollowing} loggedInUserId={loggedInUserId} />
+          <FollowButton queryRef={loggedInUserQuery} userRef={user} />
           <Spacer width={4} />
         </>
       ) : null}
-      <FollowerListButton userRef={user}></FollowerListButton>
+      <FollowerListButton userRef={user} />
     </StyledNavActionFollow>
   );
 }
