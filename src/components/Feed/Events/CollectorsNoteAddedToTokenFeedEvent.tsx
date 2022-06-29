@@ -52,26 +52,28 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
 
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
 
-  const nftDetailPath = `/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`;
-
-  const handleEventClick = useCallback(() => {
-    showModal({
-      content: (
-        <StyledNftDetailViewPopover>
-          <NftDetailView
-            username={'kaito'}
-            authenticatedUserOwnsAsset={false}
-            queryRef={event.token}
-          />
-        </StyledNftDetailViewPopover>
-      ),
-      isFullPage: true,
-    });
-  }, [event, showModal]);
+  const handleEventClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      showModal({
+        content: (
+          <StyledNftDetailViewPopover>
+            <NftDetailView
+              username={'kaito'}
+              authenticatedUserOwnsAsset={false}
+              queryRef={event.token}
+            />
+          </StyledNftDetailViewPopover>
+        ),
+        isFullPage: true,
+      });
+    },
+    [event, showModal]
+  );
 
   return (
     <StyledEvent>
-      <StyledClickHandler>
+      <StyledClickHandler onClick={handleEventClick}>
         <StyledEventHeader>
           <BaseM>
             <InteractiveLink to={`/${event.owner.username}`}>
@@ -80,6 +82,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
             added a collector's note to{' '}
             <InteractiveLink
               to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
+              onClick={handleEventClick}
             >
               {event.token.token?.name}
             </InteractiveLink>
