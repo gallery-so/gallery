@@ -96,7 +96,7 @@ const GotwContainer = styled.div`
   border-color: ${colors.white};
   transition: border ${transitions.cubic};
   &:hover {
-    border-color: ${colors.hyperBlue};
+    border-color: ${colors.offBlack};
   }
 
   width: 343px;
