@@ -4,6 +4,8 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import Link from 'next/link';
+import { useCallback, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -40,6 +42,17 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const mobileFeaturedGalleriesRef = useRef<HTMLDivElement | null>(null);
+  const desktopFeaturedGalleriesRef = useRef<HTMLDivElement | null>(null);
+
+  const handleScrollToFeaturedGalleriesMobile = useCallback(() => {
+    mobileFeaturedGalleriesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  const handleScrollToFeaturedGalleriesDesktop = useCallback(() => {
+    desktopFeaturedGalleriesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   return (
     <StyledGlobalAnnouncementPopover>
       {
@@ -66,15 +79,20 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </MobileDescriptionTextContainer>
               <Spacer height={24} />
               <MobileButtonContainer>
-                <StyledMobileButton text="Start Browsing" />
+                <Link href="/home">
+                  <StyledMobileButton text="Start Browsing" />
+                </Link>
                 <Spacer height={16} />
-                <TextButton text="Galleries To Follow ↓" />
+                <TextButton
+                  text="Galleries To Follow ↓"
+                  onClick={handleScrollToFeaturedGalleriesMobile}
+                />
               </MobileButtonContainer>
             </MobileHeaderContainer>
             <Spacer height={24} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
-            <Spacer height={24} />
+            <Spacer height={24} ref={mobileFeaturedGalleriesRef} />
             <MobileSecondaryHeaderContainer>
               <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
               <Spacer height={12} />
@@ -109,15 +127,20 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
               <DesktopButtonContainer>
-                <Button text="Start Browsing" />
+                <Link href="/home">
+                  <Button text="Start Browsing" />
+                </Link>
                 <Spacer width={32} />
-                <TextButton text="Galleries To Follow ↓" />
+                <TextButton
+                  text="Galleries To Follow ↓"
+                  onClick={handleScrollToFeaturedGalleriesDesktop}
+                />
               </DesktopButtonContainer>
             </DesktopHeaderContainer>
             <Spacer height={64} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
-            <Spacer height={64} />
+            <Spacer height={64} ref={desktopFeaturedGalleriesRef} />
             <DesktopSecondaryHeaderContainer>
               <DesktopStyledSecondaryTitle>
                 Featured galleries to follow
