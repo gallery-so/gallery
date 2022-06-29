@@ -3,16 +3,12 @@ import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleM } from 'components/core/Text/Text';
-import FollowButton from 'components/Follow/FollowButton';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from 'utils/removeNullValues';
 import { GlobalAnnouncementPopover$key } from '__generated__/GlobalAnnouncementPopover.graphql';
-import { GlobalAnnouncementPopoverGotwQueryFragment$key } from '__generated__/GlobalAnnouncementPopoverGotwQueryFragment.graphql';
-import { GlobalAnnouncementPopoverGotwUserFragment$key } from '__generated__/GlobalAnnouncementPopoverGotwUserFragment.graphql';
+import GalleryOfTheWeekCard from './Feed/GalleryOfTheWeekCard';
 
 type Props = {
   queryRef: GlobalAnnouncementPopover$key;
@@ -24,11 +20,11 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GlobalAnnouncementPopover on Query {
-        ...GlobalAnnouncementPopoverGotwQueryFragment
+        ...GalleryOfTheWeekCardQueryFragment
 
         galleryOfTheWeekWinners @required(action: LOG) {
           dbid
-          ...GlobalAnnouncementPopoverGotwUserFragment
+          ...GalleryOfTheWeekCardUserFragment
         }
       }
     `,
@@ -146,78 +142,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   );
 }
 
-type GalleryOfTheWeekCardProps = {
-  queryRef: GlobalAnnouncementPopoverGotwQueryFragment$key;
-  userRef: GlobalAnnouncementPopoverGotwUserFragment$key;
-};
-
-const GalleryOfTheWeekCard = ({ queryRef, userRef }: GalleryOfTheWeekCardProps) => {
-  const query = useFragment(
-    graphql`
-      fragment GlobalAnnouncementPopoverGotwQueryFragment on Query {
-        ...FollowButtonQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  const user = useFragment(
-    graphql`
-      fragment GlobalAnnouncementPopoverGotwUserFragment on GalleryUser {
-        username
-        galleries {
-          collections {
-            hidden
-            tokens {
-              token {
-                ...getVideoOrImageUrlForNftPreviewFragment
-              }
-            }
-          }
-        }
-        ...FollowButtonUserFragment
-      }
-    `,
-    userRef
-  );
-
-  const imageUrls = removeNullValues(
-    user.galleries?.[0]?.collections
-      ?.filter((collection) => !collection?.hidden)
-      .flatMap((collection) => collection?.tokens)
-      .map((galleryToken) => {
-        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
-      })
-      .map((token) => token?.urls.large)
-  ).slice(0, 4);
-
-  return (
-    <Link href={`/${user.username}`} passHref>
-      <StyledAnchor target="_blank" rel="noopener noreferrer">
-        <DesktopGotwContainer>
-          <GotwHeader>
-            <FollowButton queryRef={query} userRef={user} />
-            <Spacer width={8} />
-            <DesktopDescriptionText>{user.username}</DesktopDescriptionText>
-          </GotwHeader>
-          <Spacer height={32} />
-          <GotwBody>
-            {imageUrls.map((url) => (
-              <GotwImageContainer key={url}>
-                <GotwImage src={url} />
-              </GotwImageContainer>
-            ))}
-          </GotwBody>
-        </DesktopGotwContainer>
-      </StyledAnchor>
-    </Link>
-  );
-};
-
-const StyledAnchor = styled.a`
-  text-decoration: none;
-`;
-
 const DesktopGotwContainer = styled.div`
   width: 506px;
   height: 506px;
@@ -231,33 +155,6 @@ const DesktopGotwContainer = styled.div`
     border-color: ${colors.offBlack};
   }
 `;
-
-const GotwHeader = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const GotwBody = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  grid-gap: 24px;
-`;
-
-const GotwImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 190px;
-  width: 220px;
-`;
-
-const GotwImage = styled.img`
-  max-height: 100%;
-  max-width: 100%;
-`;
-
-/////
 
 const StyledGlobalAnnouncementPopover = styled.div`
   display: flex;
