@@ -5,12 +5,24 @@ import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
 
 import FeedList from './FeedList';
 
+type Props = {
+  queryRef: any;
+};
+
 export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
   const last = 10;
   // const userId = viewer.user.dbid;
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
       query ViewerFeedQuery($userId: DBID!, $before: String, $last: Int) {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+        ...FeedEventQueryFragment
         ...ViewerFeedFragment
       }
     `,
@@ -52,7 +64,12 @@ export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
 
   return (
     <StyledViewerFeed>
-      <FeedList feedData={data.feedByUserId} onLoadNext={onLoadNext} hasNext={hasNext} />
+      <FeedList
+        feedData={data.feedByUserId}
+        onLoadNext={onLoadNext}
+        hasNext={hasNext}
+        queryRef={query}
+      />
     </StyledViewerFeed>
   );
 }

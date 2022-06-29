@@ -5,10 +5,11 @@ import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFe
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 
 type Props = {
+  eventRef: any;
   queryRef: any;
 };
 
-export default function FeedEvent({ queryRef }: Props) {
+export default function FeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEventData {
@@ -32,6 +33,15 @@ export default function FeedEvent({ queryRef }: Props) {
         action
       }
     `,
+    eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FeedEventQueryFragment on Query {
+        ...UserFollowedUsersFeedEventQueryFragment
+      }
+    `,
     queryRef
   );
 
@@ -43,7 +53,7 @@ export default function FeedEvent({ queryRef }: Props) {
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
     case 'UserFollowedUsersFeedEventData':
-      return <UserFollowedUsersFeedEvent eventRef={event} />;
+      return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} />;
 
     default:
       //     return <NftDetailAnimation mediaRef={token.token} />;

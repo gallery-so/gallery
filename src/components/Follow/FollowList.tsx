@@ -10,6 +10,7 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
+import FollowListUsers from './FollowListUsers';
 
 type Props = {
   userRef: FollowListFragment$key;
@@ -37,14 +38,14 @@ export default function FollowList({ userRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
-  const track = useTrack();
+  // const track = useTrack();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
-  const handleClick = useCallback(() => {
-    track('Follower List Username Click');
-  }, [track]);
+  // const handleClick = useCallback(() => {
+  //   track('Follower List Username Click');
+  // }, [track]);
 
   return (
     <StyledFollowList fullscreen={isMobile}>
@@ -65,7 +66,13 @@ export default function FollowList({ userRef }: Props) {
           />
         </StyledHeaderText>
       </StyledHeader>
-      <StyledList>
+      <FollowListUsers
+        userList={userList}
+        emptyListText={
+          displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
+        }
+      />
+      {/* <StyledList>
         {userList.map((user: any) => (
           <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
             <TitleS>{user.username}</TitleS>
@@ -82,7 +89,7 @@ export default function FollowList({ userRef }: Props) {
             <Spacer height={48} />
           </StyledEmptyList>
         )}
-      </StyledList>
+      </StyledList> */}
     </StyledFollowList>
   );
 }

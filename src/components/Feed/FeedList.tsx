@@ -13,9 +13,10 @@ type Props = {
   feedData: any;
   onLoadNext: () => void;
   hasNext: boolean;
+  queryRef: any;
 };
 
-export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
+export default function FeedList({ feedData, onLoadNext, hasNext, queryRef }: Props) {
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
@@ -42,8 +43,8 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
     if (!isRowLoaded({ index })) {
       return <div></div>;
     } else {
+      // graphql returns the oldest event at the top of the list, so display in opposite order
       content = feedData.edges[feedData.edges.length - index - 1];
-      console.log(feedData.edges[index].node.eventData);
       return (
         <CellMeasurer
           cache={measurerCache}
@@ -54,7 +55,11 @@ export default function FeedList({ feedData, onLoadNext, hasNext }: Props) {
         >
           {({ measure, registerChild }) => (
             <div ref={registerChild} style={style}>
-              <FeedEvent queryRef={content.node.eventData} key={content.node.dbid} />
+              <FeedEvent
+                eventRef={content.node.eventData}
+                key={content.node.dbid}
+                queryRef={queryRef}
+              />
             </div>
           )}
         </CellMeasurer>

@@ -44,7 +44,6 @@ export default function GlobalFeed() {
       `,
       query
     );
-  // console.log('data, data', data.globalFeed.node.eventData);
 
   const onLoadNext = useCallback(() => {
     loadPrevious(10);

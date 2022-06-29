@@ -19,22 +19,10 @@ export type FeedMode = typeof FOLLOWING | typeof WORLDWIDE;
 type ControlProps = {
   setFeedMode: (mode: FeedMode) => void;
   initialFeedMode: FeedMode;
-  viewerQuery: any;
+  // viewerQuery: any;
 };
 
-function FeedNavbarControl({ setFeedMode, initialFeedMode, viewerQuery }: ControlProps) {
-  const viewer = useFragment(
-    graphql`
-      fragment FeedNavbarViewerFragment on Viewer {
-        user {
-          dbid
-        }
-      }
-    `,
-    viewerQuery
-  );
-
-  console.log('navbarviewer', viewer);
+function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
   // internally track the feed mode state so we can avoid adding it to the dep array
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
 
@@ -99,7 +87,7 @@ const StyledFeedNavbarControl = styled.div`
 `;
 
 export default function Feed() {
-  const { viewer } = useLazyLoadQuery<Viewer>(
+  const query = useLazyLoadQuery<Viewer>(
     graphql`
       query FeedViewerQuery {
         viewer {
@@ -107,13 +95,14 @@ export default function Feed() {
             user {
               dbid
             }
-            ...FeedNavbarViewerFragment
+            # ...FeedNavbarViewerFragment
           }
         }
       }
     `,
     {}
   );
+  const { viewer } = query;
   const viewerUserId = (viewer?.user?.dbid ?? '') as string;
   const defaultFeedMode = viewerUserId ? FOLLOWING : WORLDWIDE;
 
@@ -136,11 +125,7 @@ export default function Feed() {
       setCustomNavCenterContent(null);
     } else {
       setCustomNavCenterContent(
-        <FeedNavbarControl
-          setFeedMode={setFeedMode}
-          initialFeedMode={feedMode}
-          viewerQuery={viewer}
-        />
+        <FeedNavbarControl setFeedMode={setFeedMode} initialFeedMode={feedMode} />
       );
     }
     // don't add feedMode to the dep array. we only pass it in to set the initial state for the nav control, so we don't call setCustomNavCenterContent every time the feed mode changes
