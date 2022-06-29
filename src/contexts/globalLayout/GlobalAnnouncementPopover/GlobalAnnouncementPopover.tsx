@@ -2,7 +2,7 @@ import Button from 'components/core/Button/Button';
 import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
-import { TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -50,47 +50,48 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
         isMobile ? (
           <>
             <Spacer height={92} />
-            <DesktopHeaderContainer>
-              <DesktopIntroText>
-                A new way to <i>connect</i> with collectors
-              </DesktopIntroText>
-              <Spacer height={32} />
-              <DesktopDescriptionText>
-                Collectors are looking for ways to connect with each other. To help them stay up to
-                date with their favorite collectors on Gallery, we’re introducing our biggest change
-                thus far—
-              </DesktopDescriptionText>
-              <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
-              <Spacer height={32} />
-              <ButtonContainer>
-                <Button text="Start Browsing" />
-                <Spacer width={32} />
+            <MobileHeaderContainer>
+              <MobileIntroTextContainer>
+                <MobileIntroText>
+                  A new way to <i>connect</i> with collectors
+                </MobileIntroText>
+              </MobileIntroTextContainer>
+              <Spacer height={8} />
+              <MobileDescriptionTextContainer>
+                <BaseM>
+                  Collectors are looking for ways to connect with each other. To help them stay up
+                  to date with their favorite collectors on Gallery, we’re introducing our biggest
+                  change thus far—<b>a social feed</b>.
+                </BaseM>
+              </MobileDescriptionTextContainer>
+              <Spacer height={24} />
+              <MobileButtonContainer>
+                <StyledMobileButton text="Start Browsing" />
+                <Spacer height={16} />
                 <TextButton text="Galleries To Follow ↓" />
-              </ButtonContainer>
-            </DesktopHeaderContainer>
-            <Spacer height={64} />
+              </MobileButtonContainer>
+            </MobileHeaderContainer>
+            <Spacer height={24} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
-            <Spacer height={64} />
-            <DesktopSecondaryHeaderContainer>
-              <DesktopStyledSecondaryTitleL>
-                Featured galleries to follow
-              </DesktopStyledSecondaryTitleL>
+            <Spacer height={24} />
+            <MobileSecondaryHeaderContainer>
+              <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
               <Spacer height={12} />
-              <DesktopDescriptionText>
-                To get you started, you can follow some of our past{' '}
-                <DesktopDescriptionTextItalic>Gallery of the Week</DesktopDescriptionTextItalic>{' '}
-                winners, as voted by our community.
-              </DesktopDescriptionText>
-            </DesktopSecondaryHeaderContainer>
-            <Spacer height={64} />
-            <DesktopGalleryOfTheWeekContainer>
-              <DesktopGotwContainer />
-              <DesktopGotwContainer />
-              <DesktopGotwContainer />
-              <DesktopGotwContainer />
-            </DesktopGalleryOfTheWeekContainer>
-            <Spacer height={80} />
+              <MobileDescriptionTextContainer>
+                <BaseM>
+                  To get you started, you can follow some of our past <b>Gallery of the Week</b>{' '}
+                  winners, as voted by our community.
+                </BaseM>
+              </MobileDescriptionTextContainer>
+            </MobileSecondaryHeaderContainer>
+            <Spacer height={24} />
+            <GalleryOfTheWeekContainer>
+              {galleryOfTheWeekWinners.map((userRef) => (
+                <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
+              ))}
+            </GalleryOfTheWeekContainer>
+            <Spacer height={24} />
           </>
         ) : (
           <>
@@ -107,20 +108,20 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopDescriptionText>
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
-              <ButtonContainer>
+              <DesktopButtonContainer>
                 <Button text="Start Browsing" />
                 <Spacer width={32} />
                 <TextButton text="Galleries To Follow ↓" />
-              </ButtonContainer>
+              </DesktopButtonContainer>
             </DesktopHeaderContainer>
             <Spacer height={64} />
             {/* TODO: replace this with recorded video */}
             <img src="./temp-asset.jpg" />
             <Spacer height={64} />
             <DesktopSecondaryHeaderContainer>
-              <DesktopStyledSecondaryTitleL>
+              <DesktopStyledSecondaryTitle>
                 Featured galleries to follow
-              </DesktopStyledSecondaryTitleL>
+              </DesktopStyledSecondaryTitle>
               <Spacer height={12} />
               <DesktopDescriptionText>
                 To get you started, you can follow some of our past{' '}
@@ -129,11 +130,11 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopDescriptionText>
             </DesktopSecondaryHeaderContainer>
             <Spacer height={64} />
-            <DesktopGalleryOfTheWeekContainer>
+            <GalleryOfTheWeekContainer>
               {galleryOfTheWeekWinners.map((userRef) => (
                 <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
               ))}
-            </DesktopGalleryOfTheWeekContainer>
+            </GalleryOfTheWeekContainer>
             <Spacer height={80} />
           </>
         )
@@ -142,27 +143,64 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   );
 }
 
-const DesktopGotwContainer = styled.div`
-  width: 506px;
-  height: 506px;
-  padding: 16px;
-  background: ${colors.white};
-
-  border: 1px solid;
-  border-color: ${colors.white};
-  cursor: pointer;
-  &:hover {
-    border-color: ${colors.offBlack};
-  }
-`;
-
 const StyledGlobalAnnouncementPopover = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   background: ${colors.offWhite};
+  padding: 0px 16px;
 `;
 
+////////////////////////// MOBILE //////////////////////////
+const MobileHeaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const MobileIntroTextContainer = styled.div`
+  width: 245px;
+  text-align: center;
+`;
+
+const MobileIntroText = styled.span`
+  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
+  font-family: 'GT Alpina Condensed';
+  font-size: 32px;
+  line-height: 32px;
+  letter-spacing: -0.05em;
+`;
+
+const MobileDescriptionTextContainer = styled.div`
+  max-width: 343px;
+`;
+
+const MobileButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const StyledMobileButton = styled(Button)`
+  width: 100%;
+`;
+
+const MobileStyledSecondaryTitle = styled.span`
+  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
+  font-family: 'GT Alpina Condensed';
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: -0.05em;
+`;
+
+const MobileSecondaryHeaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+////////////////////////// DESKTOP //////////////////////////
 const DesktopHeaderContainer = styled.div`
   width: 580px;
   text-align: center;
@@ -188,7 +226,7 @@ const DesktopDescriptionTextItalic = styled.span`
   font-style: italic;
 `;
 
-const ButtonContainer = styled.div`
+const DesktopButtonContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
@@ -198,7 +236,7 @@ const DesktopSecondaryHeaderContainer = styled.div`
   text-align: center;
 `;
 
-const DesktopStyledSecondaryTitleL = styled.span`
+const DesktopStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 42px;
@@ -206,7 +244,7 @@ const DesktopStyledSecondaryTitleL = styled.span`
   letter-spacing: -0.05em;
 `;
 
-const DesktopGalleryOfTheWeekContainer = styled.div`
+const GalleryOfTheWeekContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

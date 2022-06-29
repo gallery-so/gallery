@@ -1,7 +1,9 @@
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleM } from 'components/core/Text/Text';
 import FollowButton from 'components/Follow/FollowButton';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -56,6 +58,8 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
       .map((token) => token?.urls.large)
   ).slice(0, 4);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <Link href={`/${user.username}`} passHref>
       <StyledAnchor target="_blank" rel="noopener noreferrer">
@@ -65,7 +69,7 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
             <Spacer width={8} />
             <DescriptionText>{user.username}</DescriptionText>
           </GotwHeader>
-          <Spacer height={32} />
+          <Spacer height={isMobile ? 16 : 32} />
           <GotwBody>
             {imageUrls.map((url) => (
               <GotwImageContainer key={url}>
@@ -84,16 +88,22 @@ const StyledAnchor = styled.a`
 `;
 
 const GotwContainer = styled.div`
-  width: 506px;
-  height: 506px;
-  padding: 16px;
   background: ${colors.white};
-
   border: 1px solid;
   border-color: ${colors.white};
   cursor: pointer;
   &:hover {
     border-color: ${colors.offBlack};
+  }
+
+  width: 343px;
+  height: 343px;
+  padding: 12px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 16px;
+    width: 506px;
+    height: 506px;
   }
 `;
 
@@ -113,8 +123,14 @@ const GotwImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 190px;
-  width: 220px;
+
+  width: 116px;
+  height: 116px;
+
+  @media only screen and ${breakpoints.tablet} {
+    height: 190px;
+    width: 220px;
+  }
 `;
 
 const GotwImage = styled.img`
