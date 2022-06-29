@@ -36,17 +36,58 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
   const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
 
   useEffect(() => {
-    if (dismissed) return;
-    if (AUTH_REQUIRED && !isAuthenticated) return;
-    if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
+    async function handleMount() {
+      if (dismissed) return;
+      if (AUTH_REQUIRED && !isAuthenticated) return;
+      if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
 
-    setTimeout(() => {
-      showModal({
-        content: <GlobalAnnouncementPopover queryRef={query} />,
-        isFullPage: true,
-        headerVariant: 'thicc',
-      });
-      setDismissed(true);
-    }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
+      // prevent font flicker on popover load
+      await handlePreloadFonts();
+
+      setTimeout(() => {
+        showModal({
+          content: <GlobalAnnouncementPopover queryRef={query} />,
+          isFullPage: true,
+          headerVariant: 'thicc',
+        });
+        setDismissed(true);
+      }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
+    }
+
+    handleMount();
   }, [isAuthenticated, showModal, query, dismissed, setDismissed]);
+}
+
+async function handlePreloadFonts() {
+  const fontLight = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Light.otf)'
+  );
+  const fontLightItalic = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Light-Italic.otf)'
+  );
+  const fontBoldItalic = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Bold-Italic.otf)'
+  );
+  const fontLight2 = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Light.ttf)'
+  );
+  const fontLightItalic2 = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Light-Italic.ttf)'
+  );
+  const fontBoldItalic2 = new FontFace(
+    'GT Alpina Condensed',
+    'url(/fonts/GT-Alpina-Condensed-Bold-Italic.ttf)'
+  );
+
+  await fontLight.load();
+  await fontLightItalic.load();
+  await fontBoldItalic.load();
+  await fontLight2.load();
+  await fontLightItalic2.load();
+  await fontBoldItalic2.load();
 }
