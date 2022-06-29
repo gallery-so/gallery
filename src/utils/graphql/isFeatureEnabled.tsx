@@ -16,7 +16,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   POSTER_MINT: true,
   QR_CODE: true,
   FEED: true,
-  FEED_ANNOUNCEMENT: false,
+  FEED_ANNOUNCEMENT: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
