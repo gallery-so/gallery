@@ -67,10 +67,6 @@ async function handlePreloadFonts() {
     'GT Alpina Condensed',
     'url(/fonts/GT-Alpina-Condensed-Light-Italic.otf)'
   );
-  const fontBoldItalic = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Bold-Italic.otf)'
-  );
   const fontLight2 = new FontFace(
     'GT Alpina Condensed',
     'url(/fonts/GT-Alpina-Condensed-Light.ttf)'
@@ -79,15 +75,9 @@ async function handlePreloadFonts() {
     'GT Alpina Condensed',
     'url(/fonts/GT-Alpina-Condensed-Light-Italic.ttf)'
   );
-  const fontBoldItalic2 = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Bold-Italic.ttf)'
-  );
 
   await fontLight.load();
   await fontLightItalic.load();
-  await fontBoldItalic.load();
   await fontLight2.load();
   await fontLightItalic2.load();
-  await fontBoldItalic2.load();
 }

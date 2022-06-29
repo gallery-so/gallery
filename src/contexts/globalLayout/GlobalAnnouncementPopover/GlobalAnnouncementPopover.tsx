@@ -243,7 +243,6 @@ const DesktopDescriptionTextItalic = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 24px;
-  font-weight: 800;
   font-style: italic;
 `;
 
