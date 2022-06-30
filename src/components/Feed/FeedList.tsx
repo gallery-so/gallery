@@ -124,12 +124,16 @@ const StyledLoadMoreRow = styled.div<{ width: number }>`
   align-items: center;
   justify-content: center;
   padding: 64px 0;
+  transition: background ${transitions.cubic};
   ${TitleM} {
+    font-style: normal;
+    color: ${colors.shadow};
     transition: color ${transitions.cubic};
   }
   &:hover {
+    background: ${colors.faint};
     ${TitleM} {
-      color: ${colors.shadow};
+      color: ${colors.offBlack};
     }
   }
   cursor: pointer;
