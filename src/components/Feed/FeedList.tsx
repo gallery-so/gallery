@@ -87,7 +87,7 @@ export default function FeedList({
   const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreRows = isNextPageLoading ? () => {} : onLoadNext;
+  const loadMoreRows = isNextPageLoading ? noop : onLoadNext;
 
   return (
     <WindowScroller>
