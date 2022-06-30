@@ -1,7 +1,25 @@
+import { FeatureFlag } from 'components/core/enums';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { homeQuery } from '__generated__/homeQuery.graphql';
 
 export default function Home() {
+  const query = useLazyLoadQuery<homeQuery>(
+    graphql`
+      query homeQuery {
+        ...GeneralMembershipMintPageFragment
+        ...isFeatureEnabledFragment
+      }
+    `,
+    {}
+  );
+  if (!isFeatureEnabled(FeatureFlag.FEED, query)) {
+    return <GalleryRedirect to="/" />;
+  }
+
   return <GalleryRoute element={<HomeScene />} navbar={true} />;
 }
 
