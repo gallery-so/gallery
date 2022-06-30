@@ -119,7 +119,7 @@ const StyledA = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: fit-content;
+  width: 100%;
 `;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
