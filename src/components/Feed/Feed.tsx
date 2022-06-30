@@ -4,6 +4,7 @@ import colors from 'components/core/colors';
 import { fadeIn } from 'components/core/keyframes';
 import Spacer from 'components/core/Spacer/Spacer';
 import transitions from 'components/core/transitions';
+import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useCallback, useEffect, useState } from 'react';
@@ -111,7 +112,7 @@ export default function Feed() {
     return () => {
       setTimeout(() => {
         setCustomNavCenterContent(null);
-      }, 200);
+      }, FADE_TRANSITION_TIME_MS);
     };
   }, [setCustomNavCenterContent]);
 
@@ -132,7 +133,9 @@ export default function Feed() {
   return (
     <StyledFeed>
       <Spacer height={24} />
-      {viewerUserId && feedMode === FOLLOWING && <ViewerFeed viewerUserId={viewerUserId} />}
+      {viewerUserId && feedMode === FOLLOWING && (
+        <ViewerFeed viewerUserId={viewerUserId} setFeedMode={setFeedMode} />
+      )}
       {feedMode === WORLDWIDE && <GlobalFeed />}
     </StyledFeed>
   );

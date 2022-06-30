@@ -1,3 +1,6 @@
+import colors from 'components/core/colors';
+import { TitleM } from 'components/core/Text/Text';
+import transitions from 'components/core/transitions';
 import { useMemo } from 'react';
 import {
   AutoSizer,
@@ -8,6 +11,7 @@ import {
   WindowScroller,
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
+import styled from 'styled-components';
 import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
@@ -87,34 +91,46 @@ export default function FeedList({
   const loadMoreRows = isNextPageLoading ? () => {} : onLoadNext;
 
   return (
-    <InfiniteLoader
-      isRowLoaded={isRowLoaded}
-      // @ts-expect-error: loadMoreRows type expects a function that returns a promise, but react-virtualized docs suggest passing an empty callback in some scenarios
-      loadMoreRows={loadMoreRows}
-      rowCount={rowCount}
-      threshold={2}
-    >
-      {({ onRowsRendered, registerChild }) => (
-        <WindowScroller>
-          {({ height, scrollTop }) => (
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <List
-                  ref={registerChild}
-                  autoHeight
-                  width={width}
-                  height={height}
-                  onRowsRendered={onRowsRendered}
-                  rowRenderer={rowRenderer}
-                  rowCount={rowCount}
-                  rowHeight={measurerCache.rowHeight}
-                  scrollTop={scrollTop}
-                />
+    <WindowScroller>
+      {({ height, scrollTop, registerChild }) => (
+        <AutoSizer disableHeight>
+          {({ width }) => (
+            <div ref={registerChild}>
+              <List
+                autoHeight
+                width={width}
+                height={height}
+                rowRenderer={rowRenderer}
+                rowCount={rowCount}
+                rowHeight={measurerCache.rowHeight}
+                scrollTop={scrollTop}
+              />
+              {hasNext && (
+                <StyledLoadMoreRow width={width} onClick={loadMoreRows}>
+                  <TitleM>More</TitleM>
+                </StyledLoadMoreRow>
               )}
-            </AutoSizer>
+            </div>
           )}
-        </WindowScroller>
+        </AutoSizer>
       )}
-    </InfiniteLoader>
+    </WindowScroller>
   );
 }
+
+const StyledLoadMoreRow = styled.div<{ width: number }>`
+  width: ${({ width }) => width}px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+  ${TitleM} {
+    transition: color ${transitions.cubic};
+  }
+  &:hover {
+    ${TitleM} {
+      color: ${colors.shadow};
+    }
+  }
+  cursor: pointer;
+`;
