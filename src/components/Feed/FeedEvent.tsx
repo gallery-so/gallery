@@ -6,6 +6,7 @@ import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToT
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
+import FeedEventErrorBoundary from './FeedEventErrorBoundary';
 
 type Props = {
   eventRef: FeedEventFragment$key;
@@ -13,7 +14,7 @@ type Props = {
   feedMode: FeedMode;
 };
 
-export default function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
+function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEventData {
@@ -89,4 +90,12 @@ export default function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
     default:
       return null;
   }
+}
+
+export default function FeedEventWithBoundary(props: Props) {
+  return (
+    <FeedEventErrorBoundary>
+      <FeedEvent {...props} />
+    </FeedEventErrorBoundary>
+  );
 }
