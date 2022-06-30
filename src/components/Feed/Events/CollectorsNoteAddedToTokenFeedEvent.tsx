@@ -12,6 +12,7 @@ import { getTimeSince } from 'utils/time';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import EventMedia from './EventMedia';
+import unescape from 'utils/unescape';
 
 type Props = {
   eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
@@ -97,7 +98,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
           </StyledMediaWrapper>
           <Spacer width={MIDDLE_GAP} />
           <StyledNoteWrapper>
-            <StyledNote>{event.newCollectorsNote}</StyledNote>
+            <StyledNote>{unescape(event.newCollectorsNote ?? '')}</StyledNote>
           </StyledNoteWrapper>
         </StyledContent>
       </StyledClickHandler>

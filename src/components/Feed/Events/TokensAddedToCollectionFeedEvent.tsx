@@ -15,7 +15,7 @@ import { getTimeSince } from 'utils/time';
 import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
-import unescape from 'lodash.unescape';
+import unescape from 'utils/unescape';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;

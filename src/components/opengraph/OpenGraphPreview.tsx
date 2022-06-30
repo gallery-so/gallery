@@ -1,5 +1,5 @@
 import Markdown from 'components/core/Markdown/Markdown';
-import unescape from 'lodash/unescape';
+import unescape from 'utils/unescape';
 
 type Props = {
   title: string;

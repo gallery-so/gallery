@@ -4,7 +4,7 @@ import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
-import unescape from 'lodash.unescape';
+import unescape from 'utils/unescape';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
