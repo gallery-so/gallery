@@ -40,6 +40,7 @@ const StyledContainer = styled.div`
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   padding: ${pageGutter.mobile}px;
+  background-color: #ffffff;
 `;
 
 const StyledGalleryContainer = styled.div`
