@@ -23,7 +23,7 @@ const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   GENERAL_MEMBERSHIP_MINT: true,
   POSTER_MINT: true,
   QR_CODE: true,
-  FEED: false,
+  FEED: true,
   FEED_ANNOUNCEMENT: true,
 };
 
