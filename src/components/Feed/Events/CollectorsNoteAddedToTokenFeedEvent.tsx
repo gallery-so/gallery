@@ -59,7 +59,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
         content: (
           <StyledNftDetailViewPopover>
             <NftDetailView
-              username={'kaito'}
+              username={event.owner.username ?? ''}
               authenticatedUserOwnsAsset={false}
               queryRef={event.token}
             />

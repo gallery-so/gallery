@@ -27,6 +27,13 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
+        collection {
+          gallery @required(action: THROW) {
+            owner @required(action: THROW) {
+              username
+            }
+          }
+        }
         ...NftPreviewFragment
         ...NftDetailViewFragment
       }
@@ -40,7 +47,11 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     showModal({
       content: (
         <StyledNftDetailViewPopover>
-          <NftDetailView username={'kaito'} authenticatedUserOwnsAsset={false} queryRef={token} />
+          <NftDetailView
+            username={token?.collection?.gallery?.owner.username ?? ''}
+            authenticatedUserOwnsAsset={false}
+            queryRef={token}
+          />
         </StyledNftDetailViewPopover>
       ),
       isFullPage: true,
