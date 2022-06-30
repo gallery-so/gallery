@@ -59,6 +59,8 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
 
   const showSeeAllButton = event.collection.tokens.length > 4;
 
+  const collectionName = unescape(event.collection.name ?? '');
+
   return (
     <CustomStyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
@@ -66,11 +68,14 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
           <InteractiveLink to={`/${event.owner.username}`}>{event.owner.username}</InteractiveLink>{' '}
           <BaseM>
             added {event.collection.tokens.length}{' '}
-            {pluralize(event.collection.tokens.length, 'piece')} to their new collection,{' '}
+            {pluralize(event.collection.tokens.length, 'piece')} to their new collection
+            {collectionName && `, `}
           </BaseM>
-          <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
-            {unescape(event.collection.name ?? '')}
-          </InteractiveLink>
+          {collectionName && (
+            <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
+              {unescape(event.collection.name ?? '')}
+            </InteractiveLink>
+          )}
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>

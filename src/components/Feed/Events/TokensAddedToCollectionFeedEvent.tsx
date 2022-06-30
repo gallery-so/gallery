@@ -60,6 +60,8 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
 
   const showSeeAllButton = event.newTokens.length > 4;
 
+  const collectionName = unescape(event.collection.name ?? '');
+
   return (
     <CustomStyledEvent>
       <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
@@ -68,10 +70,9 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
             <InteractiveLink to={`/${event.owner.username}`}>
               {event.owner.username}
             </InteractiveLink>{' '}
-            added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to{' '}
-            <InteractiveLink to={collectionPagePath}>
-              {unescape(event.collection.name ?? '')}
-            </InteractiveLink>
+            added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to
+            {collectionName ? ' ' : ' their collection'}
+            <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
