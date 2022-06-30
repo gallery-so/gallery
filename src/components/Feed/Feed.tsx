@@ -93,7 +93,6 @@ export default function Feed() {
             user {
               dbid
             }
-            # ...FeedNavbarViewerFragment
           }
         }
       }
@@ -101,7 +100,7 @@ export default function Feed() {
     {}
   );
   const { viewer } = query;
-  const viewerUserId = (viewer?.user?.dbid ?? '') as string;
+  const viewerUserId = viewer?.user?.dbid ?? '';
   const defaultFeedMode = viewerUserId ? FOLLOWING : WORLDWIDE;
 
   const [feedMode, setFeedMode] = useState<FeedMode>(defaultFeedMode);

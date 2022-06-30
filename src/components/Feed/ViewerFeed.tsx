@@ -6,8 +6,8 @@ import { FOLLOWING } from './Feed';
 
 import FeedList from './FeedList';
 
+const ITEMS_PER_PAGE = 10;
 export default function ViewerFeed({ viewerUserId }: { viewerUserId: string }) {
-  const ITEMS_PER_PAGE = 10;
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
       query ViewerFeedQuery($userId: DBID!, $before: String, $last: Int) {

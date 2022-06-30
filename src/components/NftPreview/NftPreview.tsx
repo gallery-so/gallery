@@ -115,8 +115,6 @@ function NftPreview({
   );
 }
 
-// const StyledLink = styled(Link)``;
-
 const StyledA = styled.a`
   display: flex;
   justify-content: center;

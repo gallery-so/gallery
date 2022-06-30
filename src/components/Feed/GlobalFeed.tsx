@@ -6,8 +6,8 @@ import { WORLDWIDE } from './Feed';
 
 import FeedList from './FeedList';
 
+const ITEMS_PER_PAGE = 10;
 export default function GlobalFeed() {
-  const ITEMS_PER_PAGE = 10;
   const query = useLazyLoadQuery<GlobalFeedQuery>(
     graphql`
       query GlobalFeedQuery($before: String, $last: Int) {

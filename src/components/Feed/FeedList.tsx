@@ -66,8 +66,7 @@ export default function FeedList({
         parent={parent}
       >
         {({ registerChild }) => (
-          // this is the suggested usage of registerChild
-          //@ts-ignore
+          // @ts-expect-error: this is the suggested usage of registerChild
           <div ref={registerChild} style={style}>
             <FeedEvent
               eventRef={content.node.eventData}
@@ -90,8 +89,7 @@ export default function FeedList({
   return (
     <InfiniteLoader
       isRowLoaded={isRowLoaded}
-      // loadMoreRows type expects a function that returns a promise, but react-virtualized docs suggest passing an empty callback in some scenarios
-      //@ts-ignore
+      // @ts-expect-error: loadMoreRows type expects a function that returns a promise, but react-virtualized docs suggest passing an empty callback in some scenarios
       loadMoreRows={loadMoreRows}
       rowCount={rowCount}
       threshold={2}
