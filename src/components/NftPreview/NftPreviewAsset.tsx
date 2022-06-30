@@ -97,7 +97,7 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
     return (
       <ImageWithLoading
         src={src}
-        heightType="inherit"
+        heightType="maxHeightScreen"
         widthType={src.includes('svg') ? 'fullWidth' : 'maxWidth'}
         alt={token.name ?? ''}
       />

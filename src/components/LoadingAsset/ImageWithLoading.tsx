@@ -5,7 +5,8 @@ import styled from 'styled-components';
 type ContentWidthType = 'fullWidth' | 'maxWidth';
 
 type ContentHeightType =
-  | 'maxHeightScreen' // fill up to screen
+  | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container
+  | 'maxHeightScreen' // fill up to 80vh of screen
   | 'inherit';
 
 type Props = {
@@ -26,8 +27,14 @@ export default function ImageWithLoading({
   const setContentIsLoaded = useSetContentIsLoaded();
 
   const maxHeight = useMemo(() => {
-    if (heightType === 'maxHeightScreen') {
+    // TODO: for some reason, the part of the 100% max height is not enforced
+    // for NftPreviewImages on the User Gallery Page. as a result, there's a
+    // separate option to force 80vh below
+    if (heightType === 'maxHeightMinScreen') {
       return 'min(100%, 80vh)';
+    }
+    if (heightType === 'maxHeightScreen') {
+      return '80vh';
     }
     if (heightType === 'inherit') {
       return '100%';
