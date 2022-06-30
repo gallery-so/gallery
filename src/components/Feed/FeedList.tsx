@@ -11,6 +11,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
+import noop from 'utils/noop';
 import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
