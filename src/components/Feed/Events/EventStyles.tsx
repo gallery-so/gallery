@@ -1,3 +1,4 @@
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
@@ -6,7 +7,12 @@ import styled from 'styled-components';
 
 // base styles for feed events
 export const StyledEvent = styled.div`
-  padding: 16px;
+  padding: 24px 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 16px;
+  }
+
   transition: background ${transitions.cubic};
   cursor: pointer;
   &:hover {
