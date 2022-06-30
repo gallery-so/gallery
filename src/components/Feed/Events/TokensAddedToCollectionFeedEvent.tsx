@@ -9,6 +9,7 @@ import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
+import { removeNullValues } from 'utils/removeNullValues';
 import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
@@ -44,7 +45,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
-    return event.newTokens.filter((n) => !!n).slice(0, 4);
+    return removeNullValues(event.newTokens).slice(0, 4);
   }, [event.newTokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
