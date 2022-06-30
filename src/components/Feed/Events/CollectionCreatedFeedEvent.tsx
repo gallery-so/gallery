@@ -4,6 +4,7 @@ import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
+import unescape from 'lodash.unescape';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -68,7 +69,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
             {pluralize(event.collection.tokens.length, 'piece')} to their new collection,{' '}
           </BaseM>
           <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
-            {event.collection.name}
+            {unescape(event.collection.name ?? '')}
           </InteractiveLink>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

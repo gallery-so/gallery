@@ -15,6 +15,7 @@ import { getTimeSince } from 'utils/time';
 import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import unescape from 'lodash.unescape';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -68,7 +69,9 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
               {event.owner.username}
             </InteractiveLink>{' '}
             added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to{' '}
-            <InteractiveLink to={collectionPagePath}>{event.collection.name}</InteractiveLink>
+            <InteractiveLink to={collectionPagePath}>
+              {unescape(event.collection.name ?? '')}
+            </InteractiveLink>
           </BaseM>
           <Spacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
