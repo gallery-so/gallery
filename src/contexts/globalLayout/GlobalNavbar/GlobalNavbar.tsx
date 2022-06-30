@@ -5,7 +5,6 @@ import { graphql, useFragment } from 'react-relay';
 import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
 import RightContent from './RightContent';
 import LeftContent from './LeftContent';
-// TODO maybe combine with LeftContent
 import CenterContent from './CenterContent';
 import NavbarGLink from 'components/NavbarGLink';
 

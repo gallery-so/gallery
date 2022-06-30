@@ -154,6 +154,7 @@ const StyledNftPreview = styled.div<{
   align-items: center;
   position: relative;
   overflow: hidden;
+  max-height: 80vh;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
