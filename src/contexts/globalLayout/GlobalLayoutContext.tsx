@@ -30,6 +30,7 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -76,6 +77,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     graphql`
       query GlobalLayoutContextQuery {
         ...GlobalLayoutContextNavbarFragment
+        ...useGlobalAnnouncementPopoverFragment
       }
     `,
     {}
@@ -226,6 +228,8 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
+
+  useGlobalAnnouncementPopover(query);
 
   return (
     // note: we render the navbar here, above the main contents of the app,

@@ -1,23 +1,33 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import useFollowUser from './mutations/useFollowUser';
 import useUnfollowUser from './mutations/useUnfollowUser';
 import IconButton from 'components/IconButton/IconButton';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { FollowButtonFragment$key } from '__generated__/FollowButtonFragment.graphql';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
+import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
+import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
 
 type Props = {
-  userRef: FollowButtonFragment$key;
-  isFollowing: boolean;
-  loggedInUserId?: string;
+  queryRef: FollowButtonQueryFragment$key;
+  userRef: FollowButtonUserFragment$key;
 };
 
-export default function FollowButton({ userRef, isFollowing, loggedInUserId }: Props) {
+export default function FollowButton({ queryRef, userRef }: Props) {
+  const loggedInUserQuery = useFragment(
+    graphql`
+      fragment FollowButtonQueryFragment on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
   const user = useFragment(
     graphql`
-      fragment FollowButtonFragment on GalleryUser {
+      fragment FollowButtonUserFragment on GalleryUser {
         id
         dbid
         username
@@ -30,6 +40,18 @@ export default function FollowButton({ userRef, isFollowing, loggedInUserId }: P
       }
     `,
     userRef
+  );
+
+  const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
+
+  const followerIds = useMemo(
+    () => user.followers.map((follower: { id: string } | null) => follower?.id),
+    [user.followers]
+  );
+
+  const isFollowing = useMemo(
+    () => !!loggedInUserId && followerIds.indexOf(loggedInUserId) > -1,
+    [followerIds, loggedInUserId]
   );
 
   const followUser = useFollowUser();
