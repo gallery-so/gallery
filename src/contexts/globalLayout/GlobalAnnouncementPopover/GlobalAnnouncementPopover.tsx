@@ -3,6 +3,7 @@ import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
@@ -41,6 +42,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const { hideModal } = useModalActions();
+
   return (
     <StyledGlobalAnnouncementPopover>
       {
@@ -68,7 +71,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Spacer height={24} />
               <MobileButtonContainer>
                 <Link href="/home">
-                  <StyledMobileButton text="Start Browsing" />
+                  <Button text="Start Browsing" onClick={hideModal} />
                 </Link>
                 <Spacer height={16} />
                 {/* TODO: replace this with blog post link */}
@@ -118,7 +121,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Spacer height={32} />
               <DesktopButtonContainer>
                 <Link href="/home">
-                  <Button text="Start Browsing" />
+                  <Button text="Start Browsing" onClick={hideModal} />
                 </Link>
                 <Spacer width={32} />
                 {/* TODO: replace this with blog post link */}
