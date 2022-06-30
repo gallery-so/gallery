@@ -40,6 +40,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
       if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
       if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
+      if (!isFeatureEnabled(FeatureFlag.FEED, query)) return;
 
       // prevent font flicker on popover load
       await handlePreloadFonts();
