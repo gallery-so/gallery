@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
+import { useTrackLoadMoreFeedEvents } from './analytics';
 import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
@@ -66,12 +67,15 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     query
   );
 
+  const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
+
   const onLoadNext = useCallback(() => {
     return new Promise((resolve) => {
-      // Infite scroll component wants load callback to return a promise
+      trackLoadMoreFeedEvents('viewer');
+      // Infinite scroll component wants load callback to return a promise
       loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
     });
-  }, [loadPrevious]);
+  }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
 

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
+import { useTrackLoadMoreFeedEvents } from './analytics';
 
 import FeedList from './FeedList';
 
@@ -49,12 +50,15 @@ export default function GlobalFeed() {
     query
   );
 
+  const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
+
   const onLoadNext = useCallback(() => {
     return new Promise((resolve) => {
-      // Infite scroll component wants load callback to return a promise
+      trackLoadMoreFeedEvents('global');
+      // Infinite scroll component wants load callback to return a promise
       loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
     });
-  }, [loadPrevious]);
+  }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
     <StyledGlobalFeed>
