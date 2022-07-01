@@ -3,6 +3,7 @@ import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading
 import NftPreview from 'components/NftPreview/NftPreview';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
@@ -58,6 +59,8 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     });
   }, [showModal, token]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <StyledNftPreviewWrapper
       maxWidth={maxWidth}
@@ -69,6 +72,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
         nftPreviewWidth={'100%'}
         previewSize={maxWidth}
         onClick={handleClick}
+        hideLabelOnMobile={isMobile}
       />
     </StyledNftPreviewWrapper>
   );
