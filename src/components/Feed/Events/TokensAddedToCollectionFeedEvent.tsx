@@ -33,6 +33,12 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         collection @required(action: THROW) {
           dbid
           name
+          tokens @required(action: THROW) {
+            token {
+              dbid
+            }
+            ...EventMediaFragment
+          }
         }
         newTokens @required(action: THROW) {
           token {
@@ -40,6 +46,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
           }
           ...EventMediaFragment
         }
+        isPreFeed
       }
     `,
     eventRef
@@ -61,7 +68,11 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     [collectionPagePath, push, track]
   );
 
-  const numAdditionalPieces = event.newTokens.length - MAX_PIECES_DISPLAYED;
+  const { isPreFeed } = event;
+
+  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
+
+  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
@@ -74,7 +85,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
             <InteractiveLink to={`/${event.owner.username}`}>
               {event.owner.username}
             </InteractiveLink>{' '}
-            added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to
+            added {isPreFeed ? '' : tokens.length} {pluralize(tokens.length, 'piece')} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>
@@ -83,7 +94,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-        {showAdditionalPiecesIndicator && (
+        {showAdditionalPiecesIndicator && !isPreFeed && (
           <>
             <Spacer height={8} />
             <StyledAdditionalPieces>
