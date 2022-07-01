@@ -4,9 +4,6 @@ import { BaseM, TitleM } from 'components/core/Text/Text';
 import unescape from 'lodash/unescape';
 import styled from 'styled-components';
 
-import OpenBracket from 'public/icons/open_bracket.svg';
-import CloseBracket from 'public/icons/close_bracket.svg';
-
 type Props = {
   title: string;
   description: string;
@@ -24,14 +21,9 @@ export const SingleOpenGraphPreview = ({
     <>
       <StyledContainer>
         <StyledGalleryContainer hasCollectorNote={!!collectorsNote}>
-          {!collectorsNote && <OpenBracket />}
-
           {imageUrls.map((url) => (
             <StyledImage key={url} src={url} />
           ))}
-
-          {!collectorsNote && <CloseBracket />}
-
           {collectorsNote && (
             <StyledCollectorNotes>
               <Markdown text={unescape('“' + collectorsNote + ' “')} />
