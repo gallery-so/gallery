@@ -42,4 +42,5 @@ export default function UserFollowedYouEvent({
 
 const StyledEventContent = styled.div`
   display: flex;
+  align-items: center;
 `;
