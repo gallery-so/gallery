@@ -1,7 +1,8 @@
 import colors from 'components/core/colors';
+import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   AutoSizer,
   CellMeasurer,
@@ -90,6 +91,14 @@ export default function FeedList({
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const loadMoreRows = isNextPageLoading ? noop : onLoadNext;
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLoadNext = useCallback(async () => {
+    setIsLoading(true);
+    await loadMoreRows();
+    setIsLoading(false);
+  }, [loadMoreRows]);
+
   return (
     <WindowScroller>
       {({ height, scrollTop, registerChild }) => (
@@ -106,8 +115,8 @@ export default function FeedList({
                 scrollTop={scrollTop}
               />
               {hasNext && (
-                <StyledLoadMoreRow width={width} onClick={loadMoreRows}>
-                  <TitleM>More</TitleM>
+                <StyledLoadMoreRow width={width} onClick={handleLoadNext}>
+                  {isLoading ? <Loader inverted size="small" /> : <TitleM>More</TitleM>}
                 </StyledLoadMoreRow>
               )}
             </div>
@@ -123,7 +132,7 @@ const StyledLoadMoreRow = styled.div<{ width: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 64px 0;
+  height: 156px;
   transition: background ${transitions.cubic};
   ${TitleM} {
     font-style: normal;

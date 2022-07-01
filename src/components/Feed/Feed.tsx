@@ -6,44 +6,37 @@ import Spacer from 'components/core/Spacer/Spacer';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
+import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useCallback, useEffect, useState } from 'react';
+import usePersistedState from 'hooks/usePersistedState';
+import { useCallback, useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import { FeedViewerQuery } from '__generated__/FeedViewerQuery.graphql';
+import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 
-export const FOLLOWING = Symbol('FOLLOWING');
-export const WORLDWIDE = Symbol('WORLDWIDE');
-export type FeedMode = typeof FOLLOWING | typeof WORLDWIDE;
+export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
 
 type ControlProps = {
   setFeedMode: (mode: FeedMode) => void;
-  initialFeedMode: FeedMode;
+  feedMode: FeedMode;
 };
 
-function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
-  // Internally mirror the feed mode state so that we can avoid adding it to the dep array, and avoid re-adding these controls to the navbar when the user switches from Following to Worldwide feed
-  const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
-
+function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
   const handleFollowingModeClick = useCallback(() => {
-    setFeedMode(FOLLOWING);
-    setFeedModeCopy(FOLLOWING);
+    setFeedMode('FOLLOWING');
   }, [setFeedMode]);
 
   const handleWorldwideModeClick = useCallback(() => {
-    setFeedMode(WORLDWIDE);
-    setFeedModeCopy(WORLDWIDE);
+    setFeedMode('WORLDWIDE');
   }, [setFeedMode]);
 
   return (
     <StyledFeedNavbarControl>
       <StyledTextWrapperLeft>
-        <StyledNavControlText
-          onClick={handleFollowingModeClick}
-          focused={feedModeCopy === FOLLOWING}
-        >
+        <StyledNavControlText onClick={handleFollowingModeClick} focused={feedMode === 'FOLLOWING'}>
           Following
         </StyledNavControlText>
       </StyledTextWrapperLeft>
@@ -51,10 +44,7 @@ function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
       <NavbarGLink />
       <Spacer width={10} />
       <StyledTextWrapper>
-        <StyledNavControlText
-          onClick={handleWorldwideModeClick}
-          focused={feedModeCopy === WORLDWIDE}
-        >
+        <StyledNavControlText onClick={handleWorldwideModeClick} focused={feedMode === 'WORLDWIDE'}>
           Worldwide
         </StyledNavControlText>
       </StyledTextWrapper>
@@ -102,9 +92,9 @@ export default function Feed() {
   );
   const { viewer } = query;
   const viewerUserId = viewer?.user?.dbid ?? '';
-  const defaultFeedMode = viewerUserId ? FOLLOWING : WORLDWIDE;
+  const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
 
-  const [feedMode, setFeedMode] = useState<FeedMode>(defaultFeedMode);
+  const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
   const { setCustomNavCenterContent } = useGlobalLayoutActions();
 
   // This effect ensures the Feed controls on the navbar are removed when the Feed unmounts, so that it is not visible when navigating to a different page.
@@ -119,24 +109,22 @@ export default function Feed() {
   // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
   useEffect(() => {
     if (!viewerUserId) {
-      setFeedMode(WORLDWIDE);
+      setFeedMode('WORLDWIDE');
       setCustomNavCenterContent(null);
     } else {
       setCustomNavCenterContent(
-        <FeedNavbarControl setFeedMode={setFeedMode} initialFeedMode={feedMode} />
+        <FeedNavbarControl setFeedMode={setFeedMode} feedMode={feedMode} />
       );
     }
-    // don't add feedMode to the dep array. we only pass it in to set the initial state for the nav control, so we don't call setCustomNavCenterContent every time the feed mode changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setCustomNavCenterContent, viewerUserId]);
+  }, [setCustomNavCenterContent, viewerUserId, feedMode, setFeedMode]);
 
   return (
     <StyledFeed>
       <Spacer height={24} />
-      {viewerUserId && feedMode === FOLLOWING && (
+      {viewerUserId && feedMode === 'FOLLOWING' && (
         <ViewerFeed viewerUserId={viewerUserId} setFeedMode={setFeedMode} />
       )}
-      {feedMode === WORLDWIDE && <GlobalFeed />}
+      {feedMode === 'WORLDWIDE' && <GlobalFeed />}
     </StyledFeed>
   );
 }
@@ -146,7 +134,8 @@ const StyledFeed = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+
   @media only screen and ${breakpoints.desktop} {
-    width: 842px;
+    width: ${FEED_MAX_WIDTH}px;
   }
 `;

@@ -73,8 +73,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
   );
 
   return (
-    <StyledEvent>
-      <StyledClickHandler onClick={handleEventClick}>
+    <StyledClickHandler onClick={handleEventClick}>
+      <StyledEvent>
         <StyledEventHeader>
           <BaseM>
             <InteractiveLink to={`/${event.owner.username}`}>
@@ -101,8 +101,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
             <StyledNote>{unescape(event.newCollectorsNote ?? '')}</StyledNote>
           </StyledNoteWrapper>
         </StyledContent>
-      </StyledClickHandler>
-    </StyledEvent>
+      </StyledEvent>
+    </StyledClickHandler>
   );
 }
 

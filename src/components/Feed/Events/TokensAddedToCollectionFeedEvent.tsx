@@ -1,9 +1,7 @@
-import breakpoints from 'components/core/breakpoints';
-import Button from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
+import { BaseM, BaseS } from 'components/core/Text/Text';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -20,6 +18,8 @@ import unescape from 'utils/unescape';
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
 };
+
+const MAX_PIECES_DISPLAYED = 4;
 
 export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const event = useFragment(
@@ -46,7 +46,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(event.newTokens).slice(0, 4);
+    return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [event.newTokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
@@ -58,13 +58,14 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     [collectionPagePath, push]
   );
 
-  const showSeeAllButton = event.newTokens.length > 4;
+  const numAdditionalPieces = event.newTokens.length - MAX_PIECES_DISPLAYED;
+  const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
 
   return (
-    <CustomStyledEvent>
-      <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+    <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+      <StyledEvent>
         <StyledEventHeader>
           <BaseM>
             <InteractiveLink to={`/${event.owner.username}`}>
@@ -79,30 +80,20 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-        {showSeeAllButton && (
+        {showAdditionalPiecesIndicator && (
           <>
-            <Spacer height={16} />
-            <StyledSecondaryButton text="See All" type="secondary" />
+            <Spacer height={8} />
+            <StyledAdditionalPieces>
+              +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+            </StyledAdditionalPieces>
           </>
         )}
-      </StyledClickHandler>
-    </CustomStyledEvent>
+      </StyledEvent>
+    </StyledClickHandler>
   );
 }
-const StyledSecondaryButton = styled(Button)`
-  @media only screen and ${breakpoints.desktop} {
-    width: fit-content;
-    align-self: end;
-  }
-`;
 
-const CustomStyledEvent = styled(StyledEvent)`
-  &:hover {
-    ${StyledSecondaryButton} {
-      ${TitleXS} {
-        color: ${colors.offBlack};
-      }
-      border: 1px solid ${colors.offBlack};
-    }
-  }
+const StyledAdditionalPieces = styled(BaseS)`
+  text-align: end;
+  color: ${colors.metal};
 `;
