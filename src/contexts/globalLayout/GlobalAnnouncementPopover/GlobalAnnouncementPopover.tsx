@@ -74,7 +74,10 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </Link>
                 <Spacer height={16} />
                 {/* TODO: replace this with blog post link */}
-                <Link href="https://google.com" passHref>
+                <Link
+                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
+                  passHref
+                >
                   <StyledAnchor target="_blank" rel="noopener noreferrer">
                     <TextButton text="Read the blog post" />
                   </StyledAnchor>
@@ -123,7 +126,10 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </Link>
                 <Spacer width={32} />
                 {/* TODO: replace this with blog post link */}
-                <Link href="https://google.com" passHref>
+                <Link
+                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
+                  passHref
+                >
                   <StyledAnchor target="_blank" rel="noopener noreferrer">
                     <TextButton text="Read the blog post" />
                   </StyledAnchor>
