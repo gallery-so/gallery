@@ -1,21 +1,17 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
-import Markdown from 'components/core/Markdown/Markdown';
 import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
+import FollowListUsers from './FollowListUsers';
 
 type Props = {
   userRef: FollowListFragment$key;
 };
-
-const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
 
 export default function FollowList({ userRef }: Props) {
   const user = useFragment(
@@ -37,14 +33,9 @@ export default function FollowList({ userRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
-  const track = useTrack();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
-
-  const handleClick = useCallback(() => {
-    track('Follower List Username Click');
-  }, [track]);
 
   return (
     <StyledFollowList fullscreen={isMobile}>
@@ -65,24 +56,12 @@ export default function FollowList({ userRef }: Props) {
           />
         </StyledHeaderText>
       </StyledHeader>
-      <StyledList>
-        {userList.map((user: any) => (
-          <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
-            <TitleS>{user.username}</TitleS>
-            <BaseM>
-              <Markdown text={getFirstLine(user.bio)} />
-            </BaseM>
-          </StyledListItem>
-        ))}
-        {userList.length === 0 && (
-          <StyledEmptyList>
-            <BaseM>
-              {displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'}
-            </BaseM>
-            <Spacer height={48} />
-          </StyledEmptyList>
-        )}
-      </StyledList>
+      <FollowListUsers
+        userList={userList}
+        emptyListText={
+          displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
+        }
+      />
     </StyledFollowList>
   );
 }
@@ -110,41 +89,10 @@ const StyledHeaderTextRight = styled(StyledHeaderText)`
   justify-content: flex-end;
 `;
 
-const StyledList = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  height: 100%;
-`;
-
-const StyledListItem = styled.a`
-  padding: 16px;
-  text-decoration: none;
-
-  &:hover {
-    background: ${colors.offWhite};
-  }
-
-  // truncate bios
-  p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
 const StyledTextButton = styled(TextButton)<{ active: boolean }>`
   ${({ active }) =>
     active &&
     `${StyledButtonText} {
     color: ${colors.offBlack};
   }`}
-`;
-
-const StyledEmptyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
 `;

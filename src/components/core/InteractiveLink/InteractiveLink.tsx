@@ -12,7 +12,7 @@ type Props = {
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
   className?: string;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
 };
 
 export default function InteractiveLink({ to, href, children, className, onClick }: Props) {
@@ -27,7 +27,7 @@ export default function InteractiveLink({ to, href, children, className, onClick
       });
 
       if (onClick) {
-        onClick();
+        onClick(event);
       }
     },
     [href, onClick, to, track]

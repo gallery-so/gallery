@@ -1,51 +1,43 @@
-import { memo, useCallback } from 'react';
+import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import Feed from 'components/Feed/Feed';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import Head from 'next/head';
 import styled from 'styled-components';
-import Button from 'components/core/Button/Button';
-import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
-import { useRouter } from 'next/router';
-import Spacer from 'components/core/Spacer/Spacer';
-import { BaseS } from 'components/core/Text/Text';
-import NavLink from 'components/core/NavLink/NavLink';
 
-function Home() {
-  const { push } = useRouter();
-
-  const handleEnterGallery = useCallback(() => {
-    // If the user is already authenticated, /auth will handle forwarding
-    // them directly to their profile
-    void push('/auth');
-  }, [push]);
-
+export default function Home() {
   return (
-    <StyledHomePage>
-      <GalleryIntro />
-      <Spacer height={24} />
-      <Button text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
-      <Spacer height={24} />
-      <StyledLinkContainer>
-        <NavLink to="/members" dataTestId="explore-button">
-          Explore
-        </NavLink>
-        <Spacer width={8} />
-        <BaseS>·</BaseS>
-        <Spacer width={8} />
-        <NavLink to="/salt">Gallery of the Week</NavLink>
-      </StyledLinkContainer>
-    </StyledHomePage>
+    <>
+      <Head>
+        <title>Gallery - Home</title>
+      </Head>
+      <StyledPage>
+        <Feed />
+      </StyledPage>
+    </>
   );
 }
 
-const StyledHomePage = styled.div`
+const StyledPage = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
 
-  height: 100vh;
-`;
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  min-height: 100vh;
 
-const StyledLinkContainer = styled.div`
-  display: flex;
-`;
+  margin-left: ${pageGutter.mobile}px;
+  margin-right: ${pageGutter.mobile}px;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 100vw;
 
-export default memo(Home);
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: ${pageGutter.tablet}px;
+    margin-right: ${pageGutter.tablet}px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: ${GLOBAL_NAVBAR_HEIGHT}px 32px 0;
+  }
+`;

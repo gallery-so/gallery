@@ -13,10 +13,6 @@ type Props = {
   className?: string;
 };
 
-export function pluralize(count: number, singular: string) {
-  return count === 1 ? singular : `${singular}s`;
-}
-
 export default function FollowerListButton({ userRef, className }: Props) {
   const user = useFragment(
     graphql`

@@ -15,7 +15,6 @@ import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
   queryRef: UserGalleryLayoutQueryFragment$key;

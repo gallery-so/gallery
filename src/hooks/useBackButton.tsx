@@ -28,6 +28,10 @@ export default function useBackButton({ username }: Props) {
     if (previousRoute?.pathname === '/[username]/[collectionId]/[tokenId]') {
       return true;
     }
+    // disable going back to the home page
+    if (previousRoute?.pathname === '/home') {
+      return true;
+    }
     // disable going back to a modal
     if (previousRoute?.query.modal === 'true') {
       return true;
