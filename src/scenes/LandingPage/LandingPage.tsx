@@ -9,6 +9,7 @@ import NavLink from 'components/core/NavLink/NavLink';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import SuppressedHrefWrapper from 'components/core/Button/SuppressedHrefWrapper';
 
 function LandingPage() {
   const query = useLazyLoadQuery<any>(
@@ -38,16 +39,20 @@ function LandingPage() {
       <GalleryIntro />
       <Spacer height={24} />
       <StyledButtonContainer>
-        <Button text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
+        <SuppressedHrefWrapper href="/auth">
+          <Button text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
+        </SuppressedHrefWrapper>
         {isFeatureEnabled(FeatureFlag.FEED, query) && (
           <>
             <Spacer width={12} />
-            <Button
-              text="Explore"
-              type="secondary"
-              onClick={handleExploreClick}
-              dataTestId="explore-button"
-            />
+            <SuppressedHrefWrapper href="/home">
+              <Button
+                text="Explore"
+                type="secondary"
+                onClick={handleExploreClick}
+                dataTestId="explore-button"
+              />
+            </SuppressedHrefWrapper>
           </>
         )}
       </StyledButtonContainer>

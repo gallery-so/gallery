@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import Loader from '../Loader/Loader';
 import { TitleXS } from '../Text/Text';
@@ -32,6 +32,7 @@ function Button({
     () => (type === 'primary' ? StyledPrimaryButton : StyledSecondaryButton),
     [type]
   );
+
   return (
     <ButtonComponent
       // Renaming this prop `buttonStyle` since the `type` prop

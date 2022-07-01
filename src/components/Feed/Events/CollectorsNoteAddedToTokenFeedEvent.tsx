@@ -13,6 +13,7 @@ import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '__generated__/C
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import EventMedia from './EventMedia';
 import unescape from 'utils/unescape';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
@@ -52,10 +53,13 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
   const { showModal } = useModalActions();
 
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
+  const track = useTrack();
 
   const handleEventClick = useCallback(
     (e) => {
       e.preventDefault();
+      track('Feed: Clicked collectors note added to token event');
+
       showModal({
         content: (
           <StyledNftDetailViewPopover>
@@ -69,7 +73,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
         isFullPage: true,
       });
     },
-    [event, showModal]
+    [event.owner.username, event.token, showModal, track]
   );
 
   return (

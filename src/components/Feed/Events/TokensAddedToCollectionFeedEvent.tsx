@@ -16,6 +16,7 @@ import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/Toke
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import unescape from 'utils/unescape';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -50,12 +51,14 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   }, [event.newTokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
+  const track = useTrack();
   const handleEventClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
+      track('Feed: Tokens added to collection event click');
       void push(collectionPagePath);
     },
-    [collectionPagePath, push]
+    [collectionPagePath, push, track]
   );
 
   const showSeeAllButton = event.newTokens.length > 4;
