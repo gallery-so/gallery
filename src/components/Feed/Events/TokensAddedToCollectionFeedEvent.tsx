@@ -53,9 +53,13 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   );
   const { push } = useRouter();
 
+  const { isPreFeed } = event;
+
+  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
+
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED);
-  }, [event.newTokens]) as TokenToPreview[];
+    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
+  }, [tokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const track = useTrack();
@@ -67,10 +71,6 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     },
     [collectionPagePath, push, track]
   );
-
-  const { isPreFeed } = event;
-
-  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;

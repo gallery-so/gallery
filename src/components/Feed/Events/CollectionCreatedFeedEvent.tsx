@@ -32,22 +32,25 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
         collection @required(action: THROW) {
           dbid
           name
-          tokens @required(action: THROW) {
-            token {
-              dbid
-            }
-            ...EventMediaFragment
+        }
+        newTokens @required(action: THROW) {
+          token {
+            dbid
           }
+          ...EventMediaFragment
         }
       }
     `,
     eventRef
   );
+
   const { push } = useRouter();
 
+  const tokens = event.newTokens;
+
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(event.collection.tokens).slice(0, MAX_PIECES_DISPLAYED);
-  }, [event.collection.tokens]) as TokenToPreview[];
+    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
+  }, [tokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const track = useTrack();
@@ -60,12 +63,12 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     [collectionPagePath, push, track]
   );
 
-  const numAdditionalPieces = event.collection.tokens.length - MAX_PIECES_DISPLAYED;
+  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
 
-  if (!event.collection.tokens) {
+  if (!tokens.length) {
     return null;
   }
 
@@ -75,8 +78,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
         <StyledEventHeader>
           <InteractiveLink to={`/${event.owner.username}`}>{event.owner.username}</InteractiveLink>{' '}
           <BaseM>
-            added {event.collection.tokens.length}{' '}
-            {pluralize(event.collection.tokens.length, 'piece')} to their new collection
+            added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
             {collectionName && `, `}
           </BaseM>
           {collectionName && (
