@@ -32,7 +32,6 @@ function Button({
     () => (type === 'primary' ? StyledPrimaryButton : StyledSecondaryButton),
     [type]
   );
-
   return (
     <ButtonComponent
       // Renaming this prop `buttonStyle` since the `type` prop
