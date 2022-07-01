@@ -85,4 +85,12 @@ async function handlePreloadFonts() {
   await fontLightItalic.load();
   await fontLight2.load();
   await fontLightItalic2.load();
+
+  await new Promise<void>((resolve) => {
+    const img = new Image();
+    img.src = './feed-announcement-mock.png';
+    img.onload = () => {
+      resolve();
+    };
+  });
 }
