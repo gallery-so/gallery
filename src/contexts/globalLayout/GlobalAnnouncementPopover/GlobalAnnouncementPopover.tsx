@@ -85,8 +85,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </MobileButtonContainer>
             </MobileHeaderContainer>
             <Spacer height={24} />
-            {/* TODO: replace this with recorded video */}
-            <img src="./temp-asset.jpg" />
+            <MobileImageContainer>
+              <img src="./feed-announcement-mock.png" />
+            </MobileImageContainer>
             <Spacer height={80} />
             <MobileSecondaryHeaderContainer>
               <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
@@ -137,8 +138,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopButtonContainer>
             </DesktopHeaderContainer>
             <Spacer height={64} />
-            {/* TODO: replace this with recorded video */}
-            <img src="./temp-asset.jpg" />
+            <DesktopImageContainer>
+              <img src="./feed-announcement-mock.png" />
+            </DesktopImageContainer>
             <Spacer height={120} />
             <DesktopSecondaryHeaderContainer>
               <DesktopStyledSecondaryTitle>
@@ -210,6 +212,13 @@ const MobileButtonContainer = styled.div`
   width: 100%;
 `;
 
+const MobileImageContainer = styled.div`
+  width: 100%;
+  img {
+    width: 100%;
+  }
+`;
+
 const MobileStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
@@ -252,6 +261,13 @@ const DesktopDescriptionTextItalic = styled.span`
 const DesktopButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const DesktopImageContainer = styled.div`
+  max-width: 1050px;
+  img {
+    width: 100%;
+  }
 `;
 
 const DesktopSecondaryHeaderContainer = styled.div`

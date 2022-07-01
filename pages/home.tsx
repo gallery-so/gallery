@@ -10,7 +10,6 @@ export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
     graphql`
       query homeQuery {
-        ...GeneralMembershipMintPageFragment
         ...isFeatureEnabledFragment
       }
     `,

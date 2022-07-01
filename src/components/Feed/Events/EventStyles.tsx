@@ -2,7 +2,6 @@ import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../dimensions';
@@ -42,7 +41,6 @@ export const StyledEventWrapper = styled.div`
     padding: 16px;
   }
 
-  transition: background ${transitions.cubic};
   cursor: pointer;
   &:hover {
     background: ${colors.faint};
