@@ -39,6 +39,9 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
         }
         ... on UserFollowedUsersFeedEventData {
           ...UserFollowedUsersFeedEventFragment
+          owner {
+            username
+          }
           followed {
             user {
               dbid
@@ -95,7 +98,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
       }
       return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} />;
     case 'UserFollowedUsersFeedEventData':
-      if (!event.followed) {
+      if (!event.followed || !event.owner?.username) {
         return null;
       }
       return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
