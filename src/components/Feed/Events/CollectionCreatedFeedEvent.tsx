@@ -63,8 +63,8 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
   const collectionName = unescape(event.collection.name ?? '');
 
   return (
-    <StyledEvent>
-      <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+    <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+      <StyledEvent>
         <StyledEventHeader>
           <InteractiveLink to={`/${event.owner.username}`}>{event.owner.username}</InteractiveLink>{' '}
           <BaseM>
@@ -90,13 +90,12 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
             </StyledAdditionalPieces>
           </>
         )}
-      </StyledClickHandler>
-    </StyledEvent>
+      </StyledEvent>
+    </StyledClickHandler>
   );
 }
 
 const StyledAdditionalPieces = styled(BaseS)`
-  width: fit-content;
-  align-self: end;
+  text-align: end;
   color: ${colors.metal};
 `;

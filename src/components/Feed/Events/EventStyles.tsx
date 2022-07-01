@@ -3,10 +3,39 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../dimensions';
+
+type StyledEventProps = {
+  children: ReactNode;
+  className?: string;
+  onClick?: any;
+};
+
+export const StyledEvent = ({ children, className, onClick }: StyledEventProps) => {
+  return (
+    <StyledEventWrapper className={className} onClick={onClick}>
+      <StyledInnerEvent>{children}</StyledInnerEvent>
+    </StyledEventWrapper>
+  );
+};
+
+const StyledInnerEvent = styled.div`
+  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: initial;
+    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+  }
+`;
 
 // base styles for feed events
-export const StyledEvent = styled.div`
+export const StyledEventWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+
   padding: 24px 16px;
 
   @media only screen and ${breakpoints.tablet} {

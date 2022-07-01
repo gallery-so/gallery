@@ -13,6 +13,7 @@ import { useCallback, useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import { FeedViewerQuery } from '__generated__/FeedViewerQuery.graphql';
+import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 
@@ -133,7 +134,8 @@ const StyledFeed = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+
   @media only screen and ${breakpoints.desktop} {
-    width: 842px;
+    width: ${FEED_MAX_WIDTH}px;
   }
 `;
