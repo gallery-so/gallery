@@ -85,9 +85,9 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     <StyledViewerFeed>
       {noViewerFeedEvents ? (
         <StyledEmptyFeed>
-          <TitleDiatypeL>Nothing here yet</TitleDiatypeL>
+          <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
           <StyledEmptyFeedBody>
-            Find new collectors to follow in the worldwide feed.
+            Discover new collectors to follow in the worldwide feed.
           </StyledEmptyFeedBody>
           <Spacer height={12} />
           <Button
