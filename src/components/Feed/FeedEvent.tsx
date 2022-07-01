@@ -2,6 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 import { FeedEventFragment$key } from '__generated__/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
+import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
@@ -44,6 +45,13 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
             }
           }
         }
+        ... on CollectorsNoteAddedToCollectionFeedEventData {
+          ...CollectorsNoteAddedToCollectionFeedEventFragment
+          newCollectorsNote
+          collection {
+            dbid
+          }
+        }
         __typename
         eventTime
 
@@ -78,14 +86,22 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
         return null;
       }
       return <TokensAddedToCollectionFeedEvent eventRef={event} />;
+    case 'CollectorsNoteAddedToCollectionFeedEventData':
+      if (!event.collection) {
+        return null;
+      }
+      if (!event.newCollectorsNote?.trim()) {
+        return null;
+      }
+      return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} />;
     case 'UserFollowedUsersFeedEventData':
       if (!event.followed) {
         return null;
       }
       return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
+
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':
-    // case 'CollectorsNoteAddedToCollectionFeedEventData':
 
     default:
       return null;
