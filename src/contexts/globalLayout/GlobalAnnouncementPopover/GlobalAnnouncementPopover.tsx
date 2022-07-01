@@ -63,9 +63,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Spacer height={8} />
               <MobileDescriptionTextContainer>
                 <BaseM>
-                  Collectors are looking for ways to connect with each other. To help them stay up
-                  to date with their favorite collectors on Gallery, we’re introducing our biggest
-                  change thus far—<b>a social feed</b>.
+                  To help you stay up to date with your favorite collectors on Gallery, we’re
+                  introducing our biggest change thus far—<b>a social feed</b>.
                 </BaseM>
               </MobileDescriptionTextContainer>
               <Spacer height={24} />
@@ -113,9 +112,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopIntroText>
               <Spacer height={32} />
               <DesktopDescriptionText>
-                Collectors are looking for ways to connect with each other. To help them stay up to
-                date with their favorite collectors on Gallery, we’re introducing our biggest change
-                thus far—
+                To help you stay up to date with your favorite collectors on Gallery, we’re
+                introducing our biggest change thus far—
               </DesktopDescriptionText>
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
