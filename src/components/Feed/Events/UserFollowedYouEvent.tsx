@@ -13,9 +13,16 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   followInfo: any;
+  followTimestamp: any;
 };
 
-export default function UserFollowedYouEvent({ followInfo, username, queryRef, userRef }: Props) {
+export default function UserFollowedYouEvent({
+  followInfo,
+  followTimestamp,
+  username,
+  queryRef,
+  userRef,
+}: Props) {
   return (
     <StyledEvent>
       <StyledEventContent>
@@ -25,7 +32,7 @@ export default function UserFollowedYouEvent({ followInfo, username, queryRef, u
             {followInfo.followedBack && 'back'}
           </BaseM>
           <Spacer width={4} />
-          <StyledTime>{getTimeSince(followInfo.eventTime)}</StyledTime>
+          <StyledTime>{getTimeSince(followTimestamp)}</StyledTime>
         </StyledEventHeader>
         {!followInfo.followedBack && <FollowButton userRef={userRef} queryRef={queryRef} />}
       </StyledEventContent>

@@ -128,6 +128,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         <UserFollowedYouEvent
           username={event.owner.username}
           followInfo={followedYouAction}
+          followTimestamp={event.eventTime}
           queryRef={query}
           userRef={event.owner}
         />
