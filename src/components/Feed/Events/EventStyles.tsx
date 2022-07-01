@@ -26,6 +26,7 @@ export const StyledEventHeader = styled.div`
 
   p {
     display: inline;
+    line-height: 16px;
   }
 
   ${Spacer} {
