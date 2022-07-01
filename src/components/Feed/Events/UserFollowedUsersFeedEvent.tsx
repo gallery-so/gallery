@@ -118,6 +118,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
     [flattenedGenericFollows, isMobile, showModal]
   );
 
+  const followedNoRemainingUsers = genericFollows.length === 0;
   // The event displays different content depending on whether the user followed a single or multiple collectors
   const followedSingleUser = genericFollows.length === 1;
 
@@ -131,7 +132,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           userRef={event.owner}
         />
       )}
-      {followedSingleUser ? (
+      {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick}>
           <StyledEventContent>
             <StyledEventHeader>
