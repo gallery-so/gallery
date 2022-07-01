@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
 import { UserFollowedUsersFeedEventFragment$key } from '__generated__/UserFollowedUsersFeedEventFragment.graphql';
 import { UserFollowedUsersFeedEventQueryFragment$key } from '__generated__/UserFollowedUsersFeedEventQueryFragment.graphql';
-import { FeedMode, WORLDWIDE } from '../Feed';
+import { FeedMode } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 
@@ -87,7 +87,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
 
   // Try to find a follow action on the event where the followee id is the viewer id (ie the user in the event followed the viewer)
   const followedYouAction = useMemo(() => {
-    if (feedMode === WORLDWIDE) {
+    if (feedMode === 'WORLDWIDE') {
       return null;
     }
     return event.followed.find((followInfo) => followInfo?.user?.dbid === viewerUserId);
@@ -95,7 +95,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
 
   // All follow actions included in the feed event *except* Followed You action
   const genericFollows = useMemo(() => {
-    if (feedMode === WORLDWIDE) {
+    if (feedMode === 'WORLDWIDE') {
       return event.followed;
     }
     return event.followed.filter((followInfo) => followInfo?.user?.dbid !== viewerUserId);
@@ -126,6 +126,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
     [flattenedGenericFollows, isMobile, showModal, track]
   );
 
+  const followedNoRemainingUsers = genericFollows.length === 0;
   // The event displays different content depending on whether the user followed a single or multiple collectors
   const followedSingleUser = genericFollows.length === 1;
 
@@ -135,11 +136,12 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         <UserFollowedYouEvent
           username={event.owner.username}
           followInfo={followedYouAction}
+          followTimestamp={event.eventTime}
           queryRef={query}
           userRef={event.owner}
         />
       )}
-      {followedSingleUser ? (
+      {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick}>
           <StyledEventContent>
             <StyledEventHeader>

@@ -1,8 +1,9 @@
 import colors from 'components/core/colors';
+import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   AutoSizer,
   CellMeasurer,
@@ -12,7 +13,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
-import noop from 'utils/noop';
+
 import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
@@ -87,15 +88,14 @@ export default function FeedList({
 
   // If there are more items to be loaded then add extra rows
   const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
-  // Only load 1 page of items at a time.
-  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const track = useTrack();
-  const handleLoadMoreClick = useCallback(() => {
-    if (!isNextPageLoading) {
-      track('Feed: Clicked Load More button');
-      loadNextPage();
-    }
-  }, [isNextPageLoading, loadNextPage, track]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLoadMoreClick = useCallback(async () => {
+    setIsLoading(true);
+    await loadNextPage();
+    setIsLoading(false);
+  }, [loadNextPage]);
 
   return (
     <WindowScroller>
@@ -114,7 +114,7 @@ export default function FeedList({
               />
               {hasNext && (
                 <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
-                  <TitleM>More</TitleM>
+                  {isLoading ? <Loader inverted size="small" /> : <TitleM>More</TitleM>}
                 </StyledLoadMoreRow>
               )}
             </div>
@@ -130,7 +130,7 @@ const StyledLoadMoreRow = styled.div<{ width: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 64px 0;
+  height: 156px;
   transition: background ${transitions.cubic};
   ${TitleM} {
     font-style: normal;

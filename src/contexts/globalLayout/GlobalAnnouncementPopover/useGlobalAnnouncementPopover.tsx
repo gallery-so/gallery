@@ -2,6 +2,7 @@ import { FeatureFlag } from 'components/core/enums';
 import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import usePersistedState from 'hooks/usePersistedState';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -35,10 +36,13 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
   const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
 
+  const { asPath } = useRouter();
+
   useEffect(() => {
     async function handleMount() {
       if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
+      if (asPath === '/announcements') return;
       if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
       if (!isFeatureEnabled(FeatureFlag.FEED, query)) return;
 
@@ -56,7 +60,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
     }
 
     handleMount();
-  }, [isAuthenticated, showModal, query, dismissed, setDismissed]);
+  }, [isAuthenticated, showModal, query, dismissed, setDismissed, asPath]);
 }
 
 async function handlePreloadFonts() {

@@ -5,7 +5,8 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
-import { FeedMode, FOLLOWING, WORLDWIDE } from './Feed';
+import { useTrackLoadMoreFeedEvents } from './analytics';
+import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
 
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const ITEMS_PER_PAGE = 24;
+
 export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
@@ -65,21 +67,23 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     query
   );
 
+  const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
   const loadNextPage = useCallback(() => {
+    trackLoadMoreFeedEvents('viewer');
     loadPrevious(ITEMS_PER_PAGE);
-  }, [loadPrevious]);
+  }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
 
-  const handleSeeWorldwideClick = useCallback(() => setFeedMode(WORLDWIDE), [setFeedMode]);
+  const handleSeeWorldwideClick = useCallback(() => setFeedMode('WORLDWIDE'), [setFeedMode]);
 
   return (
     <StyledViewerFeed>
       {noViewerFeedEvents ? (
         <StyledEmptyFeed>
-          <TitleDiatypeL>Nothing here yet</TitleDiatypeL>
+          <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
           <StyledEmptyFeedBody>
-            Find new collectors to follow in the worldwide feed.
+            Discover new collectors to follow in the worldwide feed.
           </StyledEmptyFeedBody>
           <Spacer height={12} />
           <Button
@@ -95,7 +99,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
           hasNext={hasPrevious}
           queryRef={query}
           isNextPageLoading={isLoadingPrevious}
-          feedMode={FOLLOWING}
+          feedMode={'FOLLOWING'}
         />
       )}
     </StyledViewerFeed>

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
-import { WORLDWIDE } from './Feed';
+import { useTrackLoadMoreFeedEvents } from './analytics';
 
 import FeedList from './FeedList';
 
@@ -49,10 +49,12 @@ export default function GlobalFeed() {
     `,
     query
   );
+  const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
   const loadNextPage = useCallback(() => {
+    trackLoadMoreFeedEvents('global');
     loadPrevious(ITEMS_PER_PAGE);
-  }, [loadPrevious]);
+  }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
     <StyledGlobalFeed>
@@ -62,7 +64,7 @@ export default function GlobalFeed() {
         loadNextPage={loadNextPage}
         hasNext={hasPrevious}
         isNextPageLoading={isLoadingPrevious}
-        feedMode={WORLDWIDE}
+        feedMode={'WORLDWIDE'}
       />
     </StyledGlobalFeed>
   );
