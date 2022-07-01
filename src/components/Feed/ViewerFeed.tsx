@@ -1,6 +1,7 @@
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -76,7 +77,12 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
 
-  const handleSeeWorldwideClick = useCallback(() => setFeedMode('WORLDWIDE'), [setFeedMode]);
+  const track = useTrack();
+
+  const handleSeeWorldwideClick = useCallback(() => {
+    track('Feed: Clicked worldwide button from inbox zero');
+    setFeedMode('WORLDWIDE');
+  }, [setFeedMode, track]);
 
   return (
     <StyledViewerFeed>
