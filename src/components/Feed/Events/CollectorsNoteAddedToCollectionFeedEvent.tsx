@@ -68,6 +68,10 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
 
   const collectionName = unescape(event.collection.name ?? '');
 
+  if (!event.collection.tokens.length) {
+    return null;
+  }
+
   return (
     <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
       <StyledEvent>

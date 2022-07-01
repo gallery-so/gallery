@@ -65,6 +65,10 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
 
   const collectionName = unescape(event.collection.name ?? '');
 
+  if (!event.collection.tokens) {
+    return null;
+  }
+
   return (
     <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
       <StyledEvent>
