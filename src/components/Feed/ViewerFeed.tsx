@@ -15,6 +15,7 @@ type Props = {
 };
 
 const ITEMS_PER_PAGE = 24;
+
 export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
   const query = useLazyLoadQuery<ViewerFeedQuery>(
     graphql`
@@ -68,7 +69,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
   const onLoadNext = useCallback(() => {
     return new Promise((resolve) => {
       // Infite scroll component wants load callback to return a promise
-      loadPrevious(10, { onComplete: () => resolve('loaded') });
+      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
     });
   }, [loadPrevious]);
 
