@@ -6,6 +6,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useCallback, useEffect, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -26,16 +27,19 @@ type ControlProps = {
 function FeedNavbarControl({ setFeedMode, initialFeedMode }: ControlProps) {
   // Internally mirror the feed mode state so that we can avoid adding it to the dep array, and avoid re-adding these controls to the navbar when the user switches from Following to Worldwide feed
   const [feedModeCopy, setFeedModeCopy] = useState<FeedMode>(initialFeedMode);
+  const track = useTrack();
 
   const handleFollowingModeClick = useCallback(() => {
+    track('Feed: Clicked toggle to Following feed');
     setFeedMode(FOLLOWING);
     setFeedModeCopy(FOLLOWING);
-  }, [setFeedMode]);
+  }, [setFeedMode, track]);
 
   const handleWorldwideModeClick = useCallback(() => {
+    track('Feed: Clicked toggle to Worldwide feed');
     setFeedMode(WORLDWIDE);
     setFeedModeCopy(WORLDWIDE);
-  }, [setFeedMode]);
+  }, [setFeedMode, track]);
 
   return (
     <StyledFeedNavbarControl>

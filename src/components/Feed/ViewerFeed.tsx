@@ -65,11 +65,8 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     query
   );
 
-  const onLoadNext = useCallback(() => {
-    return new Promise((resolve) => {
-      // Infite scroll component wants load callback to return a promise
-      loadPrevious(10, { onComplete: () => resolve('loaded') });
-    });
+  const loadNextPage = useCallback(() => {
+    loadPrevious(ITEMS_PER_PAGE);
   }, [loadPrevious]);
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
@@ -94,7 +91,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
       ) : (
         <FeedList
           feedData={data.feedByUserId}
-          onLoadNext={onLoadNext}
+          loadNextPage={loadNextPage}
           hasNext={hasPrevious}
           queryRef={query}
           isNextPageLoading={isLoadingPrevious}

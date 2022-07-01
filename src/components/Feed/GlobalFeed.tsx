@@ -50,11 +50,8 @@ export default function GlobalFeed() {
     query
   );
 
-  const onLoadNext = useCallback(() => {
-    return new Promise((resolve) => {
-      // Infite scroll component wants load callback to return a promise
-      loadPrevious(10, { onComplete: () => resolve('loaded') });
-    });
+  const loadNextPage = useCallback(() => {
+    loadPrevious(ITEMS_PER_PAGE);
   }, [loadPrevious]);
 
   return (
@@ -62,7 +59,7 @@ export default function GlobalFeed() {
       <FeedList
         queryRef={query}
         feedData={data.globalFeed}
-        onLoadNext={onLoadNext}
+        loadNextPage={loadNextPage}
         hasNext={hasPrevious}
         isNextPageLoading={isLoadingPrevious}
         feedMode={WORLDWIDE}

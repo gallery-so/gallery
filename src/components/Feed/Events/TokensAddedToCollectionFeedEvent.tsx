@@ -55,7 +55,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   const handleEventClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
-      track('Feed: Tokens added to collection event click');
+      track('Feed: Clicked Tokens added to collection event');
       void push(collectionPagePath);
     },
     [collectionPagePath, push, track]

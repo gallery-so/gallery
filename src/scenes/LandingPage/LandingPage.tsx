@@ -10,6 +10,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import SuppressedHrefWrapper from 'components/core/Button/SuppressedHrefWrapper';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 function LandingPage() {
   const query = useLazyLoadQuery<any>(
@@ -23,16 +24,18 @@ function LandingPage() {
 
   const { push } = useRouter();
 
+  const track = useTrack();
+
   const handleEnterGallery = useCallback(() => {
     // If the user is already authenticated, /auth will handle forwarding
-    // them directly to their profile
+    // them directly to the feed
     void push('/auth');
   }, [push]);
 
-  // TODO: change to href
   const handleExploreClick = useCallback(() => {
+    track('Landing page Explore button click');
     void push('/home');
-  }, [push]);
+  }, [push, track]);
 
   return (
     <StyledLandingPage>

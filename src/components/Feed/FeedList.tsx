@@ -1,7 +1,8 @@
 import colors from 'components/core/colors';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useMemo } from 'react';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useCallback, useMemo } from 'react';
 import {
   AutoSizer,
   CellMeasurer,
@@ -18,7 +19,7 @@ import FeedEvent from './FeedEvent';
 
 type Props = {
   feedData: any;
-  onLoadNext: () => void;
+  loadNextPage: () => void;
   hasNext: boolean;
   queryRef: FeedEventQueryFragment$key;
   isNextPageLoading: boolean;
@@ -27,7 +28,7 @@ type Props = {
 
 export default function FeedList({
   feedData,
-  onLoadNext,
+  loadNextPage,
   hasNext,
   queryRef,
   isNextPageLoading,
@@ -88,7 +89,13 @@ export default function FeedList({
   const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreRows = isNextPageLoading ? noop : onLoadNext;
+  const track = useTrack();
+  const handleLoadMoreClick = useCallback(() => {
+    if (!isNextPageLoading) {
+      track('Feed: Clicked Load More button');
+      loadNextPage();
+    }
+  }, [isNextPageLoading, loadNextPage, track]);
 
   return (
     <WindowScroller>
@@ -106,7 +113,7 @@ export default function FeedList({
                 scrollTop={scrollTop}
               />
               {hasNext && (
-                <StyledLoadMoreRow width={width} onClick={loadMoreRows}>
+                <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
                   <TitleM>More</TitleM>
                 </StyledLoadMoreRow>
               )}

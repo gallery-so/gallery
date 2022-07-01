@@ -76,7 +76,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const handleSeeFollowedUserClick = useCallback(
     (e) => {
       e.preventDefault();
-      track('Feed: See single followed user event click');
+      track('Feed: Clicked see single followed user event');
       void push(`/${firstFolloweeUsername}`);
     },
     [firstFolloweeUsername, push, track]
@@ -111,7 +111,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const handleSeeMoreClick = useCallback(
     (e) => {
       e.preventDefault();
-      track('Feed: See more followed users event click');
+      track('Feed: Clicked See more followed users event');
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
