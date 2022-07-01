@@ -42,7 +42,6 @@ export const StyledEventWrapper = styled.div`
     padding: 16px;
   }
 
-  transition: background ${transitions.cubic};
   cursor: pointer;
   &:hover {
     background: ${colors.faint};
