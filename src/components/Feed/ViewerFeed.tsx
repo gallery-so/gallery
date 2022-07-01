@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
-import { FeedMode, FOLLOWING, WORLDWIDE } from './Feed';
+import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
 
@@ -74,7 +74,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
 
-  const handleSeeWorldwideClick = useCallback(() => setFeedMode(WORLDWIDE), [setFeedMode]);
+  const handleSeeWorldwideClick = useCallback(() => setFeedMode('WORLDWIDE'), [setFeedMode]);
 
   return (
     <StyledViewerFeed>
@@ -98,7 +98,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
           hasNext={hasPrevious}
           queryRef={query}
           isNextPageLoading={isLoadingPrevious}
-          feedMode={FOLLOWING}
+          feedMode={'FOLLOWING'}
         />
       )}
     </StyledViewerFeed>

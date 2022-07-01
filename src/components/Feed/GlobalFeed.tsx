@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
-import { WORLDWIDE } from './Feed';
 
 import FeedList from './FeedList';
 
@@ -65,7 +64,7 @@ export default function GlobalFeed() {
         onLoadNext={onLoadNext}
         hasNext={hasPrevious}
         isNextPageLoading={isLoadingPrevious}
-        feedMode={WORLDWIDE}
+        feedMode={'WORLDWIDE'}
       />
     </StyledGlobalFeed>
   );
