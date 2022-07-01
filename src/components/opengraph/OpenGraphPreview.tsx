@@ -23,7 +23,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         ))}
         <CloseBracket />
       </StyledGalleryContainer>
-      <TitleM>{unescape(title)}</TitleM>
+      <StyledUsername>{unescape(title)}</StyledUsername>
       {description && (
         <StyledDescription>
           <Markdown text={unescape(description)} />
@@ -59,6 +59,10 @@ const StyledImage = styled.img`
   height: auto;
   display: block;
   margin: 0 auto;
+`;
+
+const StyledUsername = styled(TitleM)`
+  font-style: normal;
 `;
 
 const StyledDescription = styled(BaseM)`

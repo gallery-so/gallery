@@ -26,11 +26,11 @@ export const SingleOpenGraphPreview = ({
           ))}
           {collectorsNote && (
             <StyledCollectorNotes>
-              <Markdown text={unescape('“' + collectorsNote + ' “')} />
+              <Markdown text={unescape('“' + collectorsNote + ' ”')} />
             </StyledCollectorNotes>
           )}
         </StyledGalleryContainer>
-        <TitleM>{unescape(title)}</TitleM>
+        <StyledUsername>{unescape(title)}</StyledUsername>
         {description && (
           <StyledDescription>
             <Markdown text={unescape(description)} />
@@ -75,6 +75,10 @@ const StyledImage = styled.img`
   margin: 0 0 0 auto;
 `;
 
+const StyledUsername = styled(TitleM)`
+  font-style: normal;
+`;
+
 const StyledDescription = styled(BaseM)`
   overflow: hidden;
   display: -webkit-box;
@@ -84,8 +88,6 @@ const StyledDescription = styled(BaseM)`
 `;
 
 const StyledCollectorNotes = styled(TitleM)`
-  font-style: italic;
-
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
