@@ -5,6 +5,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
@@ -70,10 +71,16 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
 
   // cache first username in followed list, to be displayed when user followed only 1 collector
   const firstFolloweeUsername = event.followed[0]?.user?.username;
+  const track = useTrack();
 
-  const handleSeeFollowedUserClick = useCallback(() => {
-    void push(`/${firstFolloweeUsername}`);
-  }, [firstFolloweeUsername, push]);
+  const handleSeeFollowedUserClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      track('Feed: Clicked see single followed user event');
+      void push(`/${firstFolloweeUsername}`);
+    },
+    [firstFolloweeUsername, push, track]
+  );
 
   // a single Follow feed event can contain multiple follow actions taken by a user within a window of time.
   // We want to display "Followed you" and "Followed you back" actions as distinct events from "Followed x, y, z", so for now the front end will be responsible for splitting these events.
@@ -104,6 +111,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const handleSeeMoreClick = useCallback(
     (e) => {
       e.preventDefault();
+      track('Feed: Clicked See more followed users event');
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
@@ -115,7 +123,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         headerVariant: 'thicc',
       });
     },
-    [flattenedGenericFollows, isMobile, showModal]
+    [flattenedGenericFollows, isMobile, showModal, track]
   );
 
   const followedNoRemainingUsers = genericFollows.length === 0;

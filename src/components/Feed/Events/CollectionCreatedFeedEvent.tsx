@@ -13,6 +13,7 @@ import { getTimeSince } from 'utils/time';
 import { CollectionCreatedFeedEventFragment$key } from '__generated__/CollectionCreatedFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   eventRef: CollectionCreatedFeedEventFragment$key;
@@ -49,12 +50,14 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
   }, [event.collection.tokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
+  const track = useTrack();
   const handleEventClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
+      track('Feed: Clicked collection created event');
       void push(collectionPagePath);
     },
-    [collectionPagePath, push]
+    [collectionPagePath, push, track]
   );
 
   const numAdditionalPieces = event.collection.tokens.length - MAX_PIECES_DISPLAYED;

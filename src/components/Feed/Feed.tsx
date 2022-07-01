@@ -6,6 +6,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import usePersistedState from 'hooks/usePersistedState';
@@ -25,13 +26,16 @@ type ControlProps = {
 };
 
 function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
+  const track = useTrack();
   const handleFollowingModeClick = useCallback(() => {
+    track('Feed: Clicked toggle to Following feed');
     setFeedMode('FOLLOWING');
-  }, [setFeedMode]);
+  }, [setFeedMode, track]);
 
   const handleWorldwideModeClick = useCallback(() => {
+    track('Feed: Clicked toggle to Worldwide feed');
     setFeedMode('WORLDWIDE');
-  }, [setFeedMode]);
+  }, [setFeedMode, track]);
 
   return (
     <StyledFeedNavbarControl>

@@ -12,28 +12,20 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
-import noop from 'utils/noop';
+
 import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
 
 type Props = {
   feedData: any;
-  onLoadNext: () => void;
+  loadNextPage: () => void;
   hasNext: boolean;
   queryRef: FeedEventQueryFragment$key;
-  isNextPageLoading: boolean;
   feedMode: FeedMode;
 };
 
-export default function FeedList({
-  feedData,
-  onLoadNext,
-  hasNext,
-  queryRef,
-  isNextPageLoading,
-  feedMode,
-}: Props) {
+export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, feedMode }: Props) {
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
@@ -87,17 +79,14 @@ export default function FeedList({
 
   // If there are more items to be loaded then add extra rows
   const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
-  // Only load 1 page of items at a time.
-  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreRows = isNextPageLoading ? noop : onLoadNext;
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLoadNext = useCallback(async () => {
+  const handleLoadMoreClick = useCallback(async () => {
     setIsLoading(true);
-    await loadMoreRows();
+    await loadNextPage();
     setIsLoading(false);
-  }, [loadMoreRows]);
+  }, [loadNextPage]);
 
   return (
     <WindowScroller>
@@ -115,7 +104,7 @@ export default function FeedList({
                 scrollTop={scrollTop}
               />
               {hasNext && (
-                <StyledLoadMoreRow width={width} onClick={handleLoadNext}>
+                <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
                   {isLoading ? <Loader inverted size="small" /> : <TitleM>More</TitleM>}
                 </StyledLoadMoreRow>
               )}

@@ -1,6 +1,7 @@
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -38,10 +39,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     }
   );
 
-  const { data, loadPrevious, hasPrevious, isLoadingPrevious } = usePaginationFragment<
-    ViewerFeedQuery,
-    any
-  >(
+  const { data, loadPrevious, hasPrevious } = usePaginationFragment<ViewerFeedQuery, any>(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         feedByUserId(id: $userId, before: $before, last: $last)
@@ -69,7 +67,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
-  const onLoadNext = useCallback(() => {
+  const loadNextPage = useCallback(() => {
     return new Promise((resolve) => {
       trackLoadMoreFeedEvents('viewer');
       // Infinite scroll component wants load callback to return a promise
@@ -79,7 +77,12 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
 
-  const handleSeeWorldwideClick = useCallback(() => setFeedMode('WORLDWIDE'), [setFeedMode]);
+  const track = useTrack();
+
+  const handleSeeWorldwideClick = useCallback(() => {
+    track('Feed: Clicked worldwide button from inbox zero');
+    setFeedMode('WORLDWIDE');
+  }, [setFeedMode, track]);
 
   return (
     <StyledViewerFeed>
@@ -99,10 +102,9 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
       ) : (
         <FeedList
           feedData={data.feedByUserId}
-          onLoadNext={onLoadNext}
+          loadNextPage={loadNextPage}
           hasNext={hasPrevious}
           queryRef={query}
-          isNextPageLoading={isLoadingPrevious}
           feedMode={'FOLLOWING'}
         />
       )}
