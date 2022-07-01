@@ -6,8 +6,20 @@ import { useRouter } from 'next/router';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { FeatureFlag } from 'components/core/enums';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 function LandingPage() {
+  const query = useLazyLoadQuery<any>(
+    graphql`
+      query LandingPageQuery {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    {}
+  );
+
   const { push } = useRouter();
 
   const handleEnterGallery = useCallback(() => {
@@ -27,13 +39,17 @@ function LandingPage() {
       <Spacer height={24} />
       <StyledButtonContainer>
         <Button text="Sign In" onClick={handleEnterGallery} dataTestId="sign-in-button" />
-        <Spacer width={12} />
-        <Button
-          text="Explore"
-          type="secondary"
-          onClick={handleExploreClick}
-          dataTestId="explore-button"
-        />
+        {isFeatureEnabled(FeatureFlag.FEED, query) && (
+          <>
+            <Spacer width={12} />
+            <Button
+              text="Explore"
+              type="secondary"
+              onClick={handleExploreClick}
+              dataTestId="explore-button"
+            />
+          </>
+        )}
       </StyledButtonContainer>
       <Spacer height={24} />
       <StyledLinkContainer>
