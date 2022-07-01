@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import Loader from '../Loader/Loader';
 import { TitleXS } from '../Text/Text';

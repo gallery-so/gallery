@@ -2,7 +2,6 @@ import colors from 'components/core/colors';
 import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback, useMemo, useState } from 'react';
 import {
   AutoSizer,
@@ -23,18 +22,10 @@ type Props = {
   loadNextPage: () => void;
   hasNext: boolean;
   queryRef: FeedEventQueryFragment$key;
-  isNextPageLoading: boolean;
   feedMode: FeedMode;
 };
 
-export default function FeedList({
-  feedData,
-  loadNextPage,
-  hasNext,
-  queryRef,
-  isNextPageLoading,
-  feedMode,
-}: Props) {
+export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, feedMode }: Props) {
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,

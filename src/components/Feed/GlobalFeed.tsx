@@ -21,10 +21,7 @@ export default function GlobalFeed() {
     }
   );
 
-  const { data, hasPrevious, loadPrevious, isLoadingPrevious } = usePaginationFragment<
-    GlobalFeedQuery,
-    any
-  >(
+  const { data, hasPrevious, loadPrevious } = usePaginationFragment<GlobalFeedQuery, any>(
     graphql`
       fragment GlobalFeedFragment on Query @refetchable(queryName: "GlobalFeedPaginationQuery") {
         globalFeed(before: $before, last: $last) @connection(key: "GlobalFeed_globalFeed") {
@@ -49,11 +46,15 @@ export default function GlobalFeed() {
     `,
     query
   );
+
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
   const loadNextPage = useCallback(() => {
-    trackLoadMoreFeedEvents('global');
-    loadPrevious(ITEMS_PER_PAGE);
+    return new Promise((resolve) => {
+      trackLoadMoreFeedEvents('global');
+      // Infinite scroll component wants load callback to return a promise
+      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
+    });
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
@@ -63,7 +64,6 @@ export default function GlobalFeed() {
         feedData={data.globalFeed}
         loadNextPage={loadNextPage}
         hasNext={hasPrevious}
-        isNextPageLoading={isLoadingPrevious}
         feedMode={'WORLDWIDE'}
       />
     </StyledGlobalFeed>

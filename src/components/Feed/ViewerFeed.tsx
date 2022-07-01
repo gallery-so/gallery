@@ -38,10 +38,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     }
   );
 
-  const { data, loadPrevious, hasPrevious, isLoadingPrevious } = usePaginationFragment<
-    ViewerFeedQuery,
-    any
-  >(
+  const { data, loadPrevious, hasPrevious } = usePaginationFragment<ViewerFeedQuery, any>(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         feedByUserId(id: $userId, before: $before, last: $last)
@@ -68,9 +65,13 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
   );
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
+
   const loadNextPage = useCallback(() => {
-    trackLoadMoreFeedEvents('viewer');
-    loadPrevious(ITEMS_PER_PAGE);
+    return new Promise((resolve) => {
+      trackLoadMoreFeedEvents('viewer');
+      // Infinite scroll component wants load callback to return a promise
+      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
+    });
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   const noViewerFeedEvents = !data.feedByUserId.edges.length;
@@ -98,7 +99,6 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
           loadNextPage={loadNextPage}
           hasNext={hasPrevious}
           queryRef={query}
-          isNextPageLoading={isLoadingPrevious}
           feedMode={'FOLLOWING'}
         />
       )}
