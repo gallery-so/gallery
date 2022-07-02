@@ -1,51 +1,57 @@
-import { useCallback } from 'react';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { useCallback, useMemo } from 'react';
+import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
-import { GlobalFeedQuery } from '__generated__/GlobalFeedQuery.graphql';
+import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
+import { GlobalFeedPaginationQuery } from '__generated__/GlobalFeedPaginationQuery.graphql';
 import { useTrackLoadMoreFeedEvents } from './analytics';
 
 import FeedList from './FeedList';
 
 const ITEMS_PER_PAGE = 24;
 
-export default function GlobalFeed() {
-  const query = useLazyLoadQuery<GlobalFeedQuery>(
-    graphql`
-      query GlobalFeedQuery($before: String, $last: Int) {
-        ...GlobalFeedFragment
-        ...FeedEventQueryFragment
-      }
-    `,
-    {
-      last: ITEMS_PER_PAGE,
-    }
-  );
+type Props = {
+  queryRef: GlobalFeedFragment$key;
+};
 
-  const { data, hasPrevious, loadPrevious } = usePaginationFragment<GlobalFeedQuery, any>(
+export default function GlobalFeed({ queryRef }: Props) {
+  const {
+    data: query,
+    loadPrevious,
+    hasPrevious,
+  } = usePaginationFragment<GlobalFeedPaginationQuery, GlobalFeedFragment$key>(
     graphql`
       fragment GlobalFeedFragment on Query @refetchable(queryName: "GlobalFeedPaginationQuery") {
-        globalFeed(before: $before, last: $last) @connection(key: "GlobalFeed_globalFeed") {
+        globalFeed(before: $globalBefore, last: $globalLast)
+          @connection(key: "GlobalFeed_globalFeed") {
           edges {
             node {
               ... on FeedEvent {
-                dbid
+                __typename
                 eventData {
-                  eventTime
-                  ...FeedEventFragment
+                  ...FeedListEventDataFragment
                 }
               }
             }
-            cursor
-          }
-          pageInfo {
-            hasNextPage
-            size
           }
         }
+
+        ...FeedListFragment
       }
     `,
-    query
+    queryRef
   );
+
+  const feedData = useMemo(() => {
+    const events = [];
+
+    for (const edge of query?.globalFeed?.edges ?? []) {
+      if (edge?.node?.__typename === 'FeedEvent' && edge.node.eventData) {
+        events.push(edge.node.eventData);
+      }
+    }
+
+    return events;
+  }, [query?.globalFeed?.edges]);
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
@@ -61,7 +67,7 @@ export default function GlobalFeed() {
     <StyledGlobalFeed>
       <FeedList
         queryRef={query}
-        feedData={data.globalFeed}
+        feedEventRefs={feedData}
         loadNextPage={loadNextPage}
         hasNext={hasPrevious}
         feedMode={'WORLDWIDE'}

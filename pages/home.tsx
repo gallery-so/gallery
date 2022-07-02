@@ -9,17 +9,28 @@ import { homeQuery } from '__generated__/homeQuery.graphql';
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
     graphql`
-      query homeQuery {
+      query homeQuery(
+        $globalLast: Int!
+        $globalBefore: String
+        $viewerFirst: Int!
+        $viewerAfter: String
+      ) {
         ...isFeatureEnabledFragment
+
+        ...HomeFragment
       }
     `,
-    {}
+    {
+      globalLast: 10,
+      viewerFirst: 10,
+    }
   );
+
   if (!isFeatureEnabled(FeatureFlag.FEED, query)) {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<HomeScene />} navbar={true} />;
+  return <GalleryRoute element={<HomeScene queryRef={query} />} navbar={true} />;
 }
 
 /**
