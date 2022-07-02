@@ -339,7 +339,10 @@ type ViewerGallery {
 type Viewer {
     user: GalleryUser @goField(forceResolver: true)
     viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
+
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection
 }
+
 union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
 
 union UserByIdOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
@@ -484,7 +487,6 @@ type Query {
     communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
-    feedByUserId(id: DBID!, before: String, after: String, first: Int, last: Int): FeedConnection
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
     feedEventById(id: DBID!): FeedEventByIdOrError
 }
