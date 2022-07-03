@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import {
   getBackgroundColorOverrideForContract,
   graphqlGetResizedNftImageUrlWithFallback,
 } from 'utils/token';
-import Markdown from 'components/core/Markdown/Markdown';
 import Settings from 'public/icons/ellipses.svg';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
@@ -52,38 +51,24 @@ function CollectionRow({ collectionRef, className }: Props) {
     collectionRef
   );
 
-  const { name, collectorsNote, hidden } = collection;
+  const { name, hidden } = collection;
   const tokens = useMemo(() => removeNullValues(collection.tokens), [collection]);
 
   const unescapedCollectionName = useMemo(() => unescape(name ?? ''), [name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote ?? ''), [collectorsNote]);
 
   const firstThreeNfts = useMemo(() => tokens.slice(0, 3), [tokens]);
   const remainingNfts = useMemo(() => tokens.slice(3), [tokens]);
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
-  const truncatedCollectorsNote = useMemo(() => {
-    const lines = unescapedCollectorsNote.split('\n');
-    const firstLine = lines[0];
-
-    // If it's multiline, always truncate to suggest there are more lines
-    if (lines.length > 1) {
-      return `${firstLine.slice(0, 97).trim()}...`;
-    }
-
-    // If it's single line, only truncate if it's longer than 100ch
-    return firstLine.length > 100 ? `${firstLine.slice(0, 97).trim()}...` : firstLine;
-  }, [unescapedCollectorsNote]);
-
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <BaseM>{unescapedCollectionName}</BaseM>
+          <TitleS>{unescapedCollectionName}</TitleS>
           <Spacer height={4} />
           <StyledBaseM>
-            <Markdown text={truncatedCollectorsNote} />
+            {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
           </StyledBaseM>
         </TextContainer>
         <Settings />
@@ -135,9 +120,9 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   flex-direction: column;
 
   width: 100%;
-  padding: 32px;
+  padding: 16px;
 
-  border: 1px solid ${colors.metal};
+  border: 1px solid ${colors.porcelain};
   background-color: ${colors.white};
 
   opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};
@@ -196,7 +181,7 @@ const Body = styled.div`
   width: calc(100% + 24px);
   margin-left: -12px;
   ${BigNftContainer} {
-    margin: 12px;
+    margin: 0 12px;
   }
 `;
 
@@ -305,7 +290,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
 const StyledCompactNfts = styled.div`
   width: ${BIG_NFT_SIZE_PX}px;
   height: ${BIG_NFT_SIZE_PX}px;
-  margin: 12px;
+  margin: 0 12px;
 
   display: flex;
   justify-content: center;

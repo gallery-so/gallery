@@ -84,10 +84,9 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
   return (
     <StyledCollectionRowSettings>
+      <TextButton onClick={handleEditCollectionClick} text="Edit" />
       <Dropdown>
-        <TextButton onClick={handleEditCollectionClick} text="Edit collection" />
-        <Spacer height={12} />
-        <TextButton onClick={handleEditNameClick} text="Edit name & description" />
+        <TextButton onClick={handleEditNameClick} text="Edit name & bio" />
         <Spacer height={12} />
         <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
         <Spacer height={12} />
@@ -99,13 +98,16 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
 const StyledCollectionRowSettings = styled.div`
   position: absolute;
-  right: 24px;
-  top: 28px;
+  right: 16px;
+  top: 16px;
   z-index: 1;
+  display: flex;
+  place-items: center;
+  gap: 16px;
 
   ${StyledDropdownButton} {
-    width: 32px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
   }
 `;
 

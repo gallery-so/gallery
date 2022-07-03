@@ -28,7 +28,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
 const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   width: 100%;
 `;
