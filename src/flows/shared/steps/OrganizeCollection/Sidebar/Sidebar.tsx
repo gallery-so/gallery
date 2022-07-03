@@ -110,9 +110,9 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
   return (
     <StyledSidebar>
       <Header>
-        <TitleS>Pieces</TitleS>
-        <TextButton
-          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
+        <TitleS>All pieces</TitleS>
+        <StyledRefreshButton
+          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
           onClick={handleRefreshNfts}
           disabled={isRefreshingNfts}
         />
@@ -199,6 +199,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  min-height: 52px;
 `;
 
 const StyledSelectButtonWrapper = styled.div`
@@ -211,6 +212,16 @@ const Selection = styled.div`
   flex-wrap: wrap;
   width: 218px;
   grid-gap: 19px;
+`;
+
+// This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
+const StyledRefreshButton = styled(TextButton)`
+  & p {
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: none;
+    text-decoration: underline;
+  }
 `;
 
 export default memo(Sidebar);
