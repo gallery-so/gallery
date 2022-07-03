@@ -86,11 +86,12 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
     <StyledCollectionRowSettings>
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
       <Dropdown>
-        <TextButton onClick={handleEditNameClick} text="Edit name & bio" />
-        <Spacer height={12} />
-        <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
-        <Spacer height={12} />
-        <TextButton onClick={handleDeleteClick} text="Delete" />
+        <StyledDropdownTextButton onClick={handleEditNameClick} text="Edit name & bio" />
+        <StyledDropdownTextButton
+          onClick={handleToggleHiddenClick}
+          text={hidden ? 'Show' : 'Hide'}
+        />
+        <StyledDropdownTextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>
     </StyledCollectionRowSettings>
   );
@@ -110,6 +111,15 @@ const StyledCollectionRowSettings = styled.div`
     width: 24px;
     height: 16px;
   }
+`;
+
+const StyledDropdownTextButton = styled(TextButton)`
+  width: 24px;
+  height: 16px;
+  gap: 10px;
+  width: 175px;
+  height: 32px;
+  padding: 4px 0 4px 8px; // FIXME: Adjust if dropdown is refactored
 `;
 
 const StyledTextButton = styled(TextButton)`
