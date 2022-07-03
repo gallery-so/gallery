@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { BaseM, BaseXL } from 'components/core/Text/Text';
+import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
-import TextButton from 'components/core/Button/TextButton';
+import Button from 'components/core/Button/Button';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
   const handleAddCollection = useCallback(() => {
@@ -13,13 +13,13 @@ function Header({ wizard: { push } }: WizardComponentProps) {
   return (
     <StyledHeader>
       <TitleContainer>
-        <BaseXL>Organize your Gallery</BaseXL>
+        <TitleDiatypeL>Your Collections</TitleDiatypeL>
         <Spacer height={4} />
-        <BaseM>Drag and drop to reorder your collection</BaseM>
+        <BaseM>Drag to reorder your collection</BaseM>
       </TitleContainer>
       <OptionsContainer>
         <Spacer width={16} />
-        <TextButton text="+ Add Collection" onClick={handleAddCollection}></TextButton>
+        <Button text="Add" type="secondary" onClick={handleAddCollection} />
       </OptionsContainer>
     </StyledHeader>
   );
