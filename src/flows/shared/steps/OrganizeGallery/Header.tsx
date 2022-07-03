@@ -13,9 +13,8 @@ function Header({ wizard: { push } }: WizardComponentProps) {
   return (
     <StyledHeader>
       <TitleContainer>
-        <TitleDiatypeL>Your Collections</TitleDiatypeL>
-        <Spacer height={4} />
-        <BaseM>Drag to reorder your collection</BaseM>
+        <TitleDiatypeL>Your collections</TitleDiatypeL>
+        <BaseM>Drag to re-order collections</BaseM>
       </TitleContainer>
       <OptionsContainer>
         <Spacer width={16} />

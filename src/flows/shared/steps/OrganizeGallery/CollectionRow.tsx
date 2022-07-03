@@ -66,7 +66,6 @@ function CollectionRow({ collectionRef, className }: Props) {
       <Header>
         <TextContainer>
           <TitleS>{unescapedCollectionName}</TitleS>
-          <Spacer height={4} />
           <StyledBaseM>
             {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
           </StyledBaseM>
