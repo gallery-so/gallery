@@ -1,5 +1,4 @@
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
 import { TitleS } from 'components/core/Text/Text';
 import React from 'react';
 import styled from 'styled-components';

@@ -9,7 +9,6 @@ import {
   useCollectionEditorActions,
   SidebarTokensState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { EditModeToken } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
@@ -40,7 +39,7 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
 
   const tokens = removeNullValues(allTokens);
 
-  const { setTokensIsSelected, stageTokens, unstageAllItems } = useCollectionEditorActions();
+  const { stageTokens } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -61,38 +60,6 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
 
     return sidebarTokensAsArray;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
-
-  const isAllNftsSelected = useMemo(
-    () => !tokensToDisplayInSidebar.some((token: EditModeToken) => !token.isSelected),
-    [tokensToDisplayInSidebar]
-  );
-
-  const handleSelectAllClick = useCallback(() => {
-    // Stage all tokens that are !isSelected
-    const tokensToStage = tokensToDisplayInSidebar.filter((token) => !token.isSelected);
-    if (tokensToStage.length === 0) {
-      return;
-    }
-
-    stageTokens(tokensToStage);
-    setTokensIsSelected(
-      tokensToStage.map((token) => token.id),
-      true
-    );
-  }, [tokensToDisplayInSidebar, stageTokens, setTokensIsSelected]);
-
-  const handleDeselectAllClick = useCallback(() => {
-    // deselect all tokens in sidebar
-    const tokenIdsToUnstage = tokensToDisplayInSidebar.map((token) => token.id);
-    if (tokenIdsToUnstage.length === 0) {
-      return;
-    }
-
-    setTokensIsSelected(tokenIdsToUnstage, false);
-
-    // Unstage all items from the DND
-    unstageAllItems();
-  }, [tokensToDisplayInSidebar, setTokensIsSelected, unstageAllItems]);
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
@@ -123,20 +90,6 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
         setSearchResults={setSearchResults}
         setDebouncedSearchQuery={setDebouncedSearchQuery}
       />
-      <Spacer height={24} />
-      <StyledSelectButtonWrapper>
-        {isAllNftsSelected ? (
-          <TextButton
-            text={`Deselect All (${tokensToDisplayInSidebar.length})`}
-            onClick={handleDeselectAllClick}
-          />
-        ) : (
-          <TextButton
-            text={`Select All (${tokensToDisplayInSidebar.length})`}
-            onClick={handleSelectAllClick}
-          />
-        )}
-      </StyledSelectButtonWrapper>
       <Spacer height={16} />
       <Selection>
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
@@ -200,11 +153,6 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: baseline;
   min-height: 52px;
-`;
-
-const StyledSelectButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
 `;
 
 const Selection = styled.div`
