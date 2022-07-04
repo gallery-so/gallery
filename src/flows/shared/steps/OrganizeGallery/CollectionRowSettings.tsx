@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
@@ -86,12 +85,9 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
     <StyledCollectionRowSettings>
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
       <Dropdown>
-        <StyledDropdownTextButton onClick={handleEditNameClick} text="Edit name & bio" />
-        <StyledDropdownTextButton
-          onClick={handleToggleHiddenClick}
-          text={hidden ? 'Show' : 'Hide'}
-        />
-        <StyledDropdownTextButton onClick={handleDeleteClick} text="Delete" />
+        <TextButton onClick={handleEditNameClick} text="Edit name & bio" />
+        <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
+        <TextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>
     </StyledCollectionRowSettings>
   );
@@ -108,18 +104,9 @@ const StyledCollectionRowSettings = styled.div`
   width: 75px;
 
   ${StyledDropdownButton} {
-    width: 24px;
+    width: 32px;
     height: 16px;
   }
-`;
-
-const StyledDropdownTextButton = styled(TextButton)`
-  width: 24px;
-  height: 16px;
-  gap: 10px;
-  width: 175px;
-  height: 32px;
-  padding: 4px 0 4px 8px; // FIXME: Adjust if dropdown is refactored
 `;
 
 const StyledTextButton = styled(TextButton)`

@@ -87,7 +87,6 @@ function LoggedInNav({ queryRef }: Props) {
               text={routerQuery?.collectionId ? 'Edit Collection' : 'Edit Gallery'}
               onClick={handleEditDesignClick}
             />
-            <Spacer height={12} />
             <TextButton text="Name & Bio" onClick={handleEditNameClick} />
           </Dropdown>
         </NavElement>
@@ -100,9 +99,7 @@ function LoggedInNav({ queryRef }: Props) {
               text="My Gallery"
               onClick={username ? () => push(`/${username}`) : undefined}
             />
-            <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <Spacer height={12} />
             <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>

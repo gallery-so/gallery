@@ -135,13 +135,11 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                       text="EDIT NAME & DESCRIPTION"
                       underlineOnHover
                     />
-                    <Spacer height={8} />
                     <TextButton
                       text="Edit Collection"
                       onClick={handleEditCollectionClick}
                       underlineOnHover
                     />
-                    <Spacer height={8} />
                   </>
                 )}
                 <TextButton
