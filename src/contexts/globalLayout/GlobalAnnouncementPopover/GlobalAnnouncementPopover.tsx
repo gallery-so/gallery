@@ -3,6 +3,7 @@ import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
@@ -41,6 +42,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const { hideModal } = useModalActions();
+
   return (
     <StyledGlobalAnnouncementPopover>
       {
@@ -60,19 +63,21 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Spacer height={8} />
               <MobileDescriptionTextContainer>
                 <BaseM>
-                  Collectors are looking for ways to connect with each other. To help them stay up
-                  to date with their favorite collectors on Gallery, we’re introducing our biggest
-                  change thus far—<b>a social feed</b>.
+                  To help you stay up to date with your favorite collectors on Gallery, we’re
+                  introducing our biggest change thus far—<b>a social feed</b>.
                 </BaseM>
               </MobileDescriptionTextContainer>
               <Spacer height={24} />
               <MobileButtonContainer>
                 <Link href="/home">
-                  <StyledMobileButton text="Start Browsing" />
+                  <Button text="Start Browsing" onClick={hideModal} />
                 </Link>
                 <Spacer height={16} />
                 {/* TODO: replace this with blog post link */}
-                <Link href="https://google.com" passHref>
+                <Link
+                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
+                  passHref
+                >
                   <StyledAnchor target="_blank" rel="noopener noreferrer">
                     <TextButton text="Read the blog post" />
                   </StyledAnchor>
@@ -80,8 +85,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </MobileButtonContainer>
             </MobileHeaderContainer>
             <Spacer height={24} />
-            {/* TODO: replace this with recorded video */}
-            <img src="./temp-asset.jpg" />
+            <MobileImageContainer>
+              <img src="./feed-announcement-mock.png" />
+            </MobileImageContainer>
             <Spacer height={80} />
             <MobileSecondaryHeaderContainer>
               <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
@@ -110,19 +116,21 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopIntroText>
               <Spacer height={32} />
               <DesktopDescriptionText>
-                Collectors are looking for ways to connect with each other. To help them stay up to
-                date with their favorite collectors on Gallery, we’re introducing our biggest change
-                thus far—
+                To help you stay up to date with your favorite collectors on Gallery, we’re
+                introducing our biggest change thus far—
               </DesktopDescriptionText>
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
               <DesktopButtonContainer>
                 <Link href="/home">
-                  <Button text="Start Browsing" />
+                  <Button text="Start Browsing" onClick={hideModal} />
                 </Link>
                 <Spacer width={32} />
                 {/* TODO: replace this with blog post link */}
-                <Link href="https://google.com" passHref>
+                <Link
+                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
+                  passHref
+                >
                   <StyledAnchor target="_blank" rel="noopener noreferrer">
                     <TextButton text="Read the blog post" />
                   </StyledAnchor>
@@ -130,8 +138,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               </DesktopButtonContainer>
             </DesktopHeaderContainer>
             <Spacer height={64} />
-            {/* TODO: replace this with recorded video */}
-            <img src="./temp-asset.jpg" />
+            <DesktopImageContainer>
+              <img src="./feed-announcement-mock.png" />
+            </DesktopImageContainer>
             <Spacer height={120} />
             <DesktopSecondaryHeaderContainer>
               <DesktopStyledSecondaryTitle>
@@ -203,8 +212,11 @@ const MobileButtonContainer = styled.div`
   width: 100%;
 `;
 
-const StyledMobileButton = styled(Button)`
+const MobileImageContainer = styled.div`
   width: 100%;
+  img {
+    width: 100%;
+  }
 `;
 
 const MobileStyledSecondaryTitle = styled.span`
@@ -249,6 +261,13 @@ const DesktopDescriptionTextItalic = styled.span`
 const DesktopButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const DesktopImageContainer = styled.div`
+  max-width: 1050px;
+  img {
+    width: 100%;
+  }
 `;
 
 const DesktopSecondaryHeaderContainer = styled.div`

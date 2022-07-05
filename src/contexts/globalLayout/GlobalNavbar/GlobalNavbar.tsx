@@ -5,17 +5,23 @@ import { graphql, useFragment } from 'react-relay';
 import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
 import RightContent from './RightContent';
 import LeftContent from './LeftContent';
+import CenterContent from './CenterContent';
+import NavbarGLink from 'components/NavbarGLink';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
 
 export type Props = {
   queryRef: GlobalNavbarFragment$key;
   customLeftContent: ReactElement | null;
+  customCenterContent: ReactElement | null;
 };
 
-function GlobalNavbar({ queryRef, customLeftContent }: Props) {
+function GlobalNavbar({ queryRef, customLeftContent, customCenterContent }: Props) {
   const query = useFragment(
     graphql`
       fragment GlobalNavbarFragment on Query {
         ...RightContentFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -23,14 +29,17 @@ function GlobalNavbar({ queryRef, customLeftContent }: Props) {
 
   return (
     <StyledGlobalNavbar data-testid="navbar">
-      {customLeftContent ? (
-        <LeftContent content={customLeftContent} />
-      ) : (
-        // display an empty div here if there's no left content; otherwise,
-        // the `RightContent` component will appear on the left side
-        <div />
+      <StyledContentWrapperLeft>
+        {customLeftContent && <LeftContent content={customLeftContent} />}
+      </StyledContentWrapperLeft>
+      {isFeatureEnabled(FeatureFlag.FEED, query) && (
+        <StyledContentWrapper>
+          <CenterContent content={customCenterContent || <NavbarGLink />} />
+        </StyledContentWrapper>
       )}
-      <RightContent queryRef={query} />
+      <StyledContentWrapperRight>
+        <RightContent queryRef={query} />
+      </StyledContentWrapperRight>
     </StyledGlobalNavbar>
   );
 }
@@ -56,6 +65,20 @@ const StyledGlobalNavbar = styled.div`
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px;
   }
+`;
+
+const StyledContentWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+`;
+
+const StyledContentWrapperLeft = styled(StyledContentWrapper)`
+  justify-content: flex-start;
+`;
+
+const StyledContentWrapperRight = styled(StyledContentWrapper)`
+  justify-content: flex-end;
 `;
 
 export default memo(GlobalNavbar);

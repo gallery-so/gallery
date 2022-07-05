@@ -15,4 +15,5 @@ export enum FeatureFlag {
   POSTER_MINT = 'POSTER_MINT',
   QR_CODE = 'QR_CODE',
   FEED_ANNOUNCEMENT = 'FEED_ANNOUNCEMENT',
+  FEED = 'FEED',
 }

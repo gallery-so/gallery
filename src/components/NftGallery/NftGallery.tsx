@@ -1,6 +1,5 @@
 import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
-import NftPreview from 'components/NftPreview/NftPreview';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { insertWhitespaceBlocks } from 'utils/collectionLayout';
@@ -9,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { removeNullValues } from 'utils/removeNullValues';
+import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
@@ -26,7 +26,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
         }
         tokens {
           id
-          ...NftPreviewFragment
+          ...GalleryNftPreviewWrapperFragment
         }
 
         ...useCollectionColumnsFragment
@@ -61,7 +61,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
           return <StyledWhitespaceBlock key={galleryNft.id} />;
         }
 
-        return <NftPreview key={galleryNft.id} galleryNftRef={galleryNft} />;
+        return <NftPreviewWrapper key={galleryNft.id} galleryNftRef={galleryNft} />;
       })}
     </StyledCollectionNfts>
   );

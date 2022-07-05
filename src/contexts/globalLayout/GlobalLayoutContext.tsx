@@ -54,6 +54,7 @@ type GlobalLayoutActions = {
   setNavbarVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
   setCustomNavLeftContent: (e: ReactElement | null) => void;
+  setCustomNavCenterContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -218,6 +219,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   const [customNavLeftContent, setCustomNavLeftContent] = useState<ReactElement | null>(null);
+  const [customNavCenterContent, setCustomNavCenterContent] = useState<ReactElement | null>(null);
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
@@ -225,6 +227,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
       setIsPageInSuspenseState,
       setCustomNavLeftContent,
+      setCustomNavCenterContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
@@ -244,6 +247,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         customLeftContent={customNavLeftContent}
+        customCenterContent={customNavCenterContent}
       />
 
       <GlobalLayoutStateContext.Provider value={state}>
@@ -263,6 +267,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
   customLeftContent: GlobalNavbarProps['customLeftContent'];
+  customCenterContent: GlobalNavbarProps['customCenterContent'];
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -273,6 +278,7 @@ function GlobalNavbarWithFadeEnabled({
   fadeType,
   isBannerVisible,
   customLeftContent,
+  customCenterContent,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
@@ -349,7 +355,11 @@ function GlobalNavbarWithFadeEnabled({
         // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
         isBannerVisible ? <Banner text="" queryRef={query} /> : null
       }
-      <GlobalNavbar queryRef={query} customLeftContent={customLeftContent} />
+      <GlobalNavbar
+        queryRef={query}
+        customLeftContent={customLeftContent}
+        customCenterContent={customCenterContent}
+      />
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }

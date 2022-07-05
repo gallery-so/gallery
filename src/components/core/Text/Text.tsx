@@ -91,3 +91,11 @@ export const BaseS = styled(Paragraph)`
   font-size: 12px;
   line-height: 16px;
 `;
+
+export const TitleDiatypeL = styled(H1)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+`;
