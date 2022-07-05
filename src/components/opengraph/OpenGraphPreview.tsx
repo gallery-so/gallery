@@ -1,5 +1,11 @@
+import { pageGutter } from 'components/core/breakpoints';
 import Markdown from 'components/core/Markdown/Markdown';
-import unescape from 'utils/unescape';
+import { BaseM, TitleM } from 'components/core/Text/Text';
+import unescape from 'lodash/unescape';
+import styled from 'styled-components';
+
+import OpenBracket from 'public/icons/open_bracket.svg';
+import CloseBracket from 'public/icons/close_bracket.svg';
 
 type Props = {
   title: string;
@@ -9,86 +15,60 @@ type Props = {
 
 export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
   <>
-    <div className="container">
-      <div className="gallery">
+    <StyledContainer>
+      <StyledGalleryContainer>
+        <OpenBracket />
         {imageUrls.map((url) => (
-          <div key={url} className="image">
-            <img src={url} />
-          </div>
+          <StyledImage key={url} src={url} />
         ))}
-      </div>
-      <div className="byline">
-        <div className="username">{unescape(title)}</div>
-        {description ? (
-          <>
-            <div className="separator" />
-            <div className="bio truncate">
-              <Markdown text={unescape(description)} />
-            </div>
-          </>
-        ) : null}
-      </div>
-    </div>
-    <style jsx>{`
-      .container {
-        width: 100%;
-        height: 100%;
-        min-height: 200px;
-        background: #f9f9f9;
-        display: grid;
-        grid-template-rows: minmax(0, 1fr) auto;
-      }
-      .gallery {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(0, 1fr);
-        padding: 40px;
-        gap: 20px;
-      }
-      .image {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .gallery img {
-        max-width: 100%;
-        max-height: 170px;
-        width: auto;
-        height: auto;
-      }
-      .byline {
-        padding: 0 1.25rem 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1em;
-        color: rgba(115, 115, 115, 1);
-      }
-      .username {
-        font-family: 'GT Alpina';
-        font-weight: 400;
-        font-size: 18px;
-        color: black;
-        flex-shrink: 0;
-        letter-spacing: -4%;
-      }
-      .separator {
-        display: inline-block;
-        width: 1.5rem;
-        height: 1px;
-        background: currentColor;
-        flex-shrink: 0;
-      }
-      .bio {
-        font-family: 'ABC Diatype';
-        font-size: 14px;
-        font-weight: 400;
-      }
-      .truncate {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-      }
-    `}</style>
+        <CloseBracket />
+      </StyledGalleryContainer>
+      <StyledUsername>{unescape(title)}</StyledUsername>
+      {description && (
+        <StyledDescription>
+          <Markdown text={unescape(description)} />
+        </StyledDescription>
+      )}
+    </StyledContainer>
   </>
 );
+
+const StyledContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: ${pageGutter.mobile}px;
+  background-color: #ffffff;
+`;
+
+const StyledGalleryContainer = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  gap: ${pageGutter.mobile}px;
+  align-items: center;
+
+  justify-content: center;
+`;
+
+const StyledImage = styled.img`
+  max-width: 100%;
+  max-height: 190px;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+`;
+
+const StyledUsername = styled(TitleM)`
+  font-style: normal;
+`;
+
+const StyledDescription = styled(BaseM)`
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-width: 300px;
+`;

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
+import { SingleOpenGraphPreview } from 'components/opengraph/SingleOpenGraphPreview';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { TokenIdOpengraphQuery } from '__generated__/TokenIdOpengraphQuery.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
@@ -43,9 +43,10 @@ export default function OpenGraphCollectionPage() {
       <div className="page">
         <div id="opengraph-image" style={{ width, height }}>
           {token && (
-            <OpenGraphPreview
+            <SingleOpenGraphPreview
               title={token.name ?? ''}
-              description={(token.collectorsNote || token.description) ?? ''}
+              description={token.description ?? ''}
+              collectorsNote={token.collectorsNote ?? ''}
               imageUrls={media?.urls.large ? [media.urls.large] : []}
             />
           )}
