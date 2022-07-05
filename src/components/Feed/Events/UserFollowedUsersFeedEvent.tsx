@@ -193,7 +193,7 @@ const StyledEventContent = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
 `;
@@ -201,7 +201,7 @@ const StyledEventContent = styled.div`
 const StyledSecondaryButton = styled(Button)`
   flex-shrink: 0;
   width: 100%;
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     width: fit-content;
     align-self: end;
   }

@@ -33,6 +33,12 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         collection @required(action: THROW) {
           dbid
           name
+          tokens @required(action: THROW) {
+            token {
+              dbid
+            }
+            ...EventMediaFragment
+          }
         }
         newTokens @required(action: THROW) {
           token {
@@ -40,15 +46,20 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
           }
           ...EventMediaFragment
         }
+        isPreFeed
       }
     `,
     eventRef
   );
   const { push } = useRouter();
 
+  const { isPreFeed } = event;
+
+  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
+
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED);
-  }, [event.newTokens]) as TokenToPreview[];
+    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
+  }, [tokens]) as TokenToPreview[];
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const track = useTrack();
@@ -61,10 +72,14 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     [collectionPagePath, push, track]
   );
 
-  const numAdditionalPieces = event.newTokens.length - MAX_PIECES_DISPLAYED;
+  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
+
+  if (!tokens.length) {
+    return null;
+  }
 
   return (
     <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
@@ -74,7 +89,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
             <InteractiveLink to={`/${event.owner.username}`}>
               {event.owner.username}
             </InteractiveLink>{' '}
-            added {event.newTokens.length} {pluralize(event.newTokens.length, 'piece')} to
+            added {isPreFeed ? '' : tokens.length} {pluralize(tokens.length, 'piece')} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>
@@ -83,7 +98,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         </StyledEventHeader>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-        {showAdditionalPiecesIndicator && (
+        {showAdditionalPiecesIndicator && !isPreFeed && (
           <>
             <Spacer height={8} />
             <StyledAdditionalPieces>

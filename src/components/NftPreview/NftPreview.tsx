@@ -18,6 +18,7 @@ type Props = {
   previewSize: number;
   ownerUsername?: string;
   onClick?: () => void;
+  hideLabelOnMobile?: boolean;
 };
 
 function NftPreview({
@@ -26,6 +27,7 @@ function NftPreview({
   nftPreviewWidth,
   previewSize,
   onClick,
+  hideLabelOnMobile = false,
 }: Props) {
   const { token, collection } = useFragment(
     graphql`
@@ -101,14 +103,16 @@ function NftPreview({
             // we'll request images at double the size of the element so that it looks sharp on retina
             size={previewSize * 2}
           />
-          <StyledNftFooter>
-            <StyledNftLabel
-              title={token.name}
-              collectionName={token.contract?.name}
-              contractAddress={contractAddress}
-            />
-            <StyledGradient type="bottom" direction="down" />
-          </StyledNftFooter>
+          {hideLabelOnMobile ? null : (
+            <StyledNftFooter>
+              <StyledNftLabel
+                title={token.name}
+                collectionName={token.contract?.name}
+                contractAddress={contractAddress}
+              />
+              <StyledGradient type="bottom" direction="down" />
+            </StyledNftFooter>
+          )}
         </StyledNftPreview>
       </StyledA>
     </Link>
