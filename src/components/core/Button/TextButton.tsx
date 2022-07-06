@@ -39,7 +39,7 @@ export const StyledButtonText = styled(ActionText)<Pick<Props, 'disableTextTrans
   text-transform: ${({ disableTextTransform }) => (disableTextTransform ? 'none' : undefined)};
 `;
 
-const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>`
+export const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disabled'>>`
   padding: 0;
   border-style: none;
   cursor: pointer;

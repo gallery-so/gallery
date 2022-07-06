@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import styled from 'styled-components';
-import TextButton from '../Button/TextButton';
+import TextButton, { StyledButton, StyledButtonText } from 'components/core/Button/TextButton';
 import colors from '../colors';
 
 type Props = {
@@ -124,12 +124,12 @@ const StyledDropdownBox = styled.div<StyledDropdownProps>`
   width: max-content;
   background-color: ${colors.white};
 
-  button {
+  ${StyledButton} {
     height: 32px;
     padding: 8px;
   }
 
-  button p {
+  ${StyledButtonText} {
     font-weight: 500;
     color: ${colors.shadow};
   }
