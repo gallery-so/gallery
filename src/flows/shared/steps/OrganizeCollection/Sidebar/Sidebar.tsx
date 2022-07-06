@@ -84,7 +84,6 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
           disabled={isRefreshingNfts}
         />
       </Header>
-      <Spacer height={16} />
       <SearchBar
         tokensRef={tokens}
         setSearchResults={setSearchResults}
@@ -152,7 +151,8 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  min-height: calc(52px - 16px); /* Matches the padding of StyledSidebar */
+  min-height: 52px;
+  padding-bottom: 16px;
 `;
 
 const Selection = styled.div`
