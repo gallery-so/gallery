@@ -1,9 +1,14 @@
 import { MetaTagProps } from 'pages/_app';
+import isProduction from './isProduction';
 
 type Params = {
   title: string;
   previewPath: string;
 };
+
+const baseurl = `https://gallery-opengraph${
+  isProduction() ? '' : '-preview'
+}.vercel.app/api/opengraph/image`;
 
 export const openGraphMetaTags = ({
   title,
@@ -13,7 +18,7 @@ export const openGraphMetaTags = ({
   // TODO: add description
   {
     property: 'og:image',
-    content: `https://gallery-opengraph.vercel.app/api/opengraph/image?${new URLSearchParams({
+    content: `${baseurl}?${new URLSearchParams({
       path: previewPath,
       fallback:
         'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
@@ -22,7 +27,7 @@ export const openGraphMetaTags = ({
   { property: 'twitter:card', content: 'summary_large_image' },
   {
     property: 'twitter:image',
-    content: `https://gallery-opengraph.vercel.app/api/opengraph/image?${new URLSearchParams({
+    content: `${baseurl}?${new URLSearchParams({
       path: previewPath,
       width: '600',
       height: '314',
