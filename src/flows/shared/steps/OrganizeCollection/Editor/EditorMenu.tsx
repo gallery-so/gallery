@@ -22,11 +22,6 @@ function EditorMenu() {
 export const MENU_WIDTH = 250;
 
 const StyledTitleS = styled(TitleS)`
-  min-height: 52px;
-  width: 249px;
-  left: 0px;
-  top: 0px;
-  border-radius: 0px;
   padding: 16px 0;
 `;
 
