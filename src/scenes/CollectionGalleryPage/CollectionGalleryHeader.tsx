@@ -88,9 +88,11 @@ function CollectionGalleryHeader({
 
   const track = useTrack();
 
+  const { dbid: collectionId } = collection;
+
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.dbid}` });
-  }, [collection.dbid, username, track]);
+    track('Share Collection', { path: `/${username}/${collectionId}` });
+  }, [collectionId, username, track]);
 
   const showEditActions = username.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
@@ -101,8 +103,8 @@ function CollectionGalleryHeader({
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection');
-    void push(`/edit?collectionId=${collection.dbid}`);
-  }, [collection.dbid, push, track]);
+    void push(`/edit?collectionId=${collectionId}`);
+  }, [collectionId, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -111,7 +113,7 @@ function CollectionGalleryHeader({
           // No need for onNext because this isn't part of a wizard
           onNext={noop}
           galleryId={collection.gallery.dbid}
-          collectionId={collection.dbid}
+          collectionId={collectionId}
           collectionName={collection.name ?? undefined}
           collectionCollectorsNote={collection.collectorsNote ?? undefined}
         />
@@ -120,7 +122,7 @@ function CollectionGalleryHeader({
     });
   }, [
     collection.collectorsNote,
-    collection.dbid,
+    collectionId,
     collection.gallery.dbid,
     collection.name,
     showModal,
@@ -155,7 +157,7 @@ function CollectionGalleryHeader({
           {showEditActions ? (
             <>
               {isMobile ? (
-                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+                <LinkButton textToCopy={collectionUrl} />
               ) : (
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
@@ -179,7 +181,7 @@ function CollectionGalleryHeader({
           ) : (
             <>
               {isMobile ? (
-                <LinkButton textToCopy={`https://gallery.so/${username}/${collectionUrl}`} />
+                <LinkButton textToCopy={collectionUrl} />
               ) : (
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
