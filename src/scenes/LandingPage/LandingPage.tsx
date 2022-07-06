@@ -29,8 +29,9 @@ function LandingPage() {
   const handleEnterGallery = useCallback(() => {
     // If the user is already authenticated, /auth will handle forwarding
     // them directly to the feed
+    track('Landing page Sign In button click');
     void push('/auth');
-  }, [push]);
+  }, [push, track]);
 
   const handleExploreClick = useCallback(() => {
     track('Landing page Explore button click');
