@@ -152,7 +152,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  min-height: 52px;
+  min-height: calc(52px - 16px); /* Matches the padding of StyledSidebar */
 `;
 
 const Selection = styled.div`
