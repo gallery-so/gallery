@@ -89,6 +89,7 @@ function NftPreview({
       href={`${pathname}?username=${username}&collectionId=${collection.dbid}&tokenId=${token.dbid}&originPage=${originPage}&modal=true`}
       // disable scroll-to-top when the modal opens
       scroll={false}
+      passHref
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
