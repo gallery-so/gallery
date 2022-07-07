@@ -76,7 +76,7 @@ function NftPreview({
   const originPage = collectionId ? 'home' : 'gallery';
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      if (onClick) {
+      if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
         onClick();
       }
