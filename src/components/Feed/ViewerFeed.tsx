@@ -31,7 +31,7 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
 
         viewer {
           ... on Viewer {
-            feed(first: $viewerFirst, after: $viewerAfter)
+            feed(before: $viewerBefore, last: $viewerLast)
               @connection(key: "ViewerFeedFragment_feed") {
               edges {
                 node {
