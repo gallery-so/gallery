@@ -13,8 +13,8 @@ export default function Home() {
       query homeQuery(
         $globalLast: Int!
         $globalBefore: String
-        $viewerFirst: Int!
-        $viewerAfter: String
+        $viewerLast: Int!
+        $viewerBefore: String
       ) {
         ...isFeatureEnabledFragment
 
@@ -23,7 +23,7 @@ export default function Home() {
     `,
     {
       globalLast: ITEMS_PER_PAGE,
-      viewerFirst: ITEMS_PER_PAGE,
+      viewerLast: ITEMS_PER_PAGE,
     }
   );
 
