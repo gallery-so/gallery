@@ -339,10 +339,8 @@ type ViewerGallery {
 type Viewer {
     user: GalleryUser @goField(forceResolver: true)
     viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
-
-    feed(before: String, after: String, first: Int, last: Int): FeedConnection
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection @goField(forceResolver: true)
 }
-
 union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
 
 union UserByIdOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
@@ -416,11 +414,12 @@ type CollectorsNoteAddedToTokenFeedEventData implements FeedEventData {
     newCollectorsNote: String
 }
 
-type CollectionCreatedFeedEventData implements FeedEventData {
+type CollectionCreatedFeedEventData implements FeedEventData @goEmbedHelper {
     eventTime: Time
     owner: GalleryUser @goField(forceResolver: true)
     action: Action
     collection: Collection @goField(forceResolver: true)
+    newTokens: [CollectionToken] @goField(forceResolver: true)
 }
 
 type CollectorsNoteAddedToCollectionFeedEventData implements FeedEventData {
@@ -437,6 +436,7 @@ type TokensAddedToCollectionFeedEventData implements FeedEventData @goEmbedHelpe
     collection: Collection @goField(forceResolver: true)
     action: Action
     newTokens: [CollectionToken] @goField(forceResolver: true)
+    isPreFeed: Boolean
 }
 
 type ErrUnknownAction implements Error {
@@ -487,7 +487,9 @@ type Query {
     communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
+    feedByUserId(id: DBID!, before: String, after: String, first: Int, last: Int): FeedConnection
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
+    # Remove when frontend uses feed field on Viewer
     feedEventById(id: DBID!): FeedEventByIdOrError
 }
 
