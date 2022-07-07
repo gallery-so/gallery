@@ -18,6 +18,7 @@ type Props = {
   ownerUsername: string;
   contractAddress: string | null;
   tokenId: string | null;
+  dbId: string | null;
   externalUrl: string | null;
   // TODO [GAL-206]: support Creator Address post-merge
   // creatorAddress: string | null;
@@ -30,6 +31,7 @@ function NftDetailText({
   ownerUsername,
   contractAddress,
   tokenId,
+  dbId,
   externalUrl,
   // TODO [GAL-206]: support Creator Address post-merge
   // creatorAddress,
@@ -85,6 +87,7 @@ function NftDetailText({
       <NftAdditionalDetails
         contractAddress={contractAddress}
         tokenId={tokenId}
+        dbId={dbId}
         externalUrl={externalUrl}
       />
     </StyledDetailLabel>
