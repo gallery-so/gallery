@@ -1,4 +1,5 @@
 import { FeatureFlag } from 'components/core/enums';
+import { ITEMS_PER_PAGE } from 'components/Feed/constants';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
@@ -9,17 +10,28 @@ import { homeQuery } from '__generated__/homeQuery.graphql';
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
     graphql`
-      query homeQuery {
+      query homeQuery(
+        $globalLast: Int!
+        $globalBefore: String
+        $viewerFirst: Int!
+        $viewerAfter: String
+      ) {
         ...isFeatureEnabledFragment
+
+        ...HomeFragment
       }
     `,
-    {}
+    {
+      globalLast: ITEMS_PER_PAGE,
+      viewerFirst: ITEMS_PER_PAGE,
+    }
   );
+
   if (!isFeatureEnabled(FeatureFlag.FEED, query)) {
     return <GalleryRedirect to="/" />;
   }
 
-  return <GalleryRoute element={<HomeScene />} navbar={true} />;
+  return <GalleryRoute element={<HomeScene queryRef={query} />} navbar={true} />;
 }
 
 /**

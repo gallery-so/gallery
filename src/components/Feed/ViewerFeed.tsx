@@ -1,68 +1,54 @@
+import { useMemo } from 'react';
 import Button from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
-import { ViewerFeedQuery } from '__generated__/ViewerFeedQuery.graphql';
+import { FeedByUserIdPaginationQuery } from '__generated__/FeedByUserIdPaginationQuery.graphql';
+import { ViewerFeedFragment$key } from '__generated__/ViewerFeedFragment.graphql';
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
+import { ITEMS_PER_PAGE } from './constants';
 
 type Props = {
-  viewerUserId: string;
+  queryRef: ViewerFeedFragment$key;
   setFeedMode: (feedMode: FeedMode) => void;
 };
 
-const ITEMS_PER_PAGE = 24;
-
-export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
-  const query = useLazyLoadQuery<ViewerFeedQuery>(
-    graphql`
-      query ViewerFeedQuery($userId: DBID!, $before: String, $last: Int) {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-        ...FeedEventQueryFragment
-        ...ViewerFeedFragment
-      }
-    `,
-    {
-      last: ITEMS_PER_PAGE,
-      userId: viewerUserId,
-    }
-  );
-
-  const { data, loadPrevious, hasPrevious } = usePaginationFragment<ViewerFeedQuery, any>(
+export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
+  const {
+    data: query,
+    loadPrevious,
+    hasPrevious,
+  } = usePaginationFragment<FeedByUserIdPaginationQuery, ViewerFeedFragment$key>(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
-        feedByUserId(id: $userId, before: $before, last: $last)
-          @connection(key: "FeedByUserId_feedByUserId") {
-          edges {
-            node {
-              ... on FeedEvent {
-                dbid
-                eventData {
-                  ...FeedEventFragment
+        ...FeedListFragment
+
+        viewer {
+          ... on Viewer {
+            feed(first: $viewerFirst, after: $viewerAfter)
+              @connection(key: "ViewerFeedFragment_feed") {
+              edges {
+                node {
+                  ... on FeedEvent {
+                    __typename
+                    eventData {
+                      ...FeedListEventDataFragment
+                    }
+                  }
                 }
               }
             }
-            cursor
-          }
-          pageInfo {
-            hasNextPage
-            size
           }
         }
       }
     `,
-    query
+    queryRef
   );
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
@@ -75,7 +61,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     });
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
-  const noViewerFeedEvents = !data.feedByUserId.edges.length;
+  const noViewerFeedEvents = !query.viewer?.feed?.edges?.length;
 
   const track = useTrack();
 
@@ -83,6 +69,18 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
     track('Feed: Clicked worldwide button from inbox zero');
     setFeedMode('WORLDWIDE');
   }, [setFeedMode, track]);
+
+  const feedData = useMemo(() => {
+    const events = [];
+
+    for (const edge of query.viewer?.feed?.edges ?? []) {
+      if (edge?.node?.__typename === 'FeedEvent' && edge.node.eventData) {
+        events.push(edge.node.eventData);
+      }
+    }
+
+    return events;
+  }, [query.viewer?.feed?.edges]);
 
   return (
     <StyledViewerFeed>
@@ -101,7 +99,7 @@ export default function ViewerFeed({ viewerUserId, setFeedMode }: Props) {
         </StyledEmptyFeed>
       ) : (
         <FeedList
-          feedData={data.feedByUserId}
+          feedEventRefs={feedData}
           loadNextPage={loadNextPage}
           hasNext={hasPrevious}
           queryRef={query}

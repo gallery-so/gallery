@@ -11,12 +11,12 @@ import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback, useEffect } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { FeedViewerQuery } from '__generated__/FeedViewerQuery.graphql';
 import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
+import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
 
 export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
 
@@ -79,10 +79,14 @@ const StyledFeedNavbarControl = styled.div`
   width: 100%;
 `;
 
-export default function Feed() {
-  const query = useLazyLoadQuery<FeedViewerQuery>(
+type Props = {
+  queryRef: FeedViewerFragment$key;
+};
+
+export default function Feed({ queryRef }: Props) {
+  const query = useFragment(
     graphql`
-      query FeedViewerQuery {
+      fragment FeedViewerFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -90,10 +94,14 @@ export default function Feed() {
             }
           }
         }
+
+        ...ViewerFeedFragment
+        ...GlobalFeedFragment
       }
     `,
-    {}
+    queryRef
   );
+
   const { viewer } = query;
   const viewerUserId = viewer?.user?.dbid ?? '';
   const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
@@ -126,9 +134,9 @@ export default function Feed() {
     <StyledFeed>
       <Spacer height={24} />
       {viewerUserId && feedMode === 'FOLLOWING' && (
-        <ViewerFeed viewerUserId={viewerUserId} setFeedMode={setFeedMode} />
+        <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />
       )}
-      {feedMode === 'WORLDWIDE' && <GlobalFeed />}
+      {feedMode === 'WORLDWIDE' && <GlobalFeed queryRef={query} />}
     </StyledFeed>
   );
 }
