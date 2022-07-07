@@ -45,8 +45,15 @@ function NftPreview({
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
+          # TODO: what's the difference between id and dbid?
           id
           dbid
+          # TODO: can we make these required in the schema?
+          gallery @required(action: THROW) {
+            owner @required(action: THROW) {
+              username @required(action: THROW)
+            }
+          }
         }
         ...NftDetailViewFragment
       }
@@ -54,6 +61,8 @@ function NftPreview({
     tokenRef
   );
 
+  const username = collection.gallery.owner.username;
+  const collectionId = collection.dbid;
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
   const backgroundColorOverride = useMemo(
@@ -61,10 +70,7 @@ function NftPreview({
     [contractAddress]
   );
 
-  const {
-    pathname,
-    query: { username, collectionId },
-  } = useRouter();
+  const { pathname } = useRouter();
 
   // whether the user is on a gallery page or collection page prior to clicking on an NFT
   const originPage = collectionId ? 'home' : 'gallery';
@@ -81,12 +87,12 @@ function NftPreview({
   return (
     <Link
       // path that will be shown in the browser URL bar
-      as={`/${username}/${collection.dbid}/${token.dbid}`}
+      as={`/${username}/${collectionId}/${token.dbid}`}
       // query params purely for internal tracking. this will NOT be displayed in URL bar.
       // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
       // appropriate query params attached. this allows the app to stay on the current page,
       // while also feeding the modal the necessary data to display an NFT in detail.
-      href={`${pathname}?username=${username}&collectionId=${collection.dbid}&tokenId=${token.dbid}&originPage=${originPage}&modal=true`}
+      href={`${pathname}?username=${username}&collectionId=${collectionId}&tokenId=${token.dbid}&originPage=${originPage}&modal=true`}
       // disable scroll-to-top when the modal opens
       scroll={false}
       passHref
