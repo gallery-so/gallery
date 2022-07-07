@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import breakpoints from 'components/core/breakpoints';

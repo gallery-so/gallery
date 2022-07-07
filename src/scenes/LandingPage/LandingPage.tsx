@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 import styled from 'styled-components';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import { useRouter } from 'next/router';
 import Spacer from 'components/core/Spacer/Spacer';

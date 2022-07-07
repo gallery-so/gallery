@@ -3,7 +3,7 @@
  */
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';

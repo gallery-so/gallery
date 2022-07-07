@@ -5,7 +5,7 @@ import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import Spacer from 'components/core/Spacer/Spacer';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModalActions } from 'contexts/modal/ModalContext';
