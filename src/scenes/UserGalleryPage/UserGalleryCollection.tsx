@@ -8,7 +8,6 @@ import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
-import { useNavigateToUrl } from 'utils/navigate';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
@@ -23,6 +22,7 @@ import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGaller
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -70,7 +70,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
 
   const { showModal } = useModalActions();
   const { push, asPath } = useRouter();
-  const navigateToUrl = useNavigateToUrl();
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
     () => unescape(collection.collectorsNote ?? ''),
@@ -79,13 +78,6 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
 
   const username = asPath.split('/')[1];
   const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
-
-  const handleViewCollectionClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      navigateToUrl(`/${username}/${collection.dbid}`, event);
-    },
-    [collection.dbid, navigateToUrl, username]
-  );
 
   const track = useTrack();
 
@@ -118,9 +110,9 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <StyledCollectorsTitle onClick={handleViewCollectionClick}>
-            {unescapedCollectionName}
-          </StyledCollectorsTitle>
+          <UnstyledLink href={`/${username}/${collection.dbid}`}>
+            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+          </UnstyledLink>
           <StyledOptionsContainer>
             <StyledCopyToClipboard textToCopy={collectionUrl}>
               <StyledShareButton text="Share" onClick={handleShareClick} />
@@ -144,11 +136,9 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                     <Spacer height={8} />
                   </>
                 )}
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
+                <UnstyledLink href={`/${username}/${collection.dbid}`}>
+                  <TextButton text="View Collection" underlineOnHover />
+                </UnstyledLink>
               </Dropdown>
             </StyledSettingsDropdown>
           </StyledOptionsContainer>
