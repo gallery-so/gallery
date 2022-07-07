@@ -14,6 +14,7 @@ import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.g
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   collectionRef: CollectionRowFragment$key;
@@ -51,23 +52,42 @@ function CollectionRow({ collectionRef, className }: Props) {
     collectionRef
   );
 
-  const { name, hidden } = collection;
+  const { name, collectorsNote, hidden } = collection;
   const tokens = useMemo(() => removeNullValues(collection.tokens), [collection]);
 
   const unescapedCollectionName = useMemo(() => unescape(name ?? ''), [name]);
+  const unescapedCollectorsNote = useMemo(() => unescape(collectorsNote ?? ''), [collectorsNote]);
 
   const firstThreeNfts = useMemo(() => tokens.slice(0, 3), [tokens]);
   const remainingNfts = useMemo(() => tokens.slice(3), [tokens]);
 
   const isHidden = useMemo(() => Boolean(hidden), [hidden]);
 
+  const truncatedCollectorsNote = useMemo(() => {
+    const lines = unescapedCollectorsNote.split('\n');
+    const firstLine = lines[0];
+
+    // If it's multiline, always truncate to suggest there are more lines
+    if (lines.length > 1) {
+      return `${firstLine.slice(0, 97).trim()}...`;
+    }
+
+    // If it's single line, only truncate if it's longer than 100ch
+    return firstLine.length > 100 ? `${firstLine.slice(0, 97).trim()}...` : firstLine;
+  }, [unescapedCollectorsNote]);
+
   return (
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <TitleS>{unescapedCollectionName}</TitleS>
+          <TitleS>
+            {unescapedCollectionName} <StyledBullet>&bull;</StyledBullet>{' '}
+            <NumberPiecesText>
+              {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
+            </NumberPiecesText>
+          </TitleS>
           <StyledBaseM>
-            {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
+            <Markdown text={truncatedCollectorsNote} />
           </StyledBaseM>
         </TextContainer>
         <Settings />
@@ -338,6 +358,16 @@ const NftsWithMoreText = styled.div`
   column-gap: 4px;
 
   white-space: nowrap;
+`;
+
+const StyledBullet = styled(BaseM)`
+  display: inline;
+  margin: 0 3px;
+`;
+
+const NumberPiecesText = styled(BaseM)`
+  display: inline;
+  font-weight: 400;
 `;
 
 export default CollectionRow;
