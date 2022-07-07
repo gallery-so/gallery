@@ -4,6 +4,7 @@ import colors from '../colors';
 import transitions from '../transitions';
 import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
+import Link from 'next/link';
 
 // TODO:
 // - should a `loading` button be disabled/non-interactive?
@@ -103,14 +104,15 @@ export const ButtonLink = ({
   disabled,
   ...otherProps
 }: ButtonLinkProps) => (
-  <StyledButton
-    as="a"
-    href={href}
-    tabIndex={disabled ? -1 : 0}
-    aria-disabled={disabled}
-    data-testid={dataTestId}
-    {...otherProps}
-  >
-    {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
-  </StyledButton>
+  <Link href={href} passHref>
+    <StyledButton
+      as="a"
+      tabIndex={disabled ? -1 : undefined}
+      aria-disabled={disabled}
+      data-testid={dataTestId}
+      {...otherProps}
+    >
+      {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
+    </StyledButton>
+  </Link>
 );
