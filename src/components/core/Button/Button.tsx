@@ -26,7 +26,9 @@ const StyledButton = styled.button<StyledButtonProps>`
   border: 0;
   cursor: pointer;
 
-  padding: 6px 24px;
+  padding: 0 24px;
+  height: 32px;
+
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
   line-height: 16px;
@@ -59,7 +61,7 @@ const StyledButton = styled.button<StyledButtonProps>`
         background: ${colors.white};
         color: ${colors.shadow};
         border: 1px solid ${colors.porcelain};
-        padding: 5px 23px;
+        padding: 0 23px;
         &:hover {
           color: ${colors.offBlack};
           border: 1px solid ${colors.offBlack};
