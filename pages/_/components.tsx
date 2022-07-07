@@ -1,4 +1,4 @@
-import { Button } from 'components/core/Button/Button';
+import { Button, ButtonLink } from 'components/core/Button/Button';
 import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
 
@@ -12,6 +12,9 @@ export default function DesignPage() {
           <DeprecatedButton text="primary" />
           <DeprecatedButton text="primary" loading />
           <DeprecatedButton text="primary" loading mini />
+          <DeprecatedButton text="primary" disabled />
+          <DeprecatedButton text="primary" disabled loading />
+          <DeprecatedButton text="primary" disabled loading mini />
         </Examples>
         <Examples>
           <Button>primary</Button>
@@ -19,6 +22,31 @@ export default function DesignPage() {
           <Button loading mini>
             primary
           </Button>
+          <Button disabled>primary</Button>
+          <Button disabled loading>
+            primary
+          </Button>
+          <Button disabled loading mini>
+            primary
+          </Button>
+        </Examples>
+        <Examples>
+          <ButtonLink href="#">primary</ButtonLink>
+          <ButtonLink href="#" loading>
+            primary
+          </ButtonLink>
+          <ButtonLink href="#" loading mini>
+            primary
+          </ButtonLink>
+          <ButtonLink disabled href="#">
+            primary
+          </ButtonLink>
+          <ButtonLink disabled href="#" loading>
+            primary
+          </ButtonLink>
+          <ButtonLink disabled href="#" loading mini>
+            primary
+          </ButtonLink>
         </Examples>
 
         <Examples>
@@ -34,6 +62,17 @@ export default function DesignPage() {
           <Button variant="secondary" loading mini>
             secondary
           </Button>
+        </Examples>
+        <Examples>
+          <ButtonLink href="#" variant="secondary">
+            secondary
+          </ButtonLink>
+          <ButtonLink href="#" variant="secondary" loading>
+            secondary
+          </ButtonLink>
+          <ButtonLink href="#" variant="secondary" loading mini>
+            secondary
+          </ButtonLink>
         </Examples>
       </Container>
     </>

@@ -2,36 +2,13 @@ import styled, { css } from 'styled-components';
 import Loader from '../Loader/Loader';
 import colors from '../colors';
 import transitions from '../transitions';
-import { ButtonHTMLAttributes } from 'react';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
+  disabled?: boolean;
 };
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  StyledButtonProps & {
-    mini?: boolean;
-    loading?: boolean;
-    dataTestId?: string;
-  };
-
-export function Button({
-  mini,
-  loading,
-  dataTestId,
-  children,
-  type = 'button',
-  ...otherProps
-}: ButtonProps) {
-  return (
-    // TODO: figure out if loading should disable the button
-    <StyledButton type={type} data-testid={dataTestId} {...otherProps}>
-      {/* TODO: figure out if Loader inverted should be conditional based on variant */}
-      {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
-    </StyledButton>
-  );
-}
 
 const StyledButton = styled.button<StyledButtonProps>`
   display: flex;
@@ -46,10 +23,12 @@ const StyledButton = styled.button<StyledButtonProps>`
   line-height: 16px;
   font-weight: 400;
   text-transform: uppercase;
+  text-decoration: none;
 
   transition: all ${transitions.cubic};
 
-  &:disabled {
+  &:disabled,
+  &[aria-disabled="true"] {
     opacity: 0.2;
     pointer-events: none;
   }
@@ -80,3 +59,56 @@ const StyledButton = styled.button<StyledButtonProps>`
     }
   }}}
 `;
+
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  StyledButtonProps & {
+    mini?: boolean;
+    loading?: boolean;
+    dataTestId?: string;
+  };
+
+export const Button = ({
+  mini,
+  loading,
+  dataTestId,
+  children,
+  type = 'button',
+  ...otherProps
+}: ButtonProps) => (
+  // TODO: figure out if loading should disable the button
+  <StyledButton type={type} data-testid={dataTestId} {...otherProps}>
+    {/* TODO: figure out if Loader inverted should be conditional based on variant */}
+    {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
+  </StyledButton>
+);
+
+type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
+  StyledButtonProps & {
+    mini?: boolean;
+    loading?: boolean;
+    dataTestId?: string;
+    href: string;
+  };
+
+export const ButtonLink = ({
+  mini,
+  loading,
+  dataTestId,
+  children,
+  href,
+  disabled,
+  ...otherProps
+}: ButtonLinkProps) => (
+  // TODO: figure out if loading should disable the button
+  <StyledButton
+    as="a"
+    href={href}
+    tabIndex={disabled ? -1 : 0}
+    aria-disabled={disabled}
+    data-testid={dataTestId}
+    {...otherProps}
+  >
+    {/* TODO: figure out if Loader inverted should be conditional based on variant */}
+    {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
+  </StyledButton>
+);
