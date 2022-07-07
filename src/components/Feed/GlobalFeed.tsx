@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
 import { GlobalFeedPaginationQuery } from '__generated__/GlobalFeedPaginationQuery.graphql';
 import { useTrackLoadMoreFeedEvents } from './analytics';
+import { ITEMS_PER_PAGE } from './constants';
 
 import FeedList from './FeedList';
-
-const ITEMS_PER_PAGE = 24;
 
 type Props = {
   queryRef: GlobalFeedFragment$key;

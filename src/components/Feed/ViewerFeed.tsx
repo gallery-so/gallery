@@ -12,13 +12,12 @@ import { useTrackLoadMoreFeedEvents } from './analytics';
 import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
+import { ITEMS_PER_PAGE } from './constants';
 
 type Props = {
   queryRef: ViewerFeedFragment$key;
   setFeedMode: (feedMode: FeedMode) => void;
 };
-
-const ITEMS_PER_PAGE = 24;
 
 export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
   const {

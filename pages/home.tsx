@@ -1,4 +1,5 @@
 import { FeatureFlag } from 'components/core/enums';
+import { ITEMS_PER_PAGE } from 'components/Feed/constants';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
@@ -21,8 +22,8 @@ export default function Home() {
       }
     `,
     {
-      globalLast: 10,
-      viewerFirst: 10,
+      globalLast: ITEMS_PER_PAGE,
+      viewerFirst: ITEMS_PER_PAGE,
     }
   );
 
