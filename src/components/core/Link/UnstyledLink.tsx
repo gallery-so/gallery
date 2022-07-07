@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { AnchorHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
+// TODO:
+// - differentiate between local URL and external URL
+
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
 };

@@ -69,26 +69,22 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const galleryId = collection.gallery.dbid;
 
   const { showModal } = useModalActions();
-  const { push, asPath } = useRouter();
+  const router = useRouter();
+
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
     () => unescape(collection.collectorsNote ?? ''),
     [collection.collectorsNote]
   );
 
-  const username = asPath.split('/')[1];
-  const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
+  const username = router.query.username as string;
+  const collectionUrl = `/${username}/${collection.dbid}`;
 
   const track = useTrack();
 
-  const handleEditCollectionClick = useCallback(() => {
-    track('Update existing collection button clicked');
-    void push(`/edit?collectionId=${collection.dbid}`);
-  }, [collection.dbid, track, push]);
-
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.dbid}` });
-  }, [collection.dbid, username, track]);
+    track('Share Collection', { path: collectionUrl });
+  }, [track, collectionUrl]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -110,11 +106,11 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <UnstyledLink href={`/${username}/${collection.dbid}`}>
+          <UnstyledLink href={collectionUrl}>
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer>
-            <StyledCopyToClipboard textToCopy={collectionUrl}>
+            <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <StyledShareButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
             <Spacer width={16} />
@@ -128,15 +124,16 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                       underlineOnHover
                     />
                     <Spacer height={8} />
-                    <TextButton
-                      text="Edit Collection"
-                      onClick={handleEditCollectionClick}
-                      underlineOnHover
-                    />
+                    <UnstyledLink
+                      href={`/edit?collectionId=${collection.dbid}`}
+                      onClick={() => track('Update existing collection button clicked')}
+                    >
+                      <TextButton text="Edit Collection" underlineOnHover />
+                    </UnstyledLink>
                     <Spacer height={8} />
                   </>
                 )}
-                <UnstyledLink href={`/${username}/${collection.dbid}`}>
+                <UnstyledLink href={collectionUrl}>
                   <TextButton text="View Collection" underlineOnHover />
                 </UnstyledLink>
               </Dropdown>
