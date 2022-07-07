@@ -3,6 +3,7 @@ import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import { useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -13,19 +14,45 @@ import {
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
 
-import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
+import { FeedListEventDataFragment$key } from '__generated__/FeedListEventDataFragment.graphql';
+import { FeedListFragment$key } from '__generated__/FeedListFragment.graphql';
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
 
 type Props = {
-  feedData: any;
   loadNextPage: () => void;
   hasNext: boolean;
-  queryRef: FeedEventQueryFragment$key;
+  queryRef: FeedListFragment$key;
+  feedEventRefs: FeedListEventDataFragment$key;
   feedMode: FeedMode;
 };
 
-export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, feedMode }: Props) {
+export default function FeedList({
+  feedEventRefs,
+  loadNextPage,
+  hasNext,
+  queryRef,
+  feedMode,
+}: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FeedListFragment on Query {
+        ...FeedEventQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const feedData = useFragment(
+    graphql`
+      fragment FeedListEventDataFragment on FeedEventData @relay(plural: true) {
+        eventTime
+        ...FeedEventFragment
+      }
+    `,
+    feedEventRefs
+  );
+
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
@@ -34,7 +61,7 @@ export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, fe
   }, []);
 
   // Function responsible for tracking the loaded state of each row.
-  const isRowLoaded = ({ index }: { index: number }) => !hasNext || !!feedData.edges[index];
+  const isRowLoaded = ({ index }: { index: number }) => !hasNext || !!feedData[index];
 
   //Render a list item or a loading indicator.
   const rowRenderer = ({
@@ -52,7 +79,7 @@ export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, fe
       return <div />;
     }
     // graphql returns the oldest event at the top of the list, so display in opposite order
-    const content = feedData.edges[feedData.edges.length - index - 1];
+    const content = feedData[feedData.length - index - 1];
 
     return (
       <CellMeasurer
@@ -66,9 +93,9 @@ export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, fe
           // @ts-expect-error: this is the suggested usage of registerChild
           <div ref={registerChild} style={style}>
             <FeedEvent
-              eventRef={content.node.eventData}
-              key={content.node.dbid}
-              queryRef={queryRef}
+              eventRef={content}
+              key={content.eventTime}
+              queryRef={query}
               feedMode={feedMode}
             />
           </div>
@@ -78,7 +105,7 @@ export default function FeedList({ feedData, loadNextPage, hasNext, queryRef, fe
   };
 
   // If there are more items to be loaded then add extra rows
-  const rowCount = hasNext ? feedData.edges.length + 1 : feedData.edges.length;
+  const rowCount = hasNext ? feedData.length + 1 : feedData.length;
 
   const [isLoading, setIsLoading] = useState(false);
 

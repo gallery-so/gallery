@@ -2,16 +2,31 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import Feed from 'components/Feed/Feed';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import Head from 'next/head';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { HomeFragment$key } from '__generated__/HomeFragment.graphql';
 
-export default function Home() {
+type Props = {
+  queryRef: HomeFragment$key;
+};
+
+export default function Home({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment HomeFragment on Query {
+        ...FeedViewerFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <>
       <Head>
         <title>Gallery - Home</title>
       </Head>
       <StyledPage>
-        <Feed />
+        <Feed queryRef={query} />
       </StyledPage>
     </>
   );
