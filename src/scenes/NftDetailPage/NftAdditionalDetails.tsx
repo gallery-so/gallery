@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 type Props = {
+  authenticatedUserOwnsAsset: boolean;
   contractAddress: string | null;
   tokenId: string | null;
   dbId: string | null;
@@ -37,8 +38,15 @@ const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
 
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
-function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: Props) {
+function NftAdditionalDetails({
+  authenticatedUserOwnsAsset,
+  contractAddress,
+  dbId,
+  tokenId,
+  externalUrl,
+}: Props) {
   const [showDetails, setShowDetails] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshToken = useRefreshToken();
   const { pushToast } = useToastActions();
@@ -49,11 +57,13 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
 
   const handleRefreshMetadata = useCallback(async () => {
     if (!dbId) return;
+    setIsRefreshing(true);
     await refreshToken(dbId);
     pushToast({
       message: 'This piece is being updated with the latest metadata. Check back in a minute.',
       autoClose: true,
     });
+    setIsRefreshing(false);
   }, [dbId]);
 
   // Check for contract address befor rendering additional details
@@ -82,7 +92,11 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
                 <InteractiveLink href={getOpenseaExternalUrl(contractAddress, tokenId)}>
                   View on OpenSea
                 </InteractiveLink>
-                <InteractiveLink onClick={handleRefreshMetadata}>Refresh metadata</InteractiveLink>
+                {authenticatedUserOwnsAsset && (
+                  <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
+                    Refresh metadata
+                  </InteractiveLink>
+                )}
               </>
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
