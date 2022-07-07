@@ -6,8 +6,7 @@ export default function DesignPage() {
   return (
     <>
       <Container>
-        <Title>Button</Title>
-
+        <Title>DeprecatedButton</Title>
         <Examples>
           <DeprecatedButton text="primary" />
           <DeprecatedButton text="primary" loading />
@@ -16,6 +15,18 @@ export default function DesignPage() {
           <DeprecatedButton text="primary" disabled loading />
           <DeprecatedButton text="primary" disabled loading mini />
         </Examples>
+        <Examples>
+          <DeprecatedButton text="secondary" type="secondary" />
+          <DeprecatedButton text="secondary" type="secondary" loading />
+          <DeprecatedButton text="secondary" type="secondary" loading mini />
+          <DeprecatedButton text="secondary" type="secondary" disabled />
+          <DeprecatedButton text="secondary" type="secondary" disabled loading />
+          <DeprecatedButton text="secondary" type="secondary" disabled loading mini />
+        </Examples>
+      </Container>
+
+      <Container>
+        <Title>Button</Title>
         <Examples>
           <Button>primary</Button>
           <Button loading>primary</Button>
@@ -30,6 +41,27 @@ export default function DesignPage() {
             primary
           </Button>
         </Examples>
+        <Examples>
+          <Button variant="secondary">secondary</Button>
+          <Button variant="secondary" loading>
+            secondary
+          </Button>
+          <Button variant="secondary" loading mini>
+            secondary
+          </Button>
+          <Button disabled variant="secondary">
+            secondary
+          </Button>
+          <Button disabled variant="secondary" loading>
+            secondary
+          </Button>
+          <Button disabled variant="secondary" loading mini>
+            secondary
+          </Button>
+        </Examples>
+      </Container>
+      <Container>
+        <Title>ButtonLink</Title>
         <Examples>
           <ButtonLink href="#">primary</ButtonLink>
           <ButtonLink href="#" loading>
@@ -48,21 +80,6 @@ export default function DesignPage() {
             primary
           </ButtonLink>
         </Examples>
-
-        <Examples>
-          <DeprecatedButton text="secondary" type="secondary" />
-          <DeprecatedButton text="secondary" type="secondary" loading />
-          <DeprecatedButton text="secondary" type="secondary" loading mini />
-        </Examples>
-        <Examples>
-          <Button variant="secondary">secondary</Button>
-          <Button variant="secondary" loading>
-            secondary
-          </Button>
-          <Button variant="secondary" loading mini>
-            secondary
-          </Button>
-        </Examples>
         <Examples>
           <ButtonLink href="#" variant="secondary">
             secondary
@@ -71,6 +88,15 @@ export default function DesignPage() {
             secondary
           </ButtonLink>
           <ButtonLink href="#" variant="secondary" loading mini>
+            secondary
+          </ButtonLink>
+          <ButtonLink disabled href="#" variant="secondary">
+            secondary
+          </ButtonLink>
+          <ButtonLink disabled href="#" variant="secondary" loading>
+            secondary
+          </ButtonLink>
+          <ButtonLink disabled href="#" variant="secondary" loading mini>
             secondary
           </ButtonLink>
         </Examples>
