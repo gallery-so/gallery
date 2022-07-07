@@ -5,6 +5,12 @@ import transitions from '../transitions';
 import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 
+// TODO:
+// - should a `loading` button be disabled/non-interactive?
+// - should `Loader` be conditionally inverted based on `variant`?
+// - should `Loader` just always be `mini`?
+// - why is opacity on disabled+loading so much stronger than just disabled?
+
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
@@ -75,9 +81,7 @@ export const Button = ({
   type = 'button',
   ...otherProps
 }: ButtonProps) => (
-  // TODO: figure out if loading should disable the button
   <StyledButton type={type} data-testid={dataTestId} {...otherProps}>
-    {/* TODO: figure out if Loader inverted should be conditional based on variant */}
     {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
   </StyledButton>
 );
@@ -99,7 +103,6 @@ export const ButtonLink = ({
   disabled,
   ...otherProps
 }: ButtonLinkProps) => (
-  // TODO: figure out if loading should disable the button
   <StyledButton
     as="a"
     href={href}
@@ -108,7 +111,6 @@ export const ButtonLink = ({
     data-testid={dataTestId}
     {...otherProps}
   >
-    {/* TODO: figure out if Loader inverted should be conditional based on variant */}
     {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
   </StyledButton>
 );
