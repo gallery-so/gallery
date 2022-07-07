@@ -9,7 +9,6 @@ import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useRouter } from 'next/router';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
@@ -38,9 +37,6 @@ function CollectionGalleryHeader({
   mobileLayout,
   setMobileLayout,
 }: Props) {
-  const router = useRouter();
-  const username = router.query.username as string;
-
   const { showModal } = useModalActions();
 
   const query = useFragment(
@@ -66,6 +62,10 @@ function CollectionGalleryHeader({
         collectorsNote
         gallery @required(action: THROW) {
           dbid @required(action: THROW)
+          # TODO: figure out if these are always set/available, update schema
+          owner @required(action: THROW) {
+            username @required(action: THROW)
+          }
         }
 
         tokens {
@@ -75,6 +75,8 @@ function CollectionGalleryHeader({
     `,
     collectionRef
   );
+
+  const username = collection.gallery.owner.username;
 
   const unescapedCollectionName = useMemo(
     () => (collection.name ? unescape(collection.name) : null),
