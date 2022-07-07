@@ -11,8 +11,7 @@ import Link from 'next/link';
 // - should `Loader` be conditionally inverted based on `variant`?
 // - should `Loader` just always be `mini`?
 // - why is opacity on disabled+loading so much stronger than just disabled?
-// - does ButtonLink need to handle absolute URLs separately? or does Link do that?
-//   - should ButtonLink also add rel="noopener,noreferer" to target="_blank" links?
+// - handle rel="noopener noreferrer" for target="_blank" links
 
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';

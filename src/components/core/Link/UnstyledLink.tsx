@@ -3,7 +3,7 @@ import { AnchorHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 // TODO:
-// - differentiate between local URL and external URL
+// - handle rel="noopener noreferrer" for target="_blank" links
 
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
