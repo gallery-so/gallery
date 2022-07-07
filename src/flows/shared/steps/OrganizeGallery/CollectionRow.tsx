@@ -363,6 +363,7 @@ const NftsWithMoreText = styled.div`
 const StyledBullet = styled(BaseM)`
   display: inline;
   margin: 0 3px;
+  font-weight: 100;
 `;
 
 const NumberPiecesText = styled(BaseM)`
