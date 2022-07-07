@@ -16,7 +16,6 @@ import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
-import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
@@ -24,6 +23,7 @@ import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -38,11 +38,10 @@ function CollectionGalleryHeader({
   mobileLayout,
   setMobileLayout,
 }: Props) {
-  const username = useMemo(() => window.location.pathname.split('/')[1], []);
+  const router = useRouter();
+  const username = router.query.username as string;
 
-  const { push } = useRouter();
   const { showModal } = useModalActions();
-  const handleBackClick = useBackButton({ username });
 
   const query = useFragment(
     graphql`
@@ -94,17 +93,12 @@ function CollectionGalleryHeader({
     track('Share Collection', { path: `/${username}/${collectionId}` });
   }, [collectionId, username, track]);
 
-  const showEditActions = username.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
+  const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
   const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
-
-  const handleEditCollectionClick = useCallback(() => {
-    track('Update existing collection');
-    void push(`/edit?collectionId=${collectionId}`);
-  }, [collectionId, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -135,7 +129,9 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <StyledUsernameMobile onClick={handleBackClick}>{username}</StyledUsernameMobile>
+                <UnstyledLink href={`/${username}`}>
+                  <StyledUsernameMobile>{username}</StyledUsernameMobile>
+                </UnstyledLink>
                 {collection.name && <StyledSeparatorMobile>/</StyledSeparatorMobile>}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
@@ -145,7 +141,9 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
+                <UnstyledLink href={`/${username}`}>
+                  <StyledUsername>{username}</StyledUsername>
+                </UnstyledLink>
                 {collection.name && <StyledSeparator>/</StyledSeparator>}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
@@ -171,7 +169,12 @@ function CollectionGalleryHeader({
                     <>
                       <Spacer height={8} />
                       <NavElement>
-                        <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                        <UnstyledLink
+                          href={`/edit?collectionId=${collectionId}`}
+                          onClick={() => track('Update existing collection')}
+                        >
+                          <TextButton text="Edit Collection" />
+                        </UnstyledLink>
                       </NavElement>
                     </>
                   )}
