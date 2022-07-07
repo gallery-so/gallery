@@ -39,7 +39,7 @@ export default function InteractiveLink({
         onClick(event);
       }
     },
-    [href, onClick, to, track]
+    [href, onClick, to, track, disabled]
   );
 
   if (!to && !href && !onClick) {
