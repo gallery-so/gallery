@@ -9,7 +9,6 @@ import {
   useCollectionEditorActions,
   SidebarTokensState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
-import { EditModeToken } from '../types';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
@@ -40,7 +39,7 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
 
   const tokens = removeNullValues(allTokens);
 
-  const { setTokensIsSelected, stageTokens, unstageAllItems } = useCollectionEditorActions();
+  const { stageTokens } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -62,38 +61,6 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
     return sidebarTokensAsArray;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const isAllNftsSelected = useMemo(
-    () => !tokensToDisplayInSidebar.some((token: EditModeToken) => !token.isSelected),
-    [tokensToDisplayInSidebar]
-  );
-
-  const handleSelectAllClick = useCallback(() => {
-    // Stage all tokens that are !isSelected
-    const tokensToStage = tokensToDisplayInSidebar.filter((token) => !token.isSelected);
-    if (tokensToStage.length === 0) {
-      return;
-    }
-
-    stageTokens(tokensToStage);
-    setTokensIsSelected(
-      tokensToStage.map((token) => token.id),
-      true
-    );
-  }, [tokensToDisplayInSidebar, stageTokens, setTokensIsSelected]);
-
-  const handleDeselectAllClick = useCallback(() => {
-    // deselect all tokens in sidebar
-    const tokenIdsToUnstage = tokensToDisplayInSidebar.map((token) => token.id);
-    if (tokenIdsToUnstage.length === 0) {
-      return;
-    }
-
-    setTokensIsSelected(tokenIdsToUnstage, false);
-
-    // Unstage all items from the DND
-    unstageAllItems();
-  }, [tokensToDisplayInSidebar, setTokensIsSelected, unstageAllItems]);
-
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
     stageTokens([{ id, whitespace: 'whitespace' }]);
@@ -110,33 +77,18 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
   return (
     <StyledSidebar>
       <Header>
-        <TitleS>Pieces</TitleS>
-        <TextButton
-          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh Wallet'}
+        <TitleS>All pieces</TitleS>
+        <StyledRefreshButton
+          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
           onClick={handleRefreshNfts}
           disabled={isRefreshingNfts}
         />
       </Header>
-      <Spacer height={16} />
       <SearchBar
         tokensRef={tokens}
         setSearchResults={setSearchResults}
         setDebouncedSearchQuery={setDebouncedSearchQuery}
       />
-      <Spacer height={24} />
-      <StyledSelectButtonWrapper>
-        {isAllNftsSelected ? (
-          <TextButton
-            text={`Deselect All (${tokensToDisplayInSidebar.length})`}
-            onClick={handleDeselectAllClick}
-          />
-        ) : (
-          <TextButton
-            text={`Select All (${tokensToDisplayInSidebar.length})`}
-            onClick={handleSelectAllClick}
-          />
-        )}
-      </StyledSelectButtonWrapper>
       <Spacer height={16} />
       <Selection>
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
@@ -199,11 +151,8 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-`;
-
-const StyledSelectButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  min-height: 52px;
+  padding-bottom: 16px;
 `;
 
 const Selection = styled.div`
@@ -211,6 +160,16 @@ const Selection = styled.div`
   flex-wrap: wrap;
   width: 218px;
   grid-gap: 19px;
+`;
+
+// This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
+const StyledRefreshButton = styled(TextButton)`
+  & p {
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: none;
+    text-decoration: underline;
+  }
 `;
 
 export default memo(Sidebar);

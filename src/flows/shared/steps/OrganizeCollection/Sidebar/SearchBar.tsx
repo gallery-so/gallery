@@ -59,7 +59,7 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
 
   return (
     <StyledSearchBar>
-      <StyledSearchInput onChange={handleQueryChange} placeholder="Search" />
+      <StyledSearchInput onChange={handleQueryChange} placeholder="Search pieces" />
     </StyledSearchBar>
   );
 }

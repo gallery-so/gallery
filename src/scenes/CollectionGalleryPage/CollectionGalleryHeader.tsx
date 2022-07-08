@@ -169,7 +169,6 @@ function CollectionGalleryHeader({
                   <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
                   {!shouldDisplayMobileLayoutToggle && (
                     <>
-                      <Spacer height={8} />
                       <NavElement>
                         <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
                       </NavElement>
