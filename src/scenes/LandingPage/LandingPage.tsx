@@ -68,7 +68,7 @@ function LandingPage() {
         <Spacer width={8} />
         <BaseS>·</BaseS>
         <Spacer width={8} />
-        <NavLink to="/salt">Gallery of the Week</NavLink>
+        <NavLink to="/noCreative">Gallery of the Week</NavLink>
       </StyledLinkContainer>
     </StyledLandingPage>
   );

@@ -488,7 +488,6 @@ type Query {
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
-    # Remove when frontend uses feed field on Viewer
     feedEventById(id: DBID!): FeedEventByIdOrError
 }
 
