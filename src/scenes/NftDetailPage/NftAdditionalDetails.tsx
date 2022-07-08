@@ -77,11 +77,13 @@ function NftAdditionalDetails({
         autoClose: true,
       });
       await refreshToken(dbId);
-    } catch (err) {
-      pushToast({
-        message: err.message,
-        autoClose: true,
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        pushToast({
+          message: error.message,
+          autoClose: true,
+        });
+      }
     } finally {
       setIsRefreshing(false);
     }
