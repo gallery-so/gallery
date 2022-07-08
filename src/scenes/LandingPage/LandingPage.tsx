@@ -29,7 +29,7 @@ export default function LandingPage() {
         <ButtonLink
           href="/auth"
           onClick={() => track('Landing page Sign In button click')}
-          dataTestId="sign-in-button"
+          data-testid="sign-in-button"
         >
           Sign In
         </ButtonLink>
@@ -39,7 +39,7 @@ export default function LandingPage() {
             <ButtonLink
               href="/home"
               onClick={() => track('Landing page Explore button click')}
-              dataTestId="explore-button"
+              data-testid="explore-button"
               variant="secondary"
             >
               Explore
