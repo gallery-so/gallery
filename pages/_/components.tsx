@@ -1,6 +1,24 @@
 import { Button, ButtonLink } from 'components/core/Button/Button';
 import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
+import { useState } from 'react';
+
+const SpinnerButton = () => {
+  const [loading, setLoading] = useState(false);
+  return (
+    <Button
+      loading={loading}
+      onClick={() => {
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
+      }}
+    >
+      spinner
+    </Button>
+  );
+};
 
 export default function DesignPage() {
   return (
@@ -58,6 +76,9 @@ export default function DesignPage() {
           <Button disabled variant="secondary" loading mini>
             secondary
           </Button>
+        </Examples>
+        <Examples>
+          <SpinnerButton />
         </Examples>
       </Container>
       <Container>

@@ -15,9 +15,11 @@ import { Spinner } from '../Spinner/Spinner';
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
+  loading?: boolean;
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,6 +42,27 @@ const StyledButton = styled.button<StyledButtonProps>`
     opacity: 0.2;
     pointer-events: none;
   }
+
+  .Button-label {
+    opacity: 1;
+    transition: all ${transitions.cubic};
+  }
+  &.Button--loading .Button-label {
+    opacity: 0;
+  }
+
+  .Button-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all ${transitions.cubic};
+  }
+  &.Button--loading .Button-spinner {
+    opacity: 1;
+  }
+
 
   ${({ variant = 'primary' }) => {
     if (variant === 'primary') {
@@ -82,8 +105,16 @@ export const Button = ({
   type = 'button',
   ...otherProps
 }: ButtonProps) => (
-  <StyledButton type={type} data-testid={dataTestId} {...otherProps}>
-    {loading ? <Spinner /> : children}
+  <StyledButton
+    type={type}
+    data-testid={dataTestId}
+    className={loading ? 'Button--loading' : undefined}
+    {...otherProps}
+  >
+    <span className="Button-label">{children}</span>
+    <span className="Button-spinner" aria-hidden={!loading}>
+      <Spinner />
+    </span>
   </StyledButton>
 );
 
