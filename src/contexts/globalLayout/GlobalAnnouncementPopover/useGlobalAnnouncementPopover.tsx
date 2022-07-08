@@ -23,7 +23,6 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
             }
           }
         }
-        ...GlobalAnnouncementPopover
         ...isFeatureEnabledFragment
       }
     `,
@@ -51,7 +50,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
       setTimeout(() => {
         showModal({
-          content: <GlobalAnnouncementPopover queryRef={query} />,
+          content: <GlobalAnnouncementPopover />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
