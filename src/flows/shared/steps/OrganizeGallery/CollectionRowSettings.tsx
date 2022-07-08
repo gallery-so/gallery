@@ -13,6 +13,7 @@ import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowSettingsFragment$key } from '__generated__/CollectionRowSettingsFragment.graphql';
+import Settings from 'public/icons/ellipses.svg';
 
 type Props = {
   collectionRef: CollectionRowSettingsFragment$key;
@@ -83,6 +84,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
   return (
     <StyledCollectionRowSettings>
+      <StyledSettings />
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
       <Dropdown>
         <TextButton onClick={handleEditNameClick} text="Edit name & bio" />
@@ -115,6 +117,11 @@ const StyledTextButton = styled(TextButton)`
   border-radius: 1px;
   padding: 8px;
   font-weight: 500;
+`;
+
+const StyledSettings = styled(Settings)`
+  position: absolute;
+  right: 0;
 `;
 
 export default withWizard(CollectionRowSettings);
