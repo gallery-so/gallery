@@ -78,8 +78,10 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           name={token.name}
           description={token.description}
           ownerUsername={username}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
           contractAddress={token.contract?.contractAddress?.address ?? ''}
           tokenId={token.tokenId}
+          dbId={token.dbid}
           externalUrl={token.externalUrl}
           // TODO [GAL-206]: support Creator Address post-merge
           // creatorAddress={token.creatorAddress.address}
