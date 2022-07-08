@@ -8,13 +8,13 @@ import {
   getBackgroundColorOverrideForContract,
   graphqlGetResizedNftImageUrlWithFallback,
 } from 'utils/token';
-import Settings from 'public/icons/ellipses.svg';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import Markdown from 'components/core/Markdown/Markdown';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   collectionRef: CollectionRowFragment$key;
@@ -51,6 +51,8 @@ function CollectionRow({ collectionRef, className }: Props) {
     `,
     collectionRef
   );
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const { name, collectorsNote, hidden } = collection;
   const tokens = useMemo(() => removeNullValues(collection.tokens), [collection]);
@@ -90,7 +92,6 @@ function CollectionRow({ collectionRef, className }: Props) {
             <Markdown text={truncatedCollectorsNote} />
           </StyledBaseM>
         </TextContainer>
-        <Settings />
       </Header>
       <Spacer height={12} />
       <Body>
@@ -121,7 +122,7 @@ function CollectionRow({ collectionRef, className }: Props) {
             </BigNftContainer>
           );
         })}
-        {remainingNfts.length > 0 ? (
+        {remainingNfts.length > 0 && !isMobile ? (
           <CompactNfts nftRefs={remainingNfts.map((it) => it.token)} />
         ) : null}
       </Body>
@@ -160,6 +161,8 @@ const StyledBaseM = styled(BaseM)`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+
+  max-width: calc(100% - 75px);
 `;
 
 const StyledHiddenLabel = styled(BaseM)`
