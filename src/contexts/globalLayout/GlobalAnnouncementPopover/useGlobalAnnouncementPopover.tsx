@@ -20,6 +20,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
           ... on Viewer {
             user {
               id
+              username
             }
           }
         }
@@ -41,9 +42,15 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
     async function handleMount() {
       if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
-      if (asPath === '/announcements') return;
       if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
       if (!isFeatureEnabled(FeatureFlag.FEED, query)) return;
+      if (asPath === '/announcements') return;
+
+      // hide for new users onboarding
+      if (asPath === '/welcome' || query.viewer?.user?.username === '') {
+        setDismissed(true);
+        return;
+      }
 
       // prevent font flicker on popover load
       await handlePreloadFonts();
