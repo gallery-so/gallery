@@ -8,9 +8,18 @@ export function useRefreshToken() {
     mutation useRefreshTokenMutation($id: DBID!) {
       refreshToken(tokenId: $id) {
         ... on RefreshTokenPayload {
+          __typename
           token {
             id
           }
+        }
+        ... on ErrInvalidInput {
+          __typename
+          message
+        }
+        ... on ErrOpenSeaRefreshFailed {
+          __typename
+          message
         }
       }
     }
@@ -18,7 +27,13 @@ export function useRefreshToken() {
 
   return useCallback(
     async (tokenId: string) => {
-      await refreshTokenMutate({ variables: { id: tokenId } });
+      const response = await refreshTokenMutate({ variables: { id: tokenId } });
+      if (
+        response.refreshToken?.__typename === 'ErrInvalidInput' ||
+        response.refreshToken?.__typename === 'ErrOpenSeaRefreshFailed'
+      ) {
+        throw new Error(`Could not refresh token: ${response.refreshToken?.message}`);
+      }
     },
     [refreshTokenMutate]
   );

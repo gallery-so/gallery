@@ -69,14 +69,18 @@ function NftAdditionalDetails({
   }, []);
 
   const handleRefreshMetadata = useCallback(async () => {
-    if (!dbId) return;
-    setIsRefreshing(true);
-    await refreshToken(dbId);
-    pushToast({
-      message: 'This piece is being updated with the latest metadata. Check back in a minute.',
-      autoClose: true,
-    });
-    setIsRefreshing(false);
+    try {
+      if (!dbId) return;
+      setIsRefreshing(true);
+      pushToast({
+        message: 'This piece is being updated with the latest metadata. Check back in few minutes.',
+        autoClose: true,
+      });
+      await refreshToken(dbId);
+    } catch (error) {
+    } finally {
+      setIsRefreshing(false);
+    }
   }, [dbId, pushToast, refreshToken]);
 
   // Check for contract address befor rendering additional details
