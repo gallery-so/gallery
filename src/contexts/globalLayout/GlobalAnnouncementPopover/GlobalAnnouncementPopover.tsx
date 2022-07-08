@@ -6,22 +6,18 @@ import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import { removeNullValues } from 'utils/removeNullValues';
-import { GlobalAnnouncementPopover$key } from '__generated__/GlobalAnnouncementPopover.graphql';
+import { GlobalAnnouncementPopoverQuery } from '__generated__/GlobalAnnouncementPopoverQuery.graphql';
 import GalleryOfTheWeekCard from './Feed/GalleryOfTheWeekCard';
-
-type Props = {
-  queryRef: GlobalAnnouncementPopover$key;
-};
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
-export default function GlobalAnnouncementPopover({ queryRef }: Props) {
-  const query = useFragment(
+export default function GlobalAnnouncementPopover() {
+  const query = useLazyLoadQuery<GlobalAnnouncementPopoverQuery>(
     graphql`
-      fragment GlobalAnnouncementPopover on Query {
+      query GlobalAnnouncementPopoverQuery {
         ...GalleryOfTheWeekCardQueryFragment
 
         galleryOfTheWeekWinners @required(action: LOG) {
@@ -30,7 +26,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
         }
       }
     `,
-    queryRef
+    {}
   );
 
   if (query === null) {
