@@ -1,21 +1,22 @@
 import { Button, ButtonLink } from 'components/core/Button/Button';
 import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-const SpinnerButton = () => {
-  const [loading, setLoading] = useState(false);
+const PendingButton = (props: React.ComponentProps<typeof Button>) => {
+  const [pending, setPending] = useState(false);
   return (
     <Button
-      loading={loading}
+      pending={pending}
       onClick={() => {
-        setLoading(true);
+        setPending(true);
         setTimeout(() => {
-          setLoading(false);
+          setPending(false);
         }, 2000);
       }}
+      {...props}
     >
-      spinner
+      pending
     </Button>
   );
 };
@@ -47,57 +48,40 @@ export default function DesignPage() {
         <Title>Button</Title>
         <Examples>
           <Button>primary</Button>
-          <Button loading>primary</Button>
-          <Button loading mini>
-            primary
-          </Button>
+          <Button pending>primary</Button>
           <Button disabled>primary</Button>
-          <Button disabled loading>
-            primary
-          </Button>
-          <Button disabled loading mini>
+          <Button disabled pending>
             primary
           </Button>
         </Examples>
         <Examples>
           <Button variant="secondary">secondary</Button>
-          <Button variant="secondary" loading>
-            secondary
-          </Button>
-          <Button variant="secondary" loading mini>
+          <Button variant="secondary" pending>
             secondary
           </Button>
           <Button disabled variant="secondary">
             secondary
           </Button>
-          <Button disabled variant="secondary" loading>
-            secondary
-          </Button>
-          <Button disabled variant="secondary" loading mini>
+          <Button disabled variant="secondary" pending>
             secondary
           </Button>
         </Examples>
         <Examples>
-          <SpinnerButton />
+          <PendingButton />
+          <PendingButton variant="secondary" />
         </Examples>
       </Container>
       <Container>
         <Title>ButtonLink</Title>
         <Examples>
           <ButtonLink href="#">primary</ButtonLink>
-          <ButtonLink href="#" loading>
-            primary
-          </ButtonLink>
-          <ButtonLink href="#" loading mini>
+          <ButtonLink href="#" pending>
             primary
           </ButtonLink>
           <ButtonLink disabled href="#">
             primary
           </ButtonLink>
-          <ButtonLink disabled href="#" loading>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href="#" loading mini>
+          <ButtonLink disabled href="#" pending>
             primary
           </ButtonLink>
         </Examples>
@@ -105,19 +89,13 @@ export default function DesignPage() {
           <ButtonLink href="#" variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink href="#" variant="secondary" loading>
-            secondary
-          </ButtonLink>
-          <ButtonLink href="#" variant="secondary" loading mini>
+          <ButtonLink href="#" variant="secondary" pending>
             secondary
           </ButtonLink>
           <ButtonLink disabled href="#" variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary" loading>
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary" loading mini>
+          <ButtonLink disabled href="#" variant="secondary" pending>
             secondary
           </ButtonLink>
         </Examples>

@@ -5,7 +5,8 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-export const Spinner = styled.div`
+export const Spinner = styled.span`
+  display: inline-flex;
   border: 2px solid transparent;
   border-top: 2px solid currentColor;
   border-radius: 50%;

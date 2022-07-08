@@ -7,15 +7,11 @@ import Link from 'next/link';
 import { Spinner } from '../Spinner/Spinner';
 
 // TODO:
-// - should a `loading` button be disabled/non-interactive?
-// - why is opacity on disabled+loading so much stronger than just disabled?
-// - does ButtonLink need to handle absolute URLs separately? or does Link do that?
-//   - should ButtonLink also add rel="noopener,noreferer" to target="_blank" links?
+// - why is opacity on disabled+pending so much stronger than just disabled?
 
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
-  loading?: boolean;
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
@@ -24,7 +20,10 @@ const StyledButton = styled.button<StyledButtonProps>`
   justify-content: center;
   align-items: center;
   border: 0;
-  cursor: pointer;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
 
   padding: 8px 24px;
 
@@ -37,7 +36,6 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   transition: all ${transitions.cubic};
 
-  &:disabled,
   &[aria-disabled="true"] {
     opacity: 0.2;
     pointer-events: none;
@@ -47,22 +45,22 @@ const StyledButton = styled.button<StyledButtonProps>`
     opacity: 1;
     transition: all ${transitions.cubic};
   }
-  &.Button--loading .Button-label {
+  &[aria-busy="true"] .Button-label {
     opacity: 0;
   }
 
   .Button-spinner {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     opacity: 0;
     transition: all ${transitions.cubic};
   }
-  &.Button--loading .Button-spinner {
+  &[aria-busy="true"] .Button-spinner {
     opacity: 1;
   }
-
 
   ${({ variant = 'primary' }) => {
     if (variant === 'primary') {
@@ -93,26 +91,25 @@ const StyledButton = styled.button<StyledButtonProps>`
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   StyledButtonProps & {
-    mini?: boolean;
-    loading?: boolean;
-    dataTestId?: string;
+    pending?: boolean;
   };
 
 export const Button = ({
-  loading,
-  dataTestId,
-  children,
   type = 'button',
+  pending,
+  disabled,
+  children,
   ...otherProps
 }: ButtonProps) => (
   <StyledButton
     type={type}
-    data-testid={dataTestId}
-    className={loading ? 'Button--loading' : undefined}
+    disabled={disabled || pending}
+    aria-disabled={disabled}
+    aria-busy={pending}
     {...otherProps}
   >
     <span className="Button-label">{children}</span>
-    <span className="Button-spinner" aria-hidden={!loading}>
+    <span className="Button-spinner" aria-hidden>
       <Spinner />
     </span>
   </StyledButton>
@@ -120,18 +117,15 @@ export const Button = ({
 
 type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
   StyledButtonProps & {
-    mini?: boolean;
-    loading?: boolean;
-    dataTestId?: string;
+    pending?: boolean;
     href: string;
   };
 
 export const ButtonLink = ({
-  loading,
-  dataTestId,
-  children,
   href,
+  pending,
   disabled,
+  children,
   ...otherProps
 }: ButtonLinkProps) => (
   <Link href={href} passHref>
@@ -139,10 +133,13 @@ export const ButtonLink = ({
       as="a"
       tabIndex={disabled ? -1 : undefined}
       aria-disabled={disabled}
-      data-testid={dataTestId}
+      aria-busy={pending}
       {...otherProps}
     >
-      {loading ? <Spinner /> : children}
+      <span className="Button-label">{children}</span>
+      <span className="Button-spinner" aria-hidden>
+        <Spinner />
+      </span>
     </StyledButton>
   </Link>
 );
