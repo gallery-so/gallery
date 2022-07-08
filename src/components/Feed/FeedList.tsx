@@ -1,3 +1,4 @@
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
@@ -148,7 +149,11 @@ const StyledLoadMoreRow = styled.div<{ width: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 156px;
+
+  height: 92px;
+  @media only screen and ${breakpoints.tablet} {
+    height: 156px;
+  }
   transition: background ${transitions.cubic};
   ${TitleM} {
     font-style: normal;
