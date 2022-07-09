@@ -2,6 +2,7 @@ import { Button, ButtonLink } from 'components/core/Button/Button';
 import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
 import React, { useState } from 'react';
+import { TitleM } from 'components/core/Text/Text';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);
@@ -24,8 +25,8 @@ const PendingButton = (props: React.ComponentProps<typeof Button>) => {
 export default function DesignPage() {
   return (
     <>
-      <Container>
-        <Title>DeprecatedButton</Title>
+      <Section>
+        <TitleM>DeprecatedButton</TitleM>
         <Examples>
           <DeprecatedButton text="primary" />
           <DeprecatedButton text="primary" loading />
@@ -42,10 +43,10 @@ export default function DesignPage() {
           <DeprecatedButton text="secondary" type="secondary" disabled loading />
           <DeprecatedButton text="secondary" type="secondary" disabled loading mini />
         </Examples>
-      </Container>
+      </Section>
 
-      <Container>
-        <Title>Button</Title>
+      <Section>
+        <TitleM>Button</TitleM>
         <Examples>
           <Button>primary</Button>
           <Button pending>primary</Button>
@@ -70,9 +71,10 @@ export default function DesignPage() {
           <PendingButton />
           <PendingButton variant="secondary" />
         </Examples>
-      </Container>
-      <Container>
-        <Title>ButtonLink</Title>
+      </Section>
+
+      <Section>
+        <TitleM>ButtonLink</TitleM>
         <Examples>
           <ButtonLink href="#">primary</ButtonLink>
           <ButtonLink href="#" pending>
@@ -99,21 +101,16 @@ export default function DesignPage() {
             secondary
           </ButtonLink>
         </Examples>
-      </Container>
+      </Section>
     </>
   );
 }
 
-const Container = styled.div`
+const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-`;
-
-const Title = styled.h1`
-  font-size: 1.5rem;
-  margin: 0;
 `;
 
 const Examples = styled.div`
