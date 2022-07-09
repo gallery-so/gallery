@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 
 import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';

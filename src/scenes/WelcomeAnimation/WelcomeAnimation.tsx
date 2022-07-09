@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import Image from './Image';

@@ -1,107 +1,159 @@
-import { memo, useMemo } from 'react';
-import styled from 'styled-components';
-import Loader from '../Loader/Loader';
-import { TitleXS } from '../Text/Text';
+import styled, { css } from 'styled-components';
 import colors from '../colors';
 import transitions from '../transitions';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import { BODY_FONT_FAMILY } from '../Text/Text';
+import Link from 'next/link';
+import { Spinner } from '../Spinner/Spinner';
 
-type ButtonStyle = 'primary' | 'secondary';
+// A Chrome bug seems to double apply opacity when used with animate, so we add
+// an alpha value on hex colors for things like disabled states. This assumes
+// that we don't have any sort of dark mode or other theming.
 
-type Props = {
-  type?: ButtonStyle;
-  className?: string;
-  text?: string;
-  mini?: boolean;
-  onClick?: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  dataTestId?: string;
+const alphaHex = (percentage: number) => {
+  return Math.floor(percentage * 256).toString(16);
 };
 
-function Button({
-  type = 'primary',
-  className,
-  text,
-  mini = false,
-  onClick,
-  disabled,
-  loading,
-  dataTestId,
-}: Props) {
-  const ButtonComponent = useMemo(
-    () => (type === 'primary' ? StyledPrimaryButton : StyledSecondaryButton),
-    [type]
-  );
-  return (
-    <ButtonComponent
-      // Renaming this prop `buttonStyle` since the `type` prop
-      // already exists for styled components
-      buttonStyle={type}
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-      data-testid={dataTestId}
-      mini={mini}
-    >
-      {loading ? (
-        <Loader inverted size={mini ? 'mini' : 'small'} />
-      ) : (
-        <TitleXS color={type === 'primary' ? colors.white : colors.shadow}>{text}</TitleXS>
-      )}
-    </ButtonComponent>
-  );
-}
-
 type StyledButtonProps = {
+  variant?: 'primary' | 'secondary';
   disabled?: boolean;
-  buttonStyle: ButtonStyle;
-  mini?: boolean;
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 0;
 
-  border-style: none;
+  padding: 8px 24px;
 
-  height: 32px;
-
-  cursor: pointer;
-
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
   text-transform: uppercase;
-  padding: 0 24px;
+  text-decoration: none;
 
-  transition: border ${transitions.cubic}, opacity ${transitions.cubic};
-  opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
-`;
+  transition: all ${transitions.cubic};
 
-const StyledPrimaryButton = styled(StyledButton)`
-  background: ${colors.offBlack};
-
-  &:hover {
-    background: ${colors.offBlack};
-    opacity: 0.8;
+  &:not(:disabled) {
+    cursor: pointer;
   }
-`;
-
-const StyledSecondaryButton = styled(StyledButton)`
-  border: 1px solid ${colors.porcelain};
-  background: ${colors.white};
-  // secondary button has 1px less padding to account for border
-  padding: 0 23px;
-
-  ${TitleXS} {
-    transition: color ${transitions.cubic};
+  &[aria-disabled="true"] {
+    pointer-events: none;
   }
 
-  &:hover {
-    ${TitleXS} {
-      color: ${colors.offBlack};
+  .Button-label {
+    opacity: 1;
+    transition: all ${transitions.cubic};
+  }
+  &[aria-busy="true"] .Button-label {
+    opacity: 0;
+  }
+
+  .Button-spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity ${transitions.cubic};
+  }
+  &[aria-busy="true"] .Button-spinner {
+    opacity: 1;
+  }
+
+  ${({ variant = 'primary' }) => {
+    if (variant === 'primary') {
+      return css`
+        background: ${colors.offBlack};
+        color: ${colors.white};
+
+        &:hover:not(:disabled) {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          background: ${colors.offBlack}${alphaHex(0.8)};
+        }
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          background: ${colors.offBlack}${alphaHex(0.2)};
+        }
+      `;
     }
-    border: 1px solid ${colors.offBlack};
-  }
+
+    if (variant === 'secondary') {
+      return css`
+        background: ${colors.white};
+        color: ${colors.shadow};
+        border: 1px solid ${colors.porcelain};
+        padding: 7px 23px;
+
+        &:hover:not(:disabled) {
+          color: ${colors.offBlack};
+          border: 1px solid ${colors.offBlack};
+        }
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          color: ${colors.shadow}${alphaHex(0.3)};
+          border-color: ${colors.porcelain}${alphaHex(0.4)};
+        }
+      `;
+    }
+  }}}
 `;
 
-export default memo(Button);
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  StyledButtonProps & {
+    pending?: boolean;
+  };
+
+export const Button = ({
+  type = 'button',
+  pending,
+  disabled,
+  children,
+  ...otherProps
+}: ButtonProps) => (
+  <StyledButton
+    type={type}
+    disabled={disabled || pending}
+    aria-disabled={disabled}
+    aria-busy={pending}
+    {...otherProps}
+  >
+    <span className="Button-label">{children}</span>
+    <span className="Button-spinner" aria-hidden>
+      <Spinner />
+    </span>
+  </StyledButton>
+);
+
+type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
+  StyledButtonProps & {
+    pending?: boolean;
+    href: string;
+  };
+
+export const ButtonLink = ({
+  href,
+  pending,
+  disabled,
+  children,
+  ...otherProps
+}: ButtonLinkProps) => (
+  <Link href={href} passHref>
+    <StyledButton
+      as="a"
+      tabIndex={disabled ? -1 : undefined}
+      aria-disabled={disabled}
+      aria-busy={pending}
+      {...otherProps}
+    >
+      <span className="Button-label">{children}</span>
+      <span className="Button-spinner" aria-hidden>
+        <Spinner />
+      </span>
+    </StyledButton>
+  </Link>
+);

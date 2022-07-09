@@ -1,6 +1,6 @@
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';

@@ -1,4 +1,4 @@
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';

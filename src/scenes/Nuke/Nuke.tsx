@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import styled from 'styled-components';
 import { BaseXL } from 'components/core/Text/Text';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { useAuthActions } from 'contexts/auth/AuthContext';

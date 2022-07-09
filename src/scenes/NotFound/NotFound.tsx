@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { TitleL, BaseM } from 'components/core/Text/Text';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';

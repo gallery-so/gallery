@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';

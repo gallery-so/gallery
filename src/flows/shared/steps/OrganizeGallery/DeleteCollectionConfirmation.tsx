@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 import { useCallback, useState } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useModalActions } from 'contexts/modal/ModalContext';

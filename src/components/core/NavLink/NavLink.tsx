@@ -22,11 +22,11 @@ export default function NavLink({ to, href, children, dataTestId, className, onC
     track('Link Click', {
       to: to || href,
     });
-  }, [href, to, track]);
 
-  if (onClick) {
-    onClick();
-  }
+    if (onClick) {
+      onClick();
+    }
+  }, [href, to, track, onClick]);
 
   if (!to && !href) {
     console.error('no link provided for NavLink');
