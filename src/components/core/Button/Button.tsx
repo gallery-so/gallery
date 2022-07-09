@@ -6,8 +6,9 @@ import { BODY_FONT_FAMILY } from '../Text/Text';
 import Link from 'next/link';
 import { Spinner } from '../Spinner/Spinner';
 
-// TODO:
-// - why is opacity on disabled+pending so much stronger than just disabled?
+// A Chrome bug seems to double apply opacity when used with animate, so we add
+// an alpha value on hex colors for things like disabled states. This assumes
+// that we don't have any sort of dark mode or other theming.
 
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
@@ -65,15 +66,13 @@ const StyledButton = styled.button<StyledButtonProps>`
       return css`
         background: ${colors.offBlack};
         color: ${colors.white};
+
         &:hover:not(:disabled) {
-          // Assumes hex color, lightened to 80% opacity with alpha
-          // because opacity + animations break things
+          // Assumes hex color, lightened with alpha because opacity + animations break things
           background: ${colors.offBlack}${Math.floor(256 * 0.8).toString(16)};
         }
-
         &[aria-disabled='true'] {
-          // Assumes hex color, lightened to 20% opacity with alpha
-          // because opacity + animations break things
+          // Assumes hex color, lightened with alpha because opacity + animations break things
           background: ${colors.offBlack}${Math.floor(256 * 0.2).toString(16)};
         }
       `;
@@ -90,12 +89,10 @@ const StyledButton = styled.button<StyledButtonProps>`
           color: ${colors.offBlack};
           border: 1px solid ${colors.offBlack};
         }
-
         &[aria-disabled='true'] {
-          // Assumes hex color, lightened to 20% opacity with alpha
-          // because opacity + animations break things
-          background: ${colors.white}${Math.floor(256 * 0.2).toString(16)};
-          color: ${colors.shadow}${Math.floor(256 * 0.2).toString(16)};
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          color: ${colors.shadow}${Math.floor(256 * 0.3).toString(16)};
+          border-color: ${colors.porcelain}${Math.floor(256 * 0.4).toString(16)};
         }
       `;
     }
