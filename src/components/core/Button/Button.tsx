@@ -10,6 +10,10 @@ import { Spinner } from '../Spinner/Spinner';
 // an alpha value on hex colors for things like disabled states. This assumes
 // that we don't have any sort of dark mode or other theming.
 
+const alphaHex = (percentage: number) => {
+  return Math.floor(percentage * 256).toString(16);
+};
+
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
@@ -69,11 +73,11 @@ const StyledButton = styled.button<StyledButtonProps>`
 
         &:hover:not(:disabled) {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack}${Math.floor(256 * 0.8).toString(16)};
+          background: ${colors.offBlack}${alphaHex(0.8)};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack}${Math.floor(256 * 0.2).toString(16)};
+          background: ${colors.offBlack}${alphaHex(0.2)};
         }
       `;
     }
@@ -91,8 +95,8 @@ const StyledButton = styled.button<StyledButtonProps>`
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          color: ${colors.shadow}${Math.floor(256 * 0.3).toString(16)};
-          border-color: ${colors.porcelain}${Math.floor(256 * 0.4).toString(16)};
+          color: ${colors.shadow}${alphaHex(0.3)};
+          border-color: ${colors.porcelain}${alphaHex(0.4)};
         }
       `;
     }
