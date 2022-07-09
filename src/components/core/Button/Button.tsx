@@ -21,10 +21,6 @@ const StyledButton = styled.button<StyledButtonProps>`
   align-items: center;
   border: 0;
 
-  &:not(:disabled) {
-    cursor: pointer;
-  }
-
   padding: 8px 24px;
 
   font-family: ${BODY_FONT_FAMILY};
@@ -36,8 +32,10 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   transition: all ${transitions.cubic};
 
+  &:not(:disabled) {
+    cursor: pointer;
+  }
   &[aria-disabled="true"] {
-    opacity: 0.2;
     pointer-events: none;
   }
 
@@ -56,7 +54,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: all ${transitions.cubic};
+    transition: opacity ${transitions.cubic};
   }
   &[aria-busy="true"] .Button-spinner {
     opacity: 1;
@@ -67,9 +65,16 @@ const StyledButton = styled.button<StyledButtonProps>`
       return css`
         background: ${colors.offBlack};
         color: ${colors.white};
-        &:hover {
-          background: ${colors.offBlack};
-          opacity: 0.8;
+        &:hover:not(:disabled) {
+          // Assumes hex color, lightened to 80% opacity with alpha
+          // because opacity + animations break things
+          background: ${colors.offBlack}${Math.floor(256 * 0.8).toString(16)};
+        }
+
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened to 20% opacity with alpha
+          // because opacity + animations break things
+          background: ${colors.offBlack}${Math.floor(256 * 0.2).toString(16)};
         }
       `;
     }
@@ -80,9 +85,17 @@ const StyledButton = styled.button<StyledButtonProps>`
         color: ${colors.shadow};
         border: 1px solid ${colors.porcelain};
         padding: 7px 23px;
-        &:hover {
+
+        &:hover:not(:disabled) {
           color: ${colors.offBlack};
           border: 1px solid ${colors.offBlack};
+        }
+
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened to 20% opacity with alpha
+          // because opacity + animations break things
+          background: ${colors.white}${Math.floor(256 * 0.2).toString(16)};
+          color: ${colors.shadow}${Math.floor(256 * 0.2).toString(16)};
         }
       `;
     }
