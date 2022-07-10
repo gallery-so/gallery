@@ -55,21 +55,13 @@ function EditUserInfoModal({ queryRef }: Props) {
     [hideModal, existingUser.username, push]
   );
 
-  const {
-    username,
-    onUsernameChange,
-    usernameError,
-    onClearUsernameError,
-    bio,
-    onBioChange,
-    generalError,
-    onEditUser,
-  } = useUserInfoForm({
-    onSuccess: closeModalAndNavigateToNewUsername,
-    existingUsername: existingUser.username ?? undefined,
-    existingBio: existingUser.bio ?? undefined,
-    userId: existingUser.dbid,
-  });
+  const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
+    useUserInfoForm({
+      onSuccess: closeModalAndNavigateToNewUsername,
+      existingUsername: existingUser.username ?? undefined,
+      existingBio: existingUser.bio ?? undefined,
+      userId: existingUser.dbid,
+    });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,7 +77,6 @@ function EditUserInfoModal({ queryRef }: Props) {
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}
-        clearUsernameError={onClearUsernameError}
         onUsernameChange={onUsernameChange}
         bio={bio}
         onBioChange={onBioChange}

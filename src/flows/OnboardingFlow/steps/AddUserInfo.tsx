@@ -9,8 +9,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { AddUserInfoQuery } from '__generated__/AddUserInfoQuery.graphql';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -25,44 +23,13 @@ function useWizardConfig({ onNext }: ConfigProps) {
 }
 
 function AddUserInfo({ next }: WizardContext) {
-  // TODO(Terence): Investigate using a preloaded query here to ensure the user
-  // never gets a loading state when navigating to the next step.
-  const { viewer } = useLazyLoadQuery<AddUserInfoQuery>(
-    graphql`
-      query AddUserInfoQuery {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-              bio
-              username
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
-
-  if (!viewer?.user) {
-    throw new Error('Entered the AddUserInfo step without a logged in user in the cache');
-  }
-
-  const {
-    username,
-    onUsernameChange,
-    usernameError,
-    onClearUsernameError,
-    bio,
-    onBioChange,
-    generalError,
-    onEditUser,
-  } = useUserInfoForm({
-    onSuccess: next,
-    userId: viewer.user.dbid,
-    existingUsername: viewer.user.username ?? undefined,
-    existingBio: viewer.user.bio ?? undefined,
-  });
+  const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
+    useUserInfoForm({
+      onSuccess: next,
+      userId: undefined,
+      existingUsername: '',
+      existingBio: '',
+    });
 
   const track = useTrack();
 
@@ -80,7 +47,6 @@ function AddUserInfo({ next }: WizardContext) {
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}
-        clearUsernameError={onClearUsernameError}
         onUsernameChange={onUsernameChange}
         bio={bio}
         onBioChange={onBioChange}

@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useUpdateUser from 'hooks/api/users/useUpdateUser';
+import useCreateUser from 'hooks/api/users/useCreateUser';
 
 import {
   validate,
@@ -12,13 +13,45 @@ import {
 
 import formatError from 'errors/formatError';
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
+import { useRouter } from 'next/router';
+import { AuthPayloadVariables } from 'components/WalletSelector/mutations/types';
+import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import useDebounce from 'hooks/useDebounce';
 
 type Props = {
   onSuccess: (username: string) => void;
   existingUsername?: string;
   existingBio?: string;
-  userId: string;
+  userId?: string;
 };
+
+function useIsUsernameAvailableFetcher() {
+  const relayEnvironment = useRelayEnvironment();
+
+  return useCallback(
+    async (username: string) => {
+      const response = await fetchQuery<any>(
+        relayEnvironment,
+        graphql`
+          query useUserInfoFormIsUsernameAvailableQuery($username: String!) {
+            user: userByUsername(username: $username) {
+              ... on ErrUserNotFound {
+                __typename
+              }
+            }
+          }
+        `,
+        { username }
+      ).toPromise();
+
+      if (response.user?.__typename === 'ErrUserNotFound') {
+        return true;
+      }
+      return false;
+    },
+    [relayEnvironment]
+  );
+}
 
 export default function useUserInfoForm({
   onSuccess,
@@ -34,21 +67,22 @@ export default function useUserInfoForm({
   // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
   const updateUser = useUpdateUser();
+  const createUser = useCreateUser();
+  const { query } = useRouter();
+  const authPayloadVariables = useMemo(
+    () => ({
+      chain: 'Ethereum',
+      address: query.address,
+      nonce: query.nonce,
+      signature: query.signature,
+    }),
+    [query.address, query.nonce, query.signature]
+  );
 
   const handleCreateOrEditUser = useCallback(async () => {
     setGeneralError('');
 
-    // -------------- client-side checks --------------
-    const usernameError = validate(username, [
-      required,
-      minLength(2),
-      maxLength(20),
-      alphanumericUnderscores,
-      noConsecutivePeriodsOrUnderscores,
-    ]);
-
     if (usernameError) {
-      setUsernameError(usernameError);
       return;
     }
 
@@ -56,10 +90,13 @@ export default function useUserInfoForm({
       // No need to handle error here, since the form will mark the text as red
       return;
     }
-    // ------------ end client-side checks ------------
 
     try {
-      await updateUser(userId, username, bio);
+      if (userId) {
+        await updateUser(userId, username, bio);
+      } else {
+        await createUser(authPayloadVariables as AuthPayloadVariables, username, bio);
+      }
 
       onSuccess(username);
     } catch (error: unknown) {
@@ -67,24 +104,62 @@ export default function useUserInfoForm({
         setGeneralError(formatError(error));
       }
     }
-  }, [username, bio, updateUser, userId, onSuccess]);
+  }, [
+    usernameError,
+    bio,
+    userId,
+    onSuccess,
+    username,
+    updateUser,
+    createUser,
+    authPayloadVariables,
+  ]);
 
-  const handleClearUsernameError = useCallback(() => {
-    setUsernameError('');
+  const handleUsernameChange = useCallback((username: string) => {
+    setUsername(username);
   }, []);
+
+  const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
+
+  const debouncedUsername = useDebounce(username, 500);
+
+  // validate username
+  useEffect(() => {
+    async function validateUsername() {
+      if (debouncedUsername.length > 2) {
+        const clientSideUsernameError = validate(debouncedUsername, [
+          required,
+          minLength(2),
+          maxLength(20),
+          alphanumericUnderscores,
+          noConsecutivePeriodsOrUnderscores,
+        ]);
+
+        setUsernameError(clientSideUsernameError || '');
+
+        if (!clientSideUsernameError) {
+          const isUsernameAvailable = await isUsernameAvailableFetcher(debouncedUsername);
+          if (!isUsernameAvailable) {
+            setUsernameError('Username is taken');
+          }
+        }
+      }
+    }
+
+    validateUsername();
+  }, [debouncedUsername, isUsernameAvailableFetcher]);
 
   const values = useMemo(
     () => ({
       username,
-      onUsernameChange: setUsername,
+      onUsernameChange: handleUsernameChange,
       usernameError,
-      onClearUsernameError: handleClearUsernameError,
       bio,
       onBioChange: setBio,
       generalError,
       onEditUser: handleCreateOrEditUser,
     }),
-    [bio, generalError, handleClearUsernameError, handleCreateOrEditUser, username, usernameError]
+    [bio, generalError, handleCreateOrEditUser, handleUsernameChange, username, usernameError]
   );
 
   return values;

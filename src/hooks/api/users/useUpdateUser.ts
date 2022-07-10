@@ -27,7 +27,7 @@ export default function useUpdateUser() {
           ... on ErrNotAuthorized {
             __typename
           }
-          ... on ErrUserAlreadyExists {
+          ... on ErrUsernameNotAvailable {
             __typename
           }
         }
@@ -60,7 +60,7 @@ export default function useUpdateUser() {
         },
       });
 
-      if (response.updateUserInfo?.__typename === 'ErrUserAlreadyExists') {
+      if (response.updateUserInfo?.__typename === 'ErrUsernameNotAvailable') {
         throw new Error('Username is taken');
       }
       if (response.updateUserInfo?.__typename === 'ErrInvalidInput') {

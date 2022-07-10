@@ -14,7 +14,6 @@ type Props = {
   onSubmit: () => void;
   username: string;
   usernameError: string;
-  clearUsernameError: () => void;
   onUsernameChange: (username: string) => void;
   bio: string;
   onBioChange: (bio: string) => void;
@@ -27,7 +26,6 @@ function UserInfoForm({
   onSubmit,
   username,
   usernameError,
-  clearUsernameError,
   onUsernameChange,
   bio,
   onBioChange,
@@ -57,9 +55,8 @@ function UserInfoForm({
   const handleUsernameChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onUsernameChange(event.target.value);
-      clearUsernameError();
     },
-    [onUsernameChange, clearUsernameError]
+    [onUsernameChange]
   );
 
   const handleBioChange = useCallback(
