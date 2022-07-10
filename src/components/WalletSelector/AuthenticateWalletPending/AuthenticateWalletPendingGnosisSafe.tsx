@@ -22,7 +22,7 @@ import {
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
-import useLoginOrCreateUser from '../mutations/useLoginOrCreateUser';
+import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -45,7 +45,7 @@ function AuthenticateWalletPendingGnosisSafe({
   const [nonce, setNonce] = useState('');
   const [userExists, setUserExists] = useState(false);
 
-  const loginOrCreateUser = useLoginOrCreateUser();
+  const loginOrRedirectToOnboarding = useLoginOrRedirectToOnboarding();
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
@@ -53,9 +53,11 @@ function AuthenticateWalletPendingGnosisSafe({
 
   const authenticateWithBackend = useCallback(
     async (address: string, nonce: string) => {
-      const { userId } = await loginOrCreateUser({
+      const userId = await loginOrRedirectToOnboarding({
+        authMechanism: {
+          mechanism: { gnosisSafe: { address, nonce } },
+        },
         userExists,
-        variables: { mechanism: { gnosisSafe: { address, nonce } } },
       });
 
       if (userExists) {
@@ -65,9 +67,17 @@ function AuthenticateWalletPendingGnosisSafe({
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
       trackSignInSuccess('Gnosis Safe');
-      handleLogin(userId, address);
+      if (userId) {
+        handleLogin(userId, address);
+      }
     },
-    [loginOrCreateUser, handleLogin, trackCreateUserSuccess, trackSignInSuccess, userExists]
+    [
+      loginOrRedirectToOnboarding,
+      handleLogin,
+      trackCreateUserSuccess,
+      trackSignInSuccess,
+      userExists,
+    ]
   );
 
   const handleError = useCallback(

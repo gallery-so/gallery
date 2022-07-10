@@ -11,14 +11,13 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   isNotEarlyAccessError,
-  useTrackCreateUserSuccess,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
-import useLoginOrCreateUser from '../mutations/useLoginOrCreateUser';
+import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -42,12 +41,11 @@ function AuthenticateWalletPendingDefault({
   const { handleLogin } = useAuthActions();
 
   const createNonce = useCreateNonce();
-  const loginOrCreateUser = useLoginOrCreateUser();
+  const loginOrRedirectToOnboarding = useLoginOrRedirectToOnboarding();
 
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
-  const trackCreateUserSuccess = useTrackCreateUserSuccess(userFriendlyWalletName);
 
   /**
    * Auth Pipeline:
@@ -65,30 +63,35 @@ function AuthenticateWalletPendingDefault({
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 
-      const { userId } = await loginOrCreateUser({
-        userExists,
-        variables: {
-          mechanism: { eoa: { chainAddress: { address, chain: 'Ethereum' }, nonce, signature } },
+      const userId = await loginOrRedirectToOnboarding({
+        authMechanism: {
+          mechanism: {
+            eoa: {
+              chainAddress: {
+                chain: 'Ethereum',
+                address,
+              },
+              nonce,
+              signature,
+            },
+          },
         },
+        userExists,
       });
 
-      if (userExists) {
+      if (userExists && userId) {
         trackSignInSuccess(userFriendlyWalletName);
-      } else {
-        trackCreateUserSuccess();
+        return await handleLogin(userId, address);
       }
-
-      return await handleLogin(userId, address);
     },
     [
       trackSignInAttempt,
       userFriendlyWalletName,
       createNonce,
       pendingWallet,
-      loginOrCreateUser,
+      loginOrRedirectToOnboarding,
       handleLogin,
       trackSignInSuccess,
-      trackCreateUserSuccess,
     ]
   );
 
