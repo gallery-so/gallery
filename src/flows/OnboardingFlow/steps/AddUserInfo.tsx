@@ -9,6 +9,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -30,6 +31,16 @@ function AddUserInfo({ next }: WizardContext) {
       existingUsername: '',
       existingBio: '',
     });
+
+  const { setNextEnabled } = useWizardValidationActions();
+
+  useEffect(() => {
+    if (username.length <= 2) {
+      setNextEnabled(false);
+      return;
+    }
+    setNextEnabled(!usernameError);
+  }, [setNextEnabled, username, usernameError]);
 
   const track = useTrack();
 
