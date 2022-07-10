@@ -9,6 +9,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   QR_CODE: true,
   FEED: true,
   FEED_ANNOUNCEMENT: true,
+  REFRESH_METADATA: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
@@ -17,6 +18,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   QR_CODE: true,
   FEED: true,
   FEED_ANNOUNCEMENT: true,
+  REFRESH_METADATA: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
@@ -25,6 +27,7 @@ const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   QR_CODE: true,
   FEED: true,
   FEED_ANNOUNCEMENT: true,
+  REFRESH_METADATA: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(

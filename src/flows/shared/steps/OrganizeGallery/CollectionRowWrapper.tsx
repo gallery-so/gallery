@@ -25,7 +25,7 @@ function CollectionRowWrapper({ collectionRef }: Props) {
     <StyledCollectionRowWrapper>
       <CollectionRowSettings collectionRef={collection} />
       <SortableCollectionRow collectionRef={collection} />
-      <Spacer height={32} />
+      <Spacer height={16} />
     </StyledCollectionRowWrapper>
   );
 }

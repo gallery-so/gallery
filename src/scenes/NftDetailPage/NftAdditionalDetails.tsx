@@ -1,13 +1,21 @@
 import TextButton from 'components/core/Button/TextButton';
+import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
 import { useCallback, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { NftAdditionalDetailsQuery } from '__generated__/NftAdditionalDetailsQuery.graphql';
 
 type Props = {
+  authenticatedUserOwnsAsset: boolean;
   contractAddress: string | null;
   tokenId: string | null;
+  dbId: string | null;
   externalUrl: string | null;
 };
 
@@ -34,11 +42,52 @@ const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
 
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
-function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) {
+function NftAdditionalDetails({
+  authenticatedUserOwnsAsset,
+  contractAddress,
+  dbId,
+  tokenId,
+  externalUrl,
+}: Props) {
+  const query = useLazyLoadQuery<NftAdditionalDetailsQuery>(
+    graphql`
+      query NftAdditionalDetailsQuery {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    {}
+  );
+
   const [showDetails, setShowDetails] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshToken = useRefreshToken();
+  const { pushToast } = useToastActions();
+
   const handleToggleClick = useCallback(() => {
     setShowDetails((value) => !value);
   }, []);
+
+  const handleRefreshMetadata = useCallback(async () => {
+    try {
+      if (!dbId) return;
+      setIsRefreshing(true);
+      pushToast({
+        message: 'This piece is being updated with the latest metadata. Check back in few minutes.',
+        autoClose: true,
+      });
+      await refreshToken(dbId);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        pushToast({
+          message: error.message,
+          autoClose: true,
+        });
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [dbId, pushToast, refreshToken]);
 
   // Check for contract address befor rendering additional details
   const hasContractAddress = contractAddress !== null && contractAddress !== '' && tokenId;
@@ -66,7 +115,12 @@ function NftAdditionalDetails({ contractAddress, tokenId, externalUrl }: Props) 
                 <InteractiveLink href={getOpenseaExternalUrl(contractAddress, tokenId)}>
                   View on OpenSea
                 </InteractiveLink>
-                <Spacer width={16} />
+                {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) &&
+                  authenticatedUserOwnsAsset && (
+                    <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
+                      Refresh metadata
+                    </InteractiveLink>
+                  )}
               </>
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
@@ -83,6 +137,8 @@ const StyledNftAdditionalDetails = styled.div``;
 
 const StyledLinkContainer = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 4px;
 `;
 
 export default NftAdditionalDetails;

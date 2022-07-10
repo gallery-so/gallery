@@ -1,17 +1,18 @@
 import styled, { css } from 'styled-components';
-import Loader from '../Loader/Loader';
 import colors from '../colors';
 import transitions from '../transitions';
 import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import Link from 'next/link';
+import { Spinner } from '../Spinner/Spinner';
 
-// TODO:
-// - should a `loading` button be disabled/non-interactive?
-// - should `Loader` be conditionally inverted based on `variant`?
-// - should `Loader` just always be `mini`?
-// - why is opacity on disabled+loading so much stronger than just disabled?
-// - handle rel="noopener noreferrer" for target="_blank" links
+// A Chrome bug seems to double apply opacity when used with animate, so we add
+// an alpha value on hex colors for things like disabled states. This assumes
+// that we don't have any sort of dark mode or other theming.
+
+const alphaHex = (percentage: number) => {
+  return Math.floor(percentage * 256).toString(16);
+};
 
 type StyledButtonProps = {
   variant?: 'primary' | 'secondary';
@@ -19,14 +20,13 @@ type StyledButtonProps = {
 };
 
 const StyledButton = styled.button<StyledButtonProps>`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 0;
-  cursor: pointer;
 
-  padding: 0 24px;
-  height: 32px;
+  padding: 8px 24px;
 
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
@@ -37,10 +37,32 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   transition: all ${transitions.cubic};
 
-  &:disabled,
+  &:not(:disabled) {
+    cursor: pointer;
+  }
   &[aria-disabled="true"] {
-    opacity: 0.2;
     pointer-events: none;
+  }
+
+  .Button-label {
+    opacity: 1;
+    transition: all ${transitions.cubic};
+  }
+  &[aria-busy="true"] .Button-label {
+    opacity: 0;
+  }
+
+  .Button-spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity ${transitions.cubic};
+  }
+  &[aria-busy="true"] .Button-spinner {
+    opacity: 1;
   }
 
   ${({ variant = 'primary' }) => {
@@ -48,9 +70,14 @@ const StyledButton = styled.button<StyledButtonProps>`
       return css`
         background: ${colors.offBlack};
         color: ${colors.white};
-        &:hover {
-          background: ${colors.offBlack};
-          opacity: 0.8;
+
+        &:hover:not(:disabled) {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          background: ${colors.offBlack}${alphaHex(0.8)};
+        }
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          background: ${colors.offBlack}${alphaHex(0.2)};
         }
       `;
     }
@@ -60,10 +87,16 @@ const StyledButton = styled.button<StyledButtonProps>`
         background: ${colors.white};
         color: ${colors.shadow};
         border: 1px solid ${colors.porcelain};
-        padding: 0 23px;
-        &:hover {
+        padding: 7px 23px;
+
+        &:hover:not(:disabled) {
           color: ${colors.offBlack};
           border: 1px solid ${colors.offBlack};
+        }
+        &[aria-disabled='true'] {
+          // Assumes hex color, lightened with alpha because opacity + animations break things
+          color: ${colors.shadow}${alphaHex(0.3)};
+          border-color: ${colors.porcelain}${alphaHex(0.4)};
         }
       `;
     }
@@ -72,39 +105,41 @@ const StyledButton = styled.button<StyledButtonProps>`
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   StyledButtonProps & {
-    mini?: boolean;
-    loading?: boolean;
-    dataTestId?: string;
+    pending?: boolean;
   };
 
 export const Button = ({
-  mini,
-  loading,
-  dataTestId,
-  children,
   type = 'button',
+  pending,
+  disabled,
+  children,
   ...otherProps
 }: ButtonProps) => (
-  <StyledButton type={type} data-testid={dataTestId} {...otherProps}>
-    {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
+  <StyledButton
+    type={type}
+    disabled={disabled || pending}
+    aria-disabled={disabled}
+    aria-busy={pending}
+    {...otherProps}
+  >
+    <span className="Button-label">{children}</span>
+    <span className="Button-spinner" aria-hidden>
+      <Spinner />
+    </span>
   </StyledButton>
 );
 
 type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
   StyledButtonProps & {
-    mini?: boolean;
-    loading?: boolean;
-    dataTestId?: string;
+    pending?: boolean;
     href: string;
   };
 
 export const ButtonLink = ({
-  mini,
-  loading,
-  dataTestId,
-  children,
   href,
+  pending,
   disabled,
+  children,
   ...otherProps
 }: ButtonLinkProps) => (
   <Link href={href} passHref>
@@ -112,10 +147,13 @@ export const ButtonLink = ({
       as="a"
       tabIndex={disabled ? -1 : undefined}
       aria-disabled={disabled}
-      data-testid={dataTestId}
+      aria-busy={pending}
       {...otherProps}
     >
-      {loading ? <Loader inverted size={mini ? 'mini' : 'small'} /> : children}
+      <span className="Button-label">{children}</span>
+      <span className="Button-spinner" aria-hidden>
+        <Spinner />
+      </span>
     </StyledButton>
   </Link>
 );

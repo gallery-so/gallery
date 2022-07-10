@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import {
   getBackgroundColorOverrideForContract,
   graphqlGetResizedNftImageUrlWithFallback,
 } from 'utils/token';
-import Markdown from 'components/core/Markdown/Markdown';
-import Settings from 'public/icons/ellipses.svg';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import Markdown from 'components/core/Markdown/Markdown';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   collectionRef: CollectionRowFragment$key;
@@ -52,6 +52,8 @@ function CollectionRow({ collectionRef, className }: Props) {
     collectionRef
   );
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   const { name, collectorsNote, hidden } = collection;
   const tokens = useMemo(() => removeNullValues(collection.tokens), [collection]);
 
@@ -80,13 +82,16 @@ function CollectionRow({ collectionRef, className }: Props) {
     <StyledCollectionRow className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
-          <BaseM>{unescapedCollectionName}</BaseM>
-          <Spacer height={4} />
+          <TitleS>
+            {unescapedCollectionName} <StyledBullet>&bull;</StyledBullet>{' '}
+            <NumberPiecesText>
+              {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
+            </NumberPiecesText>
+          </TitleS>
           <StyledBaseM>
             <Markdown text={truncatedCollectorsNote} />
           </StyledBaseM>
         </TextContainer>
-        <Settings />
       </Header>
       <Spacer height={12} />
       <Body>
@@ -117,7 +122,7 @@ function CollectionRow({ collectionRef, className }: Props) {
             </BigNftContainer>
           );
         })}
-        {remainingNfts.length > 0 ? (
+        {remainingNfts.length > 0 && !isMobile ? (
           <CompactNfts nftRefs={remainingNfts.map((it) => it.token)} />
         ) : null}
       </Body>
@@ -135,9 +140,9 @@ const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
   flex-direction: column;
 
   width: 100%;
-  padding: 32px;
+  padding: 16px;
 
-  border: 1px solid ${colors.metal};
+  border: 1px solid ${colors.porcelain};
   background-color: ${colors.white};
 
   opacity: ${({ isHidden }) => (isHidden ? '0.4' : '1')};
@@ -156,6 +161,8 @@ const StyledBaseM = styled(BaseM)`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+
+  max-width: calc(100% - 75px);
 `;
 
 const StyledHiddenLabel = styled(BaseM)`
@@ -196,7 +203,7 @@ const Body = styled.div`
   width: calc(100% + 24px);
   margin-left: -12px;
   ${BigNftContainer} {
-    margin: 12px;
+    margin: 0 12px;
   }
 `;
 
@@ -305,7 +312,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
 const StyledCompactNfts = styled.div`
   width: ${BIG_NFT_SIZE_PX}px;
   height: ${BIG_NFT_SIZE_PX}px;
-  margin: 12px;
+  margin: 0 12px;
 
   display: flex;
   justify-content: center;
@@ -354,6 +361,17 @@ const NftsWithMoreText = styled.div`
   column-gap: 4px;
 
   white-space: nowrap;
+`;
+
+const StyledBullet = styled(BaseM)`
+  display: inline;
+  margin: 0 3px;
+  font-weight: 100;
+`;
+
+const NumberPiecesText = styled(BaseM)`
+  display: inline;
+  font-weight: 400;
 `;
 
 export default CollectionRow;

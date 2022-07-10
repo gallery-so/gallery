@@ -89,7 +89,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
             <InteractiveLink to={`/${event.owner.username}`}>
               {event.owner.username}
             </InteractiveLink>{' '}
-            added {isPreFeed ? '' : tokens.length} {pluralize(tokens.length, 'piece')} to
+            added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>

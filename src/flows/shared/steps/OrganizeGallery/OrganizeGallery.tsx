@@ -160,7 +160,7 @@ function OrganizeGallery({
     () => gallery.collections.length === 0,
     [gallery.collections.length]
   );
-  
+
   return (
     <StyledOrganizeGallery>
       <Spacer height={GLOBAL_NAVBAR_HEIGHT} />
@@ -198,7 +198,9 @@ const StyledOrganizeGallery = styled.div`
 `;
 
 const Content = styled.div`
-  width: 777px;
+  width: 100%;
+  padding: 0 16px;
+  max-width: 777px;
 `;
 
 export default OrganizeGallery;

@@ -54,7 +54,7 @@ function CollectionGallery({ queryRef }: Props) {
         <NftGalleryWrapper>
           <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
         </NftGalleryWrapper>
-        <Spacer height={64} />
+        <Spacer height={isMobile ? 16 : 64} />
       </StyledCollectionGallery>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {

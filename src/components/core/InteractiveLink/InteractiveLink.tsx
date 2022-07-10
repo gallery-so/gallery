@@ -12,10 +12,18 @@ type Props = {
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
   className?: string;
+  disabled?: boolean;
   onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
 };
 
-export default function InteractiveLink({ to, href, children, className, onClick }: Props) {
+export default function InteractiveLink({
+  to,
+  href,
+  children,
+  className,
+  disabled = false,
+  onClick,
+}: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(
@@ -27,13 +35,14 @@ export default function InteractiveLink({ to, href, children, className, onClick
       });
 
       if (onClick) {
+        if (disabled) return;
         onClick(event);
       }
     },
-    [href, onClick, to, track]
+    [href, onClick, to, track, disabled]
   );
 
-  if (!to && !href) {
+  if (!to && !href && !onClick) {
     console.error('no link provided for InteractiveLink');
   }
 
@@ -61,17 +70,25 @@ export default function InteractiveLink({ to, href, children, className, onClick
     );
   }
 
+  if (onClick) {
+    return (
+      <StyledAnchor onClick={handleClick} className={className} disabled={disabled}>
+        {children}
+      </StyledAnchor>
+    );
+  }
+
   return null;
 }
 
-const StyledAnchor = styled.a`
-  color: inherit;
+const StyledAnchor = styled.a<{ disabled?: boolean }>`
+  color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
   text-decoration: underline;
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 18px;
-  color: ${colors.shadow};
   transition: color ${transitions.cubic};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   &:hover {
     text-decoration: none;

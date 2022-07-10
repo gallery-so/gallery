@@ -11,7 +11,7 @@ import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback, useEffect } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useRefetchableFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
@@ -84,9 +84,9 @@ type Props = {
 };
 
 export default function Feed({ queryRef }: Props) {
-  const query = useFragment(
+  const [query, refetch] = useRefetchableFragment(
     graphql`
-      fragment FeedViewerFragment on Query {
+      fragment FeedViewerFragment on Query @refetchable(queryName: "FeedRefreshQuery") {
         viewer {
           ... on Viewer {
             user {
@@ -107,6 +107,13 @@ export default function Feed({ queryRef }: Props) {
   const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
 
   const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
+
+  // refetch when changing modes. this not only displays up-to-date data, but fixes a bug
+  // for users logging in from the feed view who were seeing empty ViewerFeeds
+  useEffect(() => {
+    refetch({}, { fetchPolicy: 'store-and-network' });
+  }, [feedMode, refetch]);
+
   const { setCustomNavCenterContent } = useGlobalLayoutActions();
 
   // This effect ensures the Feed controls on the navbar are removed when the Feed unmounts, so that it is not visible when navigating to a different page.

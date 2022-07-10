@@ -1,12 +1,32 @@
 import { Button, ButtonLink } from 'components/core/Button/Button';
 import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
+import React, { useState } from 'react';
+import { TitleM } from 'components/core/Text/Text';
+
+const PendingButton = (props: React.ComponentProps<typeof Button>) => {
+  const [pending, setPending] = useState(false);
+  return (
+    <Button
+      pending={pending}
+      onClick={() => {
+        setPending(true);
+        setTimeout(() => {
+          setPending(false);
+        }, 2000);
+      }}
+      {...props}
+    >
+      pending
+    </Button>
+  );
+};
 
 export default function DesignPage() {
   return (
     <>
-      <Container>
-        <Title>DeprecatedButton</Title>
+      <Section>
+        <TitleM>DeprecatedButton</TitleM>
         <Examples>
           <DeprecatedButton text="primary" />
           <DeprecatedButton text="primary" loading />
@@ -23,60 +43,47 @@ export default function DesignPage() {
           <DeprecatedButton text="secondary" type="secondary" disabled loading />
           <DeprecatedButton text="secondary" type="secondary" disabled loading mini />
         </Examples>
-      </Container>
+      </Section>
 
-      <Container>
-        <Title>Button</Title>
+      <Section>
+        <TitleM>Button</TitleM>
         <Examples>
           <Button>primary</Button>
-          <Button loading>primary</Button>
-          <Button loading mini>
-            primary
-          </Button>
+          <Button pending>primary</Button>
           <Button disabled>primary</Button>
-          <Button disabled loading>
-            primary
-          </Button>
-          <Button disabled loading mini>
+          <Button disabled pending>
             primary
           </Button>
         </Examples>
         <Examples>
           <Button variant="secondary">secondary</Button>
-          <Button variant="secondary" loading>
-            secondary
-          </Button>
-          <Button variant="secondary" loading mini>
+          <Button variant="secondary" pending>
             secondary
           </Button>
           <Button disabled variant="secondary">
             secondary
           </Button>
-          <Button disabled variant="secondary" loading>
-            secondary
-          </Button>
-          <Button disabled variant="secondary" loading mini>
+          <Button disabled variant="secondary" pending>
             secondary
           </Button>
         </Examples>
-      </Container>
-      <Container>
-        <Title>ButtonLink</Title>
+        <Examples>
+          <PendingButton />
+          <PendingButton variant="secondary" />
+        </Examples>
+      </Section>
+
+      <Section>
+        <TitleM>ButtonLink</TitleM>
         <Examples>
           <ButtonLink href="#">primary</ButtonLink>
-          <ButtonLink href="#" loading>
-            primary
-          </ButtonLink>
-          <ButtonLink href="#" loading mini>
+          <ButtonLink href="#" pending>
             primary
           </ButtonLink>
           <ButtonLink disabled href="#">
             primary
           </ButtonLink>
-          <ButtonLink disabled href="#" loading>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href="#" loading mini>
+          <ButtonLink disabled href="#" pending>
             primary
           </ButtonLink>
         </Examples>
@@ -84,37 +91,26 @@ export default function DesignPage() {
           <ButtonLink href="#" variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink href="#" variant="secondary" loading>
-            secondary
-          </ButtonLink>
-          <ButtonLink href="#" variant="secondary" loading mini>
+          <ButtonLink href="#" variant="secondary" pending>
             secondary
           </ButtonLink>
           <ButtonLink disabled href="#" variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary" loading>
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary" loading mini>
+          <ButtonLink disabled href="#" variant="secondary" pending>
             secondary
           </ButtonLink>
         </Examples>
-      </Container>
+      </Section>
     </>
   );
 }
 
-const Container = styled.div`
+const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-`;
-
-const Title = styled.h1`
-  font-size: 1.5rem;
-  margin: 0;
 `;
 
 const Examples = styled.div`

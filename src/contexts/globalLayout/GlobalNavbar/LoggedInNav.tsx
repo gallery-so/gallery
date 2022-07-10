@@ -78,7 +78,7 @@ function LoggedInNav({ queryRef }: Props) {
             <UnstyledLink
               href={
                 routerQuery.collectionId
-                  ? `/edit??collectionId=${routerQuery.collectionId}`
+                  ? `/edit?collectionId=${routerQuery.collectionId}`
                   : '/edit'
               }
             >
@@ -98,7 +98,6 @@ function LoggedInNav({ queryRef }: Props) {
             </UnstyledLink>
             <Spacer height={12} />
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <Spacer height={12} />
             <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>
