@@ -40,8 +40,7 @@ export default function useLoginOrRedirectToOnboarding() {
 
   return useCallback(
     async ({ authMechanism, userExists }: Props): Promise<string | undefined> => {
-      // !!!!!!!!!!!!!!! DON'T FORGET ABOUT THIS
-      if (!userExists) {
+      if (userExists) {
         const { login: result } = await login({
           variables: authMechanism,
         });

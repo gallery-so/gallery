@@ -10,6 +10,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -44,10 +45,16 @@ function AddUserInfo({ next }: WizardContext) {
 
   const track = useTrack();
 
+  const { handleRefreshNfts } = useWizardState();
+
   const handleSubmit = useCallback(async () => {
-    track('Save Name & Bio', { added_bio: bio.length > 0 });
-    return onEditUser();
-  }, [bio.length, onEditUser, track]);
+    const { success } = await onEditUser();
+    if (success) {
+      track('Save Name & Bio', { added_bio: bio.length > 0 });
+      // begin pre-fetching NFTs for user before they get to the collection editor phase
+      handleRefreshNfts();
+    }
+  }, [bio.length, handleRefreshNfts, onEditUser, track]);
 
   useWizardConfig({ onNext: handleSubmit });
 

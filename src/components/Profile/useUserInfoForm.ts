@@ -83,12 +83,12 @@ export default function useUserInfoForm({
     setGeneralError('');
 
     if (usernameError) {
-      return;
+      return { success: false };
     }
 
     if (bio.length > BIO_MAX_CHAR_COUNT) {
       // No need to handle error here, since the form will mark the text as red
-      return;
+      return { success: false };
     }
 
     try {
@@ -97,12 +97,13 @@ export default function useUserInfoForm({
       } else {
         await createUser(authPayloadVariables as AuthPayloadVariables, username, bio);
       }
-
       onSuccess(username);
+      return { success: true };
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
+      return { success: false };
     }
   }, [
     usernameError,
