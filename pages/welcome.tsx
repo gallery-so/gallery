@@ -1,24 +1,15 @@
-import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
 import OnboardingFlow from 'flows/OnboardingFlow/OnboardingFlow';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { welcomeQuery } from '__generated__/welcomeQuery.graphql';
+import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
+import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 export default function Welcome() {
-  const query = useLazyLoadQuery<welcomeQuery>(
-    graphql`
-      query welcomeQuery {
-        ...GalleryAuthenticatedRouteFragment
-      }
-    `,
-    {}
-  );
+  // The onboarding flow can only be accessed if the user has been redirected from the auth pipeline,
+  // which populates the internal URL queries with necessary data to create a profile
+  const authPayloadQuery = useAuthPayloadQuery();
+  if (!authPayloadQuery) {
+    return <GalleryRedirect to="/" />;
+  }
 
-  return (
-    <GalleryAuthenticatedRoute
-      authenticatedRouteQueryRef={query}
-      element={<OnboardingFlow />}
-      navbar={false}
-      footer={false}
-    />
-  );
+  return <GalleryRoute element={<OnboardingFlow />} navbar={false} footer={false} />;
 }

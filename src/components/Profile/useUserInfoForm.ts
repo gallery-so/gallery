@@ -13,10 +13,9 @@ import {
 
 import formatError from 'errors/formatError';
 import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
-import { useRouter } from 'next/router';
-import { AuthPayloadVariables } from 'components/WalletSelector/mutations/types';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import useDebounce from 'hooks/useDebounce';
+import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
 
 type Props = {
   onSuccess: (username: string) => void;
@@ -68,16 +67,7 @@ export default function useUserInfoForm({
   const [generalError, setGeneralError] = useState('');
   const updateUser = useUpdateUser();
   const createUser = useCreateUser();
-  const { query } = useRouter();
-  const authPayloadVariables = useMemo(
-    () => ({
-      chain: 'Ethereum',
-      address: query.address,
-      nonce: query.nonce,
-      signature: query.signature,
-    }),
-    [query.address, query.nonce, query.signature]
-  );
+  const authPayloadQuery = useAuthPayloadQuery();
 
   const handleCreateOrEditUser = useCallback(async () => {
     setGeneralError('');
@@ -95,7 +85,10 @@ export default function useUserInfoForm({
       if (userId) {
         await updateUser(userId, username, bio);
       } else {
-        await createUser(authPayloadVariables as AuthPayloadVariables, username, bio);
+        if (!authPayloadQuery) {
+          throw new Error('Auth signature for creating user not found');
+        }
+        await createUser(authPayloadQuery, username, bio);
       }
       onSuccess(username);
       return { success: true };
@@ -105,16 +98,7 @@ export default function useUserInfoForm({
       }
       return { success: false };
     }
-  }, [
-    usernameError,
-    bio,
-    userId,
-    onSuccess,
-    username,
-    updateUser,
-    createUser,
-    authPayloadVariables,
-  ]);
+  }, [usernameError, bio, userId, authPayloadQuery, onSuccess, username, updateUser, createUser]);
 
   const handleUsernameChange = useCallback((username: string) => {
     setUsername(username);

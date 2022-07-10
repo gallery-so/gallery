@@ -1,9 +1,41 @@
-import { AuthPayloadVariables } from 'components/WalletSelector/mutations/types';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+import { AuthPayloadVariables } from './useAuthPayloadQuery';
 
 export default function useCreateUser() {
+  //   const [createUser] = usePromisifiedMutation<any>(
+  //     graphql`
+  //       mutation useCreateUserMutation(
+  //         $authMechanism: AuthMechanism!
+  //         $username: String!
+  //         $bio: String!
+  //       ) {
+  //         createUser(authMechanism: $authMechanism, username: $username, bio: $bio) {
+  //           __typename
+  //           ... on CreateUserPayload {
+  //             __typename
+  //           }
+  //           ... on ErrAuthenticationFailed {
+  //             __typename
+  //           }
+  //           ... on ErrDoesNotOwnRequiredToken {
+  //             __typename
+  //           }
+  //           ... on ErrUserAlreadyExists {
+  //             __typename
+  //           }
+  //           ... on ErrUsernameNotAvailable {
+  //             __typename
+  //           }
+  //           ... on ErrInvalidInput {
+  //             __typename
+  //           }
+  //         }
+  //       }
+  //     `
+  //   );
+
   const [createUser] = usePromisifiedMutation<any>(
     graphql`
       mutation useCreateUserMutation($authMechanism: AuthMechanism!, $username: String!) {
@@ -42,7 +74,8 @@ export default function useCreateUser() {
             eoa: { chainAddress: { address, chain }, nonce, signature },
           },
           username,
-          // bio, TODO: allow sending a bio when creating user
+          // TODO: enable this
+          //   bio,
         },
       });
 
