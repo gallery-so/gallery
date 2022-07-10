@@ -36,7 +36,7 @@ function AddUserInfo({ next }: WizardContext) {
   const { setNextEnabled } = useWizardValidationActions();
 
   useEffect(() => {
-    if (username.length <= 2) {
+    if (username.length < 2) {
       setNextEnabled(false);
       return;
     }

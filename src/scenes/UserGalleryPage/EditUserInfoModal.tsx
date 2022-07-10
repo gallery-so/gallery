@@ -95,7 +95,7 @@ function EditUserInfoModal({ queryRef }: Props) {
         mini
         text="Save"
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={!!usernameError || isLoading}
         loading={isLoading}
       />
     </StyledEditUserInfoModal>

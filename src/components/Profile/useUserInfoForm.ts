@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useUpdateUser from 'hooks/api/users/useUpdateUser';
 import useCreateUser from 'hooks/api/users/useCreateUser';
 
@@ -60,6 +60,7 @@ export default function useUserInfoForm({
 }: Props) {
   const [username, setUsername] = useState(existingUsername ?? '');
   const [usernameError, setUsernameError] = useState('');
+  const usernameFieldIsDirty = useRef(false);
 
   const [bio, setBio] = useState(existingBio ?? '');
 
@@ -102,6 +103,7 @@ export default function useUserInfoForm({
 
   const handleUsernameChange = useCallback((username: string) => {
     setUsername(username);
+    usernameFieldIsDirty.current = true;
   }, []);
 
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
@@ -111,7 +113,9 @@ export default function useUserInfoForm({
   // validate username
   useEffect(() => {
     async function validateUsername() {
-      if (debouncedUsername.length > 2) {
+      setGeneralError('');
+
+      if (debouncedUsername.length >= 2) {
         const clientSideUsernameError = validate(debouncedUsername, [
           required,
           minLength(2),
@@ -122,7 +126,7 @@ export default function useUserInfoForm({
 
         setUsernameError(clientSideUsernameError || '');
 
-        if (!clientSideUsernameError) {
+        if (usernameFieldIsDirty.current && !clientSideUsernameError) {
           const isUsernameAvailable = await isUsernameAvailableFetcher(debouncedUsername);
           if (!isUsernameAvailable) {
             setUsernameError('Username is taken');
