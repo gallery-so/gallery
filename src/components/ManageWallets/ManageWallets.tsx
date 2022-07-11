@@ -87,6 +87,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
           setRemovedAddress={setRemovedAddress}
+          isOnlyWalletConnected={wallets.length === 1}
         />
       ))}
       <Spacer height={16} />

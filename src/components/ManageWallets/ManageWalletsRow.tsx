@@ -13,6 +13,7 @@ type Props = {
   userSigninAddress: string;
   setErrorMessage: (message: string) => void;
   setRemovedAddress: (address: string) => void;
+  isOnlyWalletConnected: boolean;
 };
 
 function ManageWalletsRow({
@@ -21,6 +22,7 @@ function ManageWalletsRow({
   userSigninAddress,
   setErrorMessage,
   setRemovedAddress,
+  isOnlyWalletConnected,
 }: Props) {
   const removeWallet = useRemoveWallet();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
@@ -42,10 +44,7 @@ function ManageWalletsRow({
     }
   }, [setErrorMessage, removeWallet, walletId, setRemovedAddress, address]);
 
-  const showDisconnectButton = useMemo(
-    () => address !== userSigninAddress,
-    [address, userSigninAddress]
-  );
+  const showDisconnectButton = address !== userSigninAddress && !isOnlyWalletConnected;
 
   return (
     <StyledWalletRow>
