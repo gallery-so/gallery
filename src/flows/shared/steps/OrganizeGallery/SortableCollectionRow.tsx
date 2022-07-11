@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import CollectionRow from './CollectionRow';
+import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
   collectionRef: any;
@@ -14,6 +15,7 @@ function SortableCollectionRow({ collectionRef }: Props) {
     graphql`
       fragment SortableCollectionRowFragment on Collection {
         id
+        ...CollectionRowSettingsFragment
         ...CollectionRowFragment
       }
     `,
@@ -43,7 +45,10 @@ function SortableCollectionRow({ collectionRef }: Props) {
       {...attributes}
       {...listeners}
     >
-      <CollectionRow collectionRef={collection} />
+      <>
+        <CollectionRowSettings collectionRef={collection} />
+        <CollectionRow collectionRef={collection} />
+      </>
     </StyledSortableCollectionRow>
   );
 }
