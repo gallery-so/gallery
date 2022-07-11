@@ -42,12 +42,13 @@ function SortableCollectionRow({ collectionRef }: Props) {
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
-      {...attributes}
-      {...listeners}
     >
       <>
+        {/* ensures that the entire collection row is draggable, while the Settings remains clickable (and doesn't activate drag) */}
+        <div {...listeners} {...attributes}>
+          <CollectionRow collectionRef={collection} />
+        </div>
         <CollectionRowSettings collectionRef={collection} />
-        <CollectionRow collectionRef={collection} />
       </>
     </StyledSortableCollectionRow>
   );
