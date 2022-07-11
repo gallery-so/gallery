@@ -50,19 +50,17 @@ function Auth({ queryRef }: Props) {
   // Before the welcome screen, we should preload images so that the animation is smooth
   useEffect(preloadImages, []);
 
-  if (viewer?.__typename === 'Viewer') {
+  if (viewer?.__typename === 'Viewer' && viewer.user) {
     // If user exists in DB, send them to their profile
-    if (viewer.user?.username) {
+    if (viewer.user.username) {
       if (isFeatureEnabled(FeatureFlag.FEED, query)) {
         return <GalleryRedirect to="/home" />;
       }
-      return <GalleryRedirect to={`/${viewer.user?.username}`} />;
+      return <GalleryRedirect to={`/${viewer.user.username}`} />;
     }
 
-    // If user is authenticated but hasn't set their username yet.
-    // we should continue to take them through the welcome flow.
-    // this can happen if a user signs up but hasn't set their username yet.
-    return <GalleryRedirect to="/welcome" />;
+    // This should never happen
+    throw new Error('Error: user without a username. Please contact support.');
   }
 
   return (

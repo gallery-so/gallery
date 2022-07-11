@@ -20,7 +20,7 @@ const useTrackAuthEvent = () => {
 const AUTH_MODE_SIGN_IN = 'Sign In';
 const AUTH_MODE_ADD_WALLET = 'Add Wallet';
 
-export const useTrackCreateUserSuccess = (walletName: string) => {
+export const useTrackCreateUserSuccess = (walletName = 'unknown') => {
   const trackAuthEvent = useTrackAuthEvent();
 
   return useCallback(() => {
