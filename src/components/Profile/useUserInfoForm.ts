@@ -16,6 +16,7 @@ import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import useDebounce from 'hooks/useDebounce';
 import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
+import { useTrackCreateUserSuccess } from 'contexts/analytics/authUtil';
 
 type Props = {
   onSuccess: (username: string) => void;
@@ -69,6 +70,9 @@ export default function useUserInfoForm({
   const updateUser = useUpdateUser();
   const createUser = useCreateUser();
   const authPayloadQuery = useAuthPayloadQuery();
+  const trackCreateUserSuccess = useTrackCreateUserSuccess(
+    authPayloadQuery?.userFriendlyWalletName
+  );
 
   const handleCreateOrEditUser = useCallback(async () => {
     setGeneralError('');
@@ -90,6 +94,7 @@ export default function useUserInfoForm({
           throw new Error('Auth signature for creating user not found');
         }
         await createUser(authPayloadQuery, username, bio);
+        trackCreateUserSuccess();
       }
       onSuccess(username);
       return { success: true };
@@ -99,7 +104,17 @@ export default function useUserInfoForm({
       }
       return { success: false };
     }
-  }, [usernameError, bio, userId, authPayloadQuery, onSuccess, username, updateUser, createUser]);
+  }, [
+    usernameError,
+    bio,
+    userId,
+    onSuccess,
+    username,
+    updateUser,
+    authPayloadQuery,
+    createUser,
+    trackCreateUserSuccess,
+  ]);
 
   const handleUsernameChange = useCallback((username: string) => {
     setUsername(username);

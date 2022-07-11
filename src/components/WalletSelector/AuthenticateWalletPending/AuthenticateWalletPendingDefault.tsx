@@ -77,6 +77,7 @@ function AuthenticateWalletPendingDefault({
           },
         },
         userExists,
+        userFriendlyWalletName,
       });
 
       if (userExists && userId) {

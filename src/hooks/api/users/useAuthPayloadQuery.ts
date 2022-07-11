@@ -5,6 +5,7 @@ export type AuthPayloadVariables = {
   address: string;
   nonce: string;
   signature: string;
+  userFriendlyWalletName: string;
 };
 
 export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
@@ -13,7 +14,8 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   if (
     typeof query.address !== 'string' ||
     typeof query.nonce !== 'string' ||
-    typeof query.signature !== 'string'
+    typeof query.signature !== 'string' ||
+    Array.isArray(query.userFriendlyWalletName)
   ) {
     return null;
   }
@@ -23,5 +25,6 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
     address: query.address,
     nonce: query.nonce,
     signature: query.signature,
+    userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
   };
 }

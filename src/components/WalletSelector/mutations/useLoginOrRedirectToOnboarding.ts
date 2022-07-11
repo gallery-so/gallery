@@ -34,12 +34,17 @@ export default function useLoginOrRedirectToOnboarding() {
   type Props = {
     authMechanism: useLoginOrRedirectToOnboardingMutation$variables;
     userExists: boolean;
+    userFriendlyWalletName?: string;
   };
 
   const { push } = useRouter();
 
   return useCallback(
-    async ({ authMechanism, userExists }: Props): Promise<string | undefined> => {
+    async ({
+      authMechanism,
+      userExists,
+      userFriendlyWalletName = 'unknown',
+    }: Props): Promise<string | undefined> => {
       if (userExists) {
         const { login: result } = await login({
           variables: authMechanism,
@@ -69,6 +74,7 @@ export default function useLoginOrRedirectToOnboarding() {
                 address: authMechanism.mechanism.eoa.chainAddress.address,
                 nonce: authMechanism.mechanism.eoa.nonce,
                 signature: authMechanism.mechanism.eoa.signature,
+                userFriendlyWalletName,
               },
             },
             '/welcome'

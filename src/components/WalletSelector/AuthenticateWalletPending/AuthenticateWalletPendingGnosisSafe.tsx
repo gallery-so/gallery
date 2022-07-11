@@ -58,6 +58,7 @@ function AuthenticateWalletPendingGnosisSafe({
           mechanism: { gnosisSafe: { address, nonce } },
         },
         userExists,
+        userFriendlyWalletName: 'Gnosis Safe',
       });
 
       if (userExists) {
