@@ -83,9 +83,13 @@ function CollectionRow({ collectionRef, className }: Props) {
       <Header>
         <TextContainer>
           <TitleS>
-            {unescapedCollectionName} <StyledBullet>&bull;</StyledBullet>{' '}
+            {unescapedCollectionName.trim() ? (
+              <>
+                {unescapedCollectionName} <StyledBullet>&bull;</StyledBullet>{' '}
+              </>
+            ) : null}
             <NumberPiecesText>
-              {tokens.length} {tokens.length == 1 ? 'piece' : 'pieces'}
+              {tokens.length} {tokens.length === 1 ? 'piece' : 'pieces'}
             </NumberPiecesText>
           </TitleS>
           <StyledBaseM>

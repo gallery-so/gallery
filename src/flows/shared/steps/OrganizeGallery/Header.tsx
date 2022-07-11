@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
-import Button from 'components/core/Button/Button';
+import Button from 'components/core/Button/DeprecatedButton';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
   const handleAddCollection = useCallback(() => {
