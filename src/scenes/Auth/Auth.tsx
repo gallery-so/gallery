@@ -59,10 +59,8 @@ function Auth({ queryRef }: Props) {
       return <GalleryRedirect to={`/${viewer.user.username}`} />;
     }
 
-    // If user is authenticated but hasn't set their username yet.
-    // we should continue to take them through the welcome flow.
-    // this can happen if a user signs up but hasn't set their username yet.
-    return <GalleryRedirect to="/welcome" />;
+    // This should never happen
+    throw new Error('Error: user without a username. Please contact support.');
   }
 
   return (
