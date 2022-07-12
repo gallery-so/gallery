@@ -29,8 +29,8 @@ export const openGraphMetaTags = ({
     property: 'twitter:image',
     content: `${baseurl}?${new URLSearchParams({
       path: previewPath,
-      width: '600',
-      height: '314',
+      width: '1012',
+      height: '506',
       fallback:
         'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
     }).toString()}`,
