@@ -23,11 +23,6 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getMetaMaskButton().click();
     home.acceptMetamaskAccessRequest();
-
-    cy.waitUntil(() => {
-      return cy.get('button').contains('My Gallery').should('be.exist');
-    });
-
     cy.url().should('include', `/home`);
   });
 });
