@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { CollectionRowDraggingFragment$key } from '__generated__/CollectionRowDraggingFragment.graphql';
 import CollectionRow from './CollectionRow';
+import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
   collectionRef: CollectionRowDraggingFragment$key;
@@ -13,6 +14,7 @@ function CollectionRowDragging({ collectionRef }: Props) {
   const collection = useFragment(
     graphql`
       fragment CollectionRowDraggingFragment on Collection {
+        ...CollectionRowSettingsFragment
         ...CollectionRowFragment
       }
     `,
@@ -22,7 +24,10 @@ function CollectionRowDragging({ collectionRef }: Props) {
   const isMouseUp = useMouseUp();
   return (
     <StyledCollectionRowDragging>
-      <StyledCollectionRow collectionRef={collection} isMouseUp={isMouseUp} />
+      <>
+        <CollectionRowSettings collectionRef={collection} />
+        <StyledCollectionRow collectionRef={collection} isMouseUp={isMouseUp} />
+      </>
     </StyledCollectionRowDragging>
   );
 }

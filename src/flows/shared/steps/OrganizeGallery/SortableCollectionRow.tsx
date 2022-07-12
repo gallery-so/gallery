@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import CollectionRow from './CollectionRow';
+import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
   collectionRef: any;
@@ -14,6 +15,7 @@ function SortableCollectionRow({ collectionRef }: Props) {
     graphql`
       fragment SortableCollectionRowFragment on Collection {
         id
+        ...CollectionRowSettingsFragment
         ...CollectionRowFragment
       }
     `,
@@ -40,10 +42,14 @@ function SortableCollectionRow({ collectionRef }: Props) {
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
-      {...attributes}
-      {...listeners}
     >
-      <CollectionRow collectionRef={collection} />
+      <>
+        {/* ensures that the entire collection row is draggable, while the Settings remains clickable (and doesn't activate drag) */}
+        <div {...listeners} {...attributes}>
+          <CollectionRow collectionRef={collection} />
+        </div>
+        <CollectionRowSettings collectionRef={collection} />
+      </>
     </StyledSortableCollectionRow>
   );
 }

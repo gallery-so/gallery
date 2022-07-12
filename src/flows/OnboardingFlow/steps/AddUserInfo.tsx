@@ -9,8 +9,8 @@ import Spacer from 'components/core/Spacer/Spacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { AddUserInfoQuery } from '__generated__/AddUserInfoQuery.graphql';
+import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -25,51 +25,36 @@ function useWizardConfig({ onNext }: ConfigProps) {
 }
 
 function AddUserInfo({ next }: WizardContext) {
-  // TODO(Terence): Investigate using a preloaded query here to ensure the user
-  // never gets a loading state when navigating to the next step.
-  const { viewer } = useLazyLoadQuery<AddUserInfoQuery>(
-    graphql`
-      query AddUserInfoQuery {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-              bio
-              username
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
+  const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
+    useUserInfoForm({
+      onSuccess: next,
+      userId: undefined,
+      existingUsername: '',
+      existingBio: '',
+    });
 
-  if (!viewer?.user) {
-    throw new Error('Entered the AddUserInfo step without a logged in user in the cache');
-  }
+  const { setNextEnabled } = useWizardValidationActions();
 
-  const {
-    username,
-    onUsernameChange,
-    usernameError,
-    onClearUsernameError,
-    bio,
-    onBioChange,
-    generalError,
-    onEditUser,
-  } = useUserInfoForm({
-    onSuccess: next,
-    userId: viewer.user.dbid,
-    existingUsername: viewer.user.username ?? undefined,
-    existingBio: viewer.user.bio ?? undefined,
-  });
+  useEffect(() => {
+    if (username.length < 2) {
+      setNextEnabled(false);
+      return;
+    }
+    setNextEnabled(!usernameError);
+  }, [setNextEnabled, username, usernameError]);
 
   const track = useTrack();
 
+  const { handleRefreshNfts } = useWizardState();
+
   const handleSubmit = useCallback(async () => {
-    track('Save Name & Bio', { added_bio: bio.length > 0 });
-    return onEditUser();
-  }, [bio.length, onEditUser, track]);
+    const { success } = await onEditUser();
+    if (success) {
+      track('Save Name & Bio', { added_bio: bio.length > 0 });
+      // begin pre-fetching NFTs for user before they get to the collection editor phase
+      handleRefreshNfts();
+    }
+  }, [bio.length, handleRefreshNfts, onEditUser, track]);
 
   useWizardConfig({ onNext: handleSubmit });
 
@@ -80,7 +65,6 @@ function AddUserInfo({ next }: WizardContext) {
         onSubmit={handleSubmit}
         username={username}
         usernameError={usernameError}
-        clearUsernameError={onClearUsernameError}
         onUsernameChange={onUsernameChange}
         bio={bio}
         onBioChange={onBioChange}

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import Spacer from 'components/core/Spacer/Spacer';
 import SortableCollectionRow from './SortableCollectionRow';
-import CollectionRowSettings from './CollectionRowSettings';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowWrapperFragment$key } from '__generated__/CollectionRowWrapperFragment.graphql';
 
@@ -14,7 +13,6 @@ function CollectionRowWrapper({ collectionRef }: Props) {
   const collection = useFragment(
     graphql`
       fragment CollectionRowWrapperFragment on Collection {
-        ...CollectionRowSettingsFragment
         ...SortableCollectionRowFragment
       }
     `,
@@ -23,7 +21,6 @@ function CollectionRowWrapper({ collectionRef }: Props) {
 
   return (
     <StyledCollectionRowWrapper>
-      <CollectionRowSettings collectionRef={collection} />
       <SortableCollectionRow collectionRef={collection} />
       <Spacer height={16} />
     </StyledCollectionRowWrapper>
