@@ -49,9 +49,7 @@ export default function LandingPage() {
       </StyledButtonContainer>
       <Spacer height={24} />
       <StyledLinkContainer>
-        <NavLink to="/members" dataTestId="explore-button">
-          Members
-        </NavLink>
+        <NavLink to="/members">Members</NavLink>
         <Spacer width={8} />
         <BaseS>·</BaseS>
         <Spacer width={8} />
