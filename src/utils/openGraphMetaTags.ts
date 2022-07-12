@@ -1,3 +1,4 @@
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from 'constants/opengraph';
 import { MetaTagProps } from 'pages/_app';
 import isProduction from './isProduction';
 
@@ -29,8 +30,8 @@ export const openGraphMetaTags = ({
     property: 'twitter:image',
     content: `${baseurl}?${new URLSearchParams({
       path: previewPath,
-      width: '600',
-      height: '314',
+      width: WIDTH_OPENGRAPH_IMAGE.toString(),
+      height: HEIGHT_OPENGRAPH_IMAGE.toString(),
       fallback:
         'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
     }).toString()}`,

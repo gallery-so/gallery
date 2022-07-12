@@ -1,6 +1,6 @@
 import { pageGutter } from 'components/core/breakpoints';
 import Markdown from 'components/core/Markdown/Markdown';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import { BaseXL, TitleL, TitleM } from 'components/core/Text/Text';
 import unescape from 'lodash/unescape';
 import styled from 'styled-components';
 
@@ -30,12 +30,14 @@ export const SingleOpenGraphPreview = ({
             </StyledCollectorNotes>
           )}
         </StyledGalleryContainer>
-        <StyledUsername>{unescape(title)}</StyledUsername>
-        {description && (
-          <StyledDescription>
-            <Markdown text={unescape(description)} />
-          </StyledDescription>
-        )}
+        <StyledTitleContainer>
+          <TitleL>{unescape(title)}</TitleL>
+          {description && (
+            <StyledDescription>
+              <Markdown text={unescape(description)} />
+            </StyledDescription>
+          )}
+        </StyledTitleContainer>
       </StyledContainer>
     </>
   );
@@ -47,20 +49,20 @@ const StyledContainer = styled.div`
   min-height: 200px;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  padding: ${pageGutter.mobile}px;
-
+  padding: ${pageGutter.tablet}px;
   background-color: #ffffff;
+  position: relative;
 `;
 
 const StyledGalleryContainer = styled.div<{ hasCollectorNote?: boolean }>`
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
-  gap: ${pageGutter.mobile}px;
+  gap: ${pageGutter.tablet}px;
   align-items: center;
 
   justify-content: center;
-  max-width: 400px;
+  max-width: 80%;
   margin: 0 auto;
 
   grid-auto-columns: ${({ hasCollectorNote }) => (hasCollectorNote ? `minmax(0, 1fr)` : `auto`)};
@@ -68,23 +70,25 @@ const StyledGalleryContainer = styled.div<{ hasCollectorNote?: boolean }>`
 
 const StyledImage = styled.img`
   max-width: 100%;
-  max-height: 190px;
+  max-height: 265px;
   width: auto;
   height: auto;
   display: block;
   margin: 0 0 0 auto;
 `;
 
-const StyledUsername = styled(TitleM)`
-  font-style: normal;
+const StyledTitleContainer = styled.div`
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
 `;
 
-const StyledDescription = styled(BaseM)`
+const StyledDescription = styled(BaseXL)`
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
-  max-width: 300px;
+  max-width: 600px;
 `;
 
 const StyledCollectorNotes = styled(TitleM)`

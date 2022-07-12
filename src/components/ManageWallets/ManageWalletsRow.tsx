@@ -1,6 +1,6 @@
 import TextButton from 'components/core/Button/TextButton';
 import { BaseM } from 'components/core/Text/Text';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { truncateAddress } from 'utils/wallet';
 import { isWeb3Error } from 'types/Error';
@@ -34,7 +34,7 @@ function ManageWalletsRow({
       setIsDisconnecting(true);
       await removeWallet(walletId);
       setRemovedAddress(address);
-    } catch (error: unknown) {
+    } catch (error) {
       setIsDisconnecting(false);
       if (isWeb3Error(error)) {
         setErrorMessage('Error disconnecting wallet');

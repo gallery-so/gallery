@@ -4,6 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { UsernameOpengraphQuery } from '__generated__/UsernameOpengraphQuery.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from 'utils/removeNullValues';
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from 'constants/opengraph';
 
 export default function OpenGraphUserPage() {
   const { query } = useRouter();
@@ -54,8 +55,8 @@ export default function OpenGraphUserPage() {
       .map((token) => token?.urls.large)
   ).slice(0, 4);
 
-  const width = parseInt(query.width as string) || 600;
-  const height = parseInt(query.height as string) || 300;
+  const width = parseInt(query.width as string) || WIDTH_OPENGRAPH_IMAGE;
+  const height = parseInt(query.height as string) || HEIGHT_OPENGRAPH_IMAGE;
 
   return (
     <>
