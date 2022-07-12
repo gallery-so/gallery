@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import Markdown from 'components/core/Markdown/Markdown';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 
 import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
@@ -159,16 +159,18 @@ export function CustomizedGeneralMembershipMintPage({
           </StyledIneligibleMessageWrapper>
           <Spacer height={24} />
           <StyledSecondaryLink href="/auth">
-            <Button text="Create Account" />
+            <Button>Create Account</Button>
           </StyledSecondaryLink>
         </>
       );
     }
 
     return active ? (
-      <Button text={buttonText} disabled={!isMintButtonEnabled} onClick={handleMintButtonClick} />
+      <Button disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}>
+        {buttonText}
+      </Button>
     ) : (
-      <Button text={buttonText} onClick={handleConnectWalletButtonClick} />
+      <Button onClick={handleConnectWalletButtonClick}>{buttonText}</Button>
     );
   }, [
     active,

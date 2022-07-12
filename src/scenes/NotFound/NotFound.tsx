@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { TitleL, BaseM } from 'components/core/Text/Text';
-import Button from 'components/core/Button/DeprecatedButton';
+import { ButtonLink } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
@@ -20,9 +20,7 @@ function NotFound({ resource = 'user' }: Props) {
         <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
       </StyledBody>
       <Spacer height={32} />
-      <GalleryLink to="/">
-        <StyledButton text="Take me back" />
-      </GalleryLink>
+      <ButtonLink href="/">Take me back</ButtonLink>
     </StyledNotFound>
   );
 }
@@ -38,10 +36,6 @@ const StyledBody = styled(BaseM)`
   max-width: 300px;
   white-space: pre-wrap;
   text-align: center;
-`;
-
-const StyledButton = styled(Button)`
-  padding: 0px 24px;
 `;
 
 export default NotFound;

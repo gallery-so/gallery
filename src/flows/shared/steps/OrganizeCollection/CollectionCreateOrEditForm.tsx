@@ -5,7 +5,7 @@ import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import Spacer from 'components/core/Spacer/Spacer';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -170,13 +170,9 @@ function CollectionCreateOrEditForm({
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
       <Spacer height={12} />
       <ButtonContainer>
-        <Button
-          mini
-          text={buttonText}
-          onClick={handleClick}
-          disabled={isLoading}
-          loading={isLoading}
-        />
+        <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
+          {buttonText}
+        </Button>
       </ButtonContainer>
     </StyledCollectionEditInfoForm>
   );

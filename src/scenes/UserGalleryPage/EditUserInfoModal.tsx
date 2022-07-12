@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import breakpoints from 'components/core/breakpoints';
@@ -91,13 +91,9 @@ function EditUserInfoModal({ queryRef }: Props) {
 
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
       <Spacer height={12} />
-      <StyledButton
-        mini
-        text="Save"
-        onClick={handleSubmit}
-        disabled={!!usernameError || isLoading}
-        loading={isLoading}
-      />
+      <StyledButton onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
+        Save
+      </StyledButton>
     </StyledEditUserInfoModal>
   );
 }

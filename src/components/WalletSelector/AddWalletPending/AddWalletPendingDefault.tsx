@@ -1,7 +1,7 @@
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -237,10 +237,11 @@ function AddWalletPendingDefault({
         </BaseM>
         <Spacer height={24} />
         <StyledButton
-          text={isConnecting ? 'Connecting...' : 'Confirm'}
-          onClick={async () => attemptAddWallet(account.toLowerCase(), signer)}
+          onClick={() => attemptAddWallet(account.toLowerCase(), signer)}
           disabled={isConnecting}
-        />
+        >
+          {isConnecting ? 'Connecting...' : 'Confirm'}
+        </StyledButton>
       </div>
     );
   }

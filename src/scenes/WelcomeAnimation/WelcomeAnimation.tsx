@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 
 import Image from './Image';
@@ -103,7 +103,7 @@ export default function WelcomeAnimation({ next }: Props) {
             arrange, and display your collection exactly how it was meant to be.
           </StyledBodyText>
           <Spacer height={16} />
-          <StyledButton text="Enter Gallery" onClick={handleClick} />
+          <StyledButton onClick={handleClick}>Enter Gallery</StyledButton>
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (

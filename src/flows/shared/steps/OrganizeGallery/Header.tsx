@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 
 function Header({ wizard: { push } }: WizardComponentProps) {
   const handleAddCollection = useCallback(() => {
@@ -18,7 +18,9 @@ function Header({ wizard: { push } }: WizardComponentProps) {
       </TitleContainer>
       <OptionsContainer>
         <Spacer width={16} />
-        <Button text="Add" type="secondary" onClick={handleAddCollection} />
+        <Button variant="secondary" onClick={handleAddCollection}>
+          Add
+        </Button>
       </OptionsContainer>
     </StyledHeader>
   );
