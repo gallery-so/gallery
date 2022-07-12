@@ -11,11 +11,11 @@ type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
 
 export const UnstyledLink = ({ href, ...props }: Props) => (
   <Link href={href} passHref>
-    <StyledLink {...props} />
+    <UnstyledAnchor {...props} />
   </Link>
 );
 
-export const StyledLink = styled.a`
+export const UnstyledAnchor = styled.a`
   display: inherit;
   color: inherit;
   text-decoration: inherit;
