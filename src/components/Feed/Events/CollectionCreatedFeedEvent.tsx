@@ -26,7 +26,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
         eventTime
-        owner @required(action: THROW) {
+        owner {
           username
         }
         collection @required(action: THROW) {
@@ -50,7 +50,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [tokens]) as TokenToPreview[];
 
-  const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
+  const collectionPagePath = `/${event.owner?.username}/${event.collection.dbid}`;
   const track = useTrack();
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
@@ -58,7 +58,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
 
   const collectionName = unescape(event.collection.name ?? '');
 
-  if (!tokens.length) {
+  if (!tokens.length || !event.owner) {
     return null;
   }
 
