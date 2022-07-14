@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { BaseM } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import TrashIcon from 'src/icons/Trash';
 
 type Props = {
   id: string; // id of staged item to remove
@@ -18,14 +17,10 @@ function UnstageButton({ id, className }: Props) {
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
-      <StyledBaseM color={colors.white}>REMOVE</StyledBaseM>
+      <TrashIcon />
     </StyledUnstageButton>
   );
 }
-
-const StyledBaseM = styled(BaseM)`
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-`;
 
 export const StyledUnstageButton = styled.button`
   position: absolute;
