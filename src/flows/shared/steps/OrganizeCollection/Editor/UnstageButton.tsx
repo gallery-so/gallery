@@ -18,10 +18,14 @@ function UnstageButton({ id, className }: Props) {
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>
-      <BaseM color={colors.white}>REMOVE</BaseM>
+      <StyledBaseM color={colors.white}>REMOVE</StyledBaseM>
     </StyledUnstageButton>
   );
 }
+
+const StyledBaseM = styled(BaseM)`
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+`;
 
 export const StyledUnstageButton = styled.button`
   position: absolute;
@@ -34,4 +38,5 @@ export const StyledUnstageButton = styled.button`
   z-index: 10;
   cursor: pointer;
 `;
+
 export default UnstageButton;
