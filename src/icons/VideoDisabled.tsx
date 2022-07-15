@@ -5,7 +5,7 @@ type Props = {
   color?: string;
 };
 
-export default function Video({ className, color = colors.shadow }: Props) {
+export default function VideoDisabled({ className, color = colors.shadow }: Props) {
   return (
     <svg
       className={className}
@@ -16,15 +16,16 @@ export default function Video({ className, color = colors.shadow }: Props) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M10.6666 8.00012L14.3333 11.0001V5.00012L10.6666 8.00012Z"
+        d="M10.6668 10.3337V11.3337L9.66683 12.3337H2.3335L1.3335 11.3337V4.66699L2.3335 3.66699H4.00016"
         stroke={color}
         stroke-miterlimit="10"
       />
       <path
-        d="M2.33337 3.66675H9.66671L10.6667 4.66675V11.3334L9.66671 12.3334H2.33337L1.33337 11.3334V4.66675L2.33337 3.66675Z"
+        d="M6.6665 3.66699H9.6665L10.6665 4.66699V7.33366H11.3332L14.9998 4.66699V10.3337"
         stroke={color}
         stroke-miterlimit="10"
       />
+      <path d="M2.3335 2.00024L13.6668 13.3336" stroke={color} stroke-miterlimit="10" />
     </svg>
   );
 }
