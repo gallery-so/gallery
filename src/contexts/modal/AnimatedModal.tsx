@@ -103,7 +103,7 @@ const fadeOut = keyframes`
 const _ToggleFade = styled.div<{ isActive: boolean }>`
   // keeps modal on top over other elements with z-index https://stackoverflow.com/questions/50883309/how-come-css-animations-change-z-index
   position: relative;
-  z-index: 10;
+  z-index: 11;
   animation: ${({ isActive }) =>
     css`
       ${isActive ? fadeIn : fadeOut} ${transitions.cubic}
@@ -137,7 +137,7 @@ const Overlay = styled.div`
   opacity: 0.95;
 
   // should appear above rest of site
-  z-index: 1;
+  z-index: 10;
 
   // fixes unusual opacity transition bug: https://stackoverflow.com/a/22648685
   -webkit-backface-visibility: hidden;
@@ -156,7 +156,7 @@ const StyledContentContainer = styled.div<{ isFullPage: boolean }>`
   }
 
   // should appear above the overlay
-  z-index: 2;
+  z-index: 10;
 `;
 
 const StyledHeader = styled.div`

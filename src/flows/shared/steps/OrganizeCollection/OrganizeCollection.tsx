@@ -78,6 +78,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
             galleryId={galleryId}
             stagedItems={stagedItems}
             layout={collectionMetadata.layout}
+            tokenSettings={collectionMetadata.tokenSettings}
           />
         ),
         headerText: 'Name and describe your collection',

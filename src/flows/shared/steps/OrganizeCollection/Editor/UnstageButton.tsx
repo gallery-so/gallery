@@ -30,7 +30,7 @@ export const StyledUnstageButton = styled.button`
 
   background: none;
   border: none;
-  z-index: 10;
+  z-index: 4;
   cursor: pointer;
 `;
 
