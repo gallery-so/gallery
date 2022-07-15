@@ -7,8 +7,9 @@ import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTo
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;
 export type StagedItemsState = StagingItem[];
+export type TokenSettings = Record<TokenId, Boolean>;
 export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'> & {
-  tokenSettings: Record<TokenId, Boolean>;
+  tokenSettings: TokenSettings;
 };
 
 export type CollectionEditorState = {

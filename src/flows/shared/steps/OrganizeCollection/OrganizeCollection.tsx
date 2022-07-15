@@ -51,7 +51,12 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
       setOnNext(async () => {
         // Errors will be handled in the catch block within `WizardFooter.tsx`
         try {
-          await updateCollection(collectionIdBeingEdited, stagedItems, collectionMetadata.layout);
+          await updateCollection({
+            collectionId: collectionIdBeingEdited,
+            stagedNfts: stagedItems,
+            collectionLayout: collectionMetadata.layout,
+            tokenSettings: collectionMetadata.tokenSettings,
+          });
         } catch {
           // TODO: display error toast here
         }
