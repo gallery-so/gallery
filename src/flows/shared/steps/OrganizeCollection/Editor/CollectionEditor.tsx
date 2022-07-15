@@ -52,6 +52,9 @@ function CollectionEditor({ viewerRef }: Props) {
                   name @required(action: THROW)
                   lastUpdated @required(action: THROW)
                 }
+                tokenSettings {
+                  renderLive
+                }
               }
               layout {
                 columns
@@ -109,21 +112,29 @@ function CollectionEditor({ viewerRef }: Props) {
     [collectionBeingEdited]
   );
 
-  // Set collection layout if we are editing an existing collection
-  const { setColumns } = useCollectionEditorActions();
+  // Load in state from server if we're editing an existing collection
+  const { setColumns, setTokenLiveDisplay } = useCollectionEditorActions();
   const mountRef = useRef(false);
 
   useEffect(() => {
     if (collectionBeingEdited) {
+      // handle column setting
       const currentCollectionColumns = collectionBeingEdited.layout?.columns ?? 0;
       const columns = isValidColumns(currentCollectionColumns)
         ? currentCollectionColumns
         : DEFAULT_COLUMNS;
       setColumns(columns);
+
+      // handle live render setting
+      const tokensInCollection = collectionBeingEdited.tokens ?? [];
+      const tokenIdsWithLiveDisplay = removeNullValues(tokensInCollection)
+        .filter((token) => token.tokenSettings?.renderLive)
+        .map((token) => token.token.dbid);
+      setTokenLiveDisplay(tokenIdsWithLiveDisplay, true);
     }
 
     mountRef.current = true;
-  }, [collectionBeingEdited, setColumns]);
+  }, [collectionBeingEdited, setColumns, setTokenLiveDisplay]);
 
   const sidebarTokensRef = useRef<SidebarTokensState>({});
   useEffect(() => {

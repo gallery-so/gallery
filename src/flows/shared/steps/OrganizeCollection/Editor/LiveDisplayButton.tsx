@@ -13,16 +13,16 @@ type Props = {
 
 export default function LiveDisplayButton({ id }: Props) {
   const collectionMetadata = useCollectionMetadataState();
-  const { setSingleTokenLiverender } = useCollectionEditorActions();
+  const { setTokenLiveDisplay } = useCollectionEditorActions();
 
   const isEnabled = useMemo(() => {
     return collectionMetadata.tokenSettings[id];
   }, [collectionMetadata.tokenSettings, id]);
 
   return isEnabled ? (
-    <StyledVideoDisabledIcon color="white" onClick={() => setSingleTokenLiverender(id, false)} />
+    <StyledVideoDisabledIcon color="white" onClick={() => setTokenLiveDisplay(id, false)} />
   ) : (
-    <StyledVideoEnabledIcon color="white" onClick={() => setSingleTokenLiverender(id, true)} />
+    <StyledVideoEnabledIcon color="white" onClick={() => setTokenLiveDisplay(id, true)} />
   );
 }
 

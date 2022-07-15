@@ -66,7 +66,7 @@ type CollectionEditorActions = {
   incrementColumns: () => void;
   decrementColumns: () => void;
   setColumns: (columns: number) => void;
-  setSingleTokenLiverender: (id: string, active: boolean) => void;
+  setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
 };
 
 const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
@@ -164,15 +164,36 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     }));
   }, []);
 
-  const setSingleTokenLiverender = useCallback((id: string, active: boolean) => {
-    setCollectionMetadataState((previous) => ({
-      ...previous,
-      tokenSettings: {
-        ...previous.tokenSettings,
-        [id]: active,
-      },
-    }));
-  }, []);
+  const setTokenLiveDisplay: CollectionEditorActions['setTokenLiveDisplay'] = useCallback(
+    (idOrIds, active) => {
+      if (typeof idOrIds === 'string') {
+        setCollectionMetadataState((previous) => ({
+          ...previous,
+          tokenSettings: {
+            ...previous.tokenSettings,
+            [idOrIds]: active,
+          },
+        }));
+      }
+
+      if (Array.isArray(idOrIds)) {
+        setCollectionMetadataState((previous) => {
+          const newTokenSettings: TokenSettings = {};
+          for (const id of idOrIds) {
+            newTokenSettings[id] = active;
+          }
+          return {
+            ...previous,
+            tokenSettings: {
+              ...previous.tokenSettings,
+              ...newTokenSettings,
+            },
+          };
+        });
+      }
+    },
+    []
+  );
 
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
@@ -185,7 +206,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       incrementColumns,
       decrementColumns,
       setColumns,
-      setSingleTokenLiverender,
+      setTokenLiveDisplay,
     }),
     [
       setSidebarTokens,
@@ -197,7 +218,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       incrementColumns,
       decrementColumns,
       setColumns,
-      setSingleTokenLiverender,
+      setTokenLiveDisplay,
     ]
   );
 
