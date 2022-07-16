@@ -3,7 +3,6 @@ import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import NftPreview from './NftPreview';
 
 type Props = {
@@ -52,7 +51,7 @@ function GalleryNftPreviewWrapper({ galleryNftRef }: Props) {
     galleryNftRef
   );
 
-  const { token, collection } = collectionTokenRef;
+  const { collection } = collectionTokenRef;
 
   const columns = useCollectionColumns(collection);
 

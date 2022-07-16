@@ -6,10 +6,9 @@ import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
-  maxHeight: number;
 };
 
-function NftDetailVideo({ mediaRef, maxHeight }: Props) {
+function NftDetailVideo({ mediaRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -32,17 +31,16 @@ function NftDetailVideo({ mediaRef, maxHeight }: Props) {
       playsInline
       controls
       onLoadedData={setContentIsLoaded}
-      maxHeight={maxHeight}
     />
   );
 }
 
-export const StyledVideo = styled.video<{ maxHeight: number }>`
+export const StyledVideo = styled.video`
   width: 100%;
   height: 100%;
   border: none;
 
-  max-height: ${({ maxHeight }) => maxHeight}px;
+  max-height: inherit;
 `;
 
 export default NftDetailVideo;

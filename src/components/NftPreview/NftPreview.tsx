@@ -99,7 +99,7 @@ function NftPreview({
 
   const PreviewAsset = useMemo(() => {
     if (isRenderLive && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo mediaRef={token.media} maxHeight={1000} />;
+      return <NftDetailVideo mediaRef={token.media} />;
     }
     if (isRenderLive && token.media?.__typename === 'HtmlMedia') {
       return <NftDetailAnimation mediaRef={token} />;

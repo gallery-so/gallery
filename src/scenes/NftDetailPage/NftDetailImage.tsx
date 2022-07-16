@@ -55,7 +55,6 @@ function NftDetailImage({ tokenRef, maxHeight }: Props) {
         playsInline
         controls
         onLoadedData={setContentIsLoaded}
-        maxHeight={maxHeight}
       />
     );
   }

@@ -61,7 +61,7 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
     case 'HtmlMedia':
       return <NftDetailAnimation mediaRef={token.token} />;
     case 'VideoMedia':
-      return <NftDetailVideo mediaRef={token.token.media} maxHeight={maxHeight} />;
+      return <NftDetailVideo mediaRef={token.token.media} />;
     case 'AudioMedia':
       return <NftDetailAudio tokenRef={token.token} />;
     case 'ImageMedia':
