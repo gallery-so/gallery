@@ -69,7 +69,6 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     >
       <NftPreview
         tokenRef={token}
-        nftPreviewWidth={'100%'}
         previewSize={maxWidth}
         onClick={handleClick}
         hideLabelOnMobile={isMobile}
@@ -79,6 +78,8 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
 }
 
 const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number }>`
+  display: flex;
+  width: 100%;
   ${StyledImageWithLoading} {
     max-height: calc((100vw - 64px) / 3);
     max-width: ${({ maxWidth }) => maxWidth}px;
