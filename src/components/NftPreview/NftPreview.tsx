@@ -24,6 +24,7 @@ type Props = {
   ownerUsername?: string;
   onClick?: () => void;
   hideLabelOnMobile?: boolean;
+  disableLiverender?: boolean;
 };
 
 function NftPreview({
@@ -32,6 +33,7 @@ function NftPreview({
   previewSize,
   onClick,
   hideLabelOnMobile = false,
+  disableLiverender = false,
 }: Props) {
   const { token, collection, tokenSettings } = useFragment(
     graphql`
@@ -100,13 +102,22 @@ function NftPreview({
     [onClick]
   );
 
-  const isRenderLive = tokenSettings?.renderLive;
+  const shouldLiverender = tokenSettings?.renderLive;
 
   const PreviewAsset = useMemo(() => {
-    if (isRenderLive && token.media?.__typename === 'VideoMedia') {
+    if (disableLiverender) {
+      return (
+        <NftPreviewAsset
+          tokenRef={token}
+          // we'll request images at double the size of the element so that it looks sharp on retina
+          size={previewSize * 2}
+        />
+      );
+    }
+    if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo mediaRef={token.media} hideControls />;
     }
-    if (isRenderLive && token.media?.__typename === 'HtmlMedia') {
+    if (shouldLiverender && token.media?.__typename === 'HtmlMedia') {
       return <NftDetailAnimation mediaRef={token} />;
     }
     return (
@@ -116,7 +127,7 @@ function NftPreview({
         size={previewSize * 2}
       />
     );
-  }, [isRenderLive, previewSize, token]);
+  }, [disableLiverender, shouldLiverender, previewSize, token]);
 
   const columns = useCollectionColumns(collection);
 

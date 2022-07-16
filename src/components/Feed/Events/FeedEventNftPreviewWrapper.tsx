@@ -72,6 +72,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
         previewSize={maxWidth}
         onClick={handleClick}
         hideLabelOnMobile={isMobile}
+        disableLiverender
       />
     </StyledNftPreviewWrapper>
   );
