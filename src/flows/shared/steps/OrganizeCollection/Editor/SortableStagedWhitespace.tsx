@@ -59,7 +59,7 @@ export default function SortableStagedWhitespace({ id, size }: Props) {
       >
         <StyledWhitespaceLabel>Blank space</StyledWhitespaceLabel>
       </StyledWhitespace>
-      <StyledUnstageButton id={id} />
+      <StyledUnstageButton id={id} variant="text" />
     </StyledSortableWhitespace>
   );
 }
