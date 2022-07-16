@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { NftDetailAnimationFragment$key } from '__generated__/NftDetailAnimationFragment.graphql';
+import { RawNftDetailModel } from './NftDetailModel';
 import processIFrameRenderUrl from './processIFrameRenderUrl';
 
 type Props = {
@@ -38,6 +39,10 @@ function NftDetailAnimation({ mediaRef }: Props) {
 
     return '';
   }, [token.media]);
+
+  if (contentRenderURL.endsWith('.glb')) {
+    return <RawNftDetailModel url={contentRenderURL} />;
+  }
 
   return (
     <StyledNftDetailAnimation>
