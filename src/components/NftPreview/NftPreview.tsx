@@ -45,13 +45,11 @@ function NftPreview({
           ...NftPreviewAssetFragment
         }
         collection @required(action: THROW) {
-          # TODO: what's the difference between id and dbid?
           id
           dbid
-          # TODO: can we make these required in the schema?
-          gallery @required(action: THROW) {
-            owner @required(action: THROW) {
-              username @required(action: THROW)
+          gallery {
+            owner {
+              username
             }
           }
         }
@@ -61,7 +59,7 @@ function NftPreview({
     tokenRef
   );
 
-  const username = collection.gallery.owner.username;
+  const username = collection.gallery?.owner?.username;
   const collectionId = collection.dbid;
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 

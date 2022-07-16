@@ -61,10 +61,9 @@ function CollectionGalleryHeader({
         name
         collectorsNote
         gallery @required(action: THROW) {
-          dbid @required(action: THROW)
-          # TODO: figure out if these are always set/available, update schema
-          owner @required(action: THROW) {
-            username @required(action: THROW)
+          dbid
+          owner {
+            username
           }
         }
 
@@ -76,7 +75,7 @@ function CollectionGalleryHeader({
     collectionRef
   );
 
-  const username = collection.gallery.owner.username;
+  const username = collection.gallery.owner?.username;
 
   const unescapedCollectionName = useMemo(
     () => (collection.name ? unescape(collection.name) : null),
@@ -131,10 +130,14 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <UnstyledLink href={`/${username}`}>
-                  <StyledUsernameMobile>{username}</StyledUsernameMobile>
-                </UnstyledLink>
-                {collection.name && <StyledSeparatorMobile>/</StyledSeparatorMobile>}
+                {username ? (
+                  <UnstyledLink href={`/${username}`}>
+                    <StyledUsernameMobile>{username}</StyledUsernameMobile>
+                  </UnstyledLink>
+                ) : null}
+                {username && collection.name ? (
+                  <StyledSeparatorMobile>/</StyledSeparatorMobile>
+                ) : null}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
             <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
@@ -143,10 +146,12 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <UnstyledLink href={`/${username}`}>
-                  <StyledUsername>{username}</StyledUsername>
-                </UnstyledLink>
-                {collection.name && <StyledSeparator>/</StyledSeparator>}
+                {username ? (
+                  <UnstyledLink href={`/${username}`}>
+                    <StyledUsername>{username}</StyledUsername>
+                  </UnstyledLink>
+                ) : null}
+                {username && collection.name ? <StyledSeparator>/</StyledSeparator> : null}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
             <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
