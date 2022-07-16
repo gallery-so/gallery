@@ -7,7 +7,7 @@ import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTo
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;
 export type StagedItemsState = StagingItem[];
-export type TokenSettings = Record<TokenId, Boolean>;
+export type TokenSettings = Record<TokenId, boolean>;
 export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'> & {
   tokenSettings: TokenSettings;
 };
@@ -61,7 +61,6 @@ type CollectionEditorActions = {
   setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
   stageTokens: (tokens: StagingItem[]) => void;
   unstageTokens: (ids: string[]) => void;
-  unstageAllItems: () => void;
   handleSortTokens: (event: DragEndEvent) => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
@@ -126,10 +125,17 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setStagedItemsState((previous) =>
       previous.filter((stagingItem) => !ids.includes(stagingItem.id))
     );
-  }, []);
-
-  const unstageAllItems = useCallback(() => {
-    setStagedItemsState([]);
+    // remove any related token settings
+    setCollectionMetadataState((previous) => {
+      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
+      for (const id of ids) {
+        delete newTokenSettings[id];
+      }
+      return {
+        ...previous,
+        tokenSettings: newTokenSettings,
+      };
+    });
   }, []);
 
   const handleSortTokens = useCallback((event: DragEndEvent) => {
@@ -201,7 +207,6 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setTokensIsSelected,
       stageTokens,
       unstageTokens,
-      unstageAllItems,
       handleSortTokens,
       incrementColumns,
       decrementColumns,
@@ -213,7 +218,6 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setTokensIsSelected,
       stageTokens,
       unstageTokens,
-      unstageAllItems,
       handleSortTokens,
       incrementColumns,
       decrementColumns,

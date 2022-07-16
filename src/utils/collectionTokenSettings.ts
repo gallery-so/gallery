@@ -1,7 +1,7 @@
 import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 
 type TokenId = string;
-type TokenSettingsObject = Record<TokenId, Boolean>;
+type TokenSettingsObject = Record<TokenId, boolean>;
 
 export function collectionTokenSettingsArrayToObject(
   arr: UpdateCollectionTokensInput['tokenSettings']
@@ -18,12 +18,10 @@ export function collectionTokenSettingsArrayToObject(
 export function collectionTokenSettingsObjectToArray(obj: TokenSettingsObject) {
   const tokenSettingsArray = [];
   for (const key in obj) {
-    if (obj[key]) {
-      tokenSettingsArray.push({
-        tokenId: key,
-        renderLive: true,
-      });
-    }
+    tokenSettingsArray.push({
+      tokenId: key,
+      renderLive: obj[key],
+    });
   }
   return tokenSettingsArray;
 }
