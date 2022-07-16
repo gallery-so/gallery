@@ -10,11 +10,12 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
+import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
+import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
   nftPreviewMaxWidth?: string;
-  nftPreviewWidth: string;
   previewSize: number;
   ownerUsername?: string;
   onClick?: () => void;
@@ -24,12 +25,11 @@ type Props = {
 function NftPreview({
   tokenRef,
   nftPreviewMaxWidth,
-  nftPreviewWidth,
   previewSize,
   onClick,
   hideLabelOnMobile = false,
 }: Props) {
-  const { token, collection } = useFragment(
+  const { token, collection, tokenSettings } = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
         token @required(action: THROW) {
@@ -41,8 +41,21 @@ function NftPreview({
               address
             }
           }
+          media {
+            ... on VideoMedia {
+              __typename
+              ...NftDetailVideoFragment
+            }
+            ... on HtmlMedia {
+              __typename
+            }
+          }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
+          ...NftDetailAnimationFragment
+        }
+        tokenSettings {
+          renderLive
         }
         collection @required(action: THROW) {
           id
@@ -82,6 +95,24 @@ function NftPreview({
     [onClick]
   );
 
+  const isRenderLive = tokenSettings?.renderLive;
+
+  const PreviewAsset = useMemo(() => {
+    if (isRenderLive && token.media?.__typename === 'VideoMedia') {
+      return <NftDetailVideo mediaRef={token.media} maxHeight={1000} />;
+    }
+    if (isRenderLive && token.media?.__typename === 'HtmlMedia') {
+      return <NftDetailAnimation mediaRef={token} />;
+    }
+    return (
+      <NftPreviewAsset
+        tokenRef={token}
+        // we'll request images at double the size of the element so that it looks sharp on retina
+        size={previewSize * 2}
+      />
+    );
+  }, [isRenderLive, previewSize, token]);
+
   return (
     <Link
       // path that will be shown in the browser URL bar
@@ -100,14 +131,9 @@ function NftPreview({
       <StyledA onClick={handleClick}>
         <StyledNftPreview
           maxWidth={nftPreviewMaxWidth}
-          width={nftPreviewWidth}
           backgroundColorOverride={backgroundColorOverride}
         >
-          <NftPreviewAsset
-            tokenRef={token}
-            // we'll request images at double the size of the element so that it looks sharp on retina
-            size={previewSize * 2}
-          />
+          {PreviewAsset}
           {hideLabelOnMobile ? null : (
             <StyledNftFooter>
               <StyledNftLabel
@@ -170,7 +196,7 @@ const StyledNftPreview = styled.div<{
 
 
   max-width: ${({ maxWidth }) => maxWidth};
-  width: ${({ width }) => width};
+  width: 100%;
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);
