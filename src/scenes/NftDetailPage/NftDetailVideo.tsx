@@ -6,9 +6,10 @@ import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
+  hideControls?: boolean;
 };
 
-function NftDetailVideo({ mediaRef }: Props) {
+function NftDetailVideo({ mediaRef, hideControls = false }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -29,7 +30,7 @@ function NftDetailVideo({ mediaRef }: Props) {
       autoPlay
       loop
       playsInline
-      controls
+      controls={!hideControls}
       onLoadedData={setContentIsLoaded}
     />
   );
