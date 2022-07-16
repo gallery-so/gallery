@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -179,6 +180,11 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   @media only screen and ${breakpoints.desktop} {
     width: ${({ maxHeight }) => maxHeight}px;
     height: ${({ maxHeight }) => maxHeight}px;
+  }
+
+  // enforce auto width on NFT detail page as to not stretch to shimmer container
+  ${StyledImageWithLoading} {
+    width: auto;
   }
 `;
 
