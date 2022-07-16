@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
-import transitions from 'components/core/transitions';
 import { graphql, useFragment } from 'react-relay';
 import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
