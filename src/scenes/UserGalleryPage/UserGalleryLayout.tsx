@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { FeatureFlag } from 'components/core/enums';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
   queryRef: UserGalleryLayoutQueryFragment$key;
@@ -75,8 +76,10 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     };
   }, [query, setCustomNavLeftContent, user]);
 
+  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+
   return (
-    <StyledUserGalleryLayout>
+    <StyledUserGalleryLayout wide={isFigure31ProfilePage}>
       <Spacer height={isMobile ? 48 : 80} />
       <UserGalleryHeader
         userRef={user}
@@ -92,11 +95,11 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   );
 };
 
-const StyledUserGalleryLayout = styled.div`
+const StyledUserGalleryLayout = styled.div<{ wide: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 
-  max-width: ${contentSize.desktop}px;
+  max-width: ${({ wide }) => (wide ? 1200 : contentSize.desktop)}px;
 `;
