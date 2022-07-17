@@ -144,11 +144,7 @@ function DecoratedPreloadedCollectionEditor({ push }: DecoratedCollectionEditorP
 
   useWizardConfig({ push, galleryId });
 
-  return (
-    <CollectionEditorProvider>
-      <CollectionEditor viewerRef={query.viewer} />
-    </CollectionEditorProvider>
-  );
+  return <CollectionEditor viewerRef={query.viewer} />;
 }
 
 function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
@@ -168,22 +164,22 @@ function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditor
 
   useWizardConfig({ push, galleryId });
 
-  return (
-    <CollectionEditorProvider>
-      <CollectionEditor viewerRef={query.viewer} />
-    </CollectionEditorProvider>
-  );
+  return <CollectionEditor viewerRef={query.viewer} />;
 }
 
 function OrganizeCollectionWithProvider({ push }: WizardContext) {
   const id = useWizardId();
   return (
-    // TODO: doing this because i have no idea how to conditionally use preloading
-    id === 'onboarding' ? (
-      <DecoratedPreloadedCollectionEditor push={push} />
-    ) : (
-      <DecoratedLazyloadedCollectionEditor push={push} />
-    )
+    <CollectionEditorProvider>
+      {
+        // TODO: doing this because i have no idea how to conditionally use preloading
+        id === 'onboarding' ? (
+          <DecoratedPreloadedCollectionEditor push={push} />
+        ) : (
+          <DecoratedLazyloadedCollectionEditor push={push} />
+        )
+      }
+    </CollectionEditorProvider>
   );
 }
 
