@@ -4,6 +4,7 @@ import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
+  useCollectionSettingsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useMemo } from 'react';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
@@ -19,16 +20,18 @@ function ColumnAdjuster() {
     [collectionMetadata.layout.columns]
   );
 
+  const { MAX_COLUMNS, MIN_COLUMNS } = useCollectionSettingsState();
+
   return (
     <StyledColumnAdjuster>
       <BaseM>Columns</BaseM>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton onClick={decrementColumns} disabled={columns <= 1}>
+        <StyledColumnButton onClick={decrementColumns} disabled={columns <= MIN_COLUMNS}>
           <CircleMinusIcon />
         </StyledColumnButton>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton onClick={incrementColumns} disabled={columns > 5}>
+        <StyledColumnButton onClick={incrementColumns} disabled={columns >= MAX_COLUMNS}>
           <CirclePlusIcon />
         </StyledColumnButton>
       </StyledButtonContainer>

@@ -18,6 +18,7 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
+  useCollectionSettingsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
@@ -27,34 +28,8 @@ import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
-import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
 import { removeNullValues } from 'utils/removeNullValues';
-
-// Width of draggable image for each Column # setting
-const IMAGE_SIZES: Record<number, number> = {
-  1: 400,
-  2: 320,
-  3: 210,
-  4: 145,
-  5: 110,
-  6: 78,
-};
-
-function _getDndWidth(numImagesInRow: number) {
-  return (
-    IMAGE_SIZES[numImagesInRow] * numImagesInRow + PADDING_BETWEEN_STAGED_IMAGES_PX * numImagesInRow
-  );
-}
-
-// Width of DND area for each Column # setting
-const DND_WIDTHS: Record<number, number> = {
-  1: _getDndWidth(1),
-  2: _getDndWidth(2),
-  3: _getDndWidth(3),
-  4: _getDndWidth(4),
-  5: _getDndWidth(5),
-  6: _getDndWidth(6),
-};
+import useDndWidth from 'contexts/collectionEditor/useDndWidth';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -115,6 +90,9 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
 
   const columns = collectionMetadata.layout.columns;
 
+  const { PADDING_BETWEEN_STAGED_ITEMS_PX } = useCollectionSettingsState();
+  const { itemWidth, dndWidth } = useDndWidth();
+
   return (
     <StyledStagingArea>
       <DndContext
@@ -124,9 +102,12 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedItems}>
-          <StyledStagedNftContainer width={DND_WIDTHS[columns]}>
+          <StyledStagedNftContainer
+            width={dndWidth}
+            paddingBetweenStagedItems={PADDING_BETWEEN_STAGED_ITEMS_PX}
+          >
             {stagedItems.map((stagedItem) => {
-              const size = IMAGE_SIZES[columns];
+              const size = itemWidth;
               const stagedItemRef = nftFragmentsKeyedByID[stagedItem.id];
               if (isEditModeToken(stagedItem) && stagedItemRef) {
                 return (
@@ -149,7 +130,7 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
             <StagedItemDragging
               tokenRef={activeItemRef}
               isEditModeToken={isEditModeToken(activeItem)}
-              size={IMAGE_SIZES[columns]}
+              size={itemWidth}
             />
           ) : null}
         </DragOverlay>
@@ -169,7 +150,7 @@ const StyledStagingArea = styled.div`
 
   height: calc(100vh - ${FOOTER_HEIGHT}px);
 
-  padding: 48px 80px;
+  padding: 48px 0px;
 
   overflow: auto;
 
@@ -180,6 +161,7 @@ const StyledStagingArea = styled.div`
 
 type StyledStagedNftContainerProps = {
   width: number;
+  paddingBetweenStagedItems: number;
 };
 
 const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
@@ -194,7 +176,7 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   // row-gap: 48px;
 
   // Temporary solution until Safari support
-  width: calc(100% + ${PADDING_BETWEEN_STAGED_IMAGES_PX}px);
+  width: calc(100% + ${({ paddingBetweenStagedItems }) => paddingBetweenStagedItems}px);
 
   ${StyledSortableNft} * {
     outline: none;

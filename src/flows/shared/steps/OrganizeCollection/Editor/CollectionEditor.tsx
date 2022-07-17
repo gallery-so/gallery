@@ -1,4 +1,4 @@
-import { DEFAULT_COLUMNS } from 'constants/layout';
+import { DEFAULT_COLUMNS, isValidColumns } from 'constants/layout';
 import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -10,7 +10,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
-import { isValidColumns } from 'scenes/UserGalleryPage/UserGalleryCollection';
+
 import { EditModeTokenChild, EditModeToken } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
