@@ -1,4 +1,3 @@
-import { contentSize } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 import NotFound from 'scenes/NotFound/NotFound';
