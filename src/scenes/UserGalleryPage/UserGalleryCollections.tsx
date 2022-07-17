@@ -45,6 +45,9 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
             __typename
             id
           }
+          layout {
+            whitespace
+          }
           ...UserGalleryCollectionFragment
         }
       }
@@ -59,7 +62,12 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const visibleCollections = useMemo(
     () =>
-      nonNullCollections.filter((collection) => !collection.hidden && collection.tokens?.length),
+      nonNullCollections.filter((collection) => {
+        const isNotHidden = !collection.hidden;
+        const hasTokens = collection.tokens?.length;
+        const hasWhitespace = collection.layout?.whitespace?.length;
+        return (hasTokens || hasWhitespace) && isNotHidden;
+      }),
     [nonNullCollections]
   );
 
