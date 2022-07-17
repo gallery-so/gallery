@@ -9,7 +9,6 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFragment.graphql';
 import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
-import { contentSize } from 'components/core/breakpoints';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
