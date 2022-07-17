@@ -9,6 +9,7 @@ import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { removeNullValues } from 'utils/removeNullValues';
 import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
+import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
@@ -50,8 +51,14 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
     [collection.tokens, collectionWithWhitespace, hideWhitespace]
   );
 
+  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+
   return (
-    <StyledCollectionNfts columns={columns} mobileLayout={mobileLayout}>
+    <StyledCollectionNfts
+      columns={columns}
+      mobileLayout={mobileLayout}
+      reducedGridGap={isFigure31ProfilePage}
+    >
       {itemsToDisplay?.map((galleryNft) => {
         if (!galleryNft) {
           return;
@@ -67,20 +74,24 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   );
 }
 
-const StyledCollectionNfts = styled.div<{ columns: number; mobileLayout: DisplayLayout }>`
+const StyledCollectionNfts = styled.div<{
+  columns: number;
+  mobileLayout: DisplayLayout;
+  reducedGridGap: boolean;
+}>`
   display: grid;
   grid-template-columns: ${({ columns, mobileLayout }) =>
     mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 100%))`};
-  grid-gap: 10px 10px;
+  grid-gap: ${({ reducedGridGap }) => (reducedGridGap ? '5px 5px' : '10px 10px')};
   align-items: center;
   justify-content: center;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-gap: 20px 20px;
+    grid-gap: ${({ reducedGridGap }) => (reducedGridGap ? '5px 5px' : '20px 20px')};
   }
 
   @media only screen and ${breakpoints.desktop} {
-    grid-gap: 40px 40px;
+    grid-gap: ${({ reducedGridGap }) => (reducedGridGap ? '5px 5px' : '40px 40px')};
   }
 `;
 

@@ -11,7 +11,7 @@ import UnstageButton from './UnstageButton';
 import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { PADDING_BETWEEN_STAGED_IMAGES_PX } from './constants';
+import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -61,6 +61,8 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [contractAddress]
   );
 
+  const { paddingBetweenItemsPx } = useDndDimensions();
+
   return (
     <StyledSortableNft
       id={id}
@@ -68,6 +70,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
       // @ts-expect-error force overload
       style={style}
       backgroundColorOverride={backgroundColorOverride}
+      paddingBetweenItems={paddingBetweenItemsPx}
     >
       <StagedNftImage
         tokenRef={token}
@@ -98,7 +101,10 @@ const StyledUnstageButton = styled(UnstageButton)`
   transition: opacity ${transitions.cubic};
 `;
 
-export const StyledSortableNft = styled.div<{ backgroundColorOverride: string }>`
+export const StyledSortableNft = styled.div<{
+  backgroundColorOverride: string;
+  paddingBetweenItems: number;
+}>`
   position: relative;
   -webkit-backface-visibility: hidden;
   &:focus {
@@ -107,7 +113,7 @@ export const StyledSortableNft = styled.div<{ backgroundColorOverride: string }>
   }
   cursor: grab;
 
-  margin: ${PADDING_BETWEEN_STAGED_IMAGES_PX / 2}px;
+  margin: ${({ paddingBetweenItems }) => paddingBetweenItems / 2}px;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};

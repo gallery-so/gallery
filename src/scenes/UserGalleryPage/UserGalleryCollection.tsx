@@ -1,4 +1,3 @@
-import { MAX_COLUMNS, MIN_COLUMNS } from 'constants/layout';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
@@ -29,10 +28,6 @@ type Props = {
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
 };
-
-export function isValidColumns(columns: number) {
-  return columns >= MIN_COLUMNS && columns <= MAX_COLUMNS;
-}
 
 function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
   const query = useFragment(
