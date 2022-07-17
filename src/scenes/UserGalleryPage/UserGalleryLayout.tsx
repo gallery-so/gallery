@@ -101,5 +101,5 @@ const StyledUserGalleryLayout = styled.div<{ wide: boolean }>`
   align-items: center;
   width: 100%;
 
-  max-width: ${({ wide }) => (wide ? 1200 : contentSize.desktop)}px;
+  max-width: ${({ wide }) => (wide ? 1500 : 1200)}px;
 `;
