@@ -115,7 +115,6 @@ export const organizeCollectionQuery = graphql`
           }
         }
 
-        ...CollectionEditorContextFragment
         ...CollectionEditorFragment
       }
     }
@@ -146,7 +145,7 @@ function DecoratedPreloadedCollectionEditor({ push }: DecoratedCollectionEditorP
   useWizardConfig({ push, galleryId });
 
   return (
-    <CollectionEditorProvider viewerRef={query.viewer}>
+    <CollectionEditorProvider>
       <CollectionEditor viewerRef={query.viewer} />
     </CollectionEditorProvider>
   );
@@ -170,7 +169,7 @@ function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditor
   useWizardConfig({ push, galleryId });
 
   return (
-    <CollectionEditorProvider viewerRef={query.viewer}>
+    <CollectionEditorProvider>
       <CollectionEditor viewerRef={query.viewer} />
     </CollectionEditorProvider>
   );

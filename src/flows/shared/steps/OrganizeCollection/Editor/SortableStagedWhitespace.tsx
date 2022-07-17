@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { CSS } from '@dnd-kit/utilities';
 import UnstageButton from './UnstageButton';
-import { useCollectionSettingsState } from 'contexts/collectionEditor/CollectionEditorContext';
+import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 
 type Props = {
   id: string;
@@ -40,7 +40,7 @@ export default function SortableStagedWhitespace({ id, size }: Props) {
     }
   }, []);
 
-  const { PADDING_BETWEEN_STAGED_ITEMS_PX } = useCollectionSettingsState();
+  const { paddingBetweenItemsPx } = useDndDimensions();
 
   return (
     <StyledSortableWhitespace
@@ -48,7 +48,7 @@ export default function SortableStagedWhitespace({ id, size }: Props) {
       active={isDragging}
       // @ts-expect-error force overload
       style={style}
-      paddingBetweenStagedItems={PADDING_BETWEEN_STAGED_ITEMS_PX}
+      useDndDimensions={paddingBetweenItemsPx}
     >
       <StyledWhitespace
         ref={setNodeRef}
@@ -105,7 +105,7 @@ const StyledWhitespace = styled.div<{ size: number; showAnimation: boolean }>`
     `}
 `;
 
-const StyledSortableWhitespace = styled.div<{ paddingBetweenStagedItems: number }>`
+const StyledSortableWhitespace = styled.div<{ useDndDimensions: number }>`
   position: relative;
   -webkit-backface-visibility: hidden;
   &:focus {
@@ -113,7 +113,7 @@ const StyledSortableWhitespace = styled.div<{ paddingBetweenStagedItems: number 
   }
   cursor: grab;
 
-  margin: ${({ paddingBetweenStagedItems }) => paddingBetweenStagedItems / 2}px;
+  margin: ${({ useDndDimensions }) => useDndDimensions / 2}px;
 
   ${BaseM} {
     color: ${colors.metal};

@@ -3,24 +3,15 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeToken, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
-import { graphql, useFragment } from 'react-relay';
-import useMaxColumns from './useMaxColumns';
-import usePaddingBetweenStagedItems from './usePaddingBetweenStagedItems';
 
 export type SidebarTokensState = Record<string, EditModeToken>;
 export type StagedItemsState = StagingItem[];
 export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'>;
-export type CollectionSettings = {
-  MAX_COLUMNS: number;
-  MIN_COLUMNS: number;
-  PADDING_BETWEEN_STAGED_ITEMS_PX: number;
-};
 
 export type CollectionEditorState = {
   sidebarTokens: SidebarTokensState;
   stagedItems: StagedItemsState;
   collectionMetadata: CollectionMetadataState;
-  collectionSettings: CollectionSettings;
 };
 
 const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3, whitespace: [] } };
@@ -29,11 +20,6 @@ const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarTokens: {},
   stagedItems: [],
   collectionMetadata: DEFAULT_COLLECTION_METADATA,
-  collectionSettings: {
-    MAX_COLUMNS: 6,
-    MIN_COLUMNS: 1,
-    PADDING_BETWEEN_STAGED_ITEMS_PX: 48,
-  },
 });
 
 export const useSidebarTokensState = (): SidebarTokensState => {
@@ -63,15 +49,6 @@ export const useCollectionMetadataState = (): CollectionMetadataState => {
   return context.collectionMetadata;
 };
 
-export const useCollectionSettingsState = (): CollectionSettings => {
-  const context = useContext(CollectionEditorStateContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
-  }
-
-  return context.collectionSettings;
-};
-
 type CollectionEditorActions = {
   setSidebarTokens: (tokens: Record<string, EditModeToken>) => void;
   setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
@@ -97,35 +74,13 @@ export const useCollectionEditorActions = (): CollectionEditorActions => {
   return context;
 };
 
-type Props = { children: ReactNode; viewerRef: any };
+type Props = { children: ReactNode };
 
-const CollectionEditorProvider = memo(({ children, viewerRef }: Props) => {
-  const viewer = useFragment(
-    graphql`
-      fragment CollectionEditorContextFragment on Viewer {
-        ...useMaxColumnsFragment
-      }
-    `,
-    viewerRef
-  );
-
+const CollectionEditorProvider = memo(({ children }: Props) => {
   const [sidebarTokensState, setSidebarTokensState] = useState<SidebarTokensState>({});
   const [stagedItemsState, setStagedItemsState] = useState<StagedItemsState>([]);
   const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(
     DEFAULT_COLLECTION_METADATA
-  );
-  const MAX_COLUMNS = useMaxColumns(viewer);
-  const MIN_COLUMNS = 1;
-  const PADDING_BETWEEN_STAGED_ITEMS_PX = usePaddingBetweenStagedItems(
-    collectionMetadataState.layout.columns
-  );
-  const collectionSettings = useMemo(
-    () => ({
-      MAX_COLUMNS,
-      MIN_COLUMNS,
-      PADDING_BETWEEN_STAGED_ITEMS_PX,
-    }),
-    [MAX_COLUMNS, PADDING_BETWEEN_STAGED_ITEMS_PX]
   );
 
   const collectionEditorState = useMemo(
@@ -133,9 +88,8 @@ const CollectionEditorProvider = memo(({ children, viewerRef }: Props) => {
       sidebarTokens: sidebarTokensState,
       stagedItems: stagedItemsState,
       collectionMetadata: collectionMetadataState,
-      collectionSettings,
     }),
-    [sidebarTokensState, stagedItemsState, collectionMetadataState, collectionSettings]
+    [sidebarTokensState, stagedItemsState, collectionMetadataState]
   );
 
   const setSidebarTokens = useCallback((tokens: SidebarTokensState) => {

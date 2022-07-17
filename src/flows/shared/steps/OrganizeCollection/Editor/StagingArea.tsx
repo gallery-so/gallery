@@ -18,7 +18,6 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
-  useCollectionSettingsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
@@ -29,7 +28,8 @@ import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graph
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
-import useDndWidth from 'contexts/collectionEditor/useDndWidth';
+import useDndWidth from 'contexts/collectionEditor/useDndDimensions';
+import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 
 const defaultDropAnimationConfig: DropAnimation = {
   ...defaultDropAnimation,
@@ -90,7 +90,7 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
 
   const columns = collectionMetadata.layout.columns;
 
-  const { PADDING_BETWEEN_STAGED_ITEMS_PX } = useCollectionSettingsState();
+  const { paddingBetweenItemsPx } = useDndDimensions();
   const { itemWidth, dndWidth } = useDndWidth();
 
   return (
@@ -102,10 +102,7 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         layoutMeasuring={layoutMeasuring}
       >
         <SortableContext items={stagedItems}>
-          <StyledStagedNftContainer
-            width={dndWidth}
-            paddingBetweenStagedItems={PADDING_BETWEEN_STAGED_ITEMS_PX}
-          >
+          <StyledStagedNftContainer width={dndWidth} paddingBetweenItems={paddingBetweenItemsPx}>
             {stagedItems.map((stagedItem) => {
               const size = itemWidth;
               const stagedItemRef = nftFragmentsKeyedByID[stagedItem.id];
@@ -161,7 +158,7 @@ const StyledStagingArea = styled.div`
 
 type StyledStagedNftContainerProps = {
   width: number;
-  paddingBetweenStagedItems: number;
+  paddingBetweenItems: number;
 };
 
 const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
@@ -176,7 +173,7 @@ const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
   // row-gap: 48px;
 
   // Temporary solution until Safari support
-  width: calc(100% + ${({ paddingBetweenStagedItems }) => paddingBetweenStagedItems}px);
+  width: calc(100% + ${({ paddingBetweenItems }) => paddingBetweenItems}px);
 
   ${StyledSortableNft} * {
     outline: none;

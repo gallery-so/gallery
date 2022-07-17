@@ -1,16 +1,32 @@
 import colors from 'components/core/colors';
 import { TitleS } from 'components/core/Text/Text';
 import React from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
+import { EditorMenuFragment$key } from '__generated__/EditorMenuFragment.graphql';
 import ColumnAdjuster from './ColumnAdjuster';
 // import LiveDisplayAdjuster from './LiveDisplayAdjuster';
 
-function EditorMenu() {
+type Props = {
+  viewerRef: EditorMenuFragment$key;
+};
+
+function EditorMenu({ viewerRef }: Props) {
+  const viewer = useFragment(
+    graphql`
+      fragment EditorMenuFragment on Viewer {
+        ...ColumnAdjusterFragment
+      }
+    `,
+    viewerRef
+  );
+
   return (
     <StyledEditorMenu>
       <StyledTitleS>Collection settings</StyledTitleS>
       <StyledSidebarItem>
-        <ColumnAdjuster />
+        <ColumnAdjuster viewerRef={viewer} />
       </StyledSidebarItem>
       {/* <StyledSidebarItem>
         <LiveDisplayAdjuster />

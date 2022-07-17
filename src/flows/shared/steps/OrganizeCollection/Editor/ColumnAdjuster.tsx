@@ -4,14 +4,29 @@ import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
-  useCollectionSettingsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
+import useMaxColumns from 'contexts/collectionEditor/useMaxColumns';
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
 import styled from 'styled-components';
+import { ColumnAdjusterFragment$key } from '__generated__/ColumnAdjusterFragment.graphql';
 
-function ColumnAdjuster() {
+type Props = {
+  viewerRef: ColumnAdjusterFragment$key;
+};
+
+function ColumnAdjuster({ viewerRef }: Props) {
+  const viewer = useFragment(
+    graphql`
+      fragment ColumnAdjusterFragment on Viewer {
+        ...useMaxColumnsFragment
+      }
+    `,
+    viewerRef
+  );
+
   const collectionMetadata = useCollectionMetadataState();
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
@@ -20,18 +35,18 @@ function ColumnAdjuster() {
     [collectionMetadata.layout.columns]
   );
 
-  const { MAX_COLUMNS, MIN_COLUMNS } = useCollectionSettingsState();
+  const maxColumns = useMaxColumns(viewer);
 
   return (
     <StyledColumnAdjuster>
       <BaseM>Columns</BaseM>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton onClick={decrementColumns} disabled={columns <= MIN_COLUMNS}>
+        <StyledColumnButton onClick={decrementColumns} disabled={columns <= 1}>
           <CircleMinusIcon />
         </StyledColumnButton>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton onClick={incrementColumns} disabled={columns >= MAX_COLUMNS}>
+        <StyledColumnButton onClick={incrementColumns} disabled={columns >= maxColumns}>
           <CirclePlusIcon />
         </StyledColumnButton>
       </StyledButtonContainer>

@@ -67,6 +67,7 @@ function CollectionEditor({ viewerRef }: Props) {
             ...StagingAreaFragment
           }
         }
+        ...EditorMenuFragment
       }
     `,
     viewerRef
@@ -213,7 +214,7 @@ function CollectionEditor({ viewerRef }: Props) {
         {shouldDisplayEditor ? (
           <>
             <StagingArea stagedItems={stagedNfts} tokensRef={allNfts} />
-            <EditorMenu />
+            <EditorMenu viewerRef={viewer} />
           </>
         ) : (
           <Directions />
