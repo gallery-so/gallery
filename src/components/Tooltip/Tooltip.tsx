@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { BaseS } from 'components/core/Text/Text';
+import { TitleXSBold } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 export default function Tooltip({ text, className, dataTestId }: Props) {
   return (
     <StyledTooltip className={className} data-testid={dataTestId}>
-      <StyledBaseS color={colors.white}>{text}</StyledBaseS>
+      <StyledTitleXSBold color={colors.white}>{text}</StyledTitleXSBold>
     </StyledTooltip>
   );
 }
@@ -26,6 +26,6 @@ export const StyledTooltip = styled.div`
   transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
 `;
 
-const StyledBaseS = styled(BaseS)`
+const StyledTitleXSBold = styled(TitleXSBold)`
   white-space: nowrap;
 `;
