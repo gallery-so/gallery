@@ -10,6 +10,17 @@ import {
   CreateCollectionInput,
   useCreateCollectionMutation,
 } from '__generated__/useCreateCollectionMutation.graphql';
+import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
+import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+
+type Props = {
+  galleryId: string;
+  title: string;
+  description: string;
+  stagedNfts: StagingItem[];
+  collectionLayout: CreateCollectionInput['layout'];
+  tokenSettings: TokenSettings;
+};
 
 export default function useCreateCollection() {
   const [createCollection] = usePromisifiedMutation<useCreateCollectionMutation>(graphql`
@@ -54,19 +65,22 @@ export default function useCreateCollection() {
   `);
 
   return useCallback(
-    async (
-      galleryId: string,
-      title: string,
-      description: string,
-      stagedNfts: StagingItem[],
-      collectionLayout: CreateCollectionInput['layout']
-    ) => {
+    async ({
+      galleryId,
+      title,
+      description,
+      stagedNfts,
+      collectionLayout,
+      tokenSettings,
+    }: Props) => {
       const layout = {
         ...collectionLayout,
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
       const tokens = removeWhitespacesFromStagedItems(stagedNfts);
       const tokenIds = tokens.map((token) => token.dbid);
+      const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
+
       const response = await createCollection({
         variables: {
           input: {
@@ -75,6 +89,7 @@ export default function useCreateCollection() {
             collectorsNote: description,
             tokens: tokenIds,
             layout,
+            tokenSettings: tokenSettingsArray,
           },
         },
       });

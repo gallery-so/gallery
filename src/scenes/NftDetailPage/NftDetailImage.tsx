@@ -14,7 +14,7 @@ type Props = {
   maxHeight: number;
 };
 
-function NftDetailImage({ tokenRef, maxHeight }: Props) {
+function NftDetailImage({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailImageFragment on Token {
@@ -55,7 +55,6 @@ function NftDetailImage({ tokenRef, maxHeight }: Props) {
         playsInline
         controls
         onLoadedData={setContentIsLoaded}
-        maxHeight={maxHeight}
       />
     );
   }

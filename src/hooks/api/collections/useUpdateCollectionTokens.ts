@@ -12,6 +12,15 @@ import {
   UpdateCollectionTokensInput,
   useUpdateCollectionTokensMutation,
 } from '__generated__/useUpdateCollectionTokensMutation.graphql';
+import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
+
+type Props = {
+  collectionId: string;
+  stagedNfts: StagingItem[];
+  collectionLayout: UpdateCollectionTokensInput['layout'];
+  tokenSettings: TokenSettings;
+};
 
 export default function useUpdateCollectionTokens() {
   const relayEnvironment = useRelayEnvironment();
@@ -26,17 +35,14 @@ export default function useUpdateCollectionTokens() {
   );
 
   return useCallback(
-    async (
-      collectionId: string,
-      stagedNfts: StagingItem[],
-      collectionLayout: UpdateCollectionTokensInput['layout']
-    ) => {
+    async ({ collectionId, stagedNfts, collectionLayout, tokenSettings }: Props) => {
       const layout = {
         ...collectionLayout,
         whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
       };
       const tokens = removeWhitespacesFromStagedItems(stagedNfts);
       const tokenIds = tokens.map((token) => token.dbid);
+      const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
       await updateCollectionTokens({
         variables: {
@@ -44,6 +50,7 @@ export default function useUpdateCollectionTokens() {
             collectionId,
             tokens: tokenIds,
             layout,
+            tokenSettings: tokenSettingsArray,
           },
         },
       });

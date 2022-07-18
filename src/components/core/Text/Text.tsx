@@ -65,6 +65,13 @@ export const TitleS = styled(H3)`
   letter-spacing: -0.01em;
 `;
 
+export const TitleXSBold = styled(H3)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+`;
+
 export const TitleXS = styled(H3)`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;

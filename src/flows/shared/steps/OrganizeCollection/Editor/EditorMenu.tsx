@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { EditorMenuFragment$key } from '__generated__/EditorMenuFragment.graphql';
 import ColumnAdjuster from './ColumnAdjuster';
-// import LiveDisplayAdjuster from './LiveDisplayAdjuster';
 
 type Props = {
   viewerRef: EditorMenuFragment$key;
@@ -28,9 +27,6 @@ function EditorMenu({ viewerRef }: Props) {
       <StyledSidebarItem>
         <ColumnAdjuster viewerRef={viewer} />
       </StyledSidebarItem>
-      {/* <StyledSidebarItem>
-        <LiveDisplayAdjuster />
-      </StyledSidebarItem> */}
     </StyledEditorMenu>
   );
 }
