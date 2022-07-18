@@ -4,13 +4,16 @@ import styled from 'styled-components';
 
 type Props = {
   isSidebar?: boolean;
-  size?: number;
 };
 
-export default function FailedNftPreview({ isSidebar, size = 64 }: Props) {
+export default function FailedNftPreview({ isSidebar }: Props) {
   return (
-    <StyledFailedNft size={size}>
-      <StyledFailedNftText isSidebar={isSidebar}>Could not load</StyledFailedNftText>
+    <StyledFailedNft size={isSidebar ? 64 : 300}>
+      {isSidebar ? (
+        <StyledFailedNftTextSidebar>Could not load</StyledFailedNftTextSidebar>
+      ) : (
+        <StyledFailedNftText>Could not load</StyledFailedNftText>
+      )}
     </StyledFailedNft>
   );
 }
@@ -26,7 +29,12 @@ const StyledFailedNft = styled.div<{ size: number }>`
   align-items: center;
 `;
 
-const StyledFailedNftText = styled(BaseS)<{ isSidebar?: boolean }>`
+const StyledFailedNftTextSidebar = styled(BaseS)`
+  color: ${colors.metal};
+  text-align: center;
+`;
+
+const StyledFailedNftText = styled(BaseM)`
   color: ${colors.metal};
   text-align: center;
 `;
