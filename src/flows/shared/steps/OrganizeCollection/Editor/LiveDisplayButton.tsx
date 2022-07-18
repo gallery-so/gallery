@@ -25,7 +25,7 @@ export default function LiveDisplayButton({ id }: Props) {
   return isEnabled ? (
     <>
       <StyledTooltip text="Turn off live display" showTooltip={showTooltip} />
-      <StyledVideoEnabledIcon
+      <StyledVideoDisabledIcon
         color="white"
         onClick={() => setTokenLiveDisplay(id, false)}
         onMouseEnter={() => setShowTooltip(true)}
@@ -35,7 +35,7 @@ export default function LiveDisplayButton({ id }: Props) {
   ) : (
     <>
       <StyledTooltip text="Turn on live display" showTooltip={showTooltip} />
-      <StyledVideoDisabledIcon
+      <StyledVideoEnabledIcon
         color="white"
         onClick={() => setTokenLiveDisplay(id, true)}
         onMouseEnter={() => setShowTooltip(true)}
