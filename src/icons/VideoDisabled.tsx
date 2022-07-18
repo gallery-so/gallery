@@ -4,14 +4,24 @@ import noop from 'utils/noop';
 type Props = {
   className?: string;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   color?: string;
 };
 
-export default function VideoDisabled({ className, onClick = noop, color = colors.shadow }: Props) {
+export default function VideoDisabled({
+  className,
+  onClick = noop,
+  onMouseEnter = noop,
+  onMouseLeave = noop,
+  color = colors.shadow,
+}: Props) {
   return (
     <svg
       className={className}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       width="16"
       height="16"
       viewBox="0 0 16 16"

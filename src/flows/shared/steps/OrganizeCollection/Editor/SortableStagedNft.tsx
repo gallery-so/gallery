@@ -11,7 +11,10 @@ import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
-import LiveDisplayButton, { StyledVideoEnabledIcon } from './LiveDisplayButton';
+import LiveDisplayButton, {
+  StyledVideoDisabledIcon,
+  StyledVideoEnabledIcon,
+} from './LiveDisplayButton';
 import isLiveMediaType from 'utils/isLiveMediaType';
 
 type Props = {
@@ -133,6 +136,11 @@ export const StyledSortableNft = styled.div<{
   &:hover ${StyledVideoEnabledIcon} {
     mix-blend-mode: unset;
   }
+
+  &:hover ${StyledVideoDisabledIcon} {
+    mix-blend-mode: unset;
+  }
+
 
   &:hover ${StyledUnstageButton} {
     opacity: 1;
