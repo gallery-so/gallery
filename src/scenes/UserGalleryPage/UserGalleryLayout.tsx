@@ -12,8 +12,6 @@ import styled from 'styled-components';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { FeatureFlag } from 'components/core/enums';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -26,13 +24,10 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
         ...NavActionFollowQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-
-  const isQRCodeEnabled = isFeatureEnabled(FeatureFlag.QR_CODE, query);
 
   const user = useFragment(
     graphql`
@@ -86,7 +81,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
         isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
-        isQRCodeEnabled={isQRCodeEnabled}
       />
       {collectionsView}
       <Spacer height={32} />
