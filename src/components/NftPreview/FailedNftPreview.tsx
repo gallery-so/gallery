@@ -1,12 +1,20 @@
 import colors from 'components/core/colors';
 import { BaseM, BaseS } from 'components/core/Text/Text';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 type Props = {
   isSidebar?: boolean;
+  onLoad?: () => void;
 };
 
-export default function FailedNftPreview({ isSidebar }: Props) {
+export default function FailedNftPreview({ isSidebar, onLoad }: Props) {
+  useEffect(() => {
+    if (onLoad) {
+      onLoad();
+    }
+  }, [onLoad]);
+
   return (
     <StyledFailedNft size={isSidebar ? 64 : 300}>
       {isSidebar ? (

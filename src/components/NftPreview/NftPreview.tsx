@@ -10,6 +10,8 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
+import FailedNftPreview from './FailedNftPreview';
+import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -35,6 +37,9 @@ function NftPreview({
         token @required(action: THROW) {
           dbid
           name
+          media {
+            __typename
+          }
           contract {
             name
             contractAddress {
@@ -77,6 +82,7 @@ function NftPreview({
     },
     [onClick]
   );
+  const setContentIsLoaded = useSetContentIsLoaded();
 
   return (
     <Link
@@ -93,27 +99,31 @@ function NftPreview({
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
       <StyledA onClick={handleClick}>
-        <StyledNftPreview
-          maxWidth={nftPreviewMaxWidth}
-          width={nftPreviewWidth}
-          backgroundColorOverride={backgroundColorOverride}
-        >
-          <NftPreviewAsset
-            tokenRef={token}
-            // we'll request images at double the size of the element so that it looks sharp on retina
-            size={previewSize * 2}
-          />
-          {hideLabelOnMobile ? null : (
-            <StyledNftFooter>
-              <StyledNftLabel
-                title={token.name}
-                collectionName={token.contract?.name}
-                contractAddress={contractAddress}
-              />
-              <StyledGradient type="bottom" direction="down" />
-            </StyledNftFooter>
-          )}
-        </StyledNftPreview>
+        {token.media?.__typename === 'UnknownMedia' ? (
+          <FailedNftPreview onLoad={setContentIsLoaded} />
+        ) : (
+          <StyledNftPreview
+            maxWidth={nftPreviewMaxWidth}
+            width={nftPreviewWidth}
+            backgroundColorOverride={backgroundColorOverride}
+          >
+            <NftPreviewAsset
+              tokenRef={token}
+              // we'll request images at double the size of the element so that it looks sharp on retina
+              size={previewSize * 2}
+            />
+            {hideLabelOnMobile ? null : (
+              <StyledNftFooter>
+                <StyledNftLabel
+                  title={token.name}
+                  collectionName={token.contract?.name}
+                  contractAddress={contractAddress}
+                />
+                <StyledGradient type="bottom" direction="down" />
+              </StyledNftFooter>
+            )}
+          </StyledNftPreview>
+        )}
       </StyledA>
     </Link>
   );
