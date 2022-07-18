@@ -1,3 +1,16 @@
+/**
+ *
+ *
+ *
+ * THE CONTENTS OF THIS FILE ARE DEPRECATED.
+ *
+ * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
+ *
+ *
+ *
+ *
+ */
+
 import { FeatureFlag } from 'components/core/enums';
 import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';

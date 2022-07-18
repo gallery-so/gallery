@@ -1,3 +1,16 @@
+/**
+ *
+ *
+ *
+ * THE CONTENTS OF THIS FILE ARE DEPRECATED.
+ *
+ * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
+ *
+ *
+ *
+ *
+ */
+
 import { ButtonLink } from 'components/core/Button/Button';
 import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
