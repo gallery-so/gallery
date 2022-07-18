@@ -4,21 +4,9 @@ import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { FeatureFlag } from 'components/core/enums';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 export default function LandingPage() {
-  const query = useLazyLoadQuery<any>(
-    graphql`
-      query LandingPageQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
-  );
-
   const track = useTrack();
 
   return (
@@ -33,19 +21,15 @@ export default function LandingPage() {
         >
           Sign In
         </ButtonLink>
-        {isFeatureEnabled(FeatureFlag.FEED, query) && (
-          <>
-            <Spacer width={12} />
-            <ButtonLink
-              href="/home"
-              onClick={() => track('Landing page Explore button click')}
-              data-testid="explore-button"
-              variant="secondary"
-            >
-              Explore
-            </ButtonLink>
-          </>
-        )}
+        <Spacer width={12} />
+        <ButtonLink
+          href="/home"
+          onClick={() => track('Landing page Explore button click')}
+          data-testid="explore-button"
+          variant="secondary"
+        >
+          Explore
+        </ButtonLink>
       </StyledButtonContainer>
       <Spacer height={24} />
       <StyledLinkContainer>

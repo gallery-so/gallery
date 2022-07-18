@@ -19,7 +19,6 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-  isQRCodeEnabled: boolean;
   isMobile: boolean;
 };
 
@@ -28,7 +27,6 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
-  isQRCodeEnabled,
   isMobile,
 }: Props) {
   const user = useFragment(
@@ -58,12 +56,8 @@ function UserGalleryHeader({
             <>
               <LinkButton textToCopy={`https://gallery.so/${user.username}`} />
               <Spacer width={8} />
-              {isQRCodeEnabled && (
-                <>
-                  <QRCodeButton username={user.username} styledQrCode={styledQrCode} />
-                  <Spacer width={8} />
-                </>
-              )}
+              <QRCodeButton username={user.username} styledQrCode={styledQrCode} />
+              <Spacer width={8} />
             </>
           )}
           {showMobileLayoutToggle && (
