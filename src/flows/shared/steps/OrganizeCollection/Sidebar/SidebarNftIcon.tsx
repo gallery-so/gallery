@@ -1,5 +1,6 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
+import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
@@ -23,6 +24,9 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
           contractAddress {
             address
           }
+        }
+        media {
+          __typename
         }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
@@ -58,6 +62,10 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
 
     mountRef.current = true;
   }, [id, isSelected]);
+
+  if (token.media?.__typename === 'UnknownMedia') {
+    return <FailedNftPreview size={60} />;
+  }
 
   const reportError = useReportError();
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
