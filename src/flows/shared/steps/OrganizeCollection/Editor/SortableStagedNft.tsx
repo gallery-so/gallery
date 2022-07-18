@@ -12,6 +12,7 @@ import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
+import LiveDisplayButton from './LiveDisplayButton';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -81,6 +82,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         {...listeners}
       />
       <StyledUnstageButton id={id} />
+      <LiveDisplayButton id={id} />
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
       {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
@@ -118,7 +120,6 @@ export const StyledSortableNft = styled.div<{
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
   
-
   user-select: none;
 
   &:hover ${StyledUnstageButton} {

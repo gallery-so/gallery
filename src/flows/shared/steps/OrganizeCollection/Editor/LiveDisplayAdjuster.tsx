@@ -1,7 +1,7 @@
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
-import VideoIcon from 'src/icons/Video';
+import VideoIcon from 'src/icons/VideoDisabled';
 import styled from 'styled-components';
 
 function DisplayAdjuster() {

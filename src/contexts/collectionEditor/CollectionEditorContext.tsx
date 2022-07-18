@@ -4,9 +4,12 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeToken, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 
-export type SidebarTokensState = Record<string, EditModeToken>;
+type TokenId = string;
+export type SidebarTokensState = Record<TokenId, EditModeToken>;
 export type StagedItemsState = StagingItem[];
-export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'>;
+export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'> & {
+  tokenSettings: Record<TokenId, Boolean>;
+};
 
 export type CollectionEditorState = {
   sidebarTokens: SidebarTokensState;
@@ -14,7 +17,10 @@ export type CollectionEditorState = {
   collectionMetadata: CollectionMetadataState;
 };
 
-const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3, whitespace: [] } };
+const DEFAULT_COLLECTION_METADATA = {
+  layout: { columns: 3, whitespace: [] },
+  tokenSettings: {},
+};
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarTokens: {},
@@ -59,6 +65,7 @@ type CollectionEditorActions = {
   incrementColumns: () => void;
   decrementColumns: () => void;
   setColumns: (columns: number) => void;
+  setSingleTokenLiverender: (id: string, active: boolean) => void;
 };
 
 const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
@@ -156,6 +163,16 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     }));
   }, []);
 
+  const setSingleTokenLiverender = useCallback((id: string, active: boolean) => {
+    setCollectionMetadataState((previous) => ({
+      ...previous,
+      tokenSettings: {
+        ...previous.tokenSettings,
+        [id]: active,
+      },
+    }));
+  }, []);
+
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
       setSidebarTokens,
@@ -167,6 +184,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       incrementColumns,
       decrementColumns,
       setColumns,
+      setSingleTokenLiverender,
     }),
     [
       setSidebarTokens,
@@ -178,6 +196,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       incrementColumns,
       decrementColumns,
       setColumns,
+      setSingleTokenLiverender,
     ]
   );
 
