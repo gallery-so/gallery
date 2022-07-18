@@ -26,7 +26,7 @@ export default function LiveDisplayButton({ id }: Props) {
   );
 }
 
-const StyledVideoEnabledIcon = styled(VideoEnabledIcon)`
+export const StyledVideoEnabledIcon = styled(VideoEnabledIcon)`
   mix-blend-mode: exclusion;
   position: absolute;
   left: 8px;
@@ -35,7 +35,7 @@ const StyledVideoEnabledIcon = styled(VideoEnabledIcon)`
   z-index: 11; // above the gradient
 `;
 
-const StyledVideoDisabledIcon = styled(VideoDisabledIcon)`
+export const StyledVideoDisabledIcon = styled(VideoDisabledIcon)`
   mix-blend-mode: exclusion;
   position: absolute;
   left: 8px;

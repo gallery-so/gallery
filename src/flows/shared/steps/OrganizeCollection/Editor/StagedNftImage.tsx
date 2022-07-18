@@ -85,12 +85,6 @@ const StyledGridImage = styled.div<StyledGridImageProps>`
 
 const StyledNftPreviewLabel = styled(NftPreviewLabel)`
   opacity: 0;
-  transition: opacity ${transitions.cubic};
 `;
-
-// Potentially useful links:
-// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.tsx
-// https://github.com/clauderic/dnd-kit/blob/54c877875cf7ec6d4367ca11ce216cc3eb6475d2/stories/2%20-%20Presets/Sortable/Sortable.tsx#L201
-// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.module.css#L43
 
 export default StagedNftImage;
