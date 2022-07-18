@@ -32,11 +32,12 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
     tokenRef
   );
 
+  const reportError = useReportError();
+
   if (token.media?.__typename === 'UnknownMedia') {
     return <FailedNftPreview />;
   }
 
-  const reportError = useReportError();
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
   if (!result || !result.urls.large) {
