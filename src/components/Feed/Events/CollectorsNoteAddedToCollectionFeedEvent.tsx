@@ -2,8 +2,7 @@ import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
-import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -12,10 +11,11 @@ import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -46,7 +46,6 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
     `,
     eventRef
   );
-  const { push } = useRouter();
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(event.collection.tokens).slice(0, MAX_PIECES_DISPLAYED);
@@ -54,14 +53,6 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const track = useTrack();
-  const handleEventClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      track('Feed: Clicked Description added to collection event');
-      void push(collectionPagePath);
-    },
-    [collectionPagePath, push, track]
-  );
 
   const numAdditionalPieces = event.collection.tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
@@ -73,7 +64,10 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
   }
 
   return (
-    <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+    <UnstyledLink
+      href={collectionPagePath}
+      onClick={() => track('Feed: Clicked Description added to collection event')}
+    >
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
@@ -100,7 +94,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
           </>
         )}
       </StyledEvent>
-    </StyledClickHandler>
+    </UnstyledLink>
   );
 }
 

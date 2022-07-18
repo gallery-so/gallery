@@ -12,6 +12,7 @@ import { LoggedInNavFragment$key } from '__generated__/LoggedInNavFragment.graph
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { useAuthActions } from 'contexts/auth/AuthContext';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -19,7 +20,6 @@ type Props = {
 
 function LoggedInNav({ queryRef }: Props) {
   const { showModal } = useModalActions();
-  const { push } = useRouter();
 
   const query = useFragment(
     graphql`
@@ -54,14 +54,6 @@ function LoggedInNav({ queryRef }: Props) {
     });
   }, [query, showModal]);
 
-  const handleEditDesignClick = useCallback(() => {
-    if (routerQuery?.collectionId) {
-      void push(`/edit?collectionId=${routerQuery.collectionId}`);
-    } else {
-      void push('/edit');
-    }
-  }, [push, routerQuery]);
-
   const { handleLogout } = useAuthActions();
   const handleSignOutClick = useCallback(() => {
     void handleLogout();
@@ -83,10 +75,15 @@ function LoggedInNav({ queryRef }: Props) {
       {userOwnsCollectionOrGallery && (
         <NavElement>
           <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
-            <TextButton
-              text={routerQuery?.collectionId ? 'Edit Collection' : 'Edit Gallery'}
-              onClick={handleEditDesignClick}
-            />
+            <UnstyledLink
+              href={
+                routerQuery.collectionId
+                  ? `/edit?collectionId=${routerQuery.collectionId}`
+                  : '/edit'
+              }
+            >
+              <TextButton text={routerQuery.collectionId ? 'Edit Collection' : 'Edit Gallery'} />
+            </UnstyledLink>
             <TextButton text="Name & Bio" onClick={handleEditNameClick} />
           </Dropdown>
         </NavElement>
@@ -95,10 +92,9 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <TextButton
-              text="My Gallery"
-              onClick={username ? () => push(`/${username}`) : undefined}
-            />
+            <UnstyledLink href={`/${username}`}>
+              <TextButton text="My Gallery" />
+            </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
             <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>

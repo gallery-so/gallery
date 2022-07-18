@@ -1,4 +1,4 @@
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
@@ -97,13 +97,9 @@ function GnosisSafePendingMessage({
           </BaseM>
           <Spacer height={48} />
           <StyledButtonWrapper>
-            <Button text="Yes, retry" onClick={manuallyValidateSignature} />
+            <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
             <Spacer height={8} />
-            <StyledRestartButton
-              type="secondary"
-              text="No, sign new message"
-              onClick={onRestartClick}
-            />
+            <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
           </StyledButtonWrapper>
         </>
       ) : (
@@ -124,7 +120,7 @@ const StyledButtonWrapper = styled.div`
   flex-direction: column;
 `;
 
-const StyledRestartButton = styled(Button)`
+const StyledRestartButton = styled(Button).attrs({ variant: 'secondary' })`
   border: none;
   color: ${colors.metal};
 `;

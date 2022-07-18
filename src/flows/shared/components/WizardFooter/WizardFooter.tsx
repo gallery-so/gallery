@@ -3,7 +3,7 @@
  */
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
@@ -125,12 +125,13 @@ function WizardFooter({
       )}
       <Spacer width={40} />
       <Button
-        text={buttonText}
         onClick={handleNextClick}
-        disabled={!isNextEnabled || isLoading}
-        loading={isLoading}
-        dataTestId="wizard-footer-next-button"
-      />
+        disabled={!isNextEnabled}
+        pending={isLoading}
+        data-testid="wizard-footer-next-button"
+      >
+        {buttonText}
+      </Button>
       <Spacer width={24} />
     </StyledWizardFooter>
   );

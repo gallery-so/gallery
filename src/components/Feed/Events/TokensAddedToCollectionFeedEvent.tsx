@@ -2,8 +2,7 @@ import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
-import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -12,9 +11,10 @@ import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -51,7 +51,6 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     `,
     eventRef
   );
-  const { push } = useRouter();
 
   const { isPreFeed } = event;
 
@@ -63,14 +62,6 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
 
   const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
   const track = useTrack();
-  const handleEventClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      track('Feed: Clicked Tokens added to collection event');
-      void push(collectionPagePath);
-    },
-    [collectionPagePath, push, track]
-  );
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
@@ -82,7 +73,10 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
   }
 
   return (
-    <StyledClickHandler href={collectionPagePath} onClick={handleEventClick}>
+    <UnstyledLink
+      href={collectionPagePath}
+      onClick={() => track('Feed: Clicked Tokens added to collection event')}
+    >
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
@@ -107,7 +101,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
           </>
         )}
       </StyledEvent>
-    </StyledClickHandler>
+    </UnstyledLink>
   );
 }
 

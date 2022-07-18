@@ -1,6 +1,6 @@
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -27,7 +27,7 @@ export default function GenericActionModal({
       <LeaveWrapper>
         <BaseM>{bodyText}</BaseM>
         <Spacer height={16} />
-        <StyledButton onClick={handleClick} text={buttonText} />
+        <StyledButton onClick={handleClick}>{buttonText}</StyledButton>
       </LeaveWrapper>
     </StyledModal>
   );

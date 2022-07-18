@@ -1,5 +1,5 @@
 import breakpoints from 'components/core/breakpoints';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -173,7 +173,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </StyledEventHeader>
             <Spacer height={16} />
-            <StyledSecondaryButton text={'See All'} type="secondary" />
+            <StyledSecondaryButton>See All</StyledSecondaryButton>
           </StyledEventContent>
         </CustomStyledEvent>
       )}
@@ -198,7 +198,7 @@ const StyledEventContent = styled.div`
   }
 `;
 
-const StyledSecondaryButton = styled(Button)`
+const StyledSecondaryButton = styled(Button).attrs({ variant: 'secondary' })`
   flex-shrink: 0;
   width: 100%;
   @media only screen and ${breakpoints.tablet} {
