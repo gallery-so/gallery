@@ -6,6 +6,7 @@ import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { FALLBACK_URL } from 'utils/token';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;
@@ -22,11 +23,18 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
         contract {
           name
         }
+        media {
+          __typename
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokenRef
   );
+
+  if (token.media?.__typename === 'UnknownMedia') {
+    return <FailedNftPreview />;
+  }
 
   const reportError = useReportError();
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
