@@ -35,7 +35,14 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
   const reportError = useReportError();
 
   if (token.media?.__typename === 'UnknownMedia') {
-    return <FailedNftPreview />;
+    return (
+      <>
+        <FailedNftPreview />
+        {hideLabel ? null : (
+          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
+        )}
+      </>
+    );
   }
 
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
