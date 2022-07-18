@@ -63,10 +63,6 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     mountRef.current = true;
   }, [id, isSelected]);
 
-  if (token.media?.__typename === 'UnknownMedia') {
-    return <FailedNftPreview size={60} />;
-  }
-
   const reportError = useReportError();
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
@@ -80,6 +76,15 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     () => getBackgroundColorOverrideForContract(contractAddress),
     [contractAddress]
   );
+
+  if (token.media?.__typename === 'UnknownMedia') {
+    return (
+      <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
+        <FailedNftPreview isSidebar />
+        <StyledOutline onClick={handleClick} isSelected={isSelected} />
+      </StyledSidebarNftIcon>
+    );
+  }
 
   return (
     <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
