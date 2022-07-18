@@ -12,6 +12,10 @@ import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
 import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
 import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { useCollectionColumns } from 'hooks/useCollectionColumns';
+import isFirefox from 'utils/isFirefox';
+import isSvg from 'utils/isSvg';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -65,6 +69,7 @@ function NftPreview({
               username
             }
           }
+          ...useCollectionColumnsFragment
         }
         ...NftDetailViewFragment
       }
@@ -113,6 +118,14 @@ function NftPreview({
     );
   }, [isRenderLive, previewSize, token]);
 
+  const columns = useCollectionColumns(collection);
+
+  // don't stretch to full width if column count is 1, as that causes the gradient to stretch...
+  // unless it's an SVG and the user is on safari, of course.
+  const result = getVideoOrImageUrlForNftPreview(token);
+  const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
+  const fullWidth = columns > 1 || isFirefoxSvg;
+
   return (
     <Link
       // path that will be shown in the browser URL bar
@@ -132,6 +145,7 @@ function NftPreview({
         <StyledNftPreview
           maxWidth={nftPreviewMaxWidth}
           backgroundColorOverride={backgroundColorOverride}
+          fullWidth={fullWidth}
         >
           {PreviewAsset}
           {hideLabelOnMobile ? null : (
@@ -181,6 +195,7 @@ const StyledNftPreview = styled.div<{
   maxWidth?: string;
   width?: string;
   backgroundColorOverride: string;
+  fullWidth: boolean;
 }>`
   cursor: pointer;
 
@@ -194,9 +209,8 @@ const StyledNftPreview = styled.div<{
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-
   max-width: ${({ maxWidth }) => maxWidth};
-  width: 100%;
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);

@@ -1,6 +1,8 @@
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import isFirefox from 'utils/isFirefox';
+import isSvg from 'utils/isSvg';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container
@@ -33,10 +35,13 @@ export default function ImageWithLoading({ className, heightType, src, alt }: Pr
     return '100%';
   }, [heightType]);
 
+  const renderFullWidth = isSvg(src) && !isFirefox();
+
   return (
     <StyledImageWithLoading
       className={className}
       maxHeight={maxHeight}
+      renderFullWidth={renderFullWidth}
       src={src}
       alt={alt}
       loading="lazy"
@@ -47,11 +52,12 @@ export default function ImageWithLoading({ className, heightType, src, alt }: Pr
 
 type StyledImageWithLoadingProps = {
   maxHeight: string;
+  renderFullWidth: boolean;
 };
 
 export const StyledImageWithLoading = styled.img<StyledImageWithLoadingProps>`
   display: block;
   max-height: ${({ maxHeight }) => maxHeight};
-  width: auto;
+  width: ${({ renderFullWidth }) => (renderFullWidth ? '100%' : 'auto')};
   max-width: 100%;
 `;
