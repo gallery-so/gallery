@@ -99,31 +99,32 @@ function NftPreview({
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
       <StyledA onClick={handleClick}>
-        {token.media?.__typename === 'UnknownMedia' ? (
-          <FailedNftPreview onLoad={setContentIsLoaded} />
-        ) : (
-          <StyledNftPreview
-            maxWidth={nftPreviewMaxWidth}
-            width={nftPreviewWidth}
-            backgroundColorOverride={backgroundColorOverride}
-          >
+        <StyledNftPreview
+          maxWidth={nftPreviewMaxWidth}
+          width={nftPreviewWidth}
+          backgroundColorOverride={backgroundColorOverride}
+        >
+          {token.media?.__typename === 'UnknownMedia' ? (
+            <FailedNftPreview onLoad={setContentIsLoaded} />
+          ) : (
             <NftPreviewAsset
               tokenRef={token}
               // we'll request images at double the size of the element so that it looks sharp on retina
               size={previewSize * 2}
             />
-            {hideLabelOnMobile ? null : (
-              <StyledNftFooter>
-                <StyledNftLabel
-                  title={token.name}
-                  collectionName={token.contract?.name}
-                  contractAddress={contractAddress}
-                />
-                <StyledGradient type="bottom" direction="down" />
-              </StyledNftFooter>
-            )}
-          </StyledNftPreview>
-        )}
+          )}
+
+          {hideLabelOnMobile ? null : (
+            <StyledNftFooter>
+              <StyledNftLabel
+                title={token.name}
+                collectionName={token.contract?.name}
+                contractAddress={contractAddress}
+              />
+              <StyledGradient type="bottom" direction="down" />
+            </StyledNftFooter>
+          )}
+        </StyledNftPreview>
       </StyledA>
     </Link>
   );
