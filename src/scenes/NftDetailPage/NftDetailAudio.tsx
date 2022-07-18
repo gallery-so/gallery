@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
+import Spacer from 'components/core/Spacer/Spacer';
+import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -30,6 +32,8 @@ function NftDetailAudio({ tokenRef }: Props) {
     throw new Error('Using an NftDetailAudio component without an audio media type');
   }
 
+  const isDesktop = useIsDesktopWindowWidth();
+
   return (
     <StyledAudioContainer>
       <ImageWithLoading src={token.media?.previewURLs.large} alt={token.name ?? ''} />
@@ -40,6 +44,7 @@ function NftDetailAudio({ tokenRef }: Props) {
         preload="none"
         src={token.media.contentRenderURL}
       />
+      {isDesktop && <Spacer height={40} />}
     </StyledAudioContainer>
   );
 }
