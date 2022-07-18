@@ -30,6 +30,9 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
             address
           }
         }
+        media {
+          __typename
+        }
         ...StagedNftImageFragment
       }
     `,
@@ -64,6 +67,14 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
 
   const { paddingBetweenItemsPx } = useDndDimensions();
 
+  const isLiveMediaType = useMemo(() => {
+    return (
+      token.media?.__typename === 'VideoMedia' ||
+      token.media?.__typename === 'HtmlMedia' ||
+      token.media?.__typename === 'GltfMedia'
+    );
+  }, [token.media?.__typename]);
+
   return (
     <StyledSortableNft
       id={id}
@@ -82,7 +93,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         {...listeners}
       />
       <StyledUnstageButton id={id} />
-      <LiveDisplayButton id={id} />
+      {isLiveMediaType && <LiveDisplayButton id={id} />}
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
       {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
