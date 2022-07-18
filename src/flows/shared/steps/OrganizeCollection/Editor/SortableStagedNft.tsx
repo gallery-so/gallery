@@ -13,6 +13,7 @@ import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFr
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 import LiveDisplayButton from './LiveDisplayButton';
+import isLiveMediaType from 'utils/isLiveMediaType';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -67,13 +68,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
 
   const { paddingBetweenItemsPx } = useDndDimensions();
 
-  const isLiveMediaType = useMemo(() => {
-    return (
-      token.media?.__typename === 'VideoMedia' ||
-      token.media?.__typename === 'HtmlMedia' ||
-      token.media?.__typename === 'GltfMedia'
-    );
-  }, [token.media?.__typename]);
+  const isLiveType = isLiveMediaType(token.media?.__typename);
 
   return (
     <StyledSortableNft
@@ -93,7 +88,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         {...listeners}
       />
       <StyledUnstageButton id={id} />
-      {isLiveMediaType && <LiveDisplayButton id={id} />}
+      {isLiveType && <LiveDisplayButton id={id} />}
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
       {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
