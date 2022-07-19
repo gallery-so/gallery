@@ -88,10 +88,13 @@ function NftPreview({
     [contractAddress]
   );
 
-  const { pathname } = useRouter();
+  const {
+    pathname,
+    query: { collectionId: collectionIdInQuery },
+  } = useRouter();
 
   // whether the user is on a gallery page or collection page prior to clicking on an NFT
-  const originPage = collectionId ? 'home' : 'gallery';
+  const originPage = collectionIdInQuery ? 'home' : 'gallery';
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
