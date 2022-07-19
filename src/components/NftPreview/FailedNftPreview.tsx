@@ -24,7 +24,7 @@ export default function FailedNftPreview({ isSidebar, onLoad, size }: Props) {
 }
 
 const StyledFailedNft = styled.div<{ size?: number }>`
-  height: ${({ size }) => (size ? `${size}px` : '100px')};
+  height: ${({ size }) => (size ? `${size}px` : 'auto')};
   background-color: ${colors.offWhite};
   padding-bottom: 100%;
   width: 100%;
