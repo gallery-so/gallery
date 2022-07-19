@@ -20,11 +20,12 @@ import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
+import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
   tokensRef: SidebarFragment$key;
-  viewerRef: any;
+  viewerRef: SidebarViewerFragment$key;
 };
 
 function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
