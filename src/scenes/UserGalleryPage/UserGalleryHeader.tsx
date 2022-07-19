@@ -74,7 +74,7 @@ function UserGalleryHeader({
       <Spacer height={2} />
       <StyledUserDetails>
         <BaseM>
-          <Markdown text={unescapedBio} paragraphVariant="spaced" />
+          <Markdown text={unescapedBio} />
         </BaseM>
       </StyledUserDetails>
     </StyledUserGalleryHeader>
