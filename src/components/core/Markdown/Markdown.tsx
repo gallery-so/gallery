@@ -75,5 +75,8 @@ const StyledUl = styled.ul`
 
 const StyledP = styled.p<{ paragraphVariant: ParagraphVariant }>`
   white-space: pre-line;
-  margin: ${({ paragraphVariant }) => (paragraphVariant === 'compact' ? 0 : 16)}px 0px;
+  padding-bottom: 12px;
+  &:last-child {
+    padding-bottom: 0px;
+  }
 `;
