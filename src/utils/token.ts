@@ -29,7 +29,7 @@ export function graphqlGetResizedNftImageUrlWithFallback(
 
     return {
       url: `${url}=w${size}`,
-      success: false,
+      success: true,
     };
   }
 
