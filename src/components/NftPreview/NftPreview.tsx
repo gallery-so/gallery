@@ -10,8 +10,6 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
-import FailedNftPreview from './FailedNftPreview';
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
 import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
@@ -106,7 +104,6 @@ function NftPreview({
     },
     [onClick]
   );
-  const setContentIsLoaded = useSetContentIsLoaded();
 
   const shouldLiverender = tokenSettings?.renderLive;
 
@@ -127,10 +124,6 @@ function NftPreview({
       return <NftDetailAnimation mediaRef={token} />;
     }
 
-    if (token.media?.__typename === 'UnknownMedia') {
-      return <FailedNftPreview onLoad={setContentIsLoaded} />;
-    }
-
     return (
       <NftPreviewAsset
         tokenRef={token}
@@ -138,7 +131,7 @@ function NftPreview({
         size={previewSize * 2}
       />
     );
-  }, [disableLiverender, shouldLiverender, previewSize, token, setContentIsLoaded]);
+  }, [disableLiverender, shouldLiverender, previewSize, token]);
 
   const columns = useCollectionColumns(collection);
 
