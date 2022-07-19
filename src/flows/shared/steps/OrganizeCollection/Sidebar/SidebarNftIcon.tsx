@@ -25,9 +25,6 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
             address
           }
         }
-        media {
-          __typename
-        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -77,29 +74,22 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     [contractAddress]
   );
 
-  if (token.media?.__typename === 'UnknownMedia') {
+  const previewAsset = useMemo(() => {
+    if (!result?.success) {
+      return <FailedNftPreview isSidebar />;
+    }
+    // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
+    if (result?.type === 'video')
+      return <StyledVideo isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} />;
+
     return (
-      <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-        <FailedNftPreview isSidebar />
-        <StyledOutline onClick={handleClick} isSelected={isSelected} />
-      </StyledSidebarNftIcon>
+      <StyledImage isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} alt="token" />
     );
-  }
+  }, [result, isSelected]);
 
   return (
     <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-      {
-        // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
-        result?.type === 'video' ? (
-          <StyledVideo isSelected={isSelected} src={result?.urls.small ?? FALLBACK_URL} />
-        ) : (
-          <StyledImage
-            isSelected={isSelected}
-            src={result?.urls.small ?? FALLBACK_URL}
-            alt="token"
-          />
-        )
-      }
+      {previewAsset}
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );
