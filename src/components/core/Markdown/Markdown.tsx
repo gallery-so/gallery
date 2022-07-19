@@ -66,4 +66,5 @@ const StyledUl = styled.ul`
 
 const StyledP = styled.p`
   white-space: pre-line;
+  margin: 16px 0px;
 `;
