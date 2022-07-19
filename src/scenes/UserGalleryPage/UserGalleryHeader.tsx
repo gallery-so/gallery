@@ -13,6 +13,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
 import { useQrCode } from 'scenes/Modals/QRCodePopover';
+import useIs3ac from 'hooks/oneOffs/useIs3ac';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -33,13 +34,18 @@ function UserGalleryHeader({
     graphql`
       fragment UserGalleryHeaderFragment on GalleryUser {
         username @required(action: THROW)
+        dbid
         bio
       }
     `,
     userRef
   );
 
-  const unescapedBio = useMemo(() => (user.bio ? unescape(user.bio) : ''), [user.bio]);
+  const { dbid, username, bio } = user;
+  const is3ac = useIs3ac(dbid);
+  const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
+
+  const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
   const styledQrCode = useQrCode();
 
@@ -47,16 +53,16 @@ function UserGalleryHeader({
     <StyledUserGalleryHeader>
       <StyledUsernameWrapper>
         {isMobile ? (
-          <StyledUsernameMobile>{user.username}</StyledUsernameMobile>
+          <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
         ) : (
-          <StyledUsername>{user.username}</StyledUsername>
+          <StyledUsername>{displayName}</StyledUsername>
         )}
         <StyledButtonsWrapper>
           {isMobile && (
             <>
-              <LinkButton textToCopy={`https://gallery.so/${user.username}`} />
+              <LinkButton textToCopy={`https://gallery.so/${username}`} />
               <Spacer width={8} />
-              <QRCodeButton username={user.username} styledQrCode={styledQrCode} />
+              <QRCodeButton username={username} styledQrCode={styledQrCode} />
               <Spacer width={8} />
             </>
           )}
