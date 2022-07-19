@@ -106,7 +106,7 @@ function CollectionRow({ collectionRef, className }: Props) {
             return null;
           }
 
-          const { url } = graphqlGetResizedNftImageUrlWithFallback(
+          const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
             result.urls.large,
             BIG_NFT_SIZE_PX
           );
@@ -114,10 +114,10 @@ function CollectionRow({ collectionRef, className }: Props) {
           return (
             <BigNftContainer key={token.id}>
               {result.type === 'video' ? (
-                <BigNftVideoPreview src={url} />
+                <BigNftVideoPreview src={imageUrl} />
               ) : (
                 <BigNftImagePreview
-                  src={url}
+                  src={imageUrl}
                   backgroundColorOverride={getBackgroundColorOverrideForContract(
                     token.token.contract?.contractAddress?.address ?? ''
                   )}
@@ -256,7 +256,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
                 return null;
               }
 
-              const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+              const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
                 result.urls.small,
                 SMOL_NFT_SIZE_PX
               );
@@ -287,7 +287,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
               return null;
             }
 
-            const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+            const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
               result.urls.small,
               SMOL_NFT_SIZE_PX
             );
