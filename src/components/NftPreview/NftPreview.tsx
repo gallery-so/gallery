@@ -138,7 +138,7 @@ function NftPreview({
         size={previewSize * 2}
       />
     );
-  }, [disableLiverender, shouldLiverender, previewSize, token]);
+  }, [disableLiverender, shouldLiverender, previewSize, token, setContentIsLoaded]);
 
   const columns = useCollectionColumns(collection);
 
