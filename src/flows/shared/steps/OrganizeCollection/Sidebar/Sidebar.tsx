@@ -19,13 +19,15 @@ import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
+import useIs3ac from 'hooks/oneOffs/useIs3ac';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
   tokensRef: SidebarFragment$key;
+  viewerRef: any;
 };
 
-function Sidebar({ tokensRef, sidebarTokens }: Props) {
+function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const allTokens = useFragment(
     graphql`
       fragment SidebarFragment on Token @relay(plural: true) {
@@ -36,6 +38,19 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
     `,
     tokensRef
   );
+
+  const viewer = useFragment(
+    graphql`
+      fragment SidebarViewerFragment on Viewer {
+        user {
+          dbid
+        }
+      }
+    `,
+    viewerRef
+  );
+
+  const is3ac = useIs3ac(viewer.user?.dbid);
 
   const tokens = removeNullValues(allTokens);
 
@@ -78,11 +93,16 @@ function Sidebar({ tokensRef, sidebarTokens }: Props) {
     <StyledSidebar>
       <Header>
         <TitleS>All pieces</TitleS>
-        <StyledRefreshButton
-          text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
-          onClick={handleRefreshNfts}
-          disabled={isRefreshingNfts}
-        />
+        {
+          // prevent accidental refreshing for profiles we want to keep in tact
+          is3ac ? null : (
+            <StyledRefreshButton
+              text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
+              onClick={handleRefreshNfts}
+              disabled={isRefreshingNfts}
+            />
+          )
+        }
       </Header>
       <SearchBar
         tokensRef={tokens}
