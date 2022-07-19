@@ -55,9 +55,6 @@ function NftPreview({
             ... on HtmlMedia {
               __typename
             }
-            ... on UnknownMedia {
-              __typename
-            }
           }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...NftPreviewAssetFragment
@@ -123,7 +120,6 @@ function NftPreview({
     if (shouldLiverender && token.media?.__typename === 'HtmlMedia') {
       return <NftDetailAnimation mediaRef={token} />;
     }
-
     return (
       <NftPreviewAsset
         tokenRef={token}
