@@ -39,7 +39,7 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
   if (!result?.success) {
     return (
       <StyledFailedNftContainer ref={setNodeRef} {...props}>
-        <FailedNftPreview />
+        <FailedNftPreview size={size} />
         {hideLabel ? null : (
           <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
         )}

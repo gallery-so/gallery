@@ -1,3 +1,4 @@
+import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import { useEffect } from 'react';
@@ -5,10 +6,11 @@ import styled from 'styled-components';
 
 type Props = {
   isSidebar?: boolean;
+  size?: number;
   onLoad?: () => void;
 };
 
-export default function FailedNftPreview({ isSidebar, onLoad }: Props) {
+export default function FailedNftPreview({ isSidebar, onLoad, size }: Props) {
   useEffect(() => {
     if (onLoad) {
       onLoad();
@@ -16,7 +18,7 @@ export default function FailedNftPreview({ isSidebar, onLoad }: Props) {
   }, [onLoad]);
 
   return (
-    <StyledFailedNft size={isSidebar ? 64 : 300}>
+    <StyledFailedNft size={size}>
       {isSidebar ? (
         <StyledFailedNftTextSidebar>Could not load</StyledFailedNftTextSidebar>
       ) : (
@@ -26,15 +28,18 @@ export default function FailedNftPreview({ isSidebar, onLoad }: Props) {
   );
 }
 
-const StyledFailedNft = styled.div<{ size: number }>`
-  height: ${({ size }) => size}px;
-  width: ${({ size }) => size}px;
-  max-width: 100%;
-  max-height: 100%;
+const StyledFailedNft = styled.div<{ size?: number }>`
+  height: 100px;
+  width: 100px;
   background-color: ${colors.offWhite};
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media only screen and ${breakpoints.desktop} {
+    height: ${({ size }) => (size ? `${size}px` : '100px')};
+    width: ${({ size }) => (size ? `${size}px` : '100%')};
+  }
 `;
 
 const StyledFailedNftTextSidebar = styled(BaseS)`

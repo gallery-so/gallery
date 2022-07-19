@@ -55,7 +55,7 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
   if (!result?.success) {
     return (
       <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
-        <FailedNftPreview />
+        <FailedNftPreview size={zoomedSize} />
       </ImageContainer>
     );
   }
