@@ -70,9 +70,9 @@ function NftDetailText({
       <Spacer height={isMobile ? 32 : 24} />
       {description && (
         <>
-          <StyledNftDescription>
+          <BaseM>
             <Markdown text={description} />
-          </StyledNftDescription>
+          </BaseM>
           <Spacer height={isMobile ? 32 : 24} />
         </>
       )}
@@ -118,11 +118,6 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
     margin-left: 72px;
     margin-top: 0;
   }
-`;
-
-const StyledNftDescription = styled(BaseM)`
-  /* ensures linebreaks are reflected in UI */
-  white-space: pre-line;
 `;
 
 export default NftDetailText;
