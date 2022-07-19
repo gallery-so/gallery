@@ -3,31 +3,23 @@ import styled from 'styled-components';
 import InteractiveLink from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
 
-type ParagraphVariant = 'compact' | 'spaced';
-
 type Props = {
   text: string;
-  paragraphVariant?: ParagraphVariant;
 };
 
 // Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app
-export default function Markdown({ text, paragraphVariant = 'compact' }: Props) {
+export default function Markdown({ text }: Props) {
   return (
-    <BaseMarkdown
-      allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']}
-      text={text}
-      paragraphVariant={paragraphVariant}
-    />
+    <BaseMarkdown allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']} text={text} />
   );
 }
 
 // Markdown component for rendering Gallery-provided content that allow a wider range of elements
-export function InternalMarkdown({ text, paragraphVariant = 'compact' }: Props) {
+export function InternalMarkdown({ text }: Props) {
   return (
     <BaseMarkdown
       allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p', 'h1', 'h2', 'h3', 'br']}
       text={text}
-      paragraphVariant={paragraphVariant}
     />
   );
 }
@@ -35,10 +27,9 @@ export function InternalMarkdown({ text, paragraphVariant = 'compact' }: Props) 
 type BaseProps = {
   text: string;
   allowedElements: string[];
-  paragraphVariant: ParagraphVariant;
 };
 
-function BaseMarkdown({ text, allowedElements, paragraphVariant }: BaseProps) {
+function BaseMarkdown({ text, allowedElements }: BaseProps) {
   return (
     <ReactMarkdown
       components={{
@@ -53,7 +44,7 @@ function BaseMarkdown({ text, allowedElements, paragraphVariant }: BaseProps) {
           ),
         h3: ({ children }) => <StyledBodyHeading>{children}</StyledBodyHeading>,
         ul: ({ children }) => <StyledUl>{children}</StyledUl>,
-        p: ({ children }) => <StyledP paragraphVariant={paragraphVariant}>{children}</StyledP>,
+        p: ({ children }) => <StyledP>{children}</StyledP>,
       }}
       allowedElements={allowedElements}
       unwrapDisallowed
@@ -73,7 +64,7 @@ const StyledUl = styled.ul`
   white-space: normal;
 `;
 
-const StyledP = styled.p<{ paragraphVariant: ParagraphVariant }>`
+const StyledP = styled.p`
   white-space: pre-line;
   padding-bottom: 12px;
   &:last-child {
