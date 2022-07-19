@@ -95,7 +95,7 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
     );
 
     if (!success) {
-      return <FailedNftPreview size={300} onLoad={setContentIsLoaded} />;
+      return <FailedNftPreview onLoad={setContentIsLoaded} />;
     }
 
     // TODO: this is a hack to handle videos that are returned by OS as images.
