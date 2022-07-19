@@ -1,4 +1,16 @@
-import { FeatureFlag } from 'components/core/enums';
+/**
+ *
+ *
+ *
+ * THE CONTENTS OF THIS FILE ARE DEPRECATED.
+ *
+ * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
+ *
+ *
+ *
+ *
+ */
+
 import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import usePersistedState from 'hooks/usePersistedState';
@@ -6,7 +18,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 
 const AUTH_REQUIRED = true;
@@ -24,7 +35,6 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
             }
           }
         }
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -42,8 +52,6 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
     async function handleMount() {
       if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
-      if (!isFeatureEnabled(FeatureFlag.FEED_ANNOUNCEMENT, query)) return;
-      if (!isFeatureEnabled(FeatureFlag.FEED, query)) return;
       if (asPath === '/announcements') return;
 
       // hide for new users onboarding

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -91,11 +91,9 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
             Discover new collectors to follow in the worldwide feed.
           </StyledEmptyFeedBody>
           <Spacer height={12} />
-          <Button
-            type="secondary"
-            text="See worldwide activity"
-            onClick={handleSeeWorldwideClick}
-          />
+          <Button variant="secondary" onClick={handleSeeWorldwideClick}>
+            See worldwide activity
+          </Button>
         </StyledEmptyFeed>
       ) : (
         <FeedList

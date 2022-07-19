@@ -4,29 +4,14 @@ import isProduction from 'utils/isProduction';
 import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFragment.graphql';
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  GENERAL_MEMBERSHIP_MINT: true,
-  POSTER_MINT: true,
-  QR_CODE: true,
-  FEED: true,
-  FEED_ANNOUNCEMENT: true,
   REFRESH_METADATA: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  GENERAL_MEMBERSHIP_MINT: true,
-  POSTER_MINT: true,
-  QR_CODE: true,
-  FEED: true,
-  FEED_ANNOUNCEMENT: true,
   REFRESH_METADATA: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
-  GENERAL_MEMBERSHIP_MINT: true,
-  POSTER_MINT: true,
-  QR_CODE: true,
-  FEED: true,
-  FEED_ANNOUNCEMENT: true,
   REFRESH_METADATA: true,
 };
 

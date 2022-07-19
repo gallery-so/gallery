@@ -46,6 +46,18 @@ function NftDetailModel({ mediaRef }: Props) {
   );
 }
 
+// stop-gap as the backend doesn't always categorize GltfMedia
+export function RawNftDetailModel({ url }: { url: string }) {
+  const setContentIsLoaded = useSetContentIsLoaded();
+  useEffect(setContentIsLoaded, [setContentIsLoaded]);
+
+  return (
+    <StyledNftDetailModel>
+      <model-viewer class="model-viewer" auto-rotate camera-controls src={url} />
+    </StyledNftDetailModel>
+  );
+}
+
 const StyledNftDetailModel = styled.div`
   width: 100%;
   height: 100%;

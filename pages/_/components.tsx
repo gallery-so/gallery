@@ -1,5 +1,4 @@
 import { Button, ButtonLink } from 'components/core/Button/Button';
-import DeprecatedButton from 'components/core/Button/DeprecatedButton';
 import styled from 'styled-components';
 import React, { useState } from 'react';
 import { TitleM } from 'components/core/Text/Text';
@@ -25,26 +24,6 @@ const PendingButton = (props: React.ComponentProps<typeof Button>) => {
 export default function DesignPage() {
   return (
     <>
-      <Section>
-        <TitleM>DeprecatedButton</TitleM>
-        <Examples>
-          <DeprecatedButton text="primary" />
-          <DeprecatedButton text="primary" loading />
-          <DeprecatedButton text="primary" loading mini />
-          <DeprecatedButton text="primary" disabled />
-          <DeprecatedButton text="primary" disabled loading />
-          <DeprecatedButton text="primary" disabled loading mini />
-        </Examples>
-        <Examples>
-          <DeprecatedButton text="secondary" type="secondary" />
-          <DeprecatedButton text="secondary" type="secondary" loading />
-          <DeprecatedButton text="secondary" type="secondary" loading mini />
-          <DeprecatedButton text="secondary" type="secondary" disabled />
-          <DeprecatedButton text="secondary" type="secondary" disabled loading />
-          <DeprecatedButton text="secondary" type="secondary" disabled loading mini />
-        </Examples>
-      </Section>
-
       <Section>
         <TitleM>Button</TitleM>
         <Examples>

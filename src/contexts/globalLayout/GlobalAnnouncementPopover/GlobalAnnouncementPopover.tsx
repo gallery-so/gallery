@@ -1,4 +1,17 @@
-import Button from 'components/core/Button/DeprecatedButton';
+/**
+ *
+ *
+ *
+ * THE CONTENTS OF THIS FILE ARE DEPRECATED.
+ *
+ * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
+ *
+ *
+ *
+ *
+ */
+
+import { ButtonLink } from 'components/core/Button/Button';
 import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -65,9 +78,9 @@ export default function GlobalAnnouncementPopover() {
               </MobileDescriptionTextContainer>
               <Spacer height={24} />
               <MobileButtonContainer>
-                <Link href="/home">
-                  <Button text="Start Browsing" onClick={hideModal} />
-                </Link>
+                <ButtonLink href="/home" onClick={hideModal}>
+                  Start Browsing
+                </ButtonLink>
                 <Spacer height={16} />
                 {/* TODO: replace this with blog post link */}
                 <Link
@@ -118,9 +131,9 @@ export default function GlobalAnnouncementPopover() {
               <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
               <Spacer height={32} />
               <DesktopButtonContainer>
-                <Link href="/home">
-                  <Button text="Start Browsing" onClick={hideModal} />
-                </Link>
+                <ButtonLink href="/home" onClick={hideModal}>
+                  Start Browsing
+                </ButtonLink>
                 <Spacer width={32} />
                 {/* TODO: replace this with blog post link */}
                 <Link

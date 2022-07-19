@@ -55,3 +55,7 @@ export function useIsMobileOrMobileLargeWindowWidth() {
   const breakpoint = useBreakpoint();
   return breakpoint === size.mobileLarge || breakpoint === size.mobile;
 }
+
+export function useIsDesktopWindowWidth() {
+  return useBreakpoint() === size.desktop;
+}

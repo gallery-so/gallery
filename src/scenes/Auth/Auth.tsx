@@ -11,8 +11,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 import { graphql, useFragment } from 'react-relay';
 import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
-import { FeatureFlag } from 'components/core/enums';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {
@@ -39,7 +37,6 @@ function Auth({ queryRef }: Props) {
         }
 
         ...WalletSelectorFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -53,10 +50,7 @@ function Auth({ queryRef }: Props) {
   if (viewer?.__typename === 'Viewer' && viewer.user) {
     // If user exists in DB, send them to their profile
     if (viewer.user.username) {
-      if (isFeatureEnabled(FeatureFlag.FEED, query)) {
-        return <GalleryRedirect to="/home" />;
-      }
-      return <GalleryRedirect to={`/${viewer.user.username}`} />;
+      return <GalleryRedirect to="/home" />;
     }
 
     // This should never happen

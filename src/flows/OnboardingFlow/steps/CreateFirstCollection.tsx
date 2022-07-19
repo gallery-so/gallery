@@ -1,7 +1,7 @@
 import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback, useEffect } from 'react';
@@ -39,7 +39,7 @@ function CreateFirstCollection({ next }: WizardContext) {
         anything that feels right.
       </StyledBodyText>
       <Spacer height={24} />
-      <StyledButton text="New Collection" onClick={handleNextClick} />
+      <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
     </FullPageCenteredStep>
   );
 }

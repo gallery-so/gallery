@@ -4,7 +4,6 @@ import { CSS } from '@dnd-kit/utilities';
 import styled from 'styled-components';
 
 import Gradient from 'components/core/Gradient/Gradient';
-import transitions from 'components/core/transitions';
 import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
@@ -12,12 +11,22 @@ import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
+import LiveDisplayButton, {
+  StyledVideoDisabledIcon,
+  StyledVideoEnabledIcon,
+} from './LiveDisplayButton';
+import isLiveMediaType from 'utils/isLiveMediaType';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
   size: number;
   mini: boolean;
 };
+
+// Potentially useful links:
+// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.tsx
+// https://github.com/clauderic/dnd-kit/blob/54c877875cf7ec6d4367ca11ce216cc3eb6475d2/stories/2%20-%20Presets/Sortable/Sortable.tsx#L201
+// https://github.com/clauderic/dnd-kit/blob/6f762a4d8d0ea047c9e9ba324448d4aca258c6a0/stories/components/Item/Item.module.css#L43
 
 function SortableStagedNft({ tokenRef, size, mini }: Props) {
   const token = useFragment(
@@ -28,6 +37,9 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
           contractAddress {
             address
           }
+        }
+        media {
+          __typename
         }
         ...StagedNftImageFragment
       }
@@ -63,6 +75,8 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
 
   const { paddingBetweenItemsPx } = useDndDimensions();
 
+  const isLiveType = isLiveMediaType(token.media?.__typename);
+
   return (
     <StyledSortableNft
       id={id}
@@ -81,6 +95,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         {...listeners}
       />
       <StyledUnstageButton id={id} />
+      {isLiveType && <LiveDisplayButton id={id} />}
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
       {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
@@ -92,13 +107,11 @@ const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   ${({ type }) => type}: 0;
 
   opacity: 0;
-  transition: opacity ${transitions.cubic};
 `;
 
 const StyledUnstageButton = styled(UnstageButton)`
   opacity: 0;
   top: 0;
-  transition: opacity ${transitions.cubic};
 `;
 
 export const StyledSortableNft = styled.div<{
@@ -118,8 +131,16 @@ export const StyledSortableNft = styled.div<{
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
   
-
   user-select: none;
+
+  &:hover ${StyledVideoEnabledIcon} {
+    mix-blend-mode: unset;
+  }
+
+  &:hover ${StyledVideoDisabledIcon} {
+    mix-blend-mode: unset;
+  }
+
 
   &:hover ${StyledUnstageButton} {
     opacity: 1;

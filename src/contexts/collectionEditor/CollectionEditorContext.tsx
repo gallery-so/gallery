@@ -4,9 +4,13 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { EditModeToken, StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
 import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 
-export type SidebarTokensState = Record<string, EditModeToken>;
+type TokenId = string;
+export type SidebarTokensState = Record<TokenId, EditModeToken>;
 export type StagedItemsState = StagingItem[];
-export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'>;
+export type TokenSettings = Record<TokenId, boolean>;
+export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'> & {
+  tokenSettings: TokenSettings;
+};
 
 export type CollectionEditorState = {
   sidebarTokens: SidebarTokensState;
@@ -14,7 +18,10 @@ export type CollectionEditorState = {
   collectionMetadata: CollectionMetadataState;
 };
 
-const DEFAULT_COLLECTION_METADATA = { layout: { columns: 3, whitespace: [] } };
+const DEFAULT_COLLECTION_METADATA = {
+  layout: { columns: 3, whitespace: [] },
+  tokenSettings: {},
+};
 
 const CollectionEditorStateContext = createContext<CollectionEditorState>({
   sidebarTokens: {},
@@ -54,11 +61,11 @@ type CollectionEditorActions = {
   setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
   stageTokens: (tokens: StagingItem[]) => void;
   unstageTokens: (ids: string[]) => void;
-  unstageAllItems: () => void;
   handleSortTokens: (event: DragEndEvent) => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
   setColumns: (columns: number) => void;
+  setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
 };
 
 const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
@@ -118,10 +125,17 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setStagedItemsState((previous) =>
       previous.filter((stagingItem) => !ids.includes(stagingItem.id))
     );
-  }, []);
-
-  const unstageAllItems = useCallback(() => {
-    setStagedItemsState([]);
+    // remove any related token settings
+    setCollectionMetadataState((previous) => {
+      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
+      for (const id of ids) {
+        delete newTokenSettings[id];
+      }
+      return {
+        ...previous,
+        tokenSettings: newTokenSettings,
+      };
+    });
   }, []);
 
   const handleSortTokens = useCallback((event: DragEndEvent) => {
@@ -156,28 +170,59 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     }));
   }, []);
 
+  const setTokenLiveDisplay: CollectionEditorActions['setTokenLiveDisplay'] = useCallback(
+    (idOrIds, active) => {
+      if (typeof idOrIds === 'string') {
+        setCollectionMetadataState((previous) => ({
+          ...previous,
+          tokenSettings: {
+            ...previous.tokenSettings,
+            [idOrIds]: active,
+          },
+        }));
+      }
+
+      if (Array.isArray(idOrIds)) {
+        setCollectionMetadataState((previous) => {
+          const newTokenSettings: TokenSettings = {};
+          for (const id of idOrIds) {
+            newTokenSettings[id] = active;
+          }
+          return {
+            ...previous,
+            tokenSettings: {
+              ...previous.tokenSettings,
+              ...newTokenSettings,
+            },
+          };
+        });
+      }
+    },
+    []
+  );
+
   const collectionEditorActions: CollectionEditorActions = useMemo(
     () => ({
       setSidebarTokens,
       setTokensIsSelected,
       stageTokens,
       unstageTokens,
-      unstageAllItems,
       handleSortTokens,
       incrementColumns,
       decrementColumns,
       setColumns,
+      setTokenLiveDisplay,
     }),
     [
       setSidebarTokens,
       setTokensIsSelected,
       stageTokens,
       unstageTokens,
-      unstageAllItems,
       handleSortTokens,
       incrementColumns,
       decrementColumns,
       setColumns,
+      setTokenLiveDisplay,
     ]
   );
 

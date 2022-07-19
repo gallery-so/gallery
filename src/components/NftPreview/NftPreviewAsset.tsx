@@ -94,14 +94,7 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
       return <VideoWithLoading src={src} />;
     }
 
-    return (
-      <ImageWithLoading
-        src={src}
-        heightType="maxHeightScreen"
-        widthType={src.includes('svg') ? 'fullWidth' : 'maxWidth'}
-        alt={token.name ?? ''}
-      />
-    );
+    return <ImageWithLoading src={src} heightType="maxHeightScreen" alt={token.name ?? ''} />;
   }
 
   // TODO: instead of rendering this, just throw to an error boundary and have that report to sentry

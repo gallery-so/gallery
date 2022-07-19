@@ -1,17 +1,14 @@
-import { useCallback } from 'react';
 import styled from 'styled-components';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import Button from 'components/core/Button/DeprecatedButton';
 import Spacer from 'components/core/Spacer/Spacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
-import { useRouter } from 'next/router';
 import { usePreloadedQuery } from 'react-relay';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
+import { ButtonLink } from 'components/core/Button/Button';
 
 function Congratulations() {
   const { queryRef } = useWizardState();
-  const { push } = useRouter();
 
   if (!queryRef) {
     throw new Error('Congratulations.tsx could not access queryRef');
@@ -27,17 +24,13 @@ function Congratulations() {
 
   const username = query?.viewer?.user?.username;
 
-  const handleClick = useCallback(() => {
-    void push(`/${username}`);
-  }, [username, push]);
-
   return (
     <FullPageCenteredStep>
       <TitleL>Welcome to your Gallery</TitleL>
       <Spacer height={8} />
       <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
       <Spacer height={24} />
-      <StyledButton text="Enter" onClick={handleClick} />
+      <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
     </FullPageCenteredStep>
   );
 }
@@ -47,9 +40,8 @@ const StyledBodyText = styled(BaseM)`
   text-align: center;
 `;
 
-const StyledButton = styled(Button)`
-  padding: 0px 24px;
-  width: 200px;
+const FixedWidthButtonLink = styled(ButtonLink)`
+  min-width: 200px;
 `;
 
 export default Congratulations;

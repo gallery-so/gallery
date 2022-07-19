@@ -1,4 +1,4 @@
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
@@ -91,7 +91,9 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         />
       ))}
       <Spacer height={16} />
-      <StyledButton text="Add new wallet" onClick={handleSubmit} disabled={addWalletDisabled} />
+      <StyledButton onClick={handleSubmit} disabled={addWalletDisabled}>
+        Add new wallet
+      </StyledButton>
     </StyledManageWallets>
   );
 }

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -42,14 +42,10 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
     <StyledConfirmation>
       <Spacer height={16} />
       <ButtonContainer>
-        <StyledCancelButton mini text="Cancel" type="secondary" onClick={hideModal} />
-        <StyledButton
-          mini
-          text="Delete"
-          onClick={handleConfirmClick}
-          disabled={isLoading}
-          loading={isLoading}
-        />
+        <StyledCancelButton onClick={hideModal}>Cancel</StyledCancelButton>
+        <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
+          Delete
+        </StyledButton>
       </ButtonContainer>
     </StyledConfirmation>
   );
@@ -64,7 +60,7 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const StyledCancelButton = styled(Button)`
+const StyledCancelButton = styled(Button).attrs({ variant: 'secondary' })`
   border: none;
   width: 80px;
   margin-right: 8px;

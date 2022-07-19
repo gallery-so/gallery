@@ -8,7 +8,7 @@ function generateTestNft(): EditModeToken {
   };
 }
 
-describe.skip('getWhitespacePositionsFromStagedItems', () => {
+describe('getWhitespacePositionsFromStagedItems', () => {
   it('computes the correct whitespace list given a list of staged items', () => {
     const stagedItems = [
       { id: 'blank-1', whitespace: 'whitespace' } as const,
@@ -27,7 +27,7 @@ describe.skip('getWhitespacePositionsFromStagedItems', () => {
   });
 });
 
-describe.skip('insertWhitespaceBlocks', () => {
+describe('insertWhitespaceBlocks', () => {
   it('inserts white spaces into a list of tokens accordingly', () => {
     const tokens = [
       generateTestNft(),

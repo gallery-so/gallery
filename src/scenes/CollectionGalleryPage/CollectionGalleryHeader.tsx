@@ -9,14 +9,12 @@ import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useRouter } from 'next/router';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
-import useBackButton from 'hooks/useBackButton';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
@@ -24,6 +22,7 @@ import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -38,11 +37,7 @@ function CollectionGalleryHeader({
   mobileLayout,
   setMobileLayout,
 }: Props) {
-  const username = useMemo(() => window.location.pathname.split('/')[1], []);
-
-  const { push } = useRouter();
   const { showModal } = useModalActions();
-  const handleBackClick = useBackButton({ username });
 
   const query = useFragment(
     graphql`
@@ -66,7 +61,10 @@ function CollectionGalleryHeader({
         name
         collectorsNote
         gallery @required(action: THROW) {
-          dbid @required(action: THROW)
+          dbid
+          owner {
+            username
+          }
         }
 
         tokens {
@@ -76,6 +74,8 @@ function CollectionGalleryHeader({
     `,
     collectionRef
   );
+
+  const username = collection.gallery.owner?.username;
 
   const unescapedCollectionName = useMemo(
     () => (collection.name ? unescape(collection.name) : null),
@@ -94,17 +94,12 @@ function CollectionGalleryHeader({
     track('Share Collection', { path: `/${username}/${collectionId}` });
   }, [collectionId, username, track]);
 
-  const showEditActions = username.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
+  const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
   const collectionUrl = window.location.href;
 
   const isMobile = useIsMobileWindowWidth();
   const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
-
-  const handleEditCollectionClick = useCallback(() => {
-    track('Update existing collection');
-    void push(`/edit?collectionId=${collectionId}`);
-  }, [collectionId, push, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -135,8 +130,14 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <StyledUsernameMobile onClick={handleBackClick}>{username}</StyledUsernameMobile>
-                {collection.name && <StyledSeparatorMobile>/</StyledSeparatorMobile>}
+                {username ? (
+                  <UnstyledLink href={`/${username}`}>
+                    <StyledUsernameMobile>{username}</StyledUsernameMobile>
+                  </UnstyledLink>
+                ) : null}
+                {username && collection.name ? (
+                  <StyledSeparatorMobile>/</StyledSeparatorMobile>
+                ) : null}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
             <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
@@ -145,8 +146,12 @@ function CollectionGalleryHeader({
           <StyledBreadcrumbsWrapper>
             <StyledUsernameWrapper>
               <StyledUsernameAndSeparatorWrapper>
-                <StyledUsername onClick={handleBackClick}>{username}</StyledUsername>
-                {collection.name && <StyledSeparator>/</StyledSeparator>}
+                {username ? (
+                  <UnstyledLink href={`/${username}`}>
+                    <StyledUsername>{username}</StyledUsername>
+                  </UnstyledLink>
+                ) : null}
+                {username && collection.name ? <StyledSeparator>/</StyledSeparator> : null}
               </StyledUsernameAndSeparatorWrapper>
             </StyledUsernameWrapper>
             <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
@@ -170,7 +175,12 @@ function CollectionGalleryHeader({
                   {!shouldDisplayMobileLayoutToggle && (
                     <>
                       <NavElement>
-                        <TextButton onClick={handleEditCollectionClick} text="Edit Collection" />
+                        <UnstyledLink
+                          href={`/edit?collectionId=${collectionId}`}
+                          onClick={() => track('Update existing collection')}
+                        >
+                          <TextButton text="Edit Collection" />
+                        </UnstyledLink>
                       </NavElement>
                     </>
                   )}

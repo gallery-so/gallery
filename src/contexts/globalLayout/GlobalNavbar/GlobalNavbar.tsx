@@ -7,8 +7,6 @@ import RightContent from './RightContent';
 import LeftContent from './LeftContent';
 import CenterContent from './CenterContent';
 import NavbarGLink from 'components/NavbarGLink';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
 
 export type Props = {
   queryRef: GlobalNavbarFragment$key;
@@ -21,7 +19,6 @@ function GlobalNavbar({ queryRef, customLeftContent, customCenterContent }: Prop
     graphql`
       fragment GlobalNavbarFragment on Query {
         ...RightContentFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -32,11 +29,9 @@ function GlobalNavbar({ queryRef, customLeftContent, customCenterContent }: Prop
       <StyledContentWrapperLeft>
         {customLeftContent && <LeftContent content={customLeftContent} />}
       </StyledContentWrapperLeft>
-      {isFeatureEnabled(FeatureFlag.FEED, query) && (
-        <StyledContentWrapper>
-          <CenterContent content={customCenterContent || <NavbarGLink />} />
-        </StyledContentWrapper>
-      )}
+      <StyledContentWrapper>
+        <CenterContent content={customCenterContent || <NavbarGLink />} />
+      </StyledContentWrapper>
       <StyledContentWrapperRight>
         <RightContent queryRef={query} />
       </StyledContentWrapperRight>

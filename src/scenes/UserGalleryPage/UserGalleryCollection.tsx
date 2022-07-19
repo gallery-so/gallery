@@ -7,7 +7,6 @@ import { useCallback, useMemo } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
-import { useNavigateToUrl } from 'utils/navigate';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
@@ -22,6 +21,7 @@ import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGaller
 import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -64,34 +64,22 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const galleryId = collection.gallery.dbid;
 
   const { showModal } = useModalActions();
-  const { push, asPath } = useRouter();
-  const navigateToUrl = useNavigateToUrl();
+  const router = useRouter();
+
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
   const unescapedCollectorsNote = useMemo(
     () => unescape(collection.collectorsNote ?? ''),
     [collection.collectorsNote]
   );
 
-  const username = asPath.split('/')[1];
-  const collectionUrl = `${baseUrl}/${username}/${collection.dbid}`;
-
-  const handleViewCollectionClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      navigateToUrl(`/${username}/${collection.dbid}`, event);
-    },
-    [collection.dbid, navigateToUrl, username]
-  );
+  const username = router.query.username as string;
+  const collectionUrl = `/${username}/${collection.dbid}`;
 
   const track = useTrack();
 
-  const handleEditCollectionClick = useCallback(() => {
-    track('Update existing collection button clicked');
-    void push(`/edit?collectionId=${collection.dbid}`);
-  }, [collection.dbid, track, push]);
-
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collection.dbid}` });
-  }, [collection.dbid, username, track]);
+    track('Share Collection', { path: collectionUrl });
+  }, [track, collectionUrl]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -113,11 +101,11 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
     <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <StyledCollectorsTitle onClick={handleViewCollectionClick}>
-            {unescapedCollectionName}
-          </StyledCollectorsTitle>
+          <UnstyledLink href={collectionUrl}>
+            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+          </UnstyledLink>
           <StyledOptionsContainer>
-            <StyledCopyToClipboard textToCopy={collectionUrl}>
+            <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <StyledShareButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
             <Spacer width={16} />
@@ -130,18 +118,19 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
                       text="EDIT NAME & DESCRIPTION"
                       underlineOnHover
                     />
-                    <TextButton
-                      text="Edit Collection"
-                      onClick={handleEditCollectionClick}
-                      underlineOnHover
-                    />
+                    <Spacer height={8} />
+                    <UnstyledLink
+                      href={`/edit?collectionId=${collection.dbid}`}
+                      onClick={() => track('Update existing collection button clicked')}
+                    >
+                      <TextButton text="Edit Collection" underlineOnHover />
+                    </UnstyledLink>
+                    <Spacer height={8} />
                   </>
                 )}
-                <TextButton
-                  text="View Collection"
-                  onClick={handleViewCollectionClick}
-                  underlineOnHover
-                />
+                <UnstyledLink href={collectionUrl}>
+                  <TextButton text="View Collection" underlineOnHover />
+                </UnstyledLink>
               </Dropdown>
             </StyledSettingsDropdown>
           </StyledOptionsContainer>

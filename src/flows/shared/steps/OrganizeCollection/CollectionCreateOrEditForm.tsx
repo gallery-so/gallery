@@ -5,7 +5,7 @@ import unescape from 'utils/unescape';
 
 import BigInput from 'components/core/BigInput/BigInput';
 import Spacer from 'components/core/Spacer/Spacer';
-import Button from 'components/core/Button/DeprecatedButton';
+import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -16,6 +16,7 @@ import { StagingItem } from './types';
 import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
+import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -28,6 +29,7 @@ type Props = {
     columns: number;
     whitespace: readonly number[];
   };
+  tokenSettings?: TokenSettings;
 };
 
 export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
@@ -40,6 +42,7 @@ function CollectionCreateOrEditForm({
   collectionCollectorsNote,
   stagedItems,
   layout,
+  tokenSettings = {},
 }: Props) {
   const { hideModal } = useModalActions();
 
@@ -116,7 +119,14 @@ function CollectionCreateOrEditForm({
           added_description: description.length > 0,
           nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ dbid: id }) => id),
         });
-        await createCollection(galleryId, title, description, stagedItems, layout);
+        await createCollection({
+          galleryId,
+          title,
+          description,
+          stagedNfts: stagedItems,
+          collectionLayout: layout,
+          tokenSettings,
+        });
       }
 
       goToNextStep();
@@ -131,13 +141,14 @@ function CollectionCreateOrEditForm({
     description,
     collectionId,
     stagedItems,
+    layout,
     goToNextStep,
-    updateCollection,
+    track,
     title,
+    updateCollection,
     createCollection,
     galleryId,
-    layout,
-    track,
+    tokenSettings,
   ]);
 
   return (
@@ -170,13 +181,9 @@ function CollectionCreateOrEditForm({
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
       <Spacer height={12} />
       <ButtonContainer>
-        <Button
-          mini
-          text={buttonText}
-          onClick={handleClick}
-          disabled={isLoading}
-          loading={isLoading}
-        />
+        <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
+          {buttonText}
+        </Button>
       </ButtonContainer>
     </StyledCollectionEditInfoForm>
   );
