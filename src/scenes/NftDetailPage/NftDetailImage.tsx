@@ -39,16 +39,16 @@ function NftDetailImage({ tokenRef }: Props) {
     return '';
   }, [token.media]);
 
-  const src = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
+  const { url } = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
 
   // TODO: this is a hack to handle videos that are returned by OS as images.
   // i.e., assets that do not have animation_urls, and whose image_urls all contain
   // links to videos. we should be able to remove this hack once we're off of OS.
   const setContentIsLoaded = useSetContentIsLoaded();
-  if (src.endsWith('.mp4') || src.endsWith('.webm')) {
+  if (url.endsWith('.mp4') || url.endsWith('.webm')) {
     return (
       <StyledVideo
-        src={src}
+        src={url}
         muted
         autoPlay
         loop
@@ -61,7 +61,7 @@ function NftDetailImage({ tokenRef }: Props) {
 
   return (
     <ImageWithLoading
-      src={graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200)}
+      src={url}
       alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
     />

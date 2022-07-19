@@ -106,7 +106,7 @@ function CollectionRow({ collectionRef, className }: Props) {
             return null;
           }
 
-          const imageUrl = graphqlGetResizedNftImageUrlWithFallback(
+          const { url } = graphqlGetResizedNftImageUrlWithFallback(
             result.urls.large,
             BIG_NFT_SIZE_PX
           );
@@ -114,10 +114,10 @@ function CollectionRow({ collectionRef, className }: Props) {
           return (
             <BigNftContainer key={token.id}>
               {result.type === 'video' ? (
-                <BigNftVideoPreview src={imageUrl} />
+                <BigNftVideoPreview src={url} />
               ) : (
                 <BigNftImagePreview
-                  src={imageUrl}
+                  src={url}
                   backgroundColorOverride={getBackgroundColorOverrideForContract(
                     token.token.contract?.contractAddress?.address ?? ''
                   )}
