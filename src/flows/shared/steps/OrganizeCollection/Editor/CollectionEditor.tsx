@@ -71,6 +71,7 @@ function CollectionEditor({ viewerRef }: Props) {
           }
         }
         ...EditorMenuFragment
+        ...SidebarViewerFragment
       }
     `,
     viewerRef
@@ -219,7 +220,7 @@ function CollectionEditor({ viewerRef }: Props) {
   return (
     <StyledOrganizeCollection>
       <StyledSidebarContainer>
-        <Sidebar sidebarTokens={sidebarTokens} tokensRef={allNfts} />
+        <Sidebar sidebarTokens={sidebarTokens} tokensRef={allNfts} viewerRef={viewer} />
       </StyledSidebarContainer>
       <StyledEditorContainer>
         {shouldDisplayEditor ? (
