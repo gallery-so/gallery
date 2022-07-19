@@ -22,9 +22,6 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
         contract {
           name
         }
-        media {
-          __typename
-        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -33,31 +30,35 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
 
   const reportError = useReportError();
 
-  if (token.media?.__typename === 'UnknownMedia') {
-    return (
-      <>
-        <FailedNftPreview />
-        {hideLabel ? null : (
-          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-        )}
-      </>
-    );
-  }
-
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
   if (!result || !result.urls.large) {
     reportError('Image URL not found for StagedNftImageDragging');
   }
 
-  return result?.type === 'video' ? (
-    <VideoContainer ref={setNodeRef} size={size} {...props}>
-      <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
-      {hideLabel ? null : (
-        <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-      )}
-    </VideoContainer>
-  ) : (
+  if (!result?.success) {
+    return (
+      <StyledFailedNftContainer ref={setNodeRef} {...props}>
+        <FailedNftPreview />
+        {hideLabel ? null : (
+          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
+        )}
+      </StyledFailedNftContainer>
+    );
+  }
+
+  if (result?.type === 'video') {
+    return (
+      <VideoContainer ref={setNodeRef} size={size} {...props}>
+        <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
+        {hideLabel ? null : (
+          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
+        )}
+      </VideoContainer>
+    );
+  }
+
+  return (
     <StyledGridImage
       srcUrl={result?.urls.large ?? FALLBACK_URL}
       ref={setNodeRef}
@@ -70,6 +71,10 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
     </StyledGridImage>
   );
 }
+
+const StyledFailedNftContainer = styled.div`
+  position: relative;
+`;
 
 const VideoContainer = styled.div<{ size: number }>`
   // TODO handle non square videos

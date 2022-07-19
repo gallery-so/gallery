@@ -1,4 +1,5 @@
 import colors from 'components/core/colors';
+import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
@@ -50,6 +51,14 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
     () => getBackgroundColorOverrideForContract(contractAddress),
     [contractAddress]
   );
+
+  if (!result?.success) {
+    return (
+      <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
+        <FailedNftPreview />
+      </ImageContainer>
+    );
+  }
 
   return result?.type === 'video' ? (
     <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
