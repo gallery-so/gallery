@@ -1,4 +1,4 @@
-import { contentSize } from 'components/core/breakpoints';
+import breakpoints, { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import { BaseM, TitleS } from 'components/core/Text/Text';
@@ -53,10 +53,12 @@ export default function Banner({
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
-        {title && <StyledTitle>{title}</StyledTitle>}
-        <BaseM>
-          <Markdown text={text} />
-        </BaseM>
+        <TextContainer>
+          {title && <StyledTitle>{title}</StyledTitle>}
+          <BaseM>
+            <Markdown text={text} />
+          </BaseM>
+        </TextContainer>
         <StyledAction>
           {actionComponent}
           <StyledClose onClick={hideBanner} />
@@ -82,35 +84,45 @@ const StyledContainer = styled.div`
   }
 `;
 
+const TextContainer = styled.div`
+  display: flex;
+  // ensure the text doesn't bleed over the close icon
+  max-width: calc(100% - 20px);
+`;
+
 const StyledBanner = styled.div`
   text-align: left;
   width: 100%;
-  padding: 8px 16px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   top: 0;
   border: 1px solid ${colors.shadow};
   position: relative;
+  align-items: flex-start;
+  flex-direction: column;
 
-  @media (max-width: ${contentSize.desktop}px) {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 8px 36px 8px 16px;
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
   }
 `;
 
 const StyledClose = styled(DecoratedCloseIcon)`
-  padding: 8px;
+  padding: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
 
   position: absolute;
   right: 0;
+  top: 0;
 
-  @media (max-width: ${contentSize.desktop}px) {
-    top: 0;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 8px;
+    height: 100%;
   }
 `;
 
@@ -120,6 +132,12 @@ const StyledTitle = styled(TitleS)`
 
 const StyledAction = styled.div`
   display: flex;
-  gap: 24px;
   align-items: center;
+  margin-top: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-top: 0px;
+    margin-left: 20px;
+    margin-right: 32px;
+  }
 `;
