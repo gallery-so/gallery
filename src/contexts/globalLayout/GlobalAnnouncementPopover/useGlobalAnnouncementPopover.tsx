@@ -3,7 +3,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 import usePersistedState from 'hooks/usePersistedState';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
@@ -30,16 +30,21 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const { showModal } = useModalActions();
+  const { asPath } = useRouter();
 
   const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
 
-  const { asPath } = useRouter();
+  // track dismissal separately from above in case we want the popover to be displayed
+  // again when the user refreshes, but *not* when the user navigates between pages
+  const [dismissedOnSession, setDismissedOnSession] = useState(false);
 
   const isFigure31ProfilePage = useIsFigure31ProfilePage();
 
+  const { showModal } = useModalActions();
+
   useEffect(() => {
     async function handleMount() {
+      if (dismissedOnSession) return;
       if (!isFigure31ProfilePage) return;
 
       if (dismissed) return;
@@ -56,11 +61,21 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
           isFullPage: true,
           headerVariant: 'thicc',
         });
+        setDismissedOnSession(true);
       }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
     }
 
     handleMount();
-  }, [isAuthenticated, showModal, query, dismissed, setDismissed, asPath, isFigure31ProfilePage]);
+  }, [
+    isAuthenticated,
+    showModal,
+    query,
+    dismissed,
+    setDismissed,
+    asPath,
+    isFigure31ProfilePage,
+    dismissedOnSession,
+  ]);
 }
 
 async function handlePreloadFonts() {
