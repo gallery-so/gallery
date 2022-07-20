@@ -32,10 +32,10 @@ import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 import TextButton from 'components/core/Button/TextButton';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import Spacer from 'components/core/Spacer/Spacer';
 import usePersistedState from 'hooks/usePersistedState';
 import { FIGURE31_BANNER_KEY } from 'constants/storageKeys';
 import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -84,7 +84,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       query GlobalLayoutContextQuery {
         ...GlobalLayoutContextNavbarFragment
         # Keeping this around for the next time we want to use it
-        # ...useGlobalAnnouncementPopoverFragment
+        ...useGlobalAnnouncementPopoverFragment
       }
     `,
     {}
@@ -239,7 +239,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   // Keeping this around for the next time we want to use it
-  // useGlobalAnnouncementPopover(query);
+  useGlobalAnnouncementPopover(query);
 
   return (
     // note: we render the navbar here, above the main contents of the app,
