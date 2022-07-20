@@ -8,6 +8,7 @@ import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { useModalState } from 'contexts/modal/ModalContext';
+import useIs3ac from 'hooks/oneOffs/useIs3ac';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -20,7 +21,7 @@ function UserGallery({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             user {
-              id
+              dbid
             }
           }
         }
@@ -44,9 +45,10 @@ function UserGallery({ queryRef }: Props) {
   );
 
   const { user } = query;
-  const { push } = useRouter();
+  const { push, query: routerQuery } = useRouter();
 
-  const isLoggedIn = Boolean(query.viewer?.user?.id);
+  const loggedInUserId = query.viewer?.user?.dbid;
+  const isLoggedIn = Boolean(loggedInUserId);
 
   const { isModalOpenRef } = useModalState();
 
@@ -59,6 +61,19 @@ function UserGallery({ queryRef }: Props) {
   useKeyDown('e', navigateToEdit);
 
   useDisplayFullPageNftDetailModal();
+
+  const is3acLoggedIn = useIs3ac(loggedInUserId) && isLoggedIn;
+
+  console.log(loggedInUserId, is3acLoggedIn);
+
+  // hide profile for users who aren't logged in
+  if (
+    !is3acLoggedIn &&
+    typeof routerQuery?.username === 'string' &&
+    routerQuery?.username?.toLowerCase() === '3ac'
+  ) {
+    return <NotFound />;
+  }
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;
