@@ -14,7 +14,7 @@ import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalN
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+// import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 
 type Props = {
   name: string | null;
@@ -69,7 +69,8 @@ function NftDetailText({
     });
   }, [track, contractAddress, tokenId, openseaExternalUrl]);
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+  // const isFigure31ProfilePage = useIsFigure31ProfilePage();
+  const isFigure31ProfilePage = false;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
