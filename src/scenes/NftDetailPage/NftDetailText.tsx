@@ -85,7 +85,7 @@ function NftDetailText({
         <BaseM>{contractName}</BaseM>
       )}
       <Spacer height={isMobile ? 32 : 24} />
-      {description && (
+      {!isFigure31ProfilePage && description && (
         <>
           <BaseM>
             <Markdown text={description} />
@@ -99,7 +99,13 @@ function NftDetailText({
       {addressToUse && (
         <>
           <TitleXS>Creator</TitleXS>
-          <BaseM>{<EnsOrAddress address={addressToUse} />}</BaseM>
+          <BaseM>
+            {addressToUse === '0x5872c9360cb6d6a0309f3045376e2bf8e7837971' ? (
+              <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
+            ) : (
+              <EnsOrAddress address={addressToUse} />
+            )}
+          </BaseM>
         </>
       )}
       <Spacer height={24} />
@@ -110,7 +116,7 @@ function NftDetailText({
         externalUrl={externalUrl}
         authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
       />
-      {isFigure31ProfilePage && (
+      {false && isFigure31ProfilePage && (
         <>
           <Spacer height={24} />
           <HorizontalBreak />
