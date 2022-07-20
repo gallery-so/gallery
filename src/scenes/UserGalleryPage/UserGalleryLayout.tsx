@@ -66,6 +66,13 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
 
     return () => {
+      // [GAL-302] figure out a cleaner way to do this. prevent dismount of follow icon
+      // if we're transitioning in between pages on the same user. otherwise there's a
+      // race condition between this page trying to dismount the follow icon vs. the next
+      // page trying to mount it again
+      if (window.location.href.includes(user.username ?? '')) {
+        return;
+      }
       setCustomNavLeftContent(null);
     };
   }, [query, setCustomNavLeftContent, user]);
