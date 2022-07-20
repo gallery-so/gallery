@@ -30,6 +30,12 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
+import TextButton from 'components/core/Button/TextButton';
+import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import usePersistedState from 'hooks/usePersistedState';
+import { FIGURE31_BANNER_KEY } from 'constants/storageKeys';
+import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -78,7 +84,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       query GlobalLayoutContextQuery {
         ...GlobalLayoutContextNavbarFragment
         # Keeping this around for the next time we want to use it
-        # ...useGlobalAnnouncementPopoverFragment
+        ...useGlobalAnnouncementPopoverFragment
       }
     `,
     {}
@@ -233,7 +239,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   // Keeping this around for the next time we want to use it
-  // useGlobalAnnouncementPopover(query);
+  useGlobalAnnouncementPopover(query);
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -344,6 +350,12 @@ function GlobalNavbarWithFadeEnabled({
     [handleFadeNavbarOnHover]
   );
 
+  const [, setDismissed] = usePersistedState(FIGURE31_BANNER_KEY, false);
+  const handleCloseFigure31Banner = useCallback(() => {
+    setDismissed(true);
+  }, [setDismissed]);
+  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+
   return (
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
@@ -352,10 +364,18 @@ function GlobalNavbarWithFadeEnabled({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {
-        // we'll re-think the behavior of this banner. in the meantime, if enabled, it'll appear over the banner
-        isBannerVisible ? <Banner text="" queryRef={query} /> : null
-      }
+      {isBannerVisible && !isFigure31ProfilePage ? (
+        <Banner
+          text="The MARK Exhibition by Figure31 is now live. Public sale begins at 02:00PM ET."
+          actionComponent={
+            <UnstyledLink href="/figure31" onClick={handleCloseFigure31Banner}>
+              <TextButton text="View Gallery" />
+            </UnstyledLink>
+          }
+          localStorageKey={FIGURE31_BANNER_KEY}
+          queryRef={query}
+        />
+      ) : null}
       <GlobalNavbar
         queryRef={query}
         customLeftContent={customLeftContent}

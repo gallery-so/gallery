@@ -1,301 +1,94 @@
-/**
- *
- *
- *
- * THE CONTENTS OF THIS FILE ARE DEPRECATED.
- *
- * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
- *
- *
- *
- *
- */
-
-import { ButtonLink } from 'components/core/Button/Button';
-import TextButton from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import transitions from 'components/core/transitions';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import Link from 'next/link';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { GlobalAnnouncementPopoverQuery } from '__generated__/GlobalAnnouncementPopoverQuery.graphql';
-import GalleryOfTheWeekCard from './Feed/GalleryOfTheWeekCard';
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
 export default function GlobalAnnouncementPopover() {
-  const query = useLazyLoadQuery<GlobalAnnouncementPopoverQuery>(
-    graphql`
-      query GlobalAnnouncementPopoverQuery {
-        ...GalleryOfTheWeekCardQueryFragment
-
-        galleryOfTheWeekWinners @required(action: LOG) {
-          dbid
-          ...GalleryOfTheWeekCardUserFragment
-        }
-      }
-    `,
-    {}
-  );
-
-  if (query === null) {
-    throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
-  }
-
-  const { galleryOfTheWeekWinners: rawData } = query;
-  const galleryOfTheWeekWinners = removeNullValues(rawData);
-
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   const { hideModal } = useModalActions();
+
+  const [frame, setFrame] = useState(1);
+  const incrementFrame = useCallback(() => {
+    setFrame((f) => f + 1);
+  }, []);
+
+  const FIRST_FRAME_MS = 1200;
+  const SECOND_FRAME_MS = 2500;
+  const THIRD_FRAME_MS = 3000;
+
+  useEffect(() => {
+    if (frame === 1) {
+      setTimeout(() => {
+        incrementFrame();
+      }, FIRST_FRAME_MS);
+    }
+
+    if (frame === 2) {
+      setTimeout(() => {
+        incrementFrame();
+      }, SECOND_FRAME_MS);
+    }
+
+    if (frame === 3) {
+      setTimeout(() => {
+        incrementFrame();
+      }, THIRD_FRAME_MS);
+    }
+
+    if (frame === 4) {
+      hideModal();
+    }
+  }, [frame, hideModal, incrementFrame]);
 
   return (
     <StyledGlobalAnnouncementPopover>
-      {
-        // A note on the architecture:
-        // Although desktop and mobile views are similar, they're sufficiently different such that they warrant
-        // different sets of components entirely. The alternative would be to litter this file with ternaries
-        // and CSS params
-        isMobile ? (
-          <>
-            <Spacer height={92} />
-            <MobileHeaderContainer>
-              <MobileIntroTextContainer>
-                <MobileIntroText>
-                  A new way to <i>connect</i> with collectors
-                </MobileIntroText>
-              </MobileIntroTextContainer>
-              <Spacer height={8} />
-              <MobileDescriptionTextContainer>
-                <BaseM>
-                  To help you stay up to date with your favorite collectors on Gallery, we’re
-                  introducing our biggest change thus far—<b>a social feed</b>.
-                </BaseM>
-              </MobileDescriptionTextContainer>
-              <Spacer height={24} />
-              <MobileButtonContainer>
-                <ButtonLink href="/home" onClick={hideModal}>
-                  Start Browsing
-                </ButtonLink>
-                <Spacer height={16} />
-                {/* TODO: replace this with blog post link */}
-                <Link
-                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
-                  passHref
-                >
-                  <StyledAnchor target="_blank" rel="noopener noreferrer">
-                    <TextButton text="Read the blog post" />
-                  </StyledAnchor>
-                </Link>
-              </MobileButtonContainer>
-            </MobileHeaderContainer>
-            <Spacer height={24} />
-            <MobileImageContainer>
-              <img src="./feed-announcement-mock.png" />
-            </MobileImageContainer>
-            <Spacer height={80} />
-            <MobileSecondaryHeaderContainer>
-              <MobileStyledSecondaryTitle>Featured galleries to follow</MobileStyledSecondaryTitle>
-              <Spacer height={12} />
-              <MobileDescriptionTextContainer>
-                <BaseM>
-                  To get you started, you can follow some of our past <b>Gallery of the Week</b>{' '}
-                  winners, as voted by our community.
-                </BaseM>
-              </MobileDescriptionTextContainer>
-            </MobileSecondaryHeaderContainer>
-            <Spacer height={24} />
-            <GalleryOfTheWeekContainer>
-              {galleryOfTheWeekWinners.map((userRef) => (
-                <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-              ))}
-            </GalleryOfTheWeekContainer>
-            <Spacer height={24} />
-          </>
-        ) : (
-          <>
-            <Spacer height={92} />
-            <DesktopHeaderContainer>
-              <DesktopIntroText>
-                A new way to <i>connect</i> with collectors
-              </DesktopIntroText>
-              <Spacer height={32} />
-              <DesktopDescriptionText>
-                To help you stay up to date with your favorite collectors on Gallery, we’re
-                introducing our biggest change thus far—
-              </DesktopDescriptionText>
-              <DesktopDescriptionTextItalic>a social feed.</DesktopDescriptionTextItalic>
-              <Spacer height={32} />
-              <DesktopButtonContainer>
-                <ButtonLink href="/home" onClick={hideModal}>
-                  Start Browsing
-                </ButtonLink>
-                <Spacer width={32} />
-                {/* TODO: replace this with blog post link */}
-                <Link
-                  href="https://gallery.mirror.xyz/2pJ7pfsmy266Na4rQRMlab-OoaUb0MgzqWpbCn8bJnY"
-                  passHref
-                >
-                  <StyledAnchor target="_blank" rel="noopener noreferrer">
-                    <TextButton text="Read the blog post" />
-                  </StyledAnchor>
-                </Link>
-              </DesktopButtonContainer>
-            </DesktopHeaderContainer>
-            <Spacer height={64} />
-            <DesktopImageContainer>
-              <img src="./feed-announcement-mock.png" />
-            </DesktopImageContainer>
-            <Spacer height={120} />
-            <DesktopSecondaryHeaderContainer>
-              <DesktopStyledSecondaryTitle>
-                Featured galleries to follow
-              </DesktopStyledSecondaryTitle>
-              <Spacer height={12} />
-              <DesktopDescriptionText>
-                To get you started, you can follow some of our past{' '}
-                <DesktopDescriptionTextItalic>Gallery of the Week</DesktopDescriptionTextItalic>{' '}
-                winners, as voted by our community.
-              </DesktopDescriptionText>
-            </DesktopSecondaryHeaderContainer>
-            <Spacer height={64} />
-            <GalleryOfTheWeekContainer>
-              {galleryOfTheWeekWinners.map((userRef) => (
-                <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-              ))}
-            </GalleryOfTheWeekContainer>
-            <Spacer height={80} />
-          </>
-        )
-      }
+      {frame < 3 ? (
+        <FirstFrameContainer bringToCenter={frame === 2}>
+          <IntroText>Figure31</IntroText>
+          <IntroTextItalic visible={frame === 2}>presents</IntroTextItalic>
+        </FirstFrameContainer>
+      ) : (
+        <IntroText>MARK</IntroText>
+      )}
     </StyledGlobalAnnouncementPopover>
   );
 }
 
 const StyledGlobalAnnouncementPopover = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  background: ${colors.offWhite};
-  padding: 0px 16px;
+  background: ${colors.offBlack};
+  height: 100vh;
+  width: 100vw;
 `;
 
-const StyledAnchor = styled.a`
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+const FirstFrameContainer = styled.div<{ bringToCenter: boolean }>`
+  transform: ${({ bringToCenter }) => `translateX(${bringToCenter ? 0 : 47}px)`};
+  transition: ${transitions.cubic};
 `;
 
-////////////////////////// MOBILE //////////////////////////
-const MobileHeaderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const MobileIntroTextContainer = styled.div`
-  width: 220px;
-  text-align: center;
-`;
-
-const MobileIntroText = styled.span`
+const IntroText = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 32px;
-  line-height: 32px;
-  letter-spacing: -0.05em;
+  line-height: 36px;
+  letter-spacing: -0.03em;
+  color: ${colors.white};
 `;
 
-const MobileDescriptionTextContainer = styled.div`
-  max-width: 343px;
-`;
+const IntroTextItalic = styled.span<{ visible: boolean }>`
+  padding-left: 12px;
 
-const MobileButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-`;
-
-const MobileImageContainer = styled.div`
-  width: 100%;
-  img {
-    width: 100%;
-  }
-`;
-
-const MobileStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
   font-size: 32px;
-  line-height: 32px;
-  letter-spacing: -0.05em;
-`;
-
-const MobileSecondaryHeaderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-////////////////////////// DESKTOP //////////////////////////
-const DesktopHeaderContainer = styled.div`
-  width: 580px;
-  text-align: center;
-`;
-
-const DesktopIntroText = styled.span`
-  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
-  font-family: 'GT Alpina Condensed';
-  font-size: 84px;
-  line-height: 69px;
-  letter-spacing: -0.05em;
-`;
-
-const DesktopDescriptionText = styled(TitleM)`
-  font-style: normal;
-`;
-
-const DesktopDescriptionTextItalic = styled.span`
-  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
-  font-family: 'GT Alpina Condensed';
-  font-size: 24px;
+  line-height: 36px;
   font-style: italic;
-`;
+  color: ${colors.white};
 
-const DesktopButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const DesktopImageContainer = styled.div`
-  max-width: 1050px;
-  img {
-    width: 100%;
-  }
-`;
-
-const DesktopSecondaryHeaderContainer = styled.div`
-  width: 526px;
-  text-align: center;
-`;
-
-const DesktopStyledSecondaryTitle = styled.span`
-  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
-  font-family: 'GT Alpina Condensed';
-  font-size: 42px;
-  line-height: 48px;
-  letter-spacing: -0.05em;
-`;
-
-const GalleryOfTheWeekContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  grid-gap: 24px;
-  max-width: 1040px;
+  transition: ${transitions.cubic};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
 `;

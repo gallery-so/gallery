@@ -1,27 +1,15 @@
-/**
- *
- *
- *
- * THE CONTENTS OF THIS FILE ARE DEPRECATED.
- *
- * KEEPING IT AROUND FOR OUR NEXT FULL-PAGE ANNOUNCEMENT POPOVER.
- *
- *
- *
- *
- */
-
 import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';
+import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 import usePersistedState from 'hooks/usePersistedState';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 
-const AUTH_REQUIRED = true;
-const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 1000;
+const AUTH_REQUIRED = false;
+const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 0;
 
 export default function useGlobalAnnouncementPopover(queryRef: any) {
   const query = useFragment(
@@ -42,39 +30,52 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const { showModal } = useModalActions();
+  const { asPath } = useRouter();
 
   const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
 
-  const { asPath } = useRouter();
+  // track dismissal separately from above in case we want the popover to be displayed
+  // again when the user refreshes, but *not* when the user navigates between pages
+  const [dismissedOnSession, setDismissedOnSession] = useState(false);
+
+  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+
+  const { showModal } = useModalActions();
 
   useEffect(() => {
     async function handleMount() {
+      if (dismissedOnSession) return;
+      if (!isFigure31ProfilePage) return;
+
       if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
+      // hide announcement modal on announcements page
       if (asPath === '/announcements') return;
-
       // hide for new users onboarding
-      if (asPath === '/welcome' || query.viewer?.user?.username === '') {
-        setDismissed(true);
-        return;
-      }
-
+      if (asPath === '/welcome' || query.viewer?.user?.username === '') return;
       // prevent font flicker on popover load
       await handlePreloadFonts();
-
       setTimeout(() => {
         showModal({
           content: <GlobalAnnouncementPopover />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
-        setDismissed(true);
+        setDismissedOnSession(true);
       }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
     }
 
     handleMount();
-  }, [isAuthenticated, showModal, query, dismissed, setDismissed, asPath]);
+  }, [
+    isAuthenticated,
+    showModal,
+    query,
+    dismissed,
+    setDismissed,
+    asPath,
+    isFigure31ProfilePage,
+    dismissedOnSession,
+  ]);
 }
 
 async function handlePreloadFonts() {
@@ -99,12 +100,4 @@ async function handlePreloadFonts() {
   await fontLightItalic.load();
   await fontLight2.load();
   await fontLightItalic2.load();
-
-  await new Promise<void>((resolve) => {
-    const img = new Image();
-    img.src = './feed-announcement-mock.png';
-    img.onload = () => {
-      resolve();
-    };
-  });
 }
