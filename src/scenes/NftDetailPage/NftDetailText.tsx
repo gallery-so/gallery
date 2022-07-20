@@ -4,13 +4,16 @@ import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Markdown from 'components/core/Markdown/Markdown';
-import NftAdditionalDetails from './NftAdditionalDetails';
+import NftAdditionalDetails, { getOpenseaExternalUrl } from './NftAdditionalDetails';
 import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
+import { Button } from 'components/core/Button/Button';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type Props = {
   name: string | null;
@@ -54,6 +57,17 @@ function NftDetailText({
     [contractAddress]
   );
 
+  const openseaExternalUrl = getOpenseaExternalUrl(contractAddress ?? '', tokenId ?? '');
+  const track = useTrack();
+  const handleBuyNowClick = useCallback(() => {
+    track('Buy Now Button Click', {
+      username: username.current.toLowerCase(),
+      contractAddress,
+      tokenId,
+      externaUrl: openseaExternalUrl,
+    });
+  }, [track, contractAddress, tokenId, openseaExternalUrl]);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       {name && (
@@ -93,6 +107,12 @@ function NftDetailText({
         externalUrl={externalUrl}
         authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
       />
+      <Spacer height={16} />
+      <HorizontalBreak />
+      <Spacer height={16} />
+      <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
+        <StyledButton>Buy Now</StyledButton>
+      </StyledInteractiveLink>
     </StyledDetailLabel>
   );
 }
@@ -118,6 +138,14 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
     margin-left: 72px;
     margin-top: 0;
   }
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  text-decoration: none;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
 `;
 
 export default NftDetailText;

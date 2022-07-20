@@ -31,7 +31,7 @@ const hexHandler = (str: string) => {
   return d;
 };
 
-const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
+export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
   const hexTokenId = hexHandler(tokenId);
 
   // Allows us to get referral credit
