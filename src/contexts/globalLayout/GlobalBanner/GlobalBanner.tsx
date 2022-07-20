@@ -106,7 +106,7 @@ const StyledBanner = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
     align-items: center;
-    padding: 8px;
+    padding: 8px 16px;
   }
 `;
 
@@ -138,6 +138,6 @@ const StyledAction = styled.div`
   @media only screen and ${breakpoints.tablet} {
     margin-top: 0px;
     margin-left: 20px;
-    margin-right: 32px;
+    margin-right: 16px;
   }
 `;
