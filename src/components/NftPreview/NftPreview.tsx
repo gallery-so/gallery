@@ -183,6 +183,7 @@ const StyledA = styled.a`
   justify-content: center;
   align-items: center;
   width: 100%;
+  text-decoration: none;
 `;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`

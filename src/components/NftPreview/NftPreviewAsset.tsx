@@ -6,6 +6,8 @@ import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragme
 import { useEffect } from 'react';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import VideoWithLoading from 'components/LoadingAsset/VideoWithLoading';
+import FailedNftPreview from './FailedNftPreview';
+import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type UnrenderedPreviewAssetProps = {
   id: string;
@@ -77,6 +79,8 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
     tokenRef
   );
 
+  const setContentIsLoaded = useSetContentIsLoaded();
+
   if (
     token.media?.__typename === 'VideoMedia' ||
     token.media?.__typename === 'ImageMedia' ||
@@ -85,7 +89,14 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
     token.media?.__typename === 'GltfMedia' ||
     token.media?.__typename === 'UnknownMedia'
   ) {
-    const src = graphqlGetResizedNftImageUrlWithFallback(token.media?.previewURLs.large, size);
+    const { url: src, success } = graphqlGetResizedNftImageUrlWithFallback(
+      token.media?.previewURLs.large,
+      size
+    );
+
+    if (!success) {
+      return <FailedNftPreview onLoad={setContentIsLoaded} />;
+    }
 
     // TODO: this is a hack to handle videos that are returned by OS as images.
     // i.e., assets that do not have animation_urls, and whose image_urls all contain
