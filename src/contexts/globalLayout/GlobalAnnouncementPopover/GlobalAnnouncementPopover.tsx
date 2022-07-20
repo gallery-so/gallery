@@ -19,22 +19,28 @@ export default function GlobalAnnouncementPopover() {
   const THIRD_FRAME_MS = 3000;
 
   useEffect(() => {
-    setTimeout(() => {
-      incrementFrame();
-    }, FIRST_FRAME_MS);
+    if (frame === 1) {
+      setTimeout(() => {
+        incrementFrame();
+      }, FIRST_FRAME_MS);
+    }
 
-    setTimeout(() => {
-      incrementFrame();
-    }, FIRST_FRAME_MS + SECOND_FRAME_MS);
+    if (frame === 2) {
+      setTimeout(() => {
+        incrementFrame();
+      }, SECOND_FRAME_MS);
+    }
 
-    setTimeout(() => {
-      incrementFrame();
-    }, FIRST_FRAME_MS + SECOND_FRAME_MS + THIRD_FRAME_MS);
-  }, [incrementFrame]);
+    if (frame === 3) {
+      setTimeout(() => {
+        incrementFrame();
+      }, THIRD_FRAME_MS);
+    }
 
-  useEffect(() => {
-    if (frame === 4) hideModal();
-  }, [frame, hideModal]);
+    if (frame === 4) {
+      hideModal();
+    }
+  }, [frame, hideModal, incrementFrame]);
 
   return (
     <StyledGlobalAnnouncementPopover>

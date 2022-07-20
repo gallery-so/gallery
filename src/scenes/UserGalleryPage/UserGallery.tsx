@@ -64,8 +64,6 @@ function UserGallery({ queryRef }: Props) {
 
   const is3acLoggedIn = useIs3ac(loggedInUserId) && isLoggedIn;
 
-  console.log(loggedInUserId, is3acLoggedIn);
-
   // hide profile for users who aren't logged in
   if (
     !is3acLoggedIn &&
