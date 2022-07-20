@@ -366,7 +366,7 @@ function GlobalNavbarWithFadeEnabled({
     >
       {isBannerVisible && !isFigure31ProfilePage ? (
         <Banner
-          text="The MARK Exhibition by Figure31 is now live. Public sale begins at 02:00PM ET."
+          text="Public sale is now live for MARK by Figure31."
           actionComponent={
             <UnstyledLink href="/figure31" onClick={handleCloseFigure31Banner}>
               <TextButton text="View Gallery" />

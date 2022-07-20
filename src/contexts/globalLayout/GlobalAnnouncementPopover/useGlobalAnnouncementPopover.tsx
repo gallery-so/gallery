@@ -1,7 +1,5 @@
-import { FEED_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
-import usePersistedState from 'hooks/usePersistedState';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
@@ -32,7 +30,8 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
 
   const { asPath } = useRouter();
 
-  const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
+  // enable this if we only want to display the popover once globally (across page refreshes)
+  // const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
 
   // track dismissal separately from above in case we want the popover to be displayed
   // again when the user refreshes, but *not* when the user navigates between pages
@@ -47,7 +46,8 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
       if (dismissedOnSession) return;
       if (!isFigure31ProfilePage) return;
 
-      if (dismissed) return;
+      // enable this if we only want to display the popover once globally (across page refreshes)
+      // if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
       // hide announcement modal on announcements page
       if (asPath === '/announcements') return;
@@ -66,16 +66,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
     }
 
     handleMount();
-  }, [
-    isAuthenticated,
-    showModal,
-    query,
-    dismissed,
-    setDismissed,
-    asPath,
-    isFigure31ProfilePage,
-    dismissedOnSession,
-  ]);
+  }, [isAuthenticated, showModal, query, asPath, isFigure31ProfilePage, dismissedOnSession]);
 }
 
 async function handlePreloadFonts() {

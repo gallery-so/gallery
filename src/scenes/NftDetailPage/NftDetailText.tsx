@@ -116,7 +116,7 @@ function NftDetailText({
         externalUrl={externalUrl}
         authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
       />
-      {false && isFigure31ProfilePage && (
+      {isFigure31ProfilePage && (
         <>
           <Spacer height={24} />
           <HorizontalBreak />
