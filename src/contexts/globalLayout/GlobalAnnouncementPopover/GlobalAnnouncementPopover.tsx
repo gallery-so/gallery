@@ -1,5 +1,4 @@
 import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
