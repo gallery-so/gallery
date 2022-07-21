@@ -2,14 +2,16 @@ import { useCallback, useState } from 'react';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
-import IconButton from 'components/IconButton/IconButton';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
 import router from 'next/router';
 import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
 import FollowButton from 'components/Follow/FollowButton';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
+} from 'components/core/transitions';
 
 type Props = {
   username: string;
@@ -62,28 +64,36 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
         <InteractiveLink to={`/${username}`}>{username}</InteractiveLink>
       </StyledLinkContainer>
 
-      {isHovering && (
-        <StyledCardContainer onClick={handleClick}>
-          <StyledCardHeader>
-            <StyledHoverCardTitleContainer>
-              {isLoggedIn && <FollowButton />}
-              <StyledCardUsername>{user.username}</StyledCardUsername>
-            </StyledHoverCardTitleContainer>
+      <StyledCardContainer onClick={handleClick} isHovering={isHovering}>
+        <StyledCardHeader>
+          <StyledHoverCardTitleContainer>
+            {isLoggedIn && <FollowButton />}
+            <StyledCardUsername>{user.username}</StyledCardUsername>
+          </StyledHoverCardTitleContainer>
 
-            <BaseM>{totalCollections} collections</BaseM>
-          </StyledCardHeader>
-          {user.bio && (
-            <StyledCardDescription>
-              <BaseM>
-                <Markdown text={unescape(user.bio)}></Markdown>
-              </BaseM>
-            </StyledCardDescription>
-          )}
-        </StyledCardContainer>
-      )}
+          <BaseM>{totalCollections} collections</BaseM>
+        </StyledCardHeader>
+        {user.bio && (
+          <StyledCardDescription>
+            <BaseM>
+              <Markdown text={unescape(user.bio)}></Markdown>
+            </BaseM>
+          </StyledCardDescription>
+        )}
+      </StyledCardContainer>
     </StyledContainer>
   );
 }
+
+const translateUp = keyframes`
+    from { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
+    to { transform: translateY(0px) };
+`;
+
+const translateDown = keyframes`
+    from { transform: translateY(0px) };
+    to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
+`;
 
 const StyledContainer = styled.div`
   position: relative;
@@ -94,7 +104,7 @@ const StyledLinkContainer = styled.div`
   display: inline-block;
 `;
 
-const StyledCardContainer = styled.div`
+const StyledCardContainer = styled.div<{ isHovering: boolean }>`
   border: 1px solid ${colors.offBlack};
   padding: 16px;
   width: 375px;
@@ -103,9 +113,14 @@ const StyledCardContainer = styled.div`
 
   position: absolute;
   background-color: ${colors.white};
-  z-index: 1;
-  top: 100%;
-  /* top: calc(100% + 8px); */
+  z-index: ${({ isHovering }) => (isHovering ? '1' : '-1')};
+  top: calc(100% + 8px);
+
+  animation: ${({ isHovering }) =>
+    css`
+      ${isHovering ? translateUp : translateDown} ${transitions.cubic}
+    `};
+  opacity: ${({ isHovering }) => (isHovering ? 1 : 0)};
 `;
 
 const StyledCardHeader = styled.div`
