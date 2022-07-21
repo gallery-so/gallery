@@ -7,7 +7,6 @@ import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
 import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
@@ -16,6 +15,7 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
+import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -89,7 +89,6 @@ function NftPreview({
   );
 
   const {
-    pathname,
     query: { collectionId: collectionIdInQuery },
   } = useRouter();
 
@@ -141,17 +140,11 @@ function NftPreview({
   const fullWidth = columns > 1 || isFirefoxSvg;
 
   return (
-    <Link
-      // path that will be shown in the browser URL bar
-      as={`/${username}/${collectionId}/${token.dbid}`}
-      // query params purely for internal tracking. this will NOT be displayed in URL bar.
-      // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
-      // appropriate query params attached. this allows the app to stay on the current page,
-      // while also feeding the modal the necessary data to display an NFT in detail.
-      href={`${pathname}?username=${username}&collectionId=${collectionId}&tokenId=${token.dbid}&originPage=${originPage}&modal=true`}
-      // disable scroll-to-top when the modal opens
-      scroll={false}
-      passHref
+    <LinkToNftDetailView
+      username={username ?? ''}
+      collectionId={collectionId}
+      tokenId={token.dbid}
+      originPage={originPage}
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
@@ -174,7 +167,7 @@ function NftPreview({
           )}
         </StyledNftPreview>
       </StyledA>
-    </Link>
+    </LinkToNftDetailView>
   );
 }
 
