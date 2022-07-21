@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
@@ -6,6 +6,10 @@ import IconButton from 'components/IconButton/IconButton';
 import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
+import router from 'next/router';
+import Markdown from 'components/core/Markdown/Markdown';
+import unescape from 'lodash/unescape';
+import FollowButton from 'components/Follow/FollowButton';
 
 type Props = {
   username: string;
@@ -13,7 +17,7 @@ type Props = {
 };
 
 export default function HoverCardOnUsername({ username, userRef }: Props) {
-  const [isHovering, setIsHovering] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
 
   const user = useFragment(
     graphql`
@@ -41,6 +45,17 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
     setIsHovering(false);
   };
 
+  const handleClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      router.push(`/${username}`);
+    },
+    [username]
+  );
+
+  // TODO: refactor this to use useLoggedInUserId
+  const isLoggedIn = false;
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
@@ -48,19 +63,22 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
       </StyledLinkContainer>
 
       {isHovering && (
-        <StyledCardContainer>
+        <StyledCardContainer onClick={handleClick}>
           <StyledCardHeader>
             <StyledHoverCardTitleContainer>
-              <IconButton />
+              {isLoggedIn && <FollowButton />}
               <StyledCardUsername>{user.username}</StyledCardUsername>
             </StyledHoverCardTitleContainer>
 
             <BaseM>{totalCollections} collections</BaseM>
           </StyledCardHeader>
-
-          <StyledCardDescription>
-            <BaseM>{user.bio}</BaseM>
-          </StyledCardDescription>
+          {user.bio && (
+            <StyledCardDescription>
+              <BaseM>
+                <Markdown text={unescape(user.bio)}></Markdown>
+              </BaseM>
+            </StyledCardDescription>
+          )}
         </StyledCardContainer>
       )}
     </StyledContainer>
@@ -86,6 +104,7 @@ const StyledCardContainer = styled.div`
   position: absolute;
   background-color: ${colors.white};
   z-index: 1;
+  top: 100%;
   /* top: calc(100% + 8px); */
 `;
 
