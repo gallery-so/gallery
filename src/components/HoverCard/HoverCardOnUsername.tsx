@@ -4,13 +4,34 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import IconButton from 'components/IconButton/IconButton';
 import styled from 'styled-components';
+import { graphql, useFragment } from 'react-relay';
+import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
 
 type Props = {
   username: string;
+  userRef: HoverCardOnUsernameFragment$key;
 };
 
-export default function HoverCardOnUsername({ username }: Props) {
+export default function HoverCardOnUsername({ username, userRef }: Props) {
   const [isHovering, setIsHovering] = useState(true);
+
+  const user = useFragment(
+    graphql`
+      fragment HoverCardOnUsernameFragment on GalleryUser {
+        username
+        bio
+        galleries @required(action: THROW) {
+          collections {
+            dbid
+            name
+          }
+        }
+      }
+    `,
+    userRef
+  );
+
+  const totalCollections = user?.galleries[0]?.collections?.length || 0;
 
   const handleMouseEnter = () => {
     setIsHovering(true);
@@ -21,8 +42,8 @@ export default function HoverCardOnUsername({ username }: Props) {
   };
 
   return (
-    <StyledContainer>
-      <StyledLinkContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <StyledLinkContainer>
         <InteractiveLink to={`/${username}`}>{username} test</InteractiveLink>
       </StyledLinkContainer>
 
@@ -31,20 +52,14 @@ export default function HoverCardOnUsername({ username }: Props) {
           <StyledCardHeader>
             <StyledHoverCardTitleContainer>
               <IconButton />
-              <StyledCardUsername>ForgetfulElephantzxczxczxczxczx</StyledCardUsername>
+              <StyledCardUsername>{user.username}</StyledCardUsername>
             </StyledHoverCardTitleContainer>
 
-            <BaseM>30 collections</BaseM>
+            <BaseM>{totalCollections} collections</BaseM>
           </StyledCardHeader>
 
           <StyledCardDescription>
-            <BaseM>
-              Kristian Levin aka noCreative is a 3D Artist working out of Copenhagen, Denmark. With
-              15+ years of experience across multiple disciplines in the creative industry, and
-              entered the NFT scene late 2020. Known for his striking, signature 3D cloth work,
-              Kristian has developed a notable presence within the NFT art community as an artist,
-              collector and curator.
-            </BaseM>
+            <BaseM>{user.bio}</BaseM>
           </StyledCardDescription>
         </StyledCardContainer>
       )}
@@ -71,7 +86,7 @@ const StyledCardContainer = styled.div`
   position: absolute;
   background-color: ${colors.white};
   z-index: 1;
-  top: calc(100% + 8px);
+  /* top: calc(100% + 8px); */
 `;
 
 const StyledCardHeader = styled.div`

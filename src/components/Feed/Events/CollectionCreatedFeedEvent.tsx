@@ -14,6 +14,7 @@ import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreview
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
   eventRef: CollectionCreatedFeedEventFragment$key;
@@ -27,7 +28,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
         eventTime
         owner {
-          username
+          ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -69,7 +70,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     >
       <StyledEvent>
         <StyledEventHeader>
-          <InteractiveLink to={`/${event.owner.username}`}>{event.owner.username}</InteractiveLink>{' '}
+          <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
           <BaseM>
             added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
             {collectionName && `, `}
