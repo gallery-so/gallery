@@ -1,12 +1,12 @@
 import Spacer from 'components/core/Spacer/Spacer';
 import { TitleL, TitleS } from 'components/core/Text/Text';
-import { FIGURE31_BANNER_KEY } from 'constants/storageKeys';
+import { THREE_ARROWS_CAPITAL_BANNER_KEY } from 'constants/storageKeys';
 import usePersistedState from 'hooks/usePersistedState';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
 export default function Secret() {
-  const [, setDismissed] = usePersistedState(FIGURE31_BANNER_KEY, false);
+  const [, setDismissed] = usePersistedState(THREE_ARROWS_CAPITAL_BANNER_KEY, false);
 
   useEffect(() => {
     setDismissed(false);

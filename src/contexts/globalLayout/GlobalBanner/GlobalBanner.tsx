@@ -17,6 +17,7 @@ type Props = {
   requireAuth?: boolean;
   localStorageKey?: string;
   actionComponent?: React.ReactNode;
+  dismissOnActionComponentClick?: boolean;
 };
 
 export default function Banner({
@@ -26,6 +27,7 @@ export default function Banner({
   title,
   requireAuth = false,
   actionComponent,
+  dismissOnActionComponentClick = false,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -50,6 +52,12 @@ export default function Banner({
     setDismissed(true);
   }, [setDismissed]);
 
+  const handleActionClick = useCallback(() => {
+    if (dismissOnActionComponentClick) {
+      hideBanner();
+    }
+  }, [dismissOnActionComponentClick, hideBanner]);
+
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer>
       <StyledBanner>
@@ -60,7 +68,7 @@ export default function Banner({
           </BaseM>
         </TextContainer>
         <StyledAction>
-          {actionComponent}
+          <span onClick={handleActionClick}>{actionComponent}</span>
           <StyledClose onClick={hideBanner} />
         </StyledAction>
       </StyledBanner>

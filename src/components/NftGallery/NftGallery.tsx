@@ -9,7 +9,6 @@ import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql
 import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import { removeNullValues } from 'utils/removeNullValues';
 import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
@@ -51,13 +50,13 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
     [collection.tokens, collectionWithWhitespace, hideWhitespace]
   );
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
-
   return (
     <StyledCollectionNfts
       columns={columns}
       mobileLayout={mobileLayout}
-      reducedGridGap={isFigure31ProfilePage}
+      // we used this option for figure31's gallery. in the future, if we want
+      // to enable 10-column grids for any user, we can enable this
+      reducedGridGap={false}
     >
       {itemsToDisplay?.map((galleryNft) => {
         if (!galleryNft) {

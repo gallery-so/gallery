@@ -14,7 +14,6 @@ import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalN
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 
 type Props = {
   name: string | null;
@@ -69,7 +68,8 @@ function NftDetailText({
     });
   }, [track, contractAddress, tokenId, openseaExternalUrl]);
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+  // use whenever we want to enable commerce in the future
+  const showBuyNowButton = false;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
@@ -85,7 +85,7 @@ function NftDetailText({
         <BaseM>{contractName}</BaseM>
       )}
       <Spacer height={isMobile ? 32 : 24} />
-      {!isFigure31ProfilePage && description && (
+      {description && (
         <>
           <BaseM>
             <Markdown text={description} />
@@ -100,11 +100,7 @@ function NftDetailText({
         <>
           <TitleXS>Creator</TitleXS>
           <BaseM>
-            {addressToUse === '0x5872c9360cb6d6a0309f3045376e2bf8e7837971' ? (
-              <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
-            ) : (
-              <EnsOrAddress address={addressToUse} />
-            )}
+            <EnsOrAddress address={addressToUse} />
           </BaseM>
         </>
       )}
@@ -116,7 +112,7 @@ function NftDetailText({
         externalUrl={externalUrl}
         authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
       />
-      {isFigure31ProfilePage && (
+      {showBuyNowButton && (
         <>
           <Spacer height={24} />
           <HorizontalBreak />
