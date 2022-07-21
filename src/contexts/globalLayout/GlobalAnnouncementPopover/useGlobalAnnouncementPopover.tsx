@@ -49,6 +49,8 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
       // enable this if we only want to display the popover once globally (across page refreshes)
       // if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
+      // hide modal on opengraph pages
+      if (asPath.includes('opengraph')) return;
       // hide announcement modal on announcements page
       if (asPath === '/announcements') return;
       // hide for new users onboarding
