@@ -5,6 +5,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -33,6 +34,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         eventTime
         owner @required(action: THROW) {
           username @required(action: THROW)
+          ...HoverCardOnUsernameFragment
           ...FollowButtonUserFragment
         }
         followed @required(action: THROW) {
@@ -146,9 +148,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <InteractiveLink to={`/${event.owner.username}`}>
-                  {event.owner.username}
-                </InteractiveLink>{' '}
+                <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
                 followed{' '}
                 <InteractiveLink to={`/${firstFolloweeUsername}`}>
                   {firstFolloweeUsername}
@@ -164,9 +164,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <InteractiveLink to={`/${event.owner.username}`}>
-                  {event.owner.username}
-                </InteractiveLink>{' '}
+                <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
                 followed {genericFollows.length} collectors.
               </BaseM>
               <Spacer width={4} />

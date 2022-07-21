@@ -59,7 +59,7 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <InteractiveLink to={`/${username}`}>{username} test</InteractiveLink>
+        <InteractiveLink to={`/${username}`}>{username}</InteractiveLink>
       </StyledLinkContainer>
 
       {isHovering && (

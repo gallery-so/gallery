@@ -16,6 +16,7 @@ import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -30,6 +31,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -71,9 +73,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
+            <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
             added a description to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>

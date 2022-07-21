@@ -14,6 +14,7 @@ import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from '
 import EventMedia from './EventMedia';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
   eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
@@ -31,6 +32,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         newCollectorsNote
         token @required(action: THROW) {
@@ -81,9 +83,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
+            <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
             added a collector's note to{' '}
             <InteractiveLink
               to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}

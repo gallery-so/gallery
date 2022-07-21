@@ -15,6 +15,7 @@ import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -29,6 +30,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -80,9 +82,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
+            <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
             added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>

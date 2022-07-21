@@ -28,6 +28,7 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
         eventTime
         owner {
+          username
           ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
