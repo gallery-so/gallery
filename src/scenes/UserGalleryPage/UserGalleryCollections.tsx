@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { Fragment, useMemo } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -60,7 +60,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const nonNullCollections = removeNullValues(collections);
   const isMobile = useIsMobileWindowWidth();
 
-  const visibleCollections = useMemo(
+  const collectionsToDisplay = useMemo(
     () =>
       nonNullCollections.filter((collection) => {
         const isNotHidden = !collection.hidden;
@@ -71,7 +71,43 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     [nonNullCollections]
   );
 
-  if (visibleCollections.length === 0) {
+  const numCollectionsToDisplay = collectionsToDisplay.length;
+
+  /**
+   * Poor man's virtualization.
+   *
+   * The server doesn't have pagination and sends all of a user's collections.
+   * Rather than displaying them all, render them 10 at a time.
+   */
+  const PAGE_SIZE = 10;
+  const [numRenderedCollections, setNumRenderedCollections] = useState(
+    Math.min(numCollectionsToDisplay, PAGE_SIZE)
+  );
+
+  const numRenderedCollectionsRef = useRef(numRenderedCollections);
+
+  useEffect(() => {
+    function handleScrollPosition() {
+      const pixelsFromBottomOfPage =
+        document.body.offsetHeight - window.pageYOffset - window.innerHeight;
+      if (
+        pixelsFromBottomOfPage < 1200 &&
+        numRenderedCollectionsRef.current < numCollectionsToDisplay
+      ) {
+        numRenderedCollectionsRef.current = Math.min(
+          numCollectionsToDisplay,
+          numRenderedCollectionsRef.current + PAGE_SIZE
+        );
+        setNumRenderedCollections((prev) => Math.min(numCollectionsToDisplay, prev + PAGE_SIZE));
+      }
+    }
+
+    window.addEventListener('scroll', handleScrollPosition);
+
+    return () => window.removeEventListener('scroll', handleScrollPosition);
+  }, [numCollectionsToDisplay]);
+
+  if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
       ? 'Your gallery is empty. Display your NFTs by creating a collection.'
       : 'Curation in progress.';
@@ -82,7 +118,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   return (
     <StyledUserGalleryCollections>
       <Spacer height={isMobile ? 48 : 80} />
-      {visibleCollections.map((collection) => (
+      {collectionsToDisplay.slice(0, numRenderedCollections).map((collection) => (
         <Fragment key={collection.id}>
           <UserGalleryCollection
             queryRef={query}

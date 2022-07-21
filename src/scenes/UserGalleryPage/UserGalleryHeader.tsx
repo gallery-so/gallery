@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
@@ -14,6 +14,10 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
 import { useQrCode } from 'scenes/Modals/QRCodePopover';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
+import TextButton from 'components/core/Button/TextButton';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
+import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -42,6 +46,7 @@ function UserGalleryHeader({
   );
 
   const { dbid, username, bio } = user;
+
   const is3ac = useIs3ac(dbid);
   const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
 
@@ -73,13 +78,64 @@ function UserGalleryHeader({
       </StyledUsernameWrapper>
       <Spacer height={2} />
       <StyledUserDetails>
-        <BaseM>
-          <Markdown text={unescapedBio} />
-        </BaseM>
+        {is3ac ? (
+          <ExpandableBio text={unescapedBio} />
+        ) : (
+          <BaseM>
+            <Markdown text={unescapedBio} />
+          </BaseM>
+        )}
       </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
 }
+
+const ExpandableBio = ({ text }: { text: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const truncated = useMemo(() => {
+    return text.split('\n').slice(0, 5).join('\n');
+  }, [text]);
+
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    setIsExpanded(true);
+    track('Read More Button Click: User Bio');
+  }, [track]);
+
+  return (
+    <>
+      <BaseM>
+        <Markdown
+          text={isExpanded ? text : truncated}
+          CustomInternalLinkComponent={NftDetailViewer}
+        />
+      </BaseM>
+      <Spacer height={12} />
+      {isExpanded ? null : <TextButton text="Read More" onClick={handleClick} />}
+    </>
+  );
+};
+
+type NftDetailViewerProps = {
+  href: string;
+  children?: ReactNode;
+};
+
+const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
+  const [, username, collectionId, tokenId] = href.split('/');
+  return (
+    <LinkToNftDetailView
+      username={username ?? ''}
+      collectionId={collectionId}
+      tokenId={tokenId}
+      originPage="gallery"
+    >
+      <StyledAnchor>{children}</StyledAnchor>
+    </LinkToNftDetailView>
+  );
+};
 
 const StyledUserGalleryHeader = styled.div`
   display: flex;

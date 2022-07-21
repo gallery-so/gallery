@@ -1,5 +1,5 @@
 import { useModalActions } from 'contexts/modal/ModalContext';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+import { useIs3acProfilePage } from 'hooks/oneOffs/useIs3ac';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
@@ -37,18 +37,20 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
   // again when the user refreshes, but *not* when the user navigates between pages
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+  const is3acProfilePage = useIs3acProfilePage();
 
   const { showModal } = useModalActions();
 
   useEffect(() => {
     async function handleMount() {
       if (dismissedOnSession) return;
-      if (!isFigure31ProfilePage) return;
+      if (!is3acProfilePage) return;
 
       // enable this if we only want to display the popover once globally (across page refreshes)
       // if (dismissed) return;
       if (AUTH_REQUIRED && !isAuthenticated) return;
+      // hide modal on opengraph pages
+      if (asPath.includes('opengraph')) return;
       // hide announcement modal on announcements page
       if (asPath === '/announcements') return;
       // hide for new users onboarding
@@ -66,7 +68,7 @@ export default function useGlobalAnnouncementPopover(queryRef: any) {
     }
 
     handleMount();
-  }, [isAuthenticated, showModal, query, asPath, isFigure31ProfilePage, dismissedOnSession]);
+  }, [isAuthenticated, showModal, query, asPath, dismissedOnSession, is3acProfilePage]);
 }
 
 async function handlePreloadFonts() {

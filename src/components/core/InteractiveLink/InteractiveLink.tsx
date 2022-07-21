@@ -81,7 +81,7 @@ export default function InteractiveLink({
   return null;
 }
 
-const StyledAnchor = styled.a<{ disabled?: boolean }>`
+export const StyledAnchor = styled.a<{ disabled?: boolean }>`
   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
   text-decoration: underline;
   font-family: ${BODY_FONT_FAMILY};

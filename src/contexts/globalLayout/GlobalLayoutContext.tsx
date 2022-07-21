@@ -32,10 +32,9 @@ import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 import TextButton from 'components/core/Button/TextButton';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import usePersistedState from 'hooks/usePersistedState';
-import { FIGURE31_BANNER_KEY } from 'constants/storageKeys';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+import { THREE_ARROWS_CAPITAL_BANNER_KEY } from 'constants/storageKeys';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
+import { useIs3acProfilePage } from 'hooks/oneOffs/useIs3ac';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -350,11 +349,7 @@ function GlobalNavbarWithFadeEnabled({
     [handleFadeNavbarOnHover]
   );
 
-  const [, setDismissed] = usePersistedState(FIGURE31_BANNER_KEY, false);
-  const handleCloseFigure31Banner = useCallback(() => {
-    setDismissed(true);
-  }, [setDismissed]);
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
+  const is3acProfilePage = useIs3acProfilePage();
 
   return (
     <StyledGlobalNavbarWithFadeEnabled
@@ -364,16 +359,17 @@ function GlobalNavbarWithFadeEnabled({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isBannerVisible && !isFigure31ProfilePage ? (
+      {isBannerVisible && !is3acProfilePage ? (
         <Banner
-          text="Public sale is now live for MARK by Figure31."
-          actionComponent={
-            <UnstyledLink href="/figure31" onClick={handleCloseFigure31Banner}>
-              <TextButton text="View Gallery" />
-            </UnstyledLink>
-          }
-          localStorageKey={FIGURE31_BANNER_KEY}
           queryRef={query}
+          text="The Unofficial Three Arrows Capital (3AC) Gallery is open for viewing."
+          localStorageKey={THREE_ARROWS_CAPITAL_BANNER_KEY}
+          actionComponent={
+            <StyledUnstyledLink href="/3ac">
+              <TextButton text="View Gallery" />
+            </StyledUnstyledLink>
+          }
+          dismissOnActionComponentClick
         />
       ) : null}
       <GlobalNavbar
@@ -384,6 +380,10 @@ function GlobalNavbarWithFadeEnabled({
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
+
+const StyledUnstyledLink = styled(UnstyledLink)`
+  display: flex;
+`;
 
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;

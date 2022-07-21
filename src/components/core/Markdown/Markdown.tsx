@@ -3,45 +3,52 @@ import styled from 'styled-components';
 import InteractiveLink from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
 
-type Props = {
+type PublicProps = {
   text: string;
+  CustomInternalLinkComponent?: React.FunctionComponent<{ href: string }>;
 };
 
 // Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app
-export default function Markdown({ text }: Props) {
-  return (
-    <BaseMarkdown allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']} text={text} />
-  );
+export default function Markdown(props: PublicProps) {
+  return <BaseMarkdown allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p']} {...props} />;
 }
 
 // Markdown component for rendering Gallery-provided content that allow a wider range of elements
-export function InternalMarkdown({ text }: Props) {
+export function InternalMarkdown(props: PublicProps) {
   return (
     <BaseMarkdown
       allowedElements={['a', 'strong', 'em', 'ol', 'ul', 'li', 'p', 'h1', 'h2', 'h3', 'br']}
-      text={text}
+      {...props}
     />
   );
 }
 
 type BaseProps = {
-  text: string;
   allowedElements: string[];
-};
+} & PublicProps;
 
-function BaseMarkdown({ text, allowedElements }: BaseProps) {
+function BaseMarkdown({ text, CustomInternalLinkComponent, allowedElements }: BaseProps) {
   return (
     <ReactMarkdown
       components={{
-        a: ({ href, children }) =>
-          href ? (
-            <InteractiveLink href={href}>{children}</InteractiveLink>
-          ) : (
-            // if href is blank, we must render the empty string this way;
-            // simply rendering `children` causes the markdown library to crash
-            // eslint-disable-next-line react/jsx-no-useless-fragment
-            <>{children}</>
-          ),
+        a: ({ href, children }) => {
+          if (href) {
+            const isInternalLink = href[0] === '/';
+            if (isInternalLink && CustomInternalLinkComponent) {
+              return (
+                <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>
+              );
+            }
+            if (isInternalLink) {
+              return <InteractiveLink to={href}>{children}</InteractiveLink>;
+            }
+            return <InteractiveLink href={href}>{children}</InteractiveLink>;
+          }
+          // if href is blank, we must render the empty string this way;
+          // simply rendering `children` causes the markdown library to crash
+          // eslint-disable-next-line react/jsx-no-useless-fragment
+          return <>{children}</>;
+        },
         h3: ({ children }) => <StyledBodyHeading>{children}</StyledBodyHeading>,
         ul: ({ children }) => <StyledUl>{children}</StyledUl>,
         p: ({ children }) => <StyledP>{children}</StyledP>,

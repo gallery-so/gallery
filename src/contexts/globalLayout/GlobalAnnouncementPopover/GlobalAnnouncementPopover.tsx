@@ -1,5 +1,4 @@
 import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -14,9 +13,7 @@ export default function GlobalAnnouncementPopover() {
     setFrame((f) => f + 1);
   }, []);
 
-  const FIRST_FRAME_MS = 1200;
-  const SECOND_FRAME_MS = 2500;
-  const THIRD_FRAME_MS = 3000;
+  const FIRST_FRAME_MS = 3000;
 
   useEffect(() => {
     if (frame === 1) {
@@ -26,32 +23,15 @@ export default function GlobalAnnouncementPopover() {
     }
 
     if (frame === 2) {
-      setTimeout(() => {
-        incrementFrame();
-      }, SECOND_FRAME_MS);
-    }
-
-    if (frame === 3) {
-      setTimeout(() => {
-        incrementFrame();
-      }, THIRD_FRAME_MS);
-    }
-
-    if (frame === 4) {
       hideModal();
     }
   }, [frame, hideModal, incrementFrame]);
 
   return (
     <StyledGlobalAnnouncementPopover>
-      {frame < 3 ? (
-        <FirstFrameContainer bringToCenter={frame === 2}>
-          <IntroText>Figure31</IntroText>
-          <IntroTextItalic visible={frame === 2}>presents</IntroTextItalic>
-        </FirstFrameContainer>
-      ) : (
-        <IntroText>MARK</IntroText>
-      )}
+      <IntroText>The</IntroText>
+      <IntroTextItalic>Unofficial</IntroTextItalic>
+      <IntroText>3AC Gallery</IntroText>
     </StyledGlobalAnnouncementPopover>
   );
 }
@@ -65,11 +45,6 @@ const StyledGlobalAnnouncementPopover = styled.div`
   width: 100vw;
 `;
 
-const FirstFrameContainer = styled.div<{ bringToCenter: boolean }>`
-  transform: ${({ bringToCenter }) => `translateX(${bringToCenter ? 0 : 47}px)`};
-  transition: ${transitions.cubic};
-`;
-
 const IntroText = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
@@ -79,8 +54,8 @@ const IntroText = styled.span`
   color: ${colors.white};
 `;
 
-const IntroTextItalic = styled.span<{ visible: boolean }>`
-  padding-left: 12px;
+const IntroTextItalic = styled.span`
+  padding: 0px 8px;
 
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
@@ -88,7 +63,4 @@ const IntroTextItalic = styled.span<{ visible: boolean }>`
   line-height: 36px;
   font-style: italic;
   color: ${colors.white};
-
-  transition: ${transitions.cubic};
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
 `;

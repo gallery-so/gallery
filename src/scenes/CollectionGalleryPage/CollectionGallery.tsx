@@ -7,7 +7,6 @@ import useMobileLayout from 'hooks/useMobileLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionGalleryFragment$key } from '__generated__/CollectionGalleryFragment.graphql';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
 import { useEffect } from 'react';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import NavActionFollow from 'components/Follow/NavActionFollow';
@@ -75,11 +74,9 @@ function CollectionGallery({ queryRef }: Props) {
     };
   }, [query, setCustomNavLeftContent]);
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
-
   if (collection?.__typename === 'Collection') {
     return (
-      <StyledCollectionGallery wide={isFigure31ProfilePage}>
+      <StyledCollectionGallery>
         <Spacer height={isMobile ? 48 : 80} />
         <CollectionGalleryHeader
           queryRef={query}
@@ -101,13 +98,13 @@ function CollectionGallery({ queryRef }: Props) {
   return null;
 }
 
-const StyledCollectionGallery = styled.div<{ wide: boolean }>`
+const StyledCollectionGallery = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 
-  max-width: ${({ wide }) => (wide ? 1500 : 1200)}px;
+  max-width: 1200px;
 `;
 
 const NftGalleryWrapper = styled.div`

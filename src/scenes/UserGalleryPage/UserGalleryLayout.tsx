@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import useIsFigure31ProfilePage from 'hooks/oneOffs/useIsFigure31ProfilePage';
+
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
   queryRef: UserGalleryLayoutQueryFragment$key;
@@ -77,10 +77,8 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     };
   }, [query, setCustomNavLeftContent, user]);
 
-  const isFigure31ProfilePage = useIsFigure31ProfilePage();
-
   return (
-    <StyledUserGalleryLayout wide={isFigure31ProfilePage}>
+    <StyledUserGalleryLayout>
       <Spacer height={isMobile ? 48 : 80} />
       <UserGalleryHeader
         userRef={user}
@@ -95,11 +93,10 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   );
 };
 
-const StyledUserGalleryLayout = styled.div<{ wide: boolean }>`
+const StyledUserGalleryLayout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-
-  max-width: ${({ wide }) => (wide ? 1500 : 1200)}px;
+  max-width: 1200px;
 `;
