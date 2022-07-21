@@ -365,9 +365,9 @@ function GlobalNavbarWithFadeEnabled({
           text="The Unofficial Three Arrows Capital (3AC) Gallery is open for viewing."
           localStorageKey={THREE_ARROWS_CAPITAL_BANNER_KEY}
           actionComponent={
-            <UnstyledLink href="/3ac">
+            <StyledUnstyledLink href="/3ac">
               <TextButton text="View Gallery" />
-            </UnstyledLink>
+            </StyledUnstyledLink>
           }
           dismissOnActionComponentClick
         />
@@ -380,6 +380,10 @@ function GlobalNavbarWithFadeEnabled({
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
+
+const StyledUnstyledLink = styled(UnstyledLink)`
+  display: flex;
+`;
 
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;

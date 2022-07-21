@@ -110,6 +110,7 @@ const StyledBanner = styled.div`
   position: relative;
   align-items: flex-start;
   flex-direction: column;
+  background: white;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
