@@ -13,8 +13,9 @@ type Props = {
   imageUrls: string[];
 };
 
-export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
-  <>
+export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => {
+  const firstLineDescription = description.split('\n')[0];
+  return (
     <StyledContainer>
       <StyledGalleryContainer>
         <OpenBracket />
@@ -27,13 +28,13 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => (
         <TitleL>{unescape(title)}</TitleL>
         {description && (
           <StyledDescription>
-            <Markdown text={unescape(description)} />
+            <Markdown text={unescape(firstLineDescription)} />
           </StyledDescription>
         )}
       </StyledTitleContainer>
     </StyledContainer>
-  </>
-);
+  );
+};
 
 const StyledContainer = styled.div`
   width: 100%;
