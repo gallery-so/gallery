@@ -21,6 +21,8 @@ import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -35,6 +37,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         dbid
         ...SidebarNftIconFragment
         ...SearchBarFragment
+        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokensRef
@@ -62,7 +65,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  const tokensToDisplayInSidebar = useMemo(() => {
+  const tokensFilteredBySearch = useMemo(() => {
     if (debouncedSearchQuery) {
       const searchResultNfts = [];
       for (const resultId of searchResults) {
@@ -90,6 +93,38 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
 
+  const reportError = useReportError();
+
+  const tokensToDisplayInSidebar = useMemo(() => {
+    const truthyTokens = tokensFilteredBySearch.filter((editModeToken) =>
+      Boolean(nftFragmentsKeyedByID[editModeToken.id])
+    );
+
+    const tokensWithImagePreview = [];
+    const tokensWithoutImagePreview = [];
+
+    for (const token of truthyTokens) {
+      const result = getVideoOrImageUrlForNftPreview(nftFragmentsKeyedByID[token.id], reportError);
+      if (!result || !result?.success || !result.urls.small) {
+        // Image URL not found for SidebarNftIcon
+        tokensWithoutImagePreview.push(token);
+      } else {
+        tokensWithImagePreview.push(token);
+      }
+    }
+
+    // display tokens with images first. the ones *without* images are likely to be spam.
+    const orderedTokens = [...tokensWithImagePreview, ...tokensWithoutImagePreview];
+
+    return orderedTokens.map((editModeToken) => (
+      <SidebarNftIcon
+        key={editModeToken.id}
+        tokenRef={nftFragmentsKeyedByID[editModeToken.id]}
+        editModeToken={editModeToken}
+      />
+    ));
+  }, [nftFragmentsKeyedByID, reportError, tokensFilteredBySearch]);
+
   return (
     <StyledSidebar>
       <Header>
@@ -115,15 +150,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {tokensToDisplayInSidebar
-          .filter((editModeToken) => Boolean(nftFragmentsKeyedByID[editModeToken.id]))
-          .map((editModeToken) => (
-            <SidebarNftIcon
-              key={editModeToken.id}
-              tokenRef={nftFragmentsKeyedByID[editModeToken.id]}
-              editModeToken={editModeToken}
-            />
-          ))}
+        {tokensToDisplayInSidebar}
       </Selection>
       <Spacer height={12} />
     </StyledSidebar>
