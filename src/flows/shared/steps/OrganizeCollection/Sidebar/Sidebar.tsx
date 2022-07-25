@@ -116,12 +116,12 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
         {tokensToDisplayInSidebar
-          .filter((EditModeToken) => Boolean(nftFragmentsKeyedByID[EditModeToken.id]))
-          .map((EditModeToken) => (
+          .filter((editModeToken) => Boolean(nftFragmentsKeyedByID[editModeToken.id]))
+          .map((editModeToken) => (
             <SidebarNftIcon
-              key={EditModeToken.id}
-              tokenRef={nftFragmentsKeyedByID[EditModeToken.id]}
-              EditModeToken={EditModeToken}
+              key={editModeToken.id}
+              tokenRef={nftFragmentsKeyedByID[editModeToken.id]}
+              editModeToken={editModeToken}
             />
           ))}
       </Selection>
