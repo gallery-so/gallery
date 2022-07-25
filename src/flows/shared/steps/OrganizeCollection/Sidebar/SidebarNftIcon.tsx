@@ -13,10 +13,10 @@ import { EditModeToken } from '../types';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
-  EditModeToken: EditModeToken;
+  editModeToken: EditModeToken;
 };
 
-function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
+function SidebarNftIcon({ tokenRef, editModeToken }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Token {
@@ -35,7 +35,7 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     throw new Error('SidebarNftIcon: token not provided');
   }
 
-  const { isSelected, id } = EditModeToken;
+  const { isSelected, id } = editModeToken;
 
   const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
 
@@ -44,9 +44,9 @@ function SidebarNftIcon({ tokenRef, EditModeToken }: SidebarNftIconProps) {
     if (isSelected) {
       unstageTokens([id]);
     } else {
-      stageTokens([EditModeToken]);
+      stageTokens([editModeToken]);
     }
-  }, [setTokensIsSelected, id, isSelected, unstageTokens, stageTokens, EditModeToken]);
+  }, [setTokensIsSelected, id, isSelected, unstageTokens, stageTokens, editModeToken]);
 
   const mountRef = useRef(false);
 
