@@ -18,10 +18,14 @@ export default function FailedNftPreview({ isSidebar, onLoad, size }: Props) {
 
   return (
     <StyledFailedNft size={size}>
-      {isSidebar ? <BaseS>Could not load</BaseS> : <BaseM>Could not load</BaseM>}
+      {isSidebar ? <StyledBaseS>Could not load</StyledBaseS> : <BaseM>Could not load</BaseM>}
     </StyledFailedNft>
   );
 }
+
+const StyledBaseS = styled(BaseS)`
+  font-size: 11px;
+`;
 
 const StyledFailedNft = styled.div<{ size?: number }>`
   height: ${({ size }) => (size ? `${size}px` : 'auto')};
@@ -30,7 +34,7 @@ const StyledFailedNft = styled.div<{ size?: number }>`
   width: 100%;
   aspect-ratio: 1;
 
-  ${BaseM} , ${BaseS} {
+  ${BaseM}, ${StyledBaseS} {
     color: ${colors.metal};
     text-align: center;
     position: absolute;
