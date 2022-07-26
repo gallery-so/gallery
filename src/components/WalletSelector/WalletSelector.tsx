@@ -19,7 +19,7 @@ import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 import WalletButton from './WalletButton';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -172,7 +172,13 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     });
   }, []);
 
+  // RainbowKit only returns an `openConnectModal` if not already connected. I
+  // think this is to mimic how the connect button works, where, once connected,
+  // it will show/open the account currently connected. Going to do a similar
+  // strategy here for now.
   const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
+  const connectOrShowEthereumAccount = openConnectModal || openAccountModal;
 
   if (displayedError) {
     return (
@@ -235,16 +241,18 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      {openConnectModal ? (
+      {connectOrShowEthereumAccount ? (
         <WalletButton
           label="Ethereum"
           // TODO: ethereum icon
           icon="metamask"
           onClick={() => {
+            // TODO: figure out if we need this pending state since RainbowKit
+            //       has its own pending state
             // const connector = walletConnectorMap.Ethereum;
             // setToPendingState(connector, ETHEREUM);
             // activate(connector);
-            openConnectModal();
+            connectOrShowEthereumAccount();
           }}
         />
       ) : null}
