@@ -61,6 +61,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
             }
           }
         }
+        ...FollowButtonQueryFragment
         ...HoverCardOnUsernameFollowFragment
       }
     `,
