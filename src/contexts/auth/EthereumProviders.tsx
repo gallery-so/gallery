@@ -8,6 +8,14 @@ import merge from 'lodash.merge';
 
 console.log('current theme values:', lightTheme());
 
+// Unfortunately, RainbowKit has no way to customize font weight
+// https://github.com/rainbow-me/rainbowkit/discussions/361
+
+// And we can't separate the selected wallet button color from
+// the "Get" button text color - they both lean on `accentColor`.
+
+// TODO: figure out if we need to customize any other options
+
 const myCustomTheme = merge(lightTheme(), {
   colors: {
     //   accentColor: '...',
