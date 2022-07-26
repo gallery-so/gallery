@@ -134,11 +134,16 @@ function NftPreview({
     );
   }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize]);
 
-  // don't stretch to full width if column count is 1, as that causes the gradient to stretch...
-  // unless it's an SVG and the user is on safari, of course.
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
-  const fullWidth = columns > 1 || isFirefoxSvg || (columns === 1 && isIFrameLiveDisplay);
+  // stretch the image to take up the full-width if...
+  const fullWidth =
+    // there are more than 1 columns in the layout
+    columns > 1 ||
+    // the asset is an SVG on firefox
+    isFirefoxSvg ||
+    // the asset is an iframe in single column mode
+    (columns === 1 && isIFrameLiveDisplay);
 
   return (
     <LinkToNftDetailView
