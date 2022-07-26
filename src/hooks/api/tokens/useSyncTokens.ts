@@ -25,7 +25,7 @@ export default function useSyncTokens() {
           ... on ErrNotAuthorized {
             message
           }
-          ... on ErrOpenSeaRefreshFailed {
+          ... on ErrSyncFailed {
             message
           }
         }
@@ -38,7 +38,7 @@ export default function useSyncTokens() {
       variables: {},
     });
 
-    if (response.syncTokens?.__typename === 'ErrOpenSeaRefreshFailed') {
+    if (response.syncTokens?.__typename === 'ErrSyncFailed') {
       throw new Error(
         'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
       );
