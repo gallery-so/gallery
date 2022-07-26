@@ -67,30 +67,31 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
       <StyledLinkContainer>
         <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
       </StyledLinkContainer>
+      {isHovering && (
+        <StyledCardWrapper isHovering={isHovering}>
+          <StyledCardContainer>
+            <StyledCardHeader>
+              <StyledHoverCardTitleContainer>
+                {isLoggedIn && (
+                  <StyledFollowButtonWrapper>
+                    <FollowButton userRef={user} queryRef={query} />
+                  </StyledFollowButtonWrapper>
+                )}
+                <StyledCardUsername>{user.username}</StyledCardUsername>
+              </StyledHoverCardTitleContainer>
 
-      <StyledCardWrapper isHovering={isHovering}>
-        <StyledCardContainer>
-          <StyledCardHeader>
-            <StyledHoverCardTitleContainer>
-              {isLoggedIn && (
-                <StyledFollowButtonWrapper>
-                  <FollowButton userRef={user} queryRef={query} />
-                </StyledFollowButtonWrapper>
-              )}
-              <StyledCardUsername>{user.username}</StyledCardUsername>
-            </StyledHoverCardTitleContainer>
-
-            <BaseM>{totalCollections} collections</BaseM>
-          </StyledCardHeader>
-          {user.bio && (
-            <StyledCardDescription>
-              <BaseM>
-                <Markdown text={unescape(user.bio)}></Markdown>
-              </BaseM>
-            </StyledCardDescription>
-          )}
-        </StyledCardContainer>
-      </StyledCardWrapper>
+              <BaseM>{totalCollections} collections</BaseM>
+            </StyledCardHeader>
+            {user.bio && (
+              <StyledCardDescription>
+                <BaseM>
+                  <Markdown text={unescape(user.bio)}></Markdown>
+                </BaseM>
+              </StyledCardDescription>
+            )}
+          </StyledCardContainer>
+        </StyledCardWrapper>
+      )}
     </StyledContainer>
   );
 }
