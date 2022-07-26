@@ -17,21 +17,36 @@ function NftDetailVideo({ mediaRef, hideControls = false }: Props) {
           raw @required(action: THROW)
           large @required(action: THROW)
         }
+        previewURLs {
+          large
+        }
       }
     `,
     mediaRef
   );
+
   const setContentIsLoaded = useSetContentIsLoaded();
 
   return (
     <StyledVideo
-      src={token.contentRenderURLs.large}
+      src={`${token.contentRenderURLs.large}#t=0.001`}
       muted
       autoPlay
       loop
       playsInline
       controls={!hideControls}
       onLoadedData={setContentIsLoaded}
+      /**
+       * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
+       * Upon inspecting the simulator's logs, the network request for the video asset
+       * simply returns "An error occurred trying to load the resource". A few years ago
+       * a similar issue occurred on iOS that was solved with a combination of the props
+       * used above: `autoPlay`, `playsInline`, and `loop`. Now this bug has resurfaced,
+       * and even Opensea itself cannot load videos on iOS. The best we can do is render
+       * a static poster in its place.
+       */
+      onError={setContentIsLoaded}
+      poster={token?.previewURLs?.large ?? ''}
     />
   );
 }
