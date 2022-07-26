@@ -1,7 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
