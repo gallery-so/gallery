@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import styled, { css, keyframes } from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
-import router from 'next/router';
 import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
 import FollowButton from 'components/Follow/FollowButton';
@@ -61,14 +60,6 @@ export default function HoverCardOnUsername({ username, userRef, queryRef }: Pro
     setIsHovering(false);
   };
 
-  const handleClick = useCallback(
-    (e) => {
-      e.preventDefault();
-      router.push(`/${username}`);
-    },
-    [username]
-  );
-
   const loggedInUserId = useLoggedInUserId(query);
   const isLoggedIn = !!loggedInUserId;
 
@@ -78,7 +69,7 @@ export default function HoverCardOnUsername({ username, userRef, queryRef }: Pro
         <InteractiveLink to={`/${username}`}>{username}</InteractiveLink>
       </StyledLinkContainer>
 
-      <StyledCardContainer onClick={handleClick} isHovering={isHovering}>
+      <StyledCardContainer isHovering={isHovering}>
         <StyledCardHeader>
           <StyledHoverCardTitleContainer>
             {isLoggedIn && <FollowButton userRef={user} queryRef={query} />}
