@@ -41,6 +41,7 @@ export function graphqlGetResizedNftImageUrlWithFallback(
 
 const backgroundColorOverrides: Record<string, string> = {
   '0x30cdac3871c41a63767247c8d1a2de59f5714e78': '#E0E0E0', // Obits
+  '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb': '#648494', // Cryptopunks
 };
 
 export function getBackgroundColorOverrideForContract(contractAddress: string) {
