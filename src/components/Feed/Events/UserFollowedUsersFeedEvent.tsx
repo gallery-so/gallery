@@ -42,6 +42,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
             username
             dbid
             bio
+            ...HoverCardOnUsernameFragment
           }
           followedBack
         }
@@ -73,6 +74,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const viewerUserId = query?.viewer?.user?.dbid;
 
   // cache first username in followed list, to be displayed when user followed only 1 collector
+  const firstFollowerUsernameRef = event.followed[0];
   const firstFolloweeUsername = event.followed[0]?.user?.username;
   const track = useTrack();
 
@@ -149,15 +151,10 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <HoverCardOnUsername
-                  username={event?.owner.username || ''}
-                  userRef={event.owner}
-                  queryRef={query}
-                />{' '}
-                followed{' '}
-                <InteractiveLink to={`/${firstFolloweeUsername}`}>
-                  {firstFolloweeUsername}
-                </InteractiveLink>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
+                )}
               </BaseM>
               <Spacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
@@ -169,12 +166,8 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <HoverCardOnUsername
-                  username={event?.owner.username || ''}
-                  userRef={event.owner}
-                  queryRef={query}
-                />{' '}
-                followed {genericFollows.length} collectors.
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                {genericFollows.length} collectors.
               </BaseM>
               <Spacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

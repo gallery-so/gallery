@@ -45,6 +45,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
           followed {
             user {
               dbid
+              ...HoverCardOnUsernameFragment
             }
           }
         }
