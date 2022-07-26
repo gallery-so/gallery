@@ -17,14 +17,16 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: Props) {
+export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
@@ -47,6 +49,15 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const tokensToPreview = useMemo(() => {
@@ -73,7 +84,11 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
+            <HoverCardOnUsername
+              username={event?.owner.username || ''}
+              userRef={event.owner}
+              queryRef={query}
+            />{' '}
             added a description to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>

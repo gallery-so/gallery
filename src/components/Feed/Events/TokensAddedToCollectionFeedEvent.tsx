@@ -16,14 +16,16 @@ import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
+  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -54,6 +56,15 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
     eventRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const { isPreFeed } = event;
 
   const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
@@ -82,7 +93,11 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
+            <HoverCardOnUsername
+              username={event?.owner.username || ''}
+              userRef={event.owner}
+              queryRef={query}
+            />{' '}
             added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>

@@ -12,13 +12,16 @@ import FollowButton from 'components/Follow/FollowButton';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from 'components/core/transitions';
+import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
+import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 
 type Props = {
   username: string;
   userRef: HoverCardOnUsernameFragment$key;
+  queryRef: HoverCardOnUsernameFollowFragment$key;
 };
 
-export default function HoverCardOnUsername({ username, userRef }: Props) {
+export default function HoverCardOnUsername({ username, userRef, queryRef }: Props) {
   const [isHovering, setIsHovering] = useState(false);
 
   const user = useFragment(
@@ -32,9 +35,20 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
             name
           }
         }
+        ...FollowButtonUserFragment
       }
     `,
     userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment HoverCardOnUsernameFollowFragment on Query {
+        ...FollowButtonQueryFragment
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
   );
 
   const totalCollections = user?.galleries[0]?.collections?.length || 0;
@@ -55,8 +69,8 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
     [username]
   );
 
-  // TODO: refactor this to use useLoggedInUserId
-  const isLoggedIn = false;
+  const loggedInUserId = useLoggedInUserId(query);
+  const isLoggedIn = !!loggedInUserId;
 
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -67,7 +81,7 @@ export default function HoverCardOnUsername({ username, userRef }: Props) {
       <StyledCardContainer onClick={handleClick} isHovering={isHovering}>
         <StyledCardHeader>
           <StyledHoverCardTitleContainer>
-            {isLoggedIn && <FollowButton />}
+            {isLoggedIn && <FollowButton userRef={user} queryRef={query} />}
             <StyledCardUsername>{user.username}</StyledCardUsername>
           </StyledHoverCardTitleContainer>
 
@@ -114,7 +128,8 @@ const StyledCardContainer = styled.div<{ isHovering: boolean }>`
   position: absolute;
   background-color: ${colors.white};
   z-index: ${({ isHovering }) => (isHovering ? '1' : '-1')};
-  top: calc(100% + 8px);
+  /* top: calc(100% + 8px); */
+  top: calc(100%);
 
   animation: ${({ isHovering }) =>
     css`

@@ -61,7 +61,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
             }
           }
         }
-        ...FollowButtonQueryFragment
+        ...HoverCardOnUsernameFollowFragment
       }
     `,
     queryRef
@@ -148,7 +148,11 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
+                <HoverCardOnUsername
+                  username={event?.owner.username || ''}
+                  userRef={event.owner}
+                  queryRef={query}
+                />{' '}
                 followed{' '}
                 <InteractiveLink to={`/${firstFolloweeUsername}`}>
                   {firstFolloweeUsername}
@@ -164,7 +168,11 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
+                <HoverCardOnUsername
+                  username={event?.owner.username || ''}
+                  userRef={event.owner}
+                  queryRef={query}
+                />{' '}
                 followed {genericFollows.length} collectors.
               </BaseM>
               <Spacer width={4} />

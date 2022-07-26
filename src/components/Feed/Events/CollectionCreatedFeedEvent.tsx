@@ -10,6 +10,7 @@ import { removeNullValues } from 'utils/removeNullValues';
 import { pluralize } from 'utils/string';
 import { getTimeSince } from 'utils/time';
 import { CollectionCreatedFeedEventFragment$key } from '__generated__/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventQueryFragment$key } from '__generated__/CollectionCreatedFeedEventQueryFragment.graphql';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -18,11 +19,12 @@ import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
   eventRef: CollectionCreatedFeedEventFragment$key;
+  queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
+export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -44,6 +46,15 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectionCreatedFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const tokens = event.newTokens;
@@ -71,7 +82,11 @@ export default function CollectionCreatedFeedEvent({ eventRef }: Props) {
     >
       <StyledEvent>
         <StyledEventHeader>
-          <HoverCardOnUsername username={event?.owner.username || ''} userRef={event.owner} />{' '}
+          <HoverCardOnUsername
+            username={event?.owner.username || ''}
+            userRef={event.owner}
+            queryRef={query}
+          />{' '}
           <BaseM>
             added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
             {collectionName && `, `}

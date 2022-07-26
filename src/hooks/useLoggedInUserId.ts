@@ -18,5 +18,5 @@ export const useLoggedInUserId = (queryRef: useLoggedInUserIdFragment$key) => {
     queryRef
   );
 
-  return user.viewer?.user?.id;
+  return user?.viewer?.user?.id;
 };
