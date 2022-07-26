@@ -87,7 +87,7 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
       <StyledSettings />
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
       <Dropdown>
-        <TextButton onClick={handleEditNameClick} text="Edit name & bio" />
+        <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
         <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
         <TextButton onClick={handleDeleteClick} text="Delete" />
       </Dropdown>
