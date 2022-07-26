@@ -20,12 +20,14 @@ export const CONNECT_WALLET_ONLY = Symbol('CONNECT_WALLET_ONLY');
 export const EXTERNALLY_OWNED_ACCOUNT = Symbol('EXTERNALLY_OWNED_ACCOUNT');
 export const CONTRACT_ACCOUNT = Symbol('CONTRACT_ACCOUNT');
 
+export const ETHEREUM = Symbol('ETHEREUM');
 export const METAMASK = Symbol('METAMASK');
 export const WALLETCONNECT = Symbol('WALLETCONNECT');
 export const WALLETLINK = Symbol('WALLETLINK');
 export const GNOSIS_SAFE = Symbol('GNOSIS_SAFE');
 
 export type WalletName =
+  | typeof ETHEREUM
   | typeof METAMASK
   | typeof WALLETCONNECT
   | typeof WALLETLINK

@@ -21,6 +21,7 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
+    "@rainbow-me/rainbowkit": "^0.4.4",
     "@sentry/nextjs": "^6.19.7",
     "@testing-library/react-hooks": "^8.0.0",
     "@types/relay-test-utils": "^6.0.5",
@@ -31,7 +32,9 @@
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
     "bufferutil": "^4.0.5",
+    "ethers": "^5.6.9",
     "lodash.clonedeep": "^4.5.0",
+    "lodash.merge": "^4.6.2",
     "lodash.unescape": "^4.0.1",
     "mixpanel-browser": "^2.41.0",
     "next": "12.1.0",
@@ -51,6 +54,7 @@
     "styled-components": "^5.2.3",
     "swr": "^1.1.1",
     "utf-8-validate": "^5.0.7",
+    "wagmi": "^0.5.12",
     "web3": "^1.6.1"
   },
   "devDependencies": {
@@ -63,6 +67,7 @@
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.0.2",
     "@types/lodash.clonedeep": "^4.5.6",
+    "@types/lodash.merge": "^4.6.7",
     "@types/lodash.unescape": "^4.0.6",
     "@types/mixpanel-browser": "^2.35.7",
     "@types/nock": "^11.1.0",

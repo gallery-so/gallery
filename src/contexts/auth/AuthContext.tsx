@@ -25,6 +25,7 @@ import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
 import { isWeb3Error, Web3Error } from 'types/Error';
+import { EtheremProviders } from './EthereumProviders';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -259,9 +260,11 @@ const AuthProvider = memo(({ children }: Props) => {
         <Suspense fallback={<FullPageLoader />}>
           <AuthStateContext.Provider value={authState}>
             <AuthActionsContext.Provider value={authActions}>
-              <Web3WalletProvider>
-                {shouldDisplayUniversalLoader ? null : children}
-              </Web3WalletProvider>
+              <EtheremProviders>
+                <Web3WalletProvider>
+                  {shouldDisplayUniversalLoader ? null : children}
+                </Web3WalletProvider>
+              </EtheremProviders>
             </AuthActionsContext.Provider>
           </AuthStateContext.Provider>
         </Suspense>

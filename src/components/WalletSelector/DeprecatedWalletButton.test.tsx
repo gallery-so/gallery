@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import WalletButton from 'components/WalletSelector/WalletButton';
+import WalletButton from 'components/WalletSelector/DeprecatedWalletButton';
 import { injected } from 'connectors/index';
 
 const activate = jest.fn();

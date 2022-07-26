@@ -6,11 +6,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, ETHEREUM, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
-import WalletButton from './WalletButton';
+import DeprecatedWalletButton from './DeprecatedWalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -18,6 +18,8 @@ import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
+import WalletButton from './WalletButton';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -170,6 +172,8 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     });
   }, []);
 
+  const { openConnectModal } = useConnectModal();
+
   if (displayedError) {
     return (
       <StyledWalletSelector>
@@ -231,8 +235,21 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      {availableWalletOptions.map((walletName) => (
+      {openConnectModal ? (
         <WalletButton
+          label="Ethereum"
+          // TODO: ethereum icon
+          icon="metamask"
+          onClick={() => {
+            // const connector = walletConnectorMap.Ethereum;
+            // setToPendingState(connector, ETHEREUM);
+            // activate(connector);
+            openConnectModal();
+          }}
+        />
+      ) : null}
+      {availableWalletOptions.map((walletName) => (
+        <DeprecatedWalletButton
           key={walletName}
           walletName={walletName}
           activate={activate}
