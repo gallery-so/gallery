@@ -65,11 +65,9 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const handleClick = useCallback(
     (e) => {
       e.preventDefault();
-      // If the user click the follow button, ignore the click.
-      if (e.target.matches('circle')) return;
       router.push(`${user.username}`);
     },
-    [user]
+    [user, router]
   );
 
   const loggedInUserId = useLoggedInUserId(query);
