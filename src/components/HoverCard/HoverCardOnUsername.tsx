@@ -69,23 +69,29 @@ export default function HoverCardOnUsername({ username, userRef, queryRef }: Pro
         <InteractiveLink to={`/${username}`}>{username}</InteractiveLink>
       </StyledLinkContainer>
 
-      <StyledCardContainer isHovering={isHovering}>
-        <StyledCardHeader>
-          <StyledHoverCardTitleContainer>
-            {isLoggedIn && <FollowButton userRef={user} queryRef={query} />}
-            <StyledCardUsername>{user.username}</StyledCardUsername>
-          </StyledHoverCardTitleContainer>
+      <StyledCardWrapper isHovering={isHovering}>
+        <StyledCardContainer>
+          <StyledCardHeader>
+            <StyledHoverCardTitleContainer>
+              {isLoggedIn && (
+                <StyledFollowButtonWrapper>
+                  <FollowButton userRef={user} queryRef={query} />
+                </StyledFollowButtonWrapper>
+              )}
+              <StyledCardUsername>{user.username}</StyledCardUsername>
+            </StyledHoverCardTitleContainer>
 
-          <BaseM>{totalCollections} collections</BaseM>
-        </StyledCardHeader>
-        {user.bio && (
-          <StyledCardDescription>
-            <BaseM>
-              <Markdown text={unescape(user.bio)}></Markdown>
-            </BaseM>
-          </StyledCardDescription>
-        )}
-      </StyledCardContainer>
+            <BaseM>{totalCollections} collections</BaseM>
+          </StyledCardHeader>
+          {user.bio && (
+            <StyledCardDescription>
+              <BaseM>
+                <Markdown text={unescape(user.bio)}></Markdown>
+              </BaseM>
+            </StyledCardDescription>
+          )}
+        </StyledCardContainer>
+      </StyledCardWrapper>
     </StyledContainer>
   );
 }
@@ -100,7 +106,7 @@ const translateDown = keyframes`
     to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
 `;
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.span`
   position: relative;
   display: inline-block;
 `;
@@ -109,24 +115,25 @@ const StyledLinkContainer = styled.div`
   display: inline-block;
 `;
 
-const StyledCardContainer = styled.div<{ isHovering: boolean }>`
-  border: 1px solid ${colors.offBlack};
-  padding: 16px;
-  width: 375px;
-  display: grid;
-  gap: 8px;
-
+const StyledCardWrapper = styled.div<{ isHovering: boolean }>`
+  padding-top: 8px;
   position: absolute;
-  background-color: ${colors.white};
   z-index: ${({ isHovering }) => (isHovering ? '1' : '-1')};
-  /* top: calc(100% + 8px); */
-  top: calc(100%);
-
+  top: 100%;
   animation: ${({ isHovering }) =>
     css`
       ${isHovering ? translateUp : translateDown} ${transitions.cubic}
     `};
   opacity: ${({ isHovering }) => (isHovering ? 1 : 0)};
+`;
+
+const StyledCardContainer = styled.div`
+  border: 1px solid ${colors.offBlack};
+  padding: 16px;
+  width: 375px;
+  display: grid;
+  gap: 8px;
+  background-color: ${colors.white};
 `;
 
 const StyledCardHeader = styled.div`
@@ -138,6 +145,10 @@ const StyledCardHeader = styled.div`
 const StyledHoverCardTitleContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const StyledFollowButtonWrapper = styled.div`
+  margin-right: 8px;
 `;
 
 const StyledCardUsername = styled(TitleM)`
