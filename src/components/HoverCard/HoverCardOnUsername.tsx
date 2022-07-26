@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
@@ -13,6 +13,7 @@ import transitions, {
 } from 'components/core/transitions';
 import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
+import { useRouter } from 'next/router';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -21,6 +22,8 @@ type Props = {
 
 export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isHovering, setIsHovering] = useState(false);
+
+  const router = useRouter();
 
   const user = useFragment(
     graphql`
@@ -59,6 +62,14 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     setIsHovering(false);
   };
 
+  const handleClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      router.push(`${user.username}`);
+    },
+    [user]
+  );
+
   const loggedInUserId = useLoggedInUserId(query);
   const isLoggedIn = !!loggedInUserId;
 
@@ -68,7 +79,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
         <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
       </StyledLinkContainer>
       {isHovering && (
-        <StyledCardWrapper isHovering={isHovering}>
+        <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
           <StyledCardContainer>
             <StyledCardHeader>
               <StyledHoverCardTitleContainer>
