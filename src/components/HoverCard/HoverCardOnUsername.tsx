@@ -2,14 +2,15 @@ import { useCallback, useState } from 'react';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
 import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
 import FollowButton from 'components/Follow/FollowButton';
 import transitions, {
-  ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
+  ANIMATED_COMPONENT_TRANSITION_MS,
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from 'components/core/transitions';
 import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
@@ -21,8 +22,6 @@ type Props = {
 };
 
 export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
-  const [isHovering, setIsHovering] = useState(false);
-
   const router = useRouter();
 
   const user = useFragment(
@@ -54,12 +53,19 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 
   const totalCollections = user?.galleries[0]?.collections?.length || 0;
 
+  // Pseudo-state for signaling animations. This gives us a chance
+  // to display an animation prior to unmounting the component
+  const [isActive, setIsActive] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+
   const handleMouseEnter = () => {
+    setIsActive(true);
     setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovering(false);
+    setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
   };
 
   const handleClick = useCallback(
@@ -78,8 +84,8 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
       <StyledLinkContainer>
         <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
       </StyledLinkContainer>
-      {isHovering && (
-        <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
+      <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
+        {isActive && (
           <StyledCardContainer>
             <StyledCardHeader>
               <StyledHoverCardTitleContainer>
@@ -93,6 +99,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 
               <BaseM>{totalCollections} collections</BaseM>
             </StyledCardHeader>
+
             {user.bio && (
               <StyledCardDescription>
                 <BaseM>
@@ -101,21 +108,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
               </StyledCardDescription>
             )}
           </StyledCardContainer>
-        </StyledCardWrapper>
-      )}
+        )}
+      </StyledCardWrapper>
     </StyledContainer>
   );
 }
-
-const translateUp = keyframes`
-    from { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
-    to { transform: translateY(0px) };
-`;
-
-const translateDown = keyframes`
-    from { transform: translateY(0px) };
-    to { transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px) };
-`;
 
 const StyledContainer = styled.span`
   position: relative;
@@ -129,12 +126,12 @@ const StyledLinkContainer = styled.div`
 const StyledCardWrapper = styled.div<{ isHovering: boolean }>`
   padding-top: 8px;
   position: absolute;
-  z-index: ${({ isHovering }) => (isHovering ? '1' : '-1')};
+  z-index: 1;
   top: 100%;
-  animation: ${({ isHovering }) =>
-    css`
-      ${isHovering ? translateUp : translateDown} ${transitions.cubic}
-    `};
+
+  transition: ${transitions.cubic};
+  transform: ${({ isHovering }) =>
+    `translateY(${isHovering ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
   opacity: ${({ isHovering }) => (isHovering ? 1 : 0)};
 `;
 
@@ -151,6 +148,8 @@ const StyledCardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  // enforce height on container since the follow button causes additional height
+  height: 24px;
 `;
 
 const StyledHoverCardTitleContainer = styled.div`
