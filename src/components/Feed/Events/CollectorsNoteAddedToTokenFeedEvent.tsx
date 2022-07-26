@@ -95,12 +95,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <HoverCardOnUsername
-              username={event?.owner.username || ''}
-              userRef={event.owner}
-              queryRef={query}
-            />{' '}
-            added a collector's note to{' '}
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's note
+            to{' '}
             <InteractiveLink
               to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
               onClick={handleEventClick}

@@ -84,12 +84,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <HoverCardOnUsername
-              username={event?.owner.username || ''}
-              userRef={event.owner}
-              queryRef={query}
-            />{' '}
-            added a description to
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>

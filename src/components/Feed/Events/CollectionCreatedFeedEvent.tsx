@@ -82,11 +82,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
     >
       <StyledEvent>
         <StyledEventHeader>
-          <HoverCardOnUsername
-            username={event?.owner.username || ''}
-            userRef={event.owner}
-            queryRef={query}
-          />{' '}
+          <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
           <BaseM>
             added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
             {collectionName && `, `}

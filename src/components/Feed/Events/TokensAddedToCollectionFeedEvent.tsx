@@ -93,12 +93,8 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <HoverCardOnUsername
-              username={event?.owner.username || ''}
-              userRef={event.owner}
-              queryRef={query}
-            />{' '}
-            added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
+            {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>

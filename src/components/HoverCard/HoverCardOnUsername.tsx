@@ -15,12 +15,11 @@ import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOn
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 
 type Props = {
-  username: string;
   userRef: HoverCardOnUsernameFragment$key;
   queryRef: HoverCardOnUsernameFollowFragment$key;
 };
 
-export default function HoverCardOnUsername({ username, userRef, queryRef }: Props) {
+export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isHovering, setIsHovering] = useState(false);
 
   const user = useFragment(
@@ -66,7 +65,7 @@ export default function HoverCardOnUsername({ username, userRef, queryRef }: Pro
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <InteractiveLink to={`/${username}`}>{username}</InteractiveLink>
+        <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
       </StyledLinkContainer>
 
       <StyledCardWrapper isHovering={isHovering}>
