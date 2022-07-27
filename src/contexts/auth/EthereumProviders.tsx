@@ -6,7 +6,7 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import merge from 'lodash.merge';
 
-console.log('current theme values:', lightTheme());
+// console.log('current theme values:', lightTheme());
 
 // Unfortunately, RainbowKit has no way to customize font weight
 // https://github.com/rainbow-me/rainbowkit/discussions/361

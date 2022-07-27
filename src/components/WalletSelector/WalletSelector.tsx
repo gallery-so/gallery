@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, ETHEREUM, WalletName } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
@@ -19,7 +19,7 @@ import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 import WalletButton from './WalletButton';
-import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
+import { useConnectEthereum } from './useConnectEthereum';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -172,13 +172,7 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     });
   }, []);
 
-  // RainbowKit only returns an `openConnectModal` if not already connected. I
-  // think this is to mimic how the connect button works, where, once connected,
-  // it will show/open the account currently connected. Going to do a similar
-  // strategy here for now.
-  const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
-  const connectOrShowEthereumAccount = openConnectModal || openAccountModal;
+  const connectEthereum = useConnectEthereum();
 
   if (displayedError) {
     return (
@@ -241,21 +235,19 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      {connectOrShowEthereumAccount ? (
-        <WalletButton
-          label="Ethereum"
-          // TODO: ethereum icon
-          icon="metamask"
-          onClick={() => {
-            // TODO: figure out if we need this pending state since RainbowKit
-            //       has its own pending state
-            // const connector = walletConnectorMap.Ethereum;
-            // setToPendingState(connector, ETHEREUM);
-            // activate(connector);
-            connectOrShowEthereumAccount();
-          }}
-        />
-      ) : null}
+      <WalletButton
+        label="Ethereum"
+        // TODO: ethereum icon
+        icon="metamask"
+        onClick={() => {
+          // TODO: figure out if we need this pending state since RainbowKit
+          //       has its own pending state
+          // const connector = walletConnectorMap.Ethereum;
+          // setToPendingState(connector, ETHEREUM);
+          // activate(connector);
+          connectEthereum();
+        }}
+      />
       {availableWalletOptions.map((walletName) => (
         <DeprecatedWalletButton
           key={walletName}
