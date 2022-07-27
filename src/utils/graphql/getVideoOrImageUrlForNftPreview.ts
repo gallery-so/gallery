@@ -4,14 +4,15 @@ import { FALLBACK_URL } from 'utils/token';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
+export type getVideoOrImageUrlForNftPreviewResult =
+  | { type: 'video'; urls: UrlSet; success: boolean }
+  | { type: 'image'; urls: UrlSet; success: boolean }
+  | undefined;
 
 export default function getVideoOrImageUrlForNftPreview(
   tokenRef: getVideoOrImageUrlForNftPreviewFragment$key,
   handleReportError?: ReportFn
-):
-  | { type: 'video'; urls: UrlSet; success: boolean }
-  | { type: 'image'; urls: UrlSet; success: boolean }
-  | undefined {
+): getVideoOrImageUrlForNftPreviewResult {
   const result = readInlineData(
     graphql`
       fragment getVideoOrImageUrlForNftPreviewFragment on Token @inline {
