@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS, TitleXS } from 'components/core/Text/Text';
@@ -22,7 +22,10 @@ import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview, {
+  getVideoOrImageUrlForNftPreviewResult,
+} from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import { EditModeToken } from '../types';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -80,6 +83,14 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     return sidebarTokensAsArray;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
+  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
+
+  const nonNullTokens = useMemo(() => {
+    return tokensFilteredBySearch.filter((editModeToken) =>
+      Boolean(nftFragmentsKeyedByID[editModeToken.id])
+    );
+  }, [nftFragmentsKeyedByID, tokensFilteredBySearch]);
+
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
     stageTokens([{ id, whitespace: 'whitespace' }]);
@@ -90,40 +101,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   }, [stageTokens]);
 
   const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
-
-  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
-
-  const reportError = useReportError();
-
-  const tokensToDisplayInSidebar = useMemo(() => {
-    const truthyTokens = tokensFilteredBySearch.filter((editModeToken) =>
-      Boolean(nftFragmentsKeyedByID[editModeToken.id])
-    );
-
-    const tokensWithImagePreview = [];
-    const tokensWithoutImagePreview = [];
-
-    for (const token of truthyTokens) {
-      const result = getVideoOrImageUrlForNftPreview(nftFragmentsKeyedByID[token.id], reportError);
-      if (!result || !result?.success || !result.urls.small) {
-        // Image URL not found for SidebarNftIcon
-        tokensWithoutImagePreview.push(token);
-      } else {
-        tokensWithImagePreview.push(token);
-      }
-    }
-
-    // display tokens with images first. the ones *without* images are likely to be spam.
-    const orderedTokens = [...tokensWithImagePreview, ...tokensWithoutImagePreview];
-
-    return orderedTokens.map((editModeToken) => (
-      <SidebarNftIcon
-        key={editModeToken.id}
-        tokenRef={nftFragmentsKeyedByID[editModeToken.id]}
-        editModeToken={editModeToken}
-      />
-    ));
-  }, [nftFragmentsKeyedByID, reportError, tokensFilteredBySearch]);
 
   return (
     <StyledSidebar>
@@ -150,12 +127,88 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
-        {tokensToDisplayInSidebar}
+        <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
       </Selection>
       <Spacer height={12} />
     </StyledSidebar>
   );
 }
+
+type SidebarTokensProps = {
+  nftFragmentsKeyedByID: any;
+  tokens: EditModeToken[];
+};
+
+type SidebarTokenPayload = {
+  token: EditModeToken;
+  previewUrlSet: getVideoOrImageUrlForNftPreviewResult;
+};
+
+/**
+ * The purpose of this component is to front-load the sidebar with valid NFTs, and place invalid ones at the bottom.
+ * We have a two-step mechanism for detecting invalid NFTs:
+ * 1) first check if the NFT has a thumbnail-sized preview image. if not, it's considered invalid
+ * 2) try to actually load the preview image manually. if it fails, it means the URL is corrupt
+ *
+ * The child <SidebarNftIcon /> will use this info to render the appropriate thumbnail
+ */
+const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
+  const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
+
+  const reportError = useReportError();
+
+  useEffect(() => {
+    async function mount() {
+      const tokensWithImagePreview: SidebarTokenPayload[] = [];
+      const tokensWithoutImagePreview: SidebarTokenPayload[] = [];
+
+      for (const token of tokens) {
+        const previewUrlSet = getVideoOrImageUrlForNftPreview(
+          nftFragmentsKeyedByID[token.id],
+          reportError
+        );
+        if (!previewUrlSet || !previewUrlSet?.success || !previewUrlSet.urls.small) {
+          // Image URL not found for SidebarNftIcon
+          tokensWithoutImagePreview.push({ token, previewUrlSet });
+        } else {
+          // Actually try to load the image URL to see if it's valid
+          await new Promise<void>((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              tokensWithImagePreview.push({ token, previewUrlSet });
+              resolve();
+            };
+            img.onerror = () => {
+              tokensWithoutImagePreview.push({
+                token,
+                previewUrlSet: { ...previewUrlSet, success: false },
+              });
+              resolve();
+            };
+            img.src = previewUrlSet.urls.small ?? '';
+          });
+        }
+      }
+
+      setDisplayedTokens([...tokensWithImagePreview, ...tokensWithoutImagePreview]);
+    }
+
+    mount();
+  }, [nftFragmentsKeyedByID, reportError, tokens]);
+
+  return (
+    <>
+      {displayedTokens.map((editModeToken) => (
+        <SidebarNftIcon
+          key={editModeToken.token.id}
+          tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
+          editModeToken={editModeToken.token}
+          previewUrlSet={editModeToken.previewUrlSet}
+        />
+      ))}
+    </>
+  );
+};
 
 const StyledAddBlankBlock = styled.div`
   height: 60px;
