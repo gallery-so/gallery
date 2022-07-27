@@ -32,6 +32,10 @@ export function useRefreshToken() {
         response.refreshToken?.__typename === 'ErrInvalidInput' ||
         response.refreshToken?.__typename === 'ErrSyncFailed'
       ) {
+        if (response.refreshToken?.message?.includes('context deadline exceeded')) {
+          // don't show timeout errors because that means the refresh is still continuing async
+          return;
+        }
         throw new Error(`Could not refresh token: ${response.refreshToken?.message}`);
       }
     },
