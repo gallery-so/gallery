@@ -33,6 +33,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
           collections {
             dbid
             name
+            hidden
           }
         }
         ...FollowButtonUserFragment
@@ -51,7 +52,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     queryRef
   );
 
-  const totalCollections = user?.galleries[0]?.collections?.length || 0;
+  const filteredCollections = user?.galleries[0]?.collections?.filter(
+    (collection) => !collection?.hidden
+  );
+
+  const totalCollections = filteredCollections?.length || 0;
 
   // Pseudo-state for signaling animations. This gives us a chance
   // to display an animation prior to unmounting the component
