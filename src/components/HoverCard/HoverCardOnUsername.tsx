@@ -27,6 +27,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
+        id
         username
         bio
         galleries @required(action: THROW) {
@@ -82,6 +83,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   );
 
   const loggedInUserId = useLoggedInUserId(query);
+  const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
   return (
@@ -94,7 +96,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
           <StyledCardContainer>
             <StyledCardHeader>
               <StyledHoverCardTitleContainer>
-                {isLoggedIn && (
+                {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>
