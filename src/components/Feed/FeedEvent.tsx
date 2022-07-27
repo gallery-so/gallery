@@ -45,6 +45,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
           followed {
             user {
               dbid
+              ...HoverCardOnUsernameFragment
             }
           }
         }
@@ -68,6 +69,10 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
     graphql`
       fragment FeedEventQueryFragment on Query {
         ...UserFollowedUsersFeedEventQueryFragment
+        ...TokensAddedToCollectionFeedEventQueryFragment
+        ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
+        ...CollectionCreatedFeedEventQueryFragment
+        ...CollectorsNoteAddedToTokenFeedEventQueryFragment
       }
     `,
     queryRef
@@ -78,17 +83,17 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
       if (!event.collection) {
         return null;
       }
-      return <CollectionCreatedFeedEvent eventRef={event} />;
+      return <CollectionCreatedFeedEvent eventRef={event} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
       if (!event.token) {
         return null;
       }
-      return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} />;
+      return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} queryRef={query} />;
     case 'TokensAddedToCollectionFeedEventData':
       if (!event.collection) {
         return null;
       }
-      return <TokensAddedToCollectionFeedEvent eventRef={event} />;
+      return <TokensAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
     case 'CollectorsNoteAddedToCollectionFeedEventData':
       if (!event.collection) {
         return null;
@@ -96,7 +101,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
       if (!event.newCollectorsNote?.trim()) {
         return null;
       }
-      return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} />;
+      return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
     case 'UserFollowedUsersFeedEventData':
       if (!event.followed || !event.owner?.username) {
         return null;

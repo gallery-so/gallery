@@ -15,20 +15,24 @@ import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
+  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -50,6 +54,15 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const { isPreFeed } = event;
@@ -80,10 +93,8 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef }: Props) {
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
-            added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
+            {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>

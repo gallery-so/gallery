@@ -62,6 +62,7 @@ export default function IconButton({
 
   const handleClick = useCallback(
     (e) => {
+      e.stopPropagation();
       e.preventDefault();
       setShowTooltip(false);
       setClickedAndStillHovering(true);

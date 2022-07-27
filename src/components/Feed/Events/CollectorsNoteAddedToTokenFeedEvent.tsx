@@ -14,9 +14,12 @@ import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from '
 import EventMedia from './EventMedia';
 import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
+import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 
 type Props = {
   eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
 const MARGIN = 16;
@@ -24,13 +27,14 @@ const MIDDLE_GAP = 24;
 // images will be rendered within a square of this size
 const IMAGE_SPACE_SIZE = 269;
 
-export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         newCollectorsNote
         token @required(action: THROW) {
@@ -48,6 +52,16 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
     `,
     eventRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
   const { showModal } = useModalActions();
@@ -81,10 +95,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef }: Props)
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
-            added a collector's note to{' '}
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's note
+            to{' '}
             <InteractiveLink
               to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
               onClick={handleEventClick}

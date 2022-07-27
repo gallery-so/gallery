@@ -1,10 +1,10 @@
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -33,6 +33,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         eventTime
         owner @required(action: THROW) {
           username @required(action: THROW)
+          ...HoverCardOnUsernameFragment
           ...FollowButtonUserFragment
         }
         followed @required(action: THROW) {
@@ -40,6 +41,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
             username
             dbid
             bio
+            ...HoverCardOnUsernameFragment
           }
           followedBack
         }
@@ -60,6 +62,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           }
         }
         ...FollowButtonQueryFragment
+        ...HoverCardOnUsernameFollowFragment
       }
     `,
     queryRef
@@ -70,6 +73,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const viewerUserId = query?.viewer?.user?.dbid;
 
   // cache first username in followed list, to be displayed when user followed only 1 collector
+  const firstFollowerUsernameRef = event.followed[0];
   const firstFolloweeUsername = event.followed[0]?.user?.username;
   const track = useTrack();
 
@@ -146,13 +150,10 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <InteractiveLink to={`/${event.owner.username}`}>
-                  {event.owner.username}
-                </InteractiveLink>{' '}
-                followed{' '}
-                <InteractiveLink to={`/${firstFolloweeUsername}`}>
-                  {firstFolloweeUsername}
-                </InteractiveLink>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
+                )}
               </BaseM>
               <Spacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
@@ -164,10 +165,8 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           <StyledEventContent>
             <StyledEventHeader>
               <BaseM>
-                <InteractiveLink to={`/${event.owner.username}`}>
-                  {event.owner.username}
-                </InteractiveLink>{' '}
-                followed {genericFollows.length} collectors.
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                {genericFollows.length} collectors.
               </BaseM>
               <Spacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
