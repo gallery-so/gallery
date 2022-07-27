@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, ETHEREUM, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
@@ -18,6 +18,8 @@ import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
+import WalletButton from './WalletButton';
+import { useConnectEthereum } from './useConnectEthereum';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -73,7 +75,7 @@ type Props = {
   queryRef: WalletSelectorFragment$key;
 };
 
-function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment WalletSelectorFragment on Query {
@@ -170,6 +172,8 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
     });
   }, []);
 
+  const connectEthereum = useConnectEthereum();
+
   if (displayedError) {
     return (
       <StyledWalletSelector>
@@ -231,6 +235,17 @@ function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
+      <WalletButton
+        label="Ethereum"
+        // TODO: ethereum icon
+        icon="metamask"
+        onClick={() => {
+          connectEthereum();
+          const connector = walletConnectorMap.Ethereum;
+          setToPendingState(connector, ETHEREUM);
+          activate(connector);
+        }}
+      />
       {availableWalletOptions.map((walletName) => (
         <DeprecatedWalletButton
           key={walletName}
@@ -268,5 +283,3 @@ const StyledRetryButton = styled(Button)`
   width: 200px;
   align-self: center;
 `;
-
-export default WalletSelector;
