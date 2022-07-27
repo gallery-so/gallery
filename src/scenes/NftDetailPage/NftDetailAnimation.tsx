@@ -46,7 +46,13 @@ function NftDetailAnimation({ mediaRef }: Props) {
 
   return (
     <StyledNftDetailAnimation>
-      <StyledIframe src={processIFrameRenderUrl(contentRenderURL)} onLoad={setContentIsLoaded} />
+      <StyledIframe
+        src={processIFrameRenderUrl(contentRenderURL)}
+        onLoad={setContentIsLoaded}
+        // Lets the resource run scripts (but not create popup windows): https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+        // More specifically, this prevents the rendered iframe from displaying Alerts
+        sandbox="allow-scripts"
+      />
     </StyledNftDetailAnimation>
   );
 }
