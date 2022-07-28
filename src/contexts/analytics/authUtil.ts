@@ -106,6 +106,12 @@ function getAuthErrorMessage(error: unknown) {
   return 'Unknown';
 }
 
+export function isEarlyAccessError(error: unknown) {
+  return (
+    error instanceof Error && error.message.toLowerCase().includes('required tokens not owned')
+  );
+}
+
 export function isNotEarlyAccessError(errorMessage?: string) {
   return errorMessage?.toLowerCase().includes('required tokens not owned');
 }

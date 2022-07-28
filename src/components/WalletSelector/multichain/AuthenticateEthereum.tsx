@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import { isWeb3Error, Web3Error } from 'types/Error';
-import { INITIAL, PROMPT_SIGNATURE, PendingState, WalletName } from 'types/Wallet';
+import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import Spacer from 'components/core/Spacer/Spacer';
 import {
-  isNotEarlyAccessError,
+  isEarlyAccessError,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
@@ -13,21 +12,20 @@ import {
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { getUserFriendlyWalletName } from 'utils/wallet';
-import { useAccount, useSigner } from 'wagmi';
-import { Signer } from 'ethers';
+import { useAccount } from 'wagmi';
+import { EthereumError } from './EthereumError';
+import { normalizeError } from './normalizeError';
+import { signMessage } from '@wagmi/core';
 
 type Props = {
-  walletName: WalletName;
-  setDetectedError: (error: Web3Error) => void;
+  reset: () => void;
 };
 
-export function MultichainAuthenticateWallet({ walletName, setDetectedError }: Props) {
-  const userFriendlyWalletName = getUserFriendlyWalletName(walletName?.description ?? '');
+export const AuthenticateEthereum = ({ reset }: Props) => {
   const { address: account } = useAccount();
-  const { data: signer } = useSigner();
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
+  const [error, setError] = useState<Error>();
 
   const { handleLogin } = useAuthActions();
 
@@ -46,13 +44,13 @@ export function MultichainAuthenticateWallet({ walletName, setDetectedError }: P
    * 3b. If wallet is new, sign user up
    */
   const attemptAuthentication = useCallback(
-    async (address: string, signer: Signer) => {
+    async (address: string) => {
       setPendingState(PROMPT_SIGNATURE);
-      trackSignInAttempt(userFriendlyWalletName);
+      trackSignInAttempt('Ethereum');
 
       const { nonce, user_exists: userExists } = await createNonce(address);
 
-      const signature = await signer.signMessage(nonce);
+      const signature = await signMessage({ message: nonce });
 
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
@@ -68,64 +66,57 @@ export function MultichainAuthenticateWallet({ walletName, setDetectedError }: P
           },
         },
         userExists,
-        userFriendlyWalletName,
       });
 
       if (userExists && userId) {
-        trackSignInSuccess(userFriendlyWalletName);
+        trackSignInSuccess('Ethereum');
         return await handleLogin(userId, address);
       }
     },
-    [
-      trackSignInAttempt,
-      userFriendlyWalletName,
-      createNonce,
-      loginOrRedirectToOnboarding,
-      trackSignInSuccess,
-      handleLogin,
-    ]
+    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
   );
 
   useEffect(() => {
     async function authenticate() {
-      if (account && signer) {
+      if (account) {
         try {
-          await attemptAuthentication(account.toLowerCase(), signer);
+          await attemptAuthentication(account.toLowerCase());
         } catch (error: unknown) {
-          trackSignInError(userFriendlyWalletName, error);
-
-          if (isWeb3Error(error)) {
-            // dont log error if because user is not early access
-            if (!isNotEarlyAccessError(error.message)) {
-              captureException(error.message);
-            }
-            setDetectedError(error);
-          }
-
-          // Fall back to generic error message
-          if (error instanceof Error) {
+          trackSignInError('Ethereum', error);
+          // ignore early access errors
+          if (!isEarlyAccessError(error)) {
+            // capture all others
             captureException(error);
-            const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-            setDetectedError(web3Error);
           }
+
+          console.log('got error', error, error instanceof Error);
+
+          setError(normalizeError(error));
         }
       }
     }
 
     void authenticate();
-  }, [
-    account,
-    signer,
-    setDetectedError,
-    attemptAuthentication,
-    userFriendlyWalletName,
-    trackSignInError,
-  ]);
+  }, [account, attemptAuthentication, trackSignInError]);
+
+  if (error) {
+    return (
+      <EthereumError
+        error={error}
+        reset={() => {
+          setError(undefined);
+          reset();
+        }}
+      />
+    );
+  }
+
+  // TODO: add pending state between fetching nonce and signing?
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleS>Connect with {userFriendlyWalletName ?? 'your wallet'}</TitleS>
+        <TitleS>Connect with Ethereum</TitleS>
         <Spacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
@@ -134,9 +125,9 @@ export function MultichainAuthenticateWallet({ walletName, setDetectedError }: P
 
   return (
     <div>
-      <TitleS>Connect with {userFriendlyWalletName ?? 'your wallet'}</TitleS>
+      <TitleS>Connect with Ethereum</TitleS>
       <Spacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );
-}
+};
