@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { useCallback, useState } from 'react';
-import { BaseM } from 'components/core/Text/Text';
-import { Button } from 'components/core/Button/Button';
-import { AUTH } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH } from 'types/Wallet';
 import breakpoints from 'components/core/breakpoints';
 import { graphql, useFragment } from 'react-relay';
 import { MultichainWalletSelectorFragment$key } from '__generated__/MultichainWalletSelectorFragment.graphql';
@@ -10,7 +8,8 @@ import WalletButton from './WalletButton';
 import { useConnectEthereum } from './useConnectEthereum';
 import { ConnectionMode } from '../WalletSelector';
 import { SupportedChain, supportedChains } from './supportedChains';
-import { AuthenticateEthereum } from './AuthenticateEthereum';
+import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
+import { EthereumAddWallet } from './EthereumAddWallet';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -21,7 +20,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   const query = useFragment(
     graphql`
       fragment MultichainWalletSelectorFragment on Query {
-        ...AddWalletPendingFragment
+        ...EthereumAddWalletFragment
       }
     `,
     queryRef
@@ -35,25 +34,21 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   const connectEthereum = useConnectEthereum();
 
   if (selectedChain) {
-    // if (connectionMode === ADD_WALLET_TO_USER) {
-    //   return (
-    //     <StyledWalletSelector>
-    //       <AddWalletPending
-    //         queryRef={query}
-    //         setDetectedError={setDetectedError}
-    //         pendingWallet={pendingWallet}
-    //         userFriendlyWalletName={userFriendlyWalletName}
-    //         walletName={pendingWalletName}
-    //       />
-    //     </StyledWalletSelector>
-    //   );
-    // }
+    // TODO: fix situation when adding a wallet where metamask is selected but already connected
+
+    if (connectionMode === ADD_WALLET_TO_USER) {
+      return (
+        <StyledWalletSelector>
+          <EthereumAddWallet queryRef={query} reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
 
     if (connectionMode === AUTH) {
       return (
         <StyledWalletSelector>
           {selectedChain === supportedChains.ethereum ? (
-            <AuthenticateEthereum reset={reset} />
+            <EthereumAuthenticateWallet reset={reset} />
           ) : null}
         </StyledWalletSelector>
       );
@@ -97,14 +92,4 @@ const StyledWalletSelector = styled.div`
     width: 400px;
     max-width: 480px;
   }
-`;
-
-const StyledBody = styled(BaseM)`
-  margin-bottom: 30px;
-  white-space: pre-wrap;
-`;
-
-const StyledRetryButton = styled(Button)`
-  width: 200px;
-  align-self: center;
 `;

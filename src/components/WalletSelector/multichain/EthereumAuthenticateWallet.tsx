@@ -21,7 +21,7 @@ type Props = {
   reset: () => void;
 };
 
-export const AuthenticateEthereum = ({ reset }: Props) => {
+export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   const { address: account } = useAccount();
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
