@@ -62,8 +62,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const tokens = removeNullValues(allTokens);
 
-  const { stageTokens } = useCollectionEditorActions();
-
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
 
@@ -92,15 +90,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     );
   }, [nftFragmentsKeyedByID, tokensFilteredBySearch]);
 
-  const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
-
   const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
 
   return (
@@ -124,14 +113,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         setDebouncedSearchQuery={setDebouncedSearchQuery}
       />
       <Spacer height={16} />
-      {/* <Selection>
-        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-          <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-        </StyledAddBlankBlock>
-        <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      </Selection> */}
       <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-
       <Spacer height={12} />
     </StyledSidebar>
   );
@@ -159,6 +141,16 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
 
   const reportError = useReportError();
+  const { stageTokens } = useCollectionEditorActions();
+
+  const handleAddBlankBlockClick = useCallback(() => {
+    const id = `blank-${generate12DigitId()}`;
+    stageTokens([{ id, whitespace: 'whitespace' }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [stageTokens]);
 
   useEffect(() => {
     async function mount() {
@@ -208,7 +200,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
 
         if (fromIndex === 0) {
           items.push(
-            <StyledAddBlankBlock>
+            <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
               <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
             </StyledAddBlankBlock>
           );
