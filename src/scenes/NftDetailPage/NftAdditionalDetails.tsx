@@ -115,12 +115,11 @@ function NftAdditionalDetails({
                 <InteractiveLink href={getOpenseaExternalUrl(contractAddress, tokenId)}>
                   View on OpenSea
                 </InteractiveLink>
-                {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) &&
-                  authenticatedUserOwnsAsset && (
-                    <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
-                      Refresh metadata
-                    </InteractiveLink>
-                  )}
+                {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
+                  <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
+                    Refresh metadata
+                  </InteractiveLink>
+                )}
               </>
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
