@@ -38,8 +38,9 @@ type Props = {
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
 export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
   const account = address?.toLowerCase();
+  const isMetamask = connector?.id === 'metaMask';
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -169,20 +170,17 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
           return;
         }
 
-        // if (isMetamask) {
-        //   // For metamask, prompt the user to confirm the address provided by the extension is the one they want to connect with
-        //   setPendingState(CONFIRM_ADDRESS);
-        // } else {
-        await attemptAddWallet(account);
-        // }
+        if (isMetamask) {
+          // For metamask, prompt the user to confirm the address provided by the extension is the one they want to connect with
+          setPendingState(CONFIRM_ADDRESS);
+        } else {
+          await attemptAddWallet(account);
+        }
       }
     }
 
     void authenticate();
-  }, [account, authenticatedUserAddresses, attemptAddWallet]);
-
-  // TODO: figure out metamask
-  const isMetamask = false;
+  }, [account, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
 
   if (error) {
     return (
