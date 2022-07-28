@@ -26,6 +26,7 @@ import getVideoOrImageUrlForNftPreview, {
   getVideoOrImageUrlForNftPreviewResult,
 } from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
+import { List } from 'react-virtualized';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -123,12 +124,14 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         setDebouncedSearchQuery={setDebouncedSearchQuery}
       />
       <Spacer height={16} />
-      <Selection>
+      {/* <Selection>
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
         <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      </Selection>
+      </Selection> */}
+      <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
+
       <Spacer height={12} />
     </StyledSidebar>
   );
@@ -197,16 +200,43 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   }, [nftFragmentsKeyedByID, reportError, tokens]);
 
   return (
-    <>
-      {displayedTokens.map((editModeToken) => (
-        <SidebarNftIcon
-          key={editModeToken.token.id}
-          tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
-          editModeToken={editModeToken.token}
-          previewUrlSet={editModeToken.previewUrlSet}
-        />
-      ))}
-    </>
+    <List
+      rowRenderer={({ key, style, index }) => {
+        const items = [];
+        const fromIndex = index * 3;
+        const toIndex = Math.min(fromIndex + 3, displayedTokens.length);
+
+        if (fromIndex === 0) {
+          items.push(
+            <StyledAddBlankBlock>
+              <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
+            </StyledAddBlankBlock>
+          );
+        }
+
+        for (let i = fromIndex; i < toIndex; i++) {
+          const editModeToken = displayedTokens[i];
+          items.push(
+            <SidebarNftIcon
+              key={editModeToken.token.id}
+              tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
+              editModeToken={editModeToken.token}
+              previewUrlSet={editModeToken.previewUrlSet}
+            />
+          );
+        }
+
+        return (
+          <Selection key={key} style={style}>
+            {items}
+          </Selection>
+        );
+      }}
+      rowCount={displayedTokens.length}
+      rowHeight={79} // height of SidebarNftIcon 60 + gap
+      height={(64 * displayedTokens.length) / 3}
+      width={300} // column width * column count
+    />
   );
 };
 
