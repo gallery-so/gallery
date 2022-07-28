@@ -19,7 +19,6 @@ type Props = {
   name: string | null;
   description: string | null;
   ownerUsername: string;
-  authenticatedUserOwnsAsset: boolean;
   contractAddress: string | null;
   tokenId: string | null;
   dbId: string | null;
@@ -37,7 +36,6 @@ function NftDetailText({
   tokenId,
   dbId,
   externalUrl,
-  authenticatedUserOwnsAsset,
   // TODO [GAL-206]: support Creator Address post-merge
   // creatorAddress,
   contractName,
@@ -110,7 +108,6 @@ function NftDetailText({
         tokenId={tokenId}
         dbId={dbId}
         externalUrl={externalUrl}
-        authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
       />
       {showBuyNowButton && (
         <>
