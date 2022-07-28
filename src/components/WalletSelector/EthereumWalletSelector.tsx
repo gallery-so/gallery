@@ -6,20 +6,19 @@ import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
 import Spacer from 'components/core/Spacer/Spacer';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, ETHEREUM, WalletName } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
-import DeprecatedWalletButton from './DeprecatedWalletButton';
+import WalletButton from './WalletButton';
 import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
 import AddWalletPending from './AddWalletPending/AddWalletPending';
 import Markdown from 'components/core/Markdown/Markdown';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
-import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
-import WalletButton from './WalletButton';
-import { useConnectEthereum } from './useConnectEthereum';
+import { EthereumWalletSelectorFragment$key } from '__generated__/EthereumWalletSelectorFragment.graphql';
+import { ConnectionMode } from './WalletSelector';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -64,21 +63,15 @@ function getErrorMessage(errorCode: string) {
   return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
 }
 
-// AUTH: authenticate with wallet (sign in)
-// ADD_WALLET_TO_USER: add wallet to user
-// CONNECT_WALLET: simple connect (no sign in) used to allow non-users to mint
-
-type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CONNECT_WALLET_ONLY;
-
 type Props = {
   connectionMode?: ConnectionMode;
-  queryRef: WalletSelectorFragment$key;
+  queryRef: EthereumWalletSelectorFragment$key;
 };
 
-export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+export default function EthereumWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment WalletSelectorFragment on Query {
+      fragment EthereumWalletSelectorFragment on Query {
         ...AddWalletPendingFragment
       }
     `,
@@ -172,8 +165,6 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     });
   }, []);
 
-  const connectEthereum = useConnectEthereum();
-
   if (displayedError) {
     return (
       <StyledWalletSelector>
@@ -235,19 +226,8 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   return (
     <StyledWalletSelector>
       <Spacer height={16} />
-      <WalletButton
-        label="Ethereum"
-        // TODO: ethereum icon
-        icon="metamask"
-        onClick={() => {
-          connectEthereum();
-          const connector = walletConnectorMap.Ethereum;
-          setToPendingState(connector, ETHEREUM);
-          activate(connector);
-        }}
-      />
       {availableWalletOptions.map((walletName) => (
-        <DeprecatedWalletButton
+        <WalletButton
           key={walletName}
           walletName={walletName}
           activate={activate}

@@ -11,7 +11,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 import { graphql, useFragment } from 'react-relay';
 import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
-import { MultichainWalletSelector } from 'components/WalletSelector/MultichainWalletSelector';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {
@@ -25,10 +24,6 @@ type Props = {
 };
 
 function Auth({ queryRef }: Props) {
-  const isMultichain =
-    typeof window !== 'undefined' &&
-    !!window.localStorage.getItem('GALLERY_ENABLE_MULTICHAIN_AUTH');
-
   const query = useFragment(
     graphql`
       fragment AuthFragment on Query {
@@ -40,7 +35,6 @@ function Auth({ queryRef }: Props) {
             }
           }
         }
-
         ...WalletSelectorFragment
       }
     `,
@@ -65,11 +59,7 @@ function Auth({ queryRef }: Props) {
   return (
     <StyledAuthPage>
       <StyledWalletSelectorWrapper>
-        {isMultichain ? (
-          <MultichainWalletSelector queryRef={query} />
-        ) : (
-          <WalletSelector queryRef={query} />
-        )}
+        <WalletSelector queryRef={query} />
       </StyledWalletSelectorWrapper>
       <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
