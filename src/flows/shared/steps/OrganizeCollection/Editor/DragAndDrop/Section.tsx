@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import { TitleDiatypeM } from 'components/core/Text/Text';
-import { CSSProperties, forwardRef } from 'react';
+import { Children, CSSProperties, forwardRef } from 'react';
 import styled from 'styled-components';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
@@ -17,6 +17,7 @@ export interface Props {
   shadow?: boolean;
   placeholder?: boolean;
   unstyled?: boolean;
+  isActive?: boolean;
   onClick?(): void;
   onRemove?(): void;
 }
@@ -74,14 +75,15 @@ export const Section = forwardRef<HTMLDivElement, Props>(
       scrollable,
       shadow,
       unstyled,
+      isActive,
       ...props
     }: Props,
     ref
   ) => {
     const Component = onClick ? 'button' : 'div';
-    // const { itemWidth, dndWidth } = useDndWidth();
-    // console.log(styles);
-    console.log({ style });
+
+    const isEmpty = false;
+
     return (
       <StyledSection
         ref={ref}
@@ -95,15 +97,25 @@ export const Section = forwardRef<HTMLDivElement, Props>(
         tabIndex={onClick ? 0 : undefined}
       >
         <StyledLabelWrapper>
-          <StyledLabel>
-            <StyledLabelText>{label}</StyledLabelText>
-          </StyledLabel>
+          {isActive && (
+            <StyledLabel>
+              <StyledLabelText>{label}</StyledLabelText>
+            </StyledLabel>
+          )}
           <div>
             {/* {onRemove ? <Remove onClick={onRemove} /> : undefined} */}
             <Handle {...handleProps} />
           </div>
         </StyledLabelWrapper>
-        <StyledItems>{children}</StyledItems>
+        <StyledItemContainer isActive={isActive}>
+          {isEmpty ? (
+            <StyledEmptySectionMessage>
+              <TitleDiatypeM>Select the NFTs you’d like to add to this section</TitleDiatypeM>
+            </StyledEmptySectionMessage>
+          ) : (
+            children
+          )}
+        </StyledItemContainer>
       </StyledSection>
     );
   }
@@ -144,10 +156,16 @@ const StyledLabelText = styled(TitleDiatypeM)`
   color: ${colors.white};
 `;
 
-const StyledItems = styled.div`
-  border: 1px solid ${colors.activeBlue};
+const StyledItemContainer = styled.div<{ isActive: boolean }>`
+  background: ${colors.white};
+  border: 1px solid ${({ isActive }) => (isActive ? colors.activeBlue : colors.porcelain)};
   display: flex;
   flex-wrap: wrap;
   padding: 24px;
   border-radius: 2px;
+  cursor: pointer;
+`;
+
+const StyledEmptySectionMessage = styled.div`
+  margin: auto;
 `;

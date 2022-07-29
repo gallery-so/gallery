@@ -10,6 +10,7 @@ type Props = {
   itemWidth: any;
   columns: number;
   nftFragmentsKeyedByID: any;
+  label: string;
 };
 
 export default function SectionDragging({
@@ -17,10 +18,11 @@ export default function SectionDragging({
   itemWidth,
   columns,
   nftFragmentsKeyedByID,
+  label,
 }: Props) {
   // const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
   return (
-    <Section>
+    <Section label={label}>
       {items.map((item) => {
         const size = itemWidth;
         const stagedItemRef = nftFragmentsKeyedByID[item.id];

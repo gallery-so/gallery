@@ -2,6 +2,11 @@ import { UniqueIdentifier } from '@dnd-kit/core';
 import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
 import { Section } from './Section';
 import { CSS } from '@dnd-kit/utilities';
+import { useCallback } from 'react';
+import {
+  useActiveSectionIdState,
+  useCollectionEditorActions,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 
 type Props = {
   children: React.ReactNode;
@@ -41,10 +46,20 @@ export default function DroppableSection({
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== 'container') || items.includes(over.id)
     : false;
-  console.log('isDragging', isDragging);
+
+  const { setActiveSectionIdState } = useCollectionEditorActions();
+
+  const handleClick = useCallback(() => {
+    console.log('activate the asset');
+    setActiveSectionIdState(id);
+  }, [id, setActiveSectionIdState]);
+
+  const activeSectionId = useActiveSectionIdState();
+  const isActive = activeSectionId === id;
   return (
     // <div>DroppableSection{children}</div>
     <Section
+      onClick={handleClick}
       ref={disabled ? undefined : setNodeRef}
       style={{
         ...style,
@@ -59,6 +74,7 @@ export default function DroppableSection({
       }}
       columns={columns}
       {...props}
+      isActive={isActive}
     >
       {children}
     </Section>

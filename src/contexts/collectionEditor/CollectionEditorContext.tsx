@@ -24,6 +24,7 @@ export type CollectionEditorState = {
   stagedItems: StagedItemsState;
   collectionMetadata: CollectionMetadataState;
   stagedCollection: StagedCollectionState;
+  activeSectionId: string | null;
 };
 
 const DEFAULT_COLLECTION_METADATA = {
@@ -36,6 +37,7 @@ const CollectionEditorStateContext = createContext<CollectionEditorState>({
   stagedItems: [],
   collectionMetadata: DEFAULT_COLLECTION_METADATA,
   stagedCollection: [],
+  activeSectionId: null,
 });
 
 export const useSidebarTokensState = (): SidebarTokensState => {
@@ -73,6 +75,14 @@ export const useStagedCollectionState = (): StagedCollectionState => {
   return context.stagedCollection;
 };
 
+export const useActiveSectionIdState = (): string | null => {
+  const context = useContext(CollectionEditorStateContext);
+  if (!context) {
+    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
+  }
+  return context.activeSectionId;
+};
+
 type CollectionEditorActions = {
   setSidebarTokens: (tokens: Record<string, EditModeToken>) => void;
   setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
@@ -81,12 +91,14 @@ type CollectionEditorActions = {
   setStagedCollectionState: (collection: StagedCollectionState) => void;
   handleSortTokens: (event: DragEndEvent) => void;
   reorderTokensWithinSection: (event: DragEndEvent) => void;
+  moveTokenToSection: (event: DragEndEvent, oldSectionId: string, newSectionId: string) => void;
   reorderSection: (event: DragEndEvent) => void;
   addSection: () => void;
   incrementColumns: () => void;
   decrementColumns: () => void;
   setColumns: (columns: number) => void;
   setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
+  setActiveSectionIdState: (id: string) => void;
 };
 
 const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
@@ -111,6 +123,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     DEFAULT_COLLECTION_METADATA
   );
   const [stagedCollectionState, setStagedCollectionState] = useState<StagedCollectionState>([]);
+  const [activeSectionIdState, setActiveSectionIdState] = useState<string | null>(null);
 
   // const [collectionLayoutState, setCollectionLayoutState] = useState<CollectionMetadataState>()
 
@@ -120,8 +133,15 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       stagedItems: stagedItemsState,
       collectionMetadata: collectionMetadataState,
       stagedCollection: stagedCollectionState,
+      activeSectionId: activeSectionIdState,
     }),
-    [sidebarTokensState, stagedItemsState, collectionMetadataState, stagedCollectionState]
+    [
+      sidebarTokensState,
+      stagedItemsState,
+      collectionMetadataState,
+      stagedCollectionState,
+      activeSectionIdState,
+    ]
   );
 
   const setSidebarTokens = useCallback((tokens: SidebarTokensState) => {
@@ -185,6 +205,33 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       return { ...previous, [sectionId]: updatedSection };
     });
   }, []);
+
+  const moveTokenToSection = useCallback(
+    (event: DragEndEvent, oldSectionId: string, newSectionId: string) => {
+      const { active, over } = event;
+      setStagedCollectionState((previous) => {
+        // get token from old section
+        const oldSection = previous[oldSectionId];
+        const token = oldSection.find((token) => token.id === active.id);
+        // add token to new section
+        const newSection = previous[newSectionId];
+        const newIndex = newSection.findIndex((id) => id === over?.id);
+        newSection.splice(newIndex, 0, token);
+        // remove token from old section
+        const updatedOldSection = oldSection.filter(({ id }) => id !== active.id);
+        console.log('moveTokenToSection', newSection);
+        return { ...previous, [oldSectionId]: updatedOldSection, [newSectionId]: newSection };
+      });
+    },
+    []
+  );
+  // const moveTokenToSection = useCallback((tokenId: string, sectionId: string) => {
+  //   setStagedCollectionState((previous) => {
+  //     const section = previous[sectionId];
+  //     const updatedSection = section.filter(({ id }) => id !== tokenId);
+  //     return { ...previous, [sectionId]: updatedSection };
+  //   });
+  // }, []);
 
   const reorderSection = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
@@ -308,6 +355,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       unstageTokens,
       handleSortTokens,
       reorderTokensWithinSection,
+      moveTokenToSection,
       reorderSection,
       addSection,
       incrementColumns,
@@ -315,6 +363,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setColumns,
       setTokenLiveDisplay,
       setStagedCollectionState,
+      setActiveSectionIdState,
     }),
     [
       setSidebarTokens,
@@ -323,6 +372,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       unstageTokens,
       handleSortTokens,
       reorderTokensWithinSection,
+      moveTokenToSection,
       reorderSection,
       addSection,
       incrementColumns,
@@ -330,6 +380,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       setColumns,
       setTokenLiveDisplay,
       setStagedCollectionState,
+      setActiveSectionIdState,
     ]
   );
 
