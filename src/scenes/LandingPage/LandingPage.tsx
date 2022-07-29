@@ -37,7 +37,7 @@ export default function LandingPage() {
         <Spacer width={8} />
         <BaseS>·</BaseS>
         <Spacer width={8} />
-        <NavLink to="/noCreative">Gallery of the Week</NavLink>
+        <NavLink to="/apgu">Gallery of the Week</NavLink>
       </StyledLinkContainer>
     </StyledLandingPage>
   );
