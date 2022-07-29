@@ -46,7 +46,9 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
             id
           }
           layout {
-            whitespace
+            sectionLayout {
+              whitespace
+            }
           }
           ...UserGalleryCollectionFragment
         }
@@ -65,7 +67,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
       nonNullCollections.filter((collection) => {
         const isNotHidden = !collection.hidden;
         const hasTokens = collection.tokens?.length;
-        const hasWhitespace = collection.layout?.whitespace?.length;
+        const hasWhitespace = collection.layout?.sectionLayout?.whitespace?.length;
         return (hasTokens || hasWhitespace) && isNotHidden;
       }),
     [nonNullCollections]

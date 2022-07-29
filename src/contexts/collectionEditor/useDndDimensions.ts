@@ -17,8 +17,9 @@ export const IMAGE_SIZES: Record<number, number> = {
 
 export default function useDndDimensions() {
   const {
-    layout: { columns },
+    layout: { sectionLayout },
   } = useCollectionMetadataState();
+  const columns = sectionLayout[0].columns;
 
   const paddingBetweenItemsPx = useMemo(() => {
     if (columns === 1 || columns === 2) {

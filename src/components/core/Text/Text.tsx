@@ -106,3 +106,11 @@ export const TitleDiatypeL = styled(H1)`
   line-height: 24px;
   letter-spacing: -0.01em;
 `;
+
+export const TitleDiatypeM = styled(H2)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+`;

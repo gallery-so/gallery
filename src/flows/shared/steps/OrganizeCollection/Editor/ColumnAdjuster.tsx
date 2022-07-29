@@ -31,8 +31,8 @@ function ColumnAdjuster({ viewerRef }: Props) {
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
   const columns = useMemo(
-    () => collectionMetadata.layout.columns,
-    [collectionMetadata.layout.columns]
+    () => collectionMetadata.layout.sectionLayout[0].columns,
+    [collectionMetadata.layout]
   );
 
   const maxColumns = useMaxColumns(viewer);

@@ -17,7 +17,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
-import { insertWhitespaceBlocks } from 'utils/collectionLayout';
+import { generate12DigitId, insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -32,6 +32,31 @@ function convertNftsToEditModeTokens(
     id: token.dbid,
     isSelected,
   }));
+}
+
+// Combines the list of tokens in the collection and the collection layout settings to create
+// an object that represents the full structure of the collection layout with sections and whitespace blocks.
+function parseCollectionLayout(tokens: EditModeTokenChild[], collectionLayout) {
+  console.log({ collectionLayout });
+  // loop through sections
+  // for each section, use section layout to add tokens and whitespace blocks
+  // const collection = [];
+  const parsedCollection = collectionLayout.sections.reduce(
+    (allSections, sectionStartIndex: number, index: number) => {
+      const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
+      const section = tokens.slice(sectionStartIndex, sectionEndIndex);
+      const sectionWithWhitespace = insertWhitespaceBlocks(
+        section,
+        collectionLayout.sectionLayout[index].whitespace
+      );
+      const sectionId = generate12DigitId();
+      allSections[sectionId] = sectionWithWhitespace;
+      return allSections;
+    },
+    {}
+  );
+  console.log('parsedCollection', parsedCollection);
+  return parsedCollection;
 }
 
 type Props = {
@@ -57,8 +82,11 @@ function CollectionEditor({ viewerRef }: Props) {
                 }
               }
               layout {
-                columns
-                whitespace
+                sections
+                sectionLayout {
+                  columns
+                  whitespace
+                }
               }
             }
           }
@@ -89,7 +117,8 @@ function CollectionEditor({ viewerRef }: Props) {
     };
   }, [setNextEnabled, stagedNfts]);
 
-  const { setSidebarTokens, stageTokens, unstageTokens } = useCollectionEditorActions();
+  const { setSidebarTokens, stageTokens, unstageTokens, setStagedCollectionState } =
+    useCollectionEditorActions();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
 
@@ -120,10 +149,12 @@ function CollectionEditor({ viewerRef }: Props) {
   useEffect(() => {
     if (collectionBeingEdited) {
       // handle column setting
-      const currentCollectionColumns = collectionBeingEdited.layout?.columns ?? 0;
+      const currentCollectionColumns =
+        collectionBeingEdited.layout?.sectionLayout?.[0].columns ?? 0;
       const columns = isValidColumns(currentCollectionColumns)
         ? currentCollectionColumns
         : DEFAULT_COLUMNS;
+      console.log('columns,', columns);
       setColumns(columns);
 
       // handle live render setting
@@ -153,7 +184,7 @@ function CollectionEditor({ viewerRef }: Props) {
   );
 
   const whitespaceList = useMemo(
-    () => removeNullValues(collectionBeingEdited?.layout?.whitespace) ?? [],
+    () => removeNullValues(collectionBeingEdited?.layout?.sectionLayout[0]?.whitespace) ?? [],
     [collectionBeingEdited]
   );
 
@@ -173,8 +204,12 @@ function CollectionEditor({ viewerRef }: Props) {
     const initialRender = preRefreshNftsAsArray.length === 0;
     if (initialRender) {
       const tokensToStage = convertNftsToEditModeTokens(tokensInCollection, true);
+      console.log(tokensToStage, collectionBeingEdited.layout);
+      const collectionToStage = parseCollectionLayout(tokensToStage, collectionBeingEdited.layout);
       const tokensToStageWithWhitespace = insertWhitespaceBlocks(tokensToStage, whitespaceList);
       stageTokens(tokensToStageWithWhitespace);
+      console.log('staging', collectionToStage);
+      setStagedCollectionState(collectionToStage);
     }
 
     // Mark NFTs as selected if they're in the collection being edited

@@ -10,7 +10,9 @@ export const useCollectionColumns = (collectionRef: useCollectionColumnsFragment
     graphql`
       fragment useCollectionColumnsFragment on Collection {
         layout {
-          columns
+          sectionLayout {
+            columns
+          }
         }
       }
     `,
@@ -18,8 +20,12 @@ export const useCollectionColumns = (collectionRef: useCollectionColumnsFragment
   );
 
   return useMemo(() => {
-    if (collection?.layout?.columns && isValidColumns(collection.layout.columns)) {
-      return collection.layout.columns;
+    console.log('a', collection.layout.sectionLayout[0].columns);
+    if (
+      collection?.layout?.sectionLayout &&
+      isValidColumns(collection.layout.sectionLayout[0].columns)
+    ) {
+      return collection.layout.sectionLayout[0].columns;
     }
 
     return DEFAULT_COLUMNS;

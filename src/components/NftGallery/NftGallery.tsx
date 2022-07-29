@@ -21,8 +21,10 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
       fragment NftGalleryFragment on Collection {
         dbid
         layout {
-          columns
-          whitespace
+          sectionLayout {
+            columns
+            whitespace
+          }
         }
         tokens {
           id
@@ -38,7 +40,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const columns = useCollectionColumns(collection);
 
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
-  const nonNullWhitespace = removeNullValues(collection.layout?.whitespace);
+  const nonNullWhitespace = removeNullValues(collection.layout?.sectionLayout?.whitespace);
 
   const collectionWithWhitespace = useMemo(
     () => insertWhitespaceBlocks(collection.tokens ?? [], nonNullWhitespace),
