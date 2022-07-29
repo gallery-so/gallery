@@ -26,7 +26,7 @@ import getVideoOrImageUrlForNftPreview, {
   getVideoOrImageUrlForNftPreviewResult,
 } from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
-import { AutoSizer, List } from 'react-virtualized';
+import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -116,7 +116,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
       </StyledSidebarContainer>
       <Spacer height={16} />
       <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      {/* <Spacer height={12} /> */}
+      <Spacer height={12} />
     </StyledSidebar>
   );
 }
@@ -140,8 +140,8 @@ type SidebarTokenPayload = {
  * The child <SidebarNftIcon /> will use this info to render the appropriate thumbnail
  */
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
-  const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
   const COLUMN_COUNT = 3;
+  const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
   const reportError = useReportError();
   const { stageTokens } = useCollectionEditorActions();
 
@@ -193,50 +193,51 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     mount();
   }, [nftFragmentsKeyedByID, reportError, tokens]);
 
+  const rowRenderer = ({ key, style, index }: ListRowProps) => {
+    const items = [];
+
+    if (index === 0) {
+      items.push(
+        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
+          <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
+        </StyledAddBlankBlock>
+      );
+    }
+
+    const fromIndex = index === 0 ? index * COLUMN_COUNT : index * COLUMN_COUNT - 1;
+    const lastIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
+    const toIndex = Math.min(lastIndex, displayedTokens.length);
+
+    for (let i = fromIndex; i < toIndex; i++) {
+      const editModeToken = displayedTokens[i];
+      items.push(
+        <SidebarNftIcon
+          key={editModeToken.token.id}
+          tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
+          editModeToken={editModeToken.token}
+          previewUrlSet={editModeToken.previewUrlSet}
+        />
+      );
+    }
+
+    return (
+      <Selection key={key} style={style}>
+        {items}
+      </Selection>
+    );
+  };
+
   return (
     <div
       style={{
-        width: '249px',
+        width: '100%',
         height: `calc(100% - ${FOOTER_HEIGHT}px)`,
       }}
     >
       <AutoSizer>
         {({ width, height }) => (
           <List
-            rowRenderer={({ key, style, index }) => {
-              const items = [];
-
-              if (index === 0) {
-                items.push(
-                  <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-                    <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-                  </StyledAddBlankBlock>
-                );
-              }
-
-              const fromIndex = index === 0 ? index * COLUMN_COUNT : index * COLUMN_COUNT - 1;
-
-              const lastIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
-              const toIndex = Math.min(lastIndex, displayedTokens.length);
-
-              for (let i = fromIndex; i < toIndex; i++) {
-                const editModeToken = displayedTokens[i];
-                items.push(
-                  <SidebarNftIcon
-                    key={editModeToken.token.id}
-                    tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
-                    editModeToken={editModeToken.token}
-                    previewUrlSet={editModeToken.previewUrlSet}
-                  />
-                );
-              }
-
-              return (
-                <Selection key={key} style={style}>
-                  {items}
-                </Selection>
-              );
-            }}
+            rowRenderer={rowRenderer}
             rowCount={Math.ceil(displayedTokens.length / COLUMN_COUNT)}
             rowHeight={60 + 19} // height of SidebarNftIcon 60 + gap
             width={width}
@@ -275,10 +276,6 @@ const StyledAddBlankBlockText = styled(TitleXS)`
 const StyledSidebar = styled.div`
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
-
-  /* padding: 16px; */
-
-  /* overflow: auto; */
   user-select: none;
 
   &::-webkit-scrollbar {
@@ -304,10 +301,7 @@ const Header = styled.div`
 
 const Selection = styled.div`
   display: flex;
-  /* flex-wrap: wrap; */
-  /* width: 218px; */
   grid-gap: 19px;
-  /* padding: 0 16px; */
   padding-left: 16px;
 `;
 
