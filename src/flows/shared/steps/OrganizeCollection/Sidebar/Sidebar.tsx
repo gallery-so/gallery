@@ -26,7 +26,7 @@ import getVideoOrImageUrlForNftPreview, {
   getVideoOrImageUrlForNftPreviewResult,
 } from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
-import { List } from 'react-virtualized';
+import { AutoSizer, List } from 'react-virtualized';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -94,27 +94,29 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   return (
     <StyledSidebar>
-      <Header>
-        <TitleS>All pieces</TitleS>
-        {
-          // prevent accidental refreshing for profiles we want to keep in tact
-          is3ac ? null : (
-            <StyledRefreshButton
-              text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
-              onClick={handleRefreshNfts}
-              disabled={isRefreshingNfts}
-            />
-          )
-        }
-      </Header>
-      <SearchBar
-        tokensRef={tokens}
-        setSearchResults={setSearchResults}
-        setDebouncedSearchQuery={setDebouncedSearchQuery}
-      />
+      <StyledSidebarContainer>
+        <Header>
+          <TitleS>All pieces</TitleS>
+          {
+            // prevent accidental refreshing for profiles we want to keep in tact
+            is3ac ? null : (
+              <StyledRefreshButton
+                text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
+                onClick={handleRefreshNfts}
+                disabled={isRefreshingNfts}
+              />
+            )
+          }
+        </Header>
+        <SearchBar
+          tokensRef={tokens}
+          setSearchResults={setSearchResults}
+          setDebouncedSearchQuery={setDebouncedSearchQuery}
+        />
+      </StyledSidebarContainer>
       <Spacer height={16} />
       <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      <Spacer height={12} />
+      {/* <Spacer height={12} /> */}
     </StyledSidebar>
   );
 }
@@ -139,7 +141,7 @@ type SidebarTokenPayload = {
  */
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
   const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
-
+  const COLUMN_COUNT = 3;
   const reportError = useReportError();
   const { stageTokens } = useCollectionEditorActions();
 
@@ -192,43 +194,57 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   }, [nftFragmentsKeyedByID, reportError, tokens]);
 
   return (
-    <List
-      rowRenderer={({ key, style, index }) => {
-        const items = [];
-        const fromIndex = index * 3;
-        const toIndex = Math.min(fromIndex + 3, displayedTokens.length);
-
-        if (fromIndex === 0) {
-          items.push(
-            <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-              <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-            </StyledAddBlankBlock>
-          );
-        }
-
-        for (let i = fromIndex; i < toIndex; i++) {
-          const editModeToken = displayedTokens[i];
-          items.push(
-            <SidebarNftIcon
-              key={editModeToken.token.id}
-              tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
-              editModeToken={editModeToken.token}
-              previewUrlSet={editModeToken.previewUrlSet}
-            />
-          );
-        }
-
-        return (
-          <Selection key={key} style={style}>
-            {items}
-          </Selection>
-        );
+    <div
+      style={{
+        width: '249px',
+        height: `calc(100% - ${FOOTER_HEIGHT}px)`,
       }}
-      rowCount={displayedTokens.length}
-      rowHeight={79} // height of SidebarNftIcon 60 + gap
-      height={(64 * displayedTokens.length) / 3}
-      width={300} // column width * column count
-    />
+    >
+      <AutoSizer>
+        {({ width, height }) => (
+          <List
+            rowRenderer={({ key, style, index }) => {
+              const items = [];
+
+              if (index === 0) {
+                items.push(
+                  <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
+                    <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
+                  </StyledAddBlankBlock>
+                );
+              }
+
+              const fromIndex = index === 0 ? index * COLUMN_COUNT : index * COLUMN_COUNT - 1;
+
+              const lastIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
+              const toIndex = Math.min(lastIndex, displayedTokens.length);
+
+              for (let i = fromIndex; i < toIndex; i++) {
+                const editModeToken = displayedTokens[i];
+                items.push(
+                  <SidebarNftIcon
+                    key={editModeToken.token.id}
+                    tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
+                    editModeToken={editModeToken.token}
+                    previewUrlSet={editModeToken.previewUrlSet}
+                  />
+                );
+              }
+
+              return (
+                <Selection key={key} style={style}>
+                  {items}
+                </Selection>
+              );
+            }}
+            rowCount={Math.ceil(displayedTokens.length / COLUMN_COUNT)}
+            rowHeight={60 + 19} // height of SidebarNftIcon 60 + gap
+            width={width}
+            height={height}
+          />
+        )}
+      </AutoSizer>
+    </div>
   );
 };
 
@@ -260,10 +276,18 @@ const StyledSidebar = styled.div`
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
 
-  padding: 16px;
+  /* padding: 16px; */
 
-  overflow: auto;
+  /* overflow: auto; */
   user-select: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const StyledSidebarContainer = styled.div`
+  padding: 16px;
 
   &::-webkit-scrollbar {
     display: none;
@@ -280,9 +304,11 @@ const Header = styled.div`
 
 const Selection = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  width: 218px;
+  /* flex-wrap: wrap; */
+  /* width: 218px; */
   grid-gap: 19px;
+  /* padding: 0 16px; */
+  padding-left: 16px;
 `;
 
 // This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
