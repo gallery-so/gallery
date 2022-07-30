@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import colors from '../colors';
 
-const TITLE_FONT_FAMILY = 'GT Alpina, serif';
-export const BODY_FONT_FAMILY = 'ABC Diatype, Helvetica, Arial, sans-serif';
+const TITLE_FONT_FAMILY = "'GT Alpina', serif";
+export const BODY_FONT_FAMILY = "'ABC Diatype', Helvetica, Arial, sans-serif";
 
 type TextProps = {
   color?: colors;
