@@ -14,9 +14,10 @@ type Props = {
   src: string;
   alt: string;
   heightType?: ContentHeightType;
+  inDetailPage: boolean;
 };
 
-export default function ImageWithLoading({ className, heightType, src, alt }: Props) {
+export default function ImageWithLoading({ className, heightType, src, alt, inDetailPage }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
 
   const maxHeight = useMemo(() => {
@@ -46,6 +47,9 @@ export default function ImageWithLoading({ className, heightType, src, alt }: Pr
       alt={alt}
       loading="lazy"
       onLoad={setContentIsLoaded}
+      onClick={() => {
+        if (inDetailPage) window.open(src);
+      }}
     />
   );
 }
@@ -60,4 +64,5 @@ export const StyledImageWithLoading = styled.img<StyledImageWithLoadingProps>`
   max-height: ${({ maxHeight }) => maxHeight};
   width: ${({ renderFullWidth }) => (renderFullWidth ? '100%' : 'auto')};
   max-width: 100%;
+  cursor: pointer;
 `;

@@ -12,9 +12,10 @@ import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 type Props = {
   tokenRef: NftDetailImageFragment$key;
   maxHeight: number;
+  inDetailPage: boolean;
 };
 
-function NftDetailImage({ tokenRef }: Props) {
+function NftDetailImage({ tokenRef, inDetailPage }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailImageFragment on Token {
@@ -64,6 +65,7 @@ function NftDetailImage({ tokenRef }: Props) {
       src={url}
       alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
+      inDetailPage={inDetailPage}
     />
   );
 }

@@ -19,9 +19,14 @@ import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   maxHeight: number;
+  inDetailPage: boolean;
 };
 
-function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({
+  tokenRef,
+  maxHeight,
+  inDetailPage,
+}: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -66,7 +71,9 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
     case 'AudioMedia':
       return <NftDetailAudio tokenRef={token.token} />;
     case 'ImageMedia':
-      return <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} />;
+      return (
+        <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} inDetailPage={inDetailPage} />
+      );
     case 'GltfMedia':
       return <NftDetailModel mediaRef={token.token.media} />;
     default:
@@ -143,7 +150,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} />
+      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} inDetailPage={true} />
     </StyledAssetContainer>
   );
 }
