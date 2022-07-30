@@ -14,7 +14,7 @@ type Props = {
   src: string;
   alt: string;
   heightType?: ContentHeightType;
-  inDetailPage: boolean;
+  inDetailPage?: boolean;
 };
 
 export default function ImageWithLoading({
