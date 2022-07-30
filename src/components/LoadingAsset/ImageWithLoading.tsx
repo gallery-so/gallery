@@ -17,7 +17,13 @@ type Props = {
   inDetailPage: boolean;
 };
 
-export default function ImageWithLoading({ className, heightType, src, alt, inDetailPage }: Props) {
+export default function ImageWithLoading({
+  className,
+  heightType,
+  src,
+  alt,
+  inDetailPage = false,
+}: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
 
   const maxHeight = useMemo(() => {
