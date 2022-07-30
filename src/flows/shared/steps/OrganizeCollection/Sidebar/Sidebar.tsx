@@ -193,9 +193,13 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     mount();
   }, [nftFragmentsKeyedByID, reportError, tokens]);
 
+  /**
+   * We render a row with three token.
+   */
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
     const items = [];
 
+    // add blank block button at the beginning of list
     if (index === 0) {
       items.push(
         <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
@@ -204,9 +208,13 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
       );
     }
 
-    const fromIndex = index === 0 ? index * COLUMN_COUNT : index * COLUMN_COUNT - 1;
-    const lastIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
-    const toIndex = Math.min(lastIndex, displayedTokens.length);
+    const fromIndex = index === 0 ? 0 : index * COLUMN_COUNT - 1;
+
+    // If first row, get two tokens (since we already have the add blank block button)
+    // If second row onwards, get three tokens
+    const lastAddedTokenIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
+
+    const toIndex = Math.min(lastAddedTokenIndex, displayedTokens.length);
 
     for (let i = fromIndex; i < toIndex; i++) {
       const editModeToken = displayedTokens[i];
@@ -228,12 +236,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   };
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: `calc(100% - ${FOOTER_HEIGHT}px)`,
-      }}
-    >
+    <StyledListTokenContainer>
       <AutoSizer>
         {({ width, height }) => (
           <List
@@ -245,7 +248,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
           />
         )}
       </AutoSizer>
-    </div>
+    </StyledListTokenContainer>
   );
 };
 
@@ -271,6 +274,11 @@ const StyledAddBlankBlock = styled.div`
 const StyledAddBlankBlockText = styled(TitleXS)`
   color: ${colors.shadow};
   text-align: center;
+`;
+
+const StyledListTokenContainer = styled.div`
+  width: 100%;
+  height: calc(100% - ${FOOTER_HEIGHT}px);
 `;
 
 const StyledSidebar = styled.div`
