@@ -114,7 +114,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      <Spacer height={16} />
       <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
       <Spacer height={12} />
     </StyledSidebar>
