@@ -1,4 +1,4 @@
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleXS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef } from 'react';
@@ -177,7 +177,7 @@ type NoteViewerProps = {
 function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <>
-      <BaseM>Collector&rsquo;s Note</BaseM>
+      <TitleXS>Collector&rsquo;s Note</TitleXS>
       <Spacer height={8} />
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
         <Markdown text={nftCollectorsNote} />
