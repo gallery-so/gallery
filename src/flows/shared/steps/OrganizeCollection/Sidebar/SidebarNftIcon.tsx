@@ -1,6 +1,7 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
+import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -9,7 +10,6 @@ import { getVideoOrImageUrlForNftPreviewResult } from 'utils/graphql/getVideoOrI
 import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
-import { SIDEBAR_ICON_DIMENSIONS } from './Sidebar';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
