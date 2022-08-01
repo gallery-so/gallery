@@ -167,6 +167,11 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
 
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
     const row = rows[index];
+
+    if (!row) {
+      return null;
+    }
+
     return (
       <Selection key={key} style={style}>
         {row.map((tokenOrWhitespace) => {
