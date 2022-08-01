@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS, TitleXS } from 'components/core/Text/Text';
@@ -21,10 +21,6 @@ import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview, {
-  getVideoOrImageUrlForNftPreviewResult,
-} from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
@@ -126,78 +122,37 @@ type SidebarTokensProps = {
   tokens: EditModeToken[];
 };
 
-type SidebarTokenPayload = {
-  token: EditModeToken;
-  previewUrlSet: getVideoOrImageUrlForNftPreviewResult;
-};
-
-/**
- * The purpose of this component is to front-load the sidebar with valid NFTs, and place invalid ones at the bottom.
- * We have a two-step mechanism for detecting invalid NFTs:
- * 1) first check if the NFT has a thumbnail-sized preview image. if not, it's considered invalid
- * 2) try to actually load the preview image manually. if it fails, it means the URL is corrupt
- *
- * The child <SidebarNftIcon /> will use this info to render the appropriate thumbnail
- */
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
-  const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
-  const reportError = useReportError();
-  const { stageTokens } = useCollectionEditorActions();
+  const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
+  const handleMarkErroredTokenId = useCallback((id) => {
+    setErroredTokenIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }, []);
 
-  const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
+  const displayedTokens = useMemo(() => {
+    const validTokens = [];
+    const unsupportedTokens = [];
 
-  useEffect(() => {
-    async function mount() {
-      const tokensWithImagePreview: SidebarTokenPayload[] = [];
-      const tokensWithoutImagePreview: SidebarTokenPayload[] = [];
-
-      for (const token of tokens) {
-        const previewUrlSet = getVideoOrImageUrlForNftPreview(
-          nftFragmentsKeyedByID[token.id],
-          reportError
-        );
-        if (!previewUrlSet || !previewUrlSet?.success || !previewUrlSet.urls.small) {
-          // Image URL not found for SidebarNftIcon
-          tokensWithoutImagePreview.push({ token, previewUrlSet });
-        } else {
-          // Actually try to load the image URL to see if it's valid
-          await new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-              tokensWithImagePreview.push({ token, previewUrlSet });
-              resolve();
-            };
-            img.onerror = () => {
-              tokensWithoutImagePreview.push({
-                token,
-                previewUrlSet: { ...previewUrlSet, success: false },
-              });
-              resolve();
-            };
-            img.src = previewUrlSet.urls.small ?? '';
-          });
-        }
+    for (const token of tokens) {
+      if (erroredTokenIds.has(token.token.dbid)) {
+        unsupportedTokens.push(token);
+        continue;
       }
-
-      setDisplayedTokens([...tokensWithImagePreview, ...tokensWithoutImagePreview]);
+      validTokens.push(token);
     }
 
-    mount();
-  }, [nftFragmentsKeyedByID, reportError, tokens]);
+    return [...validTokens, ...unsupportedTokens];
+  }, [erroredTokenIds, tokens]);
 
-  type SidebarTokenPayloadOrWhitespace = SidebarTokenPayload | 'whitespace';
+  type TokenOrWhitespace = EditModeToken | 'whitespace';
 
   const rows = useMemo(() => {
-    const rows: SidebarTokenPayloadOrWhitespace[][] = [];
+    const rows: TokenOrWhitespace[][] = [];
 
-    let row: SidebarTokenPayloadOrWhitespace[] = ['whitespace'];
+    let row: TokenOrWhitespace[] = ['whitespace'];
 
     displayedTokens.forEach((token) => {
       row.push(token);
@@ -214,6 +169,17 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   /**
    * We render a row with three token.
    */
+  const { stageTokens } = useCollectionEditorActions();
+
+  const handleAddBlankBlockClick = useCallback(() => {
+    const id = `blank-${generate12DigitId()}`;
+    stageTokens([{ id, whitespace: 'whitespace' }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [stageTokens]);
+
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
     const row = rows[index];
     return (
@@ -228,10 +194,13 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
           }
           return (
             <SidebarNftIcon
-              key={tokenOrWhitespace.token.id}
-              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.id]}
-              editModeToken={tokenOrWhitespace.token}
-              previewUrlSet={tokenOrWhitespace.previewUrlSet}
+              key={tokenOrWhitespace.token.dbid}
+              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.dbid]}
+              editModeToken={tokenOrWhitespace}
+              handleTokenRenderError={handleMarkErroredTokenId}
+              // this is determined at the parent level so the child doesn't need to re-compute it
+              // when it scrolls back into view
+              hasErrored={erroredTokenIds.has(tokenOrWhitespace.token.dbid)}
             />
           );
         })}
