@@ -204,7 +204,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     // add blank block button at the beginning of list
     if (index === 0) {
       items.push(
-        <StyledAddBlankBlock onClick={handleAddBlankBlockClick} size={SIDEBAR_ICON_DIMENSIONS}>
+        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
       );
