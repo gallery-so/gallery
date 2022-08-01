@@ -171,7 +171,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
       <Selection key={key} style={style}>
         {row.map((tokenOrWhitespace) => {
           if (tokenOrWhitespace === 'whitespace') {
-            return <AddBlankBlock />;
+            return <AddBlankBlock key="whitespace" />;
           }
           return (
             <SidebarNftIcon
