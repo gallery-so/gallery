@@ -1,20 +1,16 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { TitleS, TitleXS } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
-import {
-  useCollectionEditorActions,
-  SidebarTokensState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
+import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
-import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
@@ -24,6 +20,7 @@ import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.g
 import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
+import AddBlankBlock from './AddBlankBlock';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -147,8 +144,10 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     return [...validTokens, ...unsupportedTokens];
   }, [erroredTokenIds, tokens]);
 
+  /**
+   * We render a row with three token.
+   */
   type TokenOrWhitespace = EditModeToken | 'whitespace';
-
   const rows = useMemo(() => {
     const rows: TokenOrWhitespace[][] = [];
 
@@ -166,31 +165,13 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     return rows;
   }, [displayedTokens]);
 
-  /**
-   * We render a row with three token.
-   */
-  const { stageTokens } = useCollectionEditorActions();
-
-  const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
-
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
     const row = rows[index];
     return (
       <Selection key={key} style={style}>
         {row.map((tokenOrWhitespace) => {
           if (tokenOrWhitespace === 'whitespace') {
-            return (
-              <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-                <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-              </StyledAddBlankBlock>
-            );
+            return <AddBlankBlock />;
           }
           return (
             <SidebarNftIcon
@@ -226,30 +207,6 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     </StyledListTokenContainer>
   );
 };
-
-const StyledAddBlankBlock = styled.div`
-  height: ${SIDEBAR_ICON_DIMENSIONS}px;
-  width: ${SIDEBAR_ICON_DIMENSIONS}px;
-  background-color: ${colors.offWhite};
-  border: 1px solid ${colors.metal};
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  user-select: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    background-color: ${colors.metal};
-  }
-`;
-
-const StyledAddBlankBlockText = styled(TitleXS)`
-  color: ${colors.shadow};
-  text-align: center;
-`;
 
 const StyledListTokenContainer = styled.div`
   width: 100%;
