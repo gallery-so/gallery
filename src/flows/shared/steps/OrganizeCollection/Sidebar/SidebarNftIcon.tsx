@@ -1,6 +1,7 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
+import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -97,8 +98,8 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
 
 export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: ${SIDEBAR_ICON_DIMENSIONS}px;
+  height: ${SIDEBAR_ICON_DIMENSIONS}px;
   overflow: hidden;
 
   display: flex;
