@@ -208,11 +208,6 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   );
 };
 
-const StyledListTokenContainer = styled.div`
-  width: 100%;
-  height: calc(100% - ${FOOTER_HEIGHT}px);
-`;
-
 const StyledSidebar = styled.div`
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
@@ -223,12 +218,20 @@ const StyledSidebar = styled.div`
   }
 `;
 
+const LEFT_SIDEBAR_HEADER_HEIGHT = 120;
+
 const StyledSidebarContainer = styled.div`
   padding: 16px;
+  height: ${LEFT_SIDEBAR_HEADER_HEIGHT}px;
 
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const StyledListTokenContainer = styled.div`
+  width: 100%;
+  height: calc(100% - ${LEFT_SIDEBAR_HEADER_HEIGHT}px);
 `;
 
 const Header = styled.div`
