@@ -9,6 +9,7 @@ import { getVideoOrImageUrlForNftPreviewResult } from 'utils/graphql/getVideoOrI
 import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
+import { SIDEBAR_ICON_DIMENSIONS } from './Sidebar';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
@@ -97,8 +98,8 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
 
 export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: ${SIDEBAR_ICON_DIMENSIONS}px;
+  height: ${SIDEBAR_ICON_DIMENSIONS}px;
   overflow: hidden;
 
   display: flex;

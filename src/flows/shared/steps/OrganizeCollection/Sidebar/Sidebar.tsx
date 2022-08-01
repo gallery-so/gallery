@@ -34,6 +34,10 @@ type Props = {
   viewerRef: SidebarViewerFragment$key;
 };
 
+const COLUMN_COUNT = 3;
+const SIDEBAR_ICON_GAP = 19;
+export const SIDEBAR_ICON_DIMENSIONS = 60;
+
 function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const allTokens = useFragment(
     graphql`
@@ -139,7 +143,6 @@ type SidebarTokenPayload = {
  * The child <SidebarNftIcon /> will use this info to render the appropriate thumbnail
  */
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
-  const COLUMN_COUNT = 3;
   const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
   const reportError = useReportError();
   const { stageTokens } = useCollectionEditorActions();
@@ -201,7 +204,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     // add blank block button at the beginning of list
     if (index === 0) {
       items.push(
-        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
+        <StyledAddBlankBlock onClick={handleAddBlankBlockClick} size={SIDEBAR_ICON_DIMENSIONS}>
           <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
         </StyledAddBlankBlock>
       );
@@ -234,6 +237,8 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     );
   };
 
+  const rowHeight = SIDEBAR_ICON_DIMENSIONS + SIDEBAR_ICON_GAP;
+
   return (
     <StyledListTokenContainer>
       <AutoSizer>
@@ -241,7 +246,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
           <List
             rowRenderer={rowRenderer}
             rowCount={Math.ceil(displayedTokens.length / COLUMN_COUNT)}
-            rowHeight={60 + 19} // height of SidebarNftIcon 60 + gap
+            rowHeight={rowHeight}
             width={width}
             height={height}
           />
@@ -252,8 +257,8 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
 };
 
 const StyledAddBlankBlock = styled.div`
-  height: 60px;
-  width: 60px;
+  height: ${SIDEBAR_ICON_DIMENSIONS}px;
+  width: ${SIDEBAR_ICON_DIMENSIONS}px;
   background-color: ${colors.offWhite};
   border: 1px solid ${colors.metal};
   text-transform: uppercase;
@@ -308,7 +313,7 @@ const Header = styled.div`
 
 const Selection = styled.div`
   display: flex;
-  grid-gap: 19px;
+  grid-gap: ${SIDEBAR_ICON_GAP}px;
   padding-left: 16px;
 `;
 
