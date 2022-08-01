@@ -27,16 +27,13 @@ import getVideoOrImageUrlForNftPreview, {
 } from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
+import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
   tokensRef: SidebarFragment$key;
   viewerRef: SidebarViewerFragment$key;
 };
-
-const COLUMN_COUNT = 3;
-const SIDEBAR_ICON_GAP = 19;
-export const SIDEBAR_ICON_DIMENSIONS = 60;
 
 function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const allTokens = useFragment(
@@ -195,44 +192,49 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     mount();
   }, [nftFragmentsKeyedByID, reportError, tokens]);
 
+  type SidebarTokenPayloadOrWhitespace = SidebarTokenPayload | 'whitespace';
+
+  const rows = useMemo(() => {
+    const rows: SidebarTokenPayloadOrWhitespace[][] = [];
+
+    let row: SidebarTokenPayloadOrWhitespace[] = ['whitespace'];
+
+    displayedTokens.forEach((token) => {
+      row.push(token);
+
+      // if the row is full, push it to the rows array
+      if (row.length % COLUMN_COUNT === 0) {
+        rows.push(row);
+        row = [];
+      }
+    });
+    return rows;
+  }, [displayedTokens]);
+
   /**
    * We render a row with three token.
    */
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
-    const items = [];
-
-    // add blank block button at the beginning of list
-    if (index === 0) {
-      items.push(
-        <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-          <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-        </StyledAddBlankBlock>
-      );
-    }
-
-    const fromIndex = index === 0 ? 0 : index * COLUMN_COUNT - 1;
-
-    // If first row, get two tokens (since we already have the add blank block button)
-    // If second row onwards, get three tokens
-    const lastAddedTokenIndex = fromIndex + (index === 0 ? COLUMN_COUNT - 1 : COLUMN_COUNT);
-
-    const toIndex = Math.min(lastAddedTokenIndex, displayedTokens.length);
-
-    for (let i = fromIndex; i < toIndex; i++) {
-      const editModeToken = displayedTokens[i];
-      items.push(
-        <SidebarNftIcon
-          key={editModeToken.token.id}
-          tokenRef={nftFragmentsKeyedByID[editModeToken.token.id]}
-          editModeToken={editModeToken.token}
-          previewUrlSet={editModeToken.previewUrlSet}
-        />
-      );
-    }
-
+    const row = rows[index];
     return (
       <Selection key={key} style={style}>
-        {items}
+        {row.map((tokenOrWhitespace) => {
+          if (tokenOrWhitespace === 'whitespace') {
+            return (
+              <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
+                <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
+              </StyledAddBlankBlock>
+            );
+          }
+          return (
+            <SidebarNftIcon
+              key={tokenOrWhitespace.token.id}
+              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.id]}
+              editModeToken={tokenOrWhitespace.token}
+              previewUrlSet={tokenOrWhitespace.previewUrlSet}
+            />
+          );
+        })}
       </Selection>
     );
   };
