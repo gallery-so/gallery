@@ -19,14 +19,9 @@ import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   maxHeight: number;
-  inDetailPage: boolean;
 };
 
-function NftDetailAssetComponent({
-  tokenRef,
-  maxHeight,
-  inDetailPage,
-}: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -39,6 +34,7 @@ function NftDetailAssetComponent({
             }
             ... on ImageMedia {
               __typename
+              contentRenderURL
             }
             ... on HtmlMedia {
               __typename
@@ -72,7 +68,13 @@ function NftDetailAssetComponent({
       return <NftDetailAudio tokenRef={token.token} />;
     case 'ImageMedia':
       return (
-        <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} inDetailPage={inDetailPage} />
+        <NftDetailImage
+          tokenRef={token.token}
+          maxHeight={maxHeight}
+          // @ts-expect-error: we know contentRenderURL is present within the media field
+          // if token type is `ImageMedia`
+          onClick={() => window.open(token.token.media.contentRenderURL)}
+        />
       );
     case 'GltfMedia':
       return <NftDetailModel mediaRef={token.token.media} />;
@@ -150,7 +152,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} inDetailPage={true} />
+      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} />
     </StyledAssetContainer>
   );
 }

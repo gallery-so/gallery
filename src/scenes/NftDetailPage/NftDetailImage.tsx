@@ -8,14 +8,15 @@ import { NftDetailImageFragment$key } from '__generated__/NftDetailImageFragment
 import { useMemo } from 'react';
 import { StyledVideo } from './NftDetailVideo';
 import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import noop from 'utils/noop';
 
 type Props = {
   tokenRef: NftDetailImageFragment$key;
   maxHeight: number;
-  inDetailPage: boolean;
+  onClick?: () => void;
 };
 
-function NftDetailImage({ tokenRef, inDetailPage }: Props) {
+function NftDetailImage({ tokenRef, onClick = noop }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailImageFragment on Token {
@@ -65,7 +66,7 @@ function NftDetailImage({ tokenRef, inDetailPage }: Props) {
       src={url}
       alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
-      inDetailPage={inDetailPage}
+      onClick={onClick}
     />
   );
 }
