@@ -17,12 +17,12 @@ export default function CloseIcon({ isActive }: Props) {
       <path
         d="M12.6667 3.33333L3.33333 12.6667"
         stroke={isActive ? colors.offBlack : colors.shadow}
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
       <path
         d="M3.33333 3.33333L12.6667 12.6667"
         stroke={isActive ? colors.offBlack : colors.shadow}
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
     </svg>
   );

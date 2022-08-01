@@ -1,33 +1,26 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { TitleS, TitleXS } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
-import {
-  useCollectionEditorActions,
-  SidebarTokensState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
+import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
-import { generate12DigitId } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview, {
-  getVideoOrImageUrlForNftPreviewResult,
-} from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
+import AddBlankBlock from './AddBlankBlock';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -126,78 +119,39 @@ type SidebarTokensProps = {
   tokens: EditModeToken[];
 };
 
-type SidebarTokenPayload = {
-  token: EditModeToken;
-  previewUrlSet: getVideoOrImageUrlForNftPreviewResult;
-};
-
-/**
- * The purpose of this component is to front-load the sidebar with valid NFTs, and place invalid ones at the bottom.
- * We have a two-step mechanism for detecting invalid NFTs:
- * 1) first check if the NFT has a thumbnail-sized preview image. if not, it's considered invalid
- * 2) try to actually load the preview image manually. if it fails, it means the URL is corrupt
- *
- * The child <SidebarNftIcon /> will use this info to render the appropriate thumbnail
- */
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
-  const [displayedTokens, setDisplayedTokens] = useState<SidebarTokenPayload[]>([]);
-  const reportError = useReportError();
-  const { stageTokens } = useCollectionEditorActions();
+  const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
+  const handleMarkErroredTokenId = useCallback((id) => {
+    setErroredTokenIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }, []);
 
-  const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
+  const displayedTokens = useMemo(() => {
+    const validTokens = [];
+    const unsupportedTokens = [];
 
-  useEffect(() => {
-    async function mount() {
-      const tokensWithImagePreview: SidebarTokenPayload[] = [];
-      const tokensWithoutImagePreview: SidebarTokenPayload[] = [];
-
-      for (const token of tokens) {
-        const previewUrlSet = getVideoOrImageUrlForNftPreview(
-          nftFragmentsKeyedByID[token.id],
-          reportError
-        );
-        if (!previewUrlSet || !previewUrlSet?.success || !previewUrlSet.urls.small) {
-          // Image URL not found for SidebarNftIcon
-          tokensWithoutImagePreview.push({ token, previewUrlSet });
-        } else {
-          // Actually try to load the image URL to see if it's valid
-          await new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-              tokensWithImagePreview.push({ token, previewUrlSet });
-              resolve();
-            };
-            img.onerror = () => {
-              tokensWithoutImagePreview.push({
-                token,
-                previewUrlSet: { ...previewUrlSet, success: false },
-              });
-              resolve();
-            };
-            img.src = previewUrlSet.urls.small ?? '';
-          });
-        }
+    for (const token of tokens) {
+      if (erroredTokenIds.has(token.token.dbid)) {
+        unsupportedTokens.push(token);
+        continue;
       }
-
-      setDisplayedTokens([...tokensWithImagePreview, ...tokensWithoutImagePreview]);
+      validTokens.push(token);
     }
 
-    mount();
-  }, [nftFragmentsKeyedByID, reportError, tokens]);
+    return [...validTokens, ...unsupportedTokens];
+  }, [erroredTokenIds, tokens]);
 
-  type SidebarTokenPayloadOrWhitespace = SidebarTokenPayload | 'whitespace';
-
+  /**
+   * We render a row with three token.
+   */
+  type TokenOrWhitespace = EditModeToken | 'whitespace';
   const rows = useMemo(() => {
-    const rows: SidebarTokenPayloadOrWhitespace[][] = [];
+    const rows: TokenOrWhitespace[][] = [];
 
-    let row: SidebarTokenPayloadOrWhitespace[] = ['whitespace'];
+    let row: TokenOrWhitespace[] = ['whitespace'];
 
     displayedTokens.forEach((token) => {
       row.push(token);
@@ -211,27 +165,23 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
     return rows;
   }, [displayedTokens]);
 
-  /**
-   * We render a row with three token.
-   */
   const rowRenderer = ({ key, style, index }: ListRowProps) => {
     const row = rows[index];
     return (
       <Selection key={key} style={style}>
         {row.map((tokenOrWhitespace) => {
           if (tokenOrWhitespace === 'whitespace') {
-            return (
-              <StyledAddBlankBlock onClick={handleAddBlankBlockClick}>
-                <StyledAddBlankBlockText>Add Blank Space</StyledAddBlankBlockText>
-              </StyledAddBlankBlock>
-            );
+            return <AddBlankBlock key="whitespace" />;
           }
           return (
             <SidebarNftIcon
-              key={tokenOrWhitespace.token.id}
-              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.id]}
-              editModeToken={tokenOrWhitespace.token}
-              previewUrlSet={tokenOrWhitespace.previewUrlSet}
+              key={tokenOrWhitespace.token.dbid}
+              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.dbid]}
+              editModeToken={tokenOrWhitespace}
+              handleTokenRenderError={handleMarkErroredTokenId}
+              // this is determined at the parent level so the child doesn't need to re-compute it
+              // when it scrolls back into view
+              hasErrored={erroredTokenIds.has(tokenOrWhitespace.token.dbid)}
             />
           );
         })}
@@ -258,35 +208,6 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
   );
 };
 
-const StyledAddBlankBlock = styled.div`
-  height: ${SIDEBAR_ICON_DIMENSIONS}px;
-  width: ${SIDEBAR_ICON_DIMENSIONS}px;
-  background-color: ${colors.offWhite};
-  border: 1px solid ${colors.metal};
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  user-select: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    background-color: ${colors.metal};
-  }
-`;
-
-const StyledAddBlankBlockText = styled(TitleXS)`
-  color: ${colors.shadow};
-  text-align: center;
-`;
-
-const StyledListTokenContainer = styled.div`
-  width: 100%;
-  height: calc(100% - ${FOOTER_HEIGHT}px);
-`;
-
 const StyledSidebar = styled.div`
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
@@ -297,12 +218,20 @@ const StyledSidebar = styled.div`
   }
 `;
 
+const LEFT_SIDEBAR_HEADER_HEIGHT = 120;
+
 const StyledSidebarContainer = styled.div`
   padding: 16px;
+  height: ${LEFT_SIDEBAR_HEADER_HEIGHT}px;
 
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const StyledListTokenContainer = styled.div`
+  width: 100%;
+  height: calc(100% - ${LEFT_SIDEBAR_HEADER_HEIGHT}px);
 `;
 
 const Header = styled.div`

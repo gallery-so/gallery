@@ -3,10 +3,11 @@ import transitions from 'components/core/transitions';
 import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { getVideoOrImageUrlForNftPreviewResult } from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
@@ -14,13 +15,20 @@ import { EditModeToken } from '../types';
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
   editModeToken: EditModeToken;
-  previewUrlSet: getVideoOrImageUrlForNftPreviewResult;
+  handleTokenRenderError: (id: string) => void;
+  hasErrored: boolean;
 };
 
-function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIconProps) {
+function SidebarNftIcon({
+  tokenRef,
+  editModeToken,
+  handleTokenRenderError,
+  hasErrored,
+}: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Token {
+        dbid
         contract {
           contractAddress {
             address
@@ -68,8 +76,20 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
     [contractAddress]
   );
 
+  const reportError = useReportError();
+  const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
+
+  const isInvalidPreviewUrl = !previewUrlSet || !previewUrlSet.urls.small || !previewUrlSet.success;
+  const isBroken = isInvalidPreviewUrl || hasErrored;
+
+  useEffect(() => {
+    if (isInvalidPreviewUrl && !hasErrored) {
+      handleTokenRenderError(token.dbid);
+    }
+  }, [handleTokenRenderError, hasErrored, isInvalidPreviewUrl, token.dbid]);
+
   const previewAsset = useMemo(() => {
-    if (!previewUrlSet || !previewUrlSet.urls.small || !previewUrlSet.success) {
+    if (isBroken) {
       return <FailedNftPreview isSidebar />;
     }
 
@@ -84,9 +104,17 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
         isSelected={isSelected}
         src={previewUrlSet?.urls.small ?? FALLBACK_URL}
         alt="token"
+        onError={() => handleTokenRenderError(token.dbid)}
       />
     );
-  }, [previewUrlSet, isSelected]);
+  }, [
+    isBroken,
+    previewUrlSet?.type,
+    previewUrlSet?.urls.small,
+    isSelected,
+    handleTokenRenderError,
+    token.dbid,
+  ]);
 
   return (
     <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
