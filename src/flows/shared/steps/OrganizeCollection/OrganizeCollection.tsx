@@ -4,6 +4,7 @@ import { WizardContext } from 'react-albus';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
+  useStagedCollectionState,
   useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
@@ -30,6 +31,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
   const wizardId = useWizardId();
 
   const stagedItems = useStagedItemsState();
+  const stagedCollectionState = useStagedCollectionState();
 
   const updateCollection = useUpdateCollectionTokens();
   const { collectionIdBeingEdited } = useCollectionWizardState();
@@ -53,11 +55,11 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
         try {
           await updateCollection({
             collectionId: collectionIdBeingEdited,
-            stagedNfts: stagedItems,
-            collectionLayout: collectionMetadata.layout,
+            stagedCollection: stagedCollectionState,
             tokenSettings: collectionMetadata.tokenSettings,
           });
-        } catch {
+        } catch (err) {
+          console.log(err);
           // TODO: display error toast here
         }
 
@@ -76,7 +78,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
           <CollectionCreateOrEditForm
             onNext={goToOrganizeGalleryStep}
             galleryId={galleryId}
-            stagedItems={stagedItems}
+            stagedCollection={stagedCollectionState}
             layout={collectionMetadata.layout}
             tokenSettings={collectionMetadata.tokenSettings}
           />
@@ -102,6 +104,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
     stagedItems,
     track,
     galleryId,
+    stagedCollectionState,
   ]);
 }
 

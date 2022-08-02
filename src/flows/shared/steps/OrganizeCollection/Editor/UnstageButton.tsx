@@ -13,12 +13,13 @@ type Props = {
   variant?: 'icon' | 'text';
 };
 function UnstageButton({ id, className, variant = 'icon' }: Props) {
-  const { setTokensIsSelected, unstageTokens } = useCollectionEditorActions();
+  const { setTokensIsSelected, unstageTokensNew } = useCollectionEditorActions();
 
   const handleOnClick = useCallback(() => {
     setTokensIsSelected([id], false);
-    unstageTokens([id]);
-  }, [id, setTokensIsSelected, unstageTokens]);
+    // unstageTokens([id]);
+    unstageTokensNew([id]);
+  }, [id, setTokensIsSelected, unstageTokensNew]);
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>

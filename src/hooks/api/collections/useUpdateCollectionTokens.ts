@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import {
-  getWhitespacePositionsFromStagedItems,
-  removeWhitespacesFromStagedItems,
-} from 'utils/collectionLayout';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
 import { useUpdateCollectionTokensRefresherQuery } from '__generated__/useUpdateCollectionTokensRefresherQuery.graphql';
@@ -17,7 +14,7 @@ import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSetti
 
 type Props = {
   collectionId: string;
-  stagedNfts: StagingItem[];
+  stagedCollection: StagingItem[];
   collectionLayout: UpdateCollectionTokensInput['layout'];
   tokenSettings: TokenSettings;
 };
@@ -35,13 +32,9 @@ export default function useUpdateCollectionTokens() {
   );
 
   return useCallback(
-    async ({ collectionId, stagedNfts, collectionLayout, tokenSettings }: Props) => {
-      const layout = {
-        ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
-      };
-      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
-      const tokenIds = tokens.map((token) => token.dbid);
+    async ({ collectionId, stagedCollection, tokenSettings }: Props) => {
+      const layout = generateLayoutFromCollection(stagedCollection);
+      const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
       await updateCollectionTokens({

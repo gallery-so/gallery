@@ -15,11 +15,11 @@ export const IMAGE_SIZES: Record<number, number> = {
   10: 78,
 };
 
-export default function useDndDimensions() {
+export default function useDndDimensions(columns: number) {
   const {
     layout: { sectionLayout },
   } = useCollectionMetadataState();
-  const columns = sectionLayout[0].columns;
+  // const columns = sectionLayout[0].columns;
 
   const paddingBetweenItemsPx = useMemo(() => {
     if (columns === 1 || columns === 2) {

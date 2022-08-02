@@ -50,7 +50,6 @@ export default function DroppableSection({
   const { setActiveSectionIdState } = useCollectionEditorActions();
 
   const handleClick = useCallback(() => {
-    console.log('activate the asset');
     setActiveSectionIdState(id);
   }, [id, setActiveSectionIdState]);
 

@@ -29,7 +29,7 @@ function EditorMenu({ viewerRef }: Props) {
       <StyledTitleS>Collection settings</StyledTitleS>
       Active Section: {activeSectionId}
       <StyledSidebarItem>
-        <ColumnAdjuster viewerRef={viewer} />
+        {activeSectionId && <ColumnAdjuster activeSectionId={activeSectionId} viewerRef={viewer} />}
       </StyledSidebarItem>
     </StyledEditorMenu>
   );

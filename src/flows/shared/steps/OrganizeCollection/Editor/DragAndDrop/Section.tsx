@@ -124,7 +124,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
 const StyledSection = styled.div`
   display: flex;
   // max-width: 564px;
-  width: 664px; // TODO change
+  width: 830px; // TODO change
   flex-direction: column;
   // grid-auto-rows: max-content;
   // overflow: hidden;

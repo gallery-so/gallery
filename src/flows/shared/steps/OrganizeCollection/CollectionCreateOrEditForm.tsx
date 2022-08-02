@@ -13,7 +13,10 @@ import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
-import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
+import {
+  getTokenIdsFromCollection,
+  removeWhitespacesFromStagedItems,
+} from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -40,7 +43,7 @@ function CollectionCreateOrEditForm({
   collectionId,
   collectionName,
   collectionCollectorsNote,
-  stagedItems,
+  stagedCollection,
   layout,
   tokenSettings = {},
 }: Props) {
@@ -73,12 +76,12 @@ function CollectionCreateOrEditForm({
 
   const buttonText = useMemo(() => {
     // Collection is being created
-    if (stagedItems) {
+    if (stagedCollection) {
       return 'create';
     }
 
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue, stagedItems]);
+  }, [hasEnteredValue, stagedCollection]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -113,17 +116,17 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && stagedItems && layout) {
+      if (!collectionId && stagedCollection && layout) {
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
-          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ dbid: id }) => id),
+          nft_ids: getTokenIdsFromCollection(stagedCollection),
         });
         await createCollection({
           galleryId,
           title,
           description,
-          stagedNfts: stagedItems,
+          stagedCollection: stagedCollection,
           collectionLayout: layout,
           tokenSettings,
         });
@@ -140,7 +143,7 @@ function CollectionCreateOrEditForm({
   }, [
     description,
     collectionId,
-    stagedItems,
+    stagedCollection,
     layout,
     goToNextStep,
     track,

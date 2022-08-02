@@ -22,6 +22,7 @@ import {
   MeasuringStrategy,
   KeyboardCoordinateGetter,
   defaultDropAnimationSideEffects,
+  DragOverEvent,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { coordinateGetter as multipleContainersCoordinateGetter } from './DragAndDrop/multipleContainersKeyboardCoordinates';
@@ -42,7 +43,7 @@ import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graph
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
-import useDndWidth from 'contexts/collectionEditor/useDndDimensions';
+import useDndWidth, { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
@@ -72,10 +73,9 @@ const layoutMeasuring = {
 
 type Props = {
   tokensRef: StagingAreaFragment$key;
-  stagedItems: StagingItem[];
 };
 
-function StagingArea({ tokensRef, stagedItems }: Props) {
+function StagingArea({ tokensRef }: Props) {
   const tokenss = useFragment(
     graphql`
       fragment StagingAreaFragment on Token @relay(plural: true) {
@@ -92,7 +92,6 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
   // const [sections, setSections] = useState(
   //   Object.keys(stagedCollectionState) as UniqueIdentifier[]
   // );
-  console.log({ stagedCollectionState });
 
   // const formattedCollection = stagedCollectionState;
   const [formattedCollection, setFormattedCollection] = useState(stagedCollectionState);
@@ -137,7 +136,7 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
-            (container) => container.id in formattedCollection
+            (section) => section.id in formattedCollection
           ),
         });
       }
@@ -159,15 +158,15 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         }
 
         if (overId in formattedCollection) {
-          const containerItems = formattedCollection[overId];
+          const sectionItems = formattedCollection[overId].items;
 
           // If a container is matched and it contains items (columns 'A', 'B', 'C')
-          if (containerItems.length > 0) {
+          if (sectionItems.length > 0) {
             // Return the closest droppable within that container
             overId = closestCenter({
               ...args,
               droppableContainers: args.droppableContainers.filter(
-                (container) => container.id !== overId && containerItems.includes(container.id)
+                (section) => section.id !== overId && sectionItems.includes(section.id)
               ),
             })[0]?.id;
           }
@@ -193,7 +192,7 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
   );
 
   const sectionContainsId = (section, id) => {
-    return section.find((item) => item.id === id);
+    return section.items.find((item) => item.id === id);
   };
 
   const findSection = useCallback(
@@ -201,7 +200,6 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
       if (id in formattedCollection) {
         return id;
       }
-      console.log('findSection', formattedCollection, id);
 
       return Object.keys(formattedCollection).find((key) =>
         sectionContainsId(formattedCollection[key], id)
@@ -214,7 +212,6 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
 
   const handleDragOver = useCallback(
     (event: DragOverEvent) => {
-      console.log('dragover');
       const { active, over } = event;
       const overId = over?.id;
 
@@ -222,21 +219,20 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         return;
       }
 
-      const overContainer = findSection(overId);
-      const activeContainer = findSection(active.id);
-      console.log('DRAGOVER', { overContainer, activeContainer });
+      const overSection = findSection(overId);
+      const activeSection = findSection(active.id);
 
-      if (!overContainer || !activeContainer) {
+      if (!overSection || !activeSection) {
         return;
       }
 
-      if (activeContainer !== overContainer) {
+      if (activeSection !== overSection) {
         setFormattedCollection((previous) => {
-          const activeItems = previous[activeContainer];
-          const overItems = previous[overContainer];
+          const activeItems = previous[activeSection].items;
+          const overItems = previous[overSection].items;
           const overIndex = overItems.findIndex(({ id }) => id === overId);
           const activeIndex = activeItems.findIndex(({ id }) => id === active.id);
-          console.log({ overIndex, activeIndex });
+
           let newIndex: number;
           if (overId in previous) {
             newIndex = overItems.length + 1;
@@ -248,16 +244,22 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
             const modifier = isBelowOverItem ? 1 : 0;
             newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
           }
-          console.log('new index', newIndex);
+
           recentlyMovedToNewContainer.current = true;
           return {
             ...previous,
-            [activeContainer]: previous[activeContainer].filter((item) => item.id !== active.id),
-            [overContainer]: [
-              ...previous[overContainer].slice(0, newIndex),
-              previous[activeContainer][activeIndex],
-              ...previous[overContainer].slice(newIndex, previous[overContainer].length),
-            ],
+            [activeSection]: {
+              ...previous[activeSection],
+              items: previous[activeSection].items.filter((item) => item.id !== active.id),
+            },
+            [overSection]: {
+              ...previous[overSection],
+              items: [
+                ...previous[overSection].items.slice(0, newIndex),
+                previous[activeSection].items[activeIndex],
+                ...previous[overSection].items.slice(newIndex, previous[overSection].length),
+              ],
+            },
           };
           // return {};
         });
@@ -278,20 +280,12 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
       if (active.id in formattedCollection && over?.id) {
         return reorderSection(event);
       }
-      console.log(
-        'DRAGEND',
-        'over',
-        over,
-        'active',
-        active,
-        'formattedCollection',
-        formattedCollection
-      );
-      const activeContainer = findSection(active.id);
+
+      const activeSection = findSection(active.id);
       const overId = over?.id;
-      const overContainer = findSection(overId);
-      console.log('overContainer', overContainer, 'activeContainer', activeContainer);
-      if (!activeContainer) {
+      const overSection = findSection(overId);
+
+      if (!activeSection) {
         setActiveId(null);
         return;
       }
@@ -300,15 +294,17 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
         return;
       }
 
-      if (overContainer) {
-        const activeIndex = formattedCollection[activeContainer].findIndex(
+      if (overSection) {
+        const activeIndex = formattedCollection[activeSection].items.findIndex(
           ({ id }) => id === active.id
         );
-        const overIndex = formattedCollection[overContainer].findIndex(({ id }) => id === overId);
-        console.log({ activeIndex, overIndex });
+        const overIndex = formattedCollection[overSection].items.findIndex(
+          ({ id }) => id === overId
+        );
+
         if (activeIndex !== overIndex) {
           // same container
-          reorderTokensWithinSection(event, overContainer);
+          reorderTokensWithinSection(event, overSection);
         } else {
           // diff container
           // "commit" dragOver changes
@@ -327,14 +323,14 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
 
   // the item being dragged
   const activeItem = useMemo(() => {
-    const test = Object.keys(formattedCollection)
+    // flatten the collection into a single array of items to easily find the active item
+    const allItemsInCollection = Object.keys(formattedCollection)
       .map((sectionId) => formattedCollection[sectionId])
-      .flatMap((section) => section);
-    console.log({ test });
-    return test.find(({ id }) => id === activeId);
+      .flatMap((section) => section.items);
+    return allItemsInCollection.find(({ id }) => id === activeId);
   }, [formattedCollection, activeId]);
 
-  console.log({ activeItem });
+  // const activeSection
 
   const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
 
@@ -348,8 +344,8 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
   const columns = collectionMetadata.layout.sectionLayout[0].columns;
 
   const { paddingBetweenItemsPx } = useDndDimensions();
-  const { itemWidth, dndWidth } = useDndWidth();
-  console.log({ columns });
+  // const { itemWidth, dndWidth } = useDndWidth();
+
   const coordinateGetter = multipleContainersCoordinateGetter;
 
   const sensors = useSensors(
@@ -359,8 +355,6 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
       coordinateGetter,
     })
   );
-
-  console.log('formattedCollection', { formattedCollection });
 
   return (
     <StyledStagingArea>
@@ -379,30 +373,26 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
               key={sectionId}
               id={sectionId}
               label={`Section ${sectionId}`}
-              items={formattedCollection[sectionId]}
+              items={Object.keys(formattedCollection[sectionId])}
               scrollable
             >
               {/* Handles sorting for items in each section */}
-              <SortableContext items={formattedCollection[sectionId]}>
-                {formattedCollection[sectionId].map(
-                  (item) => {
-                    const size = itemWidth;
-                    const stagedItemRef = nftFragmentsKeyedByID[item.id];
-                    if (isEditModeToken(item) && stagedItemRef) {
-                      return (
-                        <SortableStagedNft
-                          key={item.id}
-                          tokenRef={stagedItemRef}
-                          size={size}
-                          mini={columns > 4}
-                        />
-                      );
-                    }
-                    return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
+              <SortableContext items={formattedCollection[sectionId].items}>
+                {formattedCollection[sectionId].items.map((item) => {
+                  const size = IMAGE_SIZES[formattedCollection[sectionId].columns];
+                  const stagedItemRef = nftFragmentsKeyedByID[item.id];
+                  if (isEditModeToken(item) && stagedItemRef) {
+                    return (
+                      <SortableStagedNft
+                        key={item.id}
+                        tokenRef={stagedItemRef}
+                        size={size}
+                        mini={columns > 4}
+                      />
+                    );
                   }
-
-                  // <SortableContext></SortableContext>;
-                )}
+                  return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
+                })}
               </SortableContext>
             </DroppableSection>
           ))}
@@ -414,8 +404,8 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
           {activeId ? (
             sections.includes(activeId) ? (
               <SectionDragging
-                items={formattedCollection[activeId]}
-                itemWidth={itemWidth}
+                items={formattedCollection[activeId].items}
+                itemWidth={IMAGE_SIZES[formattedCollection[activeId].columns]}
                 columns={columns}
                 nftFragmentsKeyedByID={nftFragmentsKeyedByID}
                 label={`Section ${activeId}`}
@@ -424,12 +414,11 @@ function StagingArea({ tokensRef, stagedItems }: Props) {
               <StagedItemDragging
                 tokenRef={activeItemRef}
                 isEditModeToken={isEditModeToken(activeItem)}
-                size={itemWidth}
+                // todo fix
+                size={IMAGE_SIZES[formattedCollection[findSection(activeId) || ''].columns]}
               />
             )
           ) : null}
-          {/* {activeItem && activeItemRef ? (
-          ) : null} */}
         </DragOverlay>
       </DndContext>
     </StyledStagingArea>

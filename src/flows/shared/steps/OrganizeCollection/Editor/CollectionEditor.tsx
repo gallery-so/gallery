@@ -6,7 +6,7 @@ import {
   SidebarTokensState,
   useCollectionEditorActions,
   useSidebarTokensState,
-  useStagedItemsState,
+  useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
@@ -37,25 +37,27 @@ function convertNftsToEditModeTokens(
 // Combines the list of tokens in the collection and the collection layout settings to create
 // an object that represents the full structure of the collection layout with sections and whitespace blocks.
 function parseCollectionLayout(tokens: EditModeTokenChild[], collectionLayout) {
-  console.log({ collectionLayout });
   // loop through sections
   // for each section, use section layout to add tokens and whitespace blocks
   // const collection = [];
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
-      const section = tokens.slice(sectionStartIndex, sectionEndIndex);
+      const section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
       const sectionWithWhitespace = insertWhitespaceBlocks(
         section,
         collectionLayout.sectionLayout[index].whitespace
       );
       const sectionId = generate12DigitId();
-      allSections[sectionId] = sectionWithWhitespace;
+      allSections[sectionId] = {
+        items: sectionWithWhitespace,
+        columns: collectionLayout.sectionLayout[index].columns,
+      };
       return allSections;
     },
     {}
   );
-  console.log('parsedCollection', parsedCollection);
+
   return parsedCollection;
 }
 
@@ -105,19 +107,19 @@ function CollectionEditor({ viewerRef }: Props) {
     viewerRef
   );
 
-  const stagedNfts = useStagedItemsState();
+  const stagedCollectionState = useStagedCollectionState();
   const sidebarTokens = useSidebarTokensState();
   const { setNextEnabled } = useWizardValidationActions();
 
   useEffect(() => {
-    setNextEnabled(stagedNfts.length > 0);
+    setNextEnabled(Object.keys(stagedCollectionState).length > 0);
 
     return () => {
       setNextEnabled(true);
     };
-  }, [setNextEnabled, stagedNfts]);
+  }, [setNextEnabled, stagedCollectionState]);
 
-  const { setSidebarTokens, stageTokens, unstageTokens, setStagedCollectionState } =
+  const { setSidebarTokens, stageTokensNew, unstageTokensNew, setStagedCollectionState } =
     useCollectionEditorActions();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
@@ -154,7 +156,7 @@ function CollectionEditor({ viewerRef }: Props) {
       const columns = isValidColumns(currentCollectionColumns)
         ? currentCollectionColumns
         : DEFAULT_COLUMNS;
-      console.log('columns,', columns);
+
       setColumns(columns);
 
       // handle live render setting
@@ -204,12 +206,17 @@ function CollectionEditor({ viewerRef }: Props) {
     const initialRender = preRefreshNftsAsArray.length === 0;
     if (initialRender) {
       const tokensToStage = convertNftsToEditModeTokens(tokensInCollection, true);
-      console.log(tokensToStage, collectionBeingEdited.layout);
-      const collectionToStage = parseCollectionLayout(tokensToStage, collectionBeingEdited.layout);
-      const tokensToStageWithWhitespace = insertWhitespaceBlocks(tokensToStage, whitespaceList);
-      stageTokens(tokensToStageWithWhitespace);
-      console.log('staging', collectionToStage);
-      setStagedCollectionState(collectionToStage);
+      if (!collectionBeingEdited) {
+        setStagedCollectionState({});
+        // return;
+      } else {
+        const collectionToStage = parseCollectionLayout(
+          tokensToStage,
+          collectionBeingEdited?.layout
+        );
+
+        setStagedCollectionState(collectionToStage);
+      }
     }
 
     // Mark NFTs as selected if they're in the collection being edited
@@ -237,7 +244,7 @@ function CollectionEditor({ viewerRef }: Props) {
     }
 
     if (tokensToUnstage.length) {
-      unstageTokens(tokensToUnstage);
+      unstageTokensNew(tokensToUnstage);
     }
 
     setSidebarTokens(newSidebarTokens);
@@ -245,12 +252,15 @@ function CollectionEditor({ viewerRef }: Props) {
     allEditModeTokens,
     tokensInCollection,
     setSidebarTokens,
-    stageTokens,
-    unstageTokens,
+    stageTokensNew,
+    unstageTokensNew,
     whitespaceList,
+    collectionBeingEdited,
+    setStagedCollectionState,
   ]);
 
-  const shouldDisplayEditor = stagedNfts.length > 0;
+  useEffect(() => {}, [stagedCollectionState]);
+  const shouldDisplayEditor = Object.keys(stagedCollectionState).length > 0;
 
   return (
     <StyledOrganizeCollection>
@@ -260,7 +270,7 @@ function CollectionEditor({ viewerRef }: Props) {
       <StyledEditorContainer>
         {shouldDisplayEditor ? (
           <>
-            <StagingArea stagedItems={stagedNfts} tokensRef={allNfts} />
+            <StagingArea tokensRef={allNfts} />
             <EditorMenu viewerRef={viewer} />
           </>
         ) : (

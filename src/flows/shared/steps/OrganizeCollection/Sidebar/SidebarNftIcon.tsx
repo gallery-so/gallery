@@ -1,7 +1,10 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
-import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import {
+  useActiveSectionIdState,
+  useCollectionEditorActions,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -37,16 +40,27 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
 
   const { isSelected, id } = editModeToken;
 
-  const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
+  const { setTokensIsSelected, stageTokensNew, unstageTokensNew } = useCollectionEditorActions();
+  const activeSectionId = useActiveSectionIdState();
 
   const handleClick = useCallback(() => {
     setTokensIsSelected([id], !isSelected);
     if (isSelected) {
-      unstageTokens([id]);
+      // unstageTokens([id]);
+      unstageTokensNew([id]);
     } else {
-      stageTokens([editModeToken]);
+      // stageTokens([editModeToken]);
+      stageTokensNew([editModeToken], activeSectionId);
     }
-  }, [setTokensIsSelected, id, isSelected, unstageTokens, stageTokens, editModeToken]);
+  }, [
+    setTokensIsSelected,
+    id,
+    isSelected,
+    unstageTokensNew,
+    editModeToken,
+    stageTokensNew,
+    activeSectionId,
+  ]);
 
   const mountRef = useRef(false);
 

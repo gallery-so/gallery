@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import {
-  getWhitespacePositionsFromStagedItems,
-  removeWhitespacesFromStagedItems,
-} from 'utils/collectionLayout';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import {
@@ -17,7 +14,7 @@ type Props = {
   galleryId: string;
   title: string;
   description: string;
-  stagedNfts: StagingItem[];
+  stagedCollection: StagingItem[];
   collectionLayout: CreateCollectionInput['layout'];
   tokenSettings: TokenSettings;
 };
@@ -65,20 +62,9 @@ export default function useCreateCollection() {
   `);
 
   return useCallback(
-    async ({
-      galleryId,
-      title,
-      description,
-      stagedNfts,
-      collectionLayout,
-      tokenSettings,
-    }: Props) => {
-      const layout = {
-        ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
-      };
-      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
-      const tokenIds = tokens.map((token) => token.dbid);
+    async ({ galleryId, title, description, stagedCollection, tokenSettings }: Props) => {
+      const layout = generateLayoutFromCollection(stagedCollection);
+      const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
       const response = await createCollection({

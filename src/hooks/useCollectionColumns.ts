@@ -20,7 +20,6 @@ export const useCollectionColumns = (collectionRef: useCollectionColumnsFragment
   );
 
   return useMemo(() => {
-    console.log('a', collection.layout.sectionLayout[0].columns);
     if (
       collection?.layout?.sectionLayout &&
       isValidColumns(collection.layout.sectionLayout[0].columns)

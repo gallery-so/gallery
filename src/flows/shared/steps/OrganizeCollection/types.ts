@@ -20,5 +20,5 @@ export type WhitespaceBlock = {
 export type StagingItem = EditModeToken | WhitespaceBlock;
 
 export function isEditModeToken(item: StagingItem): item is EditModeToken {
-  return 'token' in item && !!item.token;
+  return !!item && 'token' in item && !!item.token;
 }
