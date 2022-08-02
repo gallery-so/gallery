@@ -153,15 +153,19 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
 
     let row: TokenOrWhitespace[] = ['whitespace'];
 
-    displayedTokens.forEach((token) => {
+    displayedTokens.forEach((token, index) => {
       row.push(token);
 
       // if the row is full, push it to the rows array
       if (row.length % COLUMN_COUNT === 0) {
         rows.push(row);
         row = [];
+        // make sure the final row gets pushed in even if it isn't full
+      } else if (row.length && index === displayedTokens.length - 1) {
+        rows.push(row);
       }
     });
+
     return rows;
   }, [displayedTokens]);
 
