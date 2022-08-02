@@ -17,7 +17,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
 import StagingArea from './StagingArea';
 import EditorMenu from './EditorMenu';
-import { generate12DigitId, insertWhitespaceBlocks } from 'utils/collectionLayout';
+import { parseCollectionLayout } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -32,33 +32,6 @@ function convertNftsToEditModeTokens(
     id: token.dbid,
     isSelected,
   }));
-}
-
-// Combines the list of tokens in the collection and the collection layout settings to create
-// an object that represents the full structure of the collection layout with sections and whitespace blocks.
-function parseCollectionLayout(tokens: EditModeTokenChild[], collectionLayout) {
-  // loop through sections
-  // for each section, use section layout to add tokens and whitespace blocks
-  // const collection = [];
-  const parsedCollection = collectionLayout.sections.reduce(
-    (allSections, sectionStartIndex: number, index: number) => {
-      const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
-      const section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
-      const sectionWithWhitespace = insertWhitespaceBlocks(
-        section,
-        collectionLayout.sectionLayout[index].whitespace
-      );
-      const sectionId = generate12DigitId();
-      allSections[sectionId] = {
-        items: sectionWithWhitespace,
-        columns: collectionLayout.sectionLayout[index].columns,
-      };
-      return allSections;
-    },
-    {}
-  );
-
-  return parsedCollection;
 }
 
 type Props = {

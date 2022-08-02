@@ -1,10 +1,47 @@
 import {
+  EditModeToken,
   EditModeTokenChild,
   isEditModeToken,
   StagingItem,
   WhitespaceBlock,
 } from 'flows/shared/steps/OrganizeCollection/types';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
+
+type Section = {
+  items: EditModeToken[];
+  columns: number;
+};
+type CollectionWithLayout = Record<string, Section>;
+
+// Given a list of tokens in the collection and the collection layout settings,
+// returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
+export function parseCollectionLayout(
+  tokens: ReadonlyArray<T>,
+  collectionLayout
+): CollectionWithLayout {
+  // loop through sections
+  // for each section, use section layout to add tokens and whitespace blocks
+  // const collection = [];
+  const parsedCollection = collectionLayout.sections.reduce(
+    (allSections, sectionStartIndex: number, index: number) => {
+      const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
+      const section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
+      const sectionWithWhitespace = insertWhitespaceBlocks(
+        section,
+        collectionLayout.sectionLayout[index].whitespace
+      );
+      const sectionId = generate12DigitId();
+      allSections[sectionId] = {
+        items: sectionWithWhitespace,
+        columns: collectionLayout.sectionLayout[index].columns,
+      };
+      return allSections;
+    },
+    {}
+  );
+
+  return parsedCollection;
+}
 
 // Each value in the whitespace list represents the index of the NFT that a whitespace appears before.
 // For example, whitespace: [0] means that there is one whitespace before the first NFT in the collection.
@@ -33,13 +70,16 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
 export function generateLayoutFromCollection(collection) {
+  let sectionStartIndex = 0;
   const sectionStartIndices = Object.keys(collection).map((sectionId, index) => {
     if (index === 0) {
-      return 0;
+      return sectionStartIndex;
     }
     const previousSection = collection[Object.keys(collection)[index - 1]];
-    return previousSection.items.filter((item) => isEditModeToken(item)).length;
+    sectionStartIndex += previousSection.items.filter((item) => isEditModeToken(item)).length;
+    return sectionStartIndex;
   });
+  console.log({ sectionStartIndices });
 
   return {
     sections: sectionStartIndices,

@@ -51,7 +51,6 @@ export default function useCreateCollection() {
             # everything we need to udpate the cache.
             ...NftGalleryFragment
             ...UserGalleryCollectionFragment
-            ...useCollectionColumnsFragment
             ...CollectionRowSettingsFragment
             ...DeleteCollectionConfirmationFragment
             ...CollectionGalleryHeaderFragment

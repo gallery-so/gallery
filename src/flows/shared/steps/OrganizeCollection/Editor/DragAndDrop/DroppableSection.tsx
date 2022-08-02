@@ -2,11 +2,12 @@ import { UniqueIdentifier } from '@dnd-kit/core';
 import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
 import { Section } from './Section';
 import { CSS } from '@dnd-kit/utilities';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   useActiveSectionIdState,
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
+import styled from 'styled-components';
 
 type Props = {
   children: React.ReactNode;
@@ -29,19 +30,19 @@ export default function DroppableSection({
 }: Props & {
   disabled?: boolean;
   id: UniqueIdentifier;
-  items: UniqueIdentifier[];
+  items: any[];
   style?: React.CSSProperties;
 }) {
+  const itemIds = useMemo(() => items.map((item) => item.id), [items]);
   const { active, attributes, isDragging, listeners, over, setNodeRef, transition, transform } =
     useSortable({
       id,
       data: {
         type: 'container',
-        children: items,
+        children: itemIds,
       },
       animateLayoutChanges,
     });
-  // const isOverContainer =
 
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== 'container') || items.includes(over.id)
@@ -55,27 +56,35 @@ export default function DroppableSection({
 
   const activeSectionId = useActiveSectionIdState();
   const isActive = activeSectionId === id;
+
   return (
-    // <div>DroppableSection{children}</div>
-    <Section
-      onClick={handleClick}
-      ref={disabled ? undefined : setNodeRef}
-      style={{
-        ...style,
-        transition,
-        transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.5 : undefined,
-      }}
-      hover={isOverContainer}
-      handleProps={{
-        ...attributes,
-        ...listeners,
-      }}
-      columns={columns}
-      {...props}
-      isActive={isActive}
-    >
-      {children}
-    </Section>
+    // Set section as active onMouseDown instead of onClick so that dragging an item immediately activates that section
+    <StyledSectionWrapper onMouseDown={handleClick}>
+      <Section
+        // onClick={handleClick}
+        ref={disabled ? undefined : setNodeRef}
+        style={{
+          ...style,
+          transition,
+          transform: CSS.Translate.toString(transform),
+          opacity: isDragging ? 0.5 : undefined,
+        }}
+        hover={isOverContainer}
+        handleProps={{
+          ...attributes,
+          ...listeners,
+        }}
+        columns={columns}
+        {...props}
+        isActive={isActive}
+        isEmpty={items.length === 0}
+      >
+        {children}
+      </Section>
+    </StyledSectionWrapper>
   );
 }
+
+const StyledSectionWrapper = styled.div`
+  margin: 10px;
+`;

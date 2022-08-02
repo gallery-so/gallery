@@ -205,11 +205,13 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
+  // const moveTokenWithinSection = function(sectionItems, oldIndex, newIndex)
+
   const reorderTokensWithinSection = useCallback((event: DragEndEvent, sectionId: string) => {
     const { active, over } = event;
     setStagedCollectionState((previous) => {
       const section = previous[sectionId];
-      const sectionItems = previous[sectionId].items;
+      const sectionItems = section.items;
 
       const oldIndex = sectionItems.findIndex(({ id }) => id === active.id);
       const newIndex = sectionItems.findIndex(({ id }) => id === over?.id);
