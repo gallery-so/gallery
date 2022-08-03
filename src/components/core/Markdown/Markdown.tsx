@@ -69,7 +69,6 @@ function BaseMarkdown({
         h3: ({ children }) => <StyledBodyHeading>{children}</StyledBodyHeading>,
         ul: ({ children }) => <StyledUl>{children}</StyledUl>,
         p: ({ children }) => <StyledP>{children}</StyledP>,
-        // strong: ({ children }) => <StyledStrong>{children}</StyledStrong>, // DELETE ME
       }}
       allowedElements={allowedElements}
       unwrapDisallowed
@@ -96,9 +95,3 @@ const StyledP = styled.p`
     padding-bottom: 0px;
   }
 `;
-
-// DELETE ME
-// const StyledStrong = styled.strong`
-//   font-style: inherit !important;
-//   font-weight: 400 !important;
-// `;
