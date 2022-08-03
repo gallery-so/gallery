@@ -15,12 +15,12 @@ export const NETWORK_CONTEXT_NAME = 'NETWORK';
 
 const NETWORK_URLS = {
   [SupportedChainId.MAINNET]: 'https://mainnet.infura.io/v3/84842078b09946638c03157f83405213',
-  [SupportedChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/84842078b09946638c03157f83405213',
+  [SupportedChainId.GOERLI]: 'https://goerli.infura.io/v3/84842078b09946638c03157f83405213',
 };
 
 const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.MAINNET,
-  SupportedChainId.RINKEBY,
+  SupportedChainId.GOERLI,
 ];
 
 export const network = new NetworkConnector({
