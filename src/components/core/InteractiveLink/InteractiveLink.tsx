@@ -110,7 +110,9 @@ export function InteractiveLinkNeedsVerification({
   const track = useTrack();
 
   const handleClick = useCallback(
-    (href) => {
+    (e, href) => {
+      e.preventDefault();
+
       track('Link Click', {
         to: href,
         needsVerification: true,
@@ -129,8 +131,8 @@ export function InteractiveLinkNeedsVerification({
   return (
     <InteractiveLink
       inheritLinkStyling={inheritLinkStyling}
-      onClick={() => {
-        handleClick(href);
+      onClick={(e) => {
+        handleClick(e, href);
       }}
     >
       {children}
