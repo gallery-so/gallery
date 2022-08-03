@@ -12,14 +12,14 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
       <Spacer height={16} />
       <ButtonContainer>
         <StyledCancelButton onClick={hideModal}>Cancel</StyledCancelButton>
-        <StyledButton
+        <Button
           onClick={() => {
             window.open(href);
             hideModal();
           }}
         >
           Navigate
-        </StyledButton>
+        </Button>
       </ButtonContainer>
     </StyledConfirmation>
   );
@@ -27,10 +27,6 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
 
 const StyledConfirmation = styled.div`
   width: 400px;
-`;
-
-const StyledButton = styled(Button)`
-  width: 80px;
 `;
 
 const StyledCancelButton = styled(Button).attrs({ variant: 'secondary' })`
