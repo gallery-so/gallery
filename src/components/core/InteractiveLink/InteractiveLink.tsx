@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react';
 import Link from 'next/link';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import colors from '../colors';
@@ -143,18 +143,12 @@ export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boole
   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
   transition: color ${transitions.cubic};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  // font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
+  // font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
+  // line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};
 
   &:hover {
     text-decoration: none;
     color: ${colors.offBlack};
   }
-
-  ${({ inheritStyles }) =>
-    inheritStyles
-      ? ''
-      : css`
-          font-family: ${BODY_FONT_FAMILY};
-          font-size: 14px;
-          line-height: 18px;
-        `}
 `;
