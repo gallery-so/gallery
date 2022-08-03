@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -99,18 +99,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   console.log('numCollectionsToDisplay', numCollectionsToDisplay);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const windowScrollerRef = useRef<WindowScroller>(null);
   return (
     <StyledUserGalleryCollections>
       <Spacer height={isMobile ? 48 : 80} />
-      <div ref={containerRef}>
-        <WindowScroller
-          ref={windowScrollerRef}
-          onScroll={() => {
-            console.log('scrolled');
-          }}
-        >
+      <div>
+        <WindowScroller>
           {({ height, registerChild, scrollTop, onChildScroll }) => (
             <AutoSizer disableHeight>
               {({ width }) => (
@@ -120,7 +113,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                     autoHeight
                     width={width}
                     height={height}
-                    // height={18000} // There is something wrong with the height of the list
                     onScroll={onChildScroll}
                     rowHeight={cache.current.rowHeight}
                     rowCount={numCollectionsToDisplay}
@@ -167,12 +159,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
 const StyledUserGalleryCollections = styled.div`
   width: 100%;
-`;
-
-const StyledUserGalleryCollectionWrapper = styled.div`
-  background-color: 'red';
-  /* width: 100%;
-  display: contents; */
 `;
 
 export default UserGalleryCollections;
