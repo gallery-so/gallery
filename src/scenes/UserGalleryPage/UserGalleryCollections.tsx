@@ -67,7 +67,10 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
       nonNullCollections.filter((collection) => {
         const isNotHidden = !collection.hidden;
         const hasTokens = collection.tokens?.length;
-        const hasWhitespace = collection.layout?.sectionLayout?.whitespace?.length;
+        const hasWhitespace =
+          collection.layout?.sectionLayout?.find((layout) => !!layout?.whitespace?.length) !==
+          undefined;
+
         return (hasTokens || hasWhitespace) && isNotHidden;
       }),
     [nonNullCollections]

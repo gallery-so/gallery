@@ -1,12 +1,9 @@
 import { useCallback } from 'react';
-import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
+import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import {
-  CreateCollectionInput,
-  useCreateCollectionMutation,
-} from '__generated__/useCreateCollectionMutation.graphql';
+import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 
@@ -14,8 +11,7 @@ type Props = {
   galleryId: string;
   title: string;
   description: string;
-  stagedCollection: StagingItem[];
-  collectionLayout: CreateCollectionInput['layout'];
+  stagedCollection: StagedCollection;
   tokenSettings: TokenSettings;
 };
 

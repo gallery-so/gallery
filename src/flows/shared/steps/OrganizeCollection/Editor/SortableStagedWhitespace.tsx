@@ -40,13 +40,15 @@ export default function SortableStagedWhitespace({ id, size }: Props) {
     }
   }, []);
 
-  const { paddingBetweenItemsPx } = useDndDimensions();
+  // TODO discuss spacing with design
+  // const { paddingBetweenItemsPx } = useDndDimensions();
+  const paddingBetweenItemsPx = 32;
 
   return (
     <StyledSortableWhitespace
       id={id}
-      active={isDragging}
       // @ts-expect-error force overload
+      active={isDragging}
       style={style}
       useDndDimensions={paddingBetweenItemsPx}
     >

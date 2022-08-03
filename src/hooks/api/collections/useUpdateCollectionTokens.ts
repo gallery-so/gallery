@@ -1,21 +1,17 @@
 import { useCallback } from 'react';
-import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
+import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
 import { useUpdateCollectionTokensRefresherQuery } from '__generated__/useUpdateCollectionTokensRefresherQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import {
-  UpdateCollectionTokensInput,
-  useUpdateCollectionTokensMutation,
-} from '__generated__/useUpdateCollectionTokensMutation.graphql';
+import { useUpdateCollectionTokensMutation } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 
 type Props = {
   collectionId: string;
-  stagedCollection: StagingItem[];
-  collectionLayout: UpdateCollectionTokensInput['layout'];
+  stagedCollection: StagedCollection;
   tokenSettings: TokenSettings;
 };
 

@@ -10,7 +10,6 @@ import UnstageButton from './UnstageButton';
 import { graphql, useFragment } from 'react-relay';
 import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
-import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 import LiveDisplayButton, {
   StyledVideoDisabledIcon,
   StyledVideoEnabledIcon,
@@ -73,15 +72,15 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [contractAddress]
   );
 
-  const { paddingBetweenItemsPx } = useDndDimensions();
+  const paddingBetweenItemsPx = 32;
 
   const isLiveType = isLiveMediaType(token.media?.__typename);
 
   return (
     <StyledSortableNft
       id={id}
-      active={isDragging}
       // @ts-expect-error force overload
+      active={isDragging}
       style={style}
       backgroundColorOverride={backgroundColorOverride}
       paddingBetweenItems={paddingBetweenItemsPx}

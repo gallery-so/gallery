@@ -118,20 +118,11 @@ function CollectionEditor({ viewerRef }: Props) {
   );
 
   // Load in state from server if we're editing an existing collection
-  const { setColumns, setTokenLiveDisplay } = useCollectionEditorActions();
+  const { setTokenLiveDisplay } = useCollectionEditorActions();
   const mountRef = useRef(false);
 
   useEffect(() => {
     if (collectionBeingEdited) {
-      // handle column setting
-      const currentCollectionColumns =
-        collectionBeingEdited.layout?.sectionLayout?.[0].columns ?? 0;
-      const columns = isValidColumns(currentCollectionColumns)
-        ? currentCollectionColumns
-        : DEFAULT_COLUMNS;
-
-      setColumns(columns);
-
       // handle live render setting
       const tokensInCollection = collectionBeingEdited.tokens ?? [];
       const tokenIdsWithLiveDisplay = removeNullValues(tokensInCollection)
@@ -141,7 +132,7 @@ function CollectionEditor({ viewerRef }: Props) {
     }
 
     mountRef.current = true;
-  }, [collectionBeingEdited, setColumns, setTokenLiveDisplay]);
+  }, [collectionBeingEdited, setTokenLiveDisplay]);
 
   const sidebarTokensRef = useRef<SidebarTokensState>({});
   useEffect(() => {
@@ -156,11 +147,6 @@ function CollectionEditor({ viewerRef }: Props) {
   const allNftsCacheKey = useMemo(
     () => allNfts.reduce((prev, curr) => `${prev}-${curr.lastUpdated}`, ''),
     [allNfts]
-  );
-
-  const whitespaceList = useMemo(
-    () => removeNullValues(collectionBeingEdited?.layout?.sectionLayout[0]?.whitespace) ?? [],
-    [collectionBeingEdited]
   );
 
   // decorates NFTs returned with additional fields for the purpose of editing / dnd
@@ -226,7 +212,6 @@ function CollectionEditor({ viewerRef }: Props) {
     setSidebarTokens,
     stageTokens,
     unstageTokens,
-    whitespaceList,
     collectionBeingEdited,
     setStagedCollectionState,
   ]);

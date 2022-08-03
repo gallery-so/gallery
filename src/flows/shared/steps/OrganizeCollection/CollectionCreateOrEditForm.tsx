@@ -12,11 +12,12 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
-import { StagingItem } from './types';
+import { StagedCollection } from './types';
 import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { CollectionLayoutInput } from '__generated__/useCreateCollectionMutation.graphql';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -24,11 +25,7 @@ type Props = {
   collectionId?: string;
   collectionName?: string;
   collectionCollectorsNote?: string;
-  stagedCollection?: StagingItem[];
-  layout?: {
-    columns: number;
-    whitespace: readonly number[];
-  };
+  stagedCollection?: StagedCollection;
   tokenSettings?: TokenSettings;
 };
 
@@ -41,7 +38,6 @@ function CollectionCreateOrEditForm({
   collectionName,
   collectionCollectorsNote,
   stagedCollection,
-  layout,
   tokenSettings = {},
 }: Props) {
   const { hideModal } = useModalActions();
@@ -113,7 +109,7 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && stagedCollection && layout) {
+      if (!collectionId && stagedCollection) {
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
@@ -124,7 +120,6 @@ function CollectionCreateOrEditForm({
           title,
           description,
           stagedCollection: stagedCollection,
-          collectionLayout: layout,
           tokenSettings,
         });
       }
@@ -141,7 +136,6 @@ function CollectionCreateOrEditForm({
     description,
     collectionId,
     stagedCollection,
-    layout,
     goToNextStep,
     track,
     title,

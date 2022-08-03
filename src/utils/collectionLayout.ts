@@ -2,6 +2,7 @@ import {
   EditModeToken,
   EditModeTokenChild,
   isEditModeToken,
+  StagedCollection,
   StagingItem,
   WhitespaceBlock,
 } from 'flows/shared/steps/OrganizeCollection/types';
@@ -24,7 +25,7 @@ export function parseCollectionLayout(
   // for each section, use section layout to add tokens and whitespace blocks
   // const collection = [];
   const parsedCollection = collectionLayout.sections.reduce(
-    (allSections, sectionStartIndex: number, index: number) => {
+    (allSections: StagedCollection, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
       let section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
       if (!ignoreWhitespace) {
@@ -69,7 +70,7 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(collection) {
+export function generateLayoutFromCollection(collection: StagedCollection) {
   let sectionStartIndex = 0;
   const sectionStartIndices = Object.keys(collection).map((sectionId, index) => {
     if (index === 0) {
@@ -90,14 +91,14 @@ export function generateLayoutFromCollection(collection) {
 }
 
 // Given a collection of sections and their items, return a list of just the token ids in the collection.
-export function getTokenIdsFromCollection(collection) {
+export function getTokenIdsFromCollection(collection: StagedCollection) {
   const tokens = removeWhitespacesFromStagedItems(
     Object.keys(collection).flatMap((sectionId) => collection[sectionId].items)
   );
   return tokens.map((token) => token.dbid);
 }
 
-export function getWhitespacePositionsFromSection(sectionItems: any): number[] {
+export function getWhitespacePositionsFromSection(sectionItems: StagingItem[]): number[] {
   let nftIndex = 0;
   const result: number[] = [];
   sectionItems.forEach((item) => {

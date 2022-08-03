@@ -37,6 +37,9 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
 
   const parsedCollection = useMemo(() => {
+    if (!collection.tokens) {
+      return {};
+    }
     return parseCollectionLayout(collection.tokens, collection.layout, hideWhitespace);
   }, [collection.layout, collection.tokens, hideWhitespace]);
 
@@ -62,7 +65,13 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
                 return <StyledWhitespaceBlock key={galleryNft.id} />;
               }
 
-              return <NftPreviewWrapper key={galleryNft.id} galleryNftRef={galleryNft} />;
+              return (
+                <NftPreviewWrapper
+                  key={galleryNft.id}
+                  galleryNftRef={galleryNft}
+                  columns={section.columns}
+                />
+              );
             })}
           </StyledSection>
         );

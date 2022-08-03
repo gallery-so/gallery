@@ -77,7 +77,6 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
             onNext={goToOrganizeGalleryStep}
             galleryId={galleryId}
             stagedCollection={stagedCollectionState}
-            layout={collectionMetadata.layout}
             tokenSettings={collectionMetadata.tokenSettings}
           />
         ),

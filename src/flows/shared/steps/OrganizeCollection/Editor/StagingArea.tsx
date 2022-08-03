@@ -18,6 +18,9 @@ import {
   MeasuringStrategy,
   defaultDropAnimationSideEffects,
   DragOverEvent,
+  DragEndEvent,
+  DragStartEvent,
+  UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { coordinateGetter as multipleContainersCoordinateGetter } from './DragAndDrop/multipleContainersKeyboardCoordinates';
@@ -32,7 +35,7 @@ import {
 import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
 import SortableStagedNft from './SortableStagedNft';
-import { isEditModeToken } from '../types';
+import { isEditModeToken, Section } from '../types';
 import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
@@ -89,7 +92,7 @@ function StagingArea({ tokensRef }: Props) {
   );
 
   const tokens = removeNullValues(tokenss);
-  const lastOverId = useRef<string | null>(null);
+  const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
 
   const { setStagedCollectionState, reorderTokensWithinSection, reorderSection, addSection } =
@@ -97,7 +100,7 @@ function StagingArea({ tokensRef }: Props) {
 
   const collectionMetadata = useCollectionMetadataState();
 
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -139,7 +142,8 @@ function StagingArea({ tokensRef }: Props) {
               ...args,
               droppableContainers: args.droppableContainers.filter(
                 (section) =>
-                  section.id !== overId && sectionItems.map((item) => item.id).includes(section.id)
+                  section.id !== overId &&
+                  sectionItems.map((item) => item.id).includes(section.id as string)
               ),
             })[0]?.id;
           }
@@ -164,12 +168,15 @@ function StagingArea({ tokensRef }: Props) {
     [activeId, localStagedCollection]
   );
 
-  const sectionContainsId = (section, id) => {
+  const sectionContainsId = (section: Section, id: UniqueIdentifier) => {
     return section.items.find((item) => item.id === id);
   };
 
   const findSection = useCallback(
-    (id: string) => {
+    (id: UniqueIdentifier | undefined) => {
+      if (!id) {
+        return;
+      }
       if (id in localStagedCollection) {
         return id;
       }
@@ -270,11 +277,11 @@ function StagingArea({ tokensRef }: Props) {
       const overId = over?.id;
       const overSectionId = findSection(overId);
 
-      if (!activeSectionId) {
-        setActiveId(null);
-        return;
-      }
-      if (overId == null) {
+      // if (!activeSectionId) {
+      //   setActiveId(null);
+      //   return;
+      // }
+      if (!activeSectionId || overId == null) {
         setActiveId(null);
         return;
       }
@@ -398,7 +405,7 @@ function StagingArea({ tokensRef }: Props) {
         </SortableContext>
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId ? (
-            sectionIds.includes(activeId) ? (
+            sectionIds.includes(activeId as string) ? (
               <SectionDragging
                 items={localStagedCollection[activeId].items}
                 itemWidth={IMAGE_SIZES[localStagedCollection[activeId].columns]}
@@ -407,16 +414,20 @@ function StagingArea({ tokensRef }: Props) {
                 label={`Section ${activeId}`}
               />
             ) : (
-              <StagedItemDragging
-                tokenRef={activeItemRef}
-                isEditModeToken={isEditModeToken(activeItem)}
-                // todo fix
-                size={
-                  IMAGE_SIZES[
-                    findSection(activeId) ? localStagedCollection[findSection(activeId)].columns : 3
-                  ]
-                }
-              />
+              activeItem && (
+                <StagedItemDragging
+                  tokenRef={activeItemRef}
+                  isEditModeToken={isEditModeToken(activeItem)}
+                  // todo fix
+                  size={
+                    IMAGE_SIZES[
+                      findSection(activeId)
+                        ? localStagedCollection[findSection(activeId)!].columns
+                        : 3
+                    ]
+                  }
+                />
+              )
             )
           ) : null}
         </DragOverlay>

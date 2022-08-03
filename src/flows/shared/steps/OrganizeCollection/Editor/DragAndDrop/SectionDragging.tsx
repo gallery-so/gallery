@@ -1,13 +1,13 @@
-import { isEditModeToken } from '../../types';
+import { isEditModeToken, StagingItem } from '../../types';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
 import { Section } from './Section';
 
 type Props = {
-  items: any;
-  itemWidth: any;
+  items: StagingItem[];
+  itemWidth: number;
   columns: number;
-  nftFragmentsKeyedByID: any;
+  nftFragmentsKeyedByID: { [idKey: string]: T };
   label: string;
 };
 
