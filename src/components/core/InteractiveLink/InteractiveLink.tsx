@@ -16,6 +16,7 @@ type InteractiveLinkProps = {
   className?: string;
   disabled?: boolean;
   onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
+  // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
 };
 
@@ -36,6 +37,7 @@ export default function InteractiveLink({
 
       track('Link Click', {
         to: to || href,
+        needsVerification: false,
       });
 
       if (onClick) {
@@ -96,18 +98,23 @@ export default function InteractiveLink({
 }
 
 export function InteractiveLinkNeedsVerification({
-  inheritLinkStyling,
+  inheritLinkStyling = false,
   href,
   children,
 }: {
-  inheritLinkStyling: boolean;
+  inheritLinkStyling?: boolean;
   href: string;
   children: ReactNode;
 }) {
   const { showModal } = useModalActions();
+  const track = useTrack();
+
   const handleClick = useCallback(
     (href) => {
-      // track('What to track here?');
+      track('Link Click', {
+        to: href,
+        needsVerification: true,
+      });
 
       // FIXME: This conflicts with viewing the NFT preview page, because that is a modal.
       // So running `showModal` will close that preview modal, and then open the verify navigation modal.
@@ -117,7 +124,7 @@ export function InteractiveLinkNeedsVerification({
         headerText: `Are you sure you want to navigate to ${href}?`,
       });
     },
-    [showModal]
+    [showModal, track]
   );
   return (
     <InteractiveLink
