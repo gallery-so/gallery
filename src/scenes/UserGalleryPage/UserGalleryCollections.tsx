@@ -17,6 +17,7 @@ import {
   CellMeasurer,
   CellMeasurerCache,
   List,
+  ListRowProps,
   WindowScroller,
 } from 'react-virtualized';
 
@@ -99,6 +100,34 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   console.log('numCollectionsToDisplay', numCollectionsToDisplay);
 
+  const rowRenderer = ({ index, key, parent, style }: ListRowProps) => {
+    const collection = collectionsToDisplay[index];
+    return (
+      <CellMeasurer
+        cache={cache.current}
+        columnIndex={0}
+        rowIndex={index}
+        key={key}
+        parent={parent}
+      >
+        {({ registerChild, measure }) => {
+          return (
+            // @ts-ignore
+            <div ref={registerChild} key={key} style={style}>
+              <UserGalleryCollection
+                queryRef={query}
+                collectionRef={collection}
+                mobileLayout={mobileLayout}
+                onLoad={measure}
+              />
+              <Spacer height={48} />
+            </div>
+          );
+        }}
+      </CellMeasurer>
+    );
+  };
+
   return (
     <StyledUserGalleryCollections>
       <Spacer height={isMobile ? 48 : 80} />
@@ -118,34 +147,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                     rowCount={numCollectionsToDisplay}
                     scrollTop={scrollTop} // Somehow adding this render all row
                     deferredMeasurementCache={cache.current}
-                    rowRenderer={({ index, key, style, parent }) => {
-                      const collection = collectionsToDisplay[index];
-                      return (
-                        <CellMeasurer
-                          cache={cache.current}
-                          columnIndex={0}
-                          rowIndex={index}
-                          key={key}
-                          parent={parent}
-                        >
-                          {({ registerChild, measure }) => {
-                            return (
-                              // @ts-ignore
-                              <div ref={registerChild} key={key} style={style}>
-                                <p>Index : {index}</p>
-                                <UserGalleryCollection
-                                  queryRef={query}
-                                  collectionRef={collection}
-                                  mobileLayout={mobileLayout}
-                                  onLoad={measure}
-                                />
-                                <Spacer height={48} />
-                              </div>
-                            );
-                          }}
-                        </CellMeasurer>
-                      );
-                    }}
+                    rowRenderer={rowRenderer}
                   />
                 </div>
               )}
