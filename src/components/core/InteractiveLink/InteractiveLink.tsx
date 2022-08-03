@@ -29,7 +29,6 @@ export default function InteractiveLink({
   onClick,
   inheritLinkStyling = false,
 }: InteractiveLinkProps) {
-  console.log('inherit: ', to, inheritLinkStyling);
   const track = useTrack();
 
   const handleClick = useCallback(
@@ -154,17 +153,3 @@ export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boole
     color: ${colors.offBlack};
   }
 `;
-
-// export const StyledAnchor = styled.a<{ disabled?: boolean }>`
-//   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
-//   text-decoration: underline;
-//   font-family: ${BODY_FONT_FAMILY};
-//   font-size: 14px;
-//   line-height: 18px;
-//   transition: color ${transitions.cubic};
-//   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-//   &:hover {
-//     text-decoration: none;
-//     color: ${colors.offBlack};
-//   }
-// `;
