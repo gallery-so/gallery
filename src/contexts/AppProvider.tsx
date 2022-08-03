@@ -10,11 +10,15 @@ import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigation
 import { RelayProvider } from 'contexts/relay/RelayProvider';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
+import Debugger from 'components/Debugger/Debugger';
+import isProduction from 'utils/isProduction';
 
 type Props = {
   children: React.ReactNode;
   relayCache?: RecordMap;
 };
+
+const isProd = isProduction();
 
 export default function AppProvider({ children, relayCache }: Props) {
   return (
@@ -28,7 +32,10 @@ export default function AppProvider({ children, relayCache }: Props) {
                   <SwrProvider>
                     <GalleryNavigationProvider>
                       <ModalProvider>
-                        <GlobalLayoutContextProvider>{children}</GlobalLayoutContextProvider>
+                        <GlobalLayoutContextProvider>
+                          {isProd ? null : <Debugger />}
+                          {children}
+                        </GlobalLayoutContextProvider>
                       </ModalProvider>
                     </GalleryNavigationProvider>
                   </SwrProvider>
