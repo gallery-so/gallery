@@ -18,6 +18,7 @@ import breakpoints from 'components/core/breakpoints';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -92,7 +93,9 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
         <Spacer height={8} />
-        <StyledQuote>{unescape(event.newCollectorsNote ?? '')}</StyledQuote>
+        <StyledQuote>
+          <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+        </StyledQuote>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
         {showAdditionalPiecesIndicator && (
