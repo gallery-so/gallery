@@ -22,6 +22,7 @@ import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/Co
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import useResizeObserver from 'hooks/useResizeObserver';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -78,15 +79,12 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout, onLoad }
   const track = useTrack();
 
   // Get height of this component
-  const ref = useRef<HTMLDivElement>(null);
-  const elementHeight = useRef<number>(0);
+  const componentRef = useRef<HTMLDivElement>(null);
+  const { height: collectionElHeight } = useResizeObserver(componentRef);
 
   useEffect(() => {
-    if (elementHeight.current > 0) {
-      onLoad();
-    }
-    elementHeight.current = ref.current?.clientHeight ?? 0;
-  }, [ref.current?.clientHeight, onLoad]);
+    onLoad();
+  }, [collectionElHeight, onLoad]);
 
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: collectionUrl });
@@ -109,13 +107,11 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout, onLoad }
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
-    <StyledCollectionWrapper ref={ref}>
+    <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrl}>
-            <StyledCollectorsTitle>
-              {unescapedCollectionName} {elementHeight.current}
-            </StyledCollectorsTitle>
+            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
