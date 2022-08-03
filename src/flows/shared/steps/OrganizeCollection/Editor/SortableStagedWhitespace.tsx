@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { CSS } from '@dnd-kit/utilities';
 import UnstageButton from './UnstageButton';
-import useDndDimensions from 'contexts/collectionEditor/useDndDimensions';
 
 type Props = {
   id: string;

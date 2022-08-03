@@ -17,7 +17,6 @@ import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
-import { CollectionLayoutInput } from '__generated__/useCreateCollectionMutation.graphql';
 
 type Props = {
   onNext: WizardContext['next'];

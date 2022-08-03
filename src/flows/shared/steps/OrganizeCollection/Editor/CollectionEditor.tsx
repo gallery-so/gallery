@@ -1,4 +1,3 @@
-import { DEFAULT_COLUMNS, isValidColumns } from 'constants/layout';
 import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 

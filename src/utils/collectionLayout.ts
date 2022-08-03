@@ -1,5 +1,4 @@
 import {
-  EditModeToken,
   EditModeTokenChild,
   isEditModeToken,
   StagedCollection,
