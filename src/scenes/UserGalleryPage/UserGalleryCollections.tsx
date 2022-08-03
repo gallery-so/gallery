@@ -98,8 +98,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     return <EmptyGallery message={emptyGalleryMessage} />;
   }
 
-  console.log('numCollectionsToDisplay', numCollectionsToDisplay);
-
   const rowRenderer = ({ index, key, parent, style }: ListRowProps) => {
     const collection = collectionsToDisplay[index];
     return (
@@ -145,7 +143,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                     onScroll={onChildScroll}
                     rowHeight={cache.current.rowHeight}
                     rowCount={numCollectionsToDisplay}
-                    scrollTop={scrollTop} // Somehow adding this render all row
+                    scrollTop={scrollTop}
                     deferredMeasurementCache={cache.current}
                     rowRenderer={rowRenderer}
                   />
