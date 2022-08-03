@@ -8,7 +8,6 @@ import TextButton from 'components/core/Button/TextButton';
 import {
   useCollectionEditorActions,
   SidebarTokensState,
-  useActiveSectionIdState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SidebarNftIcon from './SidebarNftIcon';
@@ -62,7 +61,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const tokens = removeNullValues(allTokens);
 
-  const { stageTokens, stageTokensNew } = useCollectionEditorActions();
+  const { stageTokens } = useCollectionEditorActions();
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -94,12 +93,12 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
-    stageTokensNew([{ id, whitespace: 'whitespace' }]);
+    stageTokens([{ id, whitespace: 'whitespace' }]);
     // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
-  }, [stageTokensNew]);
+  }, [stageTokens]);
 
   const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
 

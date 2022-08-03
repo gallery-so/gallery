@@ -5,7 +5,6 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
-  useStagedItemsState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
@@ -30,7 +29,6 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
   const { showModal } = useModalActions();
   const wizardId = useWizardId();
 
-  const stagedItems = useStagedItemsState();
   const stagedCollectionState = useStagedCollectionState();
 
   const updateCollection = useUpdateCollectionTokens();
@@ -101,7 +99,6 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
     updateCollection,
     wizardId,
     collectionMetadata,
-    stagedItems,
     track,
     galleryId,
     stagedCollectionState,

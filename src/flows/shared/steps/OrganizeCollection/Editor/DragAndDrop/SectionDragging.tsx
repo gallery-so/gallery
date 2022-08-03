@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { isEditModeToken } from '../../types';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';

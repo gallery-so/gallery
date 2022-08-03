@@ -13,10 +13,7 @@ import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
 import { StagingItem } from './types';
-import {
-  getTokenIdsFromCollection,
-  removeWhitespacesFromStagedItems,
-} from 'utils/collectionLayout';
+import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -27,7 +24,7 @@ type Props = {
   collectionId?: string;
   collectionName?: string;
   collectionCollectorsNote?: string;
-  stagedItems?: StagingItem[];
+  stagedCollection?: StagingItem[];
   layout?: {
     columns: number;
     whitespace: readonly number[];

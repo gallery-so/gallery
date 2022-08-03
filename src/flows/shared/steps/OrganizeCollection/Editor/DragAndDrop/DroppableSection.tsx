@@ -1,4 +1,3 @@
-import { UniqueIdentifier } from '@dnd-kit/core';
 import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
 import { Section } from './Section';
 import { CSS } from '@dnd-kit/utilities';
@@ -27,7 +26,7 @@ export default function DroppableSection({
   style,
   ...props
 }: Props & {
-  id: UniqueIdentifier;
+  id: string;
   items: any[];
   style?: React.CSSProperties;
   label: string;

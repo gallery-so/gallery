@@ -2,7 +2,6 @@ import { memo, useCallback, useState, useMemo, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import {
-  CancelDrop,
   closestCenter,
   pointerWithin,
   rectIntersection,
@@ -14,22 +13,13 @@ import {
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
-  Modifiers,
-  useDroppable,
-  UniqueIdentifier,
   useSensors,
   useSensor,
   MeasuringStrategy,
-  KeyboardCoordinateGetter,
   defaultDropAnimationSideEffects,
   DragOverEvent,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  horizontalListSortingStrategy,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { coordinateGetter as multipleContainersCoordinateGetter } from './DragAndDrop/multipleContainersKeyboardCoordinates';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
@@ -41,7 +31,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { MENU_WIDTH } from './EditorMenu';
 import StagedItemDragging from './StagedItemDragging';
-import SortableStagedNft, { StyledSortableNft } from './SortableStagedNft';
+import SortableStagedNft from './SortableStagedNft';
 import { isEditModeToken } from '../types';
 import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
@@ -53,7 +43,6 @@ import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import colors from 'components/core/colors';
 import { TitleDiatypeM } from 'components/core/Text/Text';
-import { map } from 'lodash';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -95,12 +84,12 @@ function StagingArea({ tokensRef }: Props) {
   useEffect(() => setLocalStagedCollection(stagedCollectionState), [stagedCollectionState]);
 
   const sectionIds = useMemo(
-    () => Object.keys(localStagedCollection) as UniqueIdentifier[],
+    () => Object.keys(localStagedCollection) as string[],
     [localStagedCollection]
   );
 
   const tokens = removeNullValues(tokenss);
-  const lastOverId = useRef<UniqueIdentifier | null>(null);
+  const lastOverId = useRef<string | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
 
   const { setStagedCollectionState, reorderTokensWithinSection, reorderSection, addSection } =
@@ -109,9 +98,6 @@ function StagingArea({ tokensRef }: Props) {
   const collectionMetadata = useCollectionMetadataState();
 
   const [activeId, setActiveId] = useState<string | null>(null);
-  // const sectionIds = useMemo(() => {
-  //   return Object.keys(stagedCollectionState);
-  // }, [stagedCollectionState]);
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -183,7 +169,7 @@ function StagingArea({ tokensRef }: Props) {
   };
 
   const findSection = useCallback(
-    (id: UniqueIdentifier) => {
+    (id: string) => {
       if (id in localStagedCollection) {
         return id;
       }
@@ -456,30 +442,6 @@ const StyledStagingArea = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
-  }
-`;
-
-type StyledStagedNftContainerProps = {
-  width: number;
-  paddingBetweenItems: number;
-};
-
-const StyledStagedNftContainer = styled.div<StyledStagedNftContainerProps>`
-  display: flex;
-  flex-wrap: wrap;
-
-  // Limit DnD to 3 columns
-  max-width: ${({ width }) => width}px;
-
-  // Safari doesn't support this yet
-  // column-gap: 48px;
-  // row-gap: 48px;
-
-  // Temporary solution until Safari support
-  width: calc(100% + ${({ paddingBetweenItems }) => paddingBetweenItems}px);
-
-  ${StyledSortableNft} * {
-    outline: none;
   }
 `;
 

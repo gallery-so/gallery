@@ -92,7 +92,7 @@ function CollectionEditor({ viewerRef }: Props) {
     };
   }, [setNextEnabled, stagedCollectionState]);
 
-  const { setSidebarTokens, stageTokensNew, unstageTokensNew, setStagedCollectionState } =
+  const { setSidebarTokens, stageTokens, unstageTokens, setStagedCollectionState } =
     useCollectionEditorActions();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
@@ -216,7 +216,7 @@ function CollectionEditor({ viewerRef }: Props) {
     }
 
     if (tokensToUnstage.length) {
-      unstageTokensNew(tokensToUnstage);
+      unstageTokens(tokensToUnstage);
     }
 
     setSidebarTokens(newSidebarTokens);
@@ -224,8 +224,8 @@ function CollectionEditor({ viewerRef }: Props) {
     allEditModeTokens,
     tokensInCollection,
     setSidebarTokens,
-    stageTokensNew,
-    unstageTokensNew,
+    stageTokens,
+    unstageTokens,
     whitespaceList,
     collectionBeingEdited,
     setStagedCollectionState,

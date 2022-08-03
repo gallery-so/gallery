@@ -6,7 +6,7 @@ import {
   useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import useMaxColumns from 'contexts/collectionEditor/useMaxColumns';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
