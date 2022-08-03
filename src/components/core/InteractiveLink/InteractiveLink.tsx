@@ -29,6 +29,7 @@ export default function InteractiveLink({
   onClick,
   inheritLinkStyling = false,
 }: InteractiveLinkProps) {
+  console.log('inherit: ', to, inheritLinkStyling);
   const track = useTrack();
 
   const handleClick = useCallback(
@@ -141,16 +142,29 @@ export function InteractiveLinkNeedsVerification({
 }
 
 export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boolean }>`
-  text-decoration: underline;
   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
-  transition: color ${transitions.cubic};
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  text-decoration: underline;
   font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
   font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
   line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};
-
+  transition: color ${transitions.cubic};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   &:hover {
     text-decoration: none;
     color: ${colors.offBlack};
   }
 `;
+
+// export const StyledAnchor = styled.a<{ disabled?: boolean }>`
+//   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
+//   text-decoration: underline;
+//   font-family: ${BODY_FONT_FAMILY};
+//   font-size: 14px;
+//   line-height: 18px;
+//   transition: color ${transitions.cubic};
+//   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+//   &:hover {
+//     text-decoration: none;
+//     color: ${colors.offBlack};
+//   }
+// `;
