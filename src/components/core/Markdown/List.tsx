@@ -95,9 +95,9 @@ export default function List({
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect width="24" height="24" />
-          <path d="M9.66669 8.5H17.25" stroke="#141414" stroke-miterlimit="10" />
-          <path d="M9.66669 12H17.25" stroke="#141414" stroke-miterlimit="10" />
-          <path d="M9.66669 15.5H17.25" stroke="#141414" stroke-miterlimit="10" />
+          <path d="M9.66669 8.5H17.25" stroke="#141414" strokeMiterlimit="10" />
+          <path d="M9.66669 12H17.25" stroke="#141414" strokeMiterlimit="10" />
+          <path d="M9.66669 15.5H17.25" stroke="#141414" strokeMiterlimit="10" />
           <path d="M6.75 8.5H7.625" stroke="#141414" />
           <path d="M6.75 12H7.625" stroke="#141414" />
           <path d="M6.75 15.5H7.625" stroke="#141414" />

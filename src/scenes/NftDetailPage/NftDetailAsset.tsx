@@ -34,6 +34,7 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
             }
             ... on ImageMedia {
               __typename
+              contentRenderURL
             }
             ... on HtmlMedia {
               __typename
@@ -66,7 +67,15 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
     case 'AudioMedia':
       return <NftDetailAudio tokenRef={token.token} />;
     case 'ImageMedia':
-      return <NftDetailImage tokenRef={token.token} maxHeight={maxHeight} />;
+      return (
+        <NftDetailImage
+          tokenRef={token.token}
+          maxHeight={maxHeight}
+          // @ts-expect-error: we know contentRenderURL is present within the media field
+          // if token type is `ImageMedia`
+          onClick={() => window.open(token.token.media.contentRenderURL)}
+        />
+      );
     case 'GltfMedia':
       return <NftDetailModel mediaRef={token.token.media} />;
     default:

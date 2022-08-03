@@ -4,9 +4,9 @@ export default function ArrowRightIcon() {
       <path
         d="M9.33331 12.6667L14 8.00004L9.33331 3.33337"
         stroke="#707070"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
-      <path d="M14 8H1.33331" stroke="#707070" stroke-miterlimit="10" />
+      <path d="M14 8H1.33331" stroke="#707070" strokeMiterlimit="10" />
     </svg>
   );
 }

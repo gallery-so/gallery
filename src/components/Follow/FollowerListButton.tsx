@@ -6,7 +6,7 @@ import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { FollowerListButtonFragment$key } from '__generated__/FollowerListButtonFragment.graphql';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   userRef: FollowerListButtonFragment$key;
@@ -25,7 +25,7 @@ export default function FollowerListButton({ userRef, className }: Props) {
 
   const { showModal } = useModalActions();
   const track = useTrack();
-  const isMobile = useIsMobileWindowWidth();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleClick = useCallback(() => {
     track('View Follower List Click');

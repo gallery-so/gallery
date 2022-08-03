@@ -27,12 +27,14 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
+        id
         username
         bio
         galleries @required(action: THROW) {
           collections {
             dbid
             name
+            hidden
           }
         }
         ...FollowButtonUserFragment
@@ -51,7 +53,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     queryRef
   );
 
-  const totalCollections = user?.galleries[0]?.collections?.length || 0;
+  const filteredCollections = user?.galleries[0]?.collections?.filter(
+    (collection) => !collection?.hidden
+  );
+
+  const totalCollections = filteredCollections?.length || 0;
 
   // Pseudo-state for signaling animations. This gives us a chance
   // to display an animation prior to unmounting the component
@@ -77,6 +83,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   );
 
   const loggedInUserId = useLoggedInUserId(query);
+  const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
   return (
@@ -89,7 +96,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
           <StyledCardContainer>
             <StyledCardHeader>
               <StyledHoverCardTitleContainer>
-                {isLoggedIn && (
+                {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>

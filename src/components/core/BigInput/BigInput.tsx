@@ -47,7 +47,7 @@ const StyledBigInput = styled.input`
   padding: 12px;
   border: 0;
   font-size: 32px;
-  font-family: 'GT Alpina';
+  font-family: GT Alpina, serif;
   line-height: 36px;
   letter-spacing: -0.03em;
   background: ${colors.faint};
