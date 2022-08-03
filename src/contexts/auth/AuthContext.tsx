@@ -72,6 +72,13 @@ const useImperativelyFetchUser = () => {
                 id
                 dbid
                 username
+                wallets {
+                  dbid
+                  chainAddress {
+                    chain
+                    address
+                  }
+                }
               }
             }
             ... on ErrNotAuthorized {

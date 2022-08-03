@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import { TitleS } from 'components/core/Text/Text';
-import BigInput from 'components/core/BigInput/BigInput';
+import Input from 'components/core/Input/Input';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import Spacer from 'components/core/Spacer/Spacer';
 import { MODAL_PADDING_PX } from 'contexts/modal/constants';
@@ -75,12 +75,13 @@ function UserInfoForm({
     <StyledForm className={className} onSubmit={handleSubmit}>
       {mode === 'Add' ? <StyledTitleS>Add username and bio</StyledTitleS> : null}
       <Spacer height={16} />
-      <BigInput
+      <Input
         onChange={handleUsernameChange}
         placeholder="Username"
         defaultValue={username}
         errorMessage={usernameError}
         autoFocus={shouldAutofocusUsername}
+        variant="grande"
       />
       <Spacer height={16} />
       <StyledTextAreaWithCharCount
