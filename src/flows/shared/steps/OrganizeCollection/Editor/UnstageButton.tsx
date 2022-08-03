@@ -17,7 +17,6 @@ function UnstageButton({ id, className, variant = 'icon' }: Props) {
 
   const handleOnClick = useCallback(() => {
     setTokensIsSelected([id], false);
-    // unstageTokens([id]);
     unstageTokensNew([id]);
   }, [id, setTokensIsSelected, unstageTokensNew]);
 

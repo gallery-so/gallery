@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useCollectionMetadataState } from './CollectionEditorContext';
 
 // Width of draggable image for each Column # setting
 export const IMAGE_SIZES: Record<number, number> = {
@@ -16,11 +15,6 @@ export const IMAGE_SIZES: Record<number, number> = {
 };
 
 export default function useDndDimensions(columns: number) {
-  const {
-    layout: { sectionLayout },
-  } = useCollectionMetadataState();
-  // const columns = sectionLayout[0].columns;
-
   const paddingBetweenItemsPx = useMemo(() => {
     if (columns === 1 || columns === 2) {
       return 48;

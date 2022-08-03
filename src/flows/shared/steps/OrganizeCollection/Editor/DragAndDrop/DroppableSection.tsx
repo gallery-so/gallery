@@ -22,13 +22,11 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) =>
 export default function DroppableSection({
   children,
   columns = 2,
-  // disabled,
   id,
   items,
   style,
   ...props
 }: Props & {
-  // disabled?: boolean;
   id: UniqueIdentifier;
   items: any[];
   style?: React.CSSProperties;
@@ -62,7 +60,6 @@ export default function DroppableSection({
     // Set section as active onMouseDown instead of onClick so that dragging an item immediately activates that section
     <StyledSectionWrapper onMouseDown={handleClick}>
       <Section
-        // onClick={handleClick}
         ref={setNodeRef}
         style={{
           ...style,

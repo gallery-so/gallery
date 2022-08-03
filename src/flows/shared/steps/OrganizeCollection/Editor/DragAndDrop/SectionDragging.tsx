@@ -20,7 +20,6 @@ export default function SectionDragging({
   nftFragmentsKeyedByID,
   label,
 }: Props) {
-  // const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
   return (
     <Section label={label} isDragging isEmpty={items.length === 0}>
       {items.map((item) => {

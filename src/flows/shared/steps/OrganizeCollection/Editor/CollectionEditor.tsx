@@ -181,7 +181,6 @@ function CollectionEditor({ viewerRef }: Props) {
       const tokensToStage = convertNftsToEditModeTokens(tokensInCollection, true);
       if (!collectionBeingEdited) {
         setStagedCollectionState({});
-        // return;
       } else {
         const collectionToStage = parseCollectionLayout(
           tokensToStage,

@@ -2,12 +2,9 @@ import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
-// import { useCollectionColumns } from 'hooks/useCollectionColumns';
-import { removeNullValues } from 'utils/removeNullValues';
 import { parseCollectionLayout } from 'utils/collectionLayout';
 import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
 
@@ -37,25 +34,11 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
     collectionRef
   );
 
-  // const columns = useCollectionColumns(collection);
-
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
-  const nonNullWhitespace = removeNullValues(collection.layout?.sectionLayout?.whitespace);
-
-  const collectionWithWhitespace = useMemo(
-    () => insertWhitespaceBlocks(collection.tokens ?? [], nonNullWhitespace),
-    [collection.tokens, nonNullWhitespace]
-  );
-
-  const itemsToDisplay = useMemo(
-    () => (hideWhitespace ? collection.tokens : collectionWithWhitespace),
-    [collection.tokens, collectionWithWhitespace, hideWhitespace]
-  );
 
   const parsedCollection = useMemo(() => {
-    // TODO handle empty collection
-    return parseCollectionLayout(collection.tokens, collection.layout);
-  }, [collection.layout, collection.tokens]);
+    return parseCollectionLayout(collection.tokens, collection.layout, hideWhitespace);
+  }, [collection.layout, collection.tokens, hideWhitespace]);
 
   return (
     <StyledCollectionTokens>
@@ -88,8 +71,6 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   );
 }
 
-// grid-template-columns: ${({ columns, mobileLayout }) =>
-//   mobileLayout === DisplayLayout.LIST ? '1fr' : `repeat(${columns},  minmax(auto, 100%))`};
 const StyledCollectionTokens = styled.div`
   display: grid;
   grid-gap: 10px 0px;

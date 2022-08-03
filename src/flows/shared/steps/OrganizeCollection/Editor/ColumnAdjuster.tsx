@@ -29,12 +29,10 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   );
 
   const stagedCollectionState = useStagedCollectionState();
-  const activeSection = stagedCollectionState[activeSectionId];
-
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
-  // todo un memo
-  const columns = useMemo(() => activeSection.columns, [activeSection.columns]);
+  const activeSection = stagedCollectionState[activeSectionId];
+  const columns = activeSection.columns;
 
   const maxColumns = useMaxColumns(viewer);
   const handleIncrementClick = useCallback(

@@ -46,10 +46,8 @@ function SidebarNftIcon({ tokenRef, editModeToken, previewUrlSet }: SidebarNftIc
   const handleClick = useCallback(() => {
     setTokensIsSelected([id], !isSelected);
     if (isSelected) {
-      // unstageTokens([id]);
       unstageTokensNew([id]);
     } else {
-      // stageTokens([editModeToken]);
       stageTokensNew([editModeToken], activeSectionId);
     }
   }, [

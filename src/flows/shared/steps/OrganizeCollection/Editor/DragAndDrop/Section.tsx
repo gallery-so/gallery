@@ -49,8 +49,6 @@ export const Section = forwardRef<HTMLDivElement, Props>(
     }: Props,
     ref
   ) => {
-    // const isEmpty = false;
-
     return (
       <StyledSection
         ref={ref}

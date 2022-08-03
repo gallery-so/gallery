@@ -79,9 +79,7 @@ export default function useUpdateCollectionTokens() {
               ...CollectionRowWrapperFragment
               ...DeleteCollectionConfirmationFragment
               ...SortableCollectionRowFragment
-              # ...useCollectionColumnsFragment
               ...UserGalleryCollectionFragment
-              # ...useCollectionColumnsFragment
               ...CollectionGalleryHeaderFragment
             }
           }

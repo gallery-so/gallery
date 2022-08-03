@@ -17,7 +17,8 @@ type CollectionWithLayout = Record<string, Section>;
 // returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
 export function parseCollectionLayout(
   tokens: ReadonlyArray<T>,
-  collectionLayout
+  collectionLayout: any,
+  ignoreWhitespace: boolean = false
 ): CollectionWithLayout {
   // loop through sections
   // for each section, use section layout to add tokens and whitespace blocks
@@ -25,14 +26,13 @@ export function parseCollectionLayout(
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
-      const section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
-      const sectionWithWhitespace = insertWhitespaceBlocks(
-        section,
-        collectionLayout.sectionLayout[index].whitespace
-      );
+      let section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
+      if (!ignoreWhitespace) {
+        section = insertWhitespaceBlocks(section, collectionLayout.sectionLayout[index].whitespace);
+      }
       const sectionId = generate12DigitId();
       allSections[sectionId] = {
-        items: sectionWithWhitespace,
+        items: section,
         columns: collectionLayout.sectionLayout[index].columns,
       };
       return allSections;
@@ -107,8 +107,6 @@ export function getWhitespacePositionsFromSection(sectionItems: any): number[] {
       // is whitespace
       result.push(nftIndex);
     }
-    // stagedCollection[sectionId].items.forEach((stagedItem) => {
-    // });
   });
   return result;
 }
