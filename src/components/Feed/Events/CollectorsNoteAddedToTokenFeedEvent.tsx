@@ -116,7 +116,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
           <Spacer width={MIDDLE_GAP} />
           <StyledNoteWrapper>
             <StyledNote>
-              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling={true} />
+              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
             </StyledNote>
           </StyledNoteWrapper>
         </StyledContent>
