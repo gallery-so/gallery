@@ -29,7 +29,13 @@ type HandleProps = {
 
 export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) => {
   return (
-    <StyledLabel ref={ref} cursor="grab" data-cypress="draggable-handle" {...props}>
+    <StyledLabel
+      // @ts-expect-error force overload
+      ref={ref}
+      cursor="grab"
+      data-cypress="draggable-handle"
+      {...props}
+    >
       <StyledLabelText>{props.label}</StyledLabelText>
     </StyledLabel>
   );

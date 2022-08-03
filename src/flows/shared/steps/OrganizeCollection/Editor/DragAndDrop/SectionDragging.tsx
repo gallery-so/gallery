@@ -7,7 +7,7 @@ type Props = {
   items: StagingItem[];
   itemWidth: number;
   columns: number;
-  nftFragmentsKeyedByID: { [idKey: string]: T };
+  nftFragmentsKeyedByID: any;
   label: string;
 };
 

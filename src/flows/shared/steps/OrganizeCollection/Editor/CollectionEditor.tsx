@@ -11,7 +11,7 @@ import {
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
 
-import { EditModeTokenChild, EditModeToken } from '../types';
+import { EditModeTokenChild, EditModeToken, StagedCollection } from '../types';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { convertObjectToArray } from '../convertObjectToArray';
@@ -171,7 +171,7 @@ function CollectionEditor({ viewerRef }: Props) {
         const collectionToStage = parseCollectionLayout(
           tokensToStage,
           collectionBeingEdited?.layout
-        );
+        ) as StagedCollection;
 
         setStagedCollectionState(collectionToStage);
       }

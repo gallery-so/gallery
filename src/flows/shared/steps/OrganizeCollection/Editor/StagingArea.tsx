@@ -414,11 +414,11 @@ function StagingArea({ tokensRef }: Props) {
                 label={`Section ${activeId}`}
               />
             ) : (
-              activeItem && (
+              activeItem &&
+              activeItemRef && (
                 <StagedItemDragging
                   tokenRef={activeItemRef}
                   isEditModeToken={isEditModeToken(activeItem)}
-                  // todo fix
                   size={
                     IMAGE_SIZES[
                       findSection(activeId)

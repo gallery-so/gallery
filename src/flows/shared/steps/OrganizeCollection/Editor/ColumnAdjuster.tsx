@@ -1,3 +1,4 @@
+import { UniqueIdentifier } from '@dnd-kit/core';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
@@ -15,7 +16,7 @@ import { ColumnAdjusterFragment$key } from '__generated__/ColumnAdjusterFragment
 
 type Props = {
   viewerRef: ColumnAdjusterFragment$key;
-  activeSectionId: string;
+  activeSectionId: UniqueIdentifier;
 };
 
 function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {

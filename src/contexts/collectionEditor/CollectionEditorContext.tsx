@@ -80,8 +80,8 @@ type CollectionEditorActions = {
   reorderTokensWithinSection: (event: DragEndEvent, sectionId: UniqueIdentifier) => void;
   reorderSection: (event: DragEndEvent) => void;
   addSection: () => void;
-  incrementColumns: (sectionId: string) => void;
-  decrementColumns: (sectionId: string) => void;
+  incrementColumns: (sectionId: UniqueIdentifier) => void;
+  decrementColumns: (sectionId: UniqueIdentifier) => void;
   setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
   setActiveSectionIdState: (id: string) => void;
 };
@@ -149,7 +149,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
       const section = previous[sectionId];
       if (!section) {
-        return;
+        return previous;
       }
       return { ...previous, [sectionId]: { ...section, items: [...section.items, ...tokens] } };
     });
@@ -222,7 +222,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
-  const incrementColumns = useCallback((sectionId: string) => {
+  const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
     setStagedCollectionState((previous) => {
       return {
         ...previous,
@@ -234,7 +234,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
   }, []);
 
-  const decrementColumns = useCallback((sectionId: string) => {
+  const decrementColumns = useCallback((sectionId: UniqueIdentifier) => {
     setStagedCollectionState((previous) => {
       return {
         ...previous,

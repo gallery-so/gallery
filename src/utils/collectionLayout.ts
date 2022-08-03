@@ -8,26 +8,29 @@ import {
 } from 'flows/shared/steps/OrganizeCollection/types';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
-type Section = {
-  items: EditModeToken[];
+type Section<T> = {
+  items: ReadonlyArray<T | WhitespaceBlock>;
   columns: number;
 };
-type CollectionWithLayout = Record<string, Section>;
+type CollectionWithLayout<T> = Record<string, Section<T>>;
 
 // Given a list of tokens in the collection and the collection layout settings,
 // returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
-export function parseCollectionLayout(
+export function parseCollectionLayout<T>(
   tokens: ReadonlyArray<T>,
   collectionLayout: any,
   ignoreWhitespace: boolean = false
-): CollectionWithLayout {
+): CollectionWithLayout<T> {
   // loop through sections
   // for each section, use section layout to add tokens and whitespace blocks
-  // const collection = [];
+
   const parsedCollection = collectionLayout.sections.reduce(
-    (allSections: StagedCollection, sectionStartIndex: number, index: number) => {
+    (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
-      let section = tokens.slice(sectionStartIndex, sectionEndIndex + 1);
+      let section: ReadonlyArray<T | WhitespaceBlock> = tokens.slice(
+        sectionStartIndex,
+        sectionEndIndex + 1
+      );
       if (!ignoreWhitespace) {
         section = insertWhitespaceBlocks(section, collectionLayout.sectionLayout[index].whitespace);
       }
