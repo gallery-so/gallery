@@ -3,7 +3,7 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -27,9 +27,10 @@ type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
+  onLoad: () => void;
 };
 
-function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
+function UserGalleryCollection({ queryRef, collectionRef, mobileLayout, onLoad }: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
@@ -67,15 +68,25 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const router = useRouter();
 
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectorsNote ?? ''),
-    [collection.collectorsNote]
-  );
+  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectorsNote ?? ''), [
+    collection.collectorsNote,
+  ]);
 
   const username = router.query.username as string;
   const collectionUrl = `/${username}/${collection.dbid}`;
 
   const track = useTrack();
+
+  // Get height of this component
+  const ref = useRef<HTMLDivElement>(null);
+  const elementHeight = useRef<number>(0);
+
+  useEffect(() => {
+    if (elementHeight.current > 0) {
+      onLoad();
+    }
+    elementHeight.current = ref.current?.clientHeight ?? 0;
+  }, [ref.current?.clientHeight, onLoad]);
 
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: collectionUrl });
@@ -98,11 +109,13 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
-    <StyledCollectionWrapper>
+    <StyledCollectionWrapper ref={ref}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrl}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+            <StyledCollectorsTitle>
+              {unescapedCollectionName} {elementHeight.current}
+            </StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
