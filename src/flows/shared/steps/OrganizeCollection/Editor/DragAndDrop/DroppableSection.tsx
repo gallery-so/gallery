@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 type Props = {
   children: React.ReactNode;
-  disabled: boolean;
+  // disabled: boolean;
   style?: React.CSSProperties;
   columns?: number;
 };
@@ -22,16 +22,17 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) =>
 export default function DroppableSection({
   children,
   columns = 2,
-  disabled,
+  // disabled,
   id,
   items,
   style,
   ...props
 }: Props & {
-  disabled?: boolean;
+  // disabled?: boolean;
   id: UniqueIdentifier;
   items: any[];
   style?: React.CSSProperties;
+  label: string;
 }) {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
   const { active, attributes, isDragging, listeners, over, setNodeRef, transition, transform } =
@@ -45,7 +46,7 @@ export default function DroppableSection({
     });
 
   const isOverContainer = over
-    ? (id === over.id && active?.data.current?.type !== 'container') || items.includes(over.id)
+    ? (id === over.id && active?.data.current?.type !== 'container') || itemIds.includes(over.id)
     : false;
 
   const { setActiveSectionIdState } = useCollectionEditorActions();
@@ -62,7 +63,7 @@ export default function DroppableSection({
     <StyledSectionWrapper onMouseDown={handleClick}>
       <Section
         // onClick={handleClick}
-        ref={disabled ? undefined : setNodeRef}
+        ref={setNodeRef}
         style={{
           ...style,
           transition,

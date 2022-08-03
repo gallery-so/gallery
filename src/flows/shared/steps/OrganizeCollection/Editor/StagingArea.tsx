@@ -24,7 +24,12 @@ import {
   defaultDropAnimationSideEffects,
   DragOverEvent,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { coordinateGetter as multipleContainersCoordinateGetter } from './DragAndDrop/multipleContainersKeyboardCoordinates';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
@@ -89,7 +94,7 @@ function StagingArea({ tokensRef }: Props) {
   const [localStagedCollection, setLocalStagedCollection] = useState(stagedCollectionState);
   useEffect(() => setLocalStagedCollection(stagedCollectionState), [stagedCollectionState]);
 
-  const sections = useMemo(
+  const sectionIds = useMemo(
     () => Object.keys(localStagedCollection) as UniqueIdentifier[],
     [localStagedCollection]
   );
@@ -120,7 +125,6 @@ function StagingArea({ tokensRef }: Props) {
     (args) => {
       // handle collisions when dragging sections
       if (activeId && activeId in localStagedCollection) {
-        // console.log('collision', activeId in localStagedCollection);
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
@@ -153,7 +157,6 @@ function StagingArea({ tokensRef }: Props) {
               ),
             })[0]?.id;
           }
-          console.log('overId!', overId);
         }
 
         lastOverId.current = overId;
@@ -230,17 +233,16 @@ function StagingArea({ tokensRef }: Props) {
 
         let newIndex: number;
 
-        // console.log({ overId });
         if (overId in previous) {
           // if the target is the whole container, drop the item at the end of the container
 
           newIndex = newSectionItems.length + 1;
         } else {
           // if the target is an item, drop the item immediately before or after the target, depending on relative drag position
-          const isBelowOverItem =
-            over &&
-            active.rect.current.translated &&
-            active.rect.current.translated.top > over.rect.top + over.rect.height;
+          // const isBelowOverItem =
+          //   over &&
+          //   active.rect.current.translated &&
+          //   active.rect.current.translated.top > over.rect.top + over.rect.height;
 
           const modifier = 1;
           newIndex =
@@ -374,17 +376,18 @@ function StagingArea({ tokensRef }: Props) {
         onDragOver={handleDragOver}
       >
         {/* Handles sorting for sections */}
-        <SortableContext items={sections}>
-          {sections.map((sectionId) => (
+        <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
+          {sectionIds.map((sectionId) => (
             <DroppableSection
               key={sectionId}
               id={sectionId}
               label={`Section ${sectionId}`}
               items={localStagedCollection[sectionId].items}
-              scrollable
             >
               {/* Handles sorting for items in each section */}
-              <SortableContext items={localStagedCollection[sectionId].items}>
+              <SortableContext
+                items={localStagedCollection[sectionId].items.map((item) => item.id)}
+              >
                 {localStagedCollection[sectionId].items.map((item) => {
                   const size = IMAGE_SIZES[localStagedCollection[sectionId].columns];
                   const stagedItemRef = nftFragmentsKeyedByID[item.id];
@@ -409,7 +412,7 @@ function StagingArea({ tokensRef }: Props) {
         </SortableContext>
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId ? (
-            sections.includes(activeId) ? (
+            sectionIds.includes(activeId) ? (
               <SectionDragging
                 items={localStagedCollection[activeId].items}
                 itemWidth={IMAGE_SIZES[localStagedCollection[activeId].columns]}

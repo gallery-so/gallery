@@ -79,7 +79,6 @@ export function generateLayoutFromCollection(collection) {
     sectionStartIndex += previousSection.items.filter((item) => isEditModeToken(item)).length;
     return sectionStartIndex;
   });
-  console.log({ sectionStartIndices });
 
   return {
     sections: sectionStartIndices,
