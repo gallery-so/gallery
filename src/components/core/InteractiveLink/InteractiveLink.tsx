@@ -145,9 +145,9 @@ export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boole
   color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
   transition: color ${transitions.cubic};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  // font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
-  // font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
-  // line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};
+  font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
+  font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
+  line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};
 
   &:hover {
     text-decoration: none;
