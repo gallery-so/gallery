@@ -21,7 +21,6 @@ function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
     `,
     tokenRef
   );
-  console.log('stageditem');
 
   if (token && isEditModeToken) {
     return <StagedNftImageDragging tokenRef={token} size={size} />;

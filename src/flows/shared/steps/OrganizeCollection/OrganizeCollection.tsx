@@ -57,7 +57,6 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
             tokenSettings: collectionMetadata.tokenSettings,
           });
         } catch (err) {
-          console.log(err);
           // TODO: display error toast here
         }
 
