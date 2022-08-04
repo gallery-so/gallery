@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { isWeb3Error, Web3Error } from 'types/Error';
+import { Web3Error } from 'types/Error';
 import Spacer from 'components/core/Spacer/Spacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
@@ -15,7 +15,7 @@ import {
 import { useModalActions } from 'contexts/modal/ModalContext';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import {
-  isNotEarlyAccessError,
+  isEarlyAccessError,
   useTrackAddWalletAttempt,
   useTrackAddWalletError,
   useTrackAddWalletSuccess,
@@ -30,6 +30,7 @@ import useAddWallet from '../mutations/useAddWallet';
 import { useAccount } from 'wagmi';
 import { signMessage } from '@wagmi/core';
 import { EthereumError } from './EthereumError';
+import { normalizeError } from './normalizeError';
 
 type Props = {
   queryRef: EthereumAddWalletFragment$key;
@@ -137,18 +138,18 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
       } catch (error: unknown) {
         setIsConnecting(false);
         trackAddWalletError('Ethereum', error);
-        if (isWeb3Error(error)) {
-          if (!isNotEarlyAccessError(error.message)) {
-            captureException(error.message);
-          }
-          setError(error);
+        // ignore early access errors
+        if (!isEarlyAccessError(error)) {
+          // capture all others
+          captureException(error);
         }
 
         // Fall back to generic error message
         if (error instanceof Error) {
-          captureException(error);
           const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
           setError(web3Error);
+        } else {
+          setError(normalizeError(error));
         }
       }
     },
