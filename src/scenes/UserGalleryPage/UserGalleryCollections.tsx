@@ -129,30 +129,37 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   return (
     <StyledUserGalleryCollections>
       <Spacer height={isMobile ? 48 : 80} />
-      <div>
-        <WindowScroller>
-          {({ height, registerChild, scrollTop, onChildScroll }) => (
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <div ref={registerChild}>
-                  <List
-                    ref={listRef}
-                    autoHeight
-                    width={width}
-                    height={height}
-                    onScroll={onChildScroll}
-                    rowHeight={cache.current.rowHeight}
-                    rowCount={numCollectionsToDisplay}
-                    scrollTop={scrollTop}
-                    deferredMeasurementCache={cache.current}
-                    rowRenderer={rowRenderer}
-                  />
-                </div>
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      </div>
+      <WindowScroller>
+        {({ height, registerChild, scrollTop, onChildScroll }) => (
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <div ref={registerChild}>
+                <List
+                  ref={listRef}
+                  autoHeight
+                  width={width}
+                  height={height}
+                  onScroll={onChildScroll}
+                  rowHeight={cache.current.rowHeight}
+                  rowCount={numCollectionsToDisplay}
+                  scrollTop={scrollTop}
+                  deferredMeasurementCache={cache.current}
+                  rowRenderer={rowRenderer}
+                  overscanIndicesGetter={({
+                    cellCount,
+                    overscanCellsCount,
+                    startIndex,
+                    stopIndex,
+                  }) => ({
+                    overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+                    overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
+                  })}
+                />
+              </div>
+            )}
+          </AutoSizer>
+        )}
+      </WindowScroller>
     </StyledUserGalleryCollections>
   );
 }
