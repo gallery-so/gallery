@@ -123,7 +123,7 @@ export function InteractiveLinkNeedsVerification({
       showModal({
         content: <NavigateConfirmation href={href} />,
         isFullPage: false,
-        headerText: `Are you sure you want to navigate to ${href}?`,
+        headerText: 'Are you sure?',
       });
     },
     [showModal, track]
