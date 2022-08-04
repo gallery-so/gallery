@@ -3,24 +3,20 @@ import { TitleDiatypeM } from 'components/core/Text/Text';
 import { forwardRef } from 'react';
 import styled from 'styled-components';
 
-export interface Props {
+interface Props {
   children: React.ReactNode;
   columns?: number;
   label?: string;
   style?: React.CSSProperties;
-  horizontal?: boolean;
   hover?: boolean;
   handleProps?: React.HTMLAttributes<any>;
-  scrollable?: boolean;
-  shadow?: boolean;
-  placeholder?: boolean;
-  unstyled?: boolean;
   isActive?: boolean;
   onClick?(): void;
   onRemove?(): void;
   isDragging?: boolean;
   isEmpty?: boolean;
 }
+
 type HandleProps = {
   label: string;
   isActive: boolean;

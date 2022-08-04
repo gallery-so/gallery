@@ -6,13 +6,12 @@ import {
   StagedCollection,
   StagingItem,
 } from 'flows/shared/steps/OrganizeCollection/types';
-import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 import { generate12DigitId } from 'utils/collectionLayout';
 
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;
 export type TokenSettings = Record<TokenId, boolean>;
-export type CollectionMetadataState = Pick<UpdateCollectionTokensInput, 'layout'> & {
+export type CollectionMetadataState = {
   tokenSettings: TokenSettings;
 };
 
@@ -26,7 +25,6 @@ export type CollectionEditorState = {
 };
 
 const DEFAULT_COLLECTION_METADATA = {
-  layout: { sections: [], sectionLayout: [{ columns: DEFAULT_COLUMN_SETTING, whitespace: [] }] },
   tokenSettings: {},
 };
 
@@ -196,8 +194,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   const reorderSection = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     setStagedCollectionState((previous) => {
-      // swap
-      const previousOrder = Object.keys(previous); // previous order of section ids
+      const previousOrder = Object.keys(previous); // get previous order as list of section ids
 
       const oldIndex = previousOrder.findIndex((id) => id === active.id);
       const newIndex = previousOrder.findIndex((id) => id === over?.id);

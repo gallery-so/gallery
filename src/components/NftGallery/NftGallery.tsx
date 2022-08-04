@@ -56,21 +56,17 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
             // to enable 10-column grids for any user, we can enable this
             reducedGridGap={false}
           >
-            {section.items?.map((galleryNft) => {
-              if (!galleryNft) {
+            {section.items?.map((token) => {
+              if (!token) {
                 return;
               }
 
-              if ('whitespace' in galleryNft) {
-                return <StyledWhitespaceBlock key={galleryNft.id} />;
+              if ('whitespace' in token) {
+                return <StyledWhitespaceBlock key={token.id} />;
               }
 
               return (
-                <NftPreviewWrapper
-                  key={galleryNft.id}
-                  galleryNftRef={galleryNft}
-                  columns={section.columns}
-                />
+                <NftPreviewWrapper key={token.id} tokenRef={token} columns={section.columns} />
               );
             })}
           </StyledSection>

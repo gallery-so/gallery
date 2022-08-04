@@ -10,7 +10,6 @@ import {
   DragOverlay,
   DropAnimation,
   getFirstCollision,
-  KeyboardSensor,
   MouseSensor,
   TouchSensor,
   useSensors,
@@ -23,7 +22,6 @@ import {
   UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { coordinateGetter as multipleContainersCoordinateGetter } from './DragAndDrop/multipleContainersKeyboardCoordinates';
 
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 
@@ -346,17 +344,7 @@ function StagingArea({ tokensRef }: Props) {
   // fragment ref to the item being dragged
   const activeItemRef = activeId && nftFragmentsKeyedByID[activeId];
 
-  const columns = collectionMetadata.layout.sectionLayout[0].columns;
-
-  const coordinateGetter = multipleContainersCoordinateGetter;
-
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter,
-    })
-  );
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   return (
     <StyledStagingArea>
@@ -382,7 +370,8 @@ function StagingArea({ tokensRef }: Props) {
                 items={localStagedCollection[sectionId].items.map((item) => item.id)}
               >
                 {localStagedCollection[sectionId].items.map((item) => {
-                  const size = IMAGE_SIZES[localStagedCollection[sectionId].columns];
+                  const columns = localStagedCollection[sectionId].columns;
+                  const size = IMAGE_SIZES[columns];
                   const stagedItemRef = nftFragmentsKeyedByID[item.id];
                   if (isEditModeToken(item) && stagedItemRef) {
                     return (
@@ -409,7 +398,7 @@ function StagingArea({ tokensRef }: Props) {
               <SectionDragging
                 items={localStagedCollection[activeId].items}
                 itemWidth={IMAGE_SIZES[localStagedCollection[activeId].columns]}
-                columns={columns}
+                columns={localStagedCollection[activeId].columns}
                 nftFragmentsKeyedByID={nftFragmentsKeyedByID}
                 label={`Section ${activeId}`}
               />

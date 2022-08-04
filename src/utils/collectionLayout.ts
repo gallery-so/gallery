@@ -20,9 +20,6 @@ export function parseCollectionLayout<T>(
   collectionLayout: any,
   ignoreWhitespace: boolean = false
 ): CollectionWithLayout<T> {
-  // loop through sections
-  // for each section, use section layout to add tokens and whitespace blocks
-
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;

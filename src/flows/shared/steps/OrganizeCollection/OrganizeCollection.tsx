@@ -56,7 +56,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
             stagedCollection: stagedCollectionState,
             tokenSettings: collectionMetadata.tokenSettings,
           });
-        } catch (err) {
+        } catch {
           // TODO: display error toast here
         }
 

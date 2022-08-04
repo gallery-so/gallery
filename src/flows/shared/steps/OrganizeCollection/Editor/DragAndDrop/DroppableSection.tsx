@@ -10,9 +10,11 @@ import styled from 'styled-components';
 
 type Props = {
   children: React.ReactNode;
-  // disabled: boolean;
   style?: React.CSSProperties;
   columns?: number;
+  id: string;
+  items: any[];
+  label: string;
 };
 
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
@@ -25,30 +27,21 @@ export default function DroppableSection({
   items,
   style,
   ...props
-}: Props & {
-  id: string;
-  items: any[];
-  style?: React.CSSProperties;
-  label: string;
-}) {
+}: Props) {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
-  const { active, attributes, isDragging, listeners, over, setNodeRef, transition, transform } =
-    useSortable({
-      id,
-      data: {
-        type: 'container',
-        children: itemIds,
-      },
-      animateLayoutChanges,
-    });
-
-  const isOverContainer = over
-    ? (id === over.id && active?.data.current?.type !== 'container') || itemIds.includes(over.id)
-    : false;
+  const { attributes, isDragging, listeners, setNodeRef, transition, transform } = useSortable({
+    id,
+    data: {
+      type: 'container',
+      children: itemIds,
+    },
+    animateLayoutChanges,
+  });
 
   const { setActiveSectionIdState } = useCollectionEditorActions();
 
-  const handleClick = useCallback(() => {
+  // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
+  const handleMouseDown = useCallback(() => {
     setActiveSectionIdState(id);
   }, [id, setActiveSectionIdState]);
 
@@ -56,8 +49,7 @@ export default function DroppableSection({
   const isActive = activeSectionId === id;
 
   return (
-    // Set section as active onMouseDown instead of onClick so that dragging an item immediately activates that section
-    <StyledSectionWrapper onMouseDown={handleClick}>
+    <StyledSectionWrapper onMouseDown={handleMouseDown}>
       <Section
         ref={setNodeRef}
         style={{
@@ -66,7 +58,6 @@ export default function DroppableSection({
           transform: CSS.Translate.toString(transform),
           opacity: isDragging ? 0.5 : undefined,
         }}
-        hover={isOverContainer}
         handleProps={{
           ...attributes,
           ...listeners,

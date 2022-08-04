@@ -2,10 +2,11 @@ import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContex
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { GalleryNftPreviewWrapperFragment$key } from '__generated__/GalleryNftPreviewWrapperFragment.graphql';
 import NftPreview from './NftPreview';
 
 type Props = {
-  galleryNftRef: any;
+  tokenRef: GalleryNftPreviewWrapperFragment$key;
   columns: number;
 };
 
@@ -31,7 +32,7 @@ function NftPreviewWithShimmer(props: Props) {
 }
 
 // This component determines the appropriate size to render the NftPreview specifically for gallery views. (gallery + collection pages)
-function GalleryNftPreviewWrapper({ galleryNftRef, columns }: Props) {
+function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
   const collectionTokenRef = useFragment(
     graphql`
       fragment GalleryNftPreviewWrapperFragment on CollectionToken {
@@ -47,7 +48,7 @@ function GalleryNftPreviewWrapper({ galleryNftRef, columns }: Props) {
         ...NftPreviewFragment
       }
     `,
-    galleryNftRef
+    tokenRef
   );
 
   // width for rendering so that we request the appropriate size image.
