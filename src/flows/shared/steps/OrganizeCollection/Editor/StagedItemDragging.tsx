@@ -7,7 +7,7 @@ import { StagedItemDraggingFragment$key } from '__generated__/StagedItemDragging
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  tokenRef: StagedItemDraggingFragment$key;
+  tokenRef: StagedItemDraggingFragment$key | null;
   isEditModeToken: boolean;
   size: number;
 };
@@ -21,8 +21,9 @@ function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
     `,
     tokenRef
   );
+  console.log('stageditem');
 
-  if (isEditModeToken) {
+  if (token && isEditModeToken) {
     return <StagedNftImageDragging tokenRef={token} size={size} />;
   }
 

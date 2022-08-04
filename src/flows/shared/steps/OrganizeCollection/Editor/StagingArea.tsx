@@ -414,10 +414,9 @@ function StagingArea({ tokensRef }: Props) {
                 label={`Section ${activeId}`}
               />
             ) : (
-              activeItem &&
-              activeItemRef && (
+              activeItem && (
                 <StagedItemDragging
-                  tokenRef={activeItemRef}
+                  tokenRef={activeItemRef || null}
                   isEditModeToken={isEditModeToken(activeItem)}
                   size={
                     IMAGE_SIZES[
