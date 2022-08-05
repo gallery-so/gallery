@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -12,6 +12,14 @@ import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import {
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+  List,
+  ListRowProps,
+  WindowScroller,
+} from 'react-virtualized';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
@@ -60,6 +68,15 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const nonNullCollections = removeNullValues(collections);
   const isMobile = useIsMobileWindowWidth();
 
+  const cache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: 100,
+    })
+  );
+
+  const listRef = useRef<List>(null);
+
   const collectionsToDisplay = useMemo(
     () =>
       nonNullCollections.filter((collection) => {
@@ -71,41 +88,39 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     [nonNullCollections]
   );
 
-  const numCollectionsToDisplay = collectionsToDisplay.length;
-
-  /**
-   * Poor man's virtualization.
-   *
-   * The server doesn't have pagination and sends all of a user's collections.
-   * Rather than displaying them all, render them 10 at a time.
-   */
-  const PAGE_SIZE = 10;
-  const [numRenderedCollections, setNumRenderedCollections] = useState(
-    Math.min(numCollectionsToDisplay, PAGE_SIZE)
+  const rowRenderer = useCallback(
+    ({ index, key, parent, style }: ListRowProps) => {
+      const collection = collectionsToDisplay[index];
+      return (
+        <CellMeasurer
+          cache={cache.current}
+          columnIndex={0}
+          rowIndex={index}
+          key={key}
+          parent={parent}
+        >
+          {({ registerChild, measure }) => {
+            return (
+              // @ts-ignore
+              <div ref={registerChild} key={key} style={style}>
+                <UserGalleryCollection
+                  queryRef={query}
+                  collectionRef={collection}
+                  mobileLayout={mobileLayout}
+                  cacheHeight={cache.current.getHeight(index, 0)}
+                  onLoad={measure}
+                />
+                <Spacer height={48} />
+              </div>
+            );
+          }}
+        </CellMeasurer>
+      );
+    },
+    [collectionsToDisplay, mobileLayout, query]
   );
 
-  const numRenderedCollectionsRef = useRef(numRenderedCollections);
-
-  useEffect(() => {
-    function handleScrollPosition() {
-      const pixelsFromBottomOfPage =
-        document.body.offsetHeight - window.pageYOffset - window.innerHeight;
-      if (
-        pixelsFromBottomOfPage < 1200 &&
-        numRenderedCollectionsRef.current < numCollectionsToDisplay
-      ) {
-        numRenderedCollectionsRef.current = Math.min(
-          numCollectionsToDisplay,
-          numRenderedCollectionsRef.current + PAGE_SIZE
-        );
-        setNumRenderedCollections((prev) => Math.min(numCollectionsToDisplay, prev + PAGE_SIZE));
-      }
-    }
-
-    window.addEventListener('scroll', handleScrollPosition);
-
-    return () => window.removeEventListener('scroll', handleScrollPosition);
-  }, [numCollectionsToDisplay]);
+  const numCollectionsToDisplay = collectionsToDisplay.length;
 
   if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
@@ -118,16 +133,37 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   return (
     <StyledUserGalleryCollections>
       <Spacer height={isMobile ? 48 : 80} />
-      {collectionsToDisplay.slice(0, numRenderedCollections).map((collection) => (
-        <Fragment key={collection.id}>
-          <UserGalleryCollection
-            queryRef={query}
-            collectionRef={collection}
-            mobileLayout={mobileLayout}
-          />
-          <Spacer height={48} />
-        </Fragment>
-      ))}
+      <WindowScroller>
+        {({ height, registerChild, scrollTop, onChildScroll }) => (
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <div ref={registerChild}>
+                <List
+                  ref={listRef}
+                  autoHeight
+                  width={width}
+                  height={height}
+                  onScroll={onChildScroll}
+                  rowHeight={cache.current.rowHeight}
+                  rowCount={numCollectionsToDisplay}
+                  scrollTop={scrollTop}
+                  deferredMeasurementCache={cache.current}
+                  rowRenderer={rowRenderer}
+                  overscanIndicesGetter={({
+                    cellCount,
+                    overscanCellsCount,
+                    startIndex,
+                    stopIndex,
+                  }) => ({
+                    overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+                    overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
+                  })}
+                />
+              </div>
+            )}
+          </AutoSizer>
+        )}
+      </WindowScroller>
     </StyledUserGalleryCollections>
   );
 }
