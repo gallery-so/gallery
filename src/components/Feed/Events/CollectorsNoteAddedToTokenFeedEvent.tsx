@@ -16,6 +16,7 @@ import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
@@ -114,7 +115,9 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
           </StyledMediaWrapper>
           <Spacer width={MIDDLE_GAP} />
           <StyledNoteWrapper>
-            <StyledNote>{unescape(event.newCollectorsNote ?? '')}</StyledNote>
+            <StyledNote>
+              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+            </StyledNote>
           </StyledNoteWrapper>
         </StyledContent>
       </StyledEvent>
