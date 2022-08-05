@@ -123,7 +123,7 @@ export function InteractiveLinkNeedsVerification({
       showModal({
         content: <NavigateConfirmation href={href} />,
         isFullPage: false,
-        headerText: 'Are you sure?',
+        headerText: 'Leaving gallery.so?',
       });
     },
     [showModal, track]
