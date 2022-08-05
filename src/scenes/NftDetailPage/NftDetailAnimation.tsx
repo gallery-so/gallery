@@ -46,7 +46,13 @@ function NftDetailAnimation({ mediaRef }: Props) {
 
   return (
     <StyledNftDetailAnimation>
-      <StyledIframe src={processIFrameRenderUrl(contentRenderURL)} onLoad={setContentIsLoaded} />
+      <StyledIframe
+        src={processIFrameRenderUrl(contentRenderURL)}
+        onLoad={setContentIsLoaded}
+        // Lets the resource run scripts (but not create popup windows): https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+        // More specifically, this prevents the rendered iframe from displaying Alerts
+        sandbox="allow-scripts"
+      />
     </StyledNftDetailAnimation>
   );
 }
@@ -59,7 +65,7 @@ const StyledIframe = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  min-height: min(500px, 70vh);
+  aspect-ratio: 1;
 `;
 
 export default NftDetailAnimation;

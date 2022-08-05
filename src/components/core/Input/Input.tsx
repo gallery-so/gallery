@@ -11,14 +11,16 @@ type Props = {
   defaultValue?: string;
   autoFocus?: boolean;
   errorMessage?: string;
+  variant?: 'grande' | 'medium';
 };
 
-function BigInput({
+function Input({
   onChange = noop,
   placeholder,
   defaultValue,
   autoFocus = false,
   errorMessage,
+  variant = 'medium',
 }: Props) {
   return (
     <>
@@ -32,6 +34,7 @@ function BigInput({
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck="false"
+        variant={variant}
       />
       {errorMessage && (
         <>
@@ -43,13 +46,13 @@ function BigInput({
   );
 }
 
-const StyledBigInput = styled.input`
-  padding: 12px;
-  border: 0;
-  font-size: 32px;
-  font-family: 'GT Alpina';
-  line-height: 36px;
+const StyledBigInput = styled.input<{ variant: Props['variant'] }>`
+  font-family: GT Alpina, serif;
+  padding: ${({ variant }) => (variant === 'grande' ? 12 : 8)}px;
+  font-size: ${({ variant }) => (variant === 'grande' ? 32 : 16)}px;
+  line-height: ${({ variant }) => (variant === 'grande' ? 32 : 20)}px;
   letter-spacing: -0.03em;
+  border: 0;
   background: ${colors.faint};
   color: ${colors.offBlack};
 
@@ -58,4 +61,4 @@ const StyledBigInput = styled.input`
   }
 `;
 
-export default BigInput;
+export default Input;

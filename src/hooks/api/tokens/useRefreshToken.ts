@@ -17,7 +17,7 @@ export function useRefreshToken() {
           __typename
           message
         }
-        ... on ErrOpenSeaRefreshFailed {
+        ... on ErrSyncFailed {
           __typename
           message
         }
@@ -30,8 +30,12 @@ export function useRefreshToken() {
       const response = await refreshTokenMutate({ variables: { id: tokenId } });
       if (
         response.refreshToken?.__typename === 'ErrInvalidInput' ||
-        response.refreshToken?.__typename === 'ErrOpenSeaRefreshFailed'
+        response.refreshToken?.__typename === 'ErrSyncFailed'
       ) {
+        if (response.refreshToken?.message?.includes('context deadline exceeded')) {
+          // don't show timeout errors because that means the refresh is still continuing async
+          return;
+        }
         throw new Error(`Could not refresh token: ${response.refreshToken?.message}`);
       }
     },

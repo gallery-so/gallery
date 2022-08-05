@@ -34,7 +34,6 @@ import TextButton from 'components/core/Button/TextButton';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { THREE_ARROWS_CAPITAL_BANNER_KEY } from 'constants/storageKeys';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import { useIs3acProfilePage } from 'hooks/oneOffs/useIs3ac';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -349,8 +348,6 @@ function GlobalNavbarWithFadeEnabled({
     [handleFadeNavbarOnHover]
   );
 
-  const is3acProfilePage = useIs3acProfilePage();
-
   return (
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
@@ -359,19 +356,7 @@ function GlobalNavbarWithFadeEnabled({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isBannerVisible && !is3acProfilePage ? (
-        <Banner
-          queryRef={query}
-          text="The Unofficial Three Arrows Capital (3AC) Gallery is open for viewing."
-          localStorageKey={THREE_ARROWS_CAPITAL_BANNER_KEY}
-          actionComponent={
-            <StyledUnstyledLink href="/3ac">
-              <TextButton text="View Gallery" />
-            </StyledUnstyledLink>
-          }
-          dismissOnActionComponentClick
-        />
-      ) : null}
+      {isBannerVisible ? <Banner queryRef={query} text="" /> : null}
       <GlobalNavbar
         queryRef={query}
         customLeftContent={customLeftContent}

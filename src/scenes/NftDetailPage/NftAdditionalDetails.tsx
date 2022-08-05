@@ -12,7 +12,6 @@ import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { NftAdditionalDetailsQuery } from '__generated__/NftAdditionalDetailsQuery.graphql';
 
 type Props = {
-  authenticatedUserOwnsAsset: boolean;
   contractAddress: string | null;
   tokenId: string | null;
   dbId: string | null;
@@ -42,13 +41,7 @@ export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) 
 
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
-function NftAdditionalDetails({
-  authenticatedUserOwnsAsset,
-  contractAddress,
-  dbId,
-  tokenId,
-  externalUrl,
-}: Props) {
+function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: Props) {
   const query = useLazyLoadQuery<NftAdditionalDetailsQuery>(
     graphql`
       query NftAdditionalDetailsQuery {
@@ -115,12 +108,11 @@ function NftAdditionalDetails({
                 <InteractiveLink href={getOpenseaExternalUrl(contractAddress, tokenId)}>
                   View on OpenSea
                 </InteractiveLink>
-                {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) &&
-                  authenticatedUserOwnsAsset && (
-                    <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
-                      Refresh metadata
-                    </InteractiveLink>
-                  )}
+                {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
+                  <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
+                    Refresh metadata
+                  </InteractiveLink>
+                )}
               </>
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}

@@ -16,20 +16,25 @@ import unescape from 'utils/unescape';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
+import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: Props) {
+export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
         eventTime
         owner @required(action: THROW) {
           username
+          ...HoverCardOnUsernameFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -45,6 +50,15 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const tokensToPreview = useMemo(() => {
@@ -71,10 +85,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
       <StyledEvent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
-            added a description to
+            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description to
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>
@@ -82,7 +93,9 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef }: P
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
         <Spacer height={8} />
-        <StyledQuote>{unescape(event.newCollectorsNote ?? '')}</StyledQuote>
+        <StyledQuote>
+          <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+        </StyledQuote>
         <Spacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
         {showAdditionalPiecesIndicator && (

@@ -3,7 +3,7 @@ import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
-import BigInput from 'components/core/BigInput/BigInput';
+import Input from 'components/core/Input/Input';
 import Spacer from 'components/core/Spacer/Spacer';
 import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
@@ -154,11 +154,12 @@ function CollectionCreateOrEditForm({
   return (
     <StyledCollectionEditInfoForm>
       <Spacer height={16} />
-      <BigInput
+      <Input
         onChange={handleNameChange}
         defaultValue={unescapedCollectionName}
         placeholder="Collection name"
         autoFocus
+        variant="grande"
       />
       <Spacer height={16} />
       <StyledTextAreaWithCharCount

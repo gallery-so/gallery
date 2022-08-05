@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
+import noop from 'utils/noop';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container
@@ -14,9 +15,16 @@ type Props = {
   src: string;
   alt: string;
   heightType?: ContentHeightType;
+  onClick?: () => void;
 };
 
-export default function ImageWithLoading({ className, heightType, src, alt }: Props) {
+export default function ImageWithLoading({
+  className,
+  heightType,
+  src,
+  alt,
+  onClick = noop,
+}: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
 
   const maxHeight = useMemo(() => {
@@ -46,6 +54,7 @@ export default function ImageWithLoading({ className, heightType, src, alt }: Pr
       alt={alt}
       loading="lazy"
       onLoad={setContentIsLoaded}
+      onClick={onClick}
     />
   );
 }
@@ -60,4 +69,5 @@ export const StyledImageWithLoading = styled.img<StyledImageWithLoadingProps>`
   max-height: ${({ maxHeight }) => maxHeight};
   width: ${({ renderFullWidth }) => (renderFullWidth ? '100%' : 'auto')};
   max-width: 100%;
+  cursor: pointer;
 `;

@@ -33,7 +33,7 @@ const StyledPage = styled.div`
 // Apply a generalized version of Gallery's style to the body text
 const StyledContent = styled.div`
   max-width: 800px;
-  font-family: 'ABC Diatype';
+  font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 24px;
 

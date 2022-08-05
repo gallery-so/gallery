@@ -104,7 +104,10 @@ function NftPreview({
     [onClick]
   );
 
+  const columns = useCollectionColumns(collection);
+
   const shouldLiverender = tokenSettings?.renderLive;
+  const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
@@ -119,7 +122,7 @@ function NftPreview({
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo mediaRef={token.media} hideControls />;
     }
-    if (shouldLiverender && token.media?.__typename === 'HtmlMedia') {
+    if (isIFrameLiveDisplay) {
       return <NftDetailAnimation mediaRef={token} />;
     }
     return (
@@ -129,15 +132,18 @@ function NftPreview({
         size={previewSize * 2}
       />
     );
-  }, [disableLiverender, shouldLiverender, previewSize, token]);
+  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize]);
 
-  const columns = useCollectionColumns(collection);
-
-  // don't stretch to full width if column count is 1, as that causes the gradient to stretch...
-  // unless it's an SVG and the user is on safari, of course.
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
-  const fullWidth = columns > 1 || isFirefoxSvg;
+  // stretch the image to take up the full-width if...
+  const fullWidth =
+    // there are more than 1 columns in the layout
+    columns > 1 ||
+    // the asset is an SVG on firefox
+    isFirefoxSvg ||
+    // the asset is an iframe in single column mode
+    (columns === 1 && isIFrameLiveDisplay);
 
   return (
     <LinkToNftDetailView

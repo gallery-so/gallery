@@ -4,7 +4,7 @@ import isProduction from 'utils/isProduction';
 import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFragment.graphql';
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  REFRESH_METADATA: false,
+  REFRESH_METADATA: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
