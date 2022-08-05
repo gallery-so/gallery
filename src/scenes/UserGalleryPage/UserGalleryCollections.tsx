@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -88,6 +88,38 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     [nonNullCollections]
   );
 
+  const rowRenderer = useCallback(
+    ({ index, key, parent, style }: ListRowProps) => {
+      const collection = collectionsToDisplay[index];
+      return (
+        <CellMeasurer
+          cache={cache.current}
+          columnIndex={0}
+          rowIndex={index}
+          key={key}
+          parent={parent}
+        >
+          {({ registerChild, measure }) => {
+            return (
+              // @ts-ignore
+              <div ref={registerChild} key={key} style={style}>
+                <UserGalleryCollection
+                  queryRef={query}
+                  collectionRef={collection}
+                  mobileLayout={mobileLayout}
+                  cacheHeight={cache.current.getHeight(index, 0)}
+                  onLoad={measure}
+                />
+                <Spacer height={48} />
+              </div>
+            );
+          }}
+        </CellMeasurer>
+      );
+    },
+    [collectionsToDisplay, mobileLayout, query]
+  );
+
   const numCollectionsToDisplay = collectionsToDisplay.length;
 
   if (numCollectionsToDisplay === 0) {
@@ -97,35 +129,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
     return <EmptyGallery message={emptyGalleryMessage} />;
   }
-
-  const rowRenderer = ({ index, key, parent, style }: ListRowProps) => {
-    const collection = collectionsToDisplay[index];
-    return (
-      <CellMeasurer
-        cache={cache.current}
-        columnIndex={0}
-        rowIndex={index}
-        key={key}
-        parent={parent}
-      >
-        {({ registerChild, measure }) => {
-          return (
-            // @ts-ignore
-            <div ref={registerChild} key={key} style={style}>
-              <UserGalleryCollection
-                queryRef={query}
-                collectionRef={collection}
-                mobileLayout={mobileLayout}
-                cacheHeight={cache.current.getHeight(index, 0)}
-                onLoad={measure}
-              />
-              <Spacer height={48} />
-            </div>
-          );
-        }}
-      </CellMeasurer>
-    );
-  };
 
   return (
     <StyledUserGalleryCollections>
