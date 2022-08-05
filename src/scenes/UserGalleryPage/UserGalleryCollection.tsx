@@ -28,10 +28,17 @@ type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
+  cacheHeight: number;
   onLoad: () => void;
 };
 
-function UserGalleryCollection({ queryRef, collectionRef, mobileLayout, onLoad }: Props) {
+function UserGalleryCollection({
+  queryRef,
+  collectionRef,
+  mobileLayout,
+  onLoad,
+  cacheHeight,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
@@ -83,8 +90,11 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout, onLoad }
   const { height: collectionElHeight } = useResizeObserver(componentRef);
 
   useEffect(() => {
-    onLoad();
-  }, [collectionElHeight, onLoad]);
+    // If the latest height is greater than the cache height, then we know that the collection has been expanded.
+    if (collectionElHeight > cacheHeight) {
+      onLoad();
+    }
+  }, [collectionElHeight, onLoad, cacheHeight]);
 
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: collectionUrl });

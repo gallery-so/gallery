@@ -116,6 +116,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                 queryRef={query}
                 collectionRef={collection}
                 mobileLayout={mobileLayout}
+                cacheHeight={cache.current.getHeight(index, 0)}
                 onLoad={measure}
               />
               <Spacer height={48} />
