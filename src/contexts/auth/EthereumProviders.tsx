@@ -70,7 +70,7 @@ const myCustomTheme = merge(lightTheme(), {
 
 const { chains, provider } = configureChains(defaultChains, [
   // TODO: move this to env and rotate creds
-  infuraProvider({ infuraId: '84842078b09946638c03157f83405213' }),
+  infuraProvider({ apiKey: '84842078b09946638c03157f83405213' }),
   publicProvider(),
 ]);
 
