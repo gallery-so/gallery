@@ -22,7 +22,7 @@
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@rainbow-me/rainbowkit": "^0.4.4",
-    "@sentry/nextjs": "^6.19.7",
+    "@sentry/nextjs": "^7.9.0",
     "@testing-library/react-hooks": "^8.0.0",
     "@types/relay-test-utils": "^6.0.5",
     "@web3-react/abstract-connector": "^6.0.7",
