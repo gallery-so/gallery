@@ -339,7 +339,6 @@ function StagingArea({ tokensRef }: Props) {
             <DroppableSection
               key={sectionId}
               id={sectionId}
-              label={`Section ${sectionId}`}
               items={localStagedCollection[sectionId].items}
               columns={localStagedCollection[sectionId].columns}
             >
@@ -375,7 +374,6 @@ function StagingArea({ tokensRef }: Props) {
                 itemWidth={IMAGE_SIZES[localStagedCollection[activeId].columns]}
                 columns={localStagedCollection[activeId].columns}
                 nftFragmentsKeyedByID={nftFragmentsKeyedByID}
-                label={`Section ${activeId}`}
               />
             ) : (
               activeItem && (

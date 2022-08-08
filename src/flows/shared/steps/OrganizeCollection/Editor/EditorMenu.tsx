@@ -26,11 +26,7 @@ function EditorMenu({ viewerRef }: Props) {
 
   return (
     <StyledEditorMenu>
-      {activeSectionId ? (
-        <StyledTitleS>Section {activeSectionId}</StyledTitleS>
-      ) : (
-        <StyledTitleS>Collection settings</StyledTitleS>
-      )}
+      <StyledTitleS>{activeSectionId ? 'Section' : 'Collection'} Settings</StyledTitleS>
       <StyledSidebarItem>
         {activeSectionId && <ColumnAdjuster activeSectionId={activeSectionId} viewerRef={viewer} />}
       </StyledSidebarItem>

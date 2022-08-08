@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { isEditModeToken, StagingItem } from '../../types';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
@@ -8,7 +9,6 @@ type Props = {
   itemWidth: number;
   columns: number;
   nftFragmentsKeyedByID: any;
-  label: string;
 };
 
 export default function SectionDragging({
@@ -16,25 +16,30 @@ export default function SectionDragging({
   itemWidth,
   columns,
   nftFragmentsKeyedByID,
-  label,
 }: Props) {
   return (
-    <Section label={label} isDragging isEmpty={items.length === 0} columns={columns}>
-      {items.map((item) => {
-        const size = itemWidth;
-        const stagedItemRef = nftFragmentsKeyedByID[item.id];
-        if (isEditModeToken(item) && stagedItemRef) {
-          return (
-            <SortableStagedNft
-              key={item.id}
-              tokenRef={stagedItemRef}
-              size={size}
-              mini={columns > 4}
-            />
-          );
-        }
-        return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
-      })}
-    </Section>
+    <StyledDraggingWrapper>
+      <Section isDragging isEmpty={items.length === 0} columns={columns}>
+        {items.map((item) => {
+          const size = itemWidth;
+          const stagedItemRef = nftFragmentsKeyedByID[item.id];
+          if (isEditModeToken(item) && stagedItemRef) {
+            return (
+              <SortableStagedNft
+                key={item.id}
+                tokenRef={stagedItemRef}
+                size={size}
+                mini={columns > 4}
+              />
+            );
+          }
+          return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
+        })}
+      </Section>
+    </StyledDraggingWrapper>
   );
 }
+
+const StyledDraggingWrapper = styled.div`
+  box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
+`;

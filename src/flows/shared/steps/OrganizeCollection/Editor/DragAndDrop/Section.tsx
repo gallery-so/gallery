@@ -63,9 +63,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
         tabIndex={onClick ? 0 : undefined}
         isActive={isActive || isDragging}
       >
-        {/* <StyledLabelWrapper> */}
-        <Handle isActive={isActive || isDragging} isDragging={isDragging} {...handleProps}></Handle>
-        {/* </StyledLabelWrapper> */}
+        <Handle isActive={isActive || isDragging} isDragging={isDragging} {...handleProps} />
         <StyledItemContainer columns={columns}>
           {isEmpty ? (
             <StyledEmptySectionMessage>
@@ -117,7 +115,7 @@ const StyledLabelText = styled(TitleDiatypeM)`
   color: ${colors.white};
 `;
 
-const StyledItemContainer = styled.div<{ columns: number }>`
+const StyledItemContainer = styled.div<{ columns: number | undefined }>`
   display: flex;
   flex-wrap: wrap;
   padding: 0 12px 12px;
