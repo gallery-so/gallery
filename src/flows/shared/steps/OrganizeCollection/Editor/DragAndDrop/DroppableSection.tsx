@@ -17,7 +17,6 @@ type Props = {
   columns?: number;
   id: string;
   items: any[];
-  label: string;
 };
 
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
