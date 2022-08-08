@@ -7,6 +7,9 @@ import {
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import styled from 'styled-components';
+import { TitleDiatypeM } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
+import Spacer from 'components/core/Spacer/Spacer';
 
 type Props = {
   children: React.ReactNode;
@@ -20,14 +23,7 @@ type Props = {
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
   defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
-export default function DroppableSection({
-  children,
-  columns = 2,
-  id,
-  items,
-  style,
-  ...props
-}: Props) {
+export default function DroppableSection({ children, columns, id, items, style, ...props }: Props) {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
   const { attributes, isDragging, listeners, setNodeRef, transition, transform } = useSortable({
     id,
@@ -38,7 +34,7 @@ export default function DroppableSection({
     animateLayoutChanges,
   });
 
-  const { setActiveSectionIdState } = useCollectionEditorActions();
+  const { setActiveSectionIdState, addSection } = useCollectionEditorActions();
 
   // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
   const handleMouseDown = useCallback(() => {
@@ -47,6 +43,10 @@ export default function DroppableSection({
 
   const activeSectionId = useActiveSectionIdState();
   const isActive = activeSectionId === id;
+
+  const handleAddSectionClick = useCallback(() => {
+    addSection();
+  }, [addSection]);
 
   return (
     <StyledSectionWrapper onMouseDown={handleMouseDown}>
@@ -69,10 +69,34 @@ export default function DroppableSection({
       >
         {children}
       </Section>
+      {isActive && !isDragging && (
+        <>
+          <Spacer height={16} />
+          <StyledAddSectionButton onClick={handleAddSectionClick}>
+            <TitleDiatypeM color={colors.white}>+</TitleDiatypeM>
+          </StyledAddSectionButton>
+        </>
+      )}
     </StyledSectionWrapper>
   );
 }
 
 const StyledSectionWrapper = styled.div`
-  margin: 10px;
+  margin: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const StyledAddSectionButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  border: 0;
+  color: ${colors.white};
+  background-color: ${colors.activeBlue};
+  cursor: pointer;
 `;

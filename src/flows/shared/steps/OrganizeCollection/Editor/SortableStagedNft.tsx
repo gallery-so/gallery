@@ -15,6 +15,7 @@ import LiveDisplayButton, {
   StyledVideoEnabledIcon,
 } from './LiveDisplayButton';
 import isLiveMediaType from 'utils/isLiveMediaType';
+import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -72,8 +73,6 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [contractAddress]
   );
 
-  const paddingBetweenItemsPx = 32;
-
   const isLiveType = isLiveMediaType(token.media?.__typename);
 
   return (
@@ -83,7 +82,6 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
       active={isDragging}
       style={style}
       backgroundColorOverride={backgroundColorOverride}
-      paddingBetweenItems={paddingBetweenItemsPx}
     >
       <StagedNftImage
         tokenRef={token}
@@ -115,7 +113,6 @@ const StyledUnstageButton = styled(UnstageButton)`
 
 export const StyledSortableNft = styled.div<{
   backgroundColorOverride: string;
-  paddingBetweenItems: number;
 }>`
   position: relative;
   -webkit-backface-visibility: hidden;
@@ -125,7 +122,7 @@ export const StyledSortableNft = styled.div<{
   }
   cursor: grab;
 
-  margin: ${({ paddingBetweenItems }) => paddingBetweenItems / 2}px;
+  margin: ${SPACE_BETWEEN_ITEMS / 2}px;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};

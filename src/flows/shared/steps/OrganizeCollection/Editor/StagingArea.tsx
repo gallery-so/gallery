@@ -27,7 +27,6 @@ import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter
 
 import {
   useCollectionEditorActions,
-  useCollectionMetadataState,
   useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { MENU_WIDTH } from './EditorMenu';
@@ -42,8 +41,6 @@ import { removeNullValues } from 'utils/removeNullValues';
 import { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
-import colors from 'components/core/colors';
-import { TitleDiatypeM } from 'components/core/Text/Text';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -93,10 +90,8 @@ function StagingArea({ tokensRef }: Props) {
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
 
-  const { setStagedCollectionState, reorderTokensWithinSection, reorderSection, addSection } =
+  const { setStagedCollectionState, reorderTokensWithinSection, reorderSection } =
     useCollectionEditorActions();
-
-  const collectionMetadata = useCollectionMetadataState();
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
@@ -198,9 +193,6 @@ function StagingArea({ tokensRef }: Props) {
       if (!overId || active.id in localStagedCollection) {
         return;
       }
-      // if (!overId) {
-      //   return;
-      // }
 
       const overSectionId = findSection(overId);
       const activeSectionId = findSection(activeId);
@@ -229,15 +221,8 @@ function StagingArea({ tokensRef }: Props) {
 
           newIndex = newSectionItems.length + 1;
         } else {
-          // if the target is an item, drop the item immediately before or after the target, depending on relative drag position
-          // const isBelowOverItem =
-          //   over &&
-          //   active.rect.current.translated &&
-          //   active.rect.current.translated.top > over.rect.top + over.rect.height;
-
-          const modifier = 1;
           newIndex =
-            newSectionItemIndex >= 0 ? newSectionItemIndex + modifier : newSectionItems.length + 1;
+            newSectionItemIndex >= 0 ? newSectionItemIndex + 1 : newSectionItems.length + 1;
         }
 
         recentlyMovedToNewContainer.current = true;
@@ -275,10 +260,6 @@ function StagingArea({ tokensRef }: Props) {
       const overId = over?.id;
       const overSectionId = findSection(overId);
 
-      // if (!activeSectionId) {
-      //   setActiveId(null);
-      //   return;
-      // }
       if (!activeSectionId || overId == null) {
         setActiveId(null);
         return;
@@ -337,10 +318,6 @@ function StagingArea({ tokensRef }: Props) {
 
   const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
 
-  const handleAddSectionClick = useCallback(() => {
-    addSection();
-  }, [addSection]);
-
   // fragment ref to the item being dragged
   const activeItemRef = activeId && nftFragmentsKeyedByID[activeId];
 
@@ -364,6 +341,7 @@ function StagingArea({ tokensRef }: Props) {
               id={sectionId}
               label={`Section ${sectionId}`}
               items={localStagedCollection[sectionId].items}
+              columns={localStagedCollection[sectionId].columns}
             >
               {/* Handles sorting for items in each section */}
               <SortableContext
@@ -388,9 +366,6 @@ function StagingArea({ tokensRef }: Props) {
               </SortableContext>
             </DroppableSection>
           ))}
-          <StyledAddSectionButton onClick={handleAddSectionClick}>
-            <TitleDiatypeM color={colors.white}>+</TitleDiatypeM>
-          </StyledAddSectionButton>
         </SortableContext>
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId ? (
@@ -442,19 +417,6 @@ const StyledStagingArea = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-const StyledAddSectionButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  height: 20px;
-  width: 20px;
-  border: 0;
-  color: ${colors.white};
-  background-color: ${colors.activeBlue};
-  cursor: pointer;
 `;
 
 export default memo(StagingArea);

@@ -19,7 +19,7 @@ export default function SectionDragging({
   label,
 }: Props) {
   return (
-    <Section label={label} isDragging isEmpty={items.length === 0}>
+    <Section label={label} isDragging isEmpty={items.length === 0} columns={columns}>
       {items.map((item) => {
         const size = itemWidth;
         const stagedItemRef = nftFragmentsKeyedByID[item.id];

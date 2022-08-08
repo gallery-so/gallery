@@ -209,15 +209,23 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const addSection = useCallback(() => {
+    const newSectionId = generate12DigitId();
     setStagedCollectionState((previous) => {
-      const newSectionId = generate12DigitId();
-      setActiveSectionIdState(newSectionId);
-      return {
-        ...previous,
-        [newSectionId]: { columns: DEFAULT_COLUMN_SETTING, items: [] },
-      };
+      const previousOrder = Object.keys(previous); // get previous order as list of section ids
+      const activeIndex = previousOrder.findIndex((id) => id === activeSectionIdState);
+      return previousOrder.reduce((acc, sectionId, index) => {
+        if (index === activeIndex) {
+          return {
+            ...acc,
+            [sectionId]: previous[sectionId],
+            [newSectionId]: { columns: DEFAULT_COLUMN_SETTING, items: [] },
+          };
+        }
+        return { ...acc, [sectionId]: previous[sectionId] };
+      }, {});
     });
-  }, []);
+    setActiveSectionIdState(newSectionId);
+  }, [activeSectionIdState]);
 
   const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
     setStagedCollectionState((previous) => {
