@@ -1,10 +1,13 @@
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
-import InteractiveLink from '../InteractiveLink/InteractiveLink';
+import InteractiveLink, {
+  InteractiveLinkNeedsVerification,
+} from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
 
 type PublicProps = {
   text: string;
+  inheritLinkStyling?: boolean;
   CustomInternalLinkComponent?: React.FunctionComponent<{ href: string }>;
 };
 
@@ -27,7 +30,12 @@ type BaseProps = {
   allowedElements: string[];
 } & PublicProps;
 
-function BaseMarkdown({ text, CustomInternalLinkComponent, allowedElements }: BaseProps) {
+function BaseMarkdown({
+  text,
+  CustomInternalLinkComponent,
+  allowedElements,
+  inheritLinkStyling = false,
+}: BaseProps) {
   return (
     <ReactMarkdown
       components={{
@@ -40,9 +48,17 @@ function BaseMarkdown({ text, CustomInternalLinkComponent, allowedElements }: Ba
               );
             }
             if (isInternalLink) {
-              return <InteractiveLink to={href}>{children}</InteractiveLink>;
+              return (
+                <InteractiveLink inheritLinkStyling={inheritLinkStyling} to={href}>
+                  {children}
+                </InteractiveLink>
+              );
             }
-            return <InteractiveLink href={href}>{children}</InteractiveLink>;
+            return (
+              <InteractiveLinkNeedsVerification inheritLinkStyling={inheritLinkStyling} href={href}>
+                {children}
+              </InteractiveLinkNeedsVerification>
+            );
           }
           // if href is blank, we must render the empty string this way;
           // simply rendering `children` causes the markdown library to crash

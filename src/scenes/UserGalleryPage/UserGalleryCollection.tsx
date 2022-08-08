@@ -3,7 +3,7 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -22,14 +22,23 @@ import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/Co
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import useResizeObserver from 'hooks/useResizeObserver';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
+  cacheHeight: number;
+  onLoad: () => void;
 };
 
-function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
+function UserGalleryCollection({
+  queryRef,
+  collectionRef,
+  mobileLayout,
+  onLoad,
+  cacheHeight,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
@@ -67,15 +76,25 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   const router = useRouter();
 
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectorsNote ?? ''),
-    [collection.collectorsNote]
-  );
+  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectorsNote ?? ''), [
+    collection.collectorsNote,
+  ]);
 
   const username = router.query.username as string;
   const collectionUrl = `/${username}/${collection.dbid}`;
 
   const track = useTrack();
+
+  // Get height of this component
+  const componentRef = useRef<HTMLDivElement>(null);
+  const { height: collectionElHeight } = useResizeObserver(componentRef);
+
+  useEffect(() => {
+    // If the latest height is greater than the cache height, then we know that the collection has been expanded.
+    if (collectionElHeight > cacheHeight) {
+      onLoad();
+    }
+  }, [collectionElHeight, onLoad, cacheHeight]);
 
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: collectionUrl });
@@ -98,7 +117,7 @@ function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props)
   }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
 
   return (
-    <StyledCollectionWrapper>
+    <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrl}>
