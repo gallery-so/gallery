@@ -2,12 +2,10 @@ import breakpoints from 'components/core/breakpoints';
 import { DisplayLayout } from 'components/core/enums';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { insertWhitespaceBlocks } from 'utils/collectionLayout';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
-import { useCollectionColumns } from 'hooks/useCollectionColumns';
-import { removeNullValues } from 'utils/removeNullValues';
+import { parseCollectionLayout } from 'utils/collectionLayout';
 import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
 
 type Props = {
@@ -21,59 +19,77 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
       fragment NftGalleryFragment on Collection {
         dbid
         layout {
-          columns
-          whitespace
+          sections
+          sectionLayout {
+            columns
+            whitespace
+          }
         }
         tokens {
           id
           ...GalleryNftPreviewWrapperFragment
         }
-
-        ...useCollectionColumnsFragment
       }
     `,
     collectionRef
   );
 
-  const columns = useCollectionColumns(collection);
-
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
-  const nonNullWhitespace = removeNullValues(collection.layout?.whitespace);
 
-  const collectionWithWhitespace = useMemo(
-    () => insertWhitespaceBlocks(collection.tokens ?? [], nonNullWhitespace),
-    [collection.tokens, nonNullWhitespace]
-  );
-
-  const itemsToDisplay = useMemo(
-    () => (hideWhitespace ? collection.tokens : collectionWithWhitespace),
-    [collection.tokens, collectionWithWhitespace, hideWhitespace]
-  );
+  const parsedCollection = useMemo(() => {
+    if (!collection.tokens) {
+      return {};
+    }
+    return parseCollectionLayout(collection.tokens, collection.layout, hideWhitespace);
+  }, [collection.layout, collection.tokens, hideWhitespace]);
 
   return (
-    <StyledCollectionNfts
-      columns={columns}
-      mobileLayout={mobileLayout}
-      // we used this option for figure31's gallery. in the future, if we want
-      // to enable 10-column grids for any user, we can enable this
-      reducedGridGap={false}
-    >
-      {itemsToDisplay?.map((galleryNft) => {
-        if (!galleryNft) {
-          return;
-        }
+    <StyledCollectionTokens>
+      {Object.keys(parsedCollection).map((sectionId) => {
+        const section = parsedCollection[sectionId];
+        return (
+          <StyledSection
+            key={sectionId}
+            columns={section.columns}
+            mobileLayout={mobileLayout}
+            // we used this option for figure31's gallery. in the future, if we want
+            // to enable 10-column grids for any user, we can enable this
+            reducedGridGap={false}
+          >
+            {section.items?.map((token) => {
+              if (!token) {
+                return;
+              }
 
-        if ('whitespace' in galleryNft) {
-          return <StyledWhitespaceBlock key={galleryNft.id} />;
-        }
+              if ('whitespace' in token) {
+                return <StyledWhitespaceBlock key={token.id} />;
+              }
 
-        return <NftPreviewWrapper key={galleryNft.id} galleryNftRef={galleryNft} />;
+              return (
+                <NftPreviewWrapper key={token.id} tokenRef={token} columns={section.columns} />
+              );
+            })}
+          </StyledSection>
+        );
       })}
-    </StyledCollectionNfts>
+    </StyledCollectionTokens>
   );
 }
 
-const StyledCollectionNfts = styled.div<{
+const StyledCollectionTokens = styled.div`
+  display: grid;
+  grid-gap: 10px 0px;
+
+  @media only screen and ${breakpoints.tablet} {
+    grid-gap: 20px 0px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    grid-gap: 40px 0px;
+  }
+`;
+
+const StyledSection = styled.div<{
   columns: number;
   mobileLayout: DisplayLayout;
   reducedGridGap: boolean;

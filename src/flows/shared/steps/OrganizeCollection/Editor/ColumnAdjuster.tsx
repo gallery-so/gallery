@@ -1,12 +1,13 @@
+import { UniqueIdentifier } from '@dnd-kit/core';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
-  useCollectionMetadataState,
+  useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import useMaxColumns from 'contexts/collectionEditor/useMaxColumns';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
@@ -15,9 +16,10 @@ import { ColumnAdjusterFragment$key } from '__generated__/ColumnAdjusterFragment
 
 type Props = {
   viewerRef: ColumnAdjusterFragment$key;
+  activeSectionId: UniqueIdentifier;
 };
 
-function ColumnAdjuster({ viewerRef }: Props) {
+function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   const viewer = useFragment(
     graphql`
       fragment ColumnAdjusterFragment on Viewer {
@@ -27,26 +29,32 @@ function ColumnAdjuster({ viewerRef }: Props) {
     viewerRef
   );
 
-  const collectionMetadata = useCollectionMetadataState();
+  const stagedCollectionState = useStagedCollectionState();
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
-  const columns = useMemo(
-    () => collectionMetadata.layout.columns,
-    [collectionMetadata.layout.columns]
-  );
+  const activeSection = stagedCollectionState[activeSectionId];
+  const columns = activeSection.columns;
 
   const maxColumns = useMaxColumns(viewer);
+  const handleIncrementClick = useCallback(
+    () => incrementColumns(activeSectionId),
+    [activeSectionId, incrementColumns]
+  );
+  const handleDecrementClick = useCallback(
+    () => decrementColumns(activeSectionId),
+    [activeSectionId, decrementColumns]
+  );
 
   return (
     <StyledColumnAdjuster>
       <BaseM>Columns</BaseM>
       <Spacer width={24} />
       <StyledButtonContainer>
-        <StyledColumnButton onClick={decrementColumns} disabled={columns <= 1}>
+        <StyledColumnButton onClick={handleDecrementClick} disabled={columns <= 1}>
           <CircleMinusIcon />
         </StyledColumnButton>
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton onClick={incrementColumns} disabled={columns >= maxColumns}>
+        <StyledColumnButton onClick={handleIncrementClick} disabled={columns >= maxColumns}>
           <CirclePlusIcon />
         </StyledColumnButton>
       </StyledButtonContainer>

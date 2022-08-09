@@ -12,7 +12,6 @@ import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql
 import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
 import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { useCollectionColumns } from 'hooks/useCollectionColumns';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
@@ -25,6 +24,7 @@ type Props = {
   onClick?: () => void;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
+  columns?: number;
 };
 
 function NftPreview({
@@ -34,6 +34,7 @@ function NftPreview({
   onClick,
   hideLabelOnMobile = false,
   disableLiverender = false,
+  columns = 3,
 }: Props) {
   const { token, collection, tokenSettings } = useFragment(
     graphql`
@@ -71,7 +72,6 @@ function NftPreview({
               username
             }
           }
-          ...useCollectionColumnsFragment
         }
         ...NftDetailViewFragment
       }
@@ -103,8 +103,6 @@ function NftPreview({
     },
     [onClick]
   );
-
-  const columns = useCollectionColumns(collection);
 
   const shouldLiverender = tokenSettings?.renderLive;
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');

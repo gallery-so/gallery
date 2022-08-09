@@ -14,10 +14,10 @@
     "find-unused-modules": "ts-prune -s .graphql.ts -i pages/"
   },
   "dependencies": {
-    "@dnd-kit/core": "^3.0.1",
-    "@dnd-kit/modifiers": "^2.0.0",
-    "@dnd-kit/sortable": "^3.0.1",
-    "@dnd-kit/utilities": "^2.0.0",
+    "@dnd-kit/core": "^6.0.5",
+    "@dnd-kit/modifiers": "^6.0.0",
+    "@dnd-kit/sortable": "^7.0.1",
+    "@dnd-kit/utilities": "^3.2.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",

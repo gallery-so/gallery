@@ -55,7 +55,7 @@ function SidebarNftIcon({
     } else {
       stageTokens([editModeToken]);
     }
-  }, [setTokensIsSelected, id, isSelected, unstageTokens, stageTokens, editModeToken]);
+  }, [setTokensIsSelected, id, isSelected, unstageTokens, editModeToken, stageTokens]);
 
   const mountRef = useRef(false);
 

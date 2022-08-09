@@ -4,7 +4,7 @@ import { WizardContext } from 'react-albus';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
-  useStagedItemsState,
+  useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
@@ -18,6 +18,7 @@ import CollectionCreateOrEditForm from './CollectionCreateOrEditForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery, usePreloadedQuery } from 'react-relay';
 import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
+import { useToastActions } from 'contexts/toast/ToastContext';
 
 type ConfigProps = {
   push: WizardContext['push'];
@@ -29,7 +30,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
   const { showModal } = useModalActions();
   const wizardId = useWizardId();
 
-  const stagedItems = useStagedItemsState();
+  const stagedCollectionState = useStagedCollectionState();
 
   const updateCollection = useUpdateCollectionTokens();
   const { collectionIdBeingEdited } = useCollectionWizardState();
@@ -44,6 +45,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
   }, [push, setCollectionIdBeingEdited]);
 
   const track = useTrack();
+  const { pushToast } = useToastActions();
 
   useEffect(() => {
     // If collection is being edited, trigger update
@@ -53,12 +55,17 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
         try {
           await updateCollection({
             collectionId: collectionIdBeingEdited,
-            stagedNfts: stagedItems,
-            collectionLayout: collectionMetadata.layout,
+            stagedCollection: stagedCollectionState,
             tokenSettings: collectionMetadata.tokenSettings,
           });
-        } catch {
-          // TODO: display error toast here
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            pushToast({
+              message:
+                'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+            });
+            return;
+          }
         }
 
         goToOrganizeGalleryStep();
@@ -76,8 +83,7 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
           <CollectionCreateOrEditForm
             onNext={goToOrganizeGalleryStep}
             galleryId={galleryId}
-            stagedItems={stagedItems}
-            layout={collectionMetadata.layout}
+            stagedCollection={stagedCollectionState}
             tokenSettings={collectionMetadata.tokenSettings}
           />
         ),
@@ -99,9 +105,10 @@ function useWizardConfig({ push, galleryId }: ConfigProps) {
     updateCollection,
     wizardId,
     collectionMetadata,
-    stagedItems,
     track,
     galleryId,
+    stagedCollectionState,
+    pushToast,
   ]);
 }
 
