@@ -1,12 +1,12 @@
 import colors from 'components/core/colors';
 import { TitleDiatypeM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { forwardRef, useCallback } from 'react';
+import { forwardRef } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
 import DragHandleIcon from 'src/icons/DragHandleIcon';
 import Spacer from 'components/core/Spacer/Spacer';
+import noop from 'utils/noop';
 
 interface Props {
   children: React.ReactNode;
@@ -20,8 +20,7 @@ interface Props {
   onRemove?(): void;
   isDragging?: boolean;
   isEmpty?: boolean;
-  id: string;
-  itemIds: string[];
+  handleDeleteSectionClick?(): void;
 }
 
 type HandleProps = {
@@ -72,17 +71,10 @@ export const Section = forwardRef<HTMLDivElement, Props>(
       isActive,
       isDragging = false,
       isEmpty = true,
-      id,
-      itemIds,
+      handleDeleteSectionClick = noop,
     }: Props,
     ref
   ) => {
-    const { deleteSection, setTokensIsSelected, unstageTokens } = useCollectionEditorActions();
-    const handleDeleteSectionClick = useCallback(() => {
-      setTokensIsSelected(itemIds, false);
-      unstageTokens(itemIds);
-      deleteSection(id);
-    }, [deleteSection, id, itemIds, setTokensIsSelected, unstageTokens]);
     return (
       <StyledSection
         ref={ref}
