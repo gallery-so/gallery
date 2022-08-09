@@ -89,8 +89,6 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
             captureException(error);
           }
 
-          console.log('got error', error, error instanceof Error);
-
           setError(normalizeError(error));
         }
       }

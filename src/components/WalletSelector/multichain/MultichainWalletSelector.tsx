@@ -7,7 +7,7 @@ import { MultichainWalletSelectorFragment$key } from '__generated__/MultichainWa
 import WalletButton from './WalletButton';
 import { useConnectEthereum } from './useConnectEthereum';
 import { ConnectionMode } from '../WalletSelector';
-import { SupportedChain, supportedChains } from './supportedChains';
+import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { EthereumAddWallet } from './EthereumAddWallet';
 
@@ -26,16 +26,14 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     queryRef
   );
 
-  const [selectedChain, setSelectedChain] = useState<SupportedChain>();
+  const [selectedAuthMethod, setSelectedAuthMethod] = useState<SupportedAuthMethod>();
   const reset = useCallback(() => {
-    setSelectedChain(undefined);
+    setSelectedAuthMethod(undefined);
   }, []);
 
   const connectEthereum = useConnectEthereum();
 
-  if (selectedChain) {
-    // TODO: fix situation when adding a wallet where metamask is selected but already connected
-
+  if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
@@ -43,13 +41,10 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         </StyledWalletSelector>
       );
     }
-
     if (connectionMode === AUTH) {
       return (
         <StyledWalletSelector>
-          {selectedChain === supportedChains.ethereum ? (
-            <EthereumAuthenticateWallet reset={reset} />
-          ) : null}
+          <EthereumAuthenticateWallet reset={reset} />
         </StyledWalletSelector>
       );
     }
@@ -58,14 +53,14 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   return (
     <StyledWalletSelector>
       <WalletButton
-        label="Ethereum"
+        label={supportedAuthMethods.ethereum.name}
         // TODO: ethereum icon
         icon="metamask"
         onClick={() => {
           connectEthereum().then(
             (address) => {
               console.log('connected with', address);
-              setSelectedChain(supportedChains.ethereum);
+              setSelectedAuthMethod(supportedAuthMethods.ethereum);
             },
             (error) => {
               console.log('failed to connect', error);
@@ -73,10 +68,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           );
         }}
       />
-      {/* Just fiddling with an alternative to "more wallets coming soon" */}
-      <WalletButton disabled label="Tezos" icon="gnosis_safe" />
-      <WalletButton disabled label="Solana" icon="gnosis_safe" />
-      <WalletButton disabled label="Gnosis Safe" icon="gnosis_safe" />
+      <WalletButton label={supportedAuthMethods.gnosisSafe.name} icon="gnosis_safe" />
     </StyledWalletSelector>
   );
 }
