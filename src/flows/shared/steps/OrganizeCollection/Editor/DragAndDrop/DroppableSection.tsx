@@ -7,9 +7,9 @@ import {
   useCollectionEditorActions,
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import styled from 'styled-components';
-import { TitleDiatypeM } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
+import PlusIcon from 'src/icons/PlusIcon';
 
 type Props = {
   children: React.ReactNode;
@@ -61,6 +61,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
           ...attributes,
           ...listeners,
         }}
+        id={id}
         columns={columns}
         {...props}
         isActive={isActive}
@@ -72,7 +73,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
         <>
           <Spacer height={16} />
           <StyledAddSectionButton onClick={handleAddSectionClick}>
-            <TitleDiatypeM color={colors.white}>+</TitleDiatypeM>
+            <StyledPlusIcon />
           </StyledAddSectionButton>
         </>
       )}
@@ -99,3 +100,5 @@ const StyledAddSectionButton = styled.button`
   background-color: ${colors.activeBlue};
   cursor: pointer;
 `;
+
+const StyledPlusIcon = styled(PlusIcon)``;

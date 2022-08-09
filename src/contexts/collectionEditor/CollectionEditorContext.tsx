@@ -78,6 +78,7 @@ type CollectionEditorActions = {
   reorderTokensWithinSection: (event: DragEndEvent, sectionId: UniqueIdentifier) => void;
   reorderSection: (event: DragEndEvent) => void;
   addSection: () => void;
+  deleteSection: (sectionId: UniqueIdentifier) => void;
   incrementColumns: (sectionId: UniqueIdentifier) => void;
   decrementColumns: (sectionId: UniqueIdentifier) => void;
   setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
@@ -173,6 +174,18 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
       return next;
     });
+
+    // remove any related token settings
+    setCollectionMetadataState((previous) => {
+      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
+      for (const id of ids) {
+        delete newTokenSettings[id];
+      }
+      return {
+        ...previous,
+        tokenSettings: newTokenSettings,
+      };
+    });
   }, []);
 
   const reorderTokensWithinSection = useCallback(
@@ -226,6 +239,28 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     });
     setActiveSectionIdState(newSectionId);
   }, [activeSectionIdState]);
+
+  const deleteSection = useCallback((sectionId: UniqueIdentifier) => {
+    let ids: string[] = [];
+    setStagedCollectionState((previous) => {
+      const next = { ...previous };
+      ids = next[sectionId].items.map((item) => item.id);
+      delete next[sectionId];
+      return next;
+    });
+
+    // remove any related token settings
+    setCollectionMetadataState((previous) => {
+      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
+      for (const id of ids) {
+        delete newTokenSettings[id];
+      }
+      return {
+        ...previous,
+        tokenSettings: newTokenSettings,
+      };
+    });
+  }, []);
 
   const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
     setStagedCollectionState((previous) => {
@@ -291,6 +326,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       reorderTokensWithinSection,
       reorderSection,
       addSection,
+      deleteSection,
       incrementColumns,
       decrementColumns,
       setTokenLiveDisplay,
@@ -305,6 +341,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
       reorderTokensWithinSection,
       reorderSection,
       addSection,
+      deleteSection,
       incrementColumns,
       decrementColumns,
       setTokenLiveDisplay,

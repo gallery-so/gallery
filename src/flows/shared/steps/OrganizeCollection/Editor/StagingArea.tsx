@@ -168,15 +168,21 @@ function StagingArea({ tokensRef }: Props) {
   const findSection = useCallback(
     (id: UniqueIdentifier | undefined) => {
       if (!id) {
-        return;
+        return '';
       }
       if (id in localStagedCollection) {
         return id;
       }
 
-      return Object.keys(localStagedCollection).find((key) =>
+      const sectionId = Object.keys(localStagedCollection).find((key) =>
         sectionContainsId(localStagedCollection[key], id)
       );
+
+      if (!sectionId) {
+        throw new Error(`Could not find section for active id: ${id}`);
+      }
+
+      return sectionId;
     },
     [localStagedCollection]
   );
@@ -383,7 +389,7 @@ function StagingArea({ tokensRef }: Props) {
                   size={
                     IMAGE_SIZES[
                       findSection(activeId)
-                        ? localStagedCollection[findSection(activeId)!].columns
+                        ? localStagedCollection[findSection(activeId)].columns
                         : 3
                     ]
                   }

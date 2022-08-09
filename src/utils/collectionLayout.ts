@@ -22,7 +22,9 @@ export function parseCollectionLayout<T>(
 ): CollectionWithLayout<T> {
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
-      const sectionEndIndex = collectionLayout.sections[index + 1] - 1 || tokens.length;
+      const sectionEndIndex = collectionLayout.sections[index + 1]
+        ? collectionLayout.sections[index + 1] - 1
+        : tokens.length;
       let section: ReadonlyArray<T | WhitespaceBlock> = tokens.slice(
         sectionStartIndex,
         sectionEndIndex + 1
@@ -39,6 +41,7 @@ export function parseCollectionLayout<T>(
     },
     {}
   );
+  console.log({ parsedCollection });
 
   return parsedCollection;
 }
@@ -71,20 +74,38 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
 export function generateLayoutFromCollection(collection: StagedCollection) {
   let sectionStartIndex = 0;
-  const sectionStartIndices = Object.keys(collection).map((sectionId, index) => {
+  const filteredCollection = { ...collection };
+  Object.keys(collection).forEach((sectionId) => {
+    let isEmptySection = collection[sectionId].items.length === 0;
+    if (!isEmptySection) {
+      // see if it's only empty whitespace blocks
+      const sectionWithoutWhitespace = collection[sectionId].items.filter((item) =>
+        isEditModeToken(item)
+      );
+      isEmptySection = sectionWithoutWhitespace.length === 0;
+    }
+    console.log(isEmptySection, collection[sectionId]);
+    if (isEmptySection) {
+      // delete empty section
+      delete filteredCollection[sectionId];
+    }
+    // if (collection[sectionId])
+  });
+
+  const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
     if (index === 0) {
       return sectionStartIndex;
     }
-    const previousSection = collection[Object.keys(collection)[index - 1]];
+    const previousSection = filteredCollection[Object.keys(filteredCollection)[index - 1]];
     sectionStartIndex += previousSection.items.filter((item) => isEditModeToken(item)).length;
     return sectionStartIndex;
   });
 
   return {
     sections: sectionStartIndices,
-    sectionLayout: Object.keys(collection).map((sectionId) => ({
-      columns: collection[sectionId].columns,
-      whitespace: getWhitespacePositionsFromSection(collection[sectionId].items),
+    sectionLayout: Object.keys(filteredCollection).map((sectionId) => ({
+      columns: filteredCollection[sectionId].columns,
+      whitespace: getWhitespacePositionsFromSection(filteredCollection[sectionId].items),
     })),
   };
 }

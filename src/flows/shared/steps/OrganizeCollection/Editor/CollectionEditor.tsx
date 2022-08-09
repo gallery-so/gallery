@@ -91,8 +91,13 @@ function CollectionEditor({ viewerRef }: Props) {
     };
   }, [setNextEnabled, stagedCollectionState]);
 
-  const { setSidebarTokens, stageTokens, unstageTokens, setStagedCollectionState } =
-    useCollectionEditorActions();
+  const {
+    setSidebarTokens,
+    stageTokens,
+    unstageTokens,
+    setStagedCollectionState,
+    setActiveSectionIdState,
+  } = useCollectionEditorActions();
   const { collectionIdBeingEdited } = useCollectionWizardState();
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
 
@@ -173,6 +178,9 @@ function CollectionEditor({ viewerRef }: Props) {
         ) as StagedCollection;
 
         setStagedCollectionState(collectionToStage);
+        if (Object.keys(collectionToStage).length > 0) {
+          setActiveSectionIdState(Object.keys(collectionToStage)[0]);
+        }
       }
     }
 
@@ -213,9 +221,9 @@ function CollectionEditor({ viewerRef }: Props) {
     unstageTokens,
     collectionBeingEdited,
     setStagedCollectionState,
+    setActiveSectionIdState,
   ]);
 
-  useEffect(() => {}, [stagedCollectionState]);
   const shouldDisplayEditor = Object.keys(stagedCollectionState).length > 0;
 
   return (

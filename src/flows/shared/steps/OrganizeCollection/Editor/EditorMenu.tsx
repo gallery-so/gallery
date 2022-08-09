@@ -1,6 +1,9 @@
 import colors from 'components/core/colors';
 import { TitleS } from 'components/core/Text/Text';
-import { useActiveSectionIdState } from 'contexts/collectionEditor/CollectionEditorContext';
+import {
+  useActiveSectionIdState,
+  useStagedCollectionState,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import React from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -23,12 +26,14 @@ function EditorMenu({ viewerRef }: Props) {
   );
 
   const activeSectionId = useActiveSectionIdState();
+  const stagedCollectionState = useStagedCollectionState();
+  const activeSection = activeSectionId && stagedCollectionState[activeSectionId];
 
   return (
     <StyledEditorMenu>
-      <StyledTitleS>{activeSectionId ? 'Section' : 'Collection'} Settings</StyledTitleS>
+      <StyledTitleS>{activeSectionId ? 'Section' : 'Collection'} settings</StyledTitleS>
       <StyledSidebarItem>
-        {activeSectionId && <ColumnAdjuster activeSectionId={activeSectionId} viewerRef={viewer} />}
+        {activeSection && <ColumnAdjuster activeSectionId={activeSectionId} viewerRef={viewer} />}
       </StyledSidebarItem>
     </StyledEditorMenu>
   );

@@ -1,8 +1,10 @@
 import colors from 'components/core/colors';
 import { TitleDiatypeM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { forwardRef } from 'react';
+import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
+import { forwardRef, useCallback } from 'react';
 import styled from 'styled-components';
+import TrashIcon from 'src/icons/Trash';
 
 interface Props {
   children: React.ReactNode;
@@ -16,6 +18,7 @@ interface Props {
   onRemove?(): void;
   isDragging?: boolean;
   isEmpty?: boolean;
+  id: string;
 }
 
 type HandleProps = {
@@ -47,9 +50,14 @@ export const Section = forwardRef<HTMLDivElement, Props>(
       isActive,
       isDragging = false,
       isEmpty = true,
+      id,
     }: Props,
     ref
   ) => {
+    const { deleteSection } = useCollectionEditorActions();
+    const handleDeleteSectionClick = useCallback(() => {
+      deleteSection(id);
+    }, [deleteSection, id]);
     return (
       <StyledSection
         ref={ref}
@@ -63,11 +71,16 @@ export const Section = forwardRef<HTMLDivElement, Props>(
         tabIndex={onClick ? 0 : undefined}
         isActive={isActive || isDragging}
       >
-        <Handle isActive={isActive || isDragging} isDragging={isDragging} {...handleProps} />
+        <StyledButtonContainer isActive={isActive || isDragging}>
+          <Handle isActive={isActive || isDragging} isDragging={isDragging} {...handleProps} />
+          <StyledDeleteButton onClick={handleDeleteSectionClick}>
+            <StyledTrashIcon />
+          </StyledDeleteButton>
+        </StyledButtonContainer>
         <StyledItemContainer columns={columns}>
           {isEmpty ? (
             <StyledEmptySectionMessage>
-              <TitleDiatypeM>Select the NFTs you’d like to add to this section</TitleDiatypeM>
+              <TitleDiatypeM>Select the pieces you’d like to add to this section</TitleDiatypeM>
             </StyledEmptySectionMessage>
           ) : (
             children
@@ -82,9 +95,16 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   border-radius: 2px;
   padding: 2px 4px;
   width: fit-content;
-  margin-bottom: 6px;
+
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
-  margin: 8px 8px 0;
+`;
+
+const StyledButtonContainer = styled.div<{ isActive: boolean }>`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 2px;
+
   opacity: ${({ isActive }) => (isActive ? '1' : '0')};
   transition: opacity ${transitions.cubic};
 `;
@@ -105,7 +125,7 @@ const StyledSection = styled.div<{ isActive: boolean }>`
 
   &:hover {
     border: 1px solid ${colors.activeBlue};
-    ${StyledLabel} {
+    ${StyledButtonContainer} {
       opacity: 1;
     }
   }
@@ -128,3 +148,17 @@ const StyledEmptySectionMessage = styled.div`
   width: 190px;
   text-align: center;
 `;
+
+const StyledDeleteButton = styled.button`
+  height: 24px;
+  width: 24px;
+  background-color: ${colors.activeBlue};
+  border: 0;
+  border-radius: 2px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const StyledTrashIcon = styled(TrashIcon)``;
