@@ -13,10 +13,11 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
+  const [isPurchaseMoreState, setIsPurchaseMoreState] = useState(false);
 
   const toggleShowBox = useCallback(() => {
-    setShowBox(!showBox);
-  }, [showBox]);
+    setShowBox(true);
+  }, []);
 
   const handlePurchaseClick = useCallback(() => {
     setIsReceiptState(true);
@@ -24,9 +25,26 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
 
   return (
     <>
-      <ExpandPurchaseButton onClick={toggleShowBox}>Purchase</ExpandPurchaseButton>
+      {!showBox && <ExpandPurchaseButton onClick={toggleShowBox}>Purchase</ExpandPurchaseButton>}
       <>
-        <Spacer height={8} />
+        {isPurchaseMoreState && (
+          <>
+            <ReceiptContainer>
+              <StyledFlexContainer>
+                <StyledBaseM>Quantity bought</StyledBaseM>
+                <StyledBaseM>{quantity}</StyledBaseM>
+              </StyledFlexContainer>
+              <Spacer height={4} />
+              <HorizontalBreak />
+              <Spacer height={4} />
+              <StyledFlexContainer>
+                <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
+                <StyledPrice>{quantity * +price} Ξ</StyledPrice>
+              </StyledFlexContainer>
+            </ReceiptContainer>
+            <Spacer height={2} />
+          </>
+        )}
         <StyledCheckoutBox showBox={showBox}>
           <StyledCheckoutTitle>
             {isReceiptState
@@ -89,6 +107,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
             <StyledPurchaseMoreButton
               onClick={() => {
                 setIsReceiptState(false);
+                setIsPurchaseMoreState(true);
               }}
             >
               Purchase More
@@ -172,3 +191,12 @@ const StyledPrice = styled(BaseXL)``;
 
 const StyledConfirmButton = styled(Button)``;
 const StyledPurchaseMoreButton = styled(Button)``;
+
+const ReceiptContainer = styled.div`
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  border: 1px solid ${colors.porcelain};
+`;
