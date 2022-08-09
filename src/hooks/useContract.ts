@@ -13,6 +13,8 @@ export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS =
   process.env.NEXT_PUBLIC_GENERAL_MEMBERSHIP_CONTRACT_ADDRESS;
 export const GALLERY_MEMENTOS_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_GALLERY_MEMENTOS_CONTRACT_ADDRESS;
+export const GALLERY_MERCH_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS;
 
 // account is not optional
 function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
@@ -64,4 +66,8 @@ export function useGeneralMembershipCardContract() {
 
 export function useMintPosterContract() {
   return useContract(GALLERY_MEMENTOS_CONTRACT_ADDRESS || '', GALLERY_MEMENTOS_CONTRACT_ABI);
+}
+
+export function useMintMerchContract() {
+  return useContract(GALLERY_MERCH_CONTRACT_ADDRESS || '', GALLERY_MERCH_CONTRACT_ADDRESS);
 }
