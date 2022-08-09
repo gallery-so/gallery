@@ -20,6 +20,7 @@
     "@dnd-kit/utilities": "^2.0.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
+    "@gnosis.pm/safe-apps-wagmi": "^1.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@rainbow-me/rainbowkit": "^0.4.4",
     "@sentry/nextjs": "^6.19.7",
