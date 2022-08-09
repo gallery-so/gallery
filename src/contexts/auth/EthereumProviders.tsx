@@ -1,16 +1,10 @@
 import '@rainbow-me/rainbowkit/styles.css';
 
-import {
-  getDefaultWallets,
-  RainbowKitProvider,
-  lightTheme,
-  connectorsForWallets,
-} from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import { defaultChains, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import merge from 'lodash.merge';
-import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi';
 
 // console.log('current theme values:', lightTheme());
 
@@ -74,37 +68,21 @@ const myCustomTheme = merge(lightTheme(), {
   },
 });
 
-const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+const { chains, provider } = configureChains(defaultChains, [
   // TODO: move this to env and rotate creds
   infuraProvider({ apiKey: '84842078b09946638c03157f83405213' }),
   publicProvider(),
 ]);
 
-const { wallets } = getDefaultWallets({
+const { connectors } = getDefaultWallets({
   appName: 'Gallery',
   chains,
 });
 
-wallets.push({
-  groupName: 'Advanced',
-  wallets: [
-    {
-      id: 'gnosisSafe',
-      name: 'Gnosis Safe',
-      iconUrl: '/icons/gnosis_safe.svg',
-      iconBackground: '#fff',
-      createConnector: () => ({ connector: new SafeConnector({ chains }) }),
-    },
-  ],
-});
-
-const connectors = connectorsForWallets(wallets);
-
 const wagmiClient = createClient({
-  autoConnect: false,
+  autoConnect: true,
   connectors,
   provider,
-  webSocketProvider,
 });
 
 export const EtheremProviders: React.FC<{}> = ({ children }) => (
