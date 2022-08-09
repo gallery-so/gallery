@@ -5,6 +5,7 @@ import { useCollectionEditorActions } from 'contexts/collectionEditor/Collection
 import { forwardRef, useCallback } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
+import DragHandleIcon from 'src/icons/DragHandleIcon';
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ interface Props {
   isDragging?: boolean;
   isEmpty?: boolean;
   id: string;
+  itemIds: string[];
 }
 
 type HandleProps = {
@@ -35,10 +37,31 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       data-cypress="draggable-handle"
       {...props}
     >
+      <StyledDragHangleIcon />
       <StyledLabelText>Section</StyledLabelText>
     </StyledLabel>
   );
 });
+
+const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
+  display: flex;
+  background-color: ${colors.activeBlue};
+  border-radius: 2px;
+  padding-right: 4px;
+  align-items: center;
+  width: fit-content;
+
+  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+`;
+
+const StyledDragHangleIcon = styled(DragHandleIcon)`
+  width: 20px;
+`;
+
+const StyledLabelText = styled(TitleDiatypeM)`
+  color: ${colors.white};
+`;
+
 export const Section = forwardRef<HTMLDivElement, Props>(
   (
     {
@@ -51,13 +74,16 @@ export const Section = forwardRef<HTMLDivElement, Props>(
       isDragging = false,
       isEmpty = true,
       id,
+      itemIds,
     }: Props,
     ref
   ) => {
-    const { deleteSection } = useCollectionEditorActions();
+    const { deleteSection, setTokensIsSelected, unstageTokens } = useCollectionEditorActions();
     const handleDeleteSectionClick = useCallback(() => {
+      setTokensIsSelected(itemIds, false);
+      unstageTokens(itemIds);
       deleteSection(id);
-    }, [deleteSection, id]);
+    }, [deleteSection, id, itemIds, setTokensIsSelected, unstageTokens]);
     return (
       <StyledSection
         ref={ref}
@@ -90,14 +116,6 @@ export const Section = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
-const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
-  background-color: ${colors.activeBlue};
-  border-radius: 2px;
-  padding: 2px 4px;
-  width: fit-content;
-
-  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
-`;
 
 const StyledButtonContainer = styled.div<{ isActive: boolean }>`
   display: flex;
@@ -129,10 +147,6 @@ const StyledSection = styled.div<{ isActive: boolean }>`
       opacity: 1;
     }
   }
-`;
-
-const StyledLabelText = styled(TitleDiatypeM)`
-  color: ${colors.white};
 `;
 
 const StyledItemContainer = styled.div<{ columns: number | undefined }>`

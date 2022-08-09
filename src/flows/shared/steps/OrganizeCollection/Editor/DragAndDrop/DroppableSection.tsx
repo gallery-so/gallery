@@ -66,6 +66,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
         {...props}
         isActive={isActive}
         isEmpty={items.length === 0}
+        itemIds={itemIds}
       >
         {children}
       </Section>

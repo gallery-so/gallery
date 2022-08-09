@@ -8,6 +8,7 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useUpdateCollectionTokensMutation } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
+import { captureException } from '@sentry/nextjs';
 
 type Props = {
   collectionId: string;
@@ -33,7 +34,7 @@ export default function useUpdateCollectionTokens() {
       const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
-      await updateCollectionTokens({
+      const response = await updateCollectionTokens({
         variables: {
           input: {
             collectionId,
@@ -43,6 +44,15 @@ export default function useUpdateCollectionTokens() {
           },
         },
       });
+
+      if (response.updateCollectionTokens?.__typename !== 'UpdateCollectionTokensPayload') {
+        // TODO(Terence): How do we really want to handle this.
+        const error = new Error(
+          `Error updating collection tokens: response typename: ${response.updateCollectionTokens?.__typename}`
+        );
+        captureException(error);
+        throw error;
+      }
 
       // Until everything is routed through GraphQL, we need
       // a mechanism to ensure that other pages using this data

@@ -41,7 +41,6 @@ export function parseCollectionLayout<T>(
     },
     {}
   );
-  console.log({ parsedCollection });
 
   return parsedCollection;
 }
@@ -84,12 +83,11 @@ export function generateLayoutFromCollection(collection: StagedCollection) {
       );
       isEmptySection = sectionWithoutWhitespace.length === 0;
     }
-    console.log(isEmptySection, collection[sectionId]);
+
     if (isEmptySection) {
       // delete empty section
       delete filteredCollection[sectionId];
     }
-    // if (collection[sectionId])
   });
 
   const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {

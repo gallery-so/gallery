@@ -297,6 +297,8 @@ function StagingArea({ tokensRef }: Props) {
         }
       }
 
+      setActiveId(null);
+
       recentlyMovedToNewContainer.current = false;
     },
     [

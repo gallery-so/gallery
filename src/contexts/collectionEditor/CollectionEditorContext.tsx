@@ -223,6 +223,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const addSection = useCallback(() => {
     const newSectionId = generate12DigitId();
+
     setStagedCollectionState((previous) => {
       const previousOrder = Object.keys(previous); // get previous order as list of section ids
       const activeIndex = previousOrder.findIndex((id) => id === activeSectionIdState);
@@ -241,24 +242,10 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, [activeSectionIdState]);
 
   const deleteSection = useCallback((sectionId: UniqueIdentifier) => {
-    let ids: string[] = [];
     setStagedCollectionState((previous) => {
       const next = { ...previous };
-      ids = next[sectionId].items.map((item) => item.id);
       delete next[sectionId];
       return next;
-    });
-
-    // remove any related token settings
-    setCollectionMetadataState((previous) => {
-      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
-      for (const id of ids) {
-        delete newTokenSettings[id];
-      }
-      return {
-        ...previous,
-        tokenSettings: newTokenSettings,
-      };
     });
   }, []);
 
