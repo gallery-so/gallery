@@ -6,6 +6,7 @@ import { forwardRef, useCallback } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
 import DragHandleIcon from 'src/icons/DragHandleIcon';
+import Spacer from 'components/core/Spacer/Spacer';
 
 interface Props {
   children: React.ReactNode;
@@ -37,7 +38,9 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       data-cypress="draggable-handle"
       {...props}
     >
-      <StyledDragHangleIcon />
+      <Spacer width={2} />
+      <DragHandleIcon />
+      <Spacer width={2} />
       <StyledLabelText>Section</StyledLabelText>
     </StyledLabel>
   );
@@ -47,15 +50,11 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   display: flex;
   background-color: ${colors.activeBlue};
   border-radius: 2px;
-  padding-right: 4px;
+  padding-right: 6px;
   align-items: center;
   width: fit-content;
 
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
-`;
-
-const StyledDragHangleIcon = styled(DragHandleIcon)`
-  width: 20px;
 `;
 
 const StyledLabelText = styled(TitleDiatypeM)`
@@ -169,7 +168,7 @@ const StyledDeleteButton = styled.button`
   background-color: ${colors.activeBlue};
   border: 0;
   border-radius: 2px;
-  padding: 0;
+  padding: 2px 0;
   justify-content: center;
   align-items: center;
   cursor: pointer;
