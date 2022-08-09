@@ -48,42 +48,45 @@ export default function DroppableSection({ children, columns, id, items, style, 
   }, [addSection]);
 
   return (
-    <StyledSectionWrapper onMouseDown={handleMouseDown}>
-      <Section
-        ref={setNodeRef}
-        style={{
-          ...style,
-          transition,
-          transform: CSS.Translate.toString(transform),
-          opacity: isDragging ? 0.5 : undefined,
-        }}
-        handleProps={{
-          ...attributes,
-          ...listeners,
-        }}
-        id={id}
-        columns={columns}
-        {...props}
-        isActive={isActive}
-        isEmpty={items.length === 0}
-        itemIds={itemIds}
-      >
-        {children}
-      </Section>
-      {isActive && !isDragging && (
-        <>
-          <Spacer height={16} />
-          <StyledAddSectionButton onClick={handleAddSectionClick}>
-            <StyledPlusIcon />
-          </StyledAddSectionButton>
-        </>
-      )}
-    </StyledSectionWrapper>
+    <>
+      <StyledSectionWrapper onMouseDown={handleMouseDown}>
+        <Spacer height={6} />
+        <Section
+          ref={setNodeRef}
+          style={{
+            ...style,
+            transition,
+            transform: CSS.Translate.toString(transform),
+            opacity: isDragging ? 0.5 : undefined,
+          }}
+          handleProps={{
+            ...attributes,
+            ...listeners,
+          }}
+          id={id}
+          columns={columns}
+          {...props}
+          isActive={isActive}
+          isEmpty={items.length === 0}
+          itemIds={itemIds}
+        >
+          {children}
+        </Section>
+        {isActive && !isDragging && (
+          <>
+            <Spacer height={12} />
+            <StyledAddSectionButton onClick={handleAddSectionClick}>
+              <StyledPlusIcon />
+            </StyledAddSectionButton>
+          </>
+        )}
+        <Spacer height={6} />
+      </StyledSectionWrapper>
+    </>
   );
 }
 
 const StyledSectionWrapper = styled.div`
-  margin: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
