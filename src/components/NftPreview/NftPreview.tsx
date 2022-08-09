@@ -17,6 +17,7 @@ import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 
 type Props = {
+  variant: 'gallery' | 'feed';
   tokenRef: NftPreviewFragment$key;
   nftPreviewMaxWidth?: string;
   previewSize: number;
@@ -28,6 +29,7 @@ type Props = {
 };
 
 function NftPreview({
+  variant,
   tokenRef,
   nftPreviewMaxWidth,
   previewSize,
@@ -114,6 +116,7 @@ function NftPreview({
           tokenRef={token}
           // we'll request images at double the size of the element so that it looks sharp on retina
           size={previewSize * 2}
+          fullWidth={variant === 'gallery'}
         />
       );
     }
@@ -128,9 +131,10 @@ function NftPreview({
         tokenRef={token}
         // we'll request images at double the size of the element so that it looks sharp on retina
         size={previewSize * 2}
+        fullWidth={variant === 'gallery'}
       />
     );
-  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize]);
+  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize, variant]);
 
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();

@@ -76,6 +76,7 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
 
   return (
     <NftPreview
+      variant="gallery"
       tokenRef={collectionTokenRef}
       nftPreviewMaxWidth={nftPreviewMaxWidth}
       previewSize={previewSize}

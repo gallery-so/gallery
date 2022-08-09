@@ -32,9 +32,10 @@ function UnrenderedPreviewAsset({ id, assetType }: UnrenderedPreviewAssetProps) 
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;
   size: number;
+  fullWidth: boolean;
 };
 
-function NftPreviewAsset({ tokenRef, size }: Props) {
+function NftPreviewAsset({ tokenRef, size, fullWidth }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Token {
@@ -105,7 +106,14 @@ function NftPreviewAsset({ tokenRef, size }: Props) {
       return <VideoWithLoading src={src} />;
     }
 
-    return <ImageWithLoading src={src} heightType="maxHeightScreen" alt={token.name ?? ''} />;
+    return (
+      <ImageWithLoading
+        src={src}
+        heightType="maxHeightScreen"
+        alt={token.name ?? ''}
+        fullWidth={fullWidth}
+      />
+    );
   }
 
   // TODO: instead of rendering this, just throw to an error boundary and have that report to sentry
