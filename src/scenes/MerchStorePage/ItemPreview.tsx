@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import Image from 'next/image';
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
-import { Button } from 'components/core/Button/Button';
-import { TitleXSBold } from 'components/core/Text/Text';
+import { TitleXSBold, BaseM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import SingleItemPage from './SingleItemPage';
+import FlippingImage from './FlippingImage';
+import colors from 'components/core/colors';
 
 export default function ItemPreview({
   label,
@@ -37,13 +37,14 @@ export default function ItemPreview({
   }, [showModal, label, image, title, description, price]);
 
   return (
-    <StyledItemPreview>
+    <StyledItemPreview onClick={handleClick}>
       <StyledImageContainer>
-        <Image src={image} layout="fill" />
+        <FlippingImage src={image} />
       </StyledImageContainer>
       <StyledBottomText>
         <StyledItemText>{title}</StyledItemText>
-        <StyledBuyButton onClick={handleClick}>Buy Now</StyledBuyButton>
+        <StyledSlash>/</StyledSlash>
+        <StyledPurchaseText>Purchase</StyledPurchaseText>
       </StyledBottomText>
     </StyledItemPreview>
   );
@@ -58,6 +59,7 @@ const StyledItemPreview = styled.div`
   width: 100%;
   max-width: 460px;
   border-bottom: 1px solid transparent;
+  cursor: pointer;
 
   display: flex;
   justify-content: center;
@@ -80,19 +82,40 @@ const StyledImageContainer = styled.div`
 
 const StyledBottomText = styled.div`
   position: absolute;
-  bottom: 0;
+  bottom: 12px;
   left: 0;
+  text-align: center;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  place-items: center;
+  justify-content: center;
+  align-items: center;
   padding: 0px 8px;
+  display: flex;
 `;
 
 const StyledItemText = styled(TitleXSBold)`
+  font-family: ABC Diatype; /* FIXME: Figma has ABC Diatype Mono; this is not used anywhere else in the codebase */
   text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  letter-spacing: -1%;
 `;
 
-const StyledBuyButton = styled(Button)`
-  margin-bottom: 8px;
+const StyledSlash = styled(TitleXSBold)`
+  font-family: ABC Diatype; /* FIXME: Figma has ABC Diatype Mono; this is not used anywhere else in the codebase */
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  margin: 0 12px;
+`;
+
+const StyledPurchaseText = styled(BaseM)`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  text-decoration: underline;
+  color: ${colors.shadow};
 `;

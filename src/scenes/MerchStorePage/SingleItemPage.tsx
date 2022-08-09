@@ -19,11 +19,10 @@ import Spacer from 'components/core/Spacer/Spacer';
 // import { isFeatureEnabled } from 'utils/featureFlag';
 // import { FeatureFlag } from 'components/core/enums';
 // import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Image from 'next/image';
-import MintButton from './MintButton';
-
-import CircleMinusIcon from 'src/icons/CircleMinusIcon';
-import CirclePlusIcon from 'src/icons/CirclePlusIcon';
+// import Image from 'next/image';
+// import MerchMintButton from './MerchMintButton';
+import FlippingImage from './FlippingImage';
+import PurchaseBox from './PurchaseBox';
 
 export default function ItemPage({
   label,
@@ -38,8 +37,6 @@ export default function ItemPage({
   description: string;
   price: string;
 }) {
-  console.log(label);
-  const [quantity, setQuantity] = useState(1);
   const isMobile = useIsMobileWindowWidth();
 
   // const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
@@ -79,45 +76,21 @@ export default function ItemPage({
     <StyledPage>
       <StyledWrapper>
         <StyledImageContainer>
-          <Image src={image} layout="fill"></Image>
+          <FlippingImage src={image} />
         </StyledImageContainer>
         <StyledContent>
           <TitleM>{title}</TitleM>
           <BaseM>{description}</BaseM>
           <Spacer height={8} />
           <StyledPriceAndQuantity>
-            <BaseM>{price} Ξ</BaseM>
+            <BaseM>{price} Ξ each</BaseM>
             <BaseM>400/600 left</BaseM>
           </StyledPriceAndQuantity>
 
-          {!isMobile && <HorizontalBreak />}
-
-          <StyledQuantityContainer>
-            <BaseM>Quantity</BaseM>
-            <StyledQuantityCounter>
-              <StyledColumnButton
-                onClick={() => {
-                  setQuantity(quantity - 1);
-                }}
-                disabled={quantity <= 1}
-              >
-                <CircleMinusIcon />
-              </StyledColumnButton>
-              <StyledQuantity>{quantity}</StyledQuantity>
-              <StyledColumnButton
-                onClick={() => {
-                  setQuantity(quantity + 1);
-                }}
-                disabled={quantity >= 3}
-              >
-                <CirclePlusIcon />
-              </StyledColumnButton>
-            </StyledQuantityCounter>
-          </StyledQuantityContainer>
-
+          {/* {!isMobile && <HorizontalBreak />} */}
           <Spacer height={8} />
-          <MintButton onMintSuccess={() => alert('Mint func goes here')}></MintButton>
-          <StyledShippingText>Shipping available Fall 2023.</StyledShippingText>
+          <PurchaseBox label={label} price={price} />
+          {/* <StyledShippingText>Shipping available Fall 2023.</StyledShippingText> */}
 
           {/* {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
             <>
@@ -165,11 +138,13 @@ const StyledWrapper = styled.div`
   align-items: center;
   width: 100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 24px;
     width: auto;
+    place-items: center;
   }
 `;
 const StyledContent = styled.div`
@@ -177,8 +152,10 @@ const StyledContent = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 0 ${pageGutter.mobile}px;
-  max-width: 360px;
+  // max-width: 360px;
+  width: 360px;
   margin: 0 auto;
+
   @media (max-width: ${contentSize.desktop}px) {
     margin: 0;
     padding: 0;
@@ -193,41 +170,12 @@ const StyledPriceAndQuantity = styled.div`
 
 const StyledImageContainer = styled.div`
   width: auto;
-  height: 100%;
+  // height: 100%;
+  height: 500px;
   position: relative;
   aspect-ratio: 1;
 `;
 
-const StyledQuantityContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const StyledQuantityCounter = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledQuantity = styled(BaseM)`
-  margin: 0 9px;
-`;
-
-const StyledColumnButton = styled.button<{ disabled: boolean }>`
-  font-size: 16px;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  background: none;
-
-  path {
-    stroke: ${({ disabled }) => (disabled ? `${colors.porcelain}` : 'auto')};
-  }
-`;
-
-const StyledShippingText = styled(BaseM)`
-  color: ${colors.metal};
-`;
+// const StyledShippingText = styled(BaseM)`
+//   color: ${colors.metal};
+// `;

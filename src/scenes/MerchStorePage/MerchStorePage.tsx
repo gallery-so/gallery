@@ -7,22 +7,23 @@ import ItemPreview from './ItemPreview';
 const items = [
   {
     label: 'shirt',
-    image: '/merch/shirt.png',
-    title: '(Object 001) Shirt',
-    description: 'Gallery T-shirt. 100% cotton. Made in China.',
+    image: '/merch/shirt',
+    title: '(Object 001)',
+    description:
+      'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.',
     price: '0.04',
   },
   {
     label: 'hat',
-    image: '/merch/hat.png',
-    title: '(Object 002) Hat',
+    image: '/merch/hat',
+    title: '(Object 002)',
     description: 'Gallery Dad Hat. 100% cotton. Made in China.',
     price: '0.06',
   },
   {
     label: 'card',
-    image: '/merch/card.png',
-    title: '(Object 003) Card',
+    image: '/merch/card',
+    title: '(Object 003)',
     description: 'Gallery Membership card. Metal.',
     price: '0.08',
   },
