@@ -11,7 +11,7 @@ import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCol
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import {
   AutoSizer,
   CellMeasurer,
@@ -78,12 +78,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   );
   const listRef = useRef<List>(null);
 
-  // If the window is resized or mobileLayout us changed, we need to recalculate the cache height.
-  const { width: windowWidth } = useWindowSize();
+  // If the mobileLayout is changed, we need to recalculate the cache height.
   useEffect(() => {
     cache.current.clearAll();
     listRef.current?.recomputeRowHeights();
-  }, [windowWidth, cache, listRef, mobileLayout]);
+  }, [mobileLayout]);
 
   const collectionsToDisplay = useMemo(
     () =>
