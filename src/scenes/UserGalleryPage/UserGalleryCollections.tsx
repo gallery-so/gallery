@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -11,7 +11,7 @@ import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCol
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import {
   AutoSizer,
   CellMeasurer,
@@ -76,8 +76,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
       minHeight: 100,
     })
   );
-
   const listRef = useRef<List>(null);
+
+  // If the window is resized or mobileLayout us changed, we need to recalculate the cache height.
+  const { width: windowWidth } = useWindowSize();
+  useEffect(() => {
+    cache.current.clearAll();
+    listRef.current?.recomputeRowHeights();
+  }, [windowWidth, cache, listRef, mobileLayout]);
 
   const collectionsToDisplay = useMemo(
     () =>
