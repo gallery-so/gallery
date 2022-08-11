@@ -78,7 +78,7 @@ type CollectionEditorActions = {
   reorderTokensWithinSection: (event: DragEndEvent, sectionId: UniqueIdentifier) => void;
   reorderSection: (event: DragEndEvent) => void;
   addSection: () => void;
-  deleteSection: (sectionId: UniqueIdentifier) => void;
+  deleteSection: (sectionId: UniqueIdentifier, itemIds: string[]) => void;
   incrementColumns: (sectionId: UniqueIdentifier) => void;
   decrementColumns: (sectionId: UniqueIdentifier) => void;
   setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
@@ -241,13 +241,27 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
     setActiveSectionIdState(newSectionId);
   }, [activeSectionIdState]);
 
-  const deleteSection = useCallback((sectionId: UniqueIdentifier) => {
-    setStagedCollectionState((previous) => {
-      const next = { ...previous };
-      delete next[sectionId];
-      return next;
-    });
-  }, []);
+  const deleteSection = useCallback(
+    (sectionId: UniqueIdentifier, itemIds: string[]) => {
+      const sectionIndex = Object.keys(stagedCollectionState).indexOf(`${sectionId}`);
+      const newSectionId =
+        Object.keys(stagedCollectionState)[sectionIndex - 1] ??
+        Object.keys(stagedCollectionState)[sectionIndex + 1];
+      setTokensIsSelected(itemIds, false);
+      unstageTokens(itemIds);
+      setStagedCollectionState((previous) => {
+        const next = { ...previous };
+        delete next[sectionId];
+        return next;
+      });
+
+      // set another section as active if there are any sections left
+      if (newSectionId) {
+        setActiveSectionIdState(newSectionId);
+      }
+    },
+    [setTokensIsSelected, stagedCollectionState, unstageTokens]
+  );
 
   const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
     setStagedCollectionState((previous) => {
