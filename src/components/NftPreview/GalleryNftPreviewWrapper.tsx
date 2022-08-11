@@ -69,7 +69,7 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
         return '100%';
       }
       if (aspectRatioType === 'square' || aspectRatioType === 'tall') {
-        return '60%';
+        return '70%';
       }
     }
   }, [columns, aspectRatioType, isMobile]);
