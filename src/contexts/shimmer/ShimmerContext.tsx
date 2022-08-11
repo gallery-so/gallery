@@ -108,6 +108,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
 const Container = styled.div<{ overflowHidden: boolean }>`
   position: relative;
   width: 100%;
+  height: 100%;
 
   display: flex;
   justify-content: center;
@@ -126,7 +127,7 @@ const StyledShimmerComponent = styled.div<VisibleProps>`
 `;
 
 const StyledChildren = styled.div<VisibleProps>`
-  height: 100%;
+  height: inherit;
   width: inherit;
   display: flex;
   justify-content: center;

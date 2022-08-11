@@ -18,10 +18,9 @@ import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
-  maxHeight: number;
 };
 
-function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -70,7 +69,6 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
       return (
         <NftDetailImage
           tokenRef={token.token}
-          maxHeight={maxHeight}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
           onClick={() => window.open(token.token.media.contentRenderURL)}
@@ -127,13 +125,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     [contractAddress]
   );
 
-  const maxHeight = Math.min(
+  const maxWidth = Math.min(
     heightWithoutNavAndFooterGutters,
     // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
     // we should grab its dimensions and set it on the shimmer context. this will allow us to display very large
     // NFTs on very large screens
     600
   );
+  const maxHeight = heightWithoutNavAndFooterGutters;
 
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
@@ -147,18 +146,20 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   return (
     <StyledAssetContainer
       footerHeight={GLOBAL_FOOTER_HEIGHT}
+      maxWidth={maxWidth}
       maxHeight={maxHeight}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} />
+      <NftDetailAssetComponent tokenRef={token} />
     </StyledAssetContainer>
   );
 }
 
 type AssetContainerProps = {
   footerHeight: number;
+  maxWidth: number;
   maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
   hasExtraPaddingForNote: boolean;
@@ -187,7 +188,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    width: ${({ maxHeight }) => maxHeight}px;
+    width: ${({ maxWidth }) => maxWidth}px;
     height: ${({ maxHeight }) => maxHeight}px;
   }
 

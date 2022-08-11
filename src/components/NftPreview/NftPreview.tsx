@@ -180,7 +180,8 @@ const StyledA = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: inherit;
+  height: inherit;
   text-decoration: none;
 `;
 
@@ -219,6 +220,7 @@ const StyledNftPreview = styled.div<{
   max-height: 80vh;
   max-width: ${({ aspectRatio }) => `calc(80vh * ${aspectRatio})`};
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  height: inherit;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
