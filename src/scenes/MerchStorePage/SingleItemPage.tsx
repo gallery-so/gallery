@@ -79,7 +79,9 @@ export default function ItemPage({
           <FlippingImage src={image} />
         </StyledImageContainer>
         <StyledContent>
-          <TitleM>{title}</TitleM>
+          <TitleM>
+            {title} {label}
+          </TitleM>
           <BaseM>{description}</BaseM>
           <Spacer height={8} />
           <StyledPriceAndQuantity>
