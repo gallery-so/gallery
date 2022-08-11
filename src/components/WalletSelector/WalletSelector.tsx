@@ -2,7 +2,7 @@ import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
 import { MultichainWalletSelector } from './multichain/MultichainWalletSelector';
-import EthereumWalletSelector from './EthereumWalletSelector';
+import DeprecatedWalletSelector from './DeprecatedWalletSelector';
 
 // AUTH: authenticate with wallet (sign in)
 // ADD_WALLET_TO_USER: add wallet to user
@@ -31,7 +31,7 @@ export default function WalletSelector({ connectionMode = AUTH, queryRef }: Prop
   const query = useFragment(
     graphql`
       fragment WalletSelectorFragment on Query {
-        ...EthereumWalletSelectorFragment
+        ...DeprecatedWalletSelectorFragment
         ...MultichainWalletSelectorFragment
       }
     `,
@@ -41,6 +41,6 @@ export default function WalletSelector({ connectionMode = AUTH, queryRef }: Prop
   return isMultichain ? (
     <MultichainWalletSelector connectionMode={connectionMode} queryRef={query} />
   ) : (
-    <EthereumWalletSelector connectionMode={connectionMode} queryRef={query} />
+    <DeprecatedWalletSelector connectionMode={connectionMode} queryRef={query} />
   );
 }

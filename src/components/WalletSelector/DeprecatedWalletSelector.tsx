@@ -17,7 +17,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { getUserFriendlyWalletName } from 'utils/wallet';
 import { graphql, useFragment } from 'react-relay';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
-import { EthereumWalletSelectorFragment$key } from '__generated__/EthereumWalletSelectorFragment.graphql';
+import { DeprecatedWalletSelectorFragment$key } from '__generated__/DeprecatedWalletSelectorFragment.graphql';
 import { ConnectionMode } from './WalletSelector';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
@@ -65,13 +65,13 @@ function getErrorMessage(errorCode: string) {
 
 type Props = {
   connectionMode?: ConnectionMode;
-  queryRef: EthereumWalletSelectorFragment$key;
+  queryRef: DeprecatedWalletSelectorFragment$key;
 };
 
-export default function EthereumWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment EthereumWalletSelectorFragment on Query {
+      fragment DeprecatedWalletSelectorFragment on Query {
         ...AddWalletPendingFragment
       }
     `,
