@@ -6,7 +6,7 @@ import ItemPreview from './ItemPreview';
 
 const items = [
   {
-    label: 'shirt',
+    label: 'Shirt',
     image: '/merch/shirt',
     title: '(Object 001)',
     description:
@@ -14,14 +14,14 @@ const items = [
     price: '0.04',
   },
   {
-    label: 'hat',
+    label: 'Hat',
     image: '/merch/hat',
     title: '(Object 002)',
     description: 'Gallery Dad Hat. 100% cotton. Made in China.',
     price: '0.06',
   },
   {
-    label: 'card',
+    label: 'Card',
     image: '/merch/card',
     title: '(Object 003)',
     description: 'Gallery Membership card. Metal.',
@@ -76,6 +76,7 @@ const StyledItemsContainer = styled.div`
   flex-direction: column;
   padding-top: 120px; /* FIXME: Exact ? */
   justify-content: center;
+  place-items: center;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
