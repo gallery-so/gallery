@@ -14,22 +14,26 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
   const [isPurchaseMoreState, setIsPurchaseMoreState] = useState(false);
+  const [isAwaitingTransactionState, setIsAwaitingTransactionState] = useState(false);
 
   const toggleShowBox = useCallback(() => {
     setShowBox(true);
   }, []);
 
   const handlePurchaseClick = useCallback(() => {
-    setIsReceiptState(true);
+    setIsAwaitingTransactionState(true);
+    setTimeout(() => {
+      setIsReceiptState(true);
+      setIsAwaitingTransactionState(false);
+    }, 1000);
   }, [setIsReceiptState]);
 
   return (
     <>
-      {/* {!showBox && <ExpandPurchaseButton onClick={toggleShowBox}>Purchase</ExpandPurchaseButton>} */}
       <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox}>
         Purchase
       </ExpandPurchaseButton>
-      <>
+      <StyledCheckoutAndReceiptContainer showBox={showBox}>
         {isPurchaseMoreState && (
           <>
             <ReceiptContainer>
@@ -45,10 +49,13 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
                 <StyledPrice>{quantity * +price} Ξ</StyledPrice>
               </StyledFlexContainer>
             </ReceiptContainer>
-            <Spacer height={2} />
+            <Spacer height={8} />
           </>
         )}
-        <StyledCheckoutBox showBox={showBox}>
+        <StyledCheckoutBox
+          showBox={showBox}
+          isAwaitingTransactionState={isAwaitingTransactionState}
+        >
           <StyledCheckoutTitle>
             {isReceiptState
               ? `You've bought ${quantity} ${quantity == 1 ? label : `${label}s`}.`
@@ -117,7 +124,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
             </StyledPurchaseMoreButton>
           </>
         )}
-      </>
+      </StyledCheckoutAndReceiptContainer>
     </>
   );
 }
@@ -134,9 +141,12 @@ const ExpandPurchaseButton = styled(Button)<{ show?: boolean }>`
   transition: opacity 0ms ease-in-out;
 `;
 
-const StyledCheckoutBox = styled.div<{ showBox: boolean }>`
+const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
   margin-top: ${({ showBox }) => (showBox ? '-42px' : '0')};
+`;
+
+const StyledCheckoutBox = styled.div<{ showBox: boolean; isAwaitingTransactionState: boolean }>`
   z-index: 2;
   padding: 0;
   display: flex;
@@ -148,16 +158,14 @@ const StyledCheckoutBox = styled.div<{ showBox: boolean }>`
   padding: 16px;
   opacity: 0;
   border: 1px solid ${colors.porcelain};
-  // transform: translateY(15px);
 
   transition: max-height 400ms ease 0ms, transform 400ms ease 0ms, opacity 400ms ease 200ms;
-  ${({ showBox }) =>
+  ${({ showBox, isAwaitingTransactionState }) =>
     showBox &&
     `
     max-height: 1000px;
-    opacity: 1;
-    // transform: translateY(0);
-    `}
+    opacity: ${isAwaitingTransactionState ? 0.5 : 1};
+  `}
 `;
 
 const StyledCheckoutTitle = styled(TitleDiatypeL)`
@@ -205,7 +213,9 @@ const StyledColumnButton = styled.button<{ disabled: boolean }>`
 const StyledPrice = styled(BaseXL)``;
 
 const StyledConfirmButton = styled(Button)``;
-const StyledPurchaseMoreButton = styled(Button)``;
+const StyledPurchaseMoreButton = styled(Button)`
+  width: 100%;
+`;
 
 const ReceiptContainer = styled.div`
   padding: 0;
@@ -214,4 +224,5 @@ const ReceiptContainer = styled.div`
   height: 100%;
   padding: 16px;
   border: 1px solid ${colors.porcelain};
+  transition: opacity 300ms ease;
 `;
