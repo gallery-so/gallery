@@ -70,9 +70,8 @@ const StyledGalleryContainer = styled.div<{ hasCollectorNote?: boolean }>`
 
 const StyledImage = styled.img`
   max-width: 100%;
-  max-height: 265px;
+  height: 265px;
   width: auto;
-  height: auto;
   display: block;
   margin: 0 0 0 auto;
 `;
