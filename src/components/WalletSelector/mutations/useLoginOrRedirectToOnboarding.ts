@@ -70,7 +70,8 @@ export default function useLoginOrRedirectToOnboarding() {
             {
               pathname: '/welcome',
               query: {
-                chain: 'Ethereum',
+                authMechanismType: 'eoa',
+                chain: authMechanism.mechanism.eoa.chainAddress.chain,
                 address: authMechanism.mechanism.eoa.chainAddress.address,
                 nonce: authMechanism.mechanism.eoa.nonce,
                 signature: authMechanism.mechanism.eoa.signature,
@@ -81,9 +82,19 @@ export default function useLoginOrRedirectToOnboarding() {
           );
         }
 
-        // TODO: does the gnosis safe flow lead to account creation, even without a signature?
-        // the only inputs for its AuthMechanism are `address` and `nonce`
         if (authMechanism.mechanism.gnosisSafe) {
+          push(
+            {
+              pathname: '/welcome',
+              query: {
+                authMechanismType: 'gnosisSafe',
+                address: authMechanism.mechanism.gnosisSafe.address,
+                nonce: authMechanism.mechanism.gnosisSafe.nonce,
+                userFriendlyWalletName,
+              },
+            },
+            '/welcome'
+          );
         }
 
         return;

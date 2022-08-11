@@ -1,7 +1,7 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { AuthPayloadVariables } from './useAuthPayloadQuery';
+import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
 
 export default function useCreateUser() {
   const [createUser] = usePromisifiedMutation<any>(
@@ -38,13 +38,33 @@ export default function useCreateUser() {
 
   return useCallback(
     async (authPayloadVariables: AuthPayloadVariables, username: string, bio: string) => {
-      const { chain, address, nonce, signature } = authPayloadVariables;
+      let authMechanism;
+
+      if (isEoaPayload(authPayloadVariables)) {
+        const { chain, address, nonce, signature } = authPayloadVariables;
+        authMechanism = {
+          eoa: {
+            chainAddress: {
+              chain,
+              address,
+            },
+            nonce,
+            signature,
+          },
+        };
+      } else {
+        const { address, nonce } = authPayloadVariables;
+        authMechanism = {
+          gnosisSafe: {
+            address,
+            nonce,
+          },
+        };
+      }
 
       const response = await createUser({
         variables: {
-          authMechanism: {
-            eoa: { chainAddress: { address, chain }, nonce, signature },
-          },
+          authMechanism,
           username,
           bio,
         },
