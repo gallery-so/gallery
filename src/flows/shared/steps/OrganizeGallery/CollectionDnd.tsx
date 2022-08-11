@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
-  defaultDropAnimation,
+  defaultDropAnimationSideEffects,
   DndContext,
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
   DropAnimation,
+  UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
@@ -19,9 +20,14 @@ import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.g
 import { removeNullValues } from 'utils/removeNullValues';
 import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 
-const defaultDropAnimationConfig: DropAnimation = {
-  ...defaultDropAnimation,
-  dragSourceOpacity: 0.2,
+const dropAnimation: DropAnimation = {
+  sideEffects: defaultDropAnimationSideEffects({
+    styles: {
+      active: {
+        opacity: '0.2',
+      },
+    },
+  }),
 };
 
 const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
@@ -65,7 +71,7 @@ function CollectionDnd({ galleryRef }: Props) {
       .filter((collection) => Boolean(collection));
   }, [nonNullCollections, sortedCollectionIds]);
 
-  const [activeId, setActiveId] = useState<string | undefined>(undefined);
+  const [activeId, setActiveId] = useState<UniqueIdentifier | undefined>(undefined);
   const updateGallery = useUpdateGallery();
 
   const handleSortCollections = useCallback(
@@ -128,7 +134,7 @@ function CollectionDnd({ galleryRef }: Props) {
           <CollectionRowWrapper key={collection.id} collectionRef={collection} />
         ))}
       </SortableContext>
-      <DragOverlay dropAnimation={defaultDropAnimationConfig}>
+      <DragOverlay dropAnimation={dropAnimation}>
         {activeCollection ? <CollectionRowDragging collectionRef={activeCollection} /> : null}
       </DragOverlay>
     </DndContext>

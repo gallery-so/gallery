@@ -1,24 +1,18 @@
 import { useCallback } from 'react';
-import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import {
-  getWhitespacePositionsFromStagedItems,
-  removeWhitespacesFromStagedItems,
-} from 'utils/collectionLayout';
+import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
 import { useUpdateCollectionTokensRefresherQuery } from '__generated__/useUpdateCollectionTokensRefresherQuery.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import {
-  UpdateCollectionTokensInput,
-  useUpdateCollectionTokensMutation,
-} from '__generated__/useUpdateCollectionTokensMutation.graphql';
+import { useUpdateCollectionTokensMutation } from '__generated__/useUpdateCollectionTokensMutation.graphql';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
+import { captureException } from '@sentry/nextjs';
 
 type Props = {
   collectionId: string;
-  stagedNfts: StagingItem[];
-  collectionLayout: UpdateCollectionTokensInput['layout'];
+  stagedCollection: StagedCollection;
   tokenSettings: TokenSettings;
 };
 
@@ -35,16 +29,12 @@ export default function useUpdateCollectionTokens() {
   );
 
   return useCallback(
-    async ({ collectionId, stagedNfts, collectionLayout, tokenSettings }: Props) => {
-      const layout = {
-        ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
-      };
-      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
-      const tokenIds = tokens.map((token) => token.dbid);
+    async ({ collectionId, stagedCollection, tokenSettings }: Props) => {
+      const layout = generateLayoutFromCollection(stagedCollection);
+      const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
-      await updateCollectionTokens({
+      const response = await updateCollectionTokens({
         variables: {
           input: {
             collectionId,
@@ -54,6 +44,15 @@ export default function useUpdateCollectionTokens() {
           },
         },
       });
+
+      if (response.updateCollectionTokens?.__typename !== 'UpdateCollectionTokensPayload') {
+        // TODO(Terence): How do we really want to handle this.
+        const error = new Error(
+          `Error updating collection tokens: response typename: ${response.updateCollectionTokens?.__typename}`
+        );
+        captureException(error);
+        throw error;
+      }
 
       // Until everything is routed through GraphQL, we need
       // a mechanism to ensure that other pages using this data
@@ -86,9 +85,7 @@ export default function useUpdateCollectionTokens() {
               ...CollectionRowWrapperFragment
               ...DeleteCollectionConfirmationFragment
               ...SortableCollectionRowFragment
-              ...useCollectionColumnsFragment
               ...UserGalleryCollectionFragment
-              ...useCollectionColumnsFragment
               ...CollectionGalleryHeaderFragment
             }
           }

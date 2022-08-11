@@ -39,8 +39,8 @@ function SortableCollectionRow({ collectionRef }: Props) {
     <StyledSortableCollectionRow
       ref={setNodeRef}
       id={collection.id}
-      active={isDragging}
       // @ts-expect-error force overload
+      active={isDragging}
       style={style}
     >
       <>

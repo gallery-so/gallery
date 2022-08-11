@@ -12,8 +12,8 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import formatError from 'errors/formatError';
 import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
 import useCreateCollection from 'hooks/api/collections/useCreateCollection';
-import { StagingItem } from './types';
-import { removeWhitespacesFromStagedItems } from 'utils/collectionLayout';
+import { StagedCollection } from './types';
+import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -24,11 +24,7 @@ type Props = {
   collectionId?: string;
   collectionName?: string;
   collectionCollectorsNote?: string;
-  stagedItems?: StagingItem[];
-  layout?: {
-    columns: number;
-    whitespace: readonly number[];
-  };
+  stagedCollection?: StagedCollection;
   tokenSettings?: TokenSettings;
 };
 
@@ -40,8 +36,7 @@ function CollectionCreateOrEditForm({
   collectionId,
   collectionName,
   collectionCollectorsNote,
-  stagedItems,
-  layout,
+  stagedCollection,
   tokenSettings = {},
 }: Props) {
   const { hideModal } = useModalActions();
@@ -73,12 +68,12 @@ function CollectionCreateOrEditForm({
 
   const buttonText = useMemo(() => {
     // Collection is being created
-    if (stagedItems) {
+    if (stagedCollection) {
       return 'create';
     }
 
     return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue, stagedItems]);
+  }, [hasEnteredValue, stagedCollection]);
 
   const goToNextStep = useCallback(() => {
     onNext();
@@ -113,18 +108,17 @@ function CollectionCreateOrEditForm({
       }
 
       // Collection is being created
-      if (!collectionId && stagedItems && layout) {
+      if (!collectionId && stagedCollection) {
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
-          nft_ids: removeWhitespacesFromStagedItems(stagedItems).map(({ dbid: id }) => id),
+          nft_ids: getTokenIdsFromCollection(stagedCollection),
         });
         await createCollection({
           galleryId,
           title,
           description,
-          stagedNfts: stagedItems,
-          collectionLayout: layout,
+          stagedCollection: stagedCollection,
           tokenSettings,
         });
       }
@@ -140,8 +134,7 @@ function CollectionCreateOrEditForm({
   }, [
     description,
     collectionId,
-    stagedItems,
-    layout,
+    stagedCollection,
     goToNextStep,
     track,
     title,

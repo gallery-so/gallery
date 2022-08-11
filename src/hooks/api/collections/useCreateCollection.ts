@@ -1,15 +1,9 @@
 import { useCallback } from 'react';
-import { StagingItem } from 'flows/shared/steps/OrganizeCollection/types';
-import {
-  getWhitespacePositionsFromStagedItems,
-  removeWhitespacesFromStagedItems,
-} from 'utils/collectionLayout';
+import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import {
-  CreateCollectionInput,
-  useCreateCollectionMutation,
-} from '__generated__/useCreateCollectionMutation.graphql';
+import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 
@@ -17,8 +11,7 @@ type Props = {
   galleryId: string;
   title: string;
   description: string;
-  stagedNfts: StagingItem[];
-  collectionLayout: CreateCollectionInput['layout'];
+  stagedCollection: StagedCollection;
   tokenSettings: TokenSettings;
 };
 
@@ -54,7 +47,6 @@ export default function useCreateCollection() {
             # everything we need to udpate the cache.
             ...NftGalleryFragment
             ...UserGalleryCollectionFragment
-            ...useCollectionColumnsFragment
             ...CollectionRowSettingsFragment
             ...DeleteCollectionConfirmationFragment
             ...CollectionGalleryHeaderFragment
@@ -65,20 +57,9 @@ export default function useCreateCollection() {
   `);
 
   return useCallback(
-    async ({
-      galleryId,
-      title,
-      description,
-      stagedNfts,
-      collectionLayout,
-      tokenSettings,
-    }: Props) => {
-      const layout = {
-        ...collectionLayout,
-        whitespace: getWhitespacePositionsFromStagedItems(stagedNfts),
-      };
-      const tokens = removeWhitespacesFromStagedItems(stagedNfts);
-      const tokenIds = tokens.map((token) => token.dbid);
+    async ({ galleryId, title, description, stagedCollection, tokenSettings }: Props) => {
+      const layout = generateLayoutFromCollection(stagedCollection);
+      const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
 
       const response = await createCollection({

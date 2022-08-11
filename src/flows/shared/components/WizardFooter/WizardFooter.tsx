@@ -137,7 +137,7 @@ function WizardFooter({
   );
 }
 
-export const FOOTER_HEIGHT = 66;
+export const FOOTER_HEIGHT = 56;
 
 const StyledWizardFooter = styled.div`
   position: fixed;

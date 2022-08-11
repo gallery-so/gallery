@@ -20,9 +20,9 @@ type Props = {
 
 export default function ImageWithLoading({
   className,
-  heightType,
   src,
   alt,
+  heightType,
   onClick = noop,
 }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();

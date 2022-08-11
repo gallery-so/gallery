@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
 
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -54,7 +54,9 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
             id
           }
           layout {
-            whitespace
+            sectionLayout {
+              whitespace
+            }
           }
           ...UserGalleryCollectionFragment
         }
@@ -74,15 +76,23 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
       minHeight: 100,
     })
   );
-
   const listRef = useRef<List>(null);
+
+  // If the mobileLayout is changed, we need to recalculate the cache height.
+  useEffect(() => {
+    cache.current.clearAll();
+    listRef.current?.recomputeRowHeights();
+  }, [mobileLayout]);
 
   const collectionsToDisplay = useMemo(
     () =>
       nonNullCollections.filter((collection) => {
         const isNotHidden = !collection.hidden;
         const hasTokens = collection.tokens?.length;
-        const hasWhitespace = collection.layout?.whitespace?.length;
+        const hasWhitespace = collection.layout?.sectionLayout?.find(
+          (layout) => !!layout?.whitespace?.length
+        );
+
         return (hasTokens || hasWhitespace) && isNotHidden;
       }),
     [nonNullCollections]
