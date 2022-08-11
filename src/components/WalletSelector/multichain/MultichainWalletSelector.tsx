@@ -10,6 +10,9 @@ import { ConnectionMode } from '../WalletSelector';
 import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { EthereumAddWallet } from './EthereumAddWallet';
+import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
+import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
+import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -21,6 +24,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     graphql`
       fragment MultichainWalletSelectorFragment on Query {
         ...EthereumAddWalletFragment
+        ...GnosisSafeAddWalletFragment
       }
     `,
     queryRef
@@ -32,6 +36,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }, []);
 
   const connectEthereum = useConnectEthereum();
+  const connectGnosisSafe = useConnectGnosisSafe();
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -45,6 +50,23 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       return (
         <StyledWalletSelector>
           <EthereumAuthenticateWallet reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
+  }
+
+  if (selectedAuthMethod === supportedAuthMethods.gnosisSafe) {
+    if (connectionMode === ADD_WALLET_TO_USER) {
+      return (
+        <StyledWalletSelector>
+          <GnosisSafeAddWallet queryRef={query} reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
+    if (connectionMode === AUTH) {
+      return (
+        <StyledWalletSelector>
+          <GnosisSafeAuthenticateWallet reset={reset} />
         </StyledWalletSelector>
       );
     }
@@ -68,7 +90,14 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           );
         }}
       />
-      <WalletButton label={supportedAuthMethods.gnosisSafe.name} icon="gnosis_safe" />
+      <WalletButton
+        label={supportedAuthMethods.gnosisSafe.name}
+        icon="gnosis_safe"
+        onClick={() => {
+          console.log('connecting with gnosis via walletconnect');
+          connectGnosisSafe();
+        }}
+      />
     </StyledWalletSelector>
   );
 }
