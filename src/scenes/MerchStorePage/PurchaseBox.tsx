@@ -55,6 +55,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
         <StyledCheckoutBox
           showBox={showBox}
           isAwaitingTransactionState={isAwaitingTransactionState}
+          isReceiptState={isReceiptState}
         >
           <StyledCheckoutTitle>
             {isReceiptState
@@ -146,7 +147,11 @@ const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   margin-top: ${({ showBox }) => (showBox ? '-42px' : '0')};
 `;
 
-const StyledCheckoutBox = styled.div<{ showBox: boolean; isAwaitingTransactionState: boolean }>`
+const StyledCheckoutBox = styled.div<{
+  showBox: boolean;
+  isAwaitingTransactionState: boolean;
+  isReceiptState: boolean;
+}>`
   z-index: 2;
   padding: 0;
   display: flex;
@@ -158,14 +163,16 @@ const StyledCheckoutBox = styled.div<{ showBox: boolean; isAwaitingTransactionSt
   padding: 16px;
   opacity: 0;
   border: 1px solid ${colors.porcelain};
-
   transition: max-height 400ms ease 0ms, transform 400ms ease 0ms, opacity 400ms ease 200ms;
+
   ${({ showBox, isAwaitingTransactionState }) =>
     showBox &&
     `
     max-height: 1000px;
     opacity: ${isAwaitingTransactionState ? 0.5 : 1};
   `}
+
+  pointer-events: ${({ isReceiptState }) => (isReceiptState ? 'none' : 'all')};
 `;
 
 const StyledCheckoutTitle = styled(TitleDiatypeL)`
