@@ -60,12 +60,20 @@ const ShimmerProvider = memo(({ children }: Props) => {
 
   const actions = useMemo(
     () => ({
-      setContentIsLoaded: (event?: SyntheticEvent) => {
+      // using `any` here because the SynetheticEvent could be fired by different kinds of nodes that are mounting,
+      // such as images, videos, and iframes, each of which come with different properties.
+      setContentIsLoaded: (event?: any) => {
         if (event) {
-          // @ts-expect-error: the element that fires the event on load may be different (e.g. image vs. video vs. iframe).
-          // `naturalWidth` and `naturalHeight` are available on images and represent their original dimensions, whereas
-          // `width` and `height` are the literal dimensions that are rendered on the page.
-          const aspectRatio = event.target?.naturalWidth / event.target?.naturalHeight;
+          // default aspect ratio to 1; if we can't determine an asset's dimensions, we'll show it in a square viewport
+          let aspectRatio = 1;
+          if (event.target.nodeName === 'IMG') {
+            aspectRatio = event.target.naturalWidth / event.target.naturalHeight;
+          }
+          if (event.target.nodeName === 'VIDEO') {
+            aspectRatio = event.target.videoWidth / event.target.videoHeight;
+          }
+          setAspectRatio(aspectRatio);
+
           if (aspectRatio === 1) {
             setAspectRatioType('square');
           } else if (aspectRatio > 1) {
@@ -75,9 +83,6 @@ const ShimmerProvider = memo(({ children }: Props) => {
           } else {
             setAspectRatioType('unknown');
           }
-
-          // if an aspect ratio is indeterminate, we give it a square viewport
-          setAspectRatio(aspectRatio || 1);
         }
 
         setIsLoaded(true);
