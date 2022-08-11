@@ -15,11 +15,10 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
+import { useContentState } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
-  variant: 'gallery' | 'feed';
   tokenRef: NftPreviewFragment$key;
-  nftPreviewMaxWidth?: string;
   previewSize: number;
   ownerUsername?: string;
   onClick?: () => void;
@@ -29,9 +28,7 @@ type Props = {
 };
 
 function NftPreview({
-  variant,
   tokenRef,
-  nftPreviewMaxWidth,
   previewSize,
   onClick,
   hideLabelOnMobile = false,
@@ -116,7 +113,6 @@ function NftPreview({
           tokenRef={token}
           // we'll request images at double the size of the element so that it looks sharp on retina
           size={previewSize * 2}
-          fullWidth={variant === 'gallery'}
         />
       );
     }
@@ -131,10 +127,9 @@ function NftPreview({
         tokenRef={token}
         // we'll request images at double the size of the element so that it looks sharp on retina
         size={previewSize * 2}
-        fullWidth={variant === 'gallery'}
       />
     );
-  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize, variant]);
+  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize]);
 
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
@@ -147,6 +142,8 @@ function NftPreview({
     // the asset is an iframe in single column mode
     (columns === 1 && isIFrameLiveDisplay);
 
+  const { aspectRatio } = useContentState();
+
   return (
     <LinkToNftDetailView
       username={username ?? ''}
@@ -158,7 +155,7 @@ function NftPreview({
           This will inherit the `as` URL from the parent component. */}
       <StyledA onClick={handleClick}>
         <StyledNftPreview
-          maxWidth={nftPreviewMaxWidth}
+          aspectRatio={aspectRatio}
           backgroundColorOverride={backgroundColorOverride}
           fullWidth={fullWidth}
         >
@@ -183,7 +180,8 @@ const StyledA = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: inherit;
+  height: inherit;
   text-decoration: none;
 `;
 
@@ -208,10 +206,9 @@ const StyledNftFooter = styled.div`
 `;
 
 const StyledNftPreview = styled.div<{
-  maxWidth?: string;
-  width?: string;
   backgroundColorOverride: string;
   fullWidth: boolean;
+  aspectRatio: number | null;
 }>`
   cursor: pointer;
 
@@ -221,12 +218,12 @@ const StyledNftPreview = styled.div<{
   position: relative;
   overflow: hidden;
   max-height: 80vh;
+  max-width: ${({ aspectRatio }) => `calc(80vh * ${aspectRatio})`};
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  height: inherit;
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
-
-  max-width: ${({ maxWidth }) => maxWidth};
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);

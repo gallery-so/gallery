@@ -123,6 +123,7 @@ const StyledContentContainer = styled.div`
 const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)
