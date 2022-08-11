@@ -68,7 +68,6 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
       onClick={(e) => e.stopPropagation()}
     >
       <NftPreview
-        variant="feed"
         tokenRef={token}
         previewSize={maxWidth}
         onClick={handleClick}
