@@ -25,7 +25,10 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
 
   return (
     <>
-      {!showBox && <ExpandPurchaseButton onClick={toggleShowBox}>Purchase</ExpandPurchaseButton>}
+      {/* {!showBox && <ExpandPurchaseButton onClick={toggleShowBox}>Purchase</ExpandPurchaseButton>} */}
+      <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox}>
+        Purchase
+      </ExpandPurchaseButton>
       <>
         {isPurchaseMoreState && (
           <>
@@ -119,15 +122,22 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
   );
 }
 
-const ExpandPurchaseButton = styled(Button)`
+const ExpandPurchaseButton = styled(Button)<{ show?: boolean }>`
   align-self: flex-end;
   width: 100%;
   height: 100%;
   padding: 8px 24px;
   text-decoration: none;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  pointer-events: ${({ show }) => (show ? 'all' : 'none')};
+  z-index: 1;
+  transition: opacity 0ms ease-in-out;
 `;
 
 const StyledCheckoutBox = styled.div<{ showBox: boolean }>`
+  // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
+  margin-top: ${({ showBox }) => (showBox ? '-42px' : '0')};
+  z-index: 2;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -135,14 +145,19 @@ const StyledCheckoutBox = styled.div<{ showBox: boolean }>`
   overflow: hidden;
   max-height: 0;
   border: 1px solid transparent;
-  transition: max-height 300ms ease, padding 0ms ease 300ms, border 0ms ease 300ms;
+  padding: 16px;
+  opacity: 0;
+  border: 1px solid ${colors.porcelain};
+  // transform: translateY(15px);
 
+  transition: max-height 400ms ease 0ms, transform 400ms ease 0ms, opacity 400ms ease 200ms;
   ${({ showBox }) =>
     showBox &&
-    `max-height: 1000px;
-    padding:16px;
-    transition: max-height 300ms ease, padding 0ms ease 0ms, border 0ms ease 0ms;
-    border: 1px solid ${colors.porcelain}`}
+    `
+    max-height: 1000px;
+    opacity: 1;
+    // transform: translateY(0);
+    `}
 `;
 
 const StyledCheckoutTitle = styled(TitleDiatypeL)`
