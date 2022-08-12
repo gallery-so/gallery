@@ -10,6 +10,9 @@ const walletIconMap = {
   walletconnect: '/icons/walletconnect.svg',
   walletlink: '/icons/walletlink.svg',
   gnosis_safe: '/icons/gnosis_safe.svg',
+  ethereum: '/icons/ethereum_logo.svg',
+  tezos: '/icons/tezos_logo.svg',
+  solana: '/icons/solana_logo.svg',
 };
 
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

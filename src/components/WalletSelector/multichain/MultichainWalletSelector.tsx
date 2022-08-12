@@ -76,8 +76,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     <StyledWalletSelector>
       <WalletButton
         label={supportedAuthMethods.ethereum.name}
-        // TODO: ethereum icon
-        icon="metamask"
+        icon="ethereum"
         onClick={() => {
           console.log('connecting to ethereum');
           connectEthereum().then(
@@ -99,6 +98,8 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
         }}
       />
+      {/* <WalletButton label="Tezos" icon="tezos" disabled /> */}
+      {/* <WalletButton label="Solana" icon="solana" disabled /> */}
       <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
