@@ -1,4 +1,4 @@
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import GNOSIS_SAFE_CONTRACT_ABI from 'abis/gnosis-safe-contract.json';
 import { keccak256 } from '@ethersproject/keccak256';
 import { toUtf8Bytes } from '@ethersproject/strings';
@@ -9,6 +9,7 @@ import walletlinkSigner from './walletlinkSigner';
 import { Contract } from '@ethersproject/contracts';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { Web3Error } from 'types/Error';
+import { Web3Provider } from '@ethersproject/providers';
 
 // The hard coded value that Gnosis Safe contract's isValidSignature method returns if the message was signed
 // https://github.com/gnosis/safe-contracts/blob/dec13f7cdab62056984343c4edfe40df5a1954dc6/contracts/handler/CompatibilityFallbackHandler.sol#L19
@@ -35,15 +36,14 @@ export async function signMessage(
   address: string,
   nonce: string,
   connector: AbstractConnector,
-  signer: JsonRpcSigner,
-  library?: Web3Provider
+  signer: JsonRpcSigner
 ): Promise<Signature> {
   const accountType = getEthereumAccountType(connector);
 
   if (accountType === CONTRACT_ACCOUNT) {
     // TODO: if theres a nonce in local storage, prompt to try again
 
-    return signMessageWithContractAccount(address, nonce, connector, library);
+    return signMessageWithContractAccount(address, nonce, connector);
   }
 
   return signMessageWithEOA(address, nonce, signer, connector);
@@ -83,17 +83,14 @@ export async function signMessageWithEOA(
 export async function signMessageWithContractAccount(
   address: string,
   nonce: string,
-  connector: AbstractConnector,
-  library?: Web3Provider
+  connector: AbstractConnector
 ): Promise<Signature> {
   try {
     if (!(connector instanceof WalletConnectConnector)) {
       throw new Error('WalletConnectConnector is required for Contract Accounts');
     }
 
-    if (!library) {
-      throw new Error('Web3Provider is required for Contract Accounts');
-    }
+    // TODO: ensure we have a provider on the connector?
 
     // This keeps the nonce message intact instead of encrypting it for WalletConnect users
     return (await connector.walletConnectProvider.connector.signPersonalMessage([
@@ -115,9 +112,14 @@ export async function signMessageWithContractAccount(
 export async function listenForGnosisSignature(
   address: string,
   nonce: string,
-  library?: Web3Provider
+  connector?: AbstractConnector
 ) {
-  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
+  if (!(connector instanceof WalletConnectConnector)) {
+    throw new Error('WalletConnectConnector is required for listening for Gnosis Safe signature');
+  }
+
+  const provider = new Web3Provider(await connector.getProvider());
+  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, provider);
   const messageHash = generateMessageHash(nonce);
   // create listener that will listen for the SignMsg event on the Gnosis contract
   const listenToGnosisSafeContract = new Promise((resolve) => {
@@ -154,10 +156,11 @@ export async function validateGnosisSignature(gnosisSafeContract: Contract, mess
 export async function validateNonceSignedByGnosis(
   address: string,
   nonce: string,
-  library?: Web3Provider
+  connector: AbstractConnector
 ) {
   console.log('Querying Gnosis Safe');
-  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, library as any);
+  const provider = new Web3Provider(await connector.getProvider());
+  const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, provider);
   const messageHash = generateMessageHash(nonce);
   return validateGnosisSignature(gnosisSafeContract, messageHash);
 }

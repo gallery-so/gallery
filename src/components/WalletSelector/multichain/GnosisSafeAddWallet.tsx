@@ -49,7 +49,7 @@ type Props = {
 export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
   const connectGnosisSafe = useConnectGnosisSafe();
 
-  const { library, account } = useWeb3React<Web3Provider>();
+  const { account } = useWeb3React<Web3Provider>();
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
@@ -160,18 +160,18 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
         setPendingState(PROMPT_SIGNATURE);
         trackAddWalletAttempt('Gnosis Safe');
-        await signMessageWithContractAccount(address, nonce, walletconnect, library);
+        await signMessageWithContractAccount(address, nonce, walletconnect);
         window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
 
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(address, nonce, library);
+        await listenForGnosisSignature(address, nonce, walletconnect);
 
         await authenticateWithBackend(address, nonce);
       } catch (error: unknown) {
         handleError(error);
       }
     },
-    [trackAddWalletAttempt, library, authenticateWithBackend, handleError]
+    [trackAddWalletAttempt, authenticateWithBackend, handleError]
   );
 
   // Validates the signature on-chain. If it hasnt been signed yet, initializes a listener to wait for the SignMsg event.
@@ -185,7 +185,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
     try {
       // Immediately check if the message has already been signed and executed on chain
-      const wasSigned = await validateNonceSignedByGnosis(account, nonce, library);
+      const wasSigned = await validateNonceSignedByGnosis(account, nonce, walletconnect);
       if (wasSigned) {
         await authenticateWithBackend(account, nonce);
       }
@@ -193,14 +193,14 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
       // If it hasn't, set up a listener because the transaction may not have been executed yet
       if (pendingState !== LISTENING_ONCHAIN) {
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(account, nonce, library);
+        await listenForGnosisSignature(account, nonce, walletconnect);
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
     } catch (error: unknown) {
       handleError(error);
     }
-  }, [account, authenticateWithBackend, handleError, library, pendingState, nonce]);
+  }, [account, authenticateWithBackend, handleError, pendingState, nonce]);
 
   const restartAuthentication = useCallback(async () => {
     if (account) {

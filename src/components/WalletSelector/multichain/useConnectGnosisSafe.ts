@@ -12,7 +12,6 @@ export const useConnectGnosisSafe = () => {
     walletconnect.walletConnectProvider = undefined;
     window.localStorage.removeItem('walletconnect');
 
-    console.log('calling activate');
     await activate(walletconnect);
     const account = await walletconnect.getAccount();
 
