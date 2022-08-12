@@ -44,26 +44,15 @@ export default function ItemPage({
   tokenId: number;
 }) {
   const contract = useMintMerchContract();
-  const { account: rawAccount } = useWeb3React<Web3Provider>();
   const [publicSupply, setPublicSupply] = useState(0);
   const [usedPublicSupply, setUsedPublicSupply] = useState(0);
 
-  const account = rawAccount?.toLowerCase();
-
   // FIXME: Use library rather than account is account is not available (user not logged in)?
-  const updateSupplies = useCallback(
-    async (contract: any, tokenId: number) => {
-      // console.log(contract, account);
-      // if (contract && account) {
-      if (contract) {
-        return [
-          await contract.getPublicSupply(tokenId),
-          await contract.getUsedPublicSupply(tokenId),
-        ];
-      }
-    },
-    [account]
-  );
+  const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
+    if (contract) {
+      return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
+    }
+  }, []);
 
   // Run getRemainingSupply once on mount and then update the remaining supply.
   useEffect(() => {
