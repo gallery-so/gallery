@@ -13,15 +13,13 @@ import NftDetailModel from './NftDetailModel';
 import { useMemo } from 'react';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
-  maxHeight: number;
 };
 
-function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -70,7 +68,6 @@ function NftDetailAssetComponent({ tokenRef, maxHeight }: NftDetailAssetComponen
       return (
         <NftDetailImage
           tokenRef={token.token}
-          maxHeight={maxHeight}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
           onClick={() => window.open(token.token.media.contentRenderURL)}
@@ -87,15 +84,6 @@ type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
 };
-
-// number that determines a reasonable max height for the displayed NFT
-let heightWithoutNavAndFooterGutters: number;
-
-if (typeof window !== 'undefined') {
-  // NOTE: don't need to handle MOBILE footer height here, since this logic only applies to desktop + tablet
-  heightWithoutNavAndFooterGutters =
-    window.screen.availHeight - 2 * (GLOBAL_NAVBAR_HEIGHT + GLOBAL_FOOTER_HEIGHT);
-}
 
 function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const token = useFragment(
@@ -127,14 +115,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     [contractAddress]
   );
 
-  const maxHeight = Math.min(
-    heightWithoutNavAndFooterGutters,
-    // TODO: this number should be determined by the dimensions of the media itself. once the media is fetched,
-    // we should grab its dimensions and set it on the shimmer context. this will allow us to display very large
-    // NFTs on very large screens
-    600
-  );
-
   const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
 
@@ -147,19 +127,17 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   return (
     <StyledAssetContainer
       footerHeight={GLOBAL_FOOTER_HEIGHT}
-      maxHeight={maxHeight}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} maxHeight={maxHeight} />
+      <NftDetailAssetComponent tokenRef={token} />
     </StyledAssetContainer>
   );
 }
 
 type AssetContainerProps = {
   footerHeight: number;
-  maxHeight: number;
   shouldEnforceSquareAspectRatio: boolean;
   hasExtraPaddingForNote: boolean;
   backgroundColorOverride: string;
@@ -180,17 +158,11 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   @media only screen and ${breakpoints.tablet} {
-    width: 100%;
-
-    ${({ hasExtraPaddingForNote, footerHeight }) =>
-      hasExtraPaddingForNote ? `max-height: calc(85vh - 46px - ${footerHeight}px)` : ''};
+    width: 600px;
+    min-height: 600px;
+    height: 100%;
   }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: ${({ maxHeight }) => maxHeight}px;
-    height: ${({ maxHeight }) => maxHeight}px;
-  }
-
+  
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;

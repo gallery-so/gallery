@@ -58,13 +58,15 @@ function NftDetailAnimation({ mediaRef }: Props) {
 }
 
 const StyledNftDetailAnimation = styled.div`
-  width: 100%;
+  width: inherit;
+  height: inherit;
 `;
 
 const StyledIframe = styled.iframe`
-  width: 100%;
-  height: 100%;
+  width: inherit;
+  height: inherit;
   border: none;
+
   aspect-ratio: 1;
 `;
 

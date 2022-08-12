@@ -15,7 +15,6 @@ type Props = {
   src: string;
   alt: string;
   heightType?: ContentHeightType;
-  fullWidth?: boolean;
   onClick?: () => void;
 };
 
@@ -24,7 +23,6 @@ export default function ImageWithLoading({
   src,
   alt,
   heightType,
-  fullWidth,
   onClick = noop,
 }: Props) {
   const setContentIsLoaded = useSetContentIsLoaded();
@@ -45,7 +43,7 @@ export default function ImageWithLoading({
     return '100%';
   }, [heightType]);
 
-  const renderFullWidth = fullWidth || (isSvg(src) && !isFirefox());
+  const renderFullWidth = isSvg(src) && !isFirefox();
 
   return (
     <StyledImageWithLoading

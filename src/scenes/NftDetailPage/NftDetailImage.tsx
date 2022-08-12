@@ -12,7 +12,6 @@ import noop from 'utils/noop';
 
 type Props = {
   tokenRef: NftDetailImageFragment$key;
-  maxHeight: number;
   onClick?: () => void;
 };
 
