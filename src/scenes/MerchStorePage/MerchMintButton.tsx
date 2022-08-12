@@ -30,25 +30,12 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
   // const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintMerchContract();
-  // console.log(contract);
   const { transactionHash, transactionStatus, buttonText, error, handleMintButtonClick } =
     useMintContractWithQuantity({
       contract,
       tokenId,
       quantity,
     });
-
-  // console.log(contract);
-
-  useEffect(() => {
-    if (active) {
-      console.log('hide modal here');
-      // hideModal();
-    }
-  }, [
-    active,
-    // hideModal
-  ]);
 
   const handleConnectWalletButtonClick = useCallback(() => {
     if (!active) {
