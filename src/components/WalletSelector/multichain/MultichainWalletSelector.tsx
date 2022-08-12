@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useCallback, useState } from 'react';
-import { ADD_WALLET_TO_USER, AUTH } from 'types/Wallet';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import breakpoints from 'components/core/breakpoints';
 import { graphql, useFragment } from 'react-relay';
 import { MultichainWalletSelectorFragment$key } from '__generated__/MultichainWalletSelectorFragment.graphql';
@@ -90,14 +90,16 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           );
         }}
       />
-      <WalletButton
-        label={supportedAuthMethods.gnosisSafe.name}
-        icon="gnosis_safe"
-        onClick={() => {
-          console.log('connecting to gnosis safe via walletconnect');
-          setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
-        }}
-      />
+      {connectionMode !== CONNECT_WALLET_ONLY ? (
+        <WalletButton
+          label={supportedAuthMethods.gnosisSafe.name}
+          icon="gnosis_safe"
+          onClick={() => {
+            console.log('connecting to gnosis safe via walletconnect');
+            setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+          }}
+        />
+      ) : null}
       {/* <WalletButton label="Tezos" icon="tezos" disabled /> */}
       {/* <WalletButton label="Solana" icon="solana" disabled /> */}
       <Spacer height={16} />
