@@ -91,6 +91,9 @@ const useImperativelyFetchUser = () => {
                 ... on ErrDoesNotOwnRequiredToken {
                   __typename
                 }
+                ... on ErrNoCookie {
+                  __typename
+                }
               }
             }
           }
@@ -199,6 +202,19 @@ const AuthProvider = memo(({ children }: Props) => {
             name: 'ErrNotAuthorized',
             code: 'GALLERY_SERVER_ERROR',
             message: 'required tokens not owned',
+          };
+
+          throw errorWithCode;
+        }
+
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrNoCookie'
+        ) {
+          const errorWithCode: Web3Error = {
+            name: 'ErrNotAuthorized',
+            code: 'NO_COOKIE',
+            message: 'cookie not set from login',
           };
 
           throw errorWithCode;

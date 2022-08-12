@@ -28,6 +28,10 @@ const ERROR_MESSAGES: Record<string, ErrorMessage> = {
     heading: 'This address is already associated with an existing user.',
     body: 'Sign in with that address',
   },
+  NO_COOKIE: {
+    heading: 'Cookie not found',
+    body: 'A cookie was not properly set from the login flow. This issue may be related to CORS. Please try a different browser, and reach out to us on Twitter or Discord if you continue to see this error.',
+  },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
     body: 'Please try again.',
