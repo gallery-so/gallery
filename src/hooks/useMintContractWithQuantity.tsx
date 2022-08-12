@@ -19,7 +19,6 @@ export default function useMintContract({ contract, tokenId, onMintSuccess, quan
 
   const account = rawAccount?.toLowerCase();
 
-  console.log(active, account);
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number, quantity: number) => {
       if (contract && account) {
@@ -39,7 +38,8 @@ export default function useMintContract({ contract, tokenId, onMintSuccess, quan
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId, quantity).catch((error: any) => {
-        console.log(error.message, error.error.message);
+        // console.log(error.message, error.error.message);
+        // TODO: Can handle additional errors here if we want
         if (error.error.message === 'execution reverted: Merch: not allowlisted') {
           setError(
             `Your address is not on the allowlist. Please check back when public mint is live.`
