@@ -1,6 +1,5 @@
-import ShimmerProvider, { useContentState } from 'contexts/shimmer/ShimmerContext';
+import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { GalleryNftPreviewWrapperFragment$key } from '__generated__/GalleryNftPreviewWrapperFragment.graphql';
 import NftPreview from './NftPreview';
@@ -55,34 +54,7 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
-  const { aspectRatioType } = useContentState();
-
-  const nftPreviewMaxWidth = useMemo(() => {
-    if (columns > 1) return '100%';
-
-    // this could be a 1-liner but wanted to make it explicit
-    if (columns === 1) {
-      if (isMobile) {
-        return '100%';
-      }
-      if (aspectRatioType === 'wide') {
-        return '100%';
-      }
-      if (aspectRatioType === 'square' || aspectRatioType === 'tall') {
-        return '70%';
-      }
-    }
-  }, [columns, aspectRatioType, isMobile]);
-
-  return (
-    <NftPreview
-      variant="gallery"
-      tokenRef={collectionTokenRef}
-      nftPreviewMaxWidth={nftPreviewMaxWidth}
-      previewSize={previewSize}
-      columns={columns}
-    />
-  );
+  return <NftPreview tokenRef={collectionTokenRef} previewSize={previewSize} columns={columns} />;
 }
 
 export default NftPreviewWithShimmer;

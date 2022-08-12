@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { size } from 'components/core/breakpoints';
+import useDebounce from './useDebounce';
 
 export default function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
+
+  const debouncedWindowSize = useDebounce(windowSize, 50);
 
   useEffect(() => {
     function handleResize() {
@@ -22,7 +25,7 @@ export default function useWindowSize() {
     };
   }, []);
 
-  return windowSize;
+  return debouncedWindowSize;
 }
 
 export function useBreakpoint(): size {
