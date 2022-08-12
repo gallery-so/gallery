@@ -5,6 +5,7 @@ import { defaultChains, configureChains, createClient, WagmiConfig } from 'wagmi
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import merge from 'lodash.merge';
+import colors from 'components/core/colors';
 
 // Unfortunately, RainbowKit has no way to customize font weight
 // https://github.com/rainbow-me/rainbowkit/discussions/361
@@ -14,7 +15,7 @@ import merge from 'lodash.merge';
 
 const myCustomTheme = merge(lightTheme(), {
   colors: {
-    //   accentColor: '...',
+    accentColor: colors.activeBlue,
     //   accentColorForeground: '...',
     //   actionButtonBorder: '...',
     //   actionButtonBorderMobile: '...',
