@@ -33,8 +33,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
     animateLayoutChanges,
   });
 
-  const { setActiveSectionIdState, addSection, deleteSection, setTokensIsSelected, unstageTokens } =
-    useCollectionEditorActions();
+  const { setActiveSectionIdState, addSection, deleteSection } = useCollectionEditorActions();
 
   // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
   const handleMouseDown = useCallback(() => {
@@ -49,10 +48,8 @@ export default function DroppableSection({ children, columns, id, items, style, 
   }, [addSection]);
 
   const handleDeleteSectionClick = useCallback(() => {
-    setTokensIsSelected(itemIds, false);
-    unstageTokens(itemIds);
-    deleteSection(id);
-  }, [deleteSection, id, itemIds, setTokensIsSelected, unstageTokens]);
+    deleteSection(id, itemIds);
+  }, [deleteSection, id, itemIds]);
 
   return (
     <>

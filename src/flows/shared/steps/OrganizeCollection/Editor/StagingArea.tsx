@@ -26,6 +26,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-ki
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 
 import {
+  useActiveSectionIdState,
   useCollectionEditorActions,
   useStagedCollectionState,
 } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -41,6 +42,7 @@ import { removeNullValues } from 'utils/removeNullValues';
 import { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
+import useKeyDown from 'hooks/useKeyDown';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -90,7 +92,7 @@ function StagingArea({ tokensRef }: Props) {
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
 
-  const { setStagedCollectionState, reorderTokensWithinSection, reorderSection } =
+  const { setStagedCollectionState, reorderTokensWithinSection, reorderSection, deleteSection } =
     useCollectionEditorActions();
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -330,6 +332,16 @@ function StagingArea({ tokensRef }: Props) {
   const activeItemRef = activeId && nftFragmentsKeyedByID[activeId];
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  const activeSectionId = useActiveSectionIdState();
+  const handleBackspacePress = useCallback(() => {
+    if (activeSectionId) {
+      const itemIds = stagedCollectionState[activeSectionId]?.items.map(({ id }) => id) ?? [];
+      deleteSection(activeSectionId, itemIds);
+    }
+  }, [activeSectionId, deleteSection, stagedCollectionState]);
+
+  useKeyDown('Backspace', handleBackspacePress);
 
   return (
     <StyledStagingArea>
