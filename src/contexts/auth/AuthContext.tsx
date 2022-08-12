@@ -25,6 +25,7 @@ import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
 import { isWeb3Error, Web3Error } from 'types/Error';
+import { EtheremProviders } from './EthereumProviders';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -88,6 +89,9 @@ const useImperativelyFetchUser = () => {
                   __typename
                 }
                 ... on ErrDoesNotOwnRequiredToken {
+                  __typename
+                }
+                ... on ErrNoCookie {
                   __typename
                 }
               }
@@ -203,6 +207,19 @@ const AuthProvider = memo(({ children }: Props) => {
           throw errorWithCode;
         }
 
+        if (
+          response?.viewer?.__typename === 'ErrNotAuthorized' &&
+          response.viewer.cause.__typename === 'ErrNoCookie'
+        ) {
+          const errorWithCode: Web3Error = {
+            name: 'ErrNotAuthorized',
+            code: 'NO_COOKIE',
+            message: 'cookie not set from login',
+          };
+
+          throw errorWithCode;
+        }
+
         transaction.finish();
       } catch (error: unknown) {
         if (isWeb3Error(error)) {
@@ -266,9 +283,11 @@ const AuthProvider = memo(({ children }: Props) => {
         <Suspense fallback={<FullPageLoader />}>
           <AuthStateContext.Provider value={authState}>
             <AuthActionsContext.Provider value={authActions}>
-              <Web3WalletProvider>
-                {shouldDisplayUniversalLoader ? null : children}
-              </Web3WalletProvider>
+              <EtheremProviders>
+                <Web3WalletProvider>
+                  {shouldDisplayUniversalLoader ? null : children}
+                </Web3WalletProvider>
+              </EtheremProviders>
             </AuthActionsContext.Provider>
           </AuthStateContext.Provider>
         </Suspense>

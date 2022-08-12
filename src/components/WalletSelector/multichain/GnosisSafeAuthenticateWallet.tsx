@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import { isWeb3Error, Web3Error } from 'types/Error';
+import { Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import {
@@ -18,24 +17,24 @@ import {
   useTrackSignInSuccess,
   useTrackSignInError,
   useTrackCreateUserSuccess,
-  isNotEarlyAccessError,
+  isEarlyAccessError,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
+import { normalizeError } from './normalizeError';
+import { EthereumError } from './EthereumError';
+import { useConnectGnosisSafe } from './useConnectGnosisSafe';
+import { walletconnect } from '../../../connectors';
 
 type Props = {
-  pendingWallet: AbstractConnector;
-  userFriendlyWalletName: string;
-  setDetectedError: (error: Web3Error) => void;
+  reset: () => void;
 };
 
-function AuthenticateWalletPendingGnosisSafe({
-  pendingWallet,
-  userFriendlyWalletName,
-  setDetectedError,
-}: Props) {
+export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
+  const connectGnosisSafe = useConnectGnosisSafe();
   const { account } = useWeb3React<Web3Provider>();
+  const [error, setError] = useState<Error>();
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
@@ -84,22 +83,24 @@ function AuthenticateWalletPendingGnosisSafe({
   const handleError = useCallback(
     (error: unknown) => {
       trackSignInError('Gnosis Safe', error);
-      if (isWeb3Error(error)) {
-        if (!isNotEarlyAccessError(error.message)) {
-          captureException(error.message);
-        }
-        setDetectedError(error);
+
+      // ignore early access errors
+      if (!isEarlyAccessError(error)) {
+        // capture all others
+        captureException(error);
       }
 
       // Fall back to generic error message
       if (error instanceof Error) {
-        captureException(error);
         const web3Error: Web3Error = { code: 'AUTHENTICATION_ERROR', ...error };
-        setDetectedError(web3Error);
+        setError(web3Error);
+      } else {
+        setError(normalizeError(error));
       }
     },
-    [setDetectedError, trackSignInError]
+    [trackSignInError]
   );
+
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
 
   // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
@@ -109,12 +110,12 @@ function AuthenticateWalletPendingGnosisSafe({
       try {
         // Prompt the user to sign the message. Store the nonce in local storage, so if something goes wrong we can detect there was a previous attempt.
         setPendingState(PROMPT_SIGNATURE);
-        await signMessageWithContractAccount(address, nonce, pendingWallet);
+        await signMessageWithContractAccount(address, nonce, walletconnect);
         window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
 
         // Listen for the signature to be signed by the Gnosis Safe
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(address, nonce, pendingWallet);
+        await listenForGnosisSignature(address, nonce, walletconnect);
 
         await authenticateWithBackend(address, nonce);
       } catch (error: unknown) {
@@ -122,7 +123,7 @@ function AuthenticateWalletPendingGnosisSafe({
         handleError(error);
       }
     },
-    [authenticateWithBackend, handleError, pendingWallet]
+    [authenticateWithBackend, handleError]
   );
 
   // Validates the signature on-chain. If it hasnt been signed yet, initializes a listener to wait for the SignMsg event.
@@ -136,7 +137,7 @@ function AuthenticateWalletPendingGnosisSafe({
 
     try {
       // Immediately check if the message has already been signed and executed on chain
-      const wasSigned = await validateNonceSignedByGnosis(account, nonce, pendingWallet);
+      const wasSigned = await validateNonceSignedByGnosis(account, nonce, walletconnect);
       if (wasSigned) {
         await authenticateWithBackend(account, nonce);
       }
@@ -144,14 +145,14 @@ function AuthenticateWalletPendingGnosisSafe({
       // If it hasn't, set up a listener because the transaction may not have been executed yet
       if (pendingState !== LISTENING_ONCHAIN) {
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(account, nonce, pendingWallet);
+        await listenForGnosisSignature(account, nonce, walletconnect);
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
     } catch (error: unknown) {
       handleError(error);
     }
-  }, [account, authenticateWithBackend, handleError, pendingWallet, nonce, pendingState]);
+  }, [account, authenticateWithBackend, handleError, nonce, pendingState]);
 
   const restartAuthentication = useCallback(async () => {
     if (account) {
@@ -168,28 +169,24 @@ function AuthenticateWalletPendingGnosisSafe({
     }
 
     async function initiateAuthentication() {
-      if (account) {
-        setAuthenticationFlowStarted(true);
-        try {
-          trackSignInAttempt('Gnosis Safe');
-          const { nonce, user_exists: userExists } = await createNonce(account);
-          setNonce(nonce);
-          setUserExists(userExists);
+      setAuthenticationFlowStarted(true);
 
-          if (nonce === previousAttemptNonce) {
-            return;
-          }
+      const account = await connectGnosisSafe();
+      trackSignInAttempt('Gnosis Safe');
+      const { nonce, user_exists: userExists } = await createNonce(account);
+      setNonce(nonce);
+      setUserExists(userExists);
 
-          await attemptAuthentication(account.toLowerCase(), nonce);
-        } catch (error: unknown) {
-          handleError(error);
-        }
+      if (nonce === previousAttemptNonce) {
+        return;
       }
+
+      await attemptAuthentication(account.toLowerCase(), nonce);
     }
 
-    void initiateAuthentication();
+    void initiateAuthentication().catch(handleError);
   }, [
-    account,
+    connectGnosisSafe,
     attemptAuthentication,
     authenticationFlowStarted,
     createNonce,
@@ -198,14 +195,24 @@ function AuthenticateWalletPendingGnosisSafe({
     trackSignInAttempt,
   ]);
 
+  if (error) {
+    return (
+      <EthereumError
+        error={error}
+        reset={() => {
+          setError(undefined);
+          reset();
+        }}
+      />
+    );
+  }
+
   return (
     <GnosisSafePendingMessage
       pendingState={pendingState}
-      userFriendlyWalletName={userFriendlyWalletName}
+      userFriendlyWalletName="Gnosis Safe"
       onRestartClick={restartAuthentication}
       manuallyValidateSignature={manuallyValidateSignature}
     />
   );
-}
-
-export default AuthenticateWalletPendingGnosisSafe;
+};

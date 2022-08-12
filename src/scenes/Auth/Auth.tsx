@@ -35,7 +35,6 @@ function Auth({ queryRef }: Props) {
             }
           }
         }
-
         ...WalletSelectorFragment
       }
     `,
