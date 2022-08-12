@@ -4146,10 +4146,10 @@
     penpal "3.0.7"
     pocket-js-core "0.0.3"
 
-"@rainbow-me/rainbowkit@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.4.4.tgz#3f410a04d8aaa408eaf80774319994162d410e6e"
-  integrity sha512-TlTCzGF5ELRGBVS6qlwGRTWnlZ1wyj1jtXUiCDyAspjYWp6VHCom0vRaAUNaFMFvFaqANR+1zrmyqpOMFWwYng==
+"@rainbow-me/rainbowkit@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.4.6.tgz#f7a84c5774d0f34da3b824e7d845f4de9c605421"
+  integrity sha512-tb7w38u/MLJQGAsLY2sh8neSbtkqZfsLvgLOyXsC2uL3/v1d5ZL1uHUwKBVbvroCn2D+DQRElPmPAlJB6vzKtg==
   dependencies:
     "@vanilla-extract/css" "1.7.0"
     "@vanilla-extract/dynamic" "2.0.2"
@@ -5433,10 +5433,10 @@
   resolved "https://registry.yarnpkg.com/@vanilla-extract/sprinkles/-/sprinkles-1.4.1.tgz#8c8703ddedaac355c1187db909119816c0fc771c"
   integrity sha512-aW6CfMMToX4a+baLuVxwcT0FSACjX3xrNt8wdi/3LLRlLAfhyue8OK7kJxhcYNZfydBeWTP59aRy8p5FUTIeew==
 
-"@wagmi/core@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.5.1.tgz#a9de4d529c84195a015134da82960c4f9eb2e968"
-  integrity sha512-EgFppUNDLVtjThSoGqr3yzY/jq5qZUPhCgfubcPGET8Xd1OMoag/Z85e2krcxkVZ+ExWPSUGCFLau4odd2PDFQ==
+"@wagmi/core@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.5.2.tgz#38ce1c23907fafe8311185b2f0ea0a915661908d"
+  integrity sha512-Mbwq+ZMkxgPnEMXE+ldwseqRtryeeHokMMEMOGVuvUyrjJyn2mta2d6Yt2mMdfeqLVD6FfcSeKU4Pq8IscbaCw==
   dependencies:
     eventemitter3 "^4.0.7"
     zustand "^4.0.0-rc.1"
@@ -19533,13 +19533,13 @@ w3c-xmlserializer@^2.0.0:
   dependencies:
     xml-name-validator "^3.0.0"
 
-wagmi@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.6.1.tgz#f9b0fa41a1774cb402205e8ec552aa02793fe674"
-  integrity sha512-QS/QDlRz6vVt8ZcKqaR7OGawQcN6mC/qCEhmO1qAmXx3LTkNyszBDJOdvn6AuGAljFowqb6aqD87RcKfjyEhyQ==
+wagmi@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.6.2.tgz#c399a0bea5fdb64551aa0410b1f18685dccca93a"
+  integrity sha512-P+zeCzUCEgojvG5RjwNDOIBf3AlHUZ5pE6r6dNy7mBh1E80fZSmOq4gPohgSZkTNPh+iqB4q6xcMlwSRbBfcmA==
   dependencies:
     "@coinbase/wallet-sdk" "^3.3.0"
-    "@wagmi/core" "^0.5.1"
+    "@wagmi/core" "^0.5.2"
     "@walletconnect/ethereum-provider" "^1.7.8"
     react-query "4.0.0-beta.23"
     use-sync-external-store "^1.2.0"
