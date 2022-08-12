@@ -336,7 +336,7 @@ function StagingArea({ tokensRef }: Props) {
   const activeSectionId = useActiveSectionIdState();
   const handleBackspacePress = useCallback(() => {
     if (activeSectionId) {
-      const itemIds = stagedCollectionState[activeSectionId]?.items.map(({ id }) => id);
+      const itemIds = stagedCollectionState[activeSectionId]?.items.map(({ id }) => id) ?? [];
       deleteSection(activeSectionId, itemIds);
     }
   }, [activeSectionId, deleteSection, stagedCollectionState]);
