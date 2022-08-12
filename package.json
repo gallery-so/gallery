@@ -21,7 +21,7 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
-    "@rainbow-me/rainbowkit": "^0.4.4",
+    "@rainbow-me/rainbowkit": "^0.4.6",
     "@sentry/nextjs": "^6.19.7",
     "@testing-library/react-hooks": "^8.0.0",
     "@types/relay-test-utils": "^6.0.5",
@@ -54,7 +54,7 @@
     "styled-components": "^5.2.3",
     "swr": "^1.1.1",
     "utf-8-validate": "^5.0.7",
-    "wagmi": "^0.6.1",
+    "wagmi": "^0.6.2",
     "web3": "^1.6.1"
   },
   "devDependencies": {
