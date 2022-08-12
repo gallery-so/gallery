@@ -77,6 +77,12 @@
   font-weight: 700;
 }
 
+@font-face {
+  font-family: 'ABC Diatype Mono';
+  src: url('/fonts/ABCDiatypeMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
 *,
 *:before,
 *:after {

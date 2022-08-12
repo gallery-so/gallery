@@ -5,11 +5,22 @@ import colors from 'components/core/colors';
 import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import Spacer from 'components/core/Spacer/Spacer';
+import MerchMintButton from './MerchMintButton';
 
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
 
-export default function PurchaseBox({ label, price }: { label: string; price: string }) {
+export default function PurchaseBox({
+  label,
+  price,
+  tokenId,
+  disabled,
+}: {
+  label: string;
+  price: string;
+  tokenId: number;
+  disabled: boolean;
+}) {
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
@@ -17,8 +28,9 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
   const [isAwaitingTransactionState, setIsAwaitingTransactionState] = useState(false);
 
   const toggleShowBox = useCallback(() => {
+    if (disabled) return;
     setShowBox(true);
-  }, []);
+  }, [disabled]);
 
   const handlePurchaseClick = useCallback(() => {
     setIsAwaitingTransactionState(true);
@@ -30,7 +42,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
 
   return (
     <>
-      <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox}>
+      <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
         Purchase
       </ExpandPurchaseButton>
       <StyledCheckoutAndReceiptContainer showBox={showBox}>
@@ -60,7 +72,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
           <StyledCheckoutTitle>
             {isReceiptState
               ? `You've bought ${quantity} ${quantity == 1 ? label : `${label}s`}.`
-              : `Check Out NFT(s)`}
+              : `Check out NFT(s)`}
           </StyledCheckoutTitle>
           <StyledCheckoutDescription>
             {isReceiptState
@@ -103,9 +115,14 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
           {!isReceiptState && (
             <>
               <Spacer height={16} />
-              <StyledConfirmButton onClick={handlePurchaseClick}>
+              {/* <StyledConfirmButton onClick={handlePurchaseClick}>
                 Confirm Purchase
-              </StyledConfirmButton>
+              </StyledConfirmButton> */}
+              <MerchMintButton
+                onMintSuccess={handlePurchaseClick}
+                quantity={quantity}
+                tokenId={tokenId}
+              />
             </>
           )}
         </StyledCheckoutBox>
@@ -130,7 +147,7 @@ export default function PurchaseBox({ label, price }: { label: string; price: st
   );
 }
 
-const ExpandPurchaseButton = styled(Button)<{ show?: boolean }>`
+const ExpandPurchaseButton = styled(Button)<{ show?: boolean; disabled?: boolean }>`
   align-self: flex-end;
   width: 100%;
   height: 100%;
@@ -140,6 +157,7 @@ const ExpandPurchaseButton = styled(Button)<{ show?: boolean }>`
   pointer-events: ${({ show }) => (show ? 'all' : 'none')};
   z-index: 1;
   transition: opacity 0ms ease-in-out;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
 
 const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
@@ -200,6 +218,8 @@ const StyledQuantityCounter = styled.div`
 
 const StyledQuantity = styled(BaseM)`
   margin: 0 9px;
+  min-width: 10px;
+  text-align: center;
 `;
 
 const StyledColumnButton = styled.button<{ disabled: boolean }>`

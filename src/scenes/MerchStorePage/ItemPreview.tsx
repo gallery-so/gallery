@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
-import { TitleXSBold, BaseM } from 'components/core/Text/Text';
+import { TitleMonoM, BaseM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import SingleItemPage from './SingleItemPage';
 import FlippingImage from './FlippingImage';
@@ -13,12 +13,14 @@ export default function ItemPreview({
   title,
   description,
   price,
+  tokenId,
 }: {
   label: string;
   image: string;
   title: string;
   description: string;
   price: string;
+  tokenId: number;
 }) {
   const { showModal } = useModalActions();
   const handleClick = useCallback(() => {
@@ -30,11 +32,12 @@ export default function ItemPreview({
           title={title}
           description={description}
           price={price}
+          tokenId={tokenId}
         />
       ),
       isFullPage: true,
     });
-  }, [showModal, label, image, title, description, price]);
+  }, [showModal, label, image, title, description, price, tokenId]);
 
   return (
     <StyledItemPreview onClick={handleClick}>
@@ -58,7 +61,6 @@ const StyledItemPreview = styled.div`
   min-width: 200px;
   width: 100%;
   max-width: 460px;
-  border-bottom: 1px solid transparent;
   cursor: pointer;
 
   display: flex;
@@ -66,15 +68,19 @@ const StyledItemPreview = styled.div`
   align-items: center;
   position: relative;
 
+  &:not(:last-child) {
+    border-bottom: 1px solid transparent;
+  }
+
   @media only screen and ${breakpoints.tablet} {
-    border-bottom: 1px solid black;
     &:not(:last-child) {
+      border-bottom: 1px solid black;
       border-right: 1px solid transparent;
     }
   }
 `;
 
-const StyledImageContainer = styled.div`
+const StyledImageContainer = styled.div<{ isCard?: boolean }>`
   height: 66.67%;
   width: 66.67%;
   position: relative;
@@ -92,23 +98,9 @@ const StyledBottomText = styled.div`
   display: flex;
 `;
 
-const StyledItemText = styled(TitleXSBold)`
-  font-family: ABC Diatype; /* FIXME: Figma has ABC Diatype Mono; this is not used anywhere else in the codebase */
-  text-transform: uppercase;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: -0.01em;
-  letter-spacing: -1%;
-`;
+const StyledItemText = styled(TitleMonoM)``;
 
-const StyledSlash = styled(TitleXSBold)`
-  font-family: ABC Diatype; /* FIXME: Figma has ABC Diatype Mono; this is not used anywhere else in the codebase */
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: -0.01em;
-  text-align: left;
+const StyledSlash = styled(TitleMonoM)`
   margin: 0 12px;
 `;
 

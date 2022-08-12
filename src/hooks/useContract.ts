@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import PREMIUM_MEMBERSHIP_CONTRACT_ABI from 'abis/premium-membership-contract.json';
 import GENERAL_MEMBERSHIP_CONTRACT_ABI from 'abis/general-membership-contract.json';
 import GALLERY_MEMENTOS_CONTRACT_ABI from 'abis/gallery-mementos-contract.json';
+import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
 import { network } from 'connectors/index';
 import { useActiveWeb3React } from './useWeb3';
 
@@ -36,6 +37,7 @@ function getContract(address: string, ABI: any, library: Web3Provider, account?:
 
 function useContract(address: string, abi: any) {
   const { library, account, activate } = useActiveWeb3React();
+  // console.log(library, account, activate);
 
   if (!library) {
     // activate provider without an address to be able to read from contracts
@@ -69,5 +71,5 @@ export function useMintPosterContract() {
 }
 
 export function useMintMerchContract() {
-  return useContract(GALLERY_MERCH_CONTRACT_ADDRESS || '', GALLERY_MERCH_CONTRACT_ADDRESS);
+  return useContract(GALLERY_MERCH_CONTRACT_ADDRESS || '', GALLERY_MERCH_CONTRACT_ABI);
 }
