@@ -24,12 +24,14 @@ import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import { normalizeError } from './normalizeError';
 import { EthereumError } from './EthereumError';
+import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 
 type Props = {
   reset: () => void;
 };
 
 export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
+  const connectGnosisSafe = useConnectGnosisSafe();
   const { library, account, connector } = useWeb3React<Web3Provider>();
   const [error, setError] = useState<Error>();
 
@@ -171,28 +173,28 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
     }
 
     async function initiateAuthentication() {
-      if (account) {
-        setAuthenticationFlowStarted(true);
-        try {
-          trackSignInAttempt('Gnosis Safe');
-          const { nonce, user_exists: userExists } = await createNonce(account);
-          setNonce(nonce);
-          setUserExists(userExists);
+      setAuthenticationFlowStarted(true);
 
-          if (nonce === previousAttemptNonce) {
-            return;
-          }
+      try {
+        const account = await connectGnosisSafe();
+        trackSignInAttempt('Gnosis Safe');
+        const { nonce, user_exists: userExists } = await createNonce(account);
+        setNonce(nonce);
+        setUserExists(userExists);
 
-          await attemptAuthentication(account.toLowerCase(), nonce);
-        } catch (error: unknown) {
-          handleError(error);
+        if (nonce === previousAttemptNonce) {
+          return;
         }
+
+        await attemptAuthentication(account.toLowerCase(), nonce);
+      } catch (error: unknown) {
+        handleError(error);
       }
     }
 
     void initiateAuthentication();
   }, [
-    account,
+    connectGnosisSafe,
     attemptAuthentication,
     authenticationFlowStarted,
     createNonce,

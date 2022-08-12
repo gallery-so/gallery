@@ -12,7 +12,6 @@ import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { EthereumAddWallet } from './EthereumAddWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
-import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -36,7 +35,6 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }, []);
 
   const connectEthereum = useConnectEthereum();
-  const connectGnosisSafe = useConnectGnosisSafe();
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -95,7 +93,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         icon="gnosis_safe"
         onClick={() => {
           console.log('connecting with gnosis via walletconnect');
-          connectGnosisSafe();
+          setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
         }}
       />
     </StyledWalletSelector>
