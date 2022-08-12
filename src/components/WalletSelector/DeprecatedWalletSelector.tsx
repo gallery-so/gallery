@@ -42,8 +42,8 @@ const ERROR_MESSAGES: Record<ErrorCode, ErrorMessage> = {
     body: 'The selected chain is unsupported. We currently only support the Ethereum network.',
   },
   REJECTED_SIGNATURE: {
-    heading: 'Signature required',
-    body: 'Please sign the message with your wallet to log in.',
+    heading: 'Signature rejected',
+    body: 'The signature was rejected. Try again or use another wallet.',
   },
   USER_SIGNUP_DISABLED: {
     heading: 'Coming Soon',
