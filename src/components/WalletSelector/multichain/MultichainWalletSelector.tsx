@@ -12,6 +12,8 @@ import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { EthereumAddWallet } from './EthereumAddWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
+import { BaseM } from 'components/core/Text/Text';
+import Spacer from 'components/core/Spacer/Spacer';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -96,6 +98,8 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
         }}
       />
+      <Spacer height={16} />
+      <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
