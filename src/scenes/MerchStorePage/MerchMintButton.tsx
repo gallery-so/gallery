@@ -1,15 +1,15 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-// import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-// import Spacer from 'components/core/Spacer/Spacer';
-// import ErrorText from 'components/core/Text/ErrorText';
-// import { BaseM } from 'components/core/Text/Text';
-// import { useModalActions } from 'contexts/modal/ModalContext';
+import GalleryLink from 'components/core/GalleryLink/GalleryLink';
+import Spacer from 'components/core/Spacer/Spacer';
+import ErrorText from 'components/core/Text/ErrorText';
+import { BaseM } from 'components/core/Text/Text';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import useWalletModal from 'hooks/useWalletModal';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { TransactionStatus } from 'constants/transaction';
-import useMintContract from 'hooks/useMintContract';
+import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 import { useMintMerchContract } from 'hooks/useContract';
 import { NFT_TOKEN_ID } from 'constants/merch';
 import { Button } from 'components/core/Button/Button';
@@ -17,23 +17,28 @@ import styled from 'styled-components';
 
 type Props = {
   onMintSuccess: () => void;
+  quantity: number;
+  tokenId: number;
 };
 
-export default function MintButton({ onMintSuccess }: Props) {
+export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) {
   const { active } = useWeb3React<Web3Provider>();
 
   const showWalletModal = useWalletModal();
-  // const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
 
-  const tokenId = NFT_TOKEN_ID;
+  // const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintMerchContract();
+  // console.log(contract);
   const { transactionHash, transactionStatus, buttonText, error, handleMintButtonClick } =
-    useMintContract({
+    useMintContractWithQuantity({
       contract,
       tokenId,
+      quantity,
     });
+
+  // console.log(contract);
 
   useEffect(() => {
     if (active) {
@@ -47,6 +52,7 @@ export default function MintButton({ onMintSuccess }: Props) {
 
   const handleConnectWalletButtonClick = useCallback(() => {
     if (!active) {
+      // FIXME: This will close the main modal page, because only one modal can be open at a time.
       showWalletModal();
     }
   }, [active, showWalletModal]);
@@ -72,9 +78,9 @@ export default function MintButton({ onMintSuccess }: Props) {
   return (
     <>
       <StyledButton onClick={handleOnClick} disabled={false}>
-        Buy now
+        {buttonText}
       </StyledButton>
-      {/* {transactionHash && (
+      {transactionHash && (
         <>
           <BaseM>
             {transactionStatus === TransactionStatus.SUCCESS
@@ -96,7 +102,7 @@ export default function MintButton({ onMintSuccess }: Props) {
           <Spacer height={16} />
           <ErrorText message={error} />
         </>
-      )} */}
+      )}
     </>
   );
 }

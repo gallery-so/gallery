@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import breakpoints, { contentSize } from 'components/core/breakpoints';
 import React from 'react';
-import { BaseM } from 'components/core/Text/Text';
+import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
 
 const items = [
@@ -12,6 +12,7 @@ const items = [
     description:
       'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.',
     price: '0.04',
+    tokenId: 0,
   },
   {
     label: 'Hat',
@@ -19,6 +20,7 @@ const items = [
     title: '(Object 002)',
     description: 'Gallery Dad Hat. 100% cotton. Made in China.',
     price: '0.06',
+    tokenId: 1,
   },
   {
     label: 'Card',
@@ -26,13 +28,14 @@ const items = [
     title: '(Object 003)',
     description: 'Gallery Membership card. Metal.',
     price: '0.08',
+    tokenId: 2,
   },
 ];
 
 export default function MerchStorePage() {
   return (
     <StyledPage>
-      <StyledShopText>(SHOP)</StyledShopText>
+      <StyledShopText>(OBJECTS)</StyledShopText>
       <StyledItemsContainer>
         {items.map((item) => (
           <ItemPreview {...item} key={item.label} />
@@ -59,15 +62,14 @@ const StyledPage = styled.div`
   //   }
 `;
 
-const StyledShopText = styled(BaseM)`
+const StyledShopText = styled(TitleM)`
   top: 16px;
   position: absolute;
-  font-family: ABC Diatype; /* FIXME: Figma has ABC Diatype Mono; this is not used anywhere else in the codebase */
-  font-size: 16px;
+  font-family: 'GT Alpina Condensed';
+  font-style: normal;
   font-weight: 300;
-  line-height: 20px;
-  letter-spacing: 0em;
-  text-align: left;
+  font-size: 24px;
+  line-height: 27px;
 `;
 
 const StyledItemsContainer = styled.div`
