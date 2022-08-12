@@ -2,11 +2,17 @@ import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-export default function FlippingImage({ src }: { src: string }) {
+export default function FlippingImage({
+  src,
+  isInPreview = false,
+}: {
+  src: string;
+  isInPreview?: boolean;
+}) {
   const [isFlipped, setIsFlipped] = useState(false);
   return (
     <StyledContainer
-      isFlippedCard={src === '/merch/card' && isFlipped}
+      isFlippedCardInPreview={src === '/merch/card' && isFlipped && isInPreview}
       onMouseOver={() => {
         setIsFlipped(true);
       }}
@@ -19,11 +25,11 @@ export default function FlippingImage({ src }: { src: string }) {
   );
 }
 
-const StyledContainer = styled.div<{ isFlippedCard: boolean }>`
+const StyledContainer = styled.div<{ isFlippedCardInPreview: boolean }>`
   // This styling forces the card "back" image to fill the entirety of the square
-  height: ${({ isFlippedCard }) => (isFlippedCard ? '150%' : '100%')};
-  width: ${({ isFlippedCard }) => (isFlippedCard ? '150%' : '100%')};
-  margin: ${({ isFlippedCard }) => (isFlippedCard ? '-25%' : '0')};
+  height: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '150%' : '100%')};
+  width: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '150%' : '100%')};
+  margin: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '-25%' : '0')};
   position: relative;
   user-select: none;
 `;

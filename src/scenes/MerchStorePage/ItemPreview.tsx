@@ -42,7 +42,7 @@ export default function ItemPreview({
   return (
     <StyledItemPreview onClick={handleClick}>
       <StyledImageContainer>
-        <FlippingImage src={image} />
+        <FlippingImage src={image} isInPreview />
       </StyledImageContainer>
       <StyledBottomText>
         <StyledItemText>{title}</StyledItemText>
