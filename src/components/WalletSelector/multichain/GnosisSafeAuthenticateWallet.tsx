@@ -25,6 +25,7 @@ import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnb
 import { normalizeError } from './normalizeError';
 import { EthereumError } from './EthereumError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
+import { walletconnect } from '../../../connectors';
 
 type Props = {
   reset: () => void;
@@ -32,7 +33,7 @@ type Props = {
 
 export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
   const connectGnosisSafe = useConnectGnosisSafe();
-  const { library, account, connector } = useWeb3React<Web3Provider>();
+  const { library, account } = useWeb3React<Web3Provider>();
   const [error, setError] = useState<Error>();
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
@@ -106,15 +107,10 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
   // This is the default flow
   const attemptAuthentication = useCallback(
     async (address: string, nonce: string) => {
-      if (!connector) {
-        // TODO: throw an error?
-        return;
-      }
-
       try {
         // Prompt the user to sign the message. Store the nonce in local storage, so if something goes wrong we can detect there was a previous attempt.
         setPendingState(PROMPT_SIGNATURE);
-        await signMessageWithContractAccount(address, nonce, connector, library);
+        await signMessageWithContractAccount(address, nonce, walletconnect, library);
         window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
 
         // Listen for the signature to be signed by the Gnosis Safe
@@ -127,7 +123,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
         handleError(error);
       }
     },
-    [authenticateWithBackend, handleError, library, connector]
+    [authenticateWithBackend, handleError, library]
   );
 
   // Validates the signature on-chain. If it hasnt been signed yet, initializes a listener to wait for the SignMsg event.
