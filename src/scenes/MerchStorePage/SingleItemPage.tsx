@@ -13,16 +13,20 @@ import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 // import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
 // import { useWeb3React } from '@web3-react/core';
 // import { Web3Provider } from '@ethersproject/providers';
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 // import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
 // import { isFeatureEnabled } from 'utils/featureFlag';
 // import { FeatureFlag } from 'components/core/enums';
 // import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 // import Image from 'next/image';
-// import MerchMintButton from './MerchMintButton';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
+import { useMintMerchContract } from 'hooks/useContract';
+import { useWeb3React } from '@web3-react/core';
+import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
+import web3 from 'web3';
 
 export default function ItemPage({
   label,
@@ -30,14 +34,52 @@ export default function ItemPage({
   title,
   description,
   price,
+  tokenId,
 }: {
   label: string;
   image: string;
   title: string;
   description: string;
   price: string;
+  tokenId: number;
 }) {
-  const isMobile = useIsMobileWindowWidth();
+  const contract = useMintMerchContract();
+  const { account: rawAccount } = useWeb3React<Web3Provider>();
+  const [publicSupply, setPublicSupply] = useState(0);
+  const [usedPublicSupply, setUsedPublicSupply] = useState(0);
+
+  const account = rawAccount?.toLowerCase();
+
+  // FIXME: Use library rather than account is account is not available (user not logged in)?
+  const updateSupplies = useCallback(
+    async (contract: any, tokenId: number) => {
+      // console.log(contract, account);
+      // if (contract && account) {
+      if (contract) {
+        return [
+          await contract.getPublicSupply(tokenId),
+          await contract.getUsedPublicSupply(tokenId),
+        ];
+      }
+    },
+    [account]
+  );
+
+  // Run getRemainingSupply once on mount and then update the remaining supply.
+  useEffect(() => {
+    async function effect() {
+      const supplies = await updateSupplies(contract, tokenId);
+      const sup = web3.utils.hexToNumber(supplies?.[0]);
+      const used = web3.utils.hexToNumber(supplies?.[1]);
+      setPublicSupply(sup);
+      setUsedPublicSupply(used);
+    }
+
+    effect();
+    return () => {
+      // cleanup
+    };
+  }, [contract, tokenId, updateSupplies, publicSupply, usedPublicSupply]);
 
   // const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
   // const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
@@ -86,12 +128,20 @@ export default function ItemPage({
           <Spacer height={8} />
           <StyledPriceAndQuantity>
             <BaseM>{price} Ξ each</BaseM>
-            <BaseM>400/600 left</BaseM>
+            <BaseM>
+              {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
+                ? `${publicSupply - usedPublicSupply}/${publicSupply} left`
+                : ''}
+            </BaseM>
           </StyledPriceAndQuantity>
-
-          {/* {!isMobile && <HorizontalBreak />} */}
           <Spacer height={8} />
-          <PurchaseBox label={label} price={price} />
+          <PurchaseBox
+            label={label}
+            price={price}
+            tokenId={tokenId}
+            // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
+            disabled={publicSupply - usedPublicSupply == 0}
+          />
           {/* <StyledShippingText>Shipping available Fall 2023.</StyledShippingText> */}
 
           {/* {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
@@ -154,7 +204,6 @@ const StyledContent = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 0 ${pageGutter.mobile}px;
-  // max-width: 360px;
   width: 360px;
   margin: 0 auto;
 
