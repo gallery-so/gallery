@@ -175,24 +175,20 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
     async function initiateAuthentication() {
       setAuthenticationFlowStarted(true);
 
-      try {
-        const account = await connectGnosisSafe();
-        trackSignInAttempt('Gnosis Safe');
-        const { nonce, user_exists: userExists } = await createNonce(account);
-        setNonce(nonce);
-        setUserExists(userExists);
+      const account = await connectGnosisSafe();
+      trackSignInAttempt('Gnosis Safe');
+      const { nonce, user_exists: userExists } = await createNonce(account);
+      setNonce(nonce);
+      setUserExists(userExists);
 
-        if (nonce === previousAttemptNonce) {
-          return;
-        }
-
-        await attemptAuthentication(account.toLowerCase(), nonce);
-      } catch (error: unknown) {
-        handleError(error);
+      if (nonce === previousAttemptNonce) {
+        return;
       }
+
+      await attemptAuthentication(account.toLowerCase(), nonce);
     }
 
-    void initiateAuthentication();
+    void initiateAuthentication().catch(handleError);
   }, [
     connectGnosisSafe,
     attemptAuthentication,
