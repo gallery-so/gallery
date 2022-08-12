@@ -32,8 +32,7 @@ const myCustomTheme = merge(lightTheme(), {
     //   generalBorderDim: '...',
     //   menuItemBackground: '...',
     modalBackdrop: 'transparent',
-    // TODO: comment this out, just temporarily translucent to see behind it
-    modalBackground: 'rgba(255, 255, 255, 0.8)',
+    // modalBackground: '...',
     modalBorder: '#000',
     //   modalText: '...',
     //   modalTextDim: '...',
