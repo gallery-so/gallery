@@ -79,13 +79,14 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         // TODO: ethereum icon
         icon="metamask"
         onClick={() => {
+          console.log('connecting to ethereum');
           connectEthereum().then(
             (address) => {
-              console.log('connected with', address);
+              console.log('connected to ethereum with', address);
               setSelectedAuthMethod(supportedAuthMethods.ethereum);
             },
             (error) => {
-              console.log('failed to connect', error);
+              console.log('failed to connect to ethereum', error);
             }
           );
         }}
@@ -94,7 +95,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         label={supportedAuthMethods.gnosisSafe.name}
         icon="gnosis_safe"
         onClick={() => {
-          console.log('connecting with gnosis via walletconnect');
+          console.log('connecting to gnosis safe via walletconnect');
           setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
         }}
       />
