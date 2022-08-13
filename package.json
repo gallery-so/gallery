@@ -20,6 +20,7 @@
     "@dnd-kit/utilities": "^3.2.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@rainbow-me/rainbowkit": "^0.4.6",
     "@sentry/nextjs": "^6.19.7",
     "@testing-library/react-hooks": "^8.0.0",
