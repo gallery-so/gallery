@@ -1,6 +1,4 @@
-import { ANIMATED_COMPONENT_TRANSITION_MS } from 'components/core/transitions';
 import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import {
   ReactElement,
   ReactNode,
@@ -17,10 +15,11 @@ import {
 import noop from 'utils/noop';
 import AnimatedModal from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
+import { v4 as uuid } from 'uuid';
+import useKeyDown from 'hooks/useKeyDown';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
-  isModalMounted: boolean;
 };
 
 const ModalStateContext = createContext<ModalState | undefined>(undefined);
@@ -35,17 +34,25 @@ export const useModalState = (): ModalState => {
 };
 
 type ShowModalFnProps = {
+  id?: string;
   content: ReactElement;
   headerText?: string;
   headerVariant?: ModalPaddingVariant;
-  onClose?: () => void;
   isFullPage?: boolean;
   isPaddingDisabled?: boolean;
+  onClose?: () => void;
 };
 
+type HideModalFnProps =
+  | {
+      id?: string;
+      bypassOnClose?: boolean;
+    }
+  | undefined;
+
 type ModalActions = {
-  showModal: ({ content, onClose, isFullPage }: ShowModalFnProps) => void;
-  hideModal: () => void;
+  showModal: (s: ShowModalFnProps) => void;
+  hideModal: (h: HideModalFnProps) => void;
 };
 
 const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
@@ -61,85 +68,86 @@ export const useModalActions = (): ModalActions => {
 
 type Props = { children: ReactNode };
 
+type Modal = {
+  id: string;
+  isActive: boolean;
+  content: ReactElement;
+  headerText: string;
+  headerVariant: ModalPaddingVariant;
+  isFullPage: boolean;
+  isPaddingDisabled: boolean;
+  onClose: () => void;
+};
+
 function ModalProvider({ children }: Props) {
-  // Whether node is actually on the DOM
-  const [isMounted, setIsMounted] = useState(false);
-  // Pseudo-state for signaling animations. this will allow us
-  // to display an animation prior to unmounting
-  const [isActive, setIsActive] = useState(false);
-  // ref version of the above. used when needed to prevent race
-  // conditions within side-effects that look up this state
+  const [modals, setModals] = useState<Modal[]>([]);
+
+  // used when needed to prevent race conditions within side-effects that look up this state
   const isModalOpenRef = useRef(false);
-  // Whether the modal should take up the entire page.
-  const [isFullPage, setIsFullPage] = useState<boolean>(false);
-  // Whether to disable default padding
-  const [isPaddingDisabled, setIsPaddingDisabled] = useState<boolean>(false);
-  // Header text
-  const [headerText, setHeaderText] = useState('');
-  // Header variant
-  const [headerVariant, setHeaderVariant] = useState<ModalPaddingVariant>('standard');
-  // Content to be displayed within the modal
-  const [content, setContent] = useState<ReactElement | null>(null);
-  // Callback to trigger when the modal is closed
-  const onCloseRef = useRef(noop);
+  useEffect(() => {
+    isModalOpenRef.current = Boolean(modals.length);
+  }, [modals.length]);
 
-  const state = useMemo(
-    () => ({ isModalOpenRef, isModalMounted: isMounted }),
-    [isModalOpenRef, isMounted]
-  );
-
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const state = useMemo(() => ({ isModalOpenRef }), [isModalOpenRef]);
 
   const showModal = useCallback(
     ({
+      id = uuid(),
       content,
       headerText = '',
       headerVariant = 'standard',
-      onClose = noop,
       isFullPage = false,
       isPaddingDisabled = false,
-    }) => {
-      setIsActive(true);
-      setHeaderText(headerText);
-      setHeaderVariant(headerVariant);
-      isModalOpenRef.current = true;
-      setIsMounted(true);
-      setIsFullPage(isFullPage);
-      setIsPaddingDisabled(isPaddingDisabled);
-      setContent(content);
-      onCloseRef.current = onClose;
-
-      // prevent main body from being scrollable while the modal is open.
-      document.body.style.overflow = 'hidden';
+      onClose = noop,
+    }: ShowModalFnProps) => {
+      setModals((prevModals) => [
+        ...prevModals,
+        {
+          id,
+          isActive: true,
+          content,
+          headerText,
+          headerVariant,
+          isFullPage,
+          isPaddingDisabled,
+          onClose,
+        },
+      ]);
     },
     []
   );
 
-  // Trigger fade-out that takes X seconds
-  // schedule unmount in X seconds
-  const hideModal = useCallback((bypassOnClose = false) => {
-    setIsActive(false);
-    isModalOpenRef.current = false;
-    // need to explicitly check for true, because if this function
-    // is passed into an onClick, it'll be given a truthy MouseEvent
-    if (bypassOnClose !== true) {
-      onCloseRef.current?.();
-    }
-    setTimeout(() => {
-      setIsMounted(false);
-      setContent(null);
-      setHeaderText('');
-      setHeaderVariant('standard');
-      setIsFullPage(false);
-      setIsPaddingDisabled(false);
-      onCloseRef.current = noop;
+  /**
+   * consumer can choose to close a specific modal by ID. otherwise, we'll pop
+   * the latest modal off the stack.
+   *
+   * note that this function doesn't literally remove the modal from the array;
+   * it simply marks the specified modal as `isActive: false`. the child modal
+   * then takes this information to kick off an animation, and removes the modal
+   * later on.
+   */
+  const hideModal = useCallback((props = {} as HideModalFnProps) => {
+    const { id: modalId, bypassOnClose = false } = props;
 
-      // enable scrolling again
-      document.body.style.overflow = 'unset';
+    setModals((prev) => {
+      const modalToDismiss = modalId
+        ? prev.find(({ id }) => id === modalId)
+        : prev[prev.length - 1];
 
-      // Unmount a bit sooner to avoid race condition of
-      // elements flashing before they're removed from view
-    }, ANIMATED_COMPONENT_TRANSITION_MS - 30);
+      if (!bypassOnClose) {
+        modalToDismiss?.onClose();
+      }
+
+      return prev.map((modal) => {
+        if (modal.id === modalToDismiss?.id) {
+          return {
+            ...modal,
+            isActive: false,
+          };
+        }
+        return modal;
+      });
+    });
   }, []);
 
   const actions = useMemo(
@@ -150,30 +158,68 @@ function ModalProvider({ children }: Props) {
     [showModal, hideModal]
   );
 
+  const dismountModal = useCallback((modalId) => {
+    setModals((prev) => prev.filter(({ id }) => id !== modalId));
+  }, []);
+
+  const clearAllModals = useCallback(() => setModals([]), []);
+
+  // ----------------------------- SIDE EFFECTS -----------------------------
+
   // close modal on route change
   const route = useStabilizedRouteTransitionKey();
   useEffect(() => {
     if (isModalOpenRef.current) {
       // bypass onClose as to not navigate the user back mid-route change
-      hideModal(true);
+      hideModal({ bypassOnClose: true });
     }
   }, [route, hideModal]);
+
+  // prevent main body from being scrollable while any modals are open
+  useEffect(() => {
+    document.body.style.overflow = modals.length ? 'hidden' : 'unset';
+  }, [modals.length]);
+
+  // hide all modals if user clicks Back
+  useEffect(() => {
+    function handlePopState() {
+      clearAllModals();
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [clearAllModals]);
+
+  // pop one modal if user hits Escape key
+  // TODO: below logic may be fixed via stopPropagation
+  // this is wrapped in a setTimeout so that any event that triggers showModal
+  // via escape does not cause jitter. e.g. CollectionEditor.tsx opens the modal
+  // via escape, so trying to close here would jitter an open/close rapidly
+  const delayedHideModal = useCallback(() => {
+    setTimeout(hideModal, 150);
+  }, [hideModal]);
+  // hide modal if user clicks Escape
+  useKeyDown('Escape', delayedHideModal);
 
   return (
     <ModalStateContext.Provider value={state}>
       <ModalActionsContext.Provider value={actions}>
         {children}
-        {isMounted && content && (
-          <AnimatedModal
-            isActive={isActive}
-            hideModal={hideModal}
-            content={content}
-            headerText={headerText}
-            isFullPage={isFullPage}
-            isMobile={isMobile}
-            isPaddingDisabled={isPaddingDisabled}
-            headerVariant={headerVariant}
-          />
+        {modals.map(
+          ({ id, isActive, content, headerText, headerVariant, isFullPage, isPaddingDisabled }) => {
+            return (
+              <AnimatedModal
+                key={id}
+                isActive={isActive}
+                hideModal={hideModal}
+                dismountModal={() => dismountModal(id)}
+                content={content}
+                headerText={headerText}
+                isFullPage={isFullPage}
+                isPaddingDisabled={isPaddingDisabled}
+                headerVariant={headerVariant}
+              />
+            );
+          }
         )}
       </ModalActionsContext.Provider>
     </ModalStateContext.Provider>
