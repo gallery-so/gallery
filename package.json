@@ -54,6 +54,7 @@
     "styled-components": "^5.2.3",
     "swr": "^1.1.1",
     "utf-8-validate": "^5.0.7",
+    "uuid": "^8.3.2",
     "wagmi": "^0.6.1",
     "web3": "^1.6.1"
   },
@@ -80,6 +81,7 @@
     "@types/react-virtualized": "^9.21.21",
     "@types/relay-runtime": "^13.0.0",
     "@types/styled-components": "5.1.9",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "babel-jest": "^27.3.1",

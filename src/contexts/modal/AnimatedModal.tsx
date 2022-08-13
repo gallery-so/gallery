@@ -1,21 +1,28 @@
-import { ReactElement, useCallback, useEffect, useMemo } from 'react';
+import { ReactElement, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import colors from 'components/core/colors';
 import transitions, {
+  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from 'components/core/transitions';
 import breakpoints from 'components/core/breakpoints';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
-import useKeyDown from 'hooks/useKeyDown';
 import { ModalPaddingVariant, MODAL_PADDING_PX } from './constants';
 import { TitleS } from 'components/core/Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
-  isActive: boolean;
+  /**
+   * `hideModal` and `dismountModal` are used separately.
+   * hideModal begins the process for removing the modal, and
+   * dismount actually removes it by the end of the animation.
+   */
   hideModal: () => void;
+  dismountModal: () => void;
+
+  isActive: boolean;
   content: ReactElement;
   isFullPage: boolean;
-  isMobile: boolean;
   isPaddingDisabled: boolean;
   headerText: string;
   headerVariant: ModalPaddingVariant;
@@ -24,31 +31,20 @@ type Props = {
 function AnimatedModal({
   isActive,
   hideModal,
+  dismountModal,
   content,
   isFullPage,
-  isMobile,
   isPaddingDisabled,
   headerText,
   headerVariant,
 }: Props) {
-  // hide modal if user clicks Back
   useEffect(() => {
-    function handlePopState() {
-      hideModal();
+    if (!isActive) {
+      setTimeout(dismountModal, ANIMATED_COMPONENT_TRANSITION_MS);
     }
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [hideModal]);
+  }, [isActive, dismountModal]);
 
-  // this is wrapped in a setTimeout so that any event that triggers showModal
-  // via escape does not cause jitter. e.g. CollectionEditor.tsx opens the modal
-  // via escape, so trying to close here would jitter an open/close rapidly
-  const delayedHideModal = useCallback(() => {
-    setTimeout(hideModal, 150);
-  }, [hideModal]);
-
-  // hide modal if user clicks Escape
-  useKeyDown('Escape', delayedHideModal);
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const padding = useMemo(() => {
     if (isFullPage || isPaddingDisabled) {
@@ -108,6 +104,7 @@ const _ToggleFade = styled.div<{ isActive: boolean }>`
     css`
       ${isActive ? fadeIn : fadeOut} ${transitions.cubic}
     `};
+  animation-fill-mode: forwards;
 `;
 
 const translateUp = keyframes`
@@ -125,6 +122,7 @@ const _ToggleTranslate = styled.div<{ isActive: boolean }>`
     css`
       ${isActive ? translateUp : translateDown} ${transitions.cubic}
     `};
+  animation-fill-mode: forwards;
 `;
 
 const Overlay = styled.div`
