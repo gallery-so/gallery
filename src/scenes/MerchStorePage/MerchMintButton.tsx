@@ -23,7 +23,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
   // const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintMerchContract();
-  const { active, address, transactionHash, transactionStatus, buttonText, error, handleClick } =
+  const { address, transactionHash, transactionStatus, buttonText, error, handleClick } =
     useMintContractWithQuantity({
       contract,
       tokenId,

@@ -11,7 +11,15 @@ type Props = {
   quantity: number;
 };
 
-export default function useMintContract({ contract, tokenId, onMintSuccess, quantity }: Props) {
+/**
+ * Hook that contains business logic related to connecting a wallet and minting
+ */
+export default function useMintContractWithQuantity({
+  contract,
+  tokenId,
+  onMintSuccess,
+  quantity,
+}: Props) {
   const { address: rawAddress, isConnected: active } = useAccount();
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
