@@ -1,8 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
+import { useConnectEthereum } from 'components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from 'constants/transaction';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
 
 type Props = {
   contract: Contract | null;
@@ -12,20 +12,20 @@ type Props = {
 };
 
 export default function useMintContract({ contract, tokenId, onMintSuccess, quantity }: Props) {
-  const { active, account: rawAccount } = useWeb3React<Web3Provider>();
+  const { address: rawAddress, isConnected: active } = useAccount();
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [transactionHash, setTransactionHash] = useState('');
 
-  const account = rawAccount?.toLowerCase();
+  const address = rawAddress?.toLowerCase();
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number, quantity: number) => {
-      if (contract && account) {
-        return contract.mint(account, tokenId, quantity, []);
+      if (contract && address) {
+        return contract.mint(address, tokenId, quantity, []);
       }
     },
-    [account]
+    [address]
   );
 
   const handleMintButtonClick = useCallback(async () => {
@@ -74,6 +74,30 @@ export default function useMintContract({ contract, tokenId, onMintSuccess, quan
     }
   }, [active, contract, error, mintToken, onMintSuccess, tokenId, quantity]);
 
+  const connectEthereum = useConnectEthereum();
+
+  // disconnect on mount to start with blank slate
+  const { disconnect } = useDisconnect();
+  useEffect(() => {
+    disconnect();
+  }, [disconnect]);
+
+  const handleConnectWalletButtonClick = useCallback(async () => {
+    try {
+      const address = await connectEthereum();
+      console.log('connected address', address);
+    } catch (error: unknown) {
+      console.log('error conecting', error);
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+    }
+  }, [connectEthereum]);
+
+  const handleClick = useCallback(() => {
+    active ? handleMintButtonClick() : handleConnectWalletButtonClick();
+  }, [active, handleConnectWalletButtonClick, handleMintButtonClick]);
+
   const buttonText = useMemo(() => {
     if (!active) {
       return 'Connect Wallet';
@@ -90,10 +114,12 @@ export default function useMintContract({ contract, tokenId, onMintSuccess, quan
   }, [active, transactionStatus]);
 
   return {
+    active,
+    address,
     transactionStatus,
     transactionHash,
     error,
-    handleMintButtonClick,
+    handleClick,
     buttonText,
   };
 }

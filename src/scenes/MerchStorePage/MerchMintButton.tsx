@@ -1,12 +1,8 @@
-import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import useWalletModal from 'hooks/useWalletModal';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { TransactionStatus } from 'constants/transaction';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
@@ -22,31 +18,17 @@ type Props = {
 };
 
 export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) {
-  const { active } = useWeb3React<Web3Provider>();
-
-  const showWalletModal = useWalletModal();
   const { pushToast } = useToastActions();
 
   // const tokenId = NFT_TOKEN_ID;
 
   const contract = useMintMerchContract();
-  const { transactionHash, transactionStatus, buttonText, error, handleMintButtonClick } =
+  const { active, address, transactionHash, transactionStatus, buttonText, error, handleClick } =
     useMintContractWithQuantity({
       contract,
       tokenId,
       quantity,
     });
-
-  const handleConnectWalletButtonClick = useCallback(() => {
-    if (!active) {
-      // FIXME: This will close the main modal page, because only one modal can be open at a time.
-      showWalletModal();
-    }
-  }, [active, showWalletModal]);
-
-  const handleOnClick = () => {
-    active ? handleMintButtonClick() : handleConnectWalletButtonClick();
-  };
 
   useEffect(() => {
     if (transactionStatus === TransactionStatus.SUCCESS) {
@@ -64,9 +46,10 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   return (
     <>
-      <StyledButton onClick={handleOnClick} disabled={false}>
+      <StyledButton onClick={handleClick} disabled={false}>
         {buttonText}
       </StyledButton>
+      {address && !transactionHash && <BaseM>Connected address: {address}</BaseM>}
       {transactionHash && (
         <>
           <BaseM>
