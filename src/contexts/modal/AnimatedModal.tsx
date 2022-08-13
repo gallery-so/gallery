@@ -18,7 +18,7 @@ type Props = {
    * dismount actually removes it by the end of the animation.
    */
   hideModal: () => void;
-  dismountModal: (id: string) => void;
+  dismountModal: () => void;
 
   isActive: boolean;
   content: ReactElement;

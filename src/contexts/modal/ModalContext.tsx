@@ -164,9 +164,9 @@ function ModalProvider({ children }: Props) {
 
   const clearAllModals = useCallback(() => setModals([]), []);
 
-  // ----------------------------- SIDE EFFECTS -----------------------------
-
-  // close modal on route change
+  /**
+   * EFFECT: Close modal on route change
+   */
   const route = useStabilizedRouteTransitionKey();
   useEffect(() => {
     if (isModalOpenRef.current) {
@@ -175,12 +175,16 @@ function ModalProvider({ children }: Props) {
     }
   }, [route, hideModal]);
 
-  // prevent main body from being scrollable while any modals are open
+  /**
+   * EFFECT: Prevent main body from being scrollable while any modals are open
+   */
   useEffect(() => {
     document.body.style.overflow = modals.length ? 'hidden' : 'unset';
   }, [modals.length]);
 
-  // hide all modals if user clicks Back
+  /**
+   * EFFECT: Hide all modals if user clicks Back
+   */
   useEffect(() => {
     function handlePopState() {
       clearAllModals();
@@ -189,15 +193,17 @@ function ModalProvider({ children }: Props) {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [clearAllModals]);
 
-  // pop one modal if user hits Escape key
-  // TODO: below logic may be fixed via stopPropagation
-  // this is wrapped in a setTimeout so that any event that triggers showModal
-  // via escape does not cause jitter. e.g. CollectionEditor.tsx opens the modal
-  // via escape, so trying to close here would jitter an open/close rapidly
+  /**
+   * EFFECT: Pop one modal if user hits Escape key
+   *
+   * TODO: below logic may be fixed via stopPropagation
+   * this is wrapped in a setTimeout so that any event that triggers showModal
+   * via escape does not cause jitter. e.g. CollectionEditor.tsx opens the modal
+   * via escape, so trying to close here would jitter an open/close rapidly
+   */
   const delayedHideModal = useCallback(() => {
     setTimeout(hideModal, 150);
   }, [hideModal]);
-  // hide modal if user clicks Escape
   useKeyDown('Escape', delayedHideModal);
 
   return (
