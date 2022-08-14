@@ -239,7 +239,6 @@ const StyledColumnButton = styled.button<{ disabled: boolean }>`
 
 const StyledPrice = styled(BaseXL)``;
 
-const StyledConfirmButton = styled(Button)``;
 const StyledPurchaseMoreButton = styled(Button)`
   width: 100%;
 `;
