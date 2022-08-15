@@ -6,10 +6,16 @@ import { useEffect, useMemo } from 'react';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { TransactionStatus } from 'constants/transaction';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
-import { useMintMerchContract } from 'hooks/useContract';
-import { NFT_TOKEN_ID } from 'constants/merch';
 import { Button } from 'components/core/Button/Button';
 import styled from 'styled-components';
+import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
+import { Contract } from '@ethersproject/contracts';
+import { useAccount } from 'wagmi';
+import { useActiveWeb3React } from 'hooks/useWeb3';
+// import { useMintMerchContract } from 'hooks/useContract';
+
+export const GALLERY_MERCH_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS;
 
 type Props = {
   onMintSuccess: () => void;
@@ -19,11 +25,20 @@ type Props = {
 
 export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) {
   const { pushToast } = useToastActions();
+  const { address: rawAddress } = useAccount();
+  const { library } = useActiveWeb3React();
 
-  // const tokenId = NFT_TOKEN_ID;
+  const address = rawAddress?.toLowerCase();
 
-  const contract = useMintMerchContract();
-  const { address, transactionHash, transactionStatus, buttonText, error, handleClick } =
+  // FIXME: Check this? This connects to the contract with library.getSigner, would be better to do this in useMintMerchContract();
+  // const contract = useMintMerchContract();
+  const contract = new Contract(
+    GALLERY_MERCH_CONTRACT_ADDRESS || '',
+    GALLERY_MERCH_CONTRACT_ABI,
+    address && library ? library.getSigner(address).connectUnchecked() : library
+  );
+
+  const { transactionHash, transactionStatus, buttonText, error, handleClick } =
     useMintContractWithQuantity({
       contract,
       tokenId,
@@ -34,7 +49,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
     if (transactionStatus === TransactionStatus.SUCCESS) {
       onMintSuccess();
       pushToast({
-        message: 'You’ve succesfully minted 2022 Community Poster.',
+        message: 'You’ve succesfully minted merch.',
         autoClose: true,
       });
     }
@@ -46,10 +61,15 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   return (
     <>
-      <StyledButton onClick={handleClick} disabled={false}>
+      <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {address && !transactionHash && <BaseM>Connected address: {address}</BaseM>}
+      {transactionHash || (address && <Spacer height={16} />)}
+      {address && !transactionHash && (
+        <>
+          <StyledBaseMWithWrap>Connected address: {address}</StyledBaseMWithWrap>
+        </>
+      )}
       {transactionHash && (
         <>
           <BaseM>
@@ -69,7 +89,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       )}
       {error && (
         <>
-          <Spacer height={16} />
+          <Spacer height={8} />
           <ErrorText message={error} />
         </>
       )}
@@ -83,4 +103,8 @@ const StyledButton = styled(Button)`
   height: 100%;
   padding: 12px 24px;
   text-decoration: none;
+`;
+
+const StyledBaseMWithWrap = styled(BaseM)`
+  word-break: break-all;
 `;
