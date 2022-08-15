@@ -22,9 +22,11 @@ const moduleExports = {
 
   experimental: {
     // Enables the styled-components SWC transform
-    styledComponents: true,
     scrollRestoration: true,
+  },
+  compiler: {
     relay: relayConfig,
+    styledComponents: true,
   },
 
   async redirects() {
