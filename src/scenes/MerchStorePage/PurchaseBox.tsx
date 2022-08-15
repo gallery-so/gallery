@@ -115,9 +115,6 @@ export default function PurchaseBox({
           {!isReceiptState && (
             <>
               <Spacer height={16} />
-              {/* <StyledConfirmButton onClick={handlePurchaseClick}>
-                Confirm Purchase
-              </StyledConfirmButton> */}
               <MerchMintButton
                 onMintSuccess={handlePurchaseClick}
                 quantity={quantity}

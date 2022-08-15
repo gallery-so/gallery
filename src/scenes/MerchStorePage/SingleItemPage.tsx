@@ -1,20 +1,12 @@
 import styled from 'styled-components';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { contentSize, pageGutter } from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-// import PosterFigmaFrame from './PosterFigmaFrame';
-// import ActionText from 'components/core/ActionText/ActionText';
-// import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-// import useTimer from 'hooks/useTimer';
-import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 // import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
 // import ItemImage from './ItemImage';
 // import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
 // import { useWeb3React } from '@web3-react/core';
 // import { Web3Provider } from '@ethersproject/providers';
 import { useState, useCallback, useEffect } from 'react';
-// import { OPENSEA_TESTNET_BASEURL } from 'constants/opensea';
 import Spacer from 'components/core/Spacer/Spacer';
 // import { isFeatureEnabled } from 'utils/featureFlag';
 // import { FeatureFlag } from 'components/core/enums';
@@ -23,9 +15,6 @@ import Spacer from 'components/core/Spacer/Spacer';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
-import { useWeb3React } from '@web3-react/core';
-import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
 import web3 from 'web3';
 
 export default function ItemPage({
@@ -47,7 +36,6 @@ export default function ItemPage({
   const [publicSupply, setPublicSupply] = useState(0);
   const [usedPublicSupply, setUsedPublicSupply] = useState(0);
 
-  // FIXME: Use library rather than account is account is not available (user not logged in)?
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
     if (contract) {
       return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
