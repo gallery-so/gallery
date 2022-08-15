@@ -44,3 +44,6 @@ src/__generated__/operations.ts
 
 # Sentry
 .sentryclirc
+
+# JetBrains IDE
+.idea/
