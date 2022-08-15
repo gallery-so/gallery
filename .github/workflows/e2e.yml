@@ -9,9 +9,13 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
+        with:
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -24,6 +28,8 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn install
+        env:
+          CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
       - run: yarn add @synthetixio/synpress
       - name: 'Update apt'
         run: sudo apt-get update
@@ -59,3 +65,4 @@ jobs:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
           PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
           NETWORK_NAME: main
+          CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress

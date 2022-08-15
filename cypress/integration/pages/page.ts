@@ -8,7 +8,6 @@ export default class Page {
       cy.switchToMetamaskNotification();
     }
     cy.confirmMetamaskSignatureRequest();
-    cy.switchToCypressWindow();
-    cy.wait(500);
+    cy.wait(1000);
   }
 }
