@@ -13,8 +13,12 @@ export default class HomePage extends Page {
     return cy.get('[data-testid="explore-button"]');
   }
 
+  getEthereumButton() {
+    return cy.get('[data-testid="wallet-button"]').contains('Ethereum');
+  }
+
   getMetaMaskButton() {
-    return cy.get('[data-testid="wallet-button"]').contains('MetaMask');
+    return cy.get('button').contains('MetaMask');
   }
 
   getAccountButton(username: string) {
