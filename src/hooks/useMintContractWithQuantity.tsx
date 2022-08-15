@@ -48,7 +48,7 @@ export default function useMintContractWithQuantity({
       const mintResult = await mintToken(contract, tokenId, quantity).catch((error: any) => {
         // console.log(error.message, error.error.message);
         // TODO: Can handle additional errors here if we want
-        if (error.error.message === 'execution reverted: Merch: not allowlisted') {
+        if (error?.error?.message === 'execution reverted: Merch: not allowlisted') {
           setError(
             `Your address is not on the allowlist. Please check back when public mint is live.`
           );
