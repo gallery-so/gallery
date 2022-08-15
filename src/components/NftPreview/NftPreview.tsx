@@ -222,6 +222,13 @@ const StyledNftPreview = styled.div<{
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: inherit;
 
+  // Only apply to safari. Somehow the height is not being set properly on safari.
+  @media not all and (min-resolution:.001dpcm) { 
+     @supports (-webkit-appearance:none) {
+        height: initial;  
+      }
+  }
+
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
