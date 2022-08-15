@@ -57,9 +57,9 @@
     "web3": "^1.6.1"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.6.2",
-    "@graphql-codegen/typescript": "^2.4.11",
-    "@graphql-codegen/typescript-operations": "^2.4.0",
+    "@graphql-codegen/cli": "^2.11.6",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
     "@svgr/webpack": "^5.5.0",
     "@synthetixio/synpress": "^1.2.0",
     "@testing-library/jest-dom": "^5.15.0",
