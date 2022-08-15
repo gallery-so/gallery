@@ -58,9 +58,8 @@ const StyledGalleryContainer = styled.div`
 
 const StyledImage = styled.img`
   max-width: 100%;
-  max-height: 190px;
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 190px;
   display: block;
   margin: 0 auto;
 `;

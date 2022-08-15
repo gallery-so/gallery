@@ -17,6 +17,7 @@ export const SingleOpenGraphPreview = ({
   imageUrls,
   collectorsNote,
 }: Props) => {
+  const firstLineDescription = description.split('\n')[0];
   return (
     <>
       <StyledContainer>
@@ -34,7 +35,7 @@ export const SingleOpenGraphPreview = ({
           <TitleL>{unescape(title)}</TitleL>
           {description && (
             <StyledDescription>
-              <Markdown text={unescape(description)} />
+              <Markdown text={unescape(firstLineDescription)} />
             </StyledDescription>
           )}
         </StyledTitleContainer>
@@ -70,9 +71,8 @@ const StyledGalleryContainer = styled.div<{ hasCollectorNote?: boolean }>`
 
 const StyledImage = styled.img`
   max-width: 100%;
-  max-height: 265px;
+  height: 265px;
   width: auto;
-  height: auto;
   display: block;
   margin: 0 0 0 auto;
 `;
