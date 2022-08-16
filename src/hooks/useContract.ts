@@ -7,6 +7,7 @@ import GALLERY_MEMENTOS_CONTRACT_ABI from 'abis/gallery-mementos-contract.json';
 import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
 import { network } from 'connectors/index';
 import { useActiveWeb3React } from './useWeb3';
+import { useAccount, useSigner, useContract, useProvider, useNetwork } from 'wagmi';
 
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS;
@@ -18,58 +19,76 @@ export const GALLERY_MERCH_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS;
 
 // account is not optional
-function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
-  return library.getSigner(account).connectUnchecked();
-}
+// function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
+//   return library.getSigner(account).connectUnchecked();
+// }
 
 // account is optional
-function getProviderOrSigner(
-  library: Web3Provider,
-  account?: string
-): JsonRpcSigner | Web3Provider {
-  return account ? getSigner(library, account) : library;
-}
+// function getProviderOrSigner(
+//   library: Web3Provider,
+//   account?: string
+// ): JsonRpcSigner | Web3Provider {
+//   console.log('SIGNER:', account, library);
+//   return account ? getSigner(library, account) : library;
+// }
 
 // account is optional
-function getContract(address: string, ABI: any, library: Web3Provider, account?: string) {
-  return new Contract(address, ABI, getProviderOrSigner(library, account));
-}
+// function getContract(address: string, ABI: any, library: Web3Provider, account?: string) {
+//   return new Contract(address, ABI, getProviderOrSigner(library, account));
+// }
 
-function useContract(address: string, abi: any) {
-  const { library, account, activate } = useActiveWeb3React();
-  // console.log(library, account, activate);
+// function useContract(address: string, abi: any) {
+//   const { library, account, activate } = useActiveWeb3React();
+//   // console.log(library, account, activate);
+//   console.log('ACCOUNT FROM useActiveWeb3React', account);
 
-  if (!library) {
-    // activate provider without an address to be able to read from contracts
-    void activate(network);
-  }
+//   const { address: rawUserAddress } = useAccount();
+//   const userAddress = rawUserAddress?.toLowerCase();
+//   console.log('ADDRESS FROM useAccount', userAddress);
 
-  return useMemo(() => {
-    if (!address || !library) {
-      return null;
-    }
+//   const accountToUse = account || userAddress;
+//   console.log('Using address', accountToUse);
 
-    try {
-      return getContract(address, abi, library, account ? account : undefined);
-    } catch {
-      console.error('Error getting contract');
-      return null;
-    }
-  }, [abi, account, address, library]);
-}
+//   if (!library) {
+//     // activate provider without an address to be able to read from contracts
+//     void activate(network);
+//   }
 
-export function usePremiumMembershipCardContract() {
-  return useContract(PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS || '', PREMIUM_MEMBERSHIP_CONTRACT_ABI);
-}
+//   return useMemo(() => {
+//     if (!address || !library) {
+//       return null;
+//     }
 
-export function useGeneralMembershipCardContract() {
-  return useContract(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS || '', GENERAL_MEMBERSHIP_CONTRACT_ABI);
-}
+//     try {
+//       return getContract(address, abi, library, accountToUse ? accountToUse : undefined);
+//     } catch {
+//       console.error('Error getting contract');
+//       return null;
+//     }
+//   }, [abi, address, library, accountToUse]);
+// }
 
-export function useMintPosterContract() {
-  return useContract(GALLERY_MEMENTOS_CONTRACT_ADDRESS || '', GALLERY_MEMENTOS_CONTRACT_ABI);
-}
+// FIXME: Update later
+// export function usePremiumMembershipCardContract() {
+//   return useContract(PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS || '', PREMIUM_MEMBERSHIP_CONTRACT_ABI);
+// }
+
+// export function useGeneralMembershipCardContract() {
+//   return useContract(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS || '', GENERAL_MEMBERSHIP_CONTRACT_ABI);
+// }
+
+// export function useMintPosterContract() {
+//   return useContract(GALLERY_MEMENTOS_CONTRACT_ADDRESS || '', GALLERY_MEMENTOS_CONTRACT_ABI);
+// }
 
 export function useMintMerchContract() {
-  return useContract(GALLERY_MERCH_CONTRACT_ADDRESS || '', GALLERY_MERCH_CONTRACT_ABI);
+  const { data: signer } = useSigner();
+  const chainId = parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
+  const provider = useProvider({ chainId: chainId });
+
+  return useContract({
+    addressOrName: GALLERY_MERCH_CONTRACT_ADDRESS || '',
+    contractInterface: GALLERY_MERCH_CONTRACT_ABI,
+    signerOrProvider: signer ?? provider,
+  });
 }
