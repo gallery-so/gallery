@@ -153,12 +153,13 @@ const ExpandPurchaseButton = styled(Button)<{ show?: boolean; disabled?: boolean
   pointer-events: ${({ show }) => (show ? 'all' : 'none')};
   z-index: 1;
   transition: opacity 0ms ease-in-out;
+  margin-bottom: 6px;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
 
 const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
-  margin-top: ${({ showBox }) => (showBox ? '-42px' : '0')};
+  margin-top: ${({ showBox }) => (showBox ? '-54px' : '0')};
   user-select: none;
 `;
 
