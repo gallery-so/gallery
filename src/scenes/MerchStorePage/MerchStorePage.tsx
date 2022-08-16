@@ -70,12 +70,12 @@ const StyledItemsContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 120px; /* FIXME: Exact ? */
+  padding-top: 60px;
   justify-content: center;
   place-items: center;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
-    padding-top: 0;
+    padding: 0;
   }
 `;
