@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import breakpoints, { contentSize } from 'components/core/breakpoints';
+import breakpoints from 'components/core/breakpoints';
 import React from 'react';
 import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
@@ -11,7 +11,7 @@ const items = [
     title: '(Object 001)',
     description:
       'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.',
-    price: '0.04',
+    price: '0.05',
     tokenId: 0,
   },
   {
@@ -54,12 +54,6 @@ const StyledPage = styled.div`
   justify-content: center;
   width: 100%;
   margin: 0 auto;
-  //   max-width: ${contentSize.desktop}px;
-  //   @media (max-width: ${contentSize.desktop}px) {
-  //     grid-template-columns: 1fr;
-  //     grid-template-rows: auto 1fr;
-  //     padding: 0px 16px;
-  //   }
 `;
 
 const StyledShopText = styled(TitleM)`

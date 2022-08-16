@@ -2,13 +2,19 @@ import { Contract } from '@ethersproject/contracts';
 import { useConnectEthereum } from 'components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from 'constants/transaction';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import {
+  useAccount,
+  // useDisconnect
+} from 'wagmi';
+import web3 from 'web3';
+import MerkleTree from 'utils/MerkleTree';
+import { MAX_NFTS_PER_WALLET } from 'scenes/MerchStorePage/constants';
 
 type Props = {
   contract: Contract | null;
   tokenId: number;
   onMintSuccess?: () => void;
-  quantity: number;
+  quantity?: number;
 };
 
 /**
@@ -27,13 +33,116 @@ export default function useMintContractWithQuantity({
 
   const address = rawAddress?.toLowerCase();
 
-  const mintToken = useCallback(
-    async (contract: Contract, tokenId: number, quantity: number) => {
+  // SUPPLIES
+  const [publicSupply, setPublicSupply] = useState(0);
+  const [usedPublicSupply, setUsedPublicSupply] = useState(0);
+  const [userOwnedSupply, setUserOwnedSupply] = useState(0);
+  const [soldOut, setSoldOut] = useState(false);
+  const [tokenPrice, setTokenPrice] = useState(0);
+
+  const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
+    if (contract) {
+      return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
+    }
+  }, []);
+
+  const getUserOwnedSupply = useCallback(
+    async (contract: any) => {
       if (contract && address) {
-        return contract.mint(address, tokenId, quantity, []);
+        return web3.utils.hexToNumber(await contract.balanceOfType(tokenId, address));
       }
     },
-    [address]
+    [address, tokenId]
+  );
+
+  const getTokenPrice = useCallback(
+    async (contract: any) => {
+      if (contract) {
+        return await contract.getPrice(tokenId);
+      }
+    },
+    [tokenId]
+  );
+
+  // Run getRemainingSupply once on mount and then update the remaining supply.
+  useEffect(() => {
+    async function effect() {
+      const supplies = await updateSupplies(contract, tokenId);
+      const sup = web3.utils.hexToNumber(supplies?.[0]);
+      const used = web3.utils.hexToNumber(supplies?.[1]);
+      setPublicSupply(sup);
+      setUsedPublicSupply(used);
+      setSoldOut(sup - used === 0);
+
+      const userOwned = await getUserOwnedSupply(contract);
+      setUserOwnedSupply(userOwned || 0);
+
+      const price = await getTokenPrice(contract);
+      setTokenPrice(web3.utils.hexToNumber(price)); // setTokenPrice(0.15);
+
+      // console.log('Total supply: ', sup);
+      // console.log('Used supply: ', used);
+      // console.log('User currently owns: ', userOwnedSupply);
+      // console.log('Token price: ', price);
+    }
+
+    effect();
+    return () => {
+      // cleanup
+    };
+  }, [
+    contract,
+    tokenId,
+    updateSupplies,
+    publicSupply,
+    usedPublicSupply,
+    getUserOwnedSupply,
+    userOwnedSupply,
+    getTokenPrice,
+  ]);
+
+  function generateMerkleProof(address: string, allowlist: string[]) {
+    const merkleTree = new MerkleTree(allowlist);
+    return merkleTree.getHexProof(address);
+  }
+
+  const isAllowlistPeriod = true; // FIXME: to get from contract
+
+  const totalPrice = useCallback(
+    async (contract: any, tokenId: number) => {
+      if (!quantity) return;
+      if (contract) {
+        const priceOfOne = await contract.getPrice(tokenId);
+        const price = web3.utils.hexToNumber(priceOfOne) * quantity;
+
+        return price;
+      }
+    },
+    [quantity]
+  );
+
+  const mintToken = useCallback(
+    async (contract: Contract, tokenId: number, quantity: number) => {
+      // FIXME: Need allowlist in own file
+      const allowlist = [
+        '0x90d93d25db5c0be4ca49c6bd54d0ba91bde5573a',
+        '0x6c96da184a426d381e2fcc3bf22f50dd079340c0',
+        '0xe3e5549daa5ea2c1d451f352c63b13cb3920366f',
+      ];
+
+      const price = await totalPrice(contract, tokenId);
+      const weiPrice = price ? web3.utils.toWei(price.toString(), 'ether') : 0; // FIXME ? Otherwise price could be undefined, tsx error
+
+      if (contract && address) {
+        const merkleProof = isAllowlistPeriod
+          ? generateMerkleProof(address, Array.from(allowlist))
+          : [];
+        return contract.mint(address, tokenId, quantity, merkleProof, {
+          value: weiPrice,
+        });
+      }
+    },
+    [address, isAllowlistPeriod, totalPrice]
   );
 
   const handleMintButtonClick = useCallback(async () => {
@@ -43,12 +152,16 @@ export default function useMintContractWithQuantity({
     }
 
     if (active && contract) {
+      if (!quantity) return;
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId, quantity).catch((error: any) => {
-        // console.log(error.message, error.error.message);
+        console.log(error);
         // TODO: Can handle additional errors here if we want
-        if (error?.error?.message === 'execution reverted: Merch: not allowlisted') {
+        if (
+          error?.error?.message === 'execution reverted: Merch: not allowlisted' ||
+          error?.message === 'Element does not exist in Merkle tree'
+        ) {
           setError(
             `Your address is not on the allowlist. Please check back when public mint is live.`
           );
@@ -75,20 +188,27 @@ export default function useMintContractWithQuantity({
         if (waitResult) {
           setTransactionStatus(TransactionStatus.SUCCESS);
           if (onMintSuccess) {
+            const supplies = await updateSupplies(contract, tokenId);
+            const sup = web3.utils.hexToNumber(supplies?.[0]);
+            const used = web3.utils.hexToNumber(supplies?.[1]);
+            setPublicSupply(sup);
+            setUsedPublicSupply(used);
+            setSoldOut(sup - used === 0);
             onMintSuccess();
           }
         }
       }
     }
-  }, [active, contract, error, mintToken, onMintSuccess, tokenId, quantity]);
+  }, [active, contract, error, mintToken, onMintSuccess, tokenId, quantity, updateSupplies]);
 
   const connectEthereum = useConnectEthereum();
 
   // disconnect on mount to start with blank slate
-  const { disconnect } = useDisconnect();
-  useEffect(() => {
-    disconnect();
-  }, [disconnect]);
+  // FIXME: @Robin it looks like we can undo this? Is this still needed?
+  // const { disconnect } = useDisconnect();
+  // useEffect(() => {
+  //   disconnect();
+  // }, [disconnect]);
 
   const handleConnectWalletButtonClick = useCallback(async () => {
     try {
@@ -118,8 +238,13 @@ export default function useMintContractWithQuantity({
     if (transactionStatus === TransactionStatus.SUCCESS) {
       return 'Mint Successful';
     }
+
+    if (userOwnedSupply === MAX_NFTS_PER_WALLET) {
+      return 'Minted 3/3';
+    }
+
     return 'Mint';
-  }, [active, transactionStatus]);
+  }, [active, transactionStatus, userOwnedSupply]);
 
   return {
     active,
@@ -129,5 +254,11 @@ export default function useMintContractWithQuantity({
     error,
     handleClick,
     buttonText,
+    publicSupply,
+    usedPublicSupply,
+    soldOut,
+    userOwnedSupply,
+    getUserOwnedSupply,
+    tokenPrice,
   };
 }

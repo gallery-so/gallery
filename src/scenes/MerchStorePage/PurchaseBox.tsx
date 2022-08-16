@@ -5,19 +5,20 @@ import colors from 'components/core/colors';
 import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import Spacer from 'components/core/Spacer/Spacer';
-import MerchMintButton from './MerchMintButton';
+import { useMintMerchContract } from 'hooks/useContract';
+import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 
+import MerchMintButton from './MerchMintButton';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
+import { MAX_NFTS_PER_WALLET } from './constants';
 
 export default function PurchaseBox({
   label,
-  price,
   tokenId,
   disabled,
 }: {
   label: string;
-  price: string;
   tokenId: number;
   disabled: boolean;
 }) {
@@ -26,6 +27,17 @@ export default function PurchaseBox({
   const [isReceiptState, setIsReceiptState] = useState(false);
   const [isPurchaseMoreState, setIsPurchaseMoreState] = useState(false);
   const [isAwaitingTransactionState, setIsAwaitingTransactionState] = useState(false);
+
+  const contract = useMintMerchContract();
+
+  const { userOwnedSupply, active, tokenPrice } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
+
+  const maxQuantity = useCallback(() => {
+    return MAX_NFTS_PER_WALLET - userOwnedSupply;
+  }, [userOwnedSupply]);
 
   const toggleShowBox = useCallback(() => {
     if (disabled) return;
@@ -51,14 +63,14 @@ export default function PurchaseBox({
             <ReceiptContainer>
               <StyledFlexContainer>
                 <StyledBaseM>Quantity bought</StyledBaseM>
-                <StyledBaseM>{quantity}</StyledBaseM>
+                <StyledBaseM>{userOwnedSupply}</StyledBaseM>
               </StyledFlexContainer>
               <Spacer height={4} />
               <HorizontalBreak />
               <Spacer height={4} />
               <StyledFlexContainer>
-                <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
-                <StyledPrice>{quantity * +price} Ξ</StyledPrice>
+                <StyledBaseM>Total paid</StyledBaseM>
+                <StyledPrice>{(userOwnedSupply * +tokenPrice).toFixed(2)} Ξ</StyledPrice>
               </StyledFlexContainer>
             </ReceiptContainer>
             <Spacer height={8} />
@@ -90,7 +102,7 @@ export default function PurchaseBox({
                 onClick={() => {
                   setQuantity(quantity - 1);
                 }}
-                disabled={quantity <= 1}
+                disabled={quantity <= 1 || isReceiptState || !active}
               >
                 <CircleMinusIcon />
               </StyledColumnButton>
@@ -99,7 +111,7 @@ export default function PurchaseBox({
                 onClick={() => {
                   setQuantity(quantity + 1);
                 }}
-                disabled={quantity >= 3}
+                disabled={quantity >= maxQuantity() || isReceiptState || !active}
               >
                 <CirclePlusIcon />
               </StyledColumnButton>
@@ -110,7 +122,7 @@ export default function PurchaseBox({
           <Spacer height={4} />
           <StyledFlexContainer>
             <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
-            <StyledPrice>{quantity * +price} Ξ</StyledPrice>
+            <StyledPrice>{(tokenPrice * quantity).toFixed(2)} Ξ</StyledPrice>
           </StyledFlexContainer>
           {!isReceiptState && (
             <>
@@ -124,8 +136,6 @@ export default function PurchaseBox({
           )}
         </StyledCheckoutBox>
 
-        {/* FIXME: On success, show receipt text and render new button "Purchase More" */}
-        {/* <MerchMintButton onMintSuccess={() => alert('Mint func goes here')}></MerchMintButton> */}
         {isReceiptState && (
           <>
             <Spacer height={12} />
@@ -160,6 +170,7 @@ const ExpandPurchaseButton = styled(Button)<{ show?: boolean; disabled?: boolean
 const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
   margin-top: ${({ showBox }) => (showBox ? '-42px' : '0')};
+  user-select: none;
 `;
 
 const StyledCheckoutBox = styled.div<{
@@ -226,12 +237,13 @@ const StyledColumnButton = styled.button<{ disabled: boolean }>`
   height: 16px;
   border: 0;
   padding: 0;
-  cursor: pointer;
   background: none;
 
   path {
     stroke: ${({ disabled }) => (disabled ? `${colors.porcelain}` : 'auto')};
   }
+
+  cursor: ${({ disabled }) => (disabled ? `default` : 'pointer')};
 `;
 
 const StyledPrice = styled(BaseXL)``;

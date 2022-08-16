@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
+import breakpoints from 'components/core/breakpoints';
 
 export default function FlippingImage({
   src,
@@ -26,10 +27,18 @@ export default function FlippingImage({
 }
 
 const StyledContainer = styled.div<{ isFlippedCardInPreview: boolean }>`
+  // max-height: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? 'none' : '90vw')};
+  // max-width: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? 'none' : '90vw')};
+  position: relative;
+  user-select: none;
+
   // This styling forces the card "back" image to fill the entirety of the square
   height: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '150%' : '100%')};
   width: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '150%' : '100%')};
   margin: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '-25%' : '0')};
-  position: relative;
-  user-select: none;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-height: none;
+    max-width: none;
+  }
 `;
