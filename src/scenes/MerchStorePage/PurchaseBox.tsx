@@ -25,7 +25,6 @@ export default function PurchaseBox({
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
-  const [isPurchaseMoreState, setIsPurchaseMoreState] = useState(false);
 
   const contract = useMintMerchContract();
 
@@ -43,7 +42,6 @@ export default function PurchaseBox({
     setShowBox(true);
   }, [disabled]);
 
-  // FIXME: Review what I'm doing here
   const handlePurchaseClick = useCallback(() => {
     setIsReceiptState(true);
   }, [setIsReceiptState]);
@@ -54,7 +52,7 @@ export default function PurchaseBox({
         Purchase
       </ExpandPurchaseButton>
       <StyledCheckoutAndReceiptContainer showBox={showBox}>
-        {isPurchaseMoreState && (
+        {userOwnedSupply > 0 && (
           <>
             <ReceiptContainer>
               <StyledFlexContainer>
@@ -134,7 +132,6 @@ export default function PurchaseBox({
             <StyledPurchaseMoreButton
               onClick={() => {
                 setIsReceiptState(false);
-                setIsPurchaseMoreState(true);
               }}
             >
               Purchase More
@@ -203,6 +200,7 @@ const StyledFlexContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  place-items: center;
 `;
 
 const StyledBaseM = styled(BaseM)`
