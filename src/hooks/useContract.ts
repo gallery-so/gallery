@@ -1,13 +1,18 @@
-import { Contract } from '@ethersproject/contracts';
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
-import { useMemo } from 'react';
-import PREMIUM_MEMBERSHIP_CONTRACT_ABI from 'abis/premium-membership-contract.json';
-import GENERAL_MEMBERSHIP_CONTRACT_ABI from 'abis/general-membership-contract.json';
-import GALLERY_MEMENTOS_CONTRACT_ABI from 'abis/gallery-mementos-contract.json';
+// import { Contract } from '@ethersproject/contracts';
+// import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+// import { useMemo } from 'react';
+// import PREMIUM_MEMBERSHIP_CONTRACT_ABI from 'abis/premium-membership-contract.json';
+// import GENERAL_MEMBERSHIP_CONTRACT_ABI from 'abis/general-membership-contract.json';
+// import GALLERY_MEMENTOS_CONTRACT_ABI from 'abis/gallery-mementos-contract.json';
 import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
-import { network } from 'connectors/index';
-import { useActiveWeb3React } from './useWeb3';
-import { useAccount, useSigner, useContract, useProvider, useNetwork } from 'wagmi';
+// import { network } from 'connectors/index';
+// import { useActiveWeb3React } from './useWeb3';
+import {
+  // useAccount, useNetwork,
+  useSigner,
+  useContract,
+  useProvider,
+} from 'wagmi';
 
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS;
