@@ -3,6 +3,18 @@ import { _fetch, baseurl } from 'contexts/swr/fetch';
 import { startTransaction, getCurrentHub } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
 
+export function getGraphqlHost() {
+  return baseurl;
+}
+
+export function getGraphqlPath() {
+  return `/glry/graphql/query`;
+}
+
+export function getGraphqlUrl() {
+  return `${getGraphqlHost()}${getGraphqlPath()}`;
+}
+
 /**
  * This is how Relay takes an arbitrary GraphQL request, and asks for a response.
  * Since we don't currently have a GraphQL server, we're shimming a response as
@@ -13,7 +25,7 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
   const transaction = initSentryTracing(request);
   // ---------- end pre-request hooks
 
-  const response = await _fetch<GraphQLResponse>(`${baseurl}/glry/graphql/query`, {
+  const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
     body: {
       query: request.text,
       variables,
