@@ -26,7 +26,6 @@ export default function PurchaseBox({
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
   const [isPurchaseMoreState, setIsPurchaseMoreState] = useState(false);
-  const [isAwaitingTransactionState, setIsAwaitingTransactionState] = useState(false);
 
   const contract = useMintMerchContract();
 
@@ -44,12 +43,9 @@ export default function PurchaseBox({
     setShowBox(true);
   }, [disabled]);
 
+  // FIXME: Review what I'm doing here
   const handlePurchaseClick = useCallback(() => {
-    setIsAwaitingTransactionState(true);
-    setTimeout(() => {
-      setIsReceiptState(true);
-      setIsAwaitingTransactionState(false);
-    }, 1000);
+    setIsReceiptState(true);
   }, [setIsReceiptState]);
 
   return (
@@ -76,11 +72,7 @@ export default function PurchaseBox({
             <Spacer height={8} />
           </>
         )}
-        <StyledCheckoutBox
-          showBox={showBox}
-          isAwaitingTransactionState={isAwaitingTransactionState}
-          isReceiptState={isReceiptState}
-        >
+        <StyledCheckoutBox showBox={showBox} isReceiptState={isReceiptState}>
           <StyledCheckoutTitle>
             {isReceiptState
               ? `You've bought ${quantity} ${quantity == 1 ? label : `${label}s`}.`
@@ -175,7 +167,6 @@ const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
 
 const StyledCheckoutBox = styled.div<{
   showBox: boolean;
-  isAwaitingTransactionState: boolean;
   isReceiptState: boolean;
 }>`
   z-index: 2;
@@ -191,11 +182,10 @@ const StyledCheckoutBox = styled.div<{
   border: 1px solid ${colors.porcelain};
   transition: max-height 400ms ease 0ms, transform 400ms ease 0ms, opacity 400ms ease 200ms;
 
-  ${({ showBox, isAwaitingTransactionState }) =>
+  ${({ showBox }) =>
     showBox &&
-    `
-    max-height: 1000px;
-    opacity: ${isAwaitingTransactionState ? 0.5 : 1};
+    `max-height: 1000px;
+    opacity: 1;
   `}
 
   pointer-events: ${({ isReceiptState }) => (isReceiptState ? 'none' : 'all')};
