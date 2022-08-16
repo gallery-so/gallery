@@ -1,25 +1,25 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
-import { TitleMonoM, BaseM } from 'components/core/Text/Text';
+import { TitleMonoM, BaseM, BlueLabel } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import SingleItemPage from './SingleItemPage';
 import FlippingImage from './FlippingImage';
 import colors from 'components/core/colors';
+import { useMintMerchContract } from 'hooks/useContract';
+import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 
 export default function ItemPreview({
   label,
   image,
   title,
   description,
-  price,
   tokenId,
 }: {
   label: string;
   image: string;
   title: string;
   description: string;
-  price: string;
   tokenId: number;
 }) {
   const { showModal } = useModalActions();
@@ -31,23 +31,40 @@ export default function ItemPreview({
           image={image}
           title={title}
           description={description}
-          price={price}
           tokenId={tokenId}
         />
       ),
       isFullPage: true,
     });
-  }, [showModal, label, image, title, description, price, tokenId]);
+  }, [showModal, label, image, title, description, tokenId]);
+
+  const contract = useMintMerchContract();
+
+  const { soldOut, userOwnedSupply } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
 
   return (
     <StyledItemPreview onClick={handleClick}>
       <StyledImageContainer>
         <FlippingImage src={image} isInPreview />
       </StyledImageContainer>
+      <StyledTopRightLabels>
+        {typeof userOwnedSupply == 'number' && userOwnedSupply > 0 && (
+          <StyledOwnedText>You Own {userOwnedSupply}</StyledOwnedText>
+        )}
+        {soldOut && <StyledSoldOutText>Sold Out</StyledSoldOutText>}
+      </StyledTopRightLabels>
       <StyledBottomText>
         <StyledItemText>{title}</StyledItemText>
-        <StyledSlash>/</StyledSlash>
-        <StyledPurchaseText>Purchase</StyledPurchaseText>
+
+        {!soldOut && (
+          <>
+            <StyledSlash>/</StyledSlash>
+            <StyledPurchaseText>Purchase</StyledPurchaseText>
+          </>
+        )}
       </StyledBottomText>
     </StyledItemPreview>
   );
@@ -111,3 +128,18 @@ const StyledPurchaseText = styled(BaseM)`
   text-decoration: underline;
   color: ${colors.shadow};
 `;
+
+const StyledTopRightLabels = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+`;
+
+const StyledSoldOutText = styled(BlueLabel)`
+  color: ${colors.offBlack};
+  border-color: ${colors.offBlack};
+`;
+
+const StyledOwnedText = styled(BlueLabel)``;

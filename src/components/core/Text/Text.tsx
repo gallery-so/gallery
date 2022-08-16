@@ -124,3 +124,24 @@ export const TitleMonoM = styled(Paragraph)`
   letter-spacing: -0.01em;
   text-transform: uppercase;
 `;
+
+export const BlueLabel = styled(TitleXS)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+
+  display: flex;
+  align-items: center;
+  text-align: right;
+  text-transform: uppercase;
+
+  /* Blue / Active */
+  color: ${colors.activeBlue};
+
+  display: inline;
+  border: 1px solid ${colors.activeBlue};
+  border-radius: 2px;
+  padding: 0 2px;
+`;

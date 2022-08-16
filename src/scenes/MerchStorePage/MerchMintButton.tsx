@@ -8,14 +8,14 @@ import { TransactionStatus } from 'constants/transaction';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 import { Button } from 'components/core/Button/Button';
 import styled from 'styled-components';
-import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
-import { Contract } from '@ethersproject/contracts';
+// import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
+// import { Contract } from '@ethersproject/contracts';
 import { useAccount } from 'wagmi';
-import { useActiveWeb3React } from 'hooks/useWeb3';
-// import { useMintMerchContract } from 'hooks/useContract';
-
-export const GALLERY_MERCH_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS;
+// import { useActiveWeb3React } from 'hooks/useWeb3';
+// import { useWeb3React } from '@web3-react/core';
+// import { Web3Provider } from '@ethersproject/providers';
+import { useMintMerchContract } from 'hooks/useContract';
+import { MAX_NFTS_PER_WALLET } from './constants';
 
 type Props = {
   onMintSuccess: () => void;
@@ -25,20 +25,12 @@ type Props = {
 
 export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) {
   const { pushToast } = useToastActions();
+
   const { address: rawAddress } = useAccount();
-  const { library } = useActiveWeb3React();
-
   const address = rawAddress?.toLowerCase();
+  const contract = useMintMerchContract();
 
-  // FIXME: Check this? This connects to the contract with library.getSigner, would be better to do this in useMintMerchContract();
-  // const contract = useMintMerchContract();
-  const contract = new Contract(
-    GALLERY_MERCH_CONTRACT_ADDRESS || '',
-    GALLERY_MERCH_CONTRACT_ABI,
-    address && library ? library.getSigner(address).connectUnchecked() : library
-  );
-
-  const { transactionHash, transactionStatus, buttonText, error, handleClick } =
+  const { transactionHash, transactionStatus, buttonText, error, handleClick, userOwnedSupply } =
     useMintContractWithQuantity({
       contract,
       tokenId,
@@ -55,16 +47,24 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
     }
   }, [transactionStatus, pushToast, onMintSuccess]);
 
-  const isButtonDisabled = useMemo(() => {
+  const isTransactionPending = useMemo(() => {
     return transactionStatus === TransactionStatus.PENDING;
   }, [transactionStatus]);
+
+  const userOwnsMax = useMemo(() => {
+    return userOwnedSupply === MAX_NFTS_PER_WALLET;
+  }, [userOwnedSupply]);
+
+  const isButtonDisabled = useMemo(() => {
+    return isTransactionPending || userOwnsMax;
+  }, [isTransactionPending, userOwnsMax]);
 
   return (
     <>
       <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {transactionHash || (address && <Spacer height={16} />)}
+      {(transactionHash || address || error) && <Spacer height={16} />}
       {address && !transactionHash && (
         <>
           <StyledBaseMWithWrap>Connected address: {address}</StyledBaseMWithWrap>

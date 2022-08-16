@@ -6,7 +6,7 @@ import { contentSize, pageGutter } from 'components/core/breakpoints';
 // import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
 // import { useWeb3React } from '@web3-react/core';
 // import { Web3Provider } from '@ethersproject/providers';
-import { useState, useCallback, useEffect } from 'react';
+// import { useState, useCallback, useEffect } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
 // import { isFeatureEnabled } from 'utils/featureFlag';
 // import { FeatureFlag } from 'components/core/enums';
@@ -15,81 +15,27 @@ import Spacer from 'components/core/Spacer/Spacer';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
-import web3 from 'web3';
+import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 
 export default function ItemPage({
   label,
   image,
   title,
   description,
-  price,
   tokenId,
 }: {
   label: string;
   image: string;
   title: string;
   description: string;
-  price: string;
   tokenId: number;
 }) {
   const contract = useMintMerchContract();
-  const [publicSupply, setPublicSupply] = useState(0);
-  const [usedPublicSupply, setUsedPublicSupply] = useState(0);
 
-  const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
-    if (contract) {
-      return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
-    }
-  }, []);
-
-  // Run getRemainingSupply once on mount and then update the remaining supply.
-  useEffect(() => {
-    async function effect() {
-      const supplies = await updateSupplies(contract, tokenId);
-      const sup = web3.utils.hexToNumber(supplies?.[0]);
-      const used = web3.utils.hexToNumber(supplies?.[1]);
-      setPublicSupply(sup);
-      setUsedPublicSupply(used);
-    }
-
-    effect();
-    return () => {
-      // cleanup
-    };
-  }, [contract, tokenId, updateSupplies, publicSupply, usedPublicSupply]);
-
-  // const FIGMA_URL = 'https://www.figma.com/file/Opg7LD36QqoVb2JyOa4Kwi/Poster-Page?node-id=0%3A1';
-  // const BRAND_POST_URL = 'https://gallery.mirror.xyz/1jgwdWHqYF1dUQ0YoYf-hEpd-OgJ79dZ5L00ArBQzac';
-
-  //   const { timestamp } = useTimer(MINT_DATE);
-  // const { account: rawAccount } = useWeb3React<Web3Provider>();
-  // const account = rawAccount?.toLowerCase();
-  //   const [isMinted, setIsMinted] = useState(false);
-
-  // const handleBackClick = () => {
-  //   window.history.back();
-  // };
-
-  //   async function detectOwnedPosterNftFromOpensea(account: string) {
-  //     const response = await fetch(
-  //       `${OPENSEA_TESTNET_BASEURL}/api/v1/assets?owner=${account}&asset_contract_addresses=${GALLERY_MEMORABILIA_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
-  //       {}
-  //     );
-
-  //     const responseBody = await response.json();
-  //     return responseBody.assets.length > 0;
-  //   }
-
-  // useEffect(() => {
-  //   async function checkIfMinted(account: string) {
-  //     const hasOwnedPosterNft = false; // await detectOwnedPosterNftFromOpensea(account);
-  //     setIsMinted(hasOwnedPosterNft);
-  //   }
-
-  //   if (account) {
-  //     checkIfMinted(account);
-  //   }
-  // }, [account]);
+  const { publicSupply, usedPublicSupply, tokenPrice } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
 
   return (
     <StyledPage>
@@ -104,17 +50,16 @@ export default function ItemPage({
           <BaseM>{description}</BaseM>
           <Spacer height={8} />
           <StyledPriceAndQuantity>
-            <BaseM>{price} Ξ each</BaseM>
+            <BaseM>{tokenPrice} Ξ each</BaseM>
             <BaseM>
               {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
-                ? `${publicSupply - usedPublicSupply}/${publicSupply} left`
+                ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
                 : ''}
             </BaseM>
           </StyledPriceAndQuantity>
           <Spacer height={8} />
           <PurchaseBox
             label={label}
-            price={price}
             tokenId={tokenId}
             // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
             disabled={publicSupply - usedPublicSupply == 0}
@@ -158,7 +103,7 @@ const StyledPage = styled.div`
   @media (max-width: ${contentSize.desktop}px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    padding: 0px 16px;
+    padding: 16px;
   }
 `;
 
