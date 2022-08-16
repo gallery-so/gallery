@@ -121,7 +121,7 @@ export default function useMintContractWithQuantity({
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number, quantity: number) => {
-      // FIXME: Need allowlist in own file
+      // FIXME: @Robin Need allowlist in own file
       const allowlist = [
         '0x90d93d25db5c0be4ca49c6bd54d0ba91bde5573a',
         '0x6c96da184a426d381e2fcc3bf22f50dd079340c0',

@@ -118,8 +118,6 @@ export function InteractiveLinkNeedsVerification({
         needsVerification: true,
       });
 
-      // FIXME: This conflicts with viewing the NFT preview page, because that is a modal.
-      // So running `showModal` will close that preview modal, and then open the verify navigation modal.
       showModal({
         content: <NavigateConfirmation href={href} />,
         isFullPage: false,
