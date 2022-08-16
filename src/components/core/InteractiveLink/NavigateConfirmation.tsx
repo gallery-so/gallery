@@ -17,7 +17,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
       </TextContainer>
       <Spacer height={16} />
       <ButtonContainer>
-        <StyledCancelButton onClick={hideModal}>Cancel</StyledCancelButton>
+        <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <Button
           onClick={() => {
             window.open(href);

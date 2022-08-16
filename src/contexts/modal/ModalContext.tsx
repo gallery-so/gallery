@@ -43,16 +43,14 @@ type ShowModalFnProps = {
   onClose?: () => void;
 };
 
-type HideModalFnProps =
-  | {
-      id?: string;
-      bypassOnClose?: boolean;
-    }
-  | undefined;
+type HideModalFnProps = {
+  id?: string;
+  bypassOnClose?: boolean;
+};
 
 type ModalActions = {
   showModal: (s: ShowModalFnProps) => void;
-  hideModal: (h: HideModalFnProps) => void;
+  hideModal: (h?: HideModalFnProps) => void;
 };
 
 const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
