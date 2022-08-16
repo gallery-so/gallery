@@ -78,13 +78,16 @@ export default function PurchaseBox({
           </StyledCheckoutTitle>
           <StyledCheckoutDescription>
             {isReceiptState
-              ? `You will be able to redeem the physical shirts in Fall 2023.`
+              ? `You will be able to redeem the physical ${label.toLowerCase()} in Fall 2023.`
               : `You are buying the NFT. Indicate the quantity you’d like to purchase, and you will be
-            able to redeem the physical shirts in Fall 2023.`}
+            able to redeem the physical ${label.toLowerCase()}s in Fall 2023.`}
           </StyledCheckoutDescription>
-          <StyledCheckoutDescription>
-            Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
-          </StyledCheckoutDescription>
+          {label === 'Shirt' && (
+            <StyledCheckoutDescription>
+              Disclaimer: We cannot guarantee your size, as there is a limited quantity of each
+              size.
+            </StyledCheckoutDescription>
+          )}
           <StyledFlexContainer>
             <StyledBaseM>{isReceiptState ? 'Quantity bought' : 'Quantity'}</StyledBaseM>
             <StyledQuantityCounter>
