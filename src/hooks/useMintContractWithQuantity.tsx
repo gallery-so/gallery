@@ -106,8 +106,6 @@ export default function useMintContractWithQuantity({
     return merkleTree.getHexProof(address);
   }
 
-  const isAllowlistPeriod = true; // FIXME: to get from contract
-
   const totalPrice = useCallback(
     async (contract: any, tokenId: number) => {
       if (!quantity) return;
@@ -134,7 +132,7 @@ export default function useMintContractWithQuantity({
       const weiPrice = price ? web3.utils.toWei(price.toString(), 'ether') : 0; // FIXME ? Otherwise price could be undefined, tsx error
 
       if (contract && address) {
-        const merkleProof = isAllowlistPeriod
+        const merkleProof = (await contract.isAllowlistOnly(tokenId))
           ? generateMerkleProof(address, Array.from(allowlist))
           : [];
         return contract.mint(address, tokenId, quantity, merkleProof, {
@@ -142,7 +140,7 @@ export default function useMintContractWithQuantity({
         });
       }
     },
-    [address, isAllowlistPeriod, totalPrice]
+    [address, totalPrice]
   );
 
   const handleMintButtonClick = useCallback(async () => {
