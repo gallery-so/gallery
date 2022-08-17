@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
+import { VALID_URL } from 'utils/regex';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -57,6 +58,18 @@ export default function CommunityPageView({ communityRef }: Props) {
     }
   }, [descriptionRef]);
 
+  function formatUrl(str: string) {
+    let matchesUrls = str.match(VALID_URL);
+    let formattedText = str;
+    matchesUrls?.map((url: string) => {
+      formattedText = formattedText.replace(url, `[${url}](${url})`);
+    });
+
+    return formattedText;
+  }
+
+  const formattedDescription = formatUrl(description || '');
+
   return (
     <MemberListPageProvider>
       <Spacer height={80} />
@@ -66,7 +79,7 @@ export default function CommunityPageView({ communityRef }: Props) {
           <StyledDescriptionWrapper>
             <Spacer height={4} />
             <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-              <Markdown text={description} />
+              <Markdown text={formattedDescription} />
             </StyledBaseM>
             <Spacer height={8} />
             {isLineClampEnabled && (
