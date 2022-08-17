@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { BaseS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -11,17 +11,15 @@ import {
   GALLERY_TWITTER,
   GALLERY_BLOG,
 } from 'constants/urls';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
 
-type GlobalFooterProps = { isFixed?: boolean };
-
-function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
-  const isMobile = useIsMobileWindowWidth();
+function GlobalFooter() {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <StyledGlobalFooter isFixed={isFixed} isMobile={isMobile}>
+    <StyledGlobalFooter isMobile={isMobile}>
       {isMobile && <StyledHr />}
       <MainContent>
         <LogoWrapper>
@@ -62,7 +60,6 @@ function GlobalFooter({ isFixed = false }: GlobalFooterProps) {
 }
 
 type StyledFooterProps = {
-  isFixed: boolean;
   isMobile: boolean;
 };
 
@@ -79,26 +76,6 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   padding: 0 ${pageGutter.mobile}px 24px;
 
   background-color: ${colors.white};
-
-  // TODO: all of this can go away with new layout + NFT Detail Modal update
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px 24px;
-
-    ${({ isFixed }) =>
-      isFixed &&
-      css`
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-
-        background: ${colors.white};
-        background: linear-gradient(
-          to bottom,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 1) 50%
-        );
-      `}
-  }
 
   @media only screen and ${breakpoints.desktop} {
     padding: 0 32px 24px;
