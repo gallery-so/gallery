@@ -4,6 +4,9 @@ generates:
   ./src/__generated__/operations.ts:
     config:
       avoidOptionals: true
+      autoSelectId: true
     plugins:
       - typescript
-      - typescript-operations
+      - "@gallery-so/typescript-operations"
+      - add:
+            content: '// @ts-nocheck'
