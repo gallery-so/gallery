@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
+import noop from 'utils/noop';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -38,7 +39,13 @@ function NftDetailAudio({ tokenRef, onError, onLoad }: Props) {
 
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={token.media?.previewURLs.large} alt={token.name ?? ''} />
+      {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
+      <ImageWithLoading
+        onLoad={noop}
+        onError={noop}
+        src={token.media?.previewURLs.large}
+        alt={token.name ?? ''}
+      />
       <StyledAudio
         controls
         loop
