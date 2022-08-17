@@ -7,9 +7,11 @@ import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
+  onLoad: () => void;
+  onError: () => void;
 };
 
-function NftDetailAudio({ tokenRef }: Props) {
+function NftDetailAudio({ tokenRef, onError, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAudioFragment on Token {
@@ -42,6 +44,8 @@ function NftDetailAudio({ tokenRef }: Props) {
         loop
         controlsList="nodownload"
         preload="none"
+        onLoad={onLoad}
+        onError={onError}
         src={token.media.contentRenderURL}
       />
       {isDesktop && <Spacer height={40} />}

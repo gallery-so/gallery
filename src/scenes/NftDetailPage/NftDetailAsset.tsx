@@ -4,22 +4,24 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import { useBreakpoint } from 'hooks/useWindowSize';
-import { useContentState } from 'contexts/shimmer/ShimmerContext';
+import { useContentState, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
+  onLoad: () => void;
+  onError: () => void;
 };
 
-function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef, onLoad, onError }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -59,14 +61,16 @@ function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
 
   switch (token.token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation mediaRef={token.token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token.token} />;
     case 'VideoMedia':
-      return <NftDetailVideo mediaRef={token.token.media} />;
+      return <NftDetailVideo onLoad={onLoad} onError={onError} mediaRef={token.token.media} />;
     case 'AudioMedia':
-      return <NftDetailAudio tokenRef={token.token} />;
+      return <NftDetailAudio onLoad={onLoad} onError={onError} tokenRef={token.token} />;
     case 'ImageMedia':
       return (
         <NftDetailImage
+          onLoad={onLoad}
+          onError={onError}
           tokenRef={token.token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
@@ -74,9 +78,9 @@ function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel mediaRef={token.token.media} />;
+      return <NftDetailModel onLoad={onLoad} onError={onError} mediaRef={token.token.media} />;
     default:
-      return <NftDetailAnimation mediaRef={token.token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token.token} />;
   }
 }
 
@@ -84,6 +88,12 @@ type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
 };
+
+type FailureState =
+  | {
+      type: 'retries-exhausted';
+    }
+  | { type: 'timeout'; retry: number };
 
 function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const token = useFragment(
@@ -108,21 +118,67 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     tokenRef
   );
 
-  const contractAddress = token.token.contract?.contractAddress?.address ?? '';
-
-  const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(contractAddress),
-    [contractAddress]
-  );
-
-  const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
+  const { aspectRatioType } = useContentState();
+
+  const contractAddress = token.token.contract?.contractAddress?.address ?? '';
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = token.token.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
+
+  const setContentIsLoaded = useSetContentIsLoaded();
+  const [failure, setFailure] = useState<FailureState | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
+
+  const handleLoad = useCallback(() => {
+    setContentIsLoaded();
+
+    // If we "successfully" loaded, we never
+    // want to show the failure state
+    setFailure(null);
+  }, [setContentIsLoaded]);
+
+  const handleError = useCallback(() => {
+    if (retryKey >= 3) {
+      // Give up and show the failure state
+      setContentIsLoaded();
+      setFailure({ type: 'retries-exhausted' });
+    } else {
+      // Queue a retry in a second
+      setTimeout(() => {
+        setRetryKey((previous) => previous + 1);
+      }, 1000);
+    }
+  }, [retryKey, setContentIsLoaded]);
+
+  useEffect(
+    function startLoadTimeout() {
+      const timeoutId = setTimeout(() => {
+        setFailure((existingFailure) => {
+          // If we already failed from something else
+          // we don't want to override that failure with a timeout failure
+          if (existingFailure) {
+            return existingFailure;
+          }
+
+          // Including the retry key is important here so we
+          // can include it as a dependency in the useEffect.
+          // This way, every time we retry, we reset the timeout
+          // so the current retry has adequate time to load
+          return { type: 'timeout', retry: retryKey };
+        });
+      }, 3000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    },
+    [retryKey]
+  );
 
   return (
     <StyledAssetContainer
@@ -131,7 +187,12 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} />
+      <NftDetailAssetComponent
+        key={retryKey}
+        onError={handleError}
+        onLoad={handleLoad}
+        tokenRef={token}
+      />
     </StyledAssetContainer>
   );
 }

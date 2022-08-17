@@ -1,4 +1,3 @@
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -6,6 +5,8 @@ import { NftDetailModelFragment$key } from '__generated__/NftDetailModelFragment
 
 type Props = {
   mediaRef: NftDetailModelFragment$key;
+  onError: () => void;
+  onLoad: () => void;
 };
 
 // TODO: Clean this up once fixed
@@ -26,7 +27,7 @@ interface ModelViewerJSX {
   class: string;
 }
 
-function NftDetailModel({ mediaRef }: Props) {
+function NftDetailModel({ mediaRef, onLoad, onError }: Props) {
   const { contentRenderURL } = useFragment(
     graphql`
       fragment NftDetailModelFragment on GltfMedia {
@@ -36,20 +37,25 @@ function NftDetailModel({ mediaRef }: Props) {
     mediaRef
   );
 
-  const setContentIsLoaded = useSetContentIsLoaded();
-  useEffect(setContentIsLoaded, [setContentIsLoaded]);
+  // We consider models to be loaded when the component mounts
+  useEffect(onLoad, [onLoad]);
 
   return (
     <StyledNftDetailModel>
-      <model-viewer class="model-viewer" auto-rotate camera-controls src={contentRenderURL} />
+      <model-viewer
+        onError={onError}
+        class="model-viewer"
+        auto-rotate
+        camera-controls
+        src={contentRenderURL}
+      />
     </StyledNftDetailModel>
   );
 }
 
 // stop-gap as the backend doesn't always categorize GltfMedia
-export function RawNftDetailModel({ url }: { url: string }) {
-  const setContentIsLoaded = useSetContentIsLoaded();
-  useEffect(setContentIsLoaded, [setContentIsLoaded]);
+export function RawNftDetailModel({ url, onLoad }: { url: string; onLoad: () => void }) {
+  useEffect(onLoad, [onLoad]);
 
   return (
     <StyledNftDetailModel>

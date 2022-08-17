@@ -1,4 +1,3 @@
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -9,9 +8,10 @@ import processIFrameRenderUrl from './processIFrameRenderUrl';
 
 type Props = {
   mediaRef: NftDetailAnimationFragment$key;
+  onLoad: () => void;
 };
 
-function NftDetailAnimation({ mediaRef }: Props) {
+function NftDetailAnimation({ mediaRef, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAnimationFragment on Token {
@@ -30,8 +30,6 @@ function NftDetailAnimation({ mediaRef }: Props) {
     mediaRef
   );
 
-  const setContentIsLoaded = useSetContentIsLoaded();
-
   const contentRenderURL = useMemo(() => {
     if (token.media.__typename === 'HtmlMedia' || token.media.__typename === 'UnknownMedia') {
       return token.media.contentRenderURL;
@@ -41,14 +39,14 @@ function NftDetailAnimation({ mediaRef }: Props) {
   }, [token.media]);
 
   if (contentRenderURL.endsWith('.glb')) {
-    return <RawNftDetailModel url={contentRenderURL} />;
+    return <RawNftDetailModel onLoad={onLoad} url={contentRenderURL} />;
   }
 
   return (
     <StyledNftDetailAnimation>
       <StyledIframe
         src={processIFrameRenderUrl(contentRenderURL)}
-        onLoad={setContentIsLoaded}
+        onLoad={onLoad}
         // Lets the resource run scripts (but not create popup windows): https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
         // More specifically, this prevents the rendered iframe from displaying Alerts
         sandbox="allow-scripts"

@@ -7,15 +7,16 @@ import { useBreakpoint } from 'hooks/useWindowSize';
 import { NftDetailImageFragment$key } from '__generated__/NftDetailImageFragment.graphql';
 import { useMemo } from 'react';
 import { StyledVideo } from './NftDetailVideo';
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import noop from 'utils/noop';
 
 type Props = {
   tokenRef: NftDetailImageFragment$key;
   onClick?: () => void;
+  onError: () => void;
+  onLoad: () => void;
 };
 
-function NftDetailImage({ tokenRef, onClick = noop }: Props) {
+function NftDetailImage({ tokenRef, onClick = noop, onLoad, onError }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailImageFragment on Token {
@@ -45,17 +46,17 @@ function NftDetailImage({ tokenRef, onClick = noop }: Props) {
   // TODO: this is a hack to handle videos that are returned by OS as images.
   // i.e., assets that do not have animation_urls, and whose image_urls all contain
   // links to videos. we should be able to remove this hack once we're off of OS.
-  const setContentIsLoaded = useSetContentIsLoaded();
   if (url.endsWith('.mp4') || url.endsWith('.webm')) {
     return (
       <StyledVideo
+        onLoadedData={onLoad}
+        onError={onError}
         src={url}
         muted
         autoPlay
         loop
         playsInline
         controls
-        onLoadedData={setContentIsLoaded}
       />
     );
   }
@@ -66,6 +67,8 @@ function NftDetailImage({ tokenRef, onClick = noop }: Props) {
       alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
       onClick={onClick}
+      onLoad={onLoad}
+      onError={onError}
     />
   );
 }
