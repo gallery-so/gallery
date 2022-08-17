@@ -15,7 +15,7 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
-import { useContentState } from 'contexts/shimmer/ShimmerContext';
+import { useContentState, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -106,6 +106,15 @@ function NftPreview({
   const shouldLiverender = tokenSettings?.renderLive;
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
+  const setContentIsLoaded = useSetContentIsLoaded();
+  const handleLoad = useCallback(() => {
+    setContentIsLoaded();
+  }, [setContentIsLoaded]);
+
+  const handleError = useCallback(() => {
+    setContentIsLoaded();
+  }, [setContentIsLoaded]);
+
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
       return (
@@ -117,10 +126,17 @@ function NftPreview({
       );
     }
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo mediaRef={token.media} hideControls />;
+      return (
+        <NftDetailVideo
+          onLoad={handleLoad}
+          onError={handleError}
+          mediaRef={token.media}
+          hideControls
+        />
+      );
     }
     if (isIFrameLiveDisplay) {
-      return <NftDetailAnimation mediaRef={token} />;
+      return <NftDetailAnimation onLoad={handleLoad} mediaRef={token} />;
     }
     return (
       <NftPreviewAsset
