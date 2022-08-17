@@ -12,7 +12,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
-import { VALID_URL } from 'utils/regex';
+import formatUrl from 'utils/formatUrl';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -57,16 +57,6 @@ export default function CommunityPageView({ communityRef }: Props) {
       );
     }
   }, [descriptionRef]);
-
-  function formatUrl(str: string) {
-    let matchesUrls = str.match(VALID_URL);
-    let formattedText = str;
-    matchesUrls?.map((url: string) => {
-      formattedText = formattedText.replace(url, `[${url}](${url})`);
-    });
-
-    return formattedText;
-  }
 
   const formattedDescription = formatUrl(description || '');
 
