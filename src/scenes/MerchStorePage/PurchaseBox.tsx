@@ -15,6 +15,7 @@ import { MAX_NFTS_PER_WALLET } from './constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
+import transitions from 'components/core/transitions';
 
 export default function PurchaseBox({
   label,
@@ -259,7 +260,7 @@ const StyledCheckoutBox = styled.div<{
   padding: 16px;
   opacity: 0;
   border: 1px solid ${colors.porcelain};
-  transition: max-height 400ms ease 0ms, transform 400ms ease 0ms, opacity 400ms ease 200ms;
+  transition: ${transitions.cubic};
 
   ${({ showBox }) =>
     showBox &&
@@ -270,7 +271,7 @@ const StyledCheckoutBox = styled.div<{
   pointer-events: ${({ isReceiptState }) => (isReceiptState ? 'none' : 'all')};
 
   @media screen and (max-width: 768px) {
-    transition: max-height 400ms ease 0ms;
+    transition: max-height ${transitions.cubic};
     height: auto;
     position: fixed;
     bottom: 0;
@@ -369,7 +370,7 @@ const UserOwnsContainer = styled.div<{ inReceipt: boolean }>`
   height: 100%;
   padding: 16px;
   border: 1px solid ${colors.porcelain};
-  transition: opacity 300ms ease;
+  transition: opacity ${transitions.cubic};
   z-index: 1;
 
   @media screen and (max-width: 768px) {
@@ -403,7 +404,7 @@ const StyledPageOverlay = styled.div<{ show: boolean }>`
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   z-index: 2;
-  transition: opacity 300ms ease;
+  transition: opacity ${transitions.cubic};
   opacity: ${({ show }) => (show ? 1 : 0)};
   pointer-events: ${({ show }) => (show ? 'all' : 'none')};
 `;
