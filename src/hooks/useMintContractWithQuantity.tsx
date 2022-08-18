@@ -42,6 +42,11 @@ export default function useMintContractWithQuantity({
   const [soldOut, setSoldOut] = useState(false);
   const [tokenPrice, setTokenPrice] = useState(BigNumber.from(0));
 
+  // Show first 3 and last 3 characters of address
+  const truncate = (address: string) => {
+    return `${address.slice(0, 4)}...${address.slice(-2)}`;
+  };
+
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
     if (contract) {
       return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
@@ -160,7 +165,9 @@ export default function useMintContractWithQuantity({
           error?.message === 'Element does not exist in Merkle tree'
         ) {
           setError(
-            `Your address is not on the allowlist. Please check back when public mint is live.`
+            `Your address ${
+              address ? truncate(address) : ''
+            } is not on the allowlist. Please refer to our <a href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule" target="_blank" rel="noopener noreferrer">mint schedule.</a>`
           );
         } else {
           setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
@@ -196,7 +203,17 @@ export default function useMintContractWithQuantity({
         }
       }
     }
-  }, [active, contract, error, mintToken, onMintSuccess, tokenId, quantity, updateSupplies]);
+  }, [
+    active,
+    contract,
+    error,
+    mintToken,
+    onMintSuccess,
+    tokenId,
+    quantity,
+    updateSupplies,
+    address,
+  ]);
 
   const connectEthereum = useConnectEthereum();
 
