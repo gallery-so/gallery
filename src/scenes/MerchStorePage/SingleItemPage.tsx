@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BaseM, TitleM } from 'components/core/Text/Text';
-import { contentSize, pageGutter } from 'components/core/breakpoints';
+import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
 // import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
 // import ItemImage from './ItemImage';
 // import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
@@ -16,6 +16,8 @@ import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { ethers } from 'ethers';
 
 export default function ItemPage({
   label,
@@ -32,13 +34,16 @@ export default function ItemPage({
 }) {
   const contract = useMintMerchContract();
 
-  const { publicSupply, usedPublicSupply, tokenPrice } = useMintContractWithQuantity({
-    contract,
-    tokenId,
-  });
+  const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
+    useMintContractWithQuantity({
+      contract,
+      tokenId,
+    });
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <StyledPage>
+    <StyledPage pushItemsDown={isMobile && userOwnedSupply > 0}>
       <StyledWrapper>
         <StyledImageContainer>
           <FlippingImage src={image} />
@@ -48,47 +53,31 @@ export default function ItemPage({
             {title} {label}
           </TitleM>
           <BaseM>{description}</BaseM>
-          <Spacer height={8} />
-          <StyledPriceAndQuantity>
-            <BaseM>{tokenPrice} Ξ each</BaseM>
-            <BaseM>
-              {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
-                ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
-                : ''}
-            </BaseM>
-          </StyledPriceAndQuantity>
-          <Spacer height={8} />
-          <PurchaseBox
-            label={label}
-            tokenId={tokenId}
-            // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
-            disabled={publicSupply - usedPublicSupply == 0}
-          />
-          {/* <StyledShippingText>Shipping available Fall 2023.</StyledShippingText> */}
-
-          {/* {isFeatureEnabled(FeatureFlag.POSTER_MINT) ? (
-            <>
-              {isMinted ? (
-                <BaseXL>You've succesfully minted this poster.</BaseXL>
-              ) : (
-                <StyledCallToAction>
-                  <BaseXL>{timestamp}</BaseXL>
-                  <PosterMintButton onMintSuccess={() => setIsMinted(true)}></PosterMintButton>
-                </StyledCallToAction>
-              )}
-            </>
-          ) : (
-            <StyledCallToAction hasEnded>
-              <BaseXL>Mint opening soon.</BaseXL>
-            </StyledCallToAction>
-          )} */}
+          {!isMobile && <Spacer height={8} />}
+          <StyledPriceQuantityAndPurchaseContainer>
+            <StyledPriceAndQuantity>
+              <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
+              <BaseM>
+                {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
+                  ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
+                  : ''}
+              </BaseM>
+            </StyledPriceAndQuantity>
+            {!isMobile && <Spacer height={16} />}
+            <PurchaseBox
+              label={label}
+              tokenId={tokenId}
+              // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
+              disabled={publicSupply - usedPublicSupply == 0}
+            />
+          </StyledPriceQuantityAndPurchaseContainer>
         </StyledContent>
       </StyledWrapper>
     </StyledPage>
   );
 }
 
-const StyledPage = styled.div`
+const StyledPage = styled.div<{ pushItemsDown: boolean }>`
   min-height: 100vh;
   padding: 20px 40px;
   display: flex;
@@ -100,10 +89,24 @@ const StyledPage = styled.div`
   margin: 0 auto;
   max-width: ${contentSize.desktop}px;
 
-  @media (max-width: ${contentSize.desktop}px) {
+  @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     padding: 16px;
+    position: relative;
+
+    ${({ pushItemsDown }) =>
+      pushItemsDown
+        ? 'padding-top: 15vh;'
+        : ''}// On small screens that also have a small height, we push to the very bottom - 86px (enough room for the bottom purchase bar)
+  }
+
+  @media only screen and (max-width: 768px) and (max-height: 550px) {
+    ${({ pushItemsDown }) =>
+      pushItemsDown &&
+      `justify-content: flex-end;
+      padding-bottom: 86px;
+      padding-top: 0;`}
   }
 `;
 
@@ -112,8 +115,9 @@ const StyledWrapper = styled.div`
   align-items: center;
   width: 100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 
-  @media (max-width: ${contentSize.desktop}px) {
+  @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 24px;
@@ -128,8 +132,9 @@ const StyledContent = styled.div`
   padding: 0 ${pageGutter.mobile}px;
   width: 360px;
   margin: 0 auto;
+  max-width: 90vw;
 
-  @media (max-width: ${contentSize.desktop}px) {
+  @media only screen and ${breakpoints.tablet} {
     margin: 0;
     padding: 0;
   }
@@ -139,16 +144,55 @@ const StyledPriceAndQuantity = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const StyledImageContainer = styled.div`
   width: auto;
-  // height: 100%;
-  height: 500px;
   position: relative;
   aspect-ratio: 1;
+
+  @media only screen and (max-width: 768px) {
+    width: 200px;
+    height: auto;
+  }
 `;
 
-// const StyledShippingText = styled(BaseM)`
-//   color: ${colors.metal};
-// `;
+const StyledPriceQuantityAndPurchaseContainer = styled.div`
+  position: relative;
+
+  @media only screen and (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e5e5e5;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+
+    /* (WHITE) */
+    background: #fefefe;
+
+    /* Porcelain */
+    border: 1px solid #e2e2e2;
+    z-index: 1;
+  }
+`;
+
+const StyledPrice = styled(BaseM)`
+  @media only screen and (max-width: 768px) {
+    font-weight: bold;
+  }
+`;

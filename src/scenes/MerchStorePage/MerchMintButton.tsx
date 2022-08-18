@@ -16,6 +16,7 @@ import { useAccount } from 'wagmi';
 // import { Web3Provider } from '@ethersproject/providers';
 import { useMintMerchContract } from 'hooks/useContract';
 import { MAX_NFTS_PER_WALLET } from './constants';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   onMintSuccess: () => void;
@@ -29,6 +30,8 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
   const { address: rawAddress } = useAccount();
   const address = rawAddress?.toLowerCase();
   const contract = useMintMerchContract();
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const { transactionHash, transactionStatus, buttonText, error, handleClick, userOwnedSupply } =
     useMintContractWithQuantity({
@@ -64,12 +67,14 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {(transactionHash || address || error) && <Spacer height={16} />}
+      {(transactionHash || address || error) && !isMobile && <Spacer height={16} />}
+
       {address && !transactionHash && (
         <>
           <StyledBaseMWithWrap>Connected address: {address}</StyledBaseMWithWrap>
         </>
       )}
+
       {transactionHash && (
         <>
           <BaseM>
@@ -89,7 +94,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       )}
       {error && (
         <>
-          <Spacer height={8} />
+          {!isMobile && <Spacer height={8} />}
           <ErrorText message={error} />
         </>
       )}
@@ -97,14 +102,39 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
   );
 }
 
+const StyledDesktopContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const StyledMobileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    justify-content: space-between;
+  }
+`;
+
 const StyledButton = styled(Button)`
   align-self: flex-end;
   width: 100%;
-  height: 100%;
   padding: 12px 24px;
   text-decoration: none;
+
+  @media (max-width: 768px) {
+    width: 176px;
+    flex: 1;
+  }
 `;
 
 const StyledBaseMWithWrap = styled(BaseM)`
   word-break: break-all;
+  width: 100%;
 `;
