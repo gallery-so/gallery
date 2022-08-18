@@ -210,13 +210,6 @@ export default function useMintContractWithQuantity({
 
   const connectEthereum = useConnectEthereum();
 
-  // disconnect on mount to start with blank slate
-  // FIXME: @Robin it looks like we can undo this? Is this still needed?
-  // const { disconnect } = useDisconnect();
-  // useEffect(() => {
-  //   disconnect();
-  // }, [disconnect]);
-
   const handleConnectWalletButtonClick = useCallback(async () => {
     try {
       const address = await connectEthereum();

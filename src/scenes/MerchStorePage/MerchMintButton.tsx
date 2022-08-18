@@ -1,6 +1,5 @@
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
-// import ErrorText from 'components/core/Text/ErrorText';
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import { useEffect, useMemo } from 'react';
@@ -9,12 +8,6 @@ import { TransactionStatus } from 'constants/transaction';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 import { Button } from 'components/core/Button/Button';
 import styled from 'styled-components';
-// import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
-// import { Contract } from '@ethersproject/contracts';
-// import { useAccount } from 'wagmi';
-// import { useActiveWeb3React } from 'hooks/useWeb3';
-// import { useWeb3React } from '@web3-react/core';
-// import { Web3Provider } from '@ethersproject/providers';
 import { useMintMerchContract } from 'hooks/useContract';
 import { MAX_NFTS_PER_WALLET } from './constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
@@ -87,7 +80,6 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       {error && (
         <>
           {!isMobile && <Spacer height={8} />}
-          {/* <ErrorText message={error} /> */}
           <BaseMError color={colors.error} dangerouslySetInnerHTML={{ __html: error }}></BaseMError>
         </>
       )}
