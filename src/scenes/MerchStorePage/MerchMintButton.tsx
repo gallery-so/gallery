@@ -102,26 +102,6 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
   );
 }
 
-const StyledDesktopContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  @media only screen and (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const StyledMobileContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
-    justify-content: space-between;
-  }
-`;
-
 const StyledButton = styled(Button)`
   align-self: flex-end;
   width: 100%;
