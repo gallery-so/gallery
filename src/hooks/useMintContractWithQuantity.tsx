@@ -126,19 +126,13 @@ export default function useMintContractWithQuantity({
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number, quantity: number) => {
-      // FIXME: @Robin Need allowlist in own file
       console.log({ premiumAndActiveDiscordMembers });
-      const allowlist = [
-        '0x90d93d25db5c0be4ca49c6bd54d0ba91bde5573a',
-        '0x6c96da184a426d381e2fcc3bf22f50dd079340c0',
-        '0xe3e5549daa5ea2c1d451f352c63b13cb3920366f',
-      ];
 
       const price = await totalPrice(contract);
 
       if (contract && address) {
         const merkleProof = (await contract.isAllowlistOnly(tokenId))
-          ? generateMerkleProof(address, Array.from(allowlist))
+          ? generateMerkleProof(address, Array.from(premiumAndActiveDiscordMembers))
           : [];
         return contract.mint(address, tokenId, quantity, merkleProof, {
           value: price,
