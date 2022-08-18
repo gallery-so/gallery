@@ -11,7 +11,7 @@ const items = [
     image: '/merch/shirt',
     title: '(Object 001)',
     description:
-      'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.',
+      'Black short sleeve cotton t- shirt with puff - print design on left chest and both puff - print and screen - print design on full back.\nThe first entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.05',
     tokenId: 0,
   },
@@ -19,7 +19,8 @@ const items = [
     label: 'Hat',
     image: '/merch/hat',
     title: '(Object 002)',
-    description: 'Gallery Dad Hat. 100% cotton. Made in China.',
+    description:
+      'Black hat with embroidered text design at center front and embroidered Gallery logo at center back.\nThe second entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.06',
     tokenId: 1,
   },
@@ -27,7 +28,8 @@ const items = [
     label: 'Card',
     image: '/merch/card',
     title: '(Object 003)',
-    description: 'Gallery Membership card. Metal.',
+    description:
+      'Metallic membership card laser etched with the Gallery logo on the front and text design on the back.\nThe third entry in the(OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.08',
     tokenId: 2,
   },

@@ -156,6 +156,7 @@ export default function useMintContractWithQuantity({
         console.log(error);
         // TODO: Can handle additional errors here if we want
         if (
+          error?.error?.message === 'execution reverted: Merch: minting is disabled' ||
           error?.error?.message === 'execution reverted: Merch: not allowlisted' ||
           error?.message === 'Element does not exist in Merkle tree'
         ) {

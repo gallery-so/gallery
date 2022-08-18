@@ -58,7 +58,9 @@ export default function ItemPage({
             <TitleM>
               {title} {label}
             </TitleM>
-            <BaseM>{description}</BaseM>
+            {description.split('\n').map((d, i) => (
+              <BaseM key={i}>{d}</BaseM>
+            ))}
             {!isMobile && <Spacer height={8} />}
             <StyledPriceQuantityAndPurchaseContainer>
               <StyledPriceAndQuantity>
