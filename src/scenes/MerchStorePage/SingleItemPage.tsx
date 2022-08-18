@@ -148,8 +148,10 @@ const StyledContent = styled.div`
 `;
 
 const StyledConnectedAddress = styled(BaseM)`
-  margin: 14px 60px 0px 0px;
+  position: absolute;
+  padding: 14px 52px 0px 0px;
   text-align: right;
+  width: 100%;
 `;
 
 const StyledPriceAndQuantity = styled.div`
