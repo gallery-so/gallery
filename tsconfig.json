@@ -24,10 +24,12 @@
       "constants/*": ["src/constants/*"],
       "contexts/*": ["src/contexts/*"],
       "errors/*": ["src/errors/*"],
+      "icons/*": ["src/icons/*"],
       "flows/*": ["src/flows/*"],
       "hooks/*": ["src/hooks/*"],
       "mocks/*": ["src/mocks/*"],
       "scenes/*": ["src/scenes/*"],
+      "snapshots/*": ["src/snapshots/*"],
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"],
       "generated/*": ["__generated__"]
