@@ -5,7 +5,7 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  SHOP_OPEN: false,
+  SHOP_OPEN: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
@@ -15,7 +15,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  SHOP_OPEN: false,
+  SHOP_OPEN: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(
