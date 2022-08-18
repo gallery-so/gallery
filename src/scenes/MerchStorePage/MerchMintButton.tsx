@@ -70,12 +70,6 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       </StyledButton>
       {(transactionHash || address || error) && !isMobile && <Spacer height={16} />}
 
-      {address && !transactionHash && (
-        <>
-          <StyledBaseMWithWrap>Connected address: {address}</StyledBaseMWithWrap>
-        </>
-      )}
-
       {transactionHash && (
         <>
           <BaseM>
