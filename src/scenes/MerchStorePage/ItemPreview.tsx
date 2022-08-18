@@ -77,7 +77,7 @@ const StyledItemPreview = styled.div`
   aspect-ratio: 1;
   min-width: 200px;
   width: 100%;
-  max-width: 460px;
+  max-width: 420px;
   cursor: pointer;
 
   display: flex;
@@ -105,7 +105,7 @@ const StyledImageContainer = styled.div<{ isCard?: boolean }>`
 
 const StyledBottomText = styled.div`
   position: absolute;
-  bottom: 12px;
+  bottom: 14px;
   left: 0;
   text-align: center;
   width: 100%;
