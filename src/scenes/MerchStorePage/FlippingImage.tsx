@@ -1,16 +1,16 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 export default function FlippingImage({
   src,
+  isFlipped,
   isInPreview = false,
 }: {
   src: string;
+  isFlipped: boolean;
   isInPreview?: boolean;
 }) {
-  const [isFlipped, setIsFlipped] = useState(false);
-
   useEffect(() => {
     // pre-load the back of the image to prevent initial stutter on hover
     const img = new window.Image();
@@ -21,12 +21,6 @@ export default function FlippingImage({
     <StyledContainer
       isFlippedCardInPreview={src === '/merch/card' && isFlipped && isInPreview}
       isCard={src === '/merch/card'}
-      onMouseOver={() => {
-        setIsFlipped(true);
-      }}
-      onMouseOut={() => {
-        setIsFlipped(false);
-      }}
     >
       <Image src={isFlipped ? `${src}-back.jpg` : `${src}-front.jpg`} layout="fill" />
     </StyledContainer>

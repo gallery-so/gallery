@@ -1,17 +1,7 @@
 import styled from 'styled-components';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
-// import { MINT_DATE, NFT_TOKEN_ID } from 'constants/poster';
-// import ItemImage from './ItemImage';
-// import { GALLERY_MEMORABILIA_CONTRACT_ADDRESS } from 'hooks/useContract';
-// import { useWeb3React } from '@web3-react/core';
-// import { Web3Provider } from '@ethersproject/providers';
-// import { useState, useCallback, useEffect } from 'react';
 import Spacer from 'components/core/Spacer/Spacer';
-// import { isFeatureEnabled } from 'utils/featureFlag';
-// import { FeatureFlag } from 'components/core/enums';
-// import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-// import Image from 'next/image';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
@@ -20,6 +10,8 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import { truncateAddress } from 'utils/wallet';
+import { useState } from 'react';
+import noop from 'utils/noop';
 
 export default function ItemPage({
   label,
@@ -46,13 +38,19 @@ export default function ItemPage({
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
     <>
       {rawAddress && <StyledConnectedAddress>{address}</StyledConnectedAddress>}
       <StyledPage pushItemsDown={isMobile && userOwnedSupply > 0}>
         <StyledWrapper>
-          <StyledImageContainer>
-            <FlippingImage src={image} />
+          <StyledImageContainer
+            // prevent flipping on mobile detail page as the dimensions look off
+            onMouseOver={tokenId === 2 ? noop : () => setIsFlipped(true)}
+            onMouseOut={tokenId === 2 ? noop : () => setIsFlipped(false)}
+          >
+            <FlippingImage isFlipped={isFlipped} src={image} />
           </StyledImageContainer>
           <StyledContent>
             <TitleM>
@@ -135,6 +133,8 @@ const StyledWrapper = styled.div`
   }
 `;
 const StyledContent = styled.div`
+  z-index: 1; // appear above flipping image
+
   display: flex;
   flex-direction: column;
   gap: 8px;

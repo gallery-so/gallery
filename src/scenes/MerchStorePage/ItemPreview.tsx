@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
 import { TitleMonoM, BaseM, BlueLabel } from 'components/core/Text/Text';
@@ -45,10 +45,16 @@ export default function ItemPreview({
     tokenId,
   });
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
-    <StyledItemPreview onClick={handleClick}>
+    <StyledItemPreview
+      onClick={handleClick}
+      onMouseOver={() => setIsFlipped(true)}
+      onMouseOut={() => setIsFlipped(false)}
+    >
       <StyledImageContainer>
-        <FlippingImage src={image} isInPreview />
+        <FlippingImage src={image} isInPreview isFlipped={isFlipped} />
       </StyledImageContainer>
       <StyledTopRightLabels>
         {typeof userOwnedSupply == 'number' && userOwnedSupply > 0 && (
