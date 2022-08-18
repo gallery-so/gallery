@@ -69,12 +69,6 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       </StyledButton>
       {(transactionHash || address || error) && !isMobile && <Spacer height={16} />}
 
-      {address && !transactionHash && (
-        <>
-          <StyledBaseMWithWrap>Connected address: {address}</StyledBaseMWithWrap>
-        </>
-      )}
-
       {transactionHash && (
         <>
           <BaseM>
@@ -112,9 +106,4 @@ const StyledButton = styled(Button)`
     width: 176px;
     flex: 1;
   }
-`;
-
-const StyledBaseMWithWrap = styled(BaseM)`
-  word-break: break-all;
-  width: 100%;
 `;
