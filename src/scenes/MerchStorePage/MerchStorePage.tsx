@@ -3,6 +3,7 @@ import breakpoints from 'components/core/breakpoints';
 import React from 'react';
 import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
+import Countdown from './Countdown';
 
 const items = [
   {
@@ -35,6 +36,7 @@ const items = [
 export default function MerchStorePage() {
   return (
     <StyledPage>
+      <Countdown />
       <StyledShopText>(OBJECTS)</StyledShopText>
       <StyledItemsContainer>
         {items.map((item) => (
