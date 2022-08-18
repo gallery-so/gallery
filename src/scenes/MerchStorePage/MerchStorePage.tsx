@@ -29,7 +29,7 @@ const items = [
     image: '/merch/card',
     title: '(Object 003)',
     description:
-      'Metallic membership card laser etched with the Gallery logo on the front and text design on the back.\nThe third entry in the(OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
+      'Metallic membership card laser etched with the Gallery logo on the front and text design on the back.\nThe third entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.08',
     tokenId: 2,
   },
