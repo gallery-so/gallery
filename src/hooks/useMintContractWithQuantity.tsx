@@ -9,6 +9,7 @@ import {
 import web3 from 'web3';
 import MerkleTree from 'utils/MerkleTree';
 import { MAX_NFTS_PER_WALLET } from 'scenes/MerchStorePage/constants';
+import { BigNumber } from 'ethers';
 
 type Props = {
   contract: Contract | null;
@@ -38,7 +39,7 @@ export default function useMintContractWithQuantity({
   const [usedPublicSupply, setUsedPublicSupply] = useState(0);
   const [userOwnedSupply, setUserOwnedSupply] = useState(0);
   const [soldOut, setSoldOut] = useState(false);
-  const [tokenPrice, setTokenPrice] = useState(0);
+  const [tokenPrice, setTokenPrice] = useState(BigNumber.from(0));
 
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
     if (contract) {
@@ -78,7 +79,7 @@ export default function useMintContractWithQuantity({
       setUserOwnedSupply(userOwned || 0);
 
       const price = await getTokenPrice(contract);
-      setTokenPrice(web3.utils.hexToNumber(price)); // setTokenPrice(0.15);
+      setTokenPrice(price);
 
       // console.log('Total supply: ', sup);
       // console.log('Used supply: ', used);
@@ -107,16 +108,14 @@ export default function useMintContractWithQuantity({
   }
 
   const totalPrice = useCallback(
-    async (contract: any, tokenId: number) => {
+    async (contract: any) => {
       if (!quantity) return;
       if (contract) {
-        const priceOfOne = await contract.getPrice(tokenId);
-        const price = web3.utils.hexToNumber(priceOfOne) * quantity;
-
+        const price = tokenPrice.mul(quantity);
         return price;
       }
     },
-    [quantity]
+    [quantity, tokenPrice]
   );
 
   const mintToken = useCallback(
@@ -128,15 +127,14 @@ export default function useMintContractWithQuantity({
         '0xe3e5549daa5ea2c1d451f352c63b13cb3920366f',
       ];
 
-      const price = await totalPrice(contract, tokenId);
-      const weiPrice = price ? web3.utils.toWei(price.toString(), 'ether') : 0; // FIXME ? Otherwise price could be undefined, tsx error
+      const price = await totalPrice(contract);
 
       if (contract && address) {
         const merkleProof = (await contract.isAllowlistOnly(tokenId))
           ? generateMerkleProof(address, Array.from(allowlist))
           : [];
         return contract.mint(address, tokenId, quantity, merkleProof, {
-          value: weiPrice,
+          value: price,
         });
       }
     },

@@ -12,6 +12,10 @@ import MerchMintButton from './MerchMintButton';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
 import { MAX_NFTS_PER_WALLET } from './constants';
+import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { ethers } from 'ethers';
+import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 
 export default function PurchaseBox({
   label,
@@ -25,6 +29,8 @@ export default function PurchaseBox({
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
   const [isReceiptState, setIsReceiptState] = useState(false);
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const contract = useMintMerchContract();
 
@@ -40,111 +46,179 @@ export default function PurchaseBox({
   const toggleShowBox = useCallback(() => {
     if (disabled) return;
     setShowBox(true);
+    // setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
   }, [disabled]);
 
   const handlePurchaseClick = useCallback(() => {
     setIsReceiptState(true);
   }, [setIsReceiptState]);
 
-  return (
-    <>
-      <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
-        Purchase
-      </ExpandPurchaseButton>
-      <StyledCheckoutAndReceiptContainer showBox={showBox}>
-        {userOwnedSupply > 0 && (
-          <>
-            <ReceiptContainer>
-              <StyledFlexContainer>
-                <StyledBaseM>Quantity bought</StyledBaseM>
-                <StyledBaseM>{userOwnedSupply}</StyledBaseM>
-              </StyledFlexContainer>
-              <Spacer height={4} />
-              <HorizontalBreak />
-              <Spacer height={4} />
-              <StyledFlexContainer>
-                <StyledBaseM>Total paid</StyledBaseM>
-                <StyledPrice>{(userOwnedSupply * +tokenPrice).toFixed(2)} Ξ</StyledPrice>
-              </StyledFlexContainer>
-            </ReceiptContainer>
-            <Spacer height={8} />
-          </>
-        )}
-        <StyledCheckoutBox showBox={showBox} isReceiptState={isReceiptState}>
-          <StyledCheckoutTitle>
-            {isReceiptState
-              ? `You've bought ${quantity} ${quantity == 1 ? label : `${label}s`}.`
-              : `Check out NFT(s)`}
-          </StyledCheckoutTitle>
-          <StyledCheckoutDescription>
-            {isReceiptState
-              ? `You will be able to redeem the physical ${label.toLowerCase()} in Fall 2023.`
-              : `You are buying the NFT. Indicate the quantity you’d like to purchase, and you will be
-            able to redeem the physical ${label.toLowerCase()}s in Fall 2023.`}
-          </StyledCheckoutDescription>
-          {label === 'Shirt' && (
-            <StyledCheckoutDescription>
-              Disclaimer: We cannot guarantee your size, as there is a limited quantity of each
-              size.
-            </StyledCheckoutDescription>
-          )}
+  function UserOwnsBox({ inReceipt }: { inReceipt: boolean }) {
+    return (
+      <>
+        <UserOwnsContainer inReceipt={inReceipt}>
           <StyledFlexContainer>
-            <StyledBaseM>{isReceiptState ? 'Quantity bought' : 'Quantity'}</StyledBaseM>
-            <StyledQuantityCounter>
-              <StyledColumnButton
-                onClick={() => {
-                  setQuantity(quantity - 1);
-                }}
-                disabled={quantity <= 1 || isReceiptState || !active}
-              >
-                <CircleMinusIcon />
-              </StyledColumnButton>
-              <StyledQuantity>{quantity}</StyledQuantity>
-              <StyledColumnButton
-                onClick={() => {
-                  setQuantity(quantity + 1);
-                }}
-                disabled={quantity >= maxQuantity() || isReceiptState || !active}
-              >
-                <CirclePlusIcon />
-              </StyledColumnButton>
-            </StyledQuantityCounter>
+            <StyledBaseM>Quantity bought</StyledBaseM>
+            <StyledBaseM>{userOwnedSupply}</StyledBaseM>
           </StyledFlexContainer>
           <Spacer height={4} />
           <HorizontalBreak />
           <Spacer height={4} />
           <StyledFlexContainer>
-            <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
-            <StyledPrice>{(tokenPrice * quantity).toFixed(2)} Ξ</StyledPrice>
+            <StyledBaseM>Total paid</StyledBaseM>
+            <StyledPrice>
+              {(userOwnedSupply * +ethers.utils.formatEther(tokenPrice)).toFixed(2)} Ξ
+            </StyledPrice>
           </StyledFlexContainer>
-          {!isReceiptState && (
-            <>
-              <Spacer height={16} />
-              <MerchMintButton
-                onMintSuccess={handlePurchaseClick}
-                quantity={quantity}
-                tokenId={tokenId}
+        </UserOwnsContainer>
+        <Spacer height={8} />
+      </>
+    );
+  }
+
+  function MobileReceiptBox() {
+    return (
+      <StyledCheckoutBox showBox={showBox} isReceiptState={isReceiptState}>
+        {/* <StyledCloseIcon
+          onClick={() => {
+            setShowBox(false);
+            setIsReceiptState(false);
+          }}
+        /> */}
+        <StyledCheckoutTitle>
+          You've bought {quantity} {quantity == 1 ? label : `${label}s`}
+        </StyledCheckoutTitle>
+        <StyledCheckoutDescription>
+          You will be able to redeem the physical {label.toLowerCase()} in Fall 2023.
+        </StyledCheckoutDescription>
+        {label === 'Shirt' && (
+          <StyledCheckoutDescription>
+            Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
+          </StyledCheckoutDescription>
+        )}
+        <UserOwnsBox inReceipt={true} />
+      </StyledCheckoutBox>
+    );
+  }
+
+  return (
+    <>
+      {isMobile && isReceiptState && <MobileReceiptBox />}
+      {isMobile && !isReceiptState && userOwnedSupply > 0 && <UserOwnsBox inReceipt={false} />}
+
+      {isMobile && (showBox || isReceiptState) && (
+        <StyledTapOutToClose
+          onClick={() => {
+            setShowBox(false);
+            setIsReceiptState(false);
+          }}
+        />
+      )}
+
+      <StyledPurchaseBox>
+        {isMobile && (
+          <StyledPageOverlay onClick={() => setShowBox(false)} show={showBox && !isReceiptState} />
+        )}
+        <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
+          Purchase
+        </ExpandPurchaseButton>
+        <StyledCheckoutAndReceiptContainer showBox={showBox}>
+          {userOwnedSupply > 0 && !isMobile && <UserOwnsBox inReceipt={false} />}
+          {/* On mobile, we want to hide the below box UNLESS the user is checking out.
+          On desktop, we want to show no matter what, and dynamically render different text for the receipt/checkout state. */}
+          <StyledCheckoutBox
+            showBox={isMobile ? showBox && !isReceiptState : showBox}
+            isReceiptState={isReceiptState}
+          >
+            {isMobile && !isReceiptState && (
+              <StyledCloseIcon
+                onClick={() => {
+                  setShowBox(false);
+                  setIsReceiptState(false);
+                }}
               />
+            )}
+            <StyledCheckoutTitle>
+              {isReceiptState
+                ? `You've bought ${quantity} ${quantity == 1 ? label : `${label}s`}.`
+                : `Check out NFT(s)`}
+            </StyledCheckoutTitle>
+            <StyledCheckoutDescription>
+              {isReceiptState
+                ? `You will be able to redeem the physical ${label.toLowerCase()} in Fall 2023.`
+                : `You are buying the NFT. Indicate the quantity you’d like to purchase, and you will be
+            able to redeem the physical ${label.toLowerCase()}s in Fall 2023.`}
+            </StyledCheckoutDescription>
+            {label === 'Shirt' && (
+              <StyledCheckoutDescription>
+                Disclaimer: We cannot guarantee your size, as there is a limited quantity of each
+                size.
+              </StyledCheckoutDescription>
+            )}
+            <StyledFlexContainer>
+              <StyledBaseM>{isReceiptState ? 'Quantity bought' : 'Quantity'}</StyledBaseM>
+              <StyledQuantityCounter>
+                <StyledColumnButton
+                  onClick={() => {
+                    setQuantity(quantity - 1);
+                  }}
+                  disabled={quantity <= 1 || isReceiptState || !active}
+                >
+                  <CircleMinusIcon />
+                </StyledColumnButton>
+                <StyledQuantity>{quantity}</StyledQuantity>
+                <StyledColumnButton
+                  onClick={() => {
+                    setQuantity(quantity + 1);
+                  }}
+                  disabled={quantity >= maxQuantity() || isReceiptState || !active}
+                >
+                  <CirclePlusIcon />
+                </StyledColumnButton>
+              </StyledQuantityCounter>
+            </StyledFlexContainer>
+            <Spacer height={4} />
+            <HorizontalBreak />
+            <Spacer height={4} />
+            <StyledPayAndPurchaseContainer>
+              <StyledFlexContainerColumnOnMobile>
+                <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
+                <StyledPrice>
+                  {(+ethers.utils.formatEther(tokenPrice) * quantity).toFixed(2)} Ξ
+                </StyledPrice>
+              </StyledFlexContainerColumnOnMobile>
+              {!isReceiptState && (
+                <>
+                  <Spacer height={16} />
+                  <MerchMintButton
+                    onMintSuccess={handlePurchaseClick}
+                    quantity={quantity}
+                    tokenId={tokenId}
+                  />
+                </>
+              )}
+            </StyledPayAndPurchaseContainer>
+          </StyledCheckoutBox>
+
+          {isReceiptState && (
+            <>
+              <Spacer height={12} />
+              <StyledPurchaseMoreButton
+                onClick={() => {
+                  setIsReceiptState(false);
+                }}
+              >
+                Purchase More
+              </StyledPurchaseMoreButton>
             </>
           )}
-        </StyledCheckoutBox>
-
-        {isReceiptState && (
-          <>
-            <Spacer height={12} />
-            <StyledPurchaseMoreButton
-              onClick={() => {
-                setIsReceiptState(false);
-              }}
-            >
-              Purchase More
-            </StyledPurchaseMoreButton>
-          </>
-        )}
-      </StyledCheckoutAndReceiptContainer>
+        </StyledCheckoutAndReceiptContainer>
+      </StyledPurchaseBox>
     </>
   );
 }
+
+const StyledPurchaseBox = styled.div``;
 
 const ExpandPurchaseButton = styled(Button)<{ show?: boolean; disabled?: boolean }>`
   align-self: flex-end;
@@ -158,11 +232,16 @@ const ExpandPurchaseButton = styled(Button)<{ show?: boolean; disabled?: boolean
   transition: opacity 0ms ease-in-out;
   margin-bottom: 6px;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
+  @media only screen and (max-width: 768px) {
+    width: 176px;
+    margin-bottom: 0;
+  }
 `;
 
 const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
-  margin-top: ${({ showBox }) => (showBox ? '-54px' : '0')};
+  margin-top: ${({ showBox }) => (showBox ? '-38px' : '0')};
   user-select: none;
 `;
 
@@ -190,6 +269,46 @@ const StyledCheckoutBox = styled.div<{
   `}
 
   pointer-events: ${({ isReceiptState }) => (isReceiptState ? 'none' : 'all')};
+
+  @media screen and (max-width: 768px) {
+    transition: max-height 400ms ease 0ms;
+    height: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background: white;
+    pointer-events: none;
+
+    ${({ showBox }) =>
+      showBox &&
+      `
+      max-height: 1000px;
+      pointer-events: all;
+    `}
+
+    // This shows the receipt text and box on mobile above the actual asset
+    ${({ isReceiptState }) =>
+      isReceiptState &&
+      `position: fixed;
+       top: 16px;
+       height: auto;
+       bottom: unset;
+       left: 50%;
+       transform: translateX(-50%);
+       width: min(340px, 90vw);
+       background: rgba(255,255,255,.5);
+       backdrop-filter: blur(4px);
+      `}
+`;
+
+const StyledCloseIcon = styled(DecoratedCloseIcon)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8px;
+  background: white;
+  display: block;
 `;
 
 const StyledCheckoutTitle = styled(TitleDiatypeL)`
@@ -244,7 +363,7 @@ const StyledPurchaseMoreButton = styled(Button)`
   width: 100%;
 `;
 
-const ReceiptContainer = styled.div`
+const UserOwnsContainer = styled.div<{ inReceipt: boolean }>`
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -252,4 +371,73 @@ const ReceiptContainer = styled.div`
   padding: 16px;
   border: 1px solid ${colors.porcelain};
   transition: opacity 300ms ease;
+  z-index: 1;
+
+  @media screen and (max-width: 768px) {
+    position: fixed;
+    bottom: unset;
+    top: 10vh; // FIXME
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(340px, 90vw);
+    height: auto;
+    backdrop-filter: blur(3px);
+
+    ${({ inReceipt }) =>
+      inReceipt &&
+      `position: relative;
+      transform: none;
+      width: auto;
+      height: auto;
+      top: unset;
+      left: unset;
+      margin: 0 -16px -24px;
+      border: none;
+  `}
+`;
+
+const StyledPageOverlay = styled.div<{ show: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  transition: opacity 300ms ease;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  pointer-events: ${({ show }) => (show ? 'all' : 'none')};
+`;
+
+const StyledPayAndPurchaseContainer = styled.div`
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+`;
+
+const StyledFlexContainerColumnOnMobile = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  place-items: center;
+
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    flex: 1;
+    align-items: flex-start;
+  }
+`;
+
+const StyledTapOutToClose = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
 `;
