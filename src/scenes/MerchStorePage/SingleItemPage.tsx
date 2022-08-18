@@ -18,6 +18,8 @@ import { useMintMerchContract } from 'hooks/useContract';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
+import { useAccount } from 'wagmi';
+import { truncateAddress } from 'utils/wallet';
 
 export default function ItemPage({
   label,
@@ -33,6 +35,8 @@ export default function ItemPage({
   tokenId: number;
 }) {
   const contract = useMintMerchContract();
+  const { address: rawAddress } = useAccount();
+  const address = truncateAddress(rawAddress?.toLowerCase() ?? '');
 
   const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
     useMintContractWithQuantity({
@@ -43,37 +47,40 @@ export default function ItemPage({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <StyledPage pushItemsDown={isMobile && userOwnedSupply > 0}>
-      <StyledWrapper>
-        <StyledImageContainer>
-          <FlippingImage src={image} />
-        </StyledImageContainer>
-        <StyledContent>
-          <TitleM>
-            {title} {label}
-          </TitleM>
-          <BaseM>{description}</BaseM>
-          {!isMobile && <Spacer height={8} />}
-          <StyledPriceQuantityAndPurchaseContainer>
-            <StyledPriceAndQuantity>
-              <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
-              <BaseM>
-                {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
-                  ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
-                  : ''}
-              </BaseM>
-            </StyledPriceAndQuantity>
-            {!isMobile && <Spacer height={16} />}
-            <PurchaseBox
-              label={label}
-              tokenId={tokenId}
-              // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
-              disabled={publicSupply - usedPublicSupply == 0}
-            />
-          </StyledPriceQuantityAndPurchaseContainer>
-        </StyledContent>
-      </StyledWrapper>
-    </StyledPage>
+    <>
+      <StyledConnectedAddress>{address}</StyledConnectedAddress>
+      <StyledPage pushItemsDown={isMobile && userOwnedSupply > 0}>
+        <StyledWrapper>
+          <StyledImageContainer>
+            <FlippingImage src={image} />
+          </StyledImageContainer>
+          <StyledContent>
+            <TitleM>
+              {title} {label}
+            </TitleM>
+            <BaseM>{description}</BaseM>
+            {!isMobile && <Spacer height={8} />}
+            <StyledPriceQuantityAndPurchaseContainer>
+              <StyledPriceAndQuantity>
+                <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
+                <BaseM>
+                  {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
+                    ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
+                    : ''}
+                </BaseM>
+              </StyledPriceAndQuantity>
+              {!isMobile && <Spacer height={16} />}
+              <PurchaseBox
+                label={label}
+                tokenId={tokenId}
+                // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
+                disabled={publicSupply - usedPublicSupply == 0}
+              />
+            </StyledPriceQuantityAndPurchaseContainer>
+          </StyledContent>
+        </StyledWrapper>
+      </StyledPage>
+    </>
   );
 }
 
@@ -138,6 +145,11 @@ const StyledContent = styled.div`
     margin: 0;
     padding: 0;
   }
+`;
+
+const StyledConnectedAddress = styled(BaseM)`
+  margin: 14px 60px 0px 0px;
+  text-align: right;
 `;
 
 const StyledPriceAndQuantity = styled.div`
