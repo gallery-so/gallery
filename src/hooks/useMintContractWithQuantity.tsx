@@ -9,6 +9,7 @@ import {
 import web3 from 'web3';
 import MerkleTree from 'utils/MerkleTree';
 import { MAX_NFTS_PER_WALLET } from 'scenes/MerchStorePage/constants';
+import premiumAndActiveDiscordMembers from 'snapshots/aug_2022_merch/premiumAndActiveDiscordMembers.json';
 
 type Props = {
   contract: Contract | null;
@@ -122,6 +123,7 @@ export default function useMintContractWithQuantity({
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number, quantity: number) => {
       // FIXME: @Robin Need allowlist in own file
+      console.log({ premiumAndActiveDiscordMembers });
       const allowlist = [
         '0x90d93d25db5c0be4ca49c6bd54d0ba91bde5573a',
         '0x6c96da184a426d381e2fcc3bf22f50dd079340c0',
