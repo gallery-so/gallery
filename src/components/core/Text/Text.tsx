@@ -3,6 +3,7 @@ import colors from '../colors';
 
 const TITLE_FONT_FAMILY = "'GT Alpina', serif";
 export const BODY_FONT_FAMILY = "'ABC Diatype', Helvetica, Arial, sans-serif";
+export const BODY_MONO_FONT_FAMILY = "'ABC Diatype Mono', monospace";
 
 type TextProps = {
   color?: colors;
@@ -113,4 +114,34 @@ export const TitleDiatypeM = styled(H2)`
   font-size: 14px;
   line-height: 20px;
   letter-spacing: -0.01em;
+`;
+
+export const TitleMonoM = styled(Paragraph)`
+  font-family: ${BODY_MONO_FONT_FAMILY};
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+`;
+
+export const BlueLabel = styled(TitleXS)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+
+  display: flex;
+  align-items: center;
+  text-align: right;
+  text-transform: uppercase;
+
+  /* Blue / Active */
+  color: ${colors.activeBlue};
+
+  display: inline;
+  border: 1px solid ${colors.activeBlue};
+  border-radius: 2px;
+  padding: 0 2px;
 `;

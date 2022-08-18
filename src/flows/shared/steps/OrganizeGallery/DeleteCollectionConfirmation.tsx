@@ -42,7 +42,7 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
     <StyledConfirmation>
       <Spacer height={16} />
       <ButtonContainer>
-        <StyledCancelButton onClick={hideModal}>Cancel</StyledCancelButton>
+        <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
           Delete
         </StyledButton>
