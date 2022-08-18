@@ -89,7 +89,7 @@ export default function PurchaseBox({
           You've bought {quantity} {quantity == 1 ? label : `${label}s`}
         </StyledCheckoutTitle>
         <StyledCheckoutDescription>
-          You will be able to redeem the physical {label.toLowerCase()} in Fall 2023.
+          You will be able to redeem the physical {label.toLowerCase()} in Fall 2022.
         </StyledCheckoutDescription>
         {label === 'Shirt' && (
           <StyledCheckoutDescription>
@@ -145,9 +145,9 @@ export default function PurchaseBox({
             </StyledCheckoutTitle>
             <StyledCheckoutDescription>
               {isReceiptState
-                ? `You will be able to redeem the physical ${label.toLowerCase()} in Fall 2023.`
+                ? `You will be able to redeem the physical ${label.toLowerCase()} in Fall 2022.`
                 : `You are buying the NFT. Indicate the quantity you’d like to purchase, and you will be
-            able to redeem the physical ${label.toLowerCase()}s in Fall 2023.`}
+            able to redeem the physical ${label.toLowerCase()}s in Fall 2022. Shipping will be calculated separately at redemption.`}
             </StyledCheckoutDescription>
             {label === 'Shirt' && (
               <StyledCheckoutDescription>
