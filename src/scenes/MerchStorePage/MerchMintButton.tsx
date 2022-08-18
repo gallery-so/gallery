@@ -68,7 +68,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {(transactionHash || address || error) && !isMobile && <Spacer height={16} />}
+      {(transactionHash || error) && !isMobile && <Spacer height={16} />}
 
       {transactionHash && (
         <>
@@ -108,11 +108,6 @@ const StyledButton = styled(Button)`
     width: 176px;
     flex: 1;
   }
-`;
-
-const StyledBaseMWithWrap = styled(BaseM)`
-  word-break: break-all;
-  width: 100%;
 `;
 
 const BaseMError = styled(BaseM)`
