@@ -11,7 +11,7 @@ import { Button } from 'components/core/Button/Button';
 import styled from 'styled-components';
 // import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
 // import { Contract } from '@ethersproject/contracts';
-import { useAccount } from 'wagmi';
+// import { useAccount } from 'wagmi';
 // import { useActiveWeb3React } from 'hooks/useWeb3';
 // import { useWeb3React } from '@web3-react/core';
 // import { Web3Provider } from '@ethersproject/providers';
@@ -27,9 +27,6 @@ type Props = {
 
 export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) {
   const { pushToast } = useToastActions();
-
-  const { address: rawAddress } = useAccount();
-  const address = rawAddress?.toLowerCase();
   const contract = useMintMerchContract();
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
