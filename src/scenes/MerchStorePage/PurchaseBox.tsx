@@ -12,7 +12,6 @@ import MerchMintButton from './MerchMintButton';
 import CircleMinusIcon from 'src/icons/CircleMinusIcon';
 import CirclePlusIcon from 'src/icons/CirclePlusIcon';
 import { MAX_NFTS_PER_WALLET } from './constants';
-import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
