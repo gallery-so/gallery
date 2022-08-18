@@ -2,10 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { useConnectEthereum } from 'components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from 'constants/transaction';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  useAccount,
-  // useDisconnect
-} from 'wagmi';
+import { useAccount } from 'wagmi';
 import web3 from 'web3';
 import MerkleTree from 'utils/MerkleTree';
 import { MAX_NFTS_PER_WALLET } from 'scenes/MerchStorePage/constants';
