@@ -58,10 +58,11 @@ export default function Countdown() {
               <StyledCountdownLabel>{seconds === '1' ? 'sec' : 'secs'}</StyledCountdownLabel>
             </StyledCountdownText>
           </StyledCountdown>
-          <Spacer height={24} />
+          <Spacer height={12} />
           <StyledInteractiveLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
             See mint schedule
           </StyledInteractiveLink>
+          <Spacer height={32} />
         </StyledContainer>
       )}
     </>
@@ -73,7 +74,6 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
 
   // This ensures that the countdown is visible on mobile, but when it goes away at public mint, the page still has proper margins around the header
   @media screen and (max-width: 768px) {
