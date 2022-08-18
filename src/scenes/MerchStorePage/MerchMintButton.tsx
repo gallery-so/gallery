@@ -1,6 +1,7 @@
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import Spacer from 'components/core/Spacer/Spacer';
-import ErrorText from 'components/core/Text/ErrorText';
+// import ErrorText from 'components/core/Text/ErrorText';
+import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import { useEffect, useMemo } from 'react';
 import { useToastActions } from 'contexts/toast/ToastContext';
@@ -89,7 +90,8 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       {error && (
         <>
           {!isMobile && <Spacer height={8} />}
-          <ErrorText message={error} />
+          {/* <ErrorText message={error} /> */}
+          <BaseMError color={colors.error} dangerouslySetInnerHTML={{ __html: error }}></BaseMError>
         </>
       )}
     </>
@@ -105,5 +107,18 @@ const StyledButton = styled(Button)`
   @media (max-width: 768px) {
     width: 176px;
     flex: 1;
+  }
+`;
+
+const StyledBaseMWithWrap = styled(BaseM)`
+  word-break: break-all;
+  width: 100%;
+`;
+
+const BaseMError = styled(BaseM)`
+  color: ${colors.error};
+
+  & a {
+    color: ${colors.error};
   }
 `;
