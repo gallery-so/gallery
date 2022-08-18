@@ -163,7 +163,7 @@ export default function useMintContractWithQuantity({
           setError(
             `Your address ${
               address ? truncate(address) : ''
-            } is not on the allowlist. Please refer to our <a href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule" target="_blank" rel="noopener noreferrer">mint schedule.</a>`
+            } is not on the allowlist. Please refer to our <a href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule" target="_blank" rel="noopener noreferrer">mint schedule</a>.`
           );
         } else {
           setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
