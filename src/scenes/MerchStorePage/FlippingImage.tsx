@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
 
 export default function FlippingImage({
   src,
@@ -14,6 +13,7 @@ export default function FlippingImage({
   return (
     <StyledContainer
       isFlippedCardInPreview={src === '/merch/card' && isFlipped && isInPreview}
+      isCard={src === '/merch/card'}
       onMouseOver={() => {
         setIsFlipped(true);
       }}
@@ -26,9 +26,7 @@ export default function FlippingImage({
   );
 }
 
-const StyledContainer = styled.div<{ isFlippedCardInPreview: boolean }>`
-  // max-height: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? 'none' : '90vw')};
-  // max-width: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? 'none' : '90vw')};
+const StyledContainer = styled.div<{ isFlippedCardInPreview: boolean; isCard: boolean }>`
   position: relative;
   user-select: none;
 
@@ -37,8 +35,10 @@ const StyledContainer = styled.div<{ isFlippedCardInPreview: boolean }>`
   width: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '150%' : '100%')};
   margin: ${({ isFlippedCardInPreview }) => (isFlippedCardInPreview ? '-25%' : '0')};
 
-  @media only screen and ${breakpoints.tablet} {
-    max-height: none;
-    max-width: none;
+  // On small screens, we increase the size of the card even in the product preview page
+  @media only screen and (max-width: 768px) {
+    height: ${({ isCard }) => (isCard ? '150%' : '100%')};
+    width: ${({ isCard }) => (isCard ? '150%' : '100%')};
+    margin: ${({ isCard }) => (isCard ? '-25%' : '0')};
   }
 `;
