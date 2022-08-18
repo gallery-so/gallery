@@ -65,7 +65,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {(transactionHash || error) && !isMobile && <Spacer height={16} />}
+      {(transactionHash || error) && !isMobile && <Spacer height={8} />}
 
       {transactionHash && (
         <>
@@ -112,5 +112,10 @@ const BaseMError = styled(BaseM)`
 
   & a {
     color: ${colors.error};
+  }
+
+  // Forces line break on mobile view
+  @media screen and (max-width: 768px) {
+    width: 100%;
   }
 `;
