@@ -1,6 +1,6 @@
 import useTimer from 'hooks/useTimer';
 import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } from './times';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { BaseS, BaseM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import Spacer from 'components/core/Spacer/Spacer';
@@ -11,9 +11,14 @@ export default function Countdown() {
   const [nextTime, setNextTime] = useState('');
   const [text, setText] = useState('');
   const [showCounter, setShowCounter] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-  const currentTime = useMemo(() => {
-    return new Date();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
