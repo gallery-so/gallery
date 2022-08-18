@@ -30,10 +30,11 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
-import TextButton from 'components/core/Button/TextButton';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import { THREE_ARROWS_CAPITAL_BANNER_KEY } from 'constants/storageKeys';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
+import NavLink from 'components/core/NavLink/NavLink';
+import { FeatureFlag } from 'components/core/enums';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -356,7 +357,15 @@ function GlobalNavbarWithFadeEnabled({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isBannerVisible ? <Banner queryRef={query} text="" /> : null}
+      {isBannerVisible && isFeatureEnabled(FeatureFlag.SHOP_OPEN, query) ? (
+        <Banner
+          text="(OBJECTS) merch shop is now open."
+          queryRef={query}
+          actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
+          localStorageKey="MERCH_STORE_LAUNCH_STORAGE_KEY"
+          dismissOnActionComponentClick
+        />
+      ) : null}
       <GlobalNavbar
         queryRef={query}
         customLeftContent={customLeftContent}
