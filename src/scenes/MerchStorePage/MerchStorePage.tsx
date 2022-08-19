@@ -4,6 +4,7 @@ import React from 'react';
 import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
 import Countdown from './Countdown';
+import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 
 const items = [
   {
@@ -50,7 +51,7 @@ export default function MerchStorePage() {
 }
 
 const StyledPage = styled.div`
-  min-height: 90vh;
+  min-height: calc(100vh - ${GLOBAL_FOOTER_HEIGHT}px);
   padding: 20px 40px;
   display: flex;
   flex-direction: column;

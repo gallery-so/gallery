@@ -244,7 +244,7 @@ export default function useMintContractWithQuantity({
     }
 
     if (userOwnedSupply === MAX_NFTS_PER_WALLET) {
-      return 'Minted 3/3';
+      return `Minted ${MAX_NFTS_PER_WALLET}/${MAX_NFTS_PER_WALLET}`;
     }
 
     return 'Mint';

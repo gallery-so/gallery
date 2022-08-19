@@ -34,7 +34,7 @@ export default function PurchaseBox({
 
   const contract = useMintMerchContract();
 
-  const { userOwnedSupply, active, tokenPrice } = useMintContractWithQuantity({
+  const { soldOut, userOwnedSupply, active, tokenPrice } = useMintContractWithQuantity({
     contract,
     tokenId,
   });
@@ -119,9 +119,13 @@ export default function PurchaseBox({
         {isMobile && (
           <StyledPageOverlay onClick={() => setShowBox(false)} show={showBox && !isReceiptState} />
         )}
-        <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
-          Purchase
-        </ExpandPurchaseButton>
+
+        {!soldOut && (
+          <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
+            Purchase
+          </ExpandPurchaseButton>
+        )}
+
         <StyledCheckoutAndReceiptContainer showBox={showBox}>
           {userOwnedSupply > 0 && !isMobile && <UserOwnsBox inReceipt={false} />}
           {/* On mobile, we want to hide the below box UNLESS the user is checking out.
@@ -213,6 +217,12 @@ export default function PurchaseBox({
             </>
           )}
         </StyledCheckoutAndReceiptContainer>
+
+        {soldOut && (
+          <StyledSoldOutContainer>
+            <TitleDiatypeL>Sold out</TitleDiatypeL>
+          </StyledSoldOutContainer>
+        )}
       </StyledPurchaseBox>
     </>
   );
@@ -443,4 +453,8 @@ const StyledTapOutToClose = styled.div`
   width: 100%;
   height: 100%;
   opacity: 0;
+`;
+
+const StyledSoldOutContainer = styled.div`
+  text-align: center;
 `;
