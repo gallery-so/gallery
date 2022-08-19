@@ -27,10 +27,10 @@ export default function Countdown() {
       setText('Shop opens for Premium Members in');
     } else if (currentTime < new Date(GALLERY_MINTING_TIME)) {
       setNextTime(GALLERY_MINTING_TIME);
-      setText('Shop opens for all Gallery Members in');
+      setText('Shop is currently open for Premium Members.\nOpening for all Gallery Members in');
     } else if (currentTime < new Date(PUBLIC_MINTING_TIME)) {
       setNextTime(PUBLIC_MINTING_TIME);
-      setText('Shop opens to the general public in');
+      setText('Shop is currently open for all Gallery Members.\nOpening to the general public in');
     } else {
       setShowCounter(false);
     }
@@ -42,7 +42,9 @@ export default function Countdown() {
     <>
       {showCounter && (
         <StyledContainer>
-          <BaseM>{text}</BaseM>
+          {text.split('\n').map((d, i) => (
+            <BaseM key={i}>{d}</BaseM>
+          ))}
           <Spacer height={12} />
           <StyledCountdown>
             <StyledCountdownText>
