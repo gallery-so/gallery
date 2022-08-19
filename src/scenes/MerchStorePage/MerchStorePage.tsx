@@ -43,7 +43,7 @@ export default function MerchStorePage() {
     <StyledPage>
       <Countdown />
       {/* <OpenBracket /> */}
-      <StyledShopText>OBJECTS</StyledShopText>
+      <StyledShopText>( OBJECTS )</StyledShopText>
       {/* <ClosedBracket /> */}
       <StyledItemsContainer>
         {items.map((item) => (
