@@ -27,6 +27,7 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
 
   const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
     body: {
+      operationName: request.name,
       query: request.text,
       variables,
     },
