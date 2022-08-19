@@ -5,8 +5,8 @@ import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
 import Countdown from './Countdown';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import OpenBracket from 'public/icons/open_bracket.svg';
-import ClosedBracket from 'public/icons/close_bracket.svg';
+// import OpenBracket from 'public/icons/open_bracket.svg';
+// import ClosedBracket from 'public/icons/close_bracket.svg';
 
 const items = [
   {
@@ -88,5 +88,3 @@ const StyledItemsContainer = styled.div`
     padding: 0;
   }
 `;
-
-const BracketContainer = styled.div``;

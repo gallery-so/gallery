@@ -132,7 +132,7 @@ export default function PurchaseBox({
   const toggleShowBox = useCallback(() => {
     if (disabled) return;
     setShowBox(true);
-    setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
+    // setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
   }, [disabled, setShowBox]);
 
   const handlePurchaseClick = useCallback(() => {
