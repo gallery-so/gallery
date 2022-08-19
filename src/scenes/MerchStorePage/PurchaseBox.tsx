@@ -306,7 +306,6 @@ const StyledCheckoutAndReceiptContainer = styled.div<{ showBox?: boolean }>`
   // This offsets the checkout box so it is on top of the expand purchase button (which is now hidden)
   margin-top: ${({ showBox }) => (showBox ? '-38px' : '0')};
   user-select: none;
-  // width: 176px;
 `;
 
 const StyledCheckoutBox = styled.div<{
@@ -504,21 +503,11 @@ const StyledFlexContainerColumnOnMobile = styled.div`
   }
 `;
 
-// const StyledTapOutToClose = styled.div`
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   opacity: 0;
-// `;
-
 const StyledSoldOutContainer = styled.div`
   text-align: center;
 `;
 
 const StyledOwnMaxText = styled(BaseM)`
-  //styleName: Base ∙ 14|20 ∙ M;
   font-family: ABC Diatype;
   font-size: 14px;
   font-weight: 400;
