@@ -5,6 +5,8 @@ import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
 import Countdown from './Countdown';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
+import OpenBracket from 'public/icons/open_bracket.svg';
+import ClosedBracket from 'public/icons/close_bracket.svg';
 
 const items = [
   {
@@ -40,7 +42,9 @@ export default function MerchStorePage() {
   return (
     <StyledPage>
       <Countdown />
-      <StyledShopText>(OBJECTS)</StyledShopText>
+      {/* <OpenBracket /> */}
+      <StyledShopText>OBJECTS</StyledShopText>
+      {/* <ClosedBracket /> */}
       <StyledItemsContainer>
         {items.map((item) => (
           <ItemPreview {...item} key={item.label} />
@@ -84,3 +88,5 @@ const StyledItemsContainer = styled.div`
     padding: 0;
   }
 `;
+
+const BracketContainer = styled.div``;

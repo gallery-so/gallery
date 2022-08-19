@@ -61,26 +61,37 @@ export function MobileReceiptBox({
   setShowBox: (showBox: boolean) => void;
 }) {
   return (
-    <StyledMobileReceipt>
-      <StyledCloseIcon
-        onClick={() => {
-          setIsReceiptState(false);
-          setShowBox(false);
-        }}
-      />
-      <StyledCheckoutTitle>
-        You've bought {quantity} {quantity == 1 ? label : `${label}s`}
-      </StyledCheckoutTitle>
-      <StyledCheckoutDescription>
-        You will be able to redeem the physical {label.toLowerCase()} in Fall 2022.
-      </StyledCheckoutDescription>
-      {label === 'Shirt' && (
+    <>
+      <StyledMobileReceipt>
+        <StyledCloseIcon
+          onClick={() => {
+            setIsReceiptState(false);
+            setShowBox(false);
+          }}
+        />
+        <StyledCheckoutTitle>
+          You've bought {quantity} {quantity == 1 ? label : `${label}s`}
+        </StyledCheckoutTitle>
         <StyledCheckoutDescription>
-          Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
+          You will be able to redeem the physical {label.toLowerCase()} in Fall 2022.
         </StyledCheckoutDescription>
+        {label === 'Shirt' && (
+          <StyledCheckoutDescription>
+            Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
+          </StyledCheckoutDescription>
+        )}
+        <UserOwnsBox inReceipt={true} tokenId={tokenId} />
+      </StyledMobileReceipt>
+      {quantity === MAX_NFTS_PER_WALLET && (
+        <>
+          <Spacer height={12} />
+          <StyledOwnMaxText>
+            You’ve reached the limit of 3 {label}s per collector, and you will not be able to buy
+            any more.
+          </StyledOwnMaxText>
+        </>
       )}
-      <UserOwnsBox inReceipt={true} tokenId={tokenId} />
-    </StyledMobileReceipt>
+    </>
   );
 }
 
@@ -121,7 +132,7 @@ export default function PurchaseBox({
   const toggleShowBox = useCallback(() => {
     if (disabled) return;
     setShowBox(true);
-    // setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
+    setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
   }, [disabled, setShowBox]);
 
   const handlePurchaseClick = useCallback(() => {
@@ -231,13 +242,20 @@ export default function PurchaseBox({
           {isReceiptState && (
             <>
               <Spacer height={12} />
-              <StyledPurchaseMoreButton
-                onClick={() => {
-                  setIsReceiptState(false);
-                }}
-              >
-                Purchase More
-              </StyledPurchaseMoreButton>
+              {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
+                <StyledOwnMaxText>
+                  You’ve reached the limit of 3 {label}s per collector, and you will not be able to
+                  buy any more.
+                </StyledOwnMaxText>
+              ) : (
+                <StyledPurchaseMoreButton
+                  onClick={() => {
+                    setIsReceiptState(false);
+                  }}
+                >
+                  Purchase More
+                </StyledPurchaseMoreButton>
+              )}
             </>
           )}
         </StyledCheckoutAndReceiptContainer>
@@ -486,4 +504,19 @@ const StyledFlexContainerColumnOnMobile = styled.div`
 
 const StyledSoldOutContainer = styled.div`
   text-align: center;
+`;
+
+const StyledOwnMaxText = styled(BaseM)`
+  //styleName: Base ∙ 14|20 ∙ M;
+  font-family: ABC Diatype;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0px;
+  text-align: left;
+  color: ${colors.metal};
+
+  @media screen and (max-width: 768px) {
+    width: min(340px, 90vw);
+  }
 `;
