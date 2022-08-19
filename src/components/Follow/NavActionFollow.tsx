@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
-import FollowerListButton, { StyledFollowerListButton } from './FollowerListButton';
+import FollowerListButton from './FollowerListButton';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;
@@ -37,7 +37,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const isLoggedIn = !!loggedInUserId;
 
   return (
-    <StyledNavActionFollow isLoggedIn={isLoggedIn}>
+    <StyledNavActionFollow>
       {isLoggedIn ? (
         <>
           <FollowButton queryRef={loggedInUserQuery} userRef={user} />
@@ -49,21 +49,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   );
 }
 
-const StyledNavActionFollow = styled.div<{ isLoggedIn: boolean }>`
+const StyledNavActionFollow = styled.div`
   display: flex;
   align-items: center;
-
-  ${({ isLoggedIn }) =>
-    isLoggedIn &&
-    `
-    ${StyledFollowerListButton} {
-      opacity: 0;
-    }
-  `}
-
-  &:hover {
-    ${StyledFollowerListButton} {
-      opacity: 1;
-    }
-  }
 `;

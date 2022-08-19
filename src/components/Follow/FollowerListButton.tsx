@@ -1,7 +1,6 @@
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 import FollowList from './FollowList';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -10,10 +9,9 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   userRef: FollowerListButtonFragment$key;
-  className?: string;
 };
 
-export default function FollowerListButton({ userRef, className }: Props) {
+export default function FollowerListButton({ userRef }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowerListButtonFragment on GalleryUser {
@@ -37,13 +35,5 @@ export default function FollowerListButton({ userRef, className }: Props) {
     });
   }, [isMobile, showModal, track, user]);
 
-  return (
-    <StyledFollowerListButton className={className}>
-      <TextButton text={`Followers`} onClick={handleClick}></TextButton>
-    </StyledFollowerListButton>
-  );
+  return <TextButton text={`Followers`} onClick={handleClick}></TextButton>;
 }
-
-export const StyledFollowerListButton = styled.div`
-  transition: opacity 0.2s ease-in-out;
-`;
