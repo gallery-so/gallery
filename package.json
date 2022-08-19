@@ -98,6 +98,7 @@
     "graphql": "^16.5.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
+    "next-router-mock": "^0.7.4",
     "nock": "^13.2.9",
     "prettier": "^2.5.1",
     "relay-compiler": "^14.1.0",
