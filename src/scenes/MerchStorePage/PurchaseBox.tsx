@@ -93,8 +93,8 @@ export function MobileReceiptBox({
         <>
           <Spacer height={12} />
           <StyledOwnMaxText>
-            You’ve reached the limit of 3 {label}s per collector, and you will not be able to buy
-            any more.
+            You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will not be
+            able to buy any more.
           </StyledOwnMaxText>
         </>
       )}
@@ -254,8 +254,8 @@ export default function PurchaseBox({
                   ''
                 ) : (
                   <StyledOwnMaxText>
-                    You’ve reached the limit of 3 {label}s per collector, and you will not be able
-                    to buy any more.
+                    You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will
+                    not be able to buy any more.
                   </StyledOwnMaxText>
                 )
               ) : (
