@@ -60,6 +60,13 @@ export function MobileReceiptBox({
   setIsReceiptState: (isReceiptState: boolean) => void;
   setShowBox: (showBox: boolean) => void;
 }) {
+  const contract = useMintMerchContract();
+
+  const { userOwnedSupply } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
+
   return (
     <>
       <StyledMobileReceipt>
@@ -82,7 +89,7 @@ export function MobileReceiptBox({
         )}
         <UserOwnsBox inReceipt={true} tokenId={tokenId} />
       </StyledMobileReceipt>
-      {quantity === MAX_NFTS_PER_WALLET && (
+      {userOwnedSupply === MAX_NFTS_PER_WALLET && (
         <>
           <Spacer height={12} />
           <StyledOwnMaxText>
@@ -243,10 +250,14 @@ export default function PurchaseBox({
             <>
               <Spacer height={12} />
               {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
-                <StyledOwnMaxText>
-                  You’ve reached the limit of 3 {label}s per collector, and you will not be able to
-                  buy any more.
-                </StyledOwnMaxText>
+                isMobile ? (
+                  ''
+                ) : (
+                  <StyledOwnMaxText>
+                    You’ve reached the limit of 3 {label}s per collector, and you will not be able
+                    to buy any more.
+                  </StyledOwnMaxText>
+                )
               ) : (
                 <StyledPurchaseMoreButton
                   onClick={() => {
