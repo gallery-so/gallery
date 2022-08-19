@@ -11,7 +11,7 @@ const items = [
     image: '/merch/shirt',
     title: '(Object 001)',
     description:
-      'Black short sleeve cotton t- shirt with puff - print design on left chest and both puff - print and screen - print design on full back.\nThe first entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
+      'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.\nThe first entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.05',
     tokenId: 0,
   },

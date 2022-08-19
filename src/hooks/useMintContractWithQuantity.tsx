@@ -217,6 +217,10 @@ export default function useMintContractWithQuantity({
     } catch (error: unknown) {
       console.log('error conecting', error);
       if (error instanceof Error) {
+        // Ignore internal error
+        if (error.message === 'Promise replaced or component unmounted') {
+          return;
+        }
         setError(error.message);
       }
     }

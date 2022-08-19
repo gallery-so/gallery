@@ -40,6 +40,8 @@ export default function ItemPage({
 
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const isMobileAndCard = isMobile && tokenId === 2;
+
   return (
     <>
       {rawAddress && <StyledConnectedAddress>{address}</StyledConnectedAddress>}
@@ -47,8 +49,8 @@ export default function ItemPage({
         <StyledWrapper>
           <StyledImageContainer
             // prevent flipping on mobile detail page as the dimensions look off
-            onMouseOver={tokenId === 2 ? noop : () => setIsFlipped(true)}
-            onMouseOut={tokenId === 2 ? noop : () => setIsFlipped(false)}
+            onMouseOver={isMobileAndCard ? noop : () => setIsFlipped(true)}
+            onMouseOut={isMobileAndCard ? noop : () => setIsFlipped(false)}
           >
             <FlippingImage isFlipped={isFlipped} src={image} />
           </StyledImageContainer>
