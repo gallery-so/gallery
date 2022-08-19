@@ -27,7 +27,7 @@ export default function Countdown() {
       setText('Shop opens for Premium Members in');
     } else if (currentTime < new Date(GALLERY_MINTING_TIME)) {
       setNextTime(GALLERY_MINTING_TIME);
-      setText('Shop is currently open for premium members.\nOpening for all Gallery Members in');
+      setText('Shop is currently open for Premium Members.\nOpening for all Gallery Members in');
     } else if (currentTime < new Date(PUBLIC_MINTING_TIME)) {
       setNextTime(PUBLIC_MINTING_TIME);
       setText('Shop is currently open for all Gallery Members.\nOpening to the general public in');
