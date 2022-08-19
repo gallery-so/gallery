@@ -4,16 +4,16 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailVideo from './NftDetailVideo';
 import NftDetailAudio from './NftDetailAudio';
 import { useBreakpoint } from 'hooks/useWindowSize';
-import { useContentState, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
-import { useCallback, useEffect, useState } from 'react';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
+import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -89,12 +89,6 @@ type Props = {
   hasExtraPaddingForNote: boolean;
 };
 
-type FailureState =
-  | {
-      type: 'retries-exhausted';
-    }
-  | { type: 'timeout'; retry: number };
-
 function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const token = useFragment(
     graphql`
@@ -130,55 +124,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const setContentIsLoaded = useSetContentIsLoaded();
-  const [failure, setFailure] = useState<FailureState | null>(null);
-  const [retryKey, setRetryKey] = useState(0);
-
-  const handleLoad = useCallback(() => {
-    setContentIsLoaded();
-
-    // If we "successfully" loaded, we never
-    // want to show the failure state
-    setFailure(null);
-  }, [setContentIsLoaded]);
-
-  const handleError = useCallback(() => {
-    if (retryKey >= 3) {
-      // Give up and show the failure state
-      setContentIsLoaded();
-      setFailure({ type: 'retries-exhausted' });
-    } else {
-      // Queue a retry in a second
-      setTimeout(() => {
-        setRetryKey((previous) => previous + 1);
-      }, 1000);
-    }
-  }, [retryKey, setContentIsLoaded]);
-
-  useEffect(
-    function startLoadTimeout() {
-      const timeoutId = setTimeout(() => {
-        setFailure((existingFailure) => {
-          // If we already failed from something else
-          // we don't want to override that failure with a timeout failure
-          if (existingFailure) {
-            return existingFailure;
-          }
-
-          // Including the retry key is important here so we
-          // can include it as a dependency in the useEffect.
-          // This way, every time we retry, we reset the timeout
-          // so the current retry has adequate time to load
-          return { type: 'timeout', retry: retryKey };
-        });
-      }, 3000);
-
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    },
-    [retryKey]
-  );
+  const { handleNftLoaded, handleNftError, retryKey, failure } = useNftDisplayRetryLoader();
 
   return (
     <StyledAssetContainer
@@ -189,8 +135,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     >
       <NftDetailAssetComponent
         key={retryKey}
-        onError={handleError}
-        onLoad={handleLoad}
+        onError={handleNftError}
+        onLoad={handleNftLoaded}
         tokenRef={token}
       />
     </StyledAssetContainer>

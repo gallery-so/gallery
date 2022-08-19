@@ -1,4 +1,4 @@
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { ContentIsLoadedEvent, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -13,6 +13,8 @@ type Props = {
   src: string;
   widthType?: ContentWidthType;
   heightType?: ContentHeightType;
+  onLoad: ContentIsLoadedEvent;
+  onError: ContentIsLoadedEvent;
 };
 
 export default function VideoWithLoading({
@@ -20,9 +22,9 @@ export default function VideoWithLoading({
   widthType = 'maxWidth',
   heightType,
   src,
+  onLoad,
+  onError,
 }: Props) {
-  const setContentIsLoaded = useSetContentIsLoaded();
-
   const maxHeight = useMemo(() => {
     if (heightType === 'maxHeightScreen') {
       return 'min(100%, 80vh)';
@@ -40,7 +42,8 @@ export default function VideoWithLoading({
       widthType={widthType}
       // start a few frames in, in case the first frame is blank
       src={`${src}#t=0.5`}
-      onLoadedData={setContentIsLoaded}
+      onLoadedData={onLoad}
+      onError={onError}
       preload="metadata"
     />
   );

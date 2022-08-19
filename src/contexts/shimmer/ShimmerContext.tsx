@@ -28,8 +28,10 @@ export const useContentState = (): ShimmerState => {
   return context;
 };
 
+export type ContentIsLoadedEvent = (event?: any) => void;
+
 type ShimmerAction = {
-  setContentIsLoaded: (event?: SyntheticEvent) => void;
+  setContentIsLoaded: ContentIsLoadedEvent;
 };
 
 const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
@@ -62,7 +64,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
     () => ({
       // using `any` here because the SynetheticEvent could be fired by different kinds of nodes that are mounting,
       // such as images, videos, and iframes, each of which come with different properties.
-      setContentIsLoaded: (event?: any) => {
+      setContentIsLoaded: (event: any) => {
         if (event) {
           // default aspect ratio to 1; if we can't determine an asset's dimensions, we'll show it in a square viewport
           let aspectRatio = 1;
@@ -72,6 +74,11 @@ const ShimmerProvider = memo(({ children }: Props) => {
           if (event.target.nodeName === 'VIDEO') {
             aspectRatio = event.target.videoWidth / event.target.videoHeight;
           }
+
+          if (isNaN(aspectRatio)) {
+            aspectRatio = 1;
+          }
+
           setAspectRatio(aspectRatio);
 
           if (aspectRatio === 1) {
@@ -106,6 +113,10 @@ const ShimmerProvider = memo(({ children }: Props) => {
 });
 
 const Container = styled.div<{ overflowHidden: boolean }>`
+  // Ensures that grid columns don't grow to fit their children
+  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
+  min-width: 0;
+
   position: relative;
   width: 100%;
   height: 100%;

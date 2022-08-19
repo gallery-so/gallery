@@ -2,12 +2,13 @@ import { useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
 import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
+import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
   hideControls?: boolean;
-  onLoad: () => void;
-  onError: () => void;
+  onLoad: ContentIsLoadedEvent;
+  onError: ContentIsLoadedEvent;
 };
 
 function NftDetailVideo({ mediaRef, hideControls = false, onLoad, onError }: Props) {

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailModelFragment$key } from '__generated__/NftDetailModelFragment.graphql';
+import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   mediaRef: NftDetailModelFragment$key;
@@ -54,8 +55,10 @@ function NftDetailModel({ mediaRef, onLoad, onError }: Props) {
 }
 
 // stop-gap as the backend doesn't always categorize GltfMedia
-export function RawNftDetailModel({ url, onLoad }: { url: string; onLoad: () => void }) {
-  useEffect(onLoad, [onLoad]);
+export function RawNftDetailModel({ url, onLoad }: { url: string; onLoad: ContentIsLoadedEvent }) {
+  useEffect(() => {
+    onLoad();
+  }, [onLoad]);
 
   return (
     <StyledNftDetailModel>

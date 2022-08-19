@@ -1,14 +1,15 @@
-import { useMemo } from 'react';
+import { SyntheticEvent, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import { NftDetailAnimationFragment$key } from '__generated__/NftDetailAnimationFragment.graphql';
 import { RawNftDetailModel } from './NftDetailModel';
 import processIFrameRenderUrl from './processIFrameRenderUrl';
+import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   mediaRef: NftDetailAnimationFragment$key;
-  onLoad: () => void;
+  onLoad: ContentIsLoadedEvent;
 };
 
 function NftDetailAnimation({ mediaRef, onLoad }: Props) {
