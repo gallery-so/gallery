@@ -12,6 +12,7 @@ import { useAccount } from 'wagmi';
 import { truncateAddress } from 'utils/wallet';
 import { useState } from 'react';
 import noop from 'utils/noop';
+import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
 import Tooltip from 'components/Tooltip/Tooltip';
 import InfoIcon from 'public/icons/info_circle.svg';
 
@@ -44,12 +45,27 @@ export default function ItemPage({
 
   const isMobileAndCard = isMobile && tokenId === 2;
 
+  const [isReceiptState, setIsReceiptState] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [showBox, setShowBox] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <>
       {rawAddress && <StyledConnectedAddress>{address}</StyledConnectedAddress>}
-      <StyledPage pushItemsDown={isMobile && userOwnedSupply > 0}>
+      <StyledPage>
+        {isMobile && !isReceiptState && userOwnedSupply > 0 && (
+          <UserOwnsBox inReceipt={false} tokenId={tokenId} />
+        )}
+        {isMobile && isReceiptState && (
+          <MobileReceiptBox
+            quantity={quantity}
+            tokenId={tokenId}
+            label={label}
+            setIsReceiptState={setIsReceiptState}
+            setShowBox={setShowBox}
+          />
+        )}
         <StyledWrapper>
           <StyledImageContainer
             // prevent flipping on mobile detail page as the dimensions look off
@@ -91,6 +107,12 @@ export default function ItemPage({
                 tokenId={tokenId}
                 // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
                 disabled={publicSupply - usedPublicSupply == 0}
+                quantity={quantity}
+                setQuantity={setQuantity}
+                isReceiptState={isReceiptState}
+                setIsReceiptState={setIsReceiptState}
+                showBox={showBox}
+                setShowBox={setShowBox}
               />
             </StyledPriceQuantityAndPurchaseContainer>
           </StyledContent>
@@ -100,7 +122,7 @@ export default function ItemPage({
   );
 }
 
-const StyledPage = styled.div<{ pushItemsDown: boolean }>`
+const StyledPage = styled.div`
   min-height: 100vh;
   padding: 20px 40px;
   display: flex;
@@ -117,19 +139,7 @@ const StyledPage = styled.div<{ pushItemsDown: boolean }>`
     grid-template-rows: auto 1fr;
     padding: 16px;
     position: relative;
-
-    ${({ pushItemsDown }) =>
-      pushItemsDown
-        ? 'padding-top: 15vh;'
-        : ''}// On small screens that also have a small height, we push to the very bottom - 86px (enough room for the bottom purchase bar)
-  }
-
-  @media only screen and (max-width: 768px) and (max-height: 550px) {
-    ${({ pushItemsDown }) =>
-      pushItemsDown &&
-      `justify-content: flex-end;
-      padding-bottom: 86px;
-      padding-top: 0;`}
+    padding-bottom: 86px;
   }
 `;
 

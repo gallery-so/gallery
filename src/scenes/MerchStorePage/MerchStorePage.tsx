@@ -40,7 +40,8 @@ export default function MerchStorePage() {
   return (
     <StyledPage>
       <Countdown />
-      <StyledShopText>(OBJECTS)</StyledShopText>
+      {/* TODO: Use brackets from Gallery Logo here */}
+      <StyledShopText>( OBJECTS )</StyledShopText>
       <StyledItemsContainer>
         {items.map((item) => (
           <ItemPreview {...item} key={item.label} />

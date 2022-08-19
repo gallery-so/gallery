@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
@@ -17,19 +17,112 @@ import { ethers } from 'ethers';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import transitions from 'components/core/transitions';
 
+export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenId: number }) {
+  const contract = useMintMerchContract();
+
+  const { tokenPrice, userOwnedSupply } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
+
+  return (
+    <>
+      <UserOwnsContainer inReceipt={inReceipt}>
+        <StyledFlexContainer>
+          <StyledBaseM>Quantity bought</StyledBaseM>
+          <StyledBaseM>{userOwnedSupply}</StyledBaseM>
+        </StyledFlexContainer>
+        <Spacer height={4} />
+        <HorizontalBreak />
+        <Spacer height={4} />
+        <StyledFlexContainer>
+          <StyledBaseM>Total paid</StyledBaseM>
+          <StyledPrice>
+            {(userOwnedSupply * +ethers.utils.formatEther(tokenPrice)).toFixed(2)} Ξ
+          </StyledPrice>
+        </StyledFlexContainer>
+      </UserOwnsContainer>
+      <Spacer height={8} />
+    </>
+  );
+}
+
+export function MobileReceiptBox({
+  tokenId,
+  quantity,
+  label,
+  setIsReceiptState,
+  setShowBox,
+}: {
+  tokenId: number;
+  quantity: number;
+  label: string;
+  setIsReceiptState: (isReceiptState: boolean) => void;
+  setShowBox: (showBox: boolean) => void;
+}) {
+  const contract = useMintMerchContract();
+
+  const { userOwnedSupply } = useMintContractWithQuantity({
+    contract,
+    tokenId,
+  });
+
+  return (
+    <>
+      <StyledMobileReceipt>
+        <StyledCloseIcon
+          onClick={() => {
+            setIsReceiptState(false);
+            setShowBox(false);
+          }}
+        />
+        <StyledCheckoutTitle>
+          You've bought {quantity} {quantity == 1 ? label : `${label}s`}
+        </StyledCheckoutTitle>
+        <StyledCheckoutDescription>
+          You will be able to redeem the physical {label.toLowerCase()} in Fall 2022.
+        </StyledCheckoutDescription>
+        {label === 'Shirt' && (
+          <StyledCheckoutDescription>
+            Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
+          </StyledCheckoutDescription>
+        )}
+        <UserOwnsBox inReceipt={true} tokenId={tokenId} />
+      </StyledMobileReceipt>
+      {userOwnedSupply === MAX_NFTS_PER_WALLET && (
+        <>
+          <Spacer height={12} />
+          <StyledOwnMaxText>
+            You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will not be
+            able to buy any more.
+          </StyledOwnMaxText>
+        </>
+      )}
+    </>
+  );
+}
+
 export default function PurchaseBox({
   label,
   tokenId,
   disabled,
+  quantity,
+  setQuantity,
+  isReceiptState,
+  setIsReceiptState,
+  showBox,
+  setShowBox,
 }: {
   label: string;
   tokenId: number;
   disabled: boolean;
+  quantity: number;
+  setQuantity: (quantity: number) => void;
+  isReceiptState: boolean;
+  setIsReceiptState: (isReceiptState: boolean) => void;
+  showBox: boolean;
+  setShowBox: (showBox: boolean) => void;
 }) {
-  const [quantity, setQuantity] = useState(1);
-  const [showBox, setShowBox] = useState(false);
-  const [isReceiptState, setIsReceiptState] = useState(false);
-
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const contract = useMintMerchContract();
@@ -47,73 +140,22 @@ export default function PurchaseBox({
     if (disabled) return;
     setShowBox(true);
     // setIsReceiptState(true); // TO DISPLAY THE RECEIPT STATE FOR TESTING
-  }, [disabled]);
+  }, [disabled, setShowBox]);
 
   const handlePurchaseClick = useCallback(() => {
     setIsReceiptState(true);
   }, [setIsReceiptState]);
 
-  function UserOwnsBox({ inReceipt }: { inReceipt: boolean }) {
-    return (
-      <>
-        <UserOwnsContainer inReceipt={inReceipt}>
-          <StyledFlexContainer>
-            <StyledBaseM>Quantity bought</StyledBaseM>
-            <StyledBaseM>{userOwnedSupply}</StyledBaseM>
-          </StyledFlexContainer>
-          <Spacer height={4} />
-          <HorizontalBreak />
-          <Spacer height={4} />
-          <StyledFlexContainer>
-            <StyledBaseM>Total paid</StyledBaseM>
-            <StyledPrice>
-              {(userOwnedSupply * +ethers.utils.formatEther(tokenPrice)).toFixed(2)} Ξ
-            </StyledPrice>
-          </StyledFlexContainer>
-        </UserOwnsContainer>
-        <Spacer height={8} />
-      </>
-    );
-  }
-
-  function MobileReceiptBox() {
-    return (
-      <StyledCheckoutBox showBox={showBox} isReceiptState={isReceiptState}>
-        {/* <StyledCloseIcon
-          onClick={() => {
-            setShowBox(false);
-            setIsReceiptState(false);
-          }}
-        /> */}
-        <StyledCheckoutTitle>
-          You've bought {quantity} {quantity == 1 ? label : `${label}s`}
-        </StyledCheckoutTitle>
-        <StyledCheckoutDescription>
-          You will be able to redeem the physical {label.toLowerCase()} in Fall 2022.
-        </StyledCheckoutDescription>
-        {label === 'Shirt' && (
-          <StyledCheckoutDescription>
-            Disclaimer: We cannot guarantee your size, as there is a limited quantity of each size.
-          </StyledCheckoutDescription>
-        )}
-        <UserOwnsBox inReceipt={true} />
-      </StyledCheckoutBox>
-    );
-  }
-
   return (
     <>
-      {isMobile && isReceiptState && <MobileReceiptBox />}
-      {isMobile && !isReceiptState && userOwnedSupply > 0 && <UserOwnsBox inReceipt={false} />}
-
-      {isMobile && (showBox || isReceiptState) && (
+      {/* {isMobile && (showBox || isReceiptState) && (
         <StyledTapOutToClose
           onClick={() => {
             setShowBox(false);
             setIsReceiptState(false);
           }}
         />
-      )}
+      )} */}
 
       <StyledPurchaseBox>
         {isMobile && (
@@ -127,7 +169,7 @@ export default function PurchaseBox({
         )}
 
         <StyledCheckoutAndReceiptContainer showBox={showBox}>
-          {userOwnedSupply > 0 && !isMobile && <UserOwnsBox inReceipt={false} />}
+          {userOwnedSupply > 0 && !isMobile && <UserOwnsBox inReceipt={false} tokenId={tokenId} />}
           {/* On mobile, we want to hide the below box UNLESS the user is checking out.
           On desktop, we want to show no matter what, and dynamically render different text for the receipt/checkout state. */}
           <StyledCheckoutBox
@@ -207,13 +249,24 @@ export default function PurchaseBox({
           {isReceiptState && (
             <>
               <Spacer height={12} />
-              <StyledPurchaseMoreButton
-                onClick={() => {
-                  setIsReceiptState(false);
-                }}
-              >
-                Purchase More
-              </StyledPurchaseMoreButton>
+              {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
+                isMobile ? (
+                  ''
+                ) : (
+                  <StyledOwnMaxText>
+                    You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will
+                    not be able to buy any more.
+                  </StyledOwnMaxText>
+                )
+              ) : (
+                <StyledPurchaseMoreButton
+                  onClick={() => {
+                    setIsReceiptState(false);
+                  }}
+                >
+                  Purchase More
+                </StyledPurchaseMoreButton>
+              )}
             </>
           )}
         </StyledCheckoutAndReceiptContainer>
@@ -300,19 +353,27 @@ const StyledCheckoutBox = styled.div<{
       pointer-events: all;
     `}
 
-    // This shows the receipt text and box on mobile above the actual asset
     ${({ isReceiptState }) =>
       isReceiptState &&
-      `position: fixed;
-       top: 16px;
-       height: auto;
-       bottom: unset;
-       left: 50%;
-       transform: translateX(-50%);
-       width: min(340px, 90vw);
-       background: rgba(255,255,255,.5);
-       backdrop-filter: blur(4px);
-      `}
+      `
+      display: none;
+       `}
+`;
+
+const StyledMobileReceipt = styled.div`
+  z-index: 2;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid transparent;
+  padding: 16px;
+  border: 1px solid ${colors.porcelain};
+  transition: ${transitions.cubic};
+  position: relative;
+  width: min(340px, 90vw);
+  margin-top: 5vh;
 `;
 
 const StyledCloseIcon = styled(DecoratedCloseIcon)`
@@ -387,18 +448,14 @@ const UserOwnsContainer = styled.div<{ inReceipt: boolean }>`
   z-index: 1;
 
   @media screen and (max-width: 768px) {
-    position: fixed;
-    bottom: unset;
-    top: 10vh; // FIXME
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 5vh;
     width: min(340px, 90vw);
-    height: auto;
     backdrop-filter: blur(3px);
+  
 
-    ${({ inReceipt }) =>
-      inReceipt &&
-      `position: relative;
+  ${({ inReceipt }) =>
+    inReceipt &&
+    `position: relative;
       transform: none;
       width: auto;
       height: auto;
@@ -446,15 +503,20 @@ const StyledFlexContainerColumnOnMobile = styled.div`
   }
 `;
 
-const StyledTapOutToClose = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-`;
-
 const StyledSoldOutContainer = styled.div`
   text-align: center;
+`;
+
+const StyledOwnMaxText = styled(BaseM)`
+  font-family: ABC Diatype;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0px;
+  text-align: left;
+  color: ${colors.metal};
+
+  @media screen and (max-width: 768px) {
+    width: min(340px, 90vw);
+  }
 `;
