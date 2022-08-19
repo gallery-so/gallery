@@ -257,7 +257,10 @@ const StyledCheckoutBox = styled.div<{
   overflow: hidden;
   max-height: 0;
   border: 1px solid transparent;
-  padding: 16px;
+  padding-top: ${({ showBox }) => (showBox ? 16 : 0)}px;
+  padding-bottom: ${({ showBox }) => (showBox ? 16 : 0)}px;
+  padding-left: 16px;
+  padding-right: 16px;
   opacity: 0;
   border: 1px solid ${colors.porcelain};
   transition: ${transitions.cubic};
