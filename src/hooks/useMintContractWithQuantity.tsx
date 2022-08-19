@@ -41,7 +41,7 @@ export default function useMintContractWithQuantity({
 
   // Show first 3 and last 3 characters of address
   const truncate = (address: string) => {
-    return `${address.slice(0, 4)}...${address.slice(-2)}`;
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
@@ -104,6 +104,11 @@ export default function useMintContractWithQuantity({
     userOwnedSupply,
     getTokenPrice,
   ]);
+
+  useEffect(() => {
+    const merkleTree = new MerkleTree(Array.from(premiumAndActiveDiscordMembers));
+    console.log('root', merkleTree.getHexRoot());
+  }, []);
 
   function generateMerkleProof(address: string, allowlist: string[]) {
     const merkleTree = new MerkleTree(allowlist);
