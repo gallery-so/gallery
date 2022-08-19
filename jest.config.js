@@ -15,6 +15,8 @@ module.exports = {
     ],
   },
 
+  setupFilesAfterEnv: ['<rootDir>/tests/setupFileAfterEnv.js'],
+
   // Rainbow kit ships code which is not transpiled. We have to tell Jest to transpile it
   // https://stackoverflow.com/questions/55794280/jest-fails-with-unexpected-token-on-import-statement
   transformIgnorePatterns: ['node_modules/(?!(react-native' + '|@rainbow-me/rainbowkit' + ')/)'],
