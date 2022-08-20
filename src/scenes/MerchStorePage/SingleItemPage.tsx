@@ -13,8 +13,6 @@ import { truncateAddress } from 'utils/wallet';
 import { useState } from 'react';
 import noop from 'utils/noop';
 import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
-import Tooltip from 'components/Tooltip/Tooltip';
-import InfoIcon from 'public/icons/info_circle.svg';
 
 export default function ItemPage({
   label,
@@ -48,7 +46,6 @@ export default function ItemPage({
   const [isReceiptState, setIsReceiptState] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <>
@@ -90,16 +87,6 @@ export default function ItemPage({
                     ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
                     : ''}
                 </BaseM>
-                <StyledInfoIcon
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
-                />
-                <StyledTooltip
-                  text={`Supply allocated to Premium Members. General sale begins on Sat 12pm ET with a supply of ${
-                    publicSupply * 3
-                  }.`}
-                  showTooltip={showTooltip}
-                />
               </StyledPriceAndQuantity>
               {!isMobile && <Spacer height={16} />}
               <PurchaseBox
@@ -183,47 +170,12 @@ const StyledConnectedAddress = styled(BaseM)`
 `;
 
 const StyledPriceAndQuantity = styled.div`
-  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
-  }
-`;
-
-const StyledInfoIcon = styled(InfoIcon)`
-  position: absolute;
-  right: -14px;
-  top: 22px;
-
-  @media only screen and ${breakpoints.tablet} {
-    top: 1px;
-    right: -21px;
-  }
-`;
-
-const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
-  width: 200px;
-  position: absolute;
-  right: -116px;
-  top: -40px;
-
-  @media only screen and ${breakpoints.tablet} {
-    top: 1px;
-    right: -21px;
-    top: -45px;
-    max-width: 200px;
-  }
-
-  padding: 6px 8px;
-
-  opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -22 : -18)}px);
-
-  > h3 {
-    white-space: inherit;
   }
 `;
 

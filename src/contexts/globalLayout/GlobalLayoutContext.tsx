@@ -362,7 +362,6 @@ function GlobalNavbarWithFadeEnabled({
           text="(OBJECTS) merch shop is now open."
           queryRef={query}
           actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
-          localStorageKey="MERCH_STORE_LAUNCH_STORAGE_KEY"
           dismissOnActionComponentClick
         />
       ) : null}
