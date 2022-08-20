@@ -6,3 +6,5 @@ export const FEED_MODE_KEY = 'gallery_feed_mode';
 export const THREE_ARROWS_CAPITAL_BANNER_KEY = 'gallery_3ac_banner';
 
 export const DEBUG_USERNAME_KEY = 'debug_username';
+
+export const GLOBAL_BANNER_STORAGE_KEY = 'GLOBAL_BANNER_STORAGE_KEY';
