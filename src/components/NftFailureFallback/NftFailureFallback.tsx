@@ -3,7 +3,7 @@ import colors from 'src/components/core/colors';
 import { RefreshIcon } from '../../icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
-import { MouseEventHandler, useCallback } from 'react';
+import { useCallback } from 'react';
 
 type Size = 'tiny' | 'medium';
 

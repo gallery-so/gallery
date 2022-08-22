@@ -5,8 +5,8 @@ import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVi
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
 export type getVideoOrImageUrlForNftPreviewResult =
-  | { type: 'video'; urls: UrlSet; success: boolean }
-  | { type: 'image'; urls: UrlSet; success: boolean }
+  | { type: 'video'; urls: UrlSet }
+  | { type: 'image'; urls: UrlSet }
   | undefined;
 
 export default function getVideoOrImageUrlForNftPreview(
@@ -120,7 +120,6 @@ export default function getVideoOrImageUrlForNftPreview(
     return {
       type: 'image',
       urls: { large: FALLBACK_URL, medium: FALLBACK_URL, small: FALLBACK_URL },
-      success: false,
     };
   }
 
@@ -130,9 +129,9 @@ export default function getVideoOrImageUrlForNftPreview(
     // as VideoMedia due to its OpenseaImageURL or OpenseaAnimationURL, so we need to do one
     // more check ourselves
     if (media.previewURLs.large?.endsWith('mp4') || media.previewURLs.large?.endsWith('webm')) {
-      return { type: 'video', urls: media.previewURLs, success: true };
+      return { type: 'video', urls: media.previewURLs };
     }
-    return { type: 'image', urls: media.previewURLs, success: true };
+    return { type: 'image', urls: media.previewURLs };
   }
-  return { type: 'image', urls: media.previewURLs, success: true };
+  return { type: 'image', urls: media.previewURLs };
 }

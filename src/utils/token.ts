@@ -2,10 +2,11 @@ import { GOOGLE_CONTENT_IMG_URL } from './regex';
 
 export const FALLBACK_URL = 'https://www.ahhe.com/images/ecommerce/no-img-large.jpg?v=1575380448';
 
-type resizeImageUrlReturnType = {
-  url: string;
-  success: boolean;
-};
+type resizeImageUrlReturnType =
+  | {
+      url: string;
+    }
+  | undefined;
 
 export function graphqlGetResizedNftImageUrlWithFallback(
   url: string | null,
@@ -14,7 +15,6 @@ export function graphqlGetResizedNftImageUrlWithFallback(
   if (url?.endsWith('.gif')) {
     return {
       url,
-      success: true,
     };
   }
 
@@ -23,20 +23,17 @@ export function graphqlGetResizedNftImageUrlWithFallback(
     if (url.match(GOOGLE_CONTENT_IMG_URL)) {
       return {
         url: url.replace(GOOGLE_CONTENT_IMG_URL, `=w${size}`),
-        success: true,
       };
     }
 
     return {
       url: `${url}=w${size}`,
-      success: true,
     };
   }
 
-  return {
-    url: url || FALLBACK_URL,
-    success: url ? true : false,
-  };
+  if (url) {
+    return { url };
+  }
 }
 
 const backgroundColorOverrides: Record<string, string> = {
