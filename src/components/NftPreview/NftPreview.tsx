@@ -206,8 +206,6 @@ function NftPreview({
     );
   }
 
-  console.log(token.id);
-
   return (
     <LinkToNftDetailView
       username={username ?? ''}
