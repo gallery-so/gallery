@@ -1,13 +1,11 @@
-import { Component, PropsWithChildren } from 'react';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
+import { Component, PropsWithChildren, ReactNode } from 'react';
 
 type State = {
   error: Error | null;
 };
 
 type Props = PropsWithChildren<{
-  refreshing: boolean;
-  onRetry: () => void;
+  fallback: ReactNode;
   onError: () => void;
 }>;
 
@@ -27,7 +25,7 @@ export class NftFailureBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
-      return <NftFailureFallback onClick={this.props.onRetry} refreshing={this.props.refreshing} />;
+      return this.props.fallback;
     }
 
     return this.props.children;

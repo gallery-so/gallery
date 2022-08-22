@@ -2,7 +2,7 @@ import transitions from 'components/core/transitions';
 import { Fragment, useCallback, useMemo } from 'react';
 import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
-import { graphql, readInlineData } from 'relay-runtime';
+import { graphql } from 'relay-runtime';
 import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
 import NftPreviewLabel from './NftPreviewLabel';
@@ -17,8 +17,9 @@ import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
-import { NftFailureFallback } from 'components/NftPreview/NftFailureFallback';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -126,23 +127,16 @@ function NftPreview({
   const shouldLiverender = tokenSettings?.renderLive;
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
-  const {
-    handleNftLoaded,
-    handleNftError,
-    retryKey,
-    isFailed,
-    refreshMetadata,
-    refreshingMetadata,
-  } = useNftDisplayRetryLoader({
-    tokenId: token.dbid,
-  });
+  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
+    useNftDisplayRetryLoader({
+      tokenId: token.dbid,
+    });
 
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
       return (
         <NftPreviewAsset
           onLoad={handleNftLoaded}
-          onError={handleNftError}
           tokenRef={token}
           // we'll request images at double the size of the element so that it looks sharp on retina
           size={previewSize * 2}
@@ -150,14 +144,7 @@ function NftPreview({
       );
     }
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
-      return (
-        <NftDetailVideo
-          onLoad={handleNftLoaded}
-          onError={handleNftError}
-          mediaRef={token.media}
-          hideControls
-        />
-      );
+      return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;
@@ -165,7 +152,6 @@ function NftPreview({
     return (
       <NftPreviewAsset
         onLoad={handleNftLoaded}
-        onError={handleNftError}
         tokenRef={token}
         // we'll request images at double the size of the element so that it looks sharp on retina
         size={previewSize * 2}
@@ -178,7 +164,6 @@ function NftPreview({
     isIFrameLiveDisplay,
     previewSize,
     handleNftLoaded,
-    handleNftError,
   ]);
 
   const result = getVideoOrImageUrlForNftPreview(token);
@@ -194,47 +179,49 @@ function NftPreview({
 
   const { aspectRatio } = useContentState();
 
-  if (isFailed) {
-    return (
-      <StyledNftPreview
-        backgroundColorOverride={backgroundColorOverride}
-        aspectRatio={aspectRatio}
-        fullWidth={fullWidth}
-      >
-        <NftFailureFallback refreshing={refreshingMetadata} onClick={refreshMetadata} />
-      </StyledNftPreview>
-    );
-  }
-
   return (
-    <LinkToNftDetailView
-      username={username ?? ''}
-      collectionId={collectionId}
-      tokenId={token.dbid}
-      originPage={originPage}
-    >
-      {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
-          This will inherit the `as` URL from the parent component. */}
-      <StyledA onClick={handleClick}>
+    <NftFailureBoundary
+      key={retryKey}
+      fallback={
         <StyledNftPreview
-          aspectRatio={aspectRatio}
           backgroundColorOverride={backgroundColorOverride}
+          aspectRatio={aspectRatio}
           fullWidth={fullWidth}
         >
-          <Fragment key={retryKey}>{PreviewAsset}</Fragment>
-          {hideLabelOnMobile ? null : (
-            <StyledNftFooter>
-              <StyledNftLabel
-                title={token.name}
-                collectionName={token.contract?.name}
-                contractAddress={contractAddress}
-              />
-              <StyledGradient type="bottom" direction="down" />
-            </StyledNftFooter>
-          )}
+          <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
         </StyledNftPreview>
-      </StyledA>
-    </LinkToNftDetailView>
+      }
+      onError={handleNftError}
+    >
+      <LinkToNftDetailView
+        username={username ?? ''}
+        collectionId={collectionId}
+        tokenId={token.dbid}
+        originPage={originPage}
+      >
+        {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
+          This will inherit the `as` URL from the parent component. */}
+        <StyledA onClick={handleClick}>
+          <StyledNftPreview
+            aspectRatio={aspectRatio}
+            backgroundColorOverride={backgroundColorOverride}
+            fullWidth={fullWidth}
+          >
+            {PreviewAsset}
+            {hideLabelOnMobile ? null : (
+              <StyledNftFooter>
+                <StyledNftLabel
+                  title={token.name}
+                  collectionName={token.contract?.name}
+                  contractAddress={contractAddress}
+                />
+                <StyledGradient type="bottom" direction="down" />
+              </StyledNftFooter>
+            )}
+          </StyledNftPreview>
+        </StyledA>
+      </LinkToNftDetailView>
+    </NftFailureBoundary>
   );
 }
 

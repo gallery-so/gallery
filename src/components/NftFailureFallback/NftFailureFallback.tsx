@@ -8,19 +8,19 @@ import { useCallback } from 'react';
 type Size = 'tiny' | 'medium';
 
 type Props = {
-  onClick: () => void;
+  onRetry: () => void;
   refreshing: boolean;
   size?: Size;
 };
 
-export function NftFailureFallback({ onClick, refreshing, size = 'medium' }: Props) {
+export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Props) {
   const handleClick = useCallback(() => {
     if (refreshing) {
       return;
     }
 
-    onClick();
-  }, [onClick, refreshing]);
+    onRetry();
+  }, [onRetry, refreshing]);
 
   const spaceY = {
     tiny: 4,
