@@ -14,6 +14,8 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
 import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { NftFailureFallback } from 'components/NftPreview/NftFailureFallback';
+import { useEffect } from 'react';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -59,6 +61,15 @@ function NftDetailAssetComponent({ tokenRef, onLoad, onError }: NftDetailAssetCo
     tokenRef
   );
 
+  useEffect(() => {
+    if (token.token.media.__typename === 'UnknownMedia') {
+      // If we're dealing with UnknownMedia, we know the NFT is going to
+      // fail to load, so we'll just immediately notify the parent
+      // that this NftDetailAsset was unable to render
+      onError();
+    }
+  }, [onError, token.token.media.__typename]);
+
   switch (token.token.media.__typename) {
     case 'HtmlMedia':
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token.token} />;
@@ -95,6 +106,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       fragment NftDetailAssetFragment on CollectionToken {
         id
         token @required(action: THROW) {
+          dbid
           contract {
             contractAddress {
               address
@@ -124,7 +136,16 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const { handleNftLoaded, handleNftError, retryKey, failure } = useNftDisplayRetryLoader();
+  const {
+    handleNftLoaded,
+    handleNftError,
+    retryKey,
+    isFailed,
+    refreshMetadata,
+    refreshingMetadata,
+  } = useNftDisplayRetryLoader({
+    tokenId: token.token.dbid,
+  });
 
   return (
     <StyledAssetContainer
@@ -133,12 +154,16 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent
-        key={retryKey}
-        onError={handleNftError}
-        onLoad={handleNftLoaded}
-        tokenRef={token}
-      />
+      {isFailed ? (
+        <NftFailureFallback onClick={refreshMetadata} refreshing={refreshingMetadata} />
+      ) : (
+        <NftDetailAssetComponent
+          key={retryKey}
+          onError={handleNftError}
+          onLoad={handleNftLoaded}
+          tokenRef={token}
+        />
+      )}
     </StyledAssetContainer>
   );
 }
