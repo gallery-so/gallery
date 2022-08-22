@@ -100,7 +100,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad, onError }: Props) {
   } else {
     // This should immediately disappear due to the `notifyParentOfFailure`
     // effect above
-    return <FailedNftPreview />;
+    return null;
   }
 }
 
