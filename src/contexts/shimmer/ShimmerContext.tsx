@@ -1,13 +1,5 @@
 import Shimmer from 'components/Shimmer/Shimmer';
-import {
-  createContext,
-  memo,
-  ReactNode,
-  SyntheticEvent,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, memo, ReactNode, useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 type AspectRatio = 'wide' | 'square' | 'tall' | 'unknown';
@@ -34,7 +26,7 @@ type ShimmerAction = {
   setContentIsLoaded: ContentIsLoadedEvent;
 };
 
-const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
+export const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
 
 export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => {
   const context = useContext(ShimmerActionContext);
