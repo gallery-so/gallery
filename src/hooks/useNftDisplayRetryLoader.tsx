@@ -1,5 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { ContentIsLoadedEvent, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import {
+  ContentIsLoadedEvent,
+  ShimmerActionContext,
+  useSetContentIsLoaded,
+} from 'contexts/shimmer/ShimmerContext';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
 import { useNftDisplayRetryLoaderMutation } from '../../__generated__/useNftDisplayRetryLoaderMutation.graphql';
@@ -30,22 +34,23 @@ export function useNftDisplayRetryLoader({
   const [isFailed, setIsFailed] = useState<boolean>(false);
   const [refreshingMetadata, setRefreshingMetadata] = useState(false);
 
-  const setContentIsLoaded = useSetContentIsLoaded();
+  const shimmerContext = useContext(ShimmerActionContext);
+
   const handleNftLoaded = useCallback(
     (event?: any) => {
-      setContentIsLoaded(event);
+      shimmerContext?.setContentIsLoaded(event);
 
       // If we "successfully" loaded, we never
       // want to show the failure state
       setIsFailed(false);
     },
-    [setContentIsLoaded]
+    [shimmerContext]
   );
 
   const handleNftError = useCallback(
     (event?: any) => {
       // Give up and show the failure state
-      setContentIsLoaded(event);
+      shimmerContext?.setContentIsLoaded(event);
       setIsFailed(true);
 
       // If the user refreshed the metadata and there was another failure,
@@ -63,7 +68,7 @@ export function useNftDisplayRetryLoader({
         tags: { tokenId, alreadyRefreshed: refreshed },
       });
     },
-    [pushToast, refreshed, reportError, setContentIsLoaded, tokenId]
+    [pushToast, refreshed, reportError, shimmerContext, tokenId]
   );
 
   const retry = useCallback(() => {
