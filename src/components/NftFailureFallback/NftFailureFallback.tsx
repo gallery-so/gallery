@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import colors from 'src/components/core/colors';
+import colors from 'components/core/colors';
 import { RefreshIcon } from '../../icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';

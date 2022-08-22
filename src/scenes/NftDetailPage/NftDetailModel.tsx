@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailModelFragment$key } from '__generated__/NftDetailModelFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 
 type Props = {
   mediaRef: NftDetailModelFragment$key;
-  onError: () => void;
   onLoad: () => void;
 };
 
@@ -28,7 +28,7 @@ interface ModelViewerJSX {
   class: string;
 }
 
-function NftDetailModel({ mediaRef, onLoad, onError }: Props) {
+function NftDetailModel({ mediaRef, onLoad }: Props) {
   const { contentRenderURL } = useFragment(
     graphql`
       fragment NftDetailModelFragment on GltfMedia {
@@ -41,10 +41,12 @@ function NftDetailModel({ mediaRef, onLoad, onError }: Props) {
   // We consider models to be loaded when the component mounts
   useEffect(onLoad, [onLoad]);
 
+  const { handleError } = useThrowOnMediaFailure('NftDetailModal');
+
   return (
     <StyledNftDetailModel>
       <model-viewer
-        onError={onError}
+        onError={handleError}
         class="model-viewer"
         auto-rotate
         camera-controls

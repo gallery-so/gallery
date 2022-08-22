@@ -14,16 +14,15 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
 import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
-import { NftFailureFallback } from 'components/NftPreview/NftFailureFallback';
-import { useEffect } from 'react';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   onLoad: () => void;
-  onError: () => void;
 };
 
-function NftDetailAssetComponent({ tokenRef, onLoad, onError }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on CollectionToken {
@@ -61,27 +60,24 @@ function NftDetailAssetComponent({ tokenRef, onLoad, onError }: NftDetailAssetCo
     tokenRef
   );
 
-  useEffect(() => {
-    if (token.token.media.__typename === 'UnknownMedia') {
-      // If we're dealing with UnknownMedia, we know the NFT is going to
-      // fail to load, so we'll just immediately notify the parent
-      // that this NftDetailAsset was unable to render
-      onError();
-    }
-  }, [onError, token.token.media.__typename]);
+  if (token.token.media.__typename === 'UnknownMedia') {
+    // If we're dealing with UnknownMedia, we know the NFT is going to
+    // fail to load, so we'll just immediately notify the parent
+    // that this NftDetailAsset was unable to render
+    throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
+  }
 
   switch (token.token.media.__typename) {
     case 'HtmlMedia':
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token.token} />;
     case 'VideoMedia':
-      return <NftDetailVideo onLoad={onLoad} onError={onError} mediaRef={token.token.media} />;
+      return <NftDetailVideo onLoad={onLoad} mediaRef={token.token.media} />;
     case 'AudioMedia':
-      return <NftDetailAudio onLoad={onLoad} onError={onError} tokenRef={token.token} />;
+      return <NftDetailAudio onLoad={onLoad} tokenRef={token.token} />;
     case 'ImageMedia':
       return (
         <NftDetailImage
           onLoad={onLoad}
-          onError={onError}
           tokenRef={token.token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
@@ -89,7 +85,7 @@ function NftDetailAssetComponent({ tokenRef, onLoad, onError }: NftDetailAssetCo
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel onLoad={onLoad} onError={onError} mediaRef={token.token.media} />;
+      return <NftDetailModel onLoad={onLoad} mediaRef={token.token.media} />;
     default:
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token.token} />;
   }
@@ -136,16 +132,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const {
-    handleNftLoaded,
-    handleNftError,
-    retryKey,
-    isFailed,
-    refreshMetadata,
-    refreshingMetadata,
-  } = useNftDisplayRetryLoader({
-    tokenId: token.token.dbid,
-  });
+  const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
+    useNftDisplayRetryLoader({
+      tokenId: token.token.dbid,
+    });
 
   return (
     <StyledAssetContainer
@@ -154,16 +144,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      {isFailed ? (
-        <NftFailureFallback onClick={refreshMetadata} refreshing={refreshingMetadata} />
-      ) : (
-        <NftDetailAssetComponent
-          key={retryKey}
-          onError={handleNftError}
-          onLoad={handleNftLoaded}
-          tokenRef={token}
-        />
-      )}
+      <NftFailureBoundary
+        key={retryKey}
+        onError={handleNftError}
+        onRetry={refreshMetadata}
+        refreshing={refreshingMetadata}
+      >
+        <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
+      </NftFailureBoundary>
     </StyledAssetContainer>
   );
 }

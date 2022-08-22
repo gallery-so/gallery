@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
 import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
   hideControls?: boolean;
   onLoad: ContentIsLoadedEvent;
-  onError: ContentIsLoadedEvent;
 };
 
-function NftDetailVideo({ mediaRef, hideControls = false, onLoad, onError }: Props) {
+function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -26,6 +26,8 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, onError }: Pro
     `,
     mediaRef
   );
+
+  const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
 
   return (
     <StyledVideo
@@ -45,7 +47,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, onError }: Pro
        * and even Opensea itself cannot load videos on iOS. The best we can do is render
        * a static poster in its place.
        */
-      onError={onError}
+      onError={handleError}
       poster={token?.previewURLs?.large ?? ''}
     />
   );

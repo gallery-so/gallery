@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import noop from 'utils/noop';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container
@@ -15,7 +16,6 @@ type Props = {
   alt: string;
   heightType?: ContentHeightType;
   onClick?: () => void;
-  onError: JSX.IntrinsicElements['img']['onError'];
   onLoad: JSX.IntrinsicElements['img']['onLoad'];
 };
 
@@ -25,7 +25,6 @@ export default function ImageWithLoading({
   alt,
   heightType,
   onClick = noop,
-  onError,
   onLoad,
 }: Props) {
   const maxHeight = useMemo(() => {
@@ -45,6 +44,7 @@ export default function ImageWithLoading({
   }, [heightType]);
 
   const renderFullWidth = isSvg(src) && !isFirefox();
+  const { handleError } = useThrowOnMediaFailure('ImageWithLoading');
 
   return (
     <StyledImageWithLoading
@@ -55,7 +55,7 @@ export default function ImageWithLoading({
       alt={alt}
       loading="lazy"
       onLoad={onLoad}
-      onError={onError}
+      onError={handleError}
       onClick={onClick}
     />
   );

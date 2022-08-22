@@ -9,16 +9,17 @@ import { graphql } from 'relay-runtime';
 import { useNftDisplayRetryLoaderMutation } from '../../__generated__/useNftDisplayRetryLoaderMutation.graphql';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 type useNftDisplayRetryLoaderArgs = {
   tokenId: string;
 };
 
 type useNftDisplayRetryLoaderResult = {
-  isFailed: boolean;
+  retryKey: number;
   handleNftLoaded: ContentIsLoadedEvent;
   handleNftError: ContentIsLoadedEvent;
-  retryKey: number;
   refreshMetadata: () => void;
   refreshingMetadata: boolean;
 };
@@ -31,7 +32,6 @@ export function useNftDisplayRetryLoader({
 
   const [retryKey, setRetryKey] = useState(0);
   const [refreshed, setRefreshed] = useState(false);
-  const [isFailed, setIsFailed] = useState<boolean>(false);
   const [refreshingMetadata, setRefreshingMetadata] = useState(false);
 
   const shimmerContext = useContext(ShimmerActionContext);
@@ -39,10 +39,6 @@ export function useNftDisplayRetryLoader({
   const handleNftLoaded = useCallback(
     (event?: any) => {
       shimmerContext?.setContentIsLoaded(event);
-
-      // If we "successfully" loaded, we never
-      // want to show the failure state
-      setIsFailed(false);
     },
     [shimmerContext]
   );
@@ -51,7 +47,6 @@ export function useNftDisplayRetryLoader({
     (event?: any) => {
       // Give up and show the failure state
       shimmerContext?.setContentIsLoaded(event);
-      setIsFailed(true);
 
       // If the user refreshed the metadata and there was another failure,
       // we'll show them a new toast telling them things failed to load,
@@ -72,7 +67,6 @@ export function useNftDisplayRetryLoader({
   );
 
   const retry = useCallback(() => {
-    setIsFailed(false);
     setRefreshed(true);
     setRetryKey((previous) => previous + 1);
   }, []);
@@ -130,9 +124,28 @@ export function useNftDisplayRetryLoader({
       handleNftLoaded,
       handleNftError,
       retryKey,
-      isFailed,
       refreshMetadata,
       refreshingMetadata: refreshingMetadata,
     };
-  }, [isFailed, handleNftError, handleNftLoaded, refreshMetadata, retryKey, refreshingMetadata]);
+  }, [handleNftError, handleNftLoaded, refreshMetadata, retryKey, refreshingMetadata]);
+}
+
+export function useThrowOnMediaFailure(
+  componentName: string,
+  metadata?: Record<string, Primitive>
+) {
+  const [hasFailed, setHasFailed] = useState(false);
+
+  const shimmerContext = useContext(ShimmerActionContext);
+  const handleError = useCallback(() => {
+    shimmerContext?.setContentIsLoaded();
+
+    setHasFailed(true);
+  }, [shimmerContext]);
+
+  if (hasFailed) {
+    throw new CouldNotRenderNftError(componentName, 'Could not load media', metadata);
+  }
+
+  return useMemo(() => ({ handleError }), [handleError]);
 }

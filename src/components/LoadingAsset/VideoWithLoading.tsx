@@ -1,6 +1,7 @@
 import { ContentIsLoadedEvent, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 
 type ContentWidthType = 'fullWidth' | 'maxWidth';
 
@@ -14,7 +15,6 @@ type Props = {
   widthType?: ContentWidthType;
   heightType?: ContentHeightType;
   onLoad: ContentIsLoadedEvent;
-  onError: ContentIsLoadedEvent;
 };
 
 export default function VideoWithLoading({
@@ -23,7 +23,6 @@ export default function VideoWithLoading({
   heightType,
   src,
   onLoad,
-  onError,
 }: Props) {
   const maxHeight = useMemo(() => {
     if (heightType === 'maxHeightScreen') {
@@ -35,6 +34,8 @@ export default function VideoWithLoading({
     return '100%';
   }, [heightType]);
 
+  const { handleError } = useThrowOnMediaFailure('VideoWithLoading');
+
   return (
     <StyledVideo
       className={className}
@@ -43,7 +44,7 @@ export default function VideoWithLoading({
       // start a few frames in, in case the first frame is blank
       src={`${src}#t=0.5`}
       onLoadedData={onLoad}
-      onError={onError}
+      onError={handleError}
       preload="metadata"
     />
   );
