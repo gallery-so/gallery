@@ -1,6 +1,5 @@
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
-import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
@@ -8,22 +7,26 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
+import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
+import { NftFailureFallback } from 'components/NftPreview/NftFailureFallback';
+import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { SidebarNftIconPreviewAsset$key } from '../../../../../../__generated__/SidebarNftIconPreviewAsset.graphql';
+import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
   editModeToken: EditModeToken;
   handleTokenRenderError: (id: string) => void;
-  hasErrored: boolean;
+  handleTokenRenderSuccess: (id: string) => void;
 };
 
 function SidebarNftIcon({
   tokenRef,
   editModeToken,
   handleTokenRenderError,
-  hasErrored,
+  handleTokenRenderSuccess,
 }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
@@ -34,28 +37,15 @@ function SidebarNftIcon({
             address
           }
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...SidebarNftIconPreviewAsset
       }
     `,
     tokenRef
   );
 
-  if (!token) {
-    throw new Error('SidebarNftIcon: token not provided');
-  }
-
   const { isSelected, id } = editModeToken;
 
   const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
-
-  const handleClick = useCallback(() => {
-    setTokensIsSelected([id], !isSelected);
-    if (isSelected) {
-      unstageTokens([id]);
-    } else {
-      stageTokens([editModeToken]);
-    }
-  }, [setTokensIsSelected, id, isSelected, unstageTokens, editModeToken, stageTokens]);
 
   const mountRef = useRef(false);
 
@@ -76,52 +66,120 @@ function SidebarNftIcon({
     [contractAddress]
   );
 
+  const {
+    handleNftLoaded,
+    handleNftError,
+    isFailed,
+    retryKey,
+    refreshMetadata,
+    refreshingMetadata,
+  } = useNftDisplayRetryLoader({ tokenId: token.dbid });
+
+  const handleClick = useCallback(() => {
+    if (isFailed) {
+      refreshMetadata();
+
+      return;
+    }
+
+    setTokensIsSelected([id], !isSelected);
+    if (isSelected) {
+      unstageTokens([id]);
+    } else {
+      stageTokens([editModeToken]);
+    }
+  }, [
+    isFailed,
+    setTokensIsSelected,
+    id,
+    isSelected,
+    refreshMetadata,
+    unstageTokens,
+    stageTokens,
+    editModeToken,
+  ]);
+
+  const handleError = useCallback(
+    (event?: any) => {
+      handleNftError(event);
+      handleTokenRenderError(token.dbid);
+    },
+    [handleNftError, handleTokenRenderError, token.dbid]
+  );
+
+  const handleLoad = useCallback(
+    (event?: any) => {
+      handleNftLoaded(event);
+      handleTokenRenderSuccess(token.dbid);
+    },
+    [handleNftLoaded, handleTokenRenderSuccess, token.dbid]
+  );
+
+  return (
+    <StyledSidebarNftIcon key={retryKey} backgroundColorOverride={backgroundColorOverride}>
+      {isFailed ? (
+        <NftFailureFallback size="tiny" onClick={refreshMetadata} refreshing={refreshingMetadata} />
+      ) : (
+        <SidebarPreviewAsset
+          tokenRef={token}
+          onLoad={handleLoad}
+          onError={handleError}
+          isSelected={isSelected ?? false}
+        />
+      )}
+      <StyledOutline onClick={handleClick} isSelected={isSelected} />
+    </StyledSidebarNftIcon>
+  );
+}
+
+type SidebarPreviewAssetProps = {
+  tokenRef: SidebarNftIconPreviewAsset$key;
+  onError: ContentIsLoadedEvent;
+  onLoad: ContentIsLoadedEvent;
+  isSelected: boolean;
+};
+
+function SidebarPreviewAsset({ tokenRef, onLoad, onError, isSelected }: SidebarPreviewAssetProps) {
+  const token = useFragment(
+    graphql`
+      fragment SidebarNftIconPreviewAsset on Token {
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    tokenRef
+  );
+
   const reportError = useReportError();
   const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
 
-  const isInvalidPreviewUrl = !previewUrlSet || !previewUrlSet.urls.small || !previewUrlSet.success;
-  const isBroken = isInvalidPreviewUrl || hasErrored;
-
   useEffect(() => {
-    if (isInvalidPreviewUrl && !hasErrored) {
-      handleTokenRenderError(token.dbid);
+    // THIS SHOULD BE THE SAME CONDITION AS THE ONE IN THE IF BELOW
+    // We cannot extract a variable because TypeScript is unable
+    // to recognize that the types get narrowed appropriately
+    if (!previewUrlSet?.urls.small) {
+      onError();
     }
-  }, [handleTokenRenderError, hasErrored, isInvalidPreviewUrl, token.dbid]);
+  }, [onError, previewUrlSet?.urls.small]);
 
-  const previewAsset = useMemo(() => {
-    if (isBroken) {
-      return <FailedNftPreview isSidebar />;
-    }
-
-    // Some OpenSea assets dont have an image url, so render a freeze frame of the video instead
+  // THIS ONE HERE
+  if (previewUrlSet?.urls.small) {
+    // Some OpenSea assets don't have an image url,
+    // so render a freeze-frame of the video instead
     if (previewUrlSet?.type === 'video')
-      return (
-        <StyledVideo isSelected={isSelected} src={previewUrlSet?.urls.small ?? FALLBACK_URL} />
-      );
+      return <StyledVideo onLoad={onLoad} isSelected={isSelected} src={previewUrlSet.urls.small} />;
 
     return (
       <StyledImage
         isSelected={isSelected}
-        src={previewUrlSet?.urls.small ?? FALLBACK_URL}
+        src={previewUrlSet.urls.small}
         alt="token"
-        onError={() => handleTokenRenderError(token.dbid)}
+        onLoad={onLoad}
+        onError={onError}
       />
     );
-  }, [
-    isBroken,
-    previewUrlSet?.type,
-    previewUrlSet?.urls.small,
-    isSelected,
-    handleTokenRenderError,
-    token.dbid,
-  ]);
-
-  return (
-    <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-      {previewAsset}
-      <StyledOutline onClick={handleClick} isSelected={isSelected} />
-    </StyledSidebarNftIcon>
-  );
+  } else {
+    return null;
+  }
 }
 
 export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
