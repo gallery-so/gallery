@@ -8,18 +8,23 @@ import { useCallback } from 'react';
 type Size = 'tiny' | 'medium';
 
 type Props = {
-  onRetry: () => void;
-  refreshing: boolean;
   size?: Size;
-};
+} & (
+  | { noControls: true; onRetry?: undefined; refreshing?: undefined }
+  | { noControls?: false; onRetry: () => void; refreshing: boolean }
+);
 
-export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Props) {
+export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'medium' }: Props) {
   const handleClick = useCallback(() => {
+    if (noControls) {
+      return;
+    }
+
     if (refreshing) {
       return;
     }
 
-    onRetry();
+    onRetry?.();
   }, [onRetry, refreshing]);
 
   const spaceY = {
@@ -34,10 +39,14 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
       ) : (
         <Label size={size}>Could not load</Label>
       )}
-      <Spacer height={spaceY} />
-      <IconButton>
-        <RefreshIcon />
-      </IconButton>
+      {!noControls && (
+        <>
+          <Spacer height={spaceY} />
+          <IconButton>
+            <RefreshIcon />
+          </IconButton>
+        </>
+      )}
     </Wrapper>
   );
 }
