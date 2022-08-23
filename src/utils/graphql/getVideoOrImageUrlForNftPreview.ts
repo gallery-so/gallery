@@ -1,6 +1,5 @@
 import { ReportFn } from 'contexts/errorReporting/ErrorReportingContext';
 import { readInlineData, graphql } from 'relay-runtime';
-import { FALLBACK_URL } from 'utils/token';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '__generated__/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
@@ -117,10 +116,7 @@ export default function getVideoOrImageUrlForNftPreview(
   }
 
   if (!media.previewURLs.large && !media.previewURLs.medium && !media.previewURLs.small) {
-    return {
-      type: 'image',
-      urls: { large: FALLBACK_URL, medium: FALLBACK_URL, small: FALLBACK_URL },
-    };
+    return undefined;
   }
 
   if (media.__typename === 'VideoMedia') {
