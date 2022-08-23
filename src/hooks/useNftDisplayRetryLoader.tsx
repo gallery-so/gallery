@@ -1,9 +1,5 @@
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import {
-  ContentIsLoadedEvent,
-  ShimmerActionContext,
-  useSetContentIsLoaded,
-} from 'contexts/shimmer/ShimmerContext';
+import { useCallback, useContext, useMemo, useState } from 'react';
+import { ContentIsLoadedEvent, ShimmerActionContext } from 'contexts/shimmer/ShimmerContext';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
 import { useNftDisplayRetryLoaderMutation } from '../../__generated__/useNftDisplayRetryLoaderMutation.graphql';
@@ -84,6 +80,8 @@ export function useNftDisplayRetryLoader({
           token {
             # Ensure we're reloading the necessary data
             ...NftPreviewTokenFragment
+            ...SidebarNftIconPreviewAsset
+            ...NftDetailAssetTokenFragment
           }
         }
       }
