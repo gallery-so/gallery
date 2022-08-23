@@ -4,25 +4,23 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
-import {
-  getBackgroundColorOverrideForContract,
-  graphqlGetResizedNftImageUrlWithFallback,
-} from 'utils/token';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import Markdown from 'components/core/Markdown/Markdown';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import {
+  BIG_NFT_SIZE_PX,
+  BigNft,
+  BigNftContainer,
+} from 'flows/shared/steps/OrganizeGallery/BigNft';
+import { SmolNft, SmolNftContainer } from 'flows/shared/steps/OrganizeGallery/SmolNft';
 
 type Props = {
-  collectionRef: CollectionRowFragment$key;
   className?: string;
+  collectionRef: CollectionRowFragment$key;
 };
-
-const BIG_NFT_SIZE_PX = 160;
-const SMOL_NFT_SIZE_PX = 25;
 
 /**
  * Displays the first 3 NFTs in large tiles, while the rest are squeezed into the 4th position
@@ -38,12 +36,7 @@ function CollectionRow({ collectionRef, className }: Props) {
         tokens @required(action: THROW) {
           id @required(action: THROW)
           token @required(action: THROW) {
-            contract {
-              contractAddress {
-                address
-              }
-            }
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...BigNftFragment
             ...CollectionRowCompactNftsFragment
           }
         }
@@ -99,33 +92,9 @@ function CollectionRow({ collectionRef, className }: Props) {
       </Header>
       <Spacer height={12} />
       <Body>
-        {firstThreeNfts.map((token) => {
-          const result = getVideoOrImageUrlForNftPreview(token.token);
-
-          if (!result) {
-            return null;
-          }
-
-          const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
-            result.urls.large,
-            BIG_NFT_SIZE_PX
-          );
-
-          return (
-            <BigNftContainer key={token.id}>
-              {result.type === 'video' ? (
-                <BigNftVideoPreview src={imageUrl} />
-              ) : (
-                <BigNftImagePreview
-                  src={imageUrl}
-                  backgroundColorOverride={getBackgroundColorOverrideForContract(
-                    token.token.contract?.contractAddress?.address ?? ''
-                  )}
-                />
-              )}
-            </BigNftContainer>
-          );
-        })}
+        {firstThreeNfts.map((token) => (
+          <BigNft key={token.id} tokenRef={token.token} />
+        ))}
         {remainingNfts.length > 0 && !isMobile ? (
           <CompactNfts nftRefs={remainingNfts.map((it) => it.token)} />
         ) : null}
@@ -173,30 +142,6 @@ const StyledHiddenLabel = styled(BaseM)`
   text-align: right;
 `;
 
-const BigNftContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: ${BIG_NFT_SIZE_PX}px;
-  height: ${BIG_NFT_SIZE_PX}px;
-
-  user-select: none;
-  pointer-events: none;
-`;
-
-const BigNftVideoPreview = styled.video`
-  max-width: 100%;
-  max-height: 100%;
-`;
-
-const BigNftImagePreview = styled.img<{ backgroundColorOverride: string }>`
-  max-width: 100%;
-  max-height: 100%;
-  ${({ backgroundColorOverride }) =>
-    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
-`;
-
 const Body = styled.div`
   display: flex;
 
@@ -227,6 +172,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
           }
         }
         ...getVideoOrImageUrlForNftPreviewFragment
+        ...SmolNftFragment
       }
     `,
     nftRefs
@@ -249,64 +195,14 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
       <Content>
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
-            {firstThreeNfts.map((token) => {
-              const result = getVideoOrImageUrlForNftPreview(token);
-
-              if (!result) {
-                return null;
-              }
-
-              const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
-                result.urls.small,
-                SMOL_NFT_SIZE_PX
-              );
-
-              return (
-                <SmolNftContainer key={token.id}>
-                  {result.type === 'video' ? (
-                    <SmolNftVideoPreview src={imageUrl} />
-                  ) : (
-                    <SmolNftImagePreview
-                      src={imageUrl}
-                      backgroundColorOverride={getBackgroundColorOverrideForContract(
-                        token.contract?.contractAddress?.address ?? ''
-                      )}
-                    />
-                  )}
-                </SmolNftContainer>
-              );
-            })}
+            {firstThreeNfts.map((token) => (
+              <SmolNft tokenRef={token} />
+            ))}
             <Spacer width={2} />
             <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
-          firstFiveNfts.map((token) => {
-            const result = getVideoOrImageUrlForNftPreview(token);
-
-            if (!result) {
-              return null;
-            }
-
-            const { url: imageUrl } = graphqlGetResizedNftImageUrlWithFallback(
-              result.urls.small,
-              SMOL_NFT_SIZE_PX
-            );
-
-            return (
-              <SmolNftContainer key={token.id}>
-                {result.type === 'video' ? (
-                  <SmolNftVideoPreview src={imageUrl} />
-                ) : (
-                  <SmolNftImagePreview
-                    src={imageUrl}
-                    backgroundColorOverride={getBackgroundColorOverrideForContract(
-                      token.contract?.contractAddress?.address ?? ''
-                    )}
-                  />
-                )}
-              </SmolNftContainer>
-            );
-          })
+          firstFiveNfts.map((token) => <SmolNft tokenRef={token} />)
         )}
       </Content>
     </StyledCompactNfts>
@@ -321,27 +217,6 @@ const StyledCompactNfts = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const SmolNftContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: ${SMOL_NFT_SIZE_PX}px;
-  height: ${SMOL_NFT_SIZE_PX}px;
-`;
-
-const SmolNftVideoPreview = styled.video`
-  max-width: 100%;
-  max-height: 100%;
-`;
-
-const SmolNftImagePreview = styled.img<{ backgroundColorOverride: string }>`
-  max-width: 100%;
-  max-height: 100%;
-  ${({ backgroundColorOverride }) =>
-    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 `;
 
 const Content = styled.div`
