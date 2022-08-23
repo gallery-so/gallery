@@ -9,7 +9,7 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
-import { useImageUrlLoader } from 'hooks/useImageUrlLoader';
+import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
 
 type Props = {
   tokenRef: StagedNftImageDraggingFragment$key;
@@ -21,6 +21,11 @@ function StagedNftImageDragging({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageDraggingFragment on Token {
+        contract {
+          contractAddress {
+            address
+          }
+        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -98,7 +103,8 @@ function StagedNftImageDraggingImage({
 }: StagedNftImageDraggingImageProps) {
   const { handleError } = useThrowOnMediaFailure('StagedNftImageDraggingImage');
 
-  useImageUrlLoader({ url, onError: handleError });
+  // We have to use this since we're not using an actual img element
+  useImageFailureCheck({ url, onError: handleError });
 
   return (
     <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>

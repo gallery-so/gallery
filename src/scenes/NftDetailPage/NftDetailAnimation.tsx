@@ -1,4 +1,4 @@
-import { SyntheticEvent, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';

@@ -196,13 +196,13 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
         {hasMoreThanFiveNfts ? (
           <NftsWithMoreText>
             {firstThreeNfts.map((token) => (
-              <SmolNft tokenRef={token} />
+              <SmolNft key={token.id} tokenRef={token} />
             ))}
             <Spacer width={2} />
             <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
-          firstFiveNfts.map((token) => <SmolNft tokenRef={token} />)
+          firstFiveNfts.map((token) => <SmolNft key={token.id} tokenRef={token} />)
         )}
       </Content>
     </StyledCompactNfts>

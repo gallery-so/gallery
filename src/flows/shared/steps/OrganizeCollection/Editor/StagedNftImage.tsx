@@ -6,7 +6,7 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
-import { useImageUrlLoader } from 'hooks/useImageUrlLoader';
+import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;
@@ -95,7 +95,8 @@ function StagedNftImageImage({
 }: StagedNftImageImageProps) {
   const { handleError } = useThrowOnMediaFailure('StagedNftImageImage');
 
-  useImageUrlLoader({ url, onLoad, onError: handleError });
+  // We have to use this since we're not using an actual img element
+  useImageFailureCheck({ url, onLoad, onError: handleError });
 
   return (
     <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>

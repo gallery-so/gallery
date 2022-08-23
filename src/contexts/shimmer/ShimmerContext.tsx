@@ -67,6 +67,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
             aspectRatio = event.target.videoWidth / event.target.videoHeight;
           }
 
+          // Handle division by zero
           if (isNaN(aspectRatio)) {
             aspectRatio = 1;
           }

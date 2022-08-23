@@ -21,7 +21,6 @@ import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
 import AddBlankBlock from './AddBlankBlock';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   sidebarTokens: SidebarTokensState;

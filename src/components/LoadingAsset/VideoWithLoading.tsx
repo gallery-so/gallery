@@ -1,4 +1,3 @@
-import { ContentIsLoadedEvent, useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
@@ -14,7 +13,7 @@ type Props = {
   src: string;
   widthType?: ContentWidthType;
   heightType?: ContentHeightType;
-  onLoad: ContentIsLoadedEvent;
+  onLoad: JSX.IntrinsicElements['video']['onLoad'];
 };
 
 export default function VideoWithLoading({

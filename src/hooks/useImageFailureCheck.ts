@@ -6,7 +6,11 @@ type useImageUrlLoaderArgs = {
   onError?: () => void;
 };
 
-export function useImageUrlLoader({ url, onLoad, onError }: useImageUrlLoaderArgs) {
+/**
+ * This hook should be used to if you want to detect success / failure of loading
+ * an image url, but you're not using an `img` element.
+ */
+export function useImageFailureCheck({ url, onLoad, onError }: useImageUrlLoaderArgs) {
   useEffect(() => {
     if (!url) {
       onError?.();

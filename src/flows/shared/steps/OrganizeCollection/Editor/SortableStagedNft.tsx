@@ -19,7 +19,6 @@ import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions'
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
-import colors from 'components/core/colors';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;

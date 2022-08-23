@@ -25,7 +25,7 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
     }
 
     onRetry?.();
-  }, [onRetry, refreshing]);
+  }, [noControls, onRetry, refreshing]);
 
   const spaceY = {
     tiny: 4,

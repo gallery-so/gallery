@@ -1,5 +1,5 @@
 import transitions from 'components/core/transitions';
-import { Fragment, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
