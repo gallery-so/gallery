@@ -16,6 +16,7 @@ import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading
 import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -147,8 +148,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       <NftFailureBoundary
         key={retryKey}
         onError={handleNftError}
-        onRetry={refreshMetadata}
-        refreshing={refreshingMetadata}
+        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
@@ -182,7 +182,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     min-height: 600px;
     height: 100%;
   }
-  
+
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
