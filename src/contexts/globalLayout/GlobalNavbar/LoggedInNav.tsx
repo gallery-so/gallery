@@ -41,7 +41,7 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
-  const { query: routerQuery } = useRouter();
+  const { query: routerQuery, push } = useRouter();
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
@@ -53,6 +53,10 @@ function LoggedInNav({ queryRef }: Props) {
       headerText: 'Edit username and bio',
     });
   }, [query, showModal]);
+
+  const handleShopClick = useCallback(() => {
+    push('/shop');
+  }, [push]);
 
   const { handleLogout } = useAuthActions();
   const handleSignOutClick = useCallback(() => {
@@ -96,6 +100,7 @@ function LoggedInNav({ queryRef }: Props) {
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+            <TextButton text="Shop" onClick={handleShopClick} />
             <TextButton text="Sign out" onClick={handleSignOutClick} />
           </Dropdown>
         </StyledDropdownWrapper>
