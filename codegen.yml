@@ -8,3 +8,5 @@ generates:
     plugins:
       - typescript
       - "@gallery-so/typescript-operations"
+      - add:
+            content: '// @ts-nocheck'

@@ -69,7 +69,6 @@ const Wrapper = styled.button`
   // Button resets
   border: none;
   margin: 0;
-  // padding: 8px 16px;
 
   width: 100%;
 
