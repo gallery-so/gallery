@@ -3,10 +3,8 @@ import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import { graphql, useFragment } from 'react-relay';
 import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL } from 'utils/token';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useEffect } from 'react';
 import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 import { useImageUrlLoader } from 'hooks/useImageUrlLoader';
 
@@ -42,41 +40,100 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
     );
   }
 
-  const { handleError } = useThrowOnMediaFailure('StagedNftImage');
-
-  // TODO: FIGURE OUT VIDEO HAQNDLING
-  useImageUrlLoader({ url: result.urls.large, onError: handleError });
+  if (!result.urls.large) {
+    throw new CouldNotRenderNftError('StagedNftImage', 'could not find a large url');
+  }
 
   if (result.type === 'video') {
-    if (!result.urls.large) {
-      throw new CouldNotRenderNftError('StagedNftImage', 'Video did not have a large url');
-    }
-
     return (
-      <VideoContainer ref={setNodeRef} size={size} {...props}>
-        <StyledGridVideo onLoad={onLoad} src={result.urls.large} />
-        {hideLabel ? null : (
-          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-        )}
-      </VideoContainer>
+      <StagedNftImageVideo
+        size={size}
+        onLoad={onLoad}
+        hideLabel={hideLabel}
+        tokenName={token.name}
+        url={result.urls.large}
+        setNodeRef={setNodeRef}
+        collectionName={token.contract?.name ?? null}
+        {...props}
+      />
     );
   } else {
-    // Note: There is no onLoad here because we are using a background-image
-    // We don't need it since we don't show loading states here
-    // At some point in the future, we may just want to switch
-    // to suspense anyway to avoid all of this nightmare.
-    if (!result.urls.large) {
-      throw new CouldNotRenderNftError('StagedNftImage', 'Image did not have a large url');
-    }
-
     return (
-      <StyledGridImage srcUrl={result.urls.large} ref={setNodeRef} size={size} {...props}>
-        {hideLabel ? null : (
-          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-        )}
-      </StyledGridImage>
+      <StagedNftImageImage
+        size={size}
+        onLoad={onLoad}
+        hideLabel={hideLabel}
+        tokenName={token.name}
+        setNodeRef={setNodeRef}
+        url={result.urls.large}
+        collectionName={token.contract?.name ?? null}
+        {...props}
+      />
     );
   }
+}
+
+type StagedNftImageImageProps = {
+  url: string;
+  size: number;
+  tokenName: string | null;
+  hideLabel: boolean;
+  onLoad: () => void;
+  collectionName: string | null;
+  setNodeRef: (node: HTMLElement | null) => void;
+};
+
+function StagedNftImageImage({
+  url,
+  size,
+  onLoad,
+  hideLabel,
+  tokenName,
+  setNodeRef,
+  collectionName,
+  ...props
+}: StagedNftImageImageProps) {
+  const { handleError } = useThrowOnMediaFailure('StagedNftImageImage');
+
+  useImageUrlLoader({ url, onLoad, onError: handleError });
+
+  return (
+    <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>
+      {hideLabel ? null : (
+        <StyledNftPreviewLabel title={tokenName} collectionName={collectionName} />
+      )}
+    </StyledGridImage>
+  );
+}
+
+type StagedNftImageVideoProps = {
+  url: string;
+  size: number;
+  tokenName: string | null;
+  hideLabel: boolean;
+  onLoad: () => void;
+  collectionName: string | null;
+  setNodeRef: (node: HTMLElement | null) => void;
+};
+
+function StagedNftImageVideo({
+  url,
+  size,
+  onLoad,
+  hideLabel,
+  tokenName,
+  setNodeRef,
+  collectionName,
+  ...props
+}: StagedNftImageVideoProps) {
+  return (
+    <VideoContainer ref={setNodeRef} size={size} {...props}>
+      <StyledGridVideo onLoad={onLoad} src={url} />
+      {hideLabel ? null : (
+        <StyledNftPreviewLabel title={tokenName} collectionName={collectionName} />
+      )}
+    </VideoContainer>
+  );
 }
 
 const VideoContainer = styled.div<{ size: number }>`
