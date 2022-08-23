@@ -18,6 +18,7 @@ type useNftDisplayRetryLoaderArgs = {
 
 type useNftDisplayRetryLoaderResult = {
   retryKey: number;
+  isFailed: boolean;
   handleNftLoaded: ContentIsLoadedEvent;
   handleNftError: ContentIsLoadedEvent;
   refreshMetadata: () => void;
@@ -30,6 +31,7 @@ export function useNftDisplayRetryLoader({
   const reportError = useReportError();
   const { pushToast } = useToastActions();
 
+  const [isFailed, setIsFailed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const [refreshed, setRefreshed] = useState(false);
   const [refreshingMetadata, setRefreshingMetadata] = useState(false);
@@ -39,6 +41,7 @@ export function useNftDisplayRetryLoader({
   const handleNftLoaded = useCallback(
     (event?: any) => {
       shimmerContext?.setContentIsLoaded(event);
+      setIsFailed(false);
     },
     [shimmerContext]
   );
@@ -47,6 +50,7 @@ export function useNftDisplayRetryLoader({
     (event?: any) => {
       // Give up and show the failure state
       shimmerContext?.setContentIsLoaded(event);
+      setIsFailed(true);
 
       // If the user refreshed the metadata and there was another failure,
       // we'll show them a new toast telling them things failed to load,
@@ -67,6 +71,7 @@ export function useNftDisplayRetryLoader({
   );
 
   const retry = useCallback(() => {
+    setIsFailed(false);
     setRefreshed(true);
     setRetryKey((previous) => previous + 1);
   }, []);
@@ -121,13 +126,14 @@ export function useNftDisplayRetryLoader({
 
   return useMemo(() => {
     return {
+      isFailed,
       handleNftLoaded,
       handleNftError,
       retryKey,
       refreshMetadata,
       refreshingMetadata: refreshingMetadata,
     };
-  }, [handleNftError, handleNftLoaded, refreshMetadata, retryKey, refreshingMetadata]);
+  }, [isFailed, handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata]);
 }
 
 export function useThrowOnMediaFailure(
