@@ -18,7 +18,7 @@ type useNftRetryResult = {
   refreshMetadata: () => void;
   refreshingMetadata: boolean;
   handleNftLoaded: ContentIsLoadedEvent;
-  handleNftError: ContentIsLoadedEvent;
+  handleNftError: (error: Error) => void;
 };
 
 export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
@@ -40,7 +40,7 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
   );
 
   const handleNftError = useCallback(
-    (event?: any) => {
+    (error: Error) => {
       // Give up and show the failure state
       shimmerContext?.setContentIsLoaded(event);
       setIsFailed(true);
@@ -56,9 +56,20 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
         });
       }
 
-      reportError('Could not load nft after 3 retries', {
-        tags: { tokenId, alreadyRefreshed: refreshed },
-      });
+      const commonTags = {
+        tokenId,
+        alreadyRefreshed: refreshed,
+      };
+
+      if (error instanceof CouldNotRenderNftError) {
+        reportError(error.message, {
+          tags: { ...commonTags, ...error.metadata },
+        });
+      } else {
+        reportError('Could not load nft', {
+          tags: commonTags,
+        });
+      }
     },
     [pushToast, refreshed, reportError, shimmerContext, tokenId]
   );

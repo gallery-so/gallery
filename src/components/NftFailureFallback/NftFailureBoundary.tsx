@@ -6,7 +6,7 @@ type State = {
 
 type Props = PropsWithChildren<{
   fallback: ReactNode;
-  onError: () => void;
+  onError: (error: Error) => void;
 }>;
 
 export class NftFailureBoundary extends Component<Props, State> {
@@ -19,7 +19,7 @@ export class NftFailureBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error) {
-    this.props.onError();
+    this.props.onError(error);
     this.setState({ error });
   }
 
