@@ -16,6 +16,10 @@ import LiveDisplayButton, {
 } from './LiveDisplayButton';
 import isLiveMediaType from 'utils/isLiveMediaType';
 import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
+import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import colors from 'components/core/colors';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -46,13 +50,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     `,
     tokenRef
   );
-
-  if (!token) {
-    throw new Error('SortableStagedNft: token not provided');
-  }
-
   const { dbid: id } = token;
-
   const { attributes, listeners, isDragging, setNodeRef, transform, transition } = useSortable({
     id,
   });
@@ -66,14 +64,13 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [isDragging, transform, transition]
   );
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
-
-  const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(contractAddress),
-    [contractAddress]
-  );
-
   const isLiveType = isLiveMediaType(token.media?.__typename);
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
+
+  const { handleNftError, handleNftLoaded, retryKey } = useNftDisplayRetryLoader({
+    tokenId: token.dbid,
+  });
 
   return (
     <StyledSortableNft
@@ -83,14 +80,25 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
       style={style}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <StagedNftImage
-        tokenRef={token}
-        size={size}
-        hideLabel={mini}
-        setNodeRef={setNodeRef}
-        {...attributes}
-        {...listeners}
-      />
+      <NftFailureBoundary
+        key={retryKey}
+        fallback={
+          <FallbackContainer ref={setNodeRef} size={size} {...attributes} {...listeners}>
+            <NftFailureFallback noControls />
+          </FallbackContainer>
+        }
+        onError={handleNftError}
+      >
+        <StagedNftImage
+          tokenRef={token}
+          size={size}
+          hideLabel={mini}
+          setNodeRef={setNodeRef}
+          onLoad={handleNftLoaded}
+          {...attributes}
+          {...listeners}
+        />
+      </NftFailureBoundary>
       <StyledUnstageButton id={id} />
       {isLiveType && <LiveDisplayButton id={id} />}
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
@@ -98,6 +106,11 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     </StyledSortableNft>
   );
 }
+
+const FallbackContainer = styled.div<{ size: number }>`
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
+`;
 
 const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
   position: absolute;

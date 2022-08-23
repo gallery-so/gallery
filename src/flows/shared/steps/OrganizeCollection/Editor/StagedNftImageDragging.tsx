@@ -1,37 +1,31 @@
 import colors from 'components/core/colors';
-import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { FALLBACK_URL, getBackgroundColorOverrideForContract } from 'utils/token';
+import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useImageUrlLoader } from 'hooks/useImageUrlLoader';
 
 type Props = {
   tokenRef: StagedNftImageDraggingFragment$key;
+  onLoad: () => void;
   size: number;
 };
 
-function StagedNftImageDragging({ tokenRef, size }: Props) {
+function StagedNftImageDragging({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageDraggingFragment on Token {
-        contract {
-          contractAddress {
-            address
-          }
-        }
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokenRef
   );
-
-  if (!token) {
-    throw new Error('StagedNftImageDragging: token not provided');
-  }
 
   const isMouseUp = useMouseUp();
 
@@ -41,36 +35,74 @@ function StagedNftImageDragging({ tokenRef, size }: Props) {
   const reportError = useReportError();
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
-  if (!result || !result.urls.large) {
-    reportError('Image URL not found for StagedNftImageDragging');
-  }
-
   const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
-  const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(contractAddress),
-    [contractAddress]
-  );
-
-  if (!result?.success) {
-    return (
-      <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
-        <FailedNftPreview size={zoomedSize} />
-      </ImageContainer>
-    );
-  }
-
-  return result?.type === 'video' ? (
-    <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
-      <StyledDraggingVideo src={result?.urls.large ?? FALLBACK_URL} />
-    </VideoContainer>
-  ) : (
-    <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
-      <StyledDraggingImage
-        srcUrl={result?.urls.large ?? FALLBACK_URL}
+  if (result?.urls.large) {
+    return result?.type === 'video' ? (
+      <StagedNftImageDraggingVideo
+        zoomedSize={zoomedSize}
         isMouseUp={isMouseUp}
-        size={zoomedSize}
+        url={result.urls.large}
+        onLoad={onLoad}
       />
+    ) : (
+      <StagedNftImageDraggingImage
+        zoomedSize={zoomedSize}
+        isMouseUp={isMouseUp}
+        backgroundColorOverride={backgroundColorOverride}
+        url={result.urls.large}
+        onLoad={onLoad}
+      />
+    );
+  } else {
+    throw new CouldNotRenderNftError('StagedNftImageDragging', 'Nft did not have a large url');
+  }
+}
+
+type StagedNftImageDraggingVideoProps = {
+  zoomedSize: number;
+  isMouseUp: boolean;
+  url: string;
+  onLoad: () => void;
+};
+
+function StagedNftImageDraggingVideo({
+  zoomedSize,
+  isMouseUp,
+  url,
+  onLoad,
+}: StagedNftImageDraggingVideoProps) {
+  const { handleError } = useThrowOnMediaFailure('StagedNftImageDraggingVideo');
+
+  return (
+    <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
+      <StyledDraggingVideo onLoadedData={onLoad} onError={handleError} src={url} />
+    </VideoContainer>
+  );
+}
+
+type StagedNftImageDraggingImageProps = {
+  zoomedSize: number;
+  isMouseUp: boolean;
+  backgroundColorOverride: string;
+  url: string;
+  onLoad: () => void;
+};
+
+function StagedNftImageDraggingImage({
+  zoomedSize,
+  isMouseUp,
+  backgroundColorOverride,
+  url,
+}: StagedNftImageDraggingImageProps) {
+  const { handleError } = useThrowOnMediaFailure('StagedNftImageDraggingImage');
+
+  useImageUrlLoader({ url, onError: handleError });
+
+  return (
+    <ImageContainer size={zoomedSize} backgroundColorOverride={backgroundColorOverride}>
+      <StyledDraggingImage srcUrl={url} isMouseUp={isMouseUp} size={zoomedSize} />
     </ImageContainer>
   );
 }

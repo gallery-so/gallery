@@ -5,16 +5,20 @@ import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { FALLBACK_URL } from 'utils/token';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import FailedNftPreview from 'components/NftPreview/FailedNftPreview';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { useEffect } from 'react';
+import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useImageUrlLoader } from 'hooks/useImageUrlLoader';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
   hideLabel: boolean;
+  onLoad: () => void;
 };
 
-function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Props) {
+function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...props }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageFragment on Token {
@@ -29,52 +33,51 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, ...props }: Pro
   );
 
   const reportError = useReportError();
-
   const result = getVideoOrImageUrlForNftPreview(token, reportError);
 
-  if (!result || !result.urls.large) {
-    reportError('Image URL not found for StagedNftImageDragging');
-  }
-
-  if (!result?.success) {
-    return (
-      <StyledFailedNftContainer ref={setNodeRef} {...props}>
-        <FailedNftPreview size={size} />
-        {hideLabel ? null : (
-          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-        )}
-      </StyledFailedNftContainer>
+  if (!result) {
+    throw new CouldNotRenderNftError(
+      'StatedNftImage',
+      'could not compute getVideoOrImageUrlForNftPreview'
     );
   }
 
-  if (result?.type === 'video') {
+  const { handleError } = useThrowOnMediaFailure('StagedNftImage');
+
+  // TODO: FIGURE OUT VIDEO HAQNDLING
+  useImageUrlLoader({ url: result.urls.large, onError: handleError });
+
+  if (result.type === 'video') {
+    if (!result.urls.large) {
+      throw new CouldNotRenderNftError('StagedNftImage', 'Video did not have a large url');
+    }
+
     return (
       <VideoContainer ref={setNodeRef} size={size} {...props}>
-        <StyledGridVideo src={result?.urls.large ?? FALLBACK_URL} />
+        <StyledGridVideo onLoad={onLoad} src={result.urls.large} />
         {hideLabel ? null : (
           <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
         )}
       </VideoContainer>
     );
+  } else {
+    // Note: There is no onLoad here because we are using a background-image
+    // We don't need it since we don't show loading states here
+    // At some point in the future, we may just want to switch
+    // to suspense anyway to avoid all of this nightmare.
+    if (!result.urls.large) {
+      throw new CouldNotRenderNftError('StagedNftImage', 'Image did not have a large url');
+    }
+
+    return (
+      <StyledGridImage srcUrl={result.urls.large} ref={setNodeRef} size={size} {...props}>
+        {hideLabel ? null : (
+          <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
+        )}
+      </StyledGridImage>
+    );
   }
-
-  return (
-    <StyledGridImage
-      srcUrl={result?.urls.large ?? FALLBACK_URL}
-      ref={setNodeRef}
-      size={size}
-      {...props}
-    >
-      {hideLabel ? null : (
-        <StyledNftPreviewLabel title={token.name} collectionName={token.contract?.name} />
-      )}
-    </StyledGridImage>
-  );
 }
-
-const StyledFailedNftContainer = styled.div`
-  position: relative;
-`;
 
 const VideoContainer = styled.div<{ size: number }>`
   // TODO handle non square videos
