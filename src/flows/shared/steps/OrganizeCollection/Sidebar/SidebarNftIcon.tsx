@@ -3,17 +3,19 @@ import transitions from 'components/core/transitions';
 import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
-import { NftFailureFallback } from 'components/NftPreview/NftFailureFallback';
-import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
+import { useNftDisplayRetryLoader, useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
 import { SidebarNftIconPreviewAsset$key } from '../../../../../../__generated__/SidebarNftIconPreviewAsset.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
@@ -61,15 +63,12 @@ function SidebarNftIcon({
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
-  const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(contractAddress),
-    [contractAddress]
-  );
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   const {
+    isFailed,
     handleNftLoaded,
     handleNftError,
-    isFailed,
     retryKey,
     refreshMetadata,
     refreshingMetadata,
@@ -116,17 +115,24 @@ function SidebarNftIcon({
   );
 
   return (
-    <StyledSidebarNftIcon key={retryKey} backgroundColorOverride={backgroundColorOverride}>
-      {isFailed ? (
-        <NftFailureFallback size="tiny" onClick={refreshMetadata} refreshing={refreshingMetadata} />
-      ) : (
+    <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
+      <NftFailureBoundary
+        key={retryKey}
+        fallback={
+          <NftFailureFallback
+            size="tiny"
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        }
+        onError={handleError}
+      >
         <SidebarPreviewAsset
           tokenRef={token}
           onLoad={handleLoad}
-          onError={handleError}
           isSelected={isSelected ?? false}
         />
-      )}
+      </NftFailureBoundary>
       <StyledOutline onClick={handleClick} isSelected={isSelected} />
     </StyledSidebarNftIcon>
   );
@@ -134,12 +140,11 @@ function SidebarNftIcon({
 
 type SidebarPreviewAssetProps = {
   tokenRef: SidebarNftIconPreviewAsset$key;
-  onError: ContentIsLoadedEvent;
   onLoad: ContentIsLoadedEvent;
   isSelected: boolean;
 };
 
-function SidebarPreviewAsset({ tokenRef, onLoad, onError, isSelected }: SidebarPreviewAssetProps) {
+function SidebarPreviewAsset({ tokenRef, onLoad, isSelected }: SidebarPreviewAssetProps) {
   const token = useFragment(
     graphql`
       fragment SidebarNftIconPreviewAsset on Token {
@@ -152,34 +157,33 @@ function SidebarPreviewAsset({ tokenRef, onLoad, onError, isSelected }: SidebarP
   const reportError = useReportError();
   const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
 
-  useEffect(() => {
-    // THIS SHOULD BE THE SAME CONDITION AS THE ONE IN THE IF BELOW
-    // We cannot extract a variable because TypeScript is unable
-    // to recognize that the types get narrowed appropriately
-    if (!previewUrlSet?.urls.small) {
-      onError();
-    }
-  }, [onError, previewUrlSet?.urls.small]);
+  if (!previewUrlSet?.urls.small) {
+    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
+  }
 
-  // THIS ONE HERE
-  if (previewUrlSet?.urls.small) {
-    // Some OpenSea assets don't have an image url,
-    // so render a freeze-frame of the video instead
-    if (previewUrlSet?.type === 'video')
-      return <StyledVideo onLoad={onLoad} isSelected={isSelected} src={previewUrlSet.urls.small} />;
+  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
 
+  // Some OpenSea assets don't have an image url,
+  // so render a freeze-frame of the video instead
+  if (previewUrlSet?.type === 'video')
     return (
-      <StyledImage
+      <StyledVideo
+        onLoadedData={onLoad}
+        onError={handleError}
         isSelected={isSelected}
         src={previewUrlSet.urls.small}
-        alt="token"
-        onLoad={onLoad}
-        onError={onError}
       />
     );
-  } else {
-    return null;
-  }
+
+  return (
+    <StyledImage
+      isSelected={isSelected}
+      src={previewUrlSet.urls.small}
+      alt="token"
+      onLoad={onLoad}
+      onError={handleError}
+    />
+  );
 }
 
 export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string }>`
