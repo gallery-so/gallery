@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftDisplayRetryLoader, useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry, useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { BigNftPreviewFragment$key } from '../../../../../__generated__/BigNftPreviewFragment.graphql';
 
 export const BIG_NFT_SIZE_PX = 160;
@@ -29,7 +29,7 @@ export function BigNft({ tokenRef }: BigNftProps) {
     tokenRef
   );
 
-  const { handleNftLoaded, handleNftError, retryKey } = useNftDisplayRetryLoader({
+  const { handleNftLoaded, handleNftError, retryKey } = useNftRetry({
     tokenId: token.dbid,
   });
 

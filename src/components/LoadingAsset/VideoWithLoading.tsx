@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type ContentWidthType = 'fullWidth' | 'maxWidth';
 

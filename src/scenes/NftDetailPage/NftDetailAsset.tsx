@@ -13,7 +13,7 @@ import NftDetailModel from './NftDetailModel';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
-import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry } from 'hooks/useNftRetry';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
@@ -144,7 +144,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
   const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
-    useNftDisplayRetryLoader({
+    useNftRetry({
       tokenId: token.dbid,
     });
 

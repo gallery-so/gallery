@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailModelFragment$key } from '__generated__/NftDetailModelFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type Props = {
   mediaRef: NftDetailModelFragment$key;

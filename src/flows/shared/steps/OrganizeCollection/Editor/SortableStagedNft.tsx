@@ -18,7 +18,7 @@ import isLiveMediaType from 'utils/isLiveMediaType';
 import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry } from 'hooks/useNftRetry';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;
@@ -67,7 +67,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
-  const { handleNftError, handleNftLoaded, retryKey } = useNftDisplayRetryLoader({
+  const { handleNftError, handleNftLoaded, retryKey } = useNftRetry({
     tokenId: token.dbid,
   });
 

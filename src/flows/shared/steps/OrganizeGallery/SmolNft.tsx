@@ -6,7 +6,7 @@ import {
 } from 'utils/token';
 import styled from 'styled-components';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { useNftDisplayRetryLoader, useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry, useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { SmolNftFragment$key } from '../../../../../__generated__/SmolNftFragment.graphql';
 import { SmolNftPreviewFragment$key } from '../../../../../__generated__/SmolNftPreviewFragment.graphql';
@@ -28,7 +28,7 @@ export function SmolNft({ tokenRef }: SmolNftProps) {
     tokenRef
   );
 
-  const { handleNftLoaded, handleNftError, retryKey } = useNftDisplayRetryLoader({
+  const { handleNftLoaded, handleNftError, retryKey } = useNftRetry({
     tokenId: token.dbid,
   });
 

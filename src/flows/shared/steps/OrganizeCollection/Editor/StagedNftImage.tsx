@@ -5,7 +5,7 @@ import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
 
 type Props = {

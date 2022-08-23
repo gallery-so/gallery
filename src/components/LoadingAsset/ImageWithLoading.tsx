@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import noop from 'utils/noop';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container

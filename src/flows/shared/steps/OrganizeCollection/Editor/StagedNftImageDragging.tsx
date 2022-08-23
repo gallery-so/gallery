@@ -8,7 +8,7 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
 
 type Props = {

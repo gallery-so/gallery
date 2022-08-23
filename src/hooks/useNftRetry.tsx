@@ -2,37 +2,34 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import { ContentIsLoadedEvent, ShimmerActionContext } from 'contexts/shimmer/ShimmerContext';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
-import { useNftDisplayRetryLoaderMutation } from '../../__generated__/useNftDisplayRetryLoaderMutation.graphql';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { useNftRetryMutation } from '../../__generated__/useNftRetryMutation.graphql';
 
-type useNftDisplayRetryLoaderArgs = {
+type useNftRetryArgs = {
   tokenId: string;
 };
 
-type useNftDisplayRetryLoaderResult = {
+type useNftRetryResult = {
   retryKey: number;
   isFailed: boolean;
-  handleNftLoaded: ContentIsLoadedEvent;
-  handleNftError: ContentIsLoadedEvent;
   refreshMetadata: () => void;
   refreshingMetadata: boolean;
+  handleNftLoaded: ContentIsLoadedEvent;
+  handleNftError: ContentIsLoadedEvent;
 };
 
-export function useNftDisplayRetryLoader({
-  tokenId,
-}: useNftDisplayRetryLoaderArgs): useNftDisplayRetryLoaderResult {
+export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
   const reportError = useReportError();
   const { pushToast } = useToastActions();
+  const shimmerContext = useContext(ShimmerActionContext);
 
   const [isFailed, setIsFailed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const [refreshed, setRefreshed] = useState(false);
   const [refreshingMetadata, setRefreshingMetadata] = useState(false);
-
-  const shimmerContext = useContext(ShimmerActionContext);
 
   const handleNftLoaded = useCallback(
     (event?: any) => {
@@ -72,8 +69,8 @@ export function useNftDisplayRetryLoader({
     setRetryKey((previous) => previous + 1);
   }, []);
 
-  const [refresh] = usePromisifiedMutation<useNftDisplayRetryLoaderMutation>(graphql`
-    mutation useNftDisplayRetryLoaderMutation($tokenId: DBID!) {
+  const [refresh] = usePromisifiedMutation<useNftRetryMutation>(graphql`
+    mutation useNftRetryMutation($tokenId: DBID!) {
       refreshToken(tokenId: $tokenId) {
         ... on RefreshTokenPayload {
           __typename
@@ -124,12 +121,12 @@ export function useNftDisplayRetryLoader({
 
   return useMemo(() => {
     return {
-      isFailed,
-      handleNftLoaded,
-      handleNftError,
       retryKey,
+      isFailed,
+      handleNftError,
+      handleNftLoaded,
       refreshMetadata,
-      refreshingMetadata: refreshingMetadata,
+      refreshingMetadata,
     };
   }, [isFailed, handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata]);
 }

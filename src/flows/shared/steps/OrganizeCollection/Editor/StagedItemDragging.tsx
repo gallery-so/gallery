@@ -7,7 +7,7 @@ import { StagedItemDraggingFragment$key } from '__generated__/StagedItemDragging
 import StagedNftImageDragging from './StagedNftImageDragging';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry } from 'hooks/useNftRetry';
 import { StagedItemDraggingWrapperFragment$key } from '../../../../../../__generated__/StagedItemDraggingWrapperFragment.graphql';
 
 type Props = {
@@ -54,7 +54,7 @@ function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggin
     tokenRef
   );
 
-  const { handleNftError, handleNftLoaded, retryKey } = useNftDisplayRetryLoader({
+  const { handleNftError, handleNftLoaded, retryKey } = useNftRetry({
     tokenId: token.dbid,
   });
 

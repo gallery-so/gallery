@@ -11,7 +11,7 @@ import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
 import { EditModeToken } from '../types';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftDisplayRetryLoader, useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry, useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { SidebarNftIconPreviewAsset$key } from '../../../../../../__generated__/SidebarNftIconPreviewAsset.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
@@ -72,7 +72,7 @@ function SidebarNftIcon({
     retryKey,
     refreshMetadata,
     refreshingMetadata,
-  } = useNftDisplayRetryLoader({ tokenId: token.dbid });
+  } = useNftRetry({ tokenId: token.dbid });
 
   const handleClick = useCallback(() => {
     if (isFailed) {

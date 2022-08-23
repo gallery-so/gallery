@@ -16,7 +16,7 @@ import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { useNftDisplayRetryLoader } from 'hooks/useNftDisplayRetryLoader';
+import { useNftRetry } from 'hooks/useNftRetry';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
@@ -128,7 +128,7 @@ function NftPreview({
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftDisplayRetryLoader({
+    useNftRetry({
       tokenId: token.dbid,
     });
 

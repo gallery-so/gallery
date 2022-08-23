@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
 import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;

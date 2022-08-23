@@ -6,7 +6,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftDisplayRetryLoader';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
