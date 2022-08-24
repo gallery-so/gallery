@@ -17,10 +17,15 @@ const walletIconMap = {
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
   icon: keyof typeof walletIconMap;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
-export const WalletButton = ({ label, icon, disabled, ...buttonProps }: WalletButtonProps) => (
+export const WalletButton = ({
+  label,
+  icon,
+  disabled = false,
+  ...buttonProps
+}: WalletButtonProps) => (
   <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
     <BaseM>{label}</BaseM>
     <StyledButtonIcon>
