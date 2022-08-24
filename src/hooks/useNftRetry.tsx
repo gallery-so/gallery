@@ -90,6 +90,9 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
             ...NftPreviewTokenFragment
             ...SidebarNftIconPreviewAsset
             ...NftDetailAssetTokenFragment
+            ...BigNftFragment
+            ...CollectionRowCompactNftsFragment
+            ...StagingAreaFragment
           }
         }
       }
