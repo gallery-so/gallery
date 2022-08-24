@@ -2,8 +2,7 @@ import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
-
-import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 
 const walletIconMap = {
   metamask: '/icons/metamask.svg',
@@ -18,12 +17,16 @@ const walletIconMap = {
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
   icon: keyof typeof walletIconMap;
+  disabled: boolean;
 };
 
-export const WalletButton = ({ label, icon, ...buttonProps }: WalletButtonProps) => (
-  <StyledButton data-testid="wallet-button" {...buttonProps}>
+export const WalletButton = ({ label, icon, disabled, ...buttonProps }: WalletButtonProps) => (
+  <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
     <BaseM>{label}</BaseM>
-    <Icon src={walletIconMap[icon]} />
+    <StyledButtonIcon>
+      {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
+      <Icon src={walletIconMap[icon]} />
+    </StyledButtonIcon>
   </StyledButton>
 );
 
@@ -36,36 +39,20 @@ const Icon = styled.img`
   transition: transform ${transitions.cubic};
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{
+  disabled: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
 
   background: ${colors.white};
-  border: 1px solid ${colors.metal};
+  border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.offBlack)};
   padding: 8px 16px;
   margin-bottom: 8px;
   font-size: 16px;
   transition: border-color ${transitions.cubic};
-
-  :disabled {
-    ::after {
-      color: ${colors.offBlack};
-      font-family: ${BODY_FONT_FAMILY};
-      font-size: 14px;
-      line-height: 20px;
-
-      content: 'Coming soon!';
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.75);
-      margin: -1px;
-    }
-  }
 
   :enabled {
     cursor: pointer;
@@ -77,6 +64,25 @@ const StyledButton = styled.button`
       }
     }
   }
+
+  ${BaseM} {
+    color: ${({ disabled }) => (disabled ? colors.metal : colors.offBlack)};
+  }
+
+  ${Icon} {
+    filter: ${({ disabled }) => (disabled ? `grayscale(1)` : `grayscale(0)`)};
+  }
+`;
+
+const StyledButtonIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledComingSoonText = styled(BaseM)`
+  color: ${colors.metal};
+  margin-right: 24px;
 `;
 
 export default WalletButton;

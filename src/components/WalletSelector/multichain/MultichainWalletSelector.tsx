@@ -100,7 +100,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           }}
         />
       ) : null}
-      {/* <WalletButton label="Tezos" icon="tezos" disabled /> */}
+      <WalletButton label="Tezos" icon="tezos" disabled />
       {/* <WalletButton label="Solana" icon="solana" disabled /> */}
       <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
