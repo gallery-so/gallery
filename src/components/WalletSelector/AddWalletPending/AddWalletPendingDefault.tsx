@@ -130,8 +130,8 @@ function AddWalletPendingDefault({
             eoa: {
               signature,
               nonce,
-              chainAddress: {
-                address,
+              chainPubKey: {
+                pubKey: address,
                 chain: 'Ethereum',
               },
             },
