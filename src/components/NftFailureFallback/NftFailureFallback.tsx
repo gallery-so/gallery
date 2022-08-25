@@ -9,23 +9,18 @@ type Size = 'tiny' | 'medium';
 
 type Props = {
   size?: Size;
-} & (
-  | { noControls: true; onRetry?: undefined; refreshing?: undefined }
-  | { noControls?: false; onRetry: () => void; refreshing: boolean }
-);
+  onRetry: () => void;
+  refreshing: boolean;
+};
 
-export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'medium' }: Props) {
+export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Props) {
   const handleClick = useCallback(() => {
-    if (noControls) {
-      return;
-    }
-
     if (refreshing) {
       return;
     }
 
     onRetry?.();
-  }, [noControls, onRetry, refreshing]);
+  }, [onRetry, refreshing]);
 
   const handleMouseDown = useCallback<MouseEventHandler>((event) => {
     // Have to do this to stop messing with Drag & Drop stuff
@@ -33,7 +28,7 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
   }, []);
 
   const spaceY = {
-    tiny: 4,
+    tiny: 0,
     medium: 16,
   }[size];
 
@@ -44,20 +39,17 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
       ) : (
         <Label size={size}>Could not load</Label>
       )}
-      {!noControls && (
-        <>
-          <Spacer height={spaceY} />
-          <IconButton onMouseDown={handleMouseDown} onClick={handleClick}>
-            <RefreshIcon />
-          </IconButton>
-        </>
-      )}
+      <Spacer height={spaceY} />
+      <IconButton onMouseDown={handleMouseDown} onClick={handleClick}>
+        <RefreshIcon />
+      </IconButton>
     </Wrapper>
   );
 }
 
 const Label = styled(BaseM)<{ size: Size }>`
   color: ${colors.metal};
+  text-align: center;
 
   ${({ size }) => (size === 'tiny' ? 'font-size: 10px;' : '')}
   ${({ size }) => (size === 'tiny' ? 'line-height: 12px;' : '')}
@@ -83,6 +75,8 @@ const Wrapper = styled.div`
 
   width: 100%;
   aspect-ratio: 1;
+
+  padding: 10px 0;
 
   display: flex;
   flex-direction: column;
