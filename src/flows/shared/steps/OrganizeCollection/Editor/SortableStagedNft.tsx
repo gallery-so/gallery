@@ -67,9 +67,10 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
-  const { handleNftError, handleNftLoaded, retryKey } = useNftRetry({
-    tokenId: token.dbid,
-  });
+  const { handleNftError, handleNftLoaded, retryKey, refreshingMetadata, refreshMetadata } =
+    useNftRetry({
+      tokenId: token.dbid,
+    });
 
   return (
     <StyledSortableNft
@@ -83,7 +84,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         key={retryKey}
         fallback={
           <FallbackContainer ref={setNodeRef} size={size} {...attributes} {...listeners}>
-            <NftFailureFallback noControls />
+            <NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />
           </FallbackContainer>
         }
         onError={handleNftError}
