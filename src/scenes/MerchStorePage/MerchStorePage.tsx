@@ -8,6 +8,7 @@ import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalF
 import colors from 'components/core/colors';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
+import Spacer from 'components/core/Spacer/Spacer';
 
 const items = [
   {
@@ -46,6 +47,7 @@ export default function MerchStorePage() {
       <StyledLogoContainer>
         <StyledLogoBracketLeft color={colors.offBlack} />
         <StyledShopText>OBJECTS</StyledShopText>
+        <Spacer width={1} />
         <StyledLogoBracketRight color={colors.offBlack} />
       </StyledLogoContainer>
       <StyledItemsContainer>
@@ -81,8 +83,6 @@ const StyledShopText = styled(TitleM)`
   font-weight: 300;
   font-size: 24px;
   line-height: 27px;
-  // address optical illusion where right bracket seems closer than left
-  margin-right: 1px;
 `;
 
 const StyledLogoBracketLeft = styled(LogoBracketLeft)`
