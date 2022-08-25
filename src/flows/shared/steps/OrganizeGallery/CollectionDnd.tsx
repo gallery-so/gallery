@@ -7,7 +7,11 @@ import {
   DragOverlay,
   DragStartEvent,
   DropAnimation,
+  MouseSensor,
+  TouchSensor,
   UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
@@ -122,8 +126,11 @@ function CollectionDnd({ galleryRef }: Props) {
     [handleSortCollections]
   );
 
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
   return (
     <DndContext
+      sensors={sensors}
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       collisionDetection={closestCenter}
