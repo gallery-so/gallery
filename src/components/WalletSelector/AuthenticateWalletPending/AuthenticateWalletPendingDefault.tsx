@@ -67,9 +67,9 @@ function AuthenticateWalletPendingDefault({
         authMechanism: {
           mechanism: {
             eoa: {
-              chainAddress: {
+              chainPubKey: {
                 chain: 'Ethereum',
-                address,
+                pubKey: address,
               },
               nonce,
               signature,

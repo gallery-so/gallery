@@ -38,6 +38,7 @@ directive @goEmbedHelper on OBJECT
 
 scalar Time
 scalar Address
+scalar PubKey
 scalar DBID
 
 interface Node {
@@ -53,6 +54,7 @@ type GalleryUser implements Node {
     dbid: DBID!
     username: String
     bio: String
+    traits: String
 
     # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
     # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -61,6 +63,7 @@ type GalleryUser implements Node {
 
     wallets: [Wallet] @goField(forceResolver: true)
     galleries: [Gallery] @goField(forceResolver: true)
+    badges: [Badge] @goField(forceResolver: true)
     isAuthenticatedUser: Boolean
     followers: [GalleryUser] @goField(forceResolver: true)
     following: [GalleryUser] @goField(forceResolver: true)
@@ -80,9 +83,27 @@ type ChainAddress {
     chain: Chain
 }
 
+
+type ChainPubKey {
+    pubKey: PubKey
+    chain: Chain
+}
+
+
 input ChainAddressInput {
     address: Address! @goField(forceResolver: true)
     chain: Chain! @goField(forceResolver: true)
+}
+
+input ChainPubKeyInput {
+    pubKey: PubKey! @goField(forceResolver: true)
+    chain: Chain! @goField(forceResolver: true)
+}
+
+type Badge {
+    name: String
+    imageURL: String!
+    contractId: DBID
 }
 
 union GalleryUserOrWallet = GalleryUser | Wallet
@@ -214,6 +235,7 @@ enum Chain {
     Arbitrum
     Polygon
     Optimism
+    Tezos
 }
 enum WalletType {
     EOA
@@ -241,6 +263,8 @@ type Token implements Node {
     contract: Contract @goField(forceResolver: true)
     externalUrl: String
     blockNumber: String # source is uint64
+    isSpamByUser: Boolean
+    isSpamByProvider: Boolean
     # These are subject to change; unlike the other fields, they aren't present on the current persist.Token
     # struct and may ultimately end up elsewhere
     creatorAddress: ChainAddress
@@ -324,6 +348,9 @@ type Community implements Node @goGqlId(fields: ["contractAddress", "chain"]) {
     name: String
     description: String
     previewImage: String
+    profileImageURL: String
+    profileBannerURL: String
+    badgeURL: String
 
     owners: [TokenHolder]
 }
@@ -338,6 +365,9 @@ type Contract implements Node {
     creatorAddress: ChainAddress
     chain: Chain
     name: String
+    profileImageURL: String
+    profileBannerURL: String
+    badgeURL: String
 }
 
 # We have this extra type in case we need to stick authed data
@@ -490,6 +520,7 @@ type Query {
     viewer: ViewerOrError @authRequired
     userByUsername(username: String!): UserByUsernameOrError
     userById(id: DBID!): UserByIdOrError
+    usersWithTrait(trait: String!): [GalleryUser]
     membershipTiers(forceRefresh: Boolean): [MembershipTier]
     collectionById(id: DBID!): CollectionByIdOrError
     tokenById(id: DBID!): TokenByIdOrError
@@ -621,6 +652,19 @@ type UpdateTokenInfoPayload {
     token: Token
 }
 
+input SetSpamPreferenceInput {
+    tokens: [DBID!]!
+    isSpam: Boolean!
+}
+
+type SetSpamPreferencePayload {
+    tokens: [Token] @goField(forceResolver: true)
+}
+
+union SetSpamPreferencePayloadOrError =
+    SetSpamPreferencePayload
+    | ErrNotAuthorized
+
 union AddUserWalletPayloadOrError =
     AddUserWalletPayload
     | ErrAuthenticationFailed
@@ -667,17 +711,26 @@ type SyncTokensPayload {
 
 union RefreshTokenPayloadOrError =
     RefreshTokenPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshTokenPayload {
     token: Token
 }
 
+union RefreshCollectionPayloadOrError =
+    RefreshCollectionPayload
+    | ErrInvalidInput
+    | ErrSyncFailed
+
+type RefreshCollectionPayload {
+    collection: Collection
+}
+
 union RefreshContractPayloadOrError =
     RefreshContractPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshContractPayload {
     contract: Contract
@@ -753,7 +806,7 @@ input AuthMechanism {
 }
 
 input EoaAuth {
-    chainAddress: ChainAddressInput!
+    chainPubKey: ChainPubKeyInput!
     nonce: String!
     signature: String! @scrub
 }
@@ -853,9 +906,11 @@ type Mutation {
 
     # Token Mutations
     updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError @authRequired
+    setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError @authRequired
 
-    syncTokens: SyncTokensPayloadOrError @authRequired
+    syncTokens(chains: [Chain!]): SyncTokensPayloadOrError @authRequired
     refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
+    refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
     refreshContract(contractId: DBID!): RefreshContractPayloadOrError
 
     getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
