@@ -29,15 +29,16 @@ export function BigNft({ tokenRef }: BigNftProps) {
     tokenRef
   );
 
-  const { handleNftLoaded, handleNftError, retryKey } = useNftRetry({
-    tokenId: token.dbid,
-  });
+  const { handleNftLoaded, handleNftError, retryKey, refreshingMetadata, refreshMetadata } =
+    useNftRetry({
+      tokenId: token.dbid,
+    });
 
   return (
     <BigNftContainer>
       <NftFailureBoundary
         key={retryKey}
-        fallback={<NftFailureFallback noControls />}
+        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
         onError={handleNftError}
       >
         <BigNftPreview onLoad={handleNftLoaded} tokenRef={token} />
@@ -111,7 +112,6 @@ export const BigNftContainer = styled.div`
   height: ${BIG_NFT_SIZE_PX}px;
 
   user-select: none;
-  pointer-events: none;
 `;
 
 const BigNftVideoPreview = styled.video`
