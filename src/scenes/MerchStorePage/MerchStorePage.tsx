@@ -5,6 +5,10 @@ import { TitleM } from 'components/core/Text/Text';
 import ItemPreview from './ItemPreview';
 import Countdown from './Countdown';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
+import colors from 'components/core/colors';
+import LogoBracketLeft from 'icons/LogoBracketLeft';
+import LogoBracketRight from 'icons/LogoBracketRight';
+import Spacer from 'components/core/Spacer/Spacer';
 
 const items = [
   {
@@ -40,8 +44,12 @@ export default function MerchStorePage() {
   return (
     <StyledPage>
       <Countdown />
-      {/* TODO: Use brackets from Gallery Logo here */}
-      <StyledShopText>( OBJECTS )</StyledShopText>
+      <StyledLogoContainer>
+        <StyledLogoBracketLeft color={colors.offBlack} />
+        <StyledShopText>OBJECTS</StyledShopText>
+        <Spacer width={1} />
+        <StyledLogoBracketRight color={colors.offBlack} />
+      </StyledLogoContainer>
       <StyledItemsContainer>
         {items.map((item) => (
           <ItemPreview {...item} key={item.label} />
@@ -62,14 +70,29 @@ const StyledPage = styled.div`
   margin: 0 auto;
 `;
 
-const StyledShopText = styled(TitleM)`
+const StyledLogoContainer = styled.div`
   top: 16px;
   position: absolute;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledShopText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';
   font-style: normal;
   font-weight: 300;
   font-size: 24px;
   line-height: 27px;
+`;
+
+const StyledLogoBracketLeft = styled(LogoBracketLeft)`
+  width: 8px;
+  height: 26px;
+`;
+
+const StyledLogoBracketRight = styled(LogoBracketRight)`
+  width: 8px;
+  height: 26px;
 `;
 
 const StyledItemsContainer = styled.div`

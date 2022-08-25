@@ -5,6 +5,9 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseS, TitleM, BlueLabel } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import LogoBracketLeft from 'icons/LogoBracketLeft';
+import LogoBracketRight from 'icons/LogoBracketRight';
+import colors from 'components/core/colors';
 
 export default function LandingPage() {
   const track = useTrack();
@@ -41,9 +44,17 @@ export default function LandingPage() {
         </StyledLinkContainer>
         <Spacer height={12} />
         <NavLink to="/shop">
-          Shop
-          <StyledShopText>( OBJECTS )</StyledShopText>
-          <StyledNewLabel>New</StyledNewLabel>
+          <StyledShopLinkContainer>
+            Shop
+            <Spacer width={6} />
+            <StyledObjectsContainer>
+              <StyledLogoBracketLeft color={colors.shadow} />
+              <StyledShopText>OBJECTS</StyledShopText>
+              <StyledLogoBracketRight color={colors.shadow} />
+            </StyledObjectsContainer>
+            <Spacer width={6} />
+            <BlueLabel>New</BlueLabel>
+          </StyledShopLinkContainer>
         </NavLink>
       </StyledBottomContainer>
     </StyledLandingPage>
@@ -81,9 +92,7 @@ const StyledBottomContainer = styled.div`
 const StyledShopText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';
   display: inline;
-  width: 52px;
   height: 16px;
-  margin-left: 5.28px;
   font-style: normal;
   font-weight: 300;
   font-size: 14.4127px;
@@ -91,6 +100,23 @@ const StyledShopText = styled(TitleM)`
   color: inherit;
 `;
 
-const StyledNewLabel = styled(BlueLabel)`
-  margin-left: 6px;
+const StyledShopLinkContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledObjectsContainer = styled.div`
+  height: 16px;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledLogoBracketLeft = styled(LogoBracketLeft)`
+  width: 6px;
+  height: 16px;
+`;
+
+const StyledLogoBracketRight = styled(LogoBracketRight)`
+  width: 6px;
+  height: 16px;
 `;
