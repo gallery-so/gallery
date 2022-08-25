@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import { RefreshIcon } from '../../icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 
 type Size = 'tiny' | 'medium';
 
@@ -15,22 +15,22 @@ type Props = {
 );
 
 export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'medium' }: Props) {
-  const handleClick = useCallback(
-    (event: MouseEvent) => {
-      event.preventDefault();
+  const handleClick = useCallback(() => {
+    if (noControls) {
+      return;
+    }
 
-      if (noControls) {
-        return;
-      }
+    if (refreshing) {
+      return;
+    }
 
-      if (refreshing) {
-        return;
-      }
+    onRetry?.();
+  }, [noControls, onRetry, refreshing]);
 
-      onRetry?.();
-    },
-    [noControls, onRetry, refreshing]
-  );
+  const handleMouseDown = useCallback<MouseEventHandler>((event) => {
+    // Have to do this to stop messing with Drag & Drop stuff
+    event.preventDefault();
+  }, []);
 
   const spaceY = {
     tiny: 4,
@@ -47,7 +47,7 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
       {!noControls && (
         <>
           <Spacer height={spaceY} />
-          <IconButton onClick={handleClick}>
+          <IconButton onMouseDown={handleMouseDown} onClick={handleClick}>
             <RefreshIcon />
           </IconButton>
         </>
