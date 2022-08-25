@@ -72,6 +72,7 @@ const StyledLogoContainer = styled.div`
   top: 16px;
   position: absolute;
   display: flex;
+  align-items: center;
 `;
 
 const StyledShopText = styled(TitleM)`
