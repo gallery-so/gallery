@@ -62,11 +62,11 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
       };
 
       if (error instanceof CouldNotRenderNftError) {
-        reportError(error.message, {
+        reportError('NftLoadError: ' + error.message, {
           tags: { ...commonTags, ...error.metadata },
         });
       } else {
-        reportError('Could not load nft', {
+        reportError('NftLoadError: Could not load nft', {
           tags: commonTags,
         });
       }
