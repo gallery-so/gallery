@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
@@ -10,19 +10,23 @@ import {
   useTrackSignInSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { useAccount } from 'wagmi';
-import { EthereumError } from './EthereumError';
-import { normalizeError } from './normalizeError';
-import { signMessage } from '@wagmi/core';
+import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
+import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
+import { EthereumError } from '../EthereumError';
+import { normalizeError } from '../normalizeError';
+import { DAppClient, RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
+import { char2Bytes, bytes2Char } from '@taquito/utils';
 
 type Props = {
   reset: () => void;
 };
 
-export const EthereumAuthenticateWallet = ({ reset }: Props) => {
-  const { address: account } = useAccount();
+export const TezosAuthenticateWallet = ({ reset }: Props) => {
+  const dAppClient = useMemo(() => {
+    return new DAppClient({ name: 'Gallery' });
+  }, []);
+
+  console.log(bytes2Char('0x05'));
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
@@ -44,22 +48,42 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
    * 3b. If wallet is new, sign user up
    */
   const attemptAuthentication = useCallback(
-    async (address: string) => {
+    async (address: string, publicKey: string) => {
+      console.log('Requesting permissions...');
+
       setPendingState(PROMPT_SIGNATURE);
-      trackSignInAttempt('Ethereum');
+      trackSignInAttempt('Tezos');
 
-      const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
+      const { nonce, user_exists: userExists } = await createNonce(publicKey, 'Tezos');
 
-      const signature = await signMessage({ message: nonce });
+      // Gallery uses this cryptographic signature in place of a password: 2204289372043769609
+      console.log(nonce);
+
+      const formattedInput: string = ['Tezos Signed Message:', nonce].join(' ');
+
+      const bytes = char2Bytes(formattedInput);
+      // const bytes = char2Bytes(nonce);
+
+      // https://tezostaquito.io/docs/signing
+      const payloadBytes = '05' + '01' + '00' + char2Bytes(bytes.length.toString()) + bytes;
+
+      const payload: RequestSignPayloadInput = {
+        signingType: SigningType.MICHELINE,
+        payload: payloadBytes,
+        sourceAddress: address,
+      };
+
+      const { signature } = await dAppClient.requestSignPayload(payload);
 
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
           mechanism: {
             eoa: {
-              chainPubKey: {
-                chain: 'Ethereum',
-                pubKey: address,
+              chainAddress: {
+                chain: 'Tezos',
+                address: publicKey,
               },
+              // nonce: formattedInput,
               nonce,
               signature,
             },
@@ -69,33 +93,42 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
       });
 
       if (userExists && userId) {
-        trackSignInSuccess('Ethereum');
+        trackSignInSuccess('Tezos');
         return await handleLogin(userId, address);
       }
     },
-    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
+    [
+      trackSignInAttempt,
+      createNonce,
+      loginOrRedirectToOnboarding,
+      trackSignInSuccess,
+      handleLogin,
+      dAppClient,
+    ]
   );
 
   useEffect(() => {
     async function authenticate() {
-      if (account) {
+      const { publicKey, address } = await dAppClient.requestPermissions();
+
+      if (address) {
         try {
-          await attemptAuthentication(account.toLowerCase());
+          await attemptAuthentication(address, publicKey.toLowerCase());
         } catch (error) {
-          trackSignInError('Ethereum', error);
+          console.log(error);
+          trackSignInError('Tezos', error);
           // ignore early access errors
           if (!isEarlyAccessError(error)) {
             // capture all others
             captureException(error);
           }
-
           setError(normalizeError(error));
         }
       }
     }
 
     void authenticate();
-  }, [account, attemptAuthentication, trackSignInError]);
+  }, [attemptAuthentication, trackSignInError, dAppClient]);
 
   if (error) {
     return (
@@ -114,7 +147,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
@@ -123,7 +156,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   return (
     <div>
-      <TitleS>Connect with Ethereum</TitleS>
+      <TitleS>Connect with Tezos</TitleS>
       <Spacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>

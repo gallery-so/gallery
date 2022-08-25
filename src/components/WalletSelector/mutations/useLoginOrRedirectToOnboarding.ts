@@ -66,6 +66,7 @@ export default function useLoginOrRedirectToOnboarding() {
       } else {
         // Redirect user to the onboarding flow with necessary input params to create an account
         if (authMechanism.mechanism.eoa) {
+          console.log(authMechanism);
           push(
             {
               pathname: '/welcome',

@@ -18,6 +18,7 @@ export default function useCreateUser() {
           }
           ... on ErrAuthenticationFailed {
             __typename
+            message
           }
           ... on ErrDoesNotOwnRequiredToken {
             __typename

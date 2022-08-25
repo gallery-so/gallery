@@ -35,7 +35,8 @@ export default function useCreateNonce() {
   );
 
   return useCallback(
-    async (address: string): Promise<NonceResponse> => {
+    async (address: string, chain: 'Ethereum' | 'Tezos'): Promise<NonceResponse> => {
+      // async ({ address, chain = 'Ethereum' }: NonceProps): Promise<NonceResponse> => {
       // Kick off the mutation network request
       //
       // This call can throw an error. This error is the equivalent
@@ -44,7 +45,7 @@ export default function useCreateNonce() {
       // If this throws, we'll just let the UI handle that appropriately
       // with it's try catch
       const { getAuthNonce } = await createNonce({
-        variables: { chainAddress: { address, chain: 'Ethereum' } },
+        variables: { chainAddress: { address, chain } },
       });
 
       // If the server didn't give us a payload for the mutation we just committed,

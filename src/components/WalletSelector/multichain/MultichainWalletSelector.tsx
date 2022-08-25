@@ -14,6 +14,7 @@ import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
+import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -72,6 +73,23 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     }
   }
 
+  if (selectedAuthMethod === supportedAuthMethods.tezos) {
+    // if (connectionMode === ADD_WALLET_TO_USER) {
+    //   return (
+    //     <StyledWalletSelector>
+    //       <EthereumAddWallet queryRef={query} reset={reset} />
+    //     </StyledWalletSelector>
+    //   );
+    // }
+    if (connectionMode === AUTH) {
+      return (
+        <StyledWalletSelector>
+          <TezosAuthenticateWallet reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
+  }
+
   return (
     <StyledWalletSelector>
       <WalletButton
@@ -100,7 +118,15 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           }}
         />
       ) : null}
-      <WalletButton label="Tezos" icon="tezos" disabled />
+      {/* TODO: Control with hotkey */}
+      <WalletButton
+        label="Tezos"
+        icon="tezos"
+        onClick={() => {
+          console.log('connecting to tezos via walletconnect');
+          setSelectedAuthMethod(supportedAuthMethods.tezos);
+        }}
+      />
       {/* <WalletButton label="Solana" icon="solana" disabled /> */}
       <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
