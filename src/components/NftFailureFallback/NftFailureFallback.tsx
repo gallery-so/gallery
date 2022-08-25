@@ -15,17 +15,22 @@ type Props = {
 );
 
 export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'medium' }: Props) {
-  const handleClick = useCallback(() => {
-    if (noControls) {
-      return;
-    }
+  const handleClick = useCallback(
+    (event: MouseEvent) => {
+      event.preventDefault();
 
-    if (refreshing) {
-      return;
-    }
+      if (noControls) {
+        return;
+      }
 
-    onRetry?.();
-  }, [noControls, onRetry, refreshing]);
+      if (refreshing) {
+        return;
+      }
+
+      onRetry?.();
+    },
+    [noControls, onRetry, refreshing]
+  );
 
   const spaceY = {
     tiny: 4,
@@ -33,7 +38,7 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
   }[size];
 
   return (
-    <Wrapper onClick={handleClick}>
+    <Wrapper>
       {refreshing ? (
         <Label size={size}>Loading...</Label>
       ) : (
@@ -42,7 +47,7 @@ export function NftFailureFallback({ noControls, onRetry, refreshing, size = 'me
       {!noControls && (
         <>
           <Spacer height={spaceY} />
-          <IconButton>
+          <IconButton onClick={handleClick}>
             <RefreshIcon />
           </IconButton>
         </>
@@ -58,20 +63,25 @@ const Label = styled(BaseM)<{ size: Size }>`
   ${({ size }) => (size === 'tiny' ? 'line-height: 12px;' : '')}
 `;
 
-const IconButton = styled.div`
+const IconButton = styled.button`
   display: flex;
   background: transparent;
-`;
 
-const Wrapper = styled.button`
-  cursor: pointer;
-
-  // Button resets
   border: none;
   margin: 0;
+  padding: 8px;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${colors.faint};
+  }
+`;
+
+const Wrapper = styled.div`
+  cursor: pointer;
 
   width: 100%;
-
   aspect-ratio: 1;
 
   display: flex;
