@@ -115,26 +115,28 @@ function SidebarNftIcon({
   );
 
   return (
-    <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-      <NftFailureBoundary
-        key={retryKey}
-        fallback={
+    <NftFailureBoundary
+      key={retryKey}
+      fallback={
+        <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
           <NftFailureFallback
             size="tiny"
             onRetry={refreshMetadata}
             refreshing={refreshingMetadata}
           />
-        }
-        onError={handleError}
-      >
+        </StyledSidebarNftIcon>
+      }
+      onError={handleError}
+    >
+      <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
         <SidebarPreviewAsset
           tokenRef={token}
           onLoad={handleLoad}
           isSelected={isSelected ?? false}
         />
-      </NftFailureBoundary>
-      <StyledOutline onClick={handleClick} isSelected={isSelected} />
-    </StyledSidebarNftIcon>
+        <StyledOutline onClick={handleClick} isSelected={isSelected} />
+      </StyledSidebarNftIcon>
+    </NftFailureBoundary>
   );
 }
 
