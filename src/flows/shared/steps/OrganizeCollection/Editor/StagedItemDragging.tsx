@@ -9,6 +9,7 @@ import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoun
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { useNftRetry } from 'hooks/useNftRetry';
 import { StagedItemDraggingWrapperFragment$key } from '../../../../../../__generated__/StagedItemDraggingWrapperFragment.graphql';
+import noop from 'utils/noop';
 
 type Props = {
   tokenRef: StagedItemDraggingFragment$key | null;
@@ -61,7 +62,7 @@ function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggin
   return (
     <NftFailureBoundary
       key={retryKey}
-      fallback={<NftFailureFallback noControls />}
+      fallback={<NftFailureFallback refreshing={false} onRetry={noop} />}
       onError={handleNftError}
     >
       <StagedNftImageDragging onLoad={handleNftLoaded} tokenRef={token} size={size} />
