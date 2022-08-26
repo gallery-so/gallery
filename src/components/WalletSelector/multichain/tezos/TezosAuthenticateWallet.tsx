@@ -22,7 +22,7 @@ type Props = {
 };
 
 export const TezosAuthenticateWallet = ({ reset }: Props) => {
-  const dAppClient = useMemo(() => {
+  const beaconClient = useMemo(() => {
     return new DAppClient({ name: 'Gallery' });
   }, []);
 
@@ -66,7 +66,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
         sourceAddress: address,
       };
 
-      const { signature } = await dAppClient.requestSignPayload(payload);
+      const { signature } = await beaconClient.requestSignPayload(payload);
 
       // Get the nonce number
       const splittedNonceMessage = formattedInput.split(' ');
@@ -99,31 +99,31 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
       loginOrRedirectToOnboarding,
       trackSignInSuccess,
       handleLogin,
-      dAppClient,
+      beaconClient,
     ]
   );
 
   useEffect(() => {
     async function authenticate() {
-      const { publicKey, address } = await dAppClient.requestPermissions();
+      try {
+        const { publicKey, address } = await beaconClient.requestPermissions();
 
-      if (address) {
-        try {
-          await attemptAuthentication(address, publicKey);
-        } catch (error) {
-          trackSignInError('Tezos', error);
-          // ignore early access errors
-          if (!isEarlyAccessError(error)) {
-            // capture all others
-            captureException(error);
-          }
-          setError(normalizeError(error));
+        if (!address || !publicKey) return;
+
+        await attemptAuthentication(address, publicKey);
+      } catch (error) {
+        trackSignInError('Tezos', error);
+        // ignore early access errors
+        if (!isEarlyAccessError(error)) {
+          // capture all others
+          captureException(error);
         }
+        setError(normalizeError(error));
       }
     }
 
     void authenticate();
-  }, [attemptAuthentication, trackSignInError, dAppClient]);
+  }, [attemptAuthentication, trackSignInError, beaconClient]);
 
   if (error) {
     return (
