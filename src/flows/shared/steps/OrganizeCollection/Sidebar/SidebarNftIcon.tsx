@@ -192,7 +192,9 @@ export const StyledSidebarNftIcon = styled.div<{ backgroundColorOverride: string
   position: relative;
   width: ${SIDEBAR_ICON_DIMENSIONS}px;
   height: ${SIDEBAR_ICON_DIMENSIONS}px;
-  overflow: hidden;
+  
+  // Important to show the refresh tooltip
+  overflow: visible;
 
   display: flex;
   justify-content: center;

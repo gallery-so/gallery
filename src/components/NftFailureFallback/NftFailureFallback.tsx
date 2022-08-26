@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import { RefreshIcon } from '../../icons/RefreshIcon';
+import { RefreshIcon } from 'icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
-import { MouseEventHandler, useCallback } from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
+import Tooltip from 'components/Tooltip/Tooltip';
 
 type Size = 'tiny' | 'medium';
 
@@ -32,6 +33,8 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
     medium: 16,
   }[size];
 
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
     <Wrapper>
       {refreshing ? (
@@ -42,14 +45,28 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
       {!refreshing && (
         <>
           <Spacer height={spaceY} />
-          <IconButton refreshing={refreshing} onMouseDown={handleMouseDown} onClick={handleClick}>
+          <IconButton
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            refreshing={refreshing}
+            onMouseDown={handleMouseDown}
+            onClick={handleClick}
+          >
             <RefreshIcon />
+
+            <RefreshTooltip active={showTooltip} text="Refresh" />
           </IconButton>
         </>
       )}
     </Wrapper>
   );
 }
+
+const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
+  opacity: ${({ active }) => (active ? '1' : '0')};
+  bottom: 0;
+  transform: translateY(100%) translateX(8px); ;
+`;
 
 const Label = styled(BaseM)<{ size: Size }>`
   color: ${colors.metal};
@@ -60,6 +77,8 @@ const Label = styled(BaseM)<{ size: Size }>`
 `;
 
 const IconButton = styled.button<{ refreshing: boolean }>`
+  position: relative;
+
   display: flex;
   background: transparent;
 
