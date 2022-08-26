@@ -44,9 +44,9 @@ export default function useCreateUser() {
         const { chain, address, nonce, signature } = authPayloadVariables;
         authMechanism = {
           eoa: {
-            chainAddress: {
+            chainPubKey: {
               chain,
-              address,
+              pubKey: address,
             },
             nonce,
             signature,
