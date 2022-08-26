@@ -13,11 +13,19 @@ type Section<T> = {
 };
 type CollectionWithLayout<T> = Record<string, Section<T>>;
 
+type CollectionLayout = {
+  sections: number[];
+  sectionLayout: Array<{
+    whitespace: number[];
+    columns: number;
+  }>;
+};
+
 // Given a list of tokens in the collection and the collection layout settings,
 // returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
 export function parseCollectionLayout<T>(
   tokens: ReadonlyArray<T>,
-  collectionLayout: any,
+  collectionLayout: CollectionLayout,
   ignoreWhitespace: boolean = false
 ): CollectionWithLayout<T> {
   const parsedCollection = collectionLayout.sections.reduce(
