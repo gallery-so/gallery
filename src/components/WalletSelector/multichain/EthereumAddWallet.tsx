@@ -135,7 +135,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
         setIsConnecting(false);
 
         return signatureValid;
-      } catch (error) {
+      } catch (error: unknown) {
         setIsConnecting(false);
         trackAddWalletError('Ethereum', error);
         // ignore early access errors

@@ -167,7 +167,7 @@ function AddWalletPendingGnosisSafe({
         await listenForGnosisSignature(address, nonce, pendingWallet);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error) {
+      } catch (error: unknown) {
         handleError(error);
       }
     },
@@ -197,7 +197,7 @@ function AddWalletPendingGnosisSafe({
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, pendingWallet, pendingState, nonce]);
@@ -235,7 +235,7 @@ function AddWalletPendingGnosisSafe({
           }
 
           await attemptAddWallet(account.toLowerCase(), nonce, userExists);
-        } catch (error) {
+        } catch (error: unknown) {
           handleError(error);
         }
       }

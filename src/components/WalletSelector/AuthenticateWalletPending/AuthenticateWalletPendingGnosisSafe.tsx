@@ -117,7 +117,7 @@ function AuthenticateWalletPendingGnosisSafe({
         await listenForGnosisSignature(address, nonce, pendingWallet);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         handleError(error);
       }
@@ -148,7 +148,7 @@ function AuthenticateWalletPendingGnosisSafe({
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, pendingWallet, nonce, pendingState]);
@@ -181,7 +181,7 @@ function AuthenticateWalletPendingGnosisSafe({
           }
 
           await attemptAuthentication(account.toLowerCase(), nonce);
-        } catch (error) {
+        } catch (error: unknown) {
           handleError(error);
         }
       }

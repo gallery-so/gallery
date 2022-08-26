@@ -118,7 +118,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
         await listenForGnosisSignature(address, nonce, walletconnect);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         handleError(error);
       }
@@ -149,7 +149,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, nonce, pendingState]);

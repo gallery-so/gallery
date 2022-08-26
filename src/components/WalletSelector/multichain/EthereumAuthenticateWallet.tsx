@@ -81,7 +81,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
       if (account) {
         try {
           await attemptAuthentication(account.toLowerCase());
-        } catch (error) {
+        } catch (error: unknown) {
           trackSignInError('Ethereum', error);
           // ignore early access errors
           if (!isEarlyAccessError(error)) {
