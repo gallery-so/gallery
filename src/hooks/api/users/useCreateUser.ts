@@ -46,8 +46,8 @@ export default function useCreateUser() {
         authMechanism = {
           eoa: {
             chainPubKey: {
-              pubKey: address,
               chain,
+              pubKey: address,
             },
             nonce,
             signature,
