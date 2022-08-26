@@ -39,10 +39,14 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
       ) : (
         <Label size={size}>Could not load</Label>
       )}
-      <Spacer height={spaceY} />
-      <IconButton onMouseDown={handleMouseDown} onClick={handleClick}>
-        <RefreshIcon />
-      </IconButton>
+      {!refreshing && (
+        <>
+          <Spacer height={spaceY} />
+          <IconButton refreshing={refreshing} onMouseDown={handleMouseDown} onClick={handleClick}>
+            <RefreshIcon />
+          </IconButton>
+        </>
+      )}
     </Wrapper>
   );
 }
@@ -55,7 +59,7 @@ const Label = styled(BaseM)<{ size: Size }>`
   ${({ size }) => (size === 'tiny' ? 'line-height: 12px;' : '')}
 `;
 
-const IconButton = styled.button`
+const IconButton = styled.button<{ refreshing: boolean }>`
   display: flex;
   background: transparent;
 
