@@ -5376,6 +5376,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.keyby@^4.6.7":
+  version "4.6.7"
+  resolved "https://registry.yarnpkg.com/@types/lodash.keyby/-/lodash.keyby-4.6.7.tgz#e5ae589c73886fa23f08a40debf07098cacc9f30"
+  integrity sha512-3qSHbbxLfXlARIKsaijZPb/5ZHDajv1vRg7OlAOuBNwN29PESS3sEOPfG1s2kzSuZnKtxtXZd1lvGj5JasN91w==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.merge@^4.6.7":
   version "4.6.7"
   resolved "https://registry.yarnpkg.com/@types/lodash.merge/-/lodash.merge-4.6.7.tgz#0af6555dd8bc6568ef73e5e0d820a027362946b1"
@@ -14576,6 +14583,11 @@ lodash.kebabcase@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.kebabcase/-/lodash.kebabcase-4.1.1.tgz#8489b1cb0d29ff88195cceca448ff6d6cc295c36"
   integrity sha1-hImxyw0p/4gZXM7KRI/21swpXDY=
+
+lodash.keyby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.keyby/-/lodash.keyby-4.6.0.tgz#7f6a1abda93fd24e22728a4d361ed8bcba5a4354"
+  integrity sha512-PRe4Cn20oJM2Sn6ljcZMeKgyhTHpzvzFmdsp9rK+6K0eJs6Tws0MqgGFpfX/o2HjcoQcBny1Eik9W7BnVTzjIQ==
 
 lodash.memoize@4.x:
   version "4.1.2"
