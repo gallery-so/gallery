@@ -26,8 +26,6 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     return new DAppClient({ name: 'Gallery' });
   }, []);
 
-  console.log(bytes2Char('0x05'));
-
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
 
@@ -54,17 +52,12 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt('Tezos');
 
-      const { nonce, user_exists: userExists } = await createNonce(publicKey, 'Tezos');
-
-      // Gallery uses this cryptographic signature in place of a password: 2204289372043769609
-      console.log(nonce);
+      const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
 
       const formattedInput: string = ['Tezos Signed Message:', nonce].join(' ');
 
-      const bytes = char2Bytes(formattedInput);
-      // const bytes = char2Bytes(nonce);
-
       // https://tezostaquito.io/docs/signing
+      const bytes = char2Bytes(formattedInput);
       const payloadBytes = '05' + '01' + '00' + char2Bytes(bytes.length.toString()) + bytes;
 
       const payload: RequestSignPayloadInput = {
@@ -75,16 +68,19 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       const { signature } = await dAppClient.requestSignPayload(payload);
 
+      // Get the nonce number
+      const splittedNonceMessage = formattedInput.split(' ');
+      const nonceNumber = splittedNonceMessage[splittedNonceMessage.length - 1];
+
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
           mechanism: {
             eoa: {
-              chainAddress: {
+              chainPubKey: {
+                pubKey: publicKey,
                 chain: 'Tezos',
-                address: publicKey,
               },
-              // nonce: formattedInput,
-              nonce,
+              nonce: nonceNumber,
               signature,
             },
           },
@@ -113,9 +109,8 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       if (address) {
         try {
-          await attemptAuthentication(address, publicKey.toLowerCase());
+          await attemptAuthentication(address, publicKey);
         } catch (error) {
-          console.log(error);
           trackSignInError('Tezos', error);
           // ignore early access errors
           if (!isEarlyAccessError(error)) {
@@ -141,8 +136,6 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
       />
     );
   }
-
-  // TODO: add pending state between fetching nonce and signing?
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (

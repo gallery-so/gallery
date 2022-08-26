@@ -43,11 +43,12 @@ export default function useCreateUser() {
 
       if (isEoaPayload(authPayloadVariables)) {
         const { chain, address, nonce, signature } = authPayloadVariables;
+
         authMechanism = {
           eoa: {
-            chainAddress: {
+            chainPubKey: {
+              pubKey: address,
               chain,
-              address,
             },
             nonce,
             signature,
@@ -62,6 +63,8 @@ export default function useCreateUser() {
           },
         };
       }
+
+      return;
 
       const response = await createUser({
         variables: {
