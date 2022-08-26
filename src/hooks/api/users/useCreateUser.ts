@@ -64,8 +64,6 @@ export default function useCreateUser() {
         };
       }
 
-      return;
-
       const response = await createUser({
         variables: {
           authMechanism,
