@@ -15,11 +15,15 @@ import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
+import useMultiKeyDown from 'hooks/useMultiKeyDown';
+import isProduction from 'utils/isProduction';
 
 type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
 };
+
+const isProd = isProduction();
 
 export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
@@ -33,9 +37,17 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   );
 
   const [selectedAuthMethod, setSelectedAuthMethod] = useState<SupportedAuthMethod>();
+  const [isTezosConnectEnabled, setIsTezosConnectEnabled] = useState(false);
+
   const reset = useCallback(() => {
     setSelectedAuthMethod(undefined);
   }, []);
+
+  const handleToggleTezosButton = useCallback(() => {
+    !isProd && setIsTezosConnectEnabled(true);
+  }, []);
+
+  useMultiKeyDown(['Control', 't'], handleToggleTezosButton);
 
   const connectEthereum = useConnectEthereum();
 
@@ -118,7 +130,15 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           }}
         />
       ) : null}
-      <WalletButton label="Tezos" icon="tezos" disabled />
+      <WalletButton
+        label="Tezos"
+        icon="tezos"
+        disabled={!isTezosConnectEnabled}
+        onClick={() => {
+          console.log('connecting to tezos via beacon');
+          setSelectedAuthMethod(supportedAuthMethods.tezos);
+        }}
+      />
       {/* <WalletButton label="Solana" icon="solana" disabled /> */}
       <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
