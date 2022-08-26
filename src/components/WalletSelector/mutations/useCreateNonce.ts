@@ -36,7 +36,6 @@ export default function useCreateNonce() {
 
   return useCallback(
     async (address: string, chain: 'Ethereum' | 'Tezos'): Promise<NonceResponse> => {
-      // async ({ address, chain = 'Ethereum' }: NonceProps): Promise<NonceResponse> => {
       // Kick off the mutation network request
       //
       // This call can throw an error. This error is the equivalent

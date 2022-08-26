@@ -15,7 +15,7 @@ import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/
 import { EthereumError } from '../EthereumError';
 import { normalizeError } from '../normalizeError';
 import { DAppClient, RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
-import { char2Bytes, bytes2Char } from '@taquito/utils';
+import { char2Bytes } from '@taquito/utils';
 
 type Props = {
   reset: () => void;

@@ -51,10 +51,10 @@ function AddWalletPendingDefault({
   queryRef,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
-  const signer = useMemo(
-    () => (library && account ? library.getSigner(account) : undefined),
-    [library, account]
-  );
+  const signer = useMemo(() => (library && account ? library.getSigner(account) : undefined), [
+    library,
+    account,
+  ]);
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -118,7 +118,7 @@ function AddWalletPendingDefault({
         setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt(userFriendlyWalletName);
-        const { nonce, user_exists: userExists } = await createNonce(address);
+        const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -147,7 +147,7 @@ function AddWalletPendingDefault({
         setIsConnecting(false);
 
         return signatureValid;
-      } catch (error: unknown) {
+      } catch (error) {
         setIsConnecting(false);
         trackAddWalletError(userFriendlyWalletName, error);
         if (isWeb3Error(error)) {

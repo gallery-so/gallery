@@ -118,7 +118,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
         await listenForGnosisSignature(address, nonce, walletconnect);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error: unknown) {
+      } catch (error) {
         console.error(error);
         handleError(error);
       }
@@ -149,7 +149,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error: unknown) {
+    } catch (error) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, nonce, pendingState]);
@@ -173,7 +173,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
 
       const account = await connectGnosisSafe();
       trackSignInAttempt('Gnosis Safe');
-      const { nonce, user_exists: userExists } = await createNonce(account);
+      const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
       setNonce(nonce);
       setUserExists(userExists);
 

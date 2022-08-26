@@ -167,7 +167,7 @@ function AddWalletPendingGnosisSafe({
         await listenForGnosisSignature(address, nonce, pendingWallet);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error: unknown) {
+      } catch (error) {
         handleError(error);
       }
     },
@@ -197,7 +197,7 @@ function AddWalletPendingGnosisSafe({
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error: unknown) {
+    } catch (error) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, pendingWallet, pendingState, nonce]);
@@ -226,7 +226,7 @@ function AddWalletPendingGnosisSafe({
             return;
           }
 
-          const { nonce, user_exists: userExists } = await createNonce(account);
+          const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
           setNonce(nonce);
           setUserExists(userExists);
 
@@ -235,7 +235,7 @@ function AddWalletPendingGnosisSafe({
           }
 
           await attemptAddWallet(account.toLowerCase(), nonce, userExists);
-        } catch (error: unknown) {
+        } catch (error) {
           handleError(error);
         }
       }

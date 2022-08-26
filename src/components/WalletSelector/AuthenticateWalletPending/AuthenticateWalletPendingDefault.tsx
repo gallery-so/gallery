@@ -31,10 +31,10 @@ function AuthenticateWalletPendingDefault({
   setDetectedError,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
-  const signer = useMemo(
-    () => (library && account ? library.getSigner(account) : undefined),
-    [library, account]
-  );
+  const signer = useMemo(() => (library && account ? library.getSigner(account) : undefined), [
+    library,
+    account,
+  ]);
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
@@ -59,7 +59,7 @@ function AuthenticateWalletPendingDefault({
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt(userFriendlyWalletName);
 
-      const { nonce, user_exists: userExists } = await createNonce(address);
+      const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 
@@ -101,7 +101,7 @@ function AuthenticateWalletPendingDefault({
       if (account && signer) {
         try {
           await attemptAuthentication(account.toLowerCase(), signer);
-        } catch (error: unknown) {
+        } catch (error) {
           trackSignInError(userFriendlyWalletName, error);
 
           if (isWeb3Error(error)) {

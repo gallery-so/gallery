@@ -106,7 +106,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
         setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt('Ethereum');
-        const { nonce, user_exists: userExists } = await createNonce(address);
+        const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -135,7 +135,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
         setIsConnecting(false);
 
         return signatureValid;
-      } catch (error: unknown) {
+      } catch (error) {
         setIsConnecting(false);
         trackAddWalletError('Ethereum', error);
         // ignore early access errors
