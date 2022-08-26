@@ -82,11 +82,14 @@ export default function ItemPage({
             <StyledPriceQuantityAndPurchaseContainer>
               <StyledPriceAndQuantity>
                 <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
-                <BaseM>
-                  {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
-                    ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
-                    : ''}
-                </BaseM>
+                {
+                  // temporarily disable supply view
+                  // <BaseM>
+                  //   {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
+                  //     ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
+                  //     : ''}
+                  // </BaseM>
+                }
               </StyledPriceAndQuantity>
               {!isMobile && <Spacer height={16} />}
               <PurchaseBox

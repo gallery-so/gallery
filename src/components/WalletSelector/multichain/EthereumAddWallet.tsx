@@ -118,8 +118,8 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
             eoa: {
               signature,
               nonce,
-              chainAddress: {
-                address,
+              chainPubKey: {
+                pubKey: address,
                 chain: 'Ethereum',
               },
             },

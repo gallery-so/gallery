@@ -18,6 +18,7 @@ export default function useCreateUser() {
           }
           ... on ErrAuthenticationFailed {
             __typename
+            message
           }
           ... on ErrDoesNotOwnRequiredToken {
             __typename
@@ -42,11 +43,12 @@ export default function useCreateUser() {
 
       if (isEoaPayload(authPayloadVariables)) {
         const { chain, address, nonce, signature } = authPayloadVariables;
+
         authMechanism = {
           eoa: {
-            chainAddress: {
+            chainPubKey: {
+              pubKey: address,
               chain,
-              address,
             },
             nonce,
             signature,

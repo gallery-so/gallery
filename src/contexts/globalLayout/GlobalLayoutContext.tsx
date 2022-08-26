@@ -33,8 +33,6 @@ import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayou
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import NavLink from 'components/core/NavLink/NavLink';
-import { FeatureFlag } from 'components/core/enums';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -357,14 +355,14 @@ function GlobalNavbarWithFadeEnabled({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isBannerVisible && isFeatureEnabled(FeatureFlag.SHOP_OPEN, query) ? (
+      {isBannerVisible && (
         <Banner
           text="(OBJECTS) merch shop is now open."
           queryRef={query}
           actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
           dismissOnActionComponentClick
         />
-      ) : null}
+      )}
       <GlobalNavbar
         queryRef={query}
         customLeftContent={customLeftContent}

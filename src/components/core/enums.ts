@@ -12,5 +12,4 @@ export enum DisplayLayout {
 
 export enum FeatureFlag {
   REFRESH_METADATA = 'REFRESH_METADATA',
-  SHOP_OPEN = 'SHOP_OPEN',
 }

@@ -66,13 +66,14 @@ export default function useLoginOrRedirectToOnboarding() {
       } else {
         // Redirect user to the onboarding flow with necessary input params to create an account
         if (authMechanism.mechanism.eoa) {
+          console.log(authMechanism);
           push(
             {
               pathname: '/welcome',
               query: {
                 authMechanismType: 'eoa',
-                chain: authMechanism.mechanism.eoa.chainAddress.chain,
-                address: authMechanism.mechanism.eoa.chainAddress.address,
+                chain: authMechanism.mechanism.eoa.chainPubKey.chain,
+                address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
                 nonce: authMechanism.mechanism.eoa.nonce,
                 signature: authMechanism.mechanism.eoa.signature,
                 userFriendlyWalletName,

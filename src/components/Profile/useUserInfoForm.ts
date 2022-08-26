@@ -98,7 +98,7 @@ export default function useUserInfoForm({
       }
       onSuccess(username);
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }

@@ -14,6 +14,7 @@ import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
 import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
+import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -67,6 +68,23 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       return (
         <StyledWalletSelector>
           <GnosisSafeAuthenticateWallet reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
+  }
+
+  if (selectedAuthMethod === supportedAuthMethods.tezos) {
+    // if (connectionMode === ADD_WALLET_TO_USER) {
+    //   return (
+    //     <StyledWalletSelector>
+    //       <EthereumAddWallet queryRef={query} reset={reset} />
+    //     </StyledWalletSelector>
+    //   );
+    // }
+    if (connectionMode === AUTH) {
+      return (
+        <StyledWalletSelector>
+          <TezosAuthenticateWallet reset={reset} />
         </StyledWalletSelector>
       );
     }
