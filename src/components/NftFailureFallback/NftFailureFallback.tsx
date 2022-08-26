@@ -99,8 +99,6 @@ const Wrapper = styled.div`
   width: 100%;
   aspect-ratio: 1;
 
-  padding: 10px 0;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
