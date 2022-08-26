@@ -3,12 +3,13 @@ import { isEditModeToken, StagingItem } from '../../types';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
 import { Section } from './Section';
+import { SortableStagedNftFragment$key } from '../../../../../../../__generated__/SortableStagedNftFragment.graphql';
 
 type Props = {
   items: StagingItem[];
   itemWidth: number;
   columns: number;
-  nftFragmentsKeyedByID: any;
+  nftFragmentsKeyedByID: { [id: string]: SortableStagedNftFragment$key };
 };
 
 export default function SectionDragging({

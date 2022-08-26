@@ -36,6 +36,9 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
     if (active && contract) {
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
+
+      // Need to figure out a better way to type contracts
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
         setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
         setTransactionStatus(TransactionStatus.FAILED);

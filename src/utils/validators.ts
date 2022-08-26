@@ -6,7 +6,10 @@ import { ALPHANUMERIC_UNDERSCORES, NO_CONSECUTIVE_PERIODS_OR_UNDERSCORES } from 
 
 type OK = false;
 type ValidatorReturnType = Error | OK;
-type Validator = (value: any) => ValidatorReturnType;
+
+// Starting this off as string.
+// May want to update this to a union type at some point.
+type Validator = (value: string) => ValidatorReturnType;
 
 export function validate(field: string, validators: Validator[]): string | OK {
   for (const validator of validators) {

@@ -5,9 +5,10 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import CollectionRow from './CollectionRow';
 import CollectionRowSettings from './CollectionRowSettings';
+import { SortableCollectionRowFragment$key } from '../../../../../__generated__/SortableCollectionRowFragment.graphql';
 
 type Props = {
-  collectionRef: any;
+  collectionRef: SortableCollectionRowFragment$key;
 };
 
 function SortableCollectionRow({ collectionRef }: Props) {

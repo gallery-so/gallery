@@ -5,11 +5,14 @@ import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
+import { useGlobalAnnouncementPopoverFragment$key } from '../../../../__generated__/useGlobalAnnouncementPopoverFragment.graphql';
 
 const AUTH_REQUIRED = false;
 const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 0;
 
-export default function useGlobalAnnouncementPopover(queryRef: any) {
+export default function useGlobalAnnouncementPopover(
+  queryRef: useGlobalAnnouncementPopoverFragment$key
+) {
   const query = useFragment(
     graphql`
       fragment useGlobalAnnouncementPopoverFragment on Query {
