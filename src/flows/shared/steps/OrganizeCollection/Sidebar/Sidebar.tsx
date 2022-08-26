@@ -21,6 +21,7 @@ import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
 import AddBlankBlock from './AddBlankBlock';
 import keyBy from 'lodash.keyby';
+import { SidebarNftIconFragment$key } from '../../../../../../__generated__/SidebarNftIconFragment.graphql';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -115,7 +116,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 }
 
 type SidebarTokensProps = {
-  nftFragmentsKeyedByID: any;
+  nftFragmentsKeyedByID: { [id: string]: SidebarNftIconFragment$key };
   tokens: EditModeToken[];
 };
 

@@ -29,6 +29,9 @@ type Props = {
   membershipNft: MembershipNft;
   canMintToken: boolean;
   contract: Contract | null;
+  // mintToken actually returns an any type :facepalm:
+  // maybe there's a better way to type these
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mintToken: (contract: Contract, tokenId: number) => Promise<any>;
   children?: ReactNode;
   onMintSuccess?: () => void;
@@ -94,6 +97,9 @@ export function MembershipMintPage({
     if (active && contract) {
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
+
+      // Need to figure out a better way to type contracts
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mintResult = await mintToken(contract, membershipNft.tokenId).catch((error: any) => {
         setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
         setTransactionStatus(TransactionStatus.FAILED);

@@ -3,6 +3,9 @@ import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { NETWORK_CONTEXT_NAME } from 'connectors/index';
 
+// The library actually types this as any. I don't like it,
+// but I don't know what else it should be.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any) {
   const library = new Web3Provider(provider);
   library.pollingInterval = 12_000;

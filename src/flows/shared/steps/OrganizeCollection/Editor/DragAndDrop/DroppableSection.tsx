@@ -16,7 +16,7 @@ type Props = {
   style?: React.CSSProperties;
   columns?: number;
   id: string;
-  items: any[];
+  items: Array<{ id: string }>;
 };
 
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
@@ -63,10 +63,8 @@ export default function DroppableSection({ children, columns, id, items, style, 
             transform: CSS.Translate.toString(transform),
             opacity: isDragging ? 0.5 : undefined,
           }}
-          handleProps={{
-            ...attributes,
-            ...listeners,
-          }}
+          draggableAttributes={attributes}
+          draggableListeners={listeners}
           columns={columns}
           {...props}
           isActive={isActive}
