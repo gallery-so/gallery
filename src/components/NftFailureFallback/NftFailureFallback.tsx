@@ -5,6 +5,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
 import { MouseEventHandler, useCallback, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
+import IconContainer from 'components/core/Markdown/IconContainer';
 
 type Size = 'tiny' | 'medium';
 
@@ -52,8 +53,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
             onMouseDown={handleMouseDown}
             onClick={handleClick}
           >
-            <RefreshIcon />
-
+            <IconContainer icon={<RefreshIcon />} />
             <RefreshTooltip active={showTooltip} text="Refresh" />
           </IconButton>
         </>
@@ -79,18 +79,13 @@ const Label = styled(BaseM)<{ size: Size }>`
 const IconButton = styled.button<{ refreshing: boolean }>`
   position: relative;
 
-  display: flex;
-  background: transparent;
-
+  // Button Reset
   border: none;
   margin: 0;
-  padding: 8px;
+  padding: 0;
+  background: none;
 
   cursor: pointer;
-
-  &:hover {
-    background-color: ${colors.faint};
-  }
 `;
 
 const Wrapper = styled.div`
