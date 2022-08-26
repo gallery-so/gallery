@@ -34,6 +34,10 @@ export default function useTimer(date: string, currentTime?: string) {
 
   return {
     timestamp: `${days}:${hours}:${minutes}:${seconds}`,
+    days,
+    hours,
+    minutes,
+    seconds,
     hasEnded,
   };
 }

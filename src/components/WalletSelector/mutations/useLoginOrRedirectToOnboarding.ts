@@ -71,8 +71,8 @@ export default function useLoginOrRedirectToOnboarding() {
               pathname: '/welcome',
               query: {
                 authMechanismType: 'eoa',
-                chain: authMechanism.mechanism.eoa.chainAddress.chain,
-                address: authMechanism.mechanism.eoa.chainAddress.address,
+                chain: authMechanism.mechanism.eoa.chainPubKey.chain,
+                address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
                 nonce: authMechanism.mechanism.eoa.nonce,
                 signature: authMechanism.mechanism.eoa.signature,
                 userFriendlyWalletName,

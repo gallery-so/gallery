@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { BaseS } from 'components/core/Text/Text';
+import { BaseS, TitleM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import colors from 'components/core/colors';
 import {
@@ -14,6 +14,8 @@ import {
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
+import LogoBracketLeft from 'icons/LogoBracketLeft';
+import LogoBracketRight from 'icons/LogoBracketRight';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -43,6 +45,16 @@ function GlobalFooter() {
           <Spacer width={8} />
           <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
           <Spacer width={8} />
+          <StyledFooterLink href="/shop">
+            Shop
+            <Spacer width={4} />
+            <StyledObjectsContainer>
+              <StyledLogoBracketLeft color={colors.shadow} />
+              <StyledShopText>OBJECTS</StyledShopText>
+              <Spacer width={1} />
+              <StyledLogoBracketRight color={colors.shadow} />
+            </StyledObjectsContainer>
+          </StyledFooterLink>
         </StyledLinkContainer>
       </MainContent>
       {isMobile && <Spacer height={4} />}
@@ -58,6 +70,33 @@ function GlobalFooter() {
     </StyledGlobalFooter>
   );
 }
+
+const StyledObjectsContainer = styled.div`
+  height: 16px;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledShopText = styled(TitleM)`
+  font-family: 'GT Alpina Condensed';
+  display: inline;
+  height: 16px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14.4127px;
+  line-height: 16px;
+  color: inherit;
+`;
+
+const StyledLogoBracketLeft = styled(LogoBracketLeft)`
+  width: 6px;
+  height: 14px;
+`;
+
+const StyledLogoBracketRight = styled(LogoBracketRight)`
+  width: 6px;
+  height: 14px;
+`;
 
 type StyledFooterProps = {
   isMobile: boolean;
@@ -108,6 +147,7 @@ const StyledLinkContainer = styled.div`
 `;
 
 const StyledFooterLink = styled(NavLink)`
+  display: flex;
   text-transform: capitalize;
 `;
 

@@ -6,8 +6,11 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
 
   // If pressed key is our target key then set to true
   const pressHandler = useCallback(
-    ({ key }: KeyboardEvent) => {
-      setKeyPressed(key === targetKey);
+    (event) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      setKeyPressed(event.key === targetKey);
     },
     [targetKey]
   );

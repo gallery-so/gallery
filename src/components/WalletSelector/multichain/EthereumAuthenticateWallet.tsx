@@ -56,9 +56,9 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
         authMechanism: {
           mechanism: {
             eoa: {
-              chainAddress: {
+              chainPubKey: {
                 chain: 'Ethereum',
-                address,
+                pubKey: address,
               },
               nonce,
               signature,

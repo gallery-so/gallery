@@ -2,6 +2,7 @@ import breakpoints, { contentSize } from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import { BaseM, TitleS } from 'components/core/Text/Text';
+import { GLOBAL_BANNER_STORAGE_KEY } from 'constants/storageKeys';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -15,14 +16,12 @@ type Props = {
   queryRef: GlobalBannerFragment$key;
   text: string;
   requireAuth?: boolean;
-  localStorageKey?: string;
   actionComponent?: React.ReactNode;
   dismissOnActionComponentClick?: boolean;
 };
 
 export default function Banner({
   queryRef,
-  localStorageKey,
   text,
   title,
   requireAuth = false,
@@ -46,7 +45,7 @@ export default function Banner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [dismissed, setDismissed] = usePersistedState(localStorageKey || '', false);
+  const [dismissed, setDismissed] = usePersistedState(GLOBAL_BANNER_STORAGE_KEY || '', false);
 
   const hideBanner = useCallback(() => {
     setDismissed(true);

@@ -7,7 +7,7 @@ import {
   useGeneralMembershipCardContract,
 } from 'hooks/useContract';
 
-import MerkleTree from './MerkleTree';
+import MerkleTree from 'utils/MerkleTree';
 import { Contract } from '@ethersproject/contracts';
 
 import MembershipMintPageProvider, {

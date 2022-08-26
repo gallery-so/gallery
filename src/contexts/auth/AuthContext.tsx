@@ -14,7 +14,10 @@ import {
 import Web3WalletProvider from './Web3WalletContext';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
+import {
+  GLOBAL_BANNER_STORAGE_KEY,
+  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+} from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { _identify } from 'contexts/analytics/AnalyticsContext';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
@@ -151,7 +154,9 @@ const AuthProvider = memo(({ children }: Props) => {
   const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
     setLocallyLoggedInWalletAddress('');
-    clearLocalStorageWithException([]);
+    // keep around dismissed state of banner so that user doesn't
+    // encounter it again on login
+    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY]);
   }, [setLocallyLoggedInWalletAddress]);
 
   const logoutOnServer = useLogout();
