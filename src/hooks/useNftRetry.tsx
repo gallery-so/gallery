@@ -74,6 +74,8 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     [pushToast, refreshed, reportError, shimmerContext, tokenId]
   );
 
+  // TODO(Terence): Remove this
+  // eslint-disable-next-line
   const retry = useCallback(() => {
     setIsFailed(false);
     setRefreshed(true);
@@ -118,7 +120,12 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
       const response = await refresh({ variables: { tokenId } });
 
       if (response.refreshToken?.__typename === 'RefreshTokenPayload') {
-        retry();
+        // TODO(Terence): Write some unit tests to see why Relay isn't
+        // properly re-rendering with the updated data when the __typename changes
+        location.reload();
+
+        // TODO(Terence): Turn this on when we get it working
+        // retry();
       } else {
         pushErrorToast();
         reportError('GraphQL Error while refreshing nft metadata', {
@@ -131,7 +138,7 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     } finally {
       setRefreshingMetadata(false);
     }
-  }, [pushToast, refresh, reportError, retry, tokenId]);
+  }, [pushToast, refresh, reportError, tokenId]);
 
   return useMemo(() => {
     return {
