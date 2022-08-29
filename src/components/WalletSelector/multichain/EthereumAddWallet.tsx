@@ -29,7 +29,7 @@ import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
 import { useAccount } from 'wagmi';
 import { signMessage } from '@wagmi/core';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 
 type Props = {
@@ -185,7 +185,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
         error={error}
         reset={() => {
           setError(undefined);

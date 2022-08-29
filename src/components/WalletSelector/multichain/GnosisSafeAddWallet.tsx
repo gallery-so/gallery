@@ -36,7 +36,7 @@ import { GnosisSafeAddWalletFragment$key } from '__generated__/GnosisSafeAddWall
 import { removeNullValues } from 'utils/removeNullValues';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 import { walletconnect } from '../../../connectors';
 
@@ -249,7 +249,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
         error={error}
         reset={() => {
           setError(undefined);

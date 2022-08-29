@@ -22,7 +22,8 @@ const ERROR_MESSAGES: Record<string, ErrorMessage> = {
   },
   USER_SIGNUP_DISABLED: {
     heading: 'Coming Soon',
-    body: "We've detected a Gallery Member Card in your wallet! You'll be able to use it to create an account with us soon.\n\n For further updates, find us on Twitter or join our Discord.",
+    body:
+      "We've detected a Gallery Member Card in your wallet! You'll be able to use it to create an account with us soon.\n\n For further updates, find us on Twitter or join our Discord.",
   },
   EXISTING_USER: {
     heading: 'This address is already associated with an existing user.',
@@ -30,7 +31,8 @@ const ERROR_MESSAGES: Record<string, ErrorMessage> = {
   },
   NO_COOKIE: {
     heading: 'Cookie not found',
-    body: 'A cookie was not properly set from the login flow. This issue may be related to CORS. Please try a different browser, and reach out to us on Twitter or Discord if you continue to see this error.',
+    body:
+      'A cookie was not properly set from the login flow. This issue may be related to CORS. Please try a different browser, and reach out to us on Twitter or Discord if you continue to see this error.',
   },
   UNKNOWN_ERROR: {
     heading: 'There was an error connecting',
@@ -47,7 +49,7 @@ type Props = {
   reset: () => void;
 };
 
-export const EthereumError = ({ error, reset }: Props) => {
+export const WalletError = ({ error, reset }: Props) => {
   const { address } = useAccount();
 
   const displayedError = useMemo(() => {
@@ -60,7 +62,8 @@ export const EthereumError = ({ error, reset }: Props) => {
         if (!isEarlyAccessError(error)) {
           return {
             heading: address?.toLowerCase() ?? 'Unknown Wallet',
-            body: 'Your wallet address is not on the **Early Access Allowlist**. To get onto the allowlist, visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba#6fa1bc2983614500a206fc14fcfd61bf) or reach out to us on [Discord](discord.gg/vBqBEH8GaM).',
+            body:
+              'Your wallet address is not on the **Early Access Allowlist**. To get onto the allowlist, visit our [FAQ](https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba#6fa1bc2983614500a206fc14fcfd61bf) or reach out to us on [Discord](discord.gg/vBqBEH8GaM).',
           };
         }
 

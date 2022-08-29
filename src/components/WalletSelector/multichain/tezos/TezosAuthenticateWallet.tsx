@@ -12,7 +12,7 @@ import {
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
-import { EthereumError } from '../EthereumError';
+import { WalletError } from '../WalletError';
 import { normalizeError } from '../normalizeError';
 import { DAppClient, RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
 import { char2Bytes } from '@taquito/utils';
@@ -122,7 +122,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
         error={error}
         reset={() => {
           setError(undefined);

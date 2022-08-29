@@ -13,7 +13,7 @@ import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import { useAccount } from 'wagmi';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { signMessage } from '@wagmi/core';
 
@@ -99,7 +99,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
         error={error}
         reset={() => {
           setError(undefined);

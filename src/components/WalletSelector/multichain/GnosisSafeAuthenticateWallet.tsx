@@ -23,7 +23,7 @@ import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import { normalizeError } from './normalizeError';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 import { walletconnect } from '../../../connectors';
 
@@ -197,7 +197,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
         error={error}
         reset={() => {
           setError(undefined);
