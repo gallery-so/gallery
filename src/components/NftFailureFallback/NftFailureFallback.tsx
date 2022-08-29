@@ -63,9 +63,9 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
 }
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
-  opacity: ${({ active }) => (active ? '1' : '0')};
   top: 0;
-  transform: translateY(-100%) translateX(0px); ;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transform: translateY(calc(-100% + ${({ active }) => (active ? -4 : 0)}px));
 `;
 
 const Label = styled(BaseM)<{ size: Size }>`
