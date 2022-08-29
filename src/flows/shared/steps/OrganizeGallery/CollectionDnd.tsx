@@ -18,7 +18,7 @@ import CollectionRowDragging from './CollectionRowDragging';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
+import keyBy from 'lodash.keyby';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -64,7 +64,7 @@ function CollectionDnd({ galleryRef }: Props) {
   }, [nonNullCollections]);
 
   const sortedCollections = useMemo(() => {
-    const collectionsKeyedById = arrayToObjectKeyedById('id', nonNullCollections);
+    const collectionsKeyedById = keyBy(nonNullCollections, (collection) => collection.id);
 
     return sortedCollectionIds
       .map((collectionId) => collectionsKeyedById[collectionId])

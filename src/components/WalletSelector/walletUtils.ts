@@ -123,7 +123,7 @@ export async function listenForGnosisSignature(
   const messageHash = generateMessageHash(nonce);
   // create listener that will listen for the SignMsg event on the Gnosis contract
   const listenToGnosisSafeContract = new Promise((resolve) => {
-    gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: any) => {
+    gnosisSafeContract.on(GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME, async (msgHash: string) => {
       // Upon detecing the SignMsg event, validate that the contract signed the message
       console.log('Gnosis Safe Contract Event: ', GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME);
       const messageWasSigned = await validateGnosisSignature(gnosisSafeContract, messageHash);
@@ -202,6 +202,8 @@ function checkIfContractAccount(connector: WalletConnectConnector): ContractAcco
   return contractAccount;
 }
 
+// Need a better way to type this Web3 stuff
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isRpcSignatureError(error: Record<string, any>) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 4001;
 }

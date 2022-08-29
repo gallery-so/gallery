@@ -44,6 +44,8 @@ export default function useMintContractWithQuantity({
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
+  // Need to figure out a better way to type contracts
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
     if (contract) {
       return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
@@ -51,6 +53,8 @@ export default function useMintContractWithQuantity({
   }, []);
 
   const getUserOwnedSupply = useCallback(
+    // Need to figure out a better way to type contracts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (contract: any) => {
       if (contract && address) {
         return web3.utils.hexToNumber(await contract.balanceOfType(tokenId, address));
@@ -60,6 +64,8 @@ export default function useMintContractWithQuantity({
   );
 
   const getTokenPrice = useCallback(
+    // Need to figure out a better way to type contracts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (contract: any) => {
       if (contract) {
         return await contract.getPrice(tokenId);
@@ -116,6 +122,8 @@ export default function useMintContractWithQuantity({
   }
 
   const totalPrice = useCallback(
+    // Need to figure out a better way to type contracts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (contract: any) => {
       if (!quantity) return;
       if (contract) {
@@ -154,6 +162,8 @@ export default function useMintContractWithQuantity({
       if (!quantity) return;
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
+      // Need to figure out a better way to type contracts
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mintResult = await mintToken(contract, tokenId, quantity).catch((error: any) => {
         console.log(error);
         // TODO: Can handle additional errors here if we want

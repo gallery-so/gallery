@@ -1,3 +1,7 @@
-export default function isPromise(entity: any) {
-  return typeof entity === 'object' && 'then' in entity;
+export default function isPromise(entity: unknown): entity is Promise<unknown> {
+  if (entity) {
+    return typeof entity === 'object' && 'then' in entity;
+  }
+
+  return false;
 }

@@ -9,7 +9,7 @@ import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../di
 type StyledEventProps = {
   children: ReactNode;
   className?: string;
-  onClick?: any;
+  onClick?: JSX.IntrinsicElements['div']['onClick'];
 };
 
 export const StyledEvent = ({ children, className, onClick }: StyledEventProps) => {

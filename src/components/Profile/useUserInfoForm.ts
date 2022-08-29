@@ -17,6 +17,7 @@ import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import useDebounce from 'hooks/useDebounce';
 import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
 import { useTrackCreateUserSuccess } from 'contexts/analytics/authUtil';
+import { useUserInfoFormIsUsernameAvailableQuery } from '../../../__generated__/useUserInfoFormIsUsernameAvailableQuery.graphql';
 
 type Props = {
   onSuccess: (username: string) => void;
@@ -30,7 +31,7 @@ function useIsUsernameAvailableFetcher() {
 
   return useCallback(
     async (username: string) => {
-      const response = await fetchQuery<any>(
+      const response = await fetchQuery<useUserInfoFormIsUsernameAvailableQuery>(
         relayEnvironment,
         graphql`
           query useUserInfoFormIsUsernameAvailableQuery($username: String!) {
@@ -44,7 +45,7 @@ function useIsUsernameAvailableFetcher() {
         { username }
       ).toPromise();
 
-      if (response.user?.__typename === 'ErrUserNotFound') {
+      if (response?.user?.__typename === 'ErrUserNotFound') {
         return true;
       }
       return false;

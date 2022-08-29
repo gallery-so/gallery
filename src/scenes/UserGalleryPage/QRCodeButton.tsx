@@ -5,13 +5,14 @@ import QRIcon from 'src/icons/QRIcon';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import QRCodePopover from 'scenes/Modals/QRCodePopover';
+import QRCodeStyling from 'qr-code-styling';
 
 export default function QRCode({
   username,
   styledQrCode,
 }: {
   username: string;
-  styledQrCode: any;
+  styledQrCode: QRCodeStyling;
 }) {
   const { showModal } = useModalActions();
   const track = useTrack();

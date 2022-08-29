@@ -7,7 +7,7 @@ export type MountedNft<T> = { token: T; visibility: VisibilityState };
 // see unit tests for more details.
 export default function shiftNftCarousel<T>(
   direction: Directions,
-  elements: { token: any; visibility: VisibilityState }[],
+  elements: { token: T; visibility: VisibilityState }[],
   currentElementIndex: number,
   collection: T[]
 ): MountedNft<T>[] {

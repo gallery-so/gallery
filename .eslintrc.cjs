@@ -40,10 +40,11 @@ const rules = {
   '@typescript-eslint/switch-exhaustiveness-check': 'off',
   '@typescript-eslint/no-namespace': 'off',
   '@typescript-eslint/no-unused-vars': 'error',
+  '@typescript-eslint/no-explicit-any': 'error',
 };
 
 module.exports = {
-  ignorePatterns: ['next-env.d.ts', 'node_modules', 'build'],
+  ignorePatterns: ['next-env.d.ts', 'node_modules', 'build', '*.graphql.ts', 'src/__generated__/operations.ts'],
 
   extends: ['prettier'],
   plugins: ['node', 'react-hooks', '@typescript-eslint', 'react'],

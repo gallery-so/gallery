@@ -5,36 +5,54 @@ import FollowButton from 'components/Follow/FollowButton';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
 import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
-import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { graphql, useFragment } from 'react-relay';
+import { UserFollowedYouEventFragment$key } from '../../../../__generated__/UserFollowedYouEventFragment.graphql';
+import { UserFollowedYouEventEventFragment$key } from '../../../../__generated__/UserFollowedYouEventEventFragment.graphql';
 
 type Props = {
-  username: string;
   queryRef: FollowButtonQueryFragment$key;
-  userRef: FollowButtonUserFragment$key;
-  followInfo: any;
-  followTimestamp: any;
+  eventRef: UserFollowedYouEventEventFragment$key;
+  followInfoRef: UserFollowedYouEventFragment$key;
 };
 
-export default function UserFollowedYouEvent({
-  followInfo,
-  followTimestamp,
-  username,
-  queryRef,
-  userRef,
-}: Props) {
+export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef }: Props) {
+  const event = useFragment(
+    graphql`
+      fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
+        eventTime
+        owner @required(action: THROW) {
+          username @required(action: THROW)
+          ...FollowButtonUserFragment
+        }
+      }
+    `,
+    eventRef
+  );
+
+  const followInfo = useFragment(
+    graphql`
+      fragment UserFollowedYouEventFragment on FollowInfo {
+        followedBack
+      }
+    `,
+    followInfoRef
+  );
+
   return (
     <StyledEvent>
       <StyledEventContent>
         <StyledEventHeader>
           <BaseM>
-            <InteractiveLink to={`/${username}`}>{username}</InteractiveLink> followed you{' '}
-            {followInfo.followedBack && 'back'}
+            <InteractiveLink to={`/${event.owner.username}`}>
+              {event.owner.username}
+            </InteractiveLink>{' '}
+            followed you {followInfo.followedBack && 'back'}
           </BaseM>
           <Spacer width={4} />
-          <StyledTime>{getTimeSince(followTimestamp)}</StyledTime>
+          <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
-        {!followInfo.followedBack && <FollowButton userRef={userRef} queryRef={queryRef} />}
+        {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={queryRef} />}
       </StyledEventContent>
     </StyledEvent>
   );

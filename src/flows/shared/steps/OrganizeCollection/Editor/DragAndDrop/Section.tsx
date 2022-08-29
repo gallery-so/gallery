@@ -1,20 +1,23 @@
 import colors from 'components/core/colors';
 import { TitleDiatypeM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { forwardRef } from 'react';
+import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
 import DragHandleIcon from 'src/icons/DragHandleIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import noop from 'utils/noop';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { DraggableAttributes } from '@dnd-kit/core';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
   columns?: number;
   label?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   hover?: boolean;
-  handleProps?: React.HTMLAttributes<any>;
+  draggableAttributes?: DraggableAttributes;
+  draggableListeners?: SyntheticListenerMap;
   isActive?: boolean;
   onClick?(): void;
   onRemove?(): void;
@@ -65,7 +68,8 @@ export const Section = forwardRef<HTMLDivElement, Props>(
     {
       children,
       columns,
-      handleProps,
+      draggableListeners,
+      draggableAttributes,
       onClick,
       style,
       isActive,
@@ -89,7 +93,12 @@ export const Section = forwardRef<HTMLDivElement, Props>(
         isActive={isActive || isDragging}
       >
         <StyledButtonContainer isActive={isActive || isDragging}>
-          <Handle isActive={isActive || isDragging} isDragging={isDragging} {...handleProps} />
+          <Handle
+            isActive={isActive || isDragging}
+            isDragging={isDragging}
+            {...draggableListeners}
+            {...draggableAttributes}
+          />
           <StyledDeleteButton onClick={handleDeleteSectionClick}>
             <StyledTrashIcon />
           </StyledDeleteButton>

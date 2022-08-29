@@ -17,6 +17,9 @@ type CollectionWithLayout<T> = Record<string, Section<T>>;
 // returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
 export function parseCollectionLayout<T>(
   tokens: ReadonlyArray<T>,
+
+  // Hard to type this, need a second look
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collectionLayout: any,
   ignoreWhitespace: boolean = false
 ): CollectionWithLayout<T> {
