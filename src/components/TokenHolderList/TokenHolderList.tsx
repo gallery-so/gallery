@@ -30,7 +30,10 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
     nonNullTokenHolders.sort((a, b) => {
       const usernameA = a.user.username.toLowerCase();
       const usernameB = b.user.username.toLowerCase();
+
       return (
+        // TODO(Terence): What is going on here
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (/^[0-9]/.test(usernameA) as any) - (/^[0-9]/.test(usernameB) as any) ||
         usernameA.localeCompare(usernameB, undefined, { numeric: true })
       );

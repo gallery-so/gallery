@@ -2,6 +2,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import QRCodeStyling from 'qr-code-styling';
 
 export function useQrCode() {
   const QRCodeStyling = require('qr-code-styling');
@@ -68,7 +69,7 @@ export default function QRCodePopover({
   styledQrCode,
 }: {
   username: string;
-  styledQrCode: any;
+  styledQrCode: QRCodeStyling;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,7 +79,7 @@ export default function QRCodePopover({
     // This is likely because it is painted before the image has finished loading.
     // Calling update() refreshes the canvas content, which fixes the issue.
     styledQrCode.update({ data: `https://gallery.so/${username}` });
-    styledQrCode.append(ref.current);
+    styledQrCode.append(ref.current ?? undefined);
   }, [styledQrCode, username]);
 
   return (

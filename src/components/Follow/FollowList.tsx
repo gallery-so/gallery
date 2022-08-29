@@ -3,11 +3,12 @@ import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
 import FollowListUsers from './FollowListUsers';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
   userRef: FollowListFragment$key;
@@ -18,14 +19,10 @@ export default function FollowList({ userRef }: Props) {
     graphql`
       fragment FollowListFragment on GalleryUser {
         followers @required(action: THROW) {
-          dbid
-          username
-          bio
+          ...FollowListUsersFragment
         }
         following @required(action: THROW) {
-          dbid
-          username
-          bio
+          ...FollowListUsersFragment
         }
       }
     `,
@@ -36,6 +33,8 @@ export default function FollowList({ userRef }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
+
+  const nonNullUserList = useMemo(() => removeNullValues(userList), [userList]);
 
   return (
     <StyledFollowList fullscreen={isMobile}>
@@ -57,7 +56,7 @@ export default function FollowList({ userRef }: Props) {
         </StyledHeaderText>
       </StyledHeader>
       <FollowListUsers
-        userList={userList}
+        userRefs={nonNullUserList}
         emptyListText={
           displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
         }

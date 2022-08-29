@@ -1,4 +1,5 @@
 import { memo, useCallback, useState, useMemo, useRef, useEffect } from 'react';
+import keyBy from 'lodash.keyby';
 import styled from 'styled-components';
 
 import {
@@ -37,7 +38,6 @@ import { isEditModeToken, Section } from '../types';
 import { graphql, useFragment } from 'react-relay';
 import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
-import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
@@ -326,7 +326,7 @@ function StagingArea({ tokensRef }: Props) {
     return allItemsInCollection.find(({ id }) => id === activeId);
   }, [allItemsInCollection, activeId]);
 
-  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
+  const nftFragmentsKeyedByID = useMemo(() => keyBy(tokens, (token) => token.dbid), [tokens]);
 
   // fragment ref to the item being dragged
   const activeItemRef = activeId && nftFragmentsKeyedByID[activeId];

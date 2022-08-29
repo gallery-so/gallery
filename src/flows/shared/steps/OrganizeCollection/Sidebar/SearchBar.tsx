@@ -1,5 +1,12 @@
 import colors from 'components/core/colors';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import {
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import useDebounce from 'hooks/useDebounce';
 import { graphql, useFragment } from 'react-relay';
@@ -28,8 +35,8 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
-  const handleQueryChange = useCallback(
-    (event: any) => {
+  const handleQueryChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
       const searchQuery = event.target.value;
       setSearchQuery(searchQuery);
     },
