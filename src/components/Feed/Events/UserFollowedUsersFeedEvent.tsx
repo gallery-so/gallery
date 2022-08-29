@@ -19,6 +19,7 @@ import { UserFollowedUsersFeedEventQueryFragment$key } from '__generated__/UserF
 import { FeedMode } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
+import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
   eventRef: UserFollowedUsersFeedEventFragment$key;
@@ -40,11 +41,15 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
           user {
             username
             dbid
-            bio
+            ...FollowListUsersFragment
             ...HoverCardOnUsernameFragment
           }
           followedBack
+
+          ...UserFollowedYouEventFragment
         }
+
+        ...UserFollowedYouEventEventFragment
       }
     `,
 
@@ -106,7 +111,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   }, [event.followed, feedMode, viewerUserId]);
 
   const flattenedGenericFollows = useMemo(() => {
-    return genericFollows.map((followInfo) => followInfo?.user);
+    return removeNullValues(genericFollows.map((followInfo) => followInfo?.user));
   }, [genericFollows]);
 
   const { showModal } = useModalActions();
@@ -119,7 +124,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
-            <FollowListUsers userList={flattenedGenericFollows} />
+            <FollowListUsers userRefs={flattenedGenericFollows} />
           </StyledFollowList>
         ),
         isFullPage: isMobile,
@@ -137,13 +142,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   return (
     <>
       {viewerUserId && followedYouAction && (
-        <UserFollowedYouEvent
-          username={event.owner.username}
-          followInfo={followedYouAction}
-          followTimestamp={event.eventTime}
-          queryRef={query}
-          userRef={event.owner}
-        />
+        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick}>

@@ -56,7 +56,9 @@ const ShimmerProvider = memo(({ children }: Props) => {
     () => ({
       // using `any` here because the SynetheticEvent could be fired by different kinds of nodes that are mounting,
       // such as images, videos, and iframes, each of which come with different properties.
-      setContentIsLoaded: (event: any) => {
+      // This is getting fixed in a followup PR
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setContentIsLoaded: (event?: any) => {
         if (event) {
           // default aspect ratio to 1; if we can't determine an asset's dimensions, we'll show it in a square viewport
           let aspectRatio = 1;

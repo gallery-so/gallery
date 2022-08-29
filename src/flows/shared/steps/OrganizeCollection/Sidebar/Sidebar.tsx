@@ -13,7 +13,6 @@ import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
-import arrayToObjectKeyedById from 'utils/arrayToObjectKeyedById';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
@@ -21,6 +20,8 @@ import { EditModeToken } from '../types';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
 import AddBlankBlock from './AddBlankBlock';
+import keyBy from 'lodash.keyby';
+import { SidebarNftIconFragment$key } from '../../../../../../__generated__/SidebarNftIconFragment.graphql';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -76,7 +77,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     return sidebarTokensAsArray;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const nftFragmentsKeyedByID = useMemo(() => arrayToObjectKeyedById('dbid', tokens), [tokens]);
+  const nftFragmentsKeyedByID = useMemo(() => keyBy(tokens, (token) => token.dbid), [tokens]);
 
   const nonNullTokens = useMemo(() => {
     return tokensFilteredBySearch.filter((editModeToken) =>
@@ -115,7 +116,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 }
 
 type SidebarTokensProps = {
-  nftFragmentsKeyedByID: any;
+  nftFragmentsKeyedByID: { [id: string]: SidebarNftIconFragment$key };
   tokens: EditModeToken[];
 };
 
