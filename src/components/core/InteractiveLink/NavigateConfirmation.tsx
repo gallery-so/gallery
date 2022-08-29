@@ -4,15 +4,19 @@ import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from '../Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 export default function VerifyNavigationPopover({ href }: { href: string }) {
   const { hideModal } = useModalActions();
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
-    <StyledConfirmation>
+    <StyledConfirmation isMobile={isMobile}>
       <TextContainer>
         <StyledBaseM>
-          Confirm that you are navigating to: <b>{href}</b>
+          Confirm that you are navigating to: Confirm that you are navigating to: Confirm that you
+          are navigating to: Confirm that you are navigating to: <b>{href}</b>
         </StyledBaseM>
       </TextContainer>
       <Spacer height={16} />
@@ -31,8 +35,9 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
   );
 }
 
-const StyledConfirmation = styled.div`
-  width: 400px;
+// TODO: maybe the width should be set when triggering the modal, as opposed to this component
+const StyledConfirmation = styled.div<{ isMobile: boolean }>`
+  width: ${({ isMobile }) => (isMobile ? 'unset' : '400px')};
 `;
 
 const TextContainer = styled.div`
