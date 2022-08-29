@@ -59,7 +59,7 @@ function AuthenticateWalletPendingDefault({
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt(userFriendlyWalletName);
 
-      const { nonce, user_exists: userExists } = await createNonce(address);
+      const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
 
       const signature = await signMessageWithEOA(address, nonce, signer, pendingWallet);
 

@@ -226,7 +226,7 @@ function AddWalletPendingGnosisSafe({
             return;
           }
 
-          const { nonce, user_exists: userExists } = await createNonce(account);
+          const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
           setNonce(nonce);
           setUserExists(userExists);
 

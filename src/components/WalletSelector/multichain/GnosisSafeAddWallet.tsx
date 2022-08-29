@@ -36,7 +36,7 @@ import { GnosisSafeAddWalletFragment$key } from '__generated__/GnosisSafeAddWall
 import { removeNullValues } from 'utils/removeNullValues';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 import { walletconnect } from '../../../connectors';
 
@@ -225,7 +225,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
         return;
       }
 
-      const { nonce, user_exists: userExists } = await createNonce(account);
+      const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
       setNonce(nonce);
       setUserExists(userExists);
 
@@ -249,7 +249,8 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
+        address={account}
         error={error}
         reset={() => {
           setError(undefined);

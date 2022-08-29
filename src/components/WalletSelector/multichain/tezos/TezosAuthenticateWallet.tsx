@@ -10,22 +10,27 @@ import {
   useTrackSignInSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { useAccount } from 'wagmi';
-import { WalletError } from './WalletError';
-import { normalizeError } from './normalizeError';
-import { signMessage } from '@wagmi/core';
+import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
+import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
+import { WalletError } from '../WalletError';
+import { normalizeError } from '../normalizeError';
+import { DAppClient, RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
+import { char2Bytes } from '@taquito/utils';
 
 type Props = {
   reset: () => void;
 };
 
-export const EthereumAuthenticateWallet = ({ reset }: Props) => {
-  const { address: account } = useAccount();
+let beaconClient: DAppClient;
 
+if (typeof window !== 'undefined') {
+  beaconClient = new DAppClient({ name: 'Gallery' });
+}
+
+export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
+  const [address, setAddress] = useState<string>();
 
   const { handleLogin } = useAuthActions();
 
@@ -44,23 +49,41 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
    * 3b. If wallet is new, sign user up
    */
   const attemptAuthentication = useCallback(
-    async (address: string) => {
+    async (address: string, publicKey: string) => {
+      console.log('Requesting permissions...');
+
       setPendingState(PROMPT_SIGNATURE);
-      trackSignInAttempt('Ethereum');
+      trackSignInAttempt('Tezos');
 
-      const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
+      const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
 
-      const signature = await signMessage({ message: nonce });
+      const formattedInput: string = ['Tezos Signed Message:', nonce].join(' ');
+
+      // https://tezostaquito.io/docs/signing
+      const bytes = char2Bytes(formattedInput);
+      const payloadBytes = '05' + '01' + '00' + char2Bytes(bytes.length.toString()) + bytes;
+
+      const payload: RequestSignPayloadInput = {
+        signingType: SigningType.MICHELINE,
+        payload: payloadBytes,
+        sourceAddress: address,
+      };
+
+      const { signature } = await beaconClient.requestSignPayload(payload);
+
+      // Get the nonce number
+      const splittedNonceMessage = formattedInput.split(' ');
+      const nonceNumber = splittedNonceMessage[splittedNonceMessage.length - 1];
 
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
           mechanism: {
             eoa: {
               chainPubKey: {
-                chain: 'Ethereum',
-                pubKey: address,
+                pubKey: publicKey,
+                chain: 'Tezos',
               },
-              nonce,
+              nonce: nonceNumber,
               signature,
             },
           },
@@ -69,7 +92,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
       });
 
       if (userExists && userId) {
-        trackSignInSuccess('Ethereum');
+        trackSignInSuccess('Tezos');
         return await handleLogin(userId, address);
       }
     },
@@ -78,29 +101,30 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   useEffect(() => {
     async function authenticate() {
-      if (account) {
-        try {
-          await attemptAuthentication(account.toLowerCase());
-        } catch (error: unknown) {
-          trackSignInError('Ethereum', error);
-          // ignore early access errors
-          if (!isEarlyAccessError(error)) {
-            // capture all others
-            captureException(error);
-          }
+      try {
+        const { publicKey, address } = await beaconClient.requestPermissions();
 
-          setError(normalizeError(error));
+        if (!address || !publicKey) return;
+        setAddress(address);
+        await attemptAuthentication(address, publicKey);
+      } catch (error) {
+        trackSignInError('Tezos', error);
+        // ignore early access errors
+        if (!isEarlyAccessError(error)) {
+          // capture all others
+          captureException(error);
         }
+        setError(normalizeError(error));
       }
     }
 
     void authenticate();
-  }, [account, attemptAuthentication, trackSignInError]);
+  }, [attemptAuthentication, trackSignInError]);
 
   if (error) {
     return (
       <WalletError
-        address={account}
+        address={address}
         error={error}
         reset={() => {
           setError(undefined);
@@ -110,12 +134,10 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
     );
   }
 
-  // TODO: add pending state between fetching nonce and signing?
-
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
@@ -124,7 +146,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   return (
     <div>
-      <TitleS>Connect with Ethereum</TitleS>
+      <TitleS>Connect with Tezos</TitleS>
       <Spacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>

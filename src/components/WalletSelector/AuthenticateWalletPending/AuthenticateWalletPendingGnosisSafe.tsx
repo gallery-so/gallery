@@ -172,7 +172,7 @@ function AuthenticateWalletPendingGnosisSafe({
         setAuthenticationFlowStarted(true);
         try {
           trackSignInAttempt('Gnosis Safe');
-          const { nonce, user_exists: userExists } = await createNonce(account);
+          const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
           setNonce(nonce);
           setUserExists(userExists);
 

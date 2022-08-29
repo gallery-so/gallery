@@ -29,7 +29,7 @@ import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
 import { useAccount } from 'wagmi';
 import { signMessage } from '@wagmi/core';
-import { EthereumError } from './EthereumError';
+import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 
 type Props = {
@@ -106,7 +106,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
         setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt('Ethereum');
-        const { nonce, user_exists: userExists } = await createNonce(address);
+        const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -185,7 +185,8 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
 
   if (error) {
     return (
-      <EthereumError
+      <WalletError
+        address={account}
         error={error}
         reset={() => {
           setError(undefined);
