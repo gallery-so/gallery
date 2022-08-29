@@ -63,6 +63,17 @@ function AnimatedModal({
     return `calc(100vw - ${MODAL_PADDING_PX}px)`;
   }, [isFullPage, isMobile]);
 
+  // TODO: could consolidate maxWidth and width styles
+  const width = useMemo(() => {
+    if (isFullPage) {
+      return '100vw';
+    }
+    if (isMobile) {
+      return `calc(100vw - ${MODAL_PADDING_PX * 2}px)`;
+    }
+    return 'unset';
+  }, [isFullPage, isMobile]);
+
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={hideModal} />
@@ -72,6 +83,7 @@ function AnimatedModal({
             isFullPage={isFullPage}
             isPaddingDisabled={isPaddingDisabled}
             maxWidth={maxWidth}
+            width={width}
             padding={padding}
           >
             <StyledHeader>
@@ -171,6 +183,7 @@ const StyledContent = styled.div<{
   isFullPage: boolean;
   isPaddingDisabled: boolean;
   maxWidth: string;
+  width: string;
   padding: string;
 }>`
   position: relative;
@@ -183,18 +196,11 @@ const StyledContent = styled.div<{
 
   // no border on full page
   border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
-  // no padding on full page
   max-height: ${({ isFullPage }) => `calc(100vh - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
+  min-height: ${({ isFullPage }) => (isFullPage ? '-webkit-fill-available' : 'unset')};
   padding: ${({ padding }) => padding};
   max-width: ${({ maxWidth }) => maxWidth};
-  // take up entire page on full page
-  ${({ isFullPage }) =>
-    isFullPage
-      ? `
-    width: 100vw;
-    min-height: -webkit-fill-available;
-  `
-      : ''};
+  width: ${({ width }) => width};
 `;
 
 const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`

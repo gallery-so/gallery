@@ -41,7 +41,7 @@
     "lodash.merge": "^4.6.2",
     "lodash.unescape": "^4.0.1",
     "mixpanel-browser": "^2.41.0",
-    "next": "12.1.0",
+    "next": "^12.2.5",
     "qr-code-styling": "^1.6.0-rc.1",
     "react": "^17.0.2",
     "react-albus": "^2.0.0",
