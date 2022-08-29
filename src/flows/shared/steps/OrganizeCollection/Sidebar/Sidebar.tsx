@@ -122,10 +122,19 @@ type SidebarTokensProps = {
 
 const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
   const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
+
   const handleMarkErroredTokenId = useCallback((id) => {
     setErroredTokenIds((prev) => {
       const next = new Set(prev);
       next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleMarkSuccessTokenId = useCallback((id) => {
+    setErroredTokenIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
       return next;
     });
   }, []);
@@ -189,9 +198,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
               tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.dbid]}
               editModeToken={tokenOrWhitespace}
               handleTokenRenderError={handleMarkErroredTokenId}
-              // this is determined at the parent level so the child doesn't need to re-compute it
-              // when it scrolls back into view
-              hasErrored={erroredTokenIds.has(tokenOrWhitespace.token.dbid)}
+              handleTokenRenderSuccess={handleMarkSuccessTokenId}
             />
           );
         })}

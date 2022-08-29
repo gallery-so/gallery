@@ -1,13 +1,5 @@
 import Shimmer from 'components/Shimmer/Shimmer';
-import {
-  createContext,
-  memo,
-  ReactNode,
-  SyntheticEvent,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, memo, ReactNode, useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 type AspectRatio = 'wide' | 'square' | 'tall' | 'unknown';
@@ -28,11 +20,15 @@ export const useContentState = (): ShimmerState => {
   return context;
 };
 
+// TODO(Terence): Fix this later
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ContentIsLoadedEvent = (event?: any) => void;
+
 type ShimmerAction = {
-  setContentIsLoaded: (event?: SyntheticEvent) => void;
+  setContentIsLoaded: ContentIsLoadedEvent;
 };
 
-const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
+export const ShimmerActionContext = createContext<ShimmerAction | undefined>(undefined);
 
 export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => {
   const context = useContext(ShimmerActionContext);
@@ -74,6 +70,12 @@ const ShimmerProvider = memo(({ children }: Props) => {
           if (event.target.nodeName === 'VIDEO') {
             aspectRatio = event.target.videoWidth / event.target.videoHeight;
           }
+
+          // Handle division by zero
+          if (isNaN(aspectRatio)) {
+            aspectRatio = 1;
+          }
+
           setAspectRatio(aspectRatio);
 
           if (aspectRatio === 1) {
@@ -108,6 +110,10 @@ const ShimmerProvider = memo(({ children }: Props) => {
 });
 
 const Container = styled.div<{ overflowHidden: boolean }>`
+  // Ensures that grid columns don't grow to fit their children
+  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
+  min-width: 0;
+
   position: relative;
   width: 100%;
   height: 100%;

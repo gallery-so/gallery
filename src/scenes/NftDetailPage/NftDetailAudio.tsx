@@ -4,12 +4,16 @@ import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
 import Spacer from 'components/core/Spacer/Spacer';
 import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
+import noop from 'utils/noop';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
+  onLoad: () => void;
 };
 
-function NftDetailAudio({ tokenRef }: Props) {
+function NftDetailAudio({ tokenRef, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAudioFragment on Token {
@@ -28,20 +32,27 @@ function NftDetailAudio({ tokenRef }: Props) {
     tokenRef
   );
 
-  if (token.media.__typename !== 'AudioMedia') {
-    throw new Error('Using an NftDetailAudio component without an audio media type');
-  }
-
   const isDesktop = useIsDesktopWindowWidth();
+  const { handleError } = useThrowOnMediaFailure('NftDetailAudio');
+
+  if (token.media.__typename !== 'AudioMedia') {
+    throw new CouldNotRenderNftError(
+      'NftDetailAudio',
+      'Using an NftDetailAudio component without an audio media type'
+    );
+  }
 
   return (
     <StyledAudioContainer>
-      <ImageWithLoading src={token.media?.previewURLs.large} alt={token.name ?? ''} />
+      {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
+      <ImageWithLoading onLoad={noop} src={token.media?.previewURLs.large} alt={token.name ?? ''} />
       <StyledAudio
         controls
         loop
         controlsList="nodownload"
         preload="none"
+        onLoad={onLoad}
+        onError={handleError}
         src={token.media.contentRenderURL}
       />
       {isDesktop && <Spacer height={40} />}

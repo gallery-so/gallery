@@ -1,9 +1,9 @@
-import { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import noop from 'utils/noop';
+import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container
@@ -16,6 +16,7 @@ type Props = {
   alt: string;
   heightType?: ContentHeightType;
   onClick?: () => void;
+  onLoad: JSX.IntrinsicElements['img']['onLoad'];
 };
 
 export default function ImageWithLoading({
@@ -24,9 +25,8 @@ export default function ImageWithLoading({
   alt,
   heightType,
   onClick = noop,
+  onLoad,
 }: Props) {
-  const setContentIsLoaded = useSetContentIsLoaded();
-
   const maxHeight = useMemo(() => {
     // TODO: for some reason, the part of the 100% max height is not enforced
     // for NftPreviewImages on the User Gallery Page. as a result, there's a
@@ -44,6 +44,7 @@ export default function ImageWithLoading({
   }, [heightType]);
 
   const renderFullWidth = isSvg(src) && !isFirefox();
+  const { handleError } = useThrowOnMediaFailure('ImageWithLoading');
 
   return (
     <StyledImageWithLoading
@@ -53,7 +54,8 @@ export default function ImageWithLoading({
       src={src}
       alt={alt}
       loading="lazy"
-      onLoad={setContentIsLoaded}
+      onLoad={onLoad}
+      onError={handleError}
       onClick={onClick}
     />
   );

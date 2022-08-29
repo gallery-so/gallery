@@ -16,6 +16,10 @@ import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
+import { useNftRetry } from 'hooks/useNftRetry';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
+import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -27,6 +31,32 @@ type Props = {
   columns?: number;
 };
 
+const nftPreviewTokenFragment = graphql`
+  fragment NftPreviewTokenFragment on Token {
+    id
+    dbid
+    name
+    contract {
+      name
+      contractAddress {
+        address
+      }
+    }
+    media {
+      ... on VideoMedia {
+        __typename
+        ...NftDetailVideoFragment
+      }
+      ... on HtmlMedia {
+        __typename
+      }
+    }
+    ...getVideoOrImageUrlForNftPreviewFragment
+    ...NftPreviewAssetFragment
+    ...NftDetailAnimationFragment
+  }
+`;
+
 function NftPreview({
   tokenRef,
   previewSize,
@@ -35,30 +65,11 @@ function NftPreview({
   disableLiverender = false,
   columns = 3,
 }: Props) {
-  const { token, collection, tokenSettings } = useFragment(
+  const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
         token @required(action: THROW) {
-          dbid
-          name
-          contract {
-            name
-            contractAddress {
-              address
-            }
-          }
-          media {
-            ... on VideoMedia {
-              __typename
-              ...NftDetailVideoFragment
-            }
-            ... on HtmlMedia {
-              __typename
-            }
-          }
-          ...getVideoOrImageUrlForNftPreviewFragment
-          ...NftPreviewAssetFragment
-          ...NftDetailAnimationFragment
+          ...NftPreviewTokenFragment
         }
         tokenSettings {
           renderLive
@@ -78,8 +89,18 @@ function NftPreview({
     tokenRef
   );
 
+  const { collection, tokenSettings } = collectionToken;
+
   const username = collection.gallery?.owner?.username;
   const collectionId = collection.dbid;
+
+  // This fragment is split up, so we can refresh it as a part
+  // of the retry system
+  const token = useFragment<NftPreviewTokenFragment$key>(
+    nftPreviewTokenFragment,
+    collectionToken.token
+  );
+
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
   const backgroundColorOverride = useMemo(
@@ -106,10 +127,16 @@ function NftPreview({
   const shouldLiverender = tokenSettings?.renderLive;
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
+  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
+    useNftRetry({
+      tokenId: token.dbid,
+    });
+
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
       return (
         <NftPreviewAsset
+          onLoad={handleNftLoaded}
           tokenRef={token}
           // we'll request images at double the size of the element so that it looks sharp on retina
           size={previewSize * 2}
@@ -117,19 +144,27 @@ function NftPreview({
       );
     }
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo mediaRef={token.media} hideControls />;
+      return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
     }
     if (isIFrameLiveDisplay) {
-      return <NftDetailAnimation mediaRef={token} />;
+      return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;
     }
     return (
       <NftPreviewAsset
+        onLoad={handleNftLoaded}
         tokenRef={token}
         // we'll request images at double the size of the element so that it looks sharp on retina
         size={previewSize * 2}
       />
     );
-  }, [disableLiverender, shouldLiverender, token, isIFrameLiveDisplay, previewSize]);
+  }, [
+    disableLiverender,
+    shouldLiverender,
+    token,
+    isIFrameLiveDisplay,
+    previewSize,
+    handleNftLoaded,
+  ]);
 
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
@@ -145,34 +180,48 @@ function NftPreview({
   const { aspectRatio } = useContentState();
 
   return (
-    <LinkToNftDetailView
-      username={username ?? ''}
-      collectionId={collectionId}
-      tokenId={token.dbid}
-      originPage={originPage}
-    >
-      {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
-          This will inherit the `as` URL from the parent component. */}
-      <StyledA onClick={handleClick}>
+    <NftFailureBoundary
+      key={retryKey}
+      fallback={
         <StyledNftPreview
-          aspectRatio={aspectRatio}
           backgroundColorOverride={backgroundColorOverride}
+          aspectRatio={aspectRatio}
           fullWidth={fullWidth}
         >
-          {PreviewAsset}
-          {hideLabelOnMobile ? null : (
-            <StyledNftFooter>
-              <StyledNftLabel
-                title={token.name}
-                collectionName={token.contract?.name}
-                contractAddress={contractAddress}
-              />
-              <StyledGradient type="bottom" direction="down" />
-            </StyledNftFooter>
-          )}
+          <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
         </StyledNftPreview>
-      </StyledA>
-    </LinkToNftDetailView>
+      }
+      onError={handleNftError}
+    >
+      <LinkToNftDetailView
+        username={username ?? ''}
+        collectionId={collectionId}
+        tokenId={token.dbid}
+        originPage={originPage}
+      >
+        {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
+          This will inherit the `as` URL from the parent component. */}
+        <StyledA onClick={handleClick}>
+          <StyledNftPreview
+            aspectRatio={aspectRatio}
+            backgroundColorOverride={backgroundColorOverride}
+            fullWidth={fullWidth}
+          >
+            {PreviewAsset}
+            {hideLabelOnMobile ? null : (
+              <StyledNftFooter>
+                <StyledNftLabel
+                  title={token.name}
+                  collectionName={token.contract?.name}
+                  contractAddress={contractAddress}
+                />
+                <StyledGradient type="bottom" direction="down" />
+              </StyledNftFooter>
+            )}
+          </StyledNftPreview>
+        </StyledA>
+      </LinkToNftDetailView>
+    </NftFailureBoundary>
   );
 }
 
@@ -221,11 +270,11 @@ const StyledNftPreview = styled.div<{
   max-width: ${({ aspectRatio }) => `calc(80vh * ${aspectRatio})`};
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: inherit;
-
+  
   // Only apply to safari. Somehow the height is not being set properly on safari.
-  @media not all and (min-resolution:.001dpcm) { 
+  @media not all and (min-resolution:.001dpcm) {
      @supports (-webkit-appearance:none) {
-        height: initial;  
+        height: initial;
       }
   }
 

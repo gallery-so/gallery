@@ -10,73 +10,83 @@ import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment
 import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
-import { useMemo } from 'react';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
+import { useNftRetry } from 'hooks/useNftRetry';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
+import { NftDetailAssetTokenFragment$key } from '../../../__generated__/NftDetailAssetTokenFragment.graphql';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
+  onLoad: () => void;
 };
 
-function NftDetailAssetComponent({ tokenRef }: NftDetailAssetComponentProps) {
+function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
-      fragment NftDetailAssetComponentFragment on CollectionToken {
-        id
-        token @required(action: THROW) {
-          media @required(action: THROW) {
-            ... on VideoMedia {
-              __typename
-              ...NftDetailVideoFragment
-            }
-            ... on ImageMedia {
-              __typename
-              contentRenderURL
-            }
-            ... on HtmlMedia {
-              __typename
-            }
-            ... on AudioMedia {
-              __typename
-            }
-            ... on GltfMedia {
-              __typename
-              ...NftDetailModelFragment
-            }
-            ... on UnknownMedia {
-              __typename
-            }
+      fragment NftDetailAssetComponentFragment on Token {
+        media @required(action: THROW) {
+          ... on VideoMedia {
+            __typename
+            ...NftDetailVideoFragment
           }
-          ...NftDetailAnimationFragment
-          ...NftDetailAudioFragment
-          ...NftDetailImageFragment
+          ... on ImageMedia {
+            __typename
+            contentRenderURL
+          }
+          ... on HtmlMedia {
+            __typename
+          }
+          ... on AudioMedia {
+            __typename
+          }
+          ... on GltfMedia {
+            __typename
+            ...NftDetailModelFragment
+          }
+          ... on UnknownMedia {
+            __typename
+          }
         }
+        ...NftDetailAnimationFragment
+        ...NftDetailAudioFragment
+        ...NftDetailImageFragment
       }
     `,
     tokenRef
   );
 
-  switch (token.token.media.__typename) {
+  if (token.media.__typename === 'UnknownMedia') {
+    // If we're dealing with UnknownMedia, we know the NFT is going to
+    // fail to load, so we'll just immediately notify the parent
+    // that this NftDetailAsset was unable to render
+    throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
+  }
+
+  switch (token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation mediaRef={token.token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
     case 'VideoMedia':
-      return <NftDetailVideo mediaRef={token.token.media} />;
+      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} />;
     case 'AudioMedia':
-      return <NftDetailAudio tokenRef={token.token} />;
+      return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
       return (
         <NftDetailImage
-          tokenRef={token.token}
+          onLoad={onLoad}
+          tokenRef={token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
-          onClick={() => window.open(token.token.media.contentRenderURL)}
+          onClick={() => window.open(media.contentRenderURL)}
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel mediaRef={token.token.media} />;
+      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} />;
     default:
-      return <NftDetailAnimation mediaRef={token.token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
   }
 }
 
@@ -86,43 +96,57 @@ type Props = {
 };
 
 function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
-  const token = useFragment(
+  const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
         id
         token @required(action: THROW) {
-          contract {
-            contractAddress {
-              address
-            }
-          }
-          media @required(action: THROW) {
-            ... on HtmlMedia {
-              __typename
-            }
-          }
+          ...NftDetailAssetTokenFragment
         }
-        ...NftDetailAssetComponentFragment
       }
     `,
     tokenRef
   );
 
-  const contractAddress = token.token.contract?.contractAddress?.address ?? '';
+  // This is split up, so we can retry
+  // this fragment when an NFT fails to load
+  const token = useFragment<NftDetailAssetTokenFragment$key>(
+    graphql`
+      fragment NftDetailAssetTokenFragment on Token {
+        dbid
+        contract {
+          contractAddress {
+            address
+          }
+        }
+        media @required(action: THROW) {
+          ... on HtmlMedia {
+            __typename
+          }
+        }
 
-  const backgroundColorOverride = useMemo(
-    () => getBackgroundColorOverrideForContract(contractAddress),
-    [contractAddress]
+        ...NftDetailAssetComponentFragment
+      }
+    `,
+    collectionToken.token
   );
 
-  const { aspectRatioType } = useContentState();
   const breakpoint = useBreakpoint();
+  const { aspectRatioType } = useContentState();
+
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = token.token.media.__typename === 'HtmlMedia';
+  const isIframe = token.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
+
+  const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
+    useNftRetry({
+      tokenId: token.dbid,
+    });
 
   return (
     <StyledAssetContainer
@@ -131,7 +155,13 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftDetailAssetComponent tokenRef={token} />
+      <NftFailureBoundary
+        key={retryKey}
+        onError={handleNftError}
+        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
+      >
+        <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
+      </NftFailureBoundary>
     </StyledAssetContainer>
   );
 }
@@ -162,7 +192,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     min-height: 600px;
     height: 100%;
   }
-  
+
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
