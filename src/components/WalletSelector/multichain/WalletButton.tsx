@@ -36,8 +36,8 @@ export const WalletButton = ({
 );
 
 const Icon = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   margin: 5px;
 
   transform: scale(1);
