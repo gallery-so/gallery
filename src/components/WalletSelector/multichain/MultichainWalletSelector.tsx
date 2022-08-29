@@ -139,7 +139,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
           setSelectedAuthMethod(supportedAuthMethods.tezos);
         }}
       />
-      {/* <WalletButton label="Solana" icon="solana" disabled /> */}
+      <WalletButton label="Solana" icon="solana" disabled />
       <Spacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
