@@ -31,8 +31,8 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
   const [refreshed, setRefreshed] = useState(false);
   const [refreshingMetadata, setRefreshingMetadata] = useState(false);
 
-  const handleNftLoaded = useCallback(
-    (event?: any) => {
+  const handleNftLoaded = useCallback<ContentIsLoadedEvent>(
+    (event) => {
       shimmerContext?.setContentIsLoaded(event);
       setIsFailed(false);
     },

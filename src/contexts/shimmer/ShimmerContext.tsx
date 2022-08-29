@@ -20,6 +20,8 @@ export const useContentState = (): ShimmerState => {
   return context;
 };
 
+// TODO(Terence): Fix this later
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ContentIsLoadedEvent = (event?: any) => void;
 
 type ShimmerAction = {

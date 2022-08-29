@@ -98,16 +98,16 @@ function SidebarNftIcon({
     editModeToken,
   ]);
 
-  const handleError = useCallback(
-    (event?: any) => {
+  const handleError = useCallback<ContentIsLoadedEvent>(
+    (event) => {
       handleNftError(event);
       handleTokenRenderError(token.dbid);
     },
     [handleNftError, handleTokenRenderError, token.dbid]
   );
 
-  const handleLoad = useCallback(
-    (event?: any) => {
+  const handleLoad = useCallback<ContentIsLoadedEvent>(
+    (event) => {
       handleNftLoaded(event);
       handleTokenRenderSuccess(token.dbid);
     },
