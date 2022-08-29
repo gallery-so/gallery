@@ -74,6 +74,8 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     [pushToast, refreshed, reportError, shimmerContext, tokenId]
   );
 
+  // TODO(Terence): Remove this
+  // eslint-disable-next-line
   const retry = useCallback(() => {
     setIsFailed(false);
     setRefreshed(true);
@@ -136,7 +138,7 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     } finally {
       setRefreshingMetadata(false);
     }
-  }, [pushToast, refresh, reportError, retry, tokenId]);
+  }, [pushToast, refresh, reportError, tokenId]);
 
   return useMemo(() => {
     return {
