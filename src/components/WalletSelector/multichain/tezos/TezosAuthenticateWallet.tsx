@@ -30,6 +30,7 @@ if (typeof window !== 'undefined') {
 export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
+  const [address, setAddress] = useState<string>();
 
   const { handleLogin } = useAuthActions();
 
@@ -104,7 +105,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
         const { publicKey, address } = await beaconClient.requestPermissions();
 
         if (!address || !publicKey) return;
-
+        setAddress(address);
         await attemptAuthentication(address, publicKey);
       } catch (error) {
         trackSignInError('Tezos', error);
@@ -123,6 +124,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   if (error) {
     return (
       <WalletError
+        address={address}
         error={error}
         reset={() => {
           setError(undefined);

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { isEarlyAccessError } from 'contexts/analytics/authUtil';
-import { useAccount, UserRejectedRequestError } from 'wagmi';
+import { UserRejectedRequestError } from 'wagmi';
 import { WalletSelectorError } from './WalletSelectorError';
 import { isWeb3Error } from 'types/Error';
 
@@ -45,13 +45,12 @@ function getErrorMessage(errorCode: string) {
 }
 
 type Props = {
+  address?: string | null;
   error: Error;
   reset: () => void;
 };
 
-export const WalletError = ({ error, reset }: Props) => {
-  const { address } = useAccount();
-
+export const WalletError = ({ address, error, reset }: Props) => {
   const displayedError = useMemo(() => {
     if (error instanceof UserRejectedRequestError) {
       return getErrorMessage('REJECTED_SIGNATURE');

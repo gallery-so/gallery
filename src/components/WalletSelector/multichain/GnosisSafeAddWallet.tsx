@@ -250,6 +250,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
   if (error) {
     return (
       <WalletError
+        address={account}
         error={error}
         reset={() => {
           setError(undefined);
