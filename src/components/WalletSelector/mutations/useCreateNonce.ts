@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 import { Web3Error } from 'types/Error';
 import { useCreateNonceMutation } from '__generated__/useCreateNonceMutation.graphql';
+import { Chain } from '__generated__/useCreateUserMutation.graphql';
 
 /**
  * Retrieve a nonce for the client to sign given a wallet address.
@@ -35,7 +36,7 @@ export default function useCreateNonce() {
   );
 
   return useCallback(
-    async (address: string, chain: 'Ethereum' | 'Tezos'): Promise<NonceResponse> => {
+    async (address: string, chain: Chain): Promise<NonceResponse> => {
       // Kick off the mutation network request
       //
       // This call can throw an error. This error is the equivalent
