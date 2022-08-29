@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
@@ -21,11 +21,13 @@ type Props = {
   reset: () => void;
 };
 
-export const TezosAuthenticateWallet = ({ reset }: Props) => {
-  const beaconClient = useMemo(() => {
-    return new DAppClient({ name: 'Gallery' });
-  }, []);
+let beaconClient: DAppClient;
 
+if (typeof window !== 'undefined') {
+  beaconClient = new DAppClient({ name: 'Gallery' });
+}
+
+export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
 
@@ -93,14 +95,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
         return await handleLogin(userId, address);
       }
     },
-    [
-      trackSignInAttempt,
-      createNonce,
-      loginOrRedirectToOnboarding,
-      trackSignInSuccess,
-      handleLogin,
-      beaconClient,
-    ]
+    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
   );
 
   useEffect(() => {
@@ -123,7 +118,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     }
 
     void authenticate();
-  }, [attemptAuthentication, trackSignInError, beaconClient]);
+  }, [attemptAuthentication, trackSignInError]);
 
   if (error) {
     return (
