@@ -30,9 +30,9 @@ function ManageWallets({ newAddress, queryRef }: Props) {
             user {
               wallets {
                 dbid @required(action: THROW)
-                chain @required(action: THROW)
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
+                  chain @required(action: THROW)
                 }
               }
             }
@@ -90,7 +90,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           key={wallet.dbid}
           walletId={wallet.dbid}
           address={wallet.chainAddress.address}
-          chain={wallet.chain}
+          chain={wallet.chainAddress.chain}
           setErrorMessage={setErrorMessage}
           userSigninAddress={userSigninAddress}
           setRemovedAddress={setRemovedAddress}
