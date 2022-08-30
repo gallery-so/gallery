@@ -68,7 +68,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         autoClose: true,
       });
     }
-  }, [removedAddress]);
+  }, [removedAddress, pushToast]);
 
   useEffect(() => {
     if (newAddress) {
@@ -77,7 +77,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
         autoClose: true,
       });
     }
-  }, [newAddress]);
+  }, [newAddress, pushToast]);
 
   return (
     <StyledManageWallets>
