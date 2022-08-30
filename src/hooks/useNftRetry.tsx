@@ -123,7 +123,6 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
           __typename
           token {
             # Ensure we're reloading the necessary data
-            ...NftDetailAssetComponentFragment
             ...NftPreviewTokenFragment
             ...SidebarNftIconPreviewAsset
             ...NftDetailAssetTokenFragment
