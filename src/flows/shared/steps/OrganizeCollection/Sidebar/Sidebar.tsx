@@ -215,7 +215,7 @@ const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) =>
           <List
             style={{ outline: 'none' }}
             rowRenderer={rowRenderer}
-            rowCount={Math.ceil(displayedTokens.length / COLUMN_COUNT)}
+            rowCount={rows.length}
             rowHeight={rowHeight}
             width={width}
             height={height}
