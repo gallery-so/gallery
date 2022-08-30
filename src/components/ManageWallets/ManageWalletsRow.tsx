@@ -79,7 +79,13 @@ function ManageWalletsRow({
           >
             {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
           </StyledDisconnectButton>
-          <ReactTooltip id="global" place="top" effect="solid" arrowColor="transparent">
+          <ReactTooltip
+            id="global"
+            place="top"
+            effect="solid"
+            arrowColor="transparent"
+            backgroundColor="transparent"
+          >
             <StyledTooltip
               showTooltip={showTooltip}
               whiteSpace="normal"
