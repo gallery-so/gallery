@@ -3,12 +3,14 @@ import Spacer from 'components/core/Spacer/Spacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
+import { useToastActions } from 'contexts/toast/ToastContext';
 import useAddWalletModal from 'hooks/useAddWalletModal';
 import usePersistedState from 'hooks/usePersistedState';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { removeNullValues } from 'utils/removeNullValues';
+import { truncateAddress } from 'utils/wallet';
 import { ManageWalletsFragment$key } from '__generated__/ManageWalletsFragment.graphql';
 import ManageWalletsRow from './ManageWalletsRow';
 
@@ -43,9 +45,10 @@ function ManageWallets({ newAddress, queryRef }: Props) {
 
   const wallets = useMemo(() => removeNullValues(viewer?.user?.wallets), [viewer?.user?.wallets]);
 
+  const { pushToast } = useToastActions();
+
   const [removedAddress, setRemovedAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [notification, setNotification] = useState('');
 
   const showAddWalletModal = useAddWalletModal();
 
@@ -58,13 +61,21 @@ function ManageWallets({ newAddress, queryRef }: Props) {
 
   useEffect(() => {
     if (removedAddress) {
-      setNotification(`Wallet ${removedAddress} has been removed.`);
+      pushToast({
+        message: `You have removed all pieces in wallet ${truncateAddress(
+          removedAddress
+        )} from your gallery.`,
+        autoClose: true,
+      });
     }
   }, [removedAddress]);
 
   useEffect(() => {
     if (newAddress) {
-      setNotification(`Wallet ${newAddress} has been added.`);
+      pushToast({
+        message: `Wallet ${truncateAddress(newAddress)} has been added.`,
+        autoClose: true,
+      });
     }
   }, [newAddress]);
 
@@ -73,12 +84,6 @@ function ManageWallets({ newAddress, queryRef }: Props) {
       <Spacer height={16} />
       <BaseM>Add more wallets to access your other NFTs.</BaseM>
       <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
-      {notification && (
-        <>
-          <Spacer height={16} />
-          <BaseM>{notification}</BaseM>
-        </>
-      )}
       {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
       {wallets.map((wallet) => (
         <ManageWalletsRow
