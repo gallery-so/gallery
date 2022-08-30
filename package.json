@@ -62,9 +62,8 @@
     "web3": "^1.6.1"
   },
   "devDependencies": {
-    "@gallery-so/typescript-operations": "^0.0.2",
+    "@gallery-so/typescript-operations": "^0.0.7",
     "@gallery-so/visitor-plugin-common": "^0.0.2",
-    "@graphql-codegen/add": "^3.2.1",
     "@graphql-codegen/cli": "^2.11.6",
     "@graphql-codegen/typescript": "^2.7.3",
     "@svgr/webpack": "^5.5.0",
