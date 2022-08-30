@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n Next,Relay-Compiler,GraphQL-Codegen \"next\" \"yarn relay:watch\" \"graphql-codegen --watch\"",
-    "build": "yarn relay && next build",
+    "build": "yarn relay && yarn graphql-codegen && next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "graphql-codegen; tsc --noEmit",
