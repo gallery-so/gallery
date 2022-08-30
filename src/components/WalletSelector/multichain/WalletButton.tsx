@@ -4,7 +4,7 @@ import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
 import { BaseM } from 'components/core/Text/Text';
 
-const walletIconMap = {
+export const walletIconMap = {
   metamask: '/icons/metamask.svg',
   walletconnect: '/icons/walletconnect.svg',
   walletlink: '/icons/walletlink.svg',

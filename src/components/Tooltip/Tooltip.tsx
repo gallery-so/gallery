@@ -6,12 +6,15 @@ type Props = {
   text: string;
   className?: string;
   dataTestId?: string;
+  whiteSpace?: 'nowrap' | 'normal';
 };
 
-export default function Tooltip({ text, className, dataTestId }: Props) {
+export default function Tooltip({ text, className, dataTestId, whiteSpace = 'nowrap' }: Props) {
   return (
     <StyledTooltip className={className} data-testid={dataTestId}>
-      <StyledTitleXSBold color={colors.white}>{text}</StyledTitleXSBold>
+      <StyledTitleXSBold color={colors.white} whitespace={whiteSpace}>
+        {text}
+      </StyledTitleXSBold>
     </StyledTooltip>
   );
 }
@@ -26,6 +29,6 @@ export const StyledTooltip = styled.div`
   transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
 `;
 
-const StyledTitleXSBold = styled(TitleXSBold)`
-  white-space: nowrap;
+const StyledTitleXSBold = styled(TitleXSBold)<{ whitespace: string }>`
+  white-space: ${({ whitespace }) => whitespace};
 `;
