@@ -62,6 +62,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
           <>
             <Spacer height={spaceY} />
             <IconButton
+              data-testid="RefreshButton"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               refreshing={refreshing}
