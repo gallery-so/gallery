@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import { RefreshIcon } from 'icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import IconContainer from 'components/core/Markdown/IconContainer';
 
@@ -35,6 +35,20 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
   }[size];
 
   const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(
+    // When you click the refresh icon, the element disappears.
+    // Therefore, we never get an onMouseLeave event to reset
+    // the tooltip state.
+    //
+    // This should ensure we reset the tooltip state when a refresh begins.
+    function resetTooltipWhenRefreshing() {
+      if (refreshing) {
+        setShowTooltip(false);
+      }
+    },
+    [refreshing]
+  );
 
   return (
     <AspectRatioWrapper>
