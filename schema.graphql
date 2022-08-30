@@ -119,6 +119,7 @@ union MediaSubtype =
     | JsonMedia
     | GltfMedia
     | UnknownMedia
+    | SyncingMedia
     | InvalidMedia
 
 type PreviewURLSet {
@@ -216,6 +217,14 @@ type UnknownMedia implements Media {
     contentRenderURL: String
 }
 
+type SyncingMedia implements Media {
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
+
+    contentRenderURL: String
+}
+
 type InvalidMedia implements Media {
     previewURLs: PreviewURLSet
     mediaURL: String
@@ -236,6 +245,7 @@ enum Chain {
     Polygon
     Optimism
     Tezos
+    POAP
 }
 enum WalletType {
     EOA
