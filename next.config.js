@@ -8,6 +8,12 @@ const moduleExports = {
     ignoreBuildErrors: true,
   },
 
+  eslint: {
+    // Save time in Vercel builds by avoiding linting.
+    // This is fine since we do a lint in Github Actions.
+    ignoreDuringBuilds: true,
+  },
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
