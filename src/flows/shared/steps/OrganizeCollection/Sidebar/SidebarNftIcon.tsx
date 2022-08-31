@@ -4,7 +4,7 @@ import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
 import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { memo, useCallback, useEffect, useRef } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, useRelayEnvironment } from 'react-relay';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from 'utils/token';
@@ -16,6 +16,9 @@ import { SidebarNftIconPreviewAsset$key } from '../../../../../../__generated__/
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import { fetchQuery } from 'relay-runtime';
+import { SidebarNftIconPollerQuery } from '../../../../../../__generated__/SidebarNftIconPollerQuery.graphql';
+import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
@@ -32,11 +35,17 @@ function SidebarNftIcon({
 }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
-      fragment SidebarNftIconFragment on Token {
+      fragment SidebarNftIconFragment on Token
+      @refetchable(queryName: "RefetchableSidebarNftIconFragment") {
         dbid
         contract {
           contractAddress {
             address
+          }
+        }
+        media {
+          ... on SyncingMedia {
+            __typename
           }
         }
         ...SidebarNftIconPreviewAsset
@@ -114,6 +123,47 @@ function SidebarNftIcon({
     [handleNftLoaded, handleTokenRenderSuccess, token.dbid]
   );
 
+  const relayEnvironment = useRelayEnvironment();
+  useEffect(
+    function pollTokenWhileStillSyncing() {
+      const POLLING_INTERVAL_MS = 5000;
+      if (token.media?.__typename !== 'SyncingMedia') {
+        return;
+      }
+
+      let timeoutId: ReturnType<typeof setTimeout>;
+
+      async function refreshToken() {
+        await fetchQuery<SidebarNftIconPollerQuery>(
+          relayEnvironment,
+          graphql`
+            query SidebarNftIconPollerQuery($id: DBID!) {
+              tokenById(id: $id) {
+                ...SidebarNftIconFragment
+              }
+            }
+          `,
+          { id: token.dbid }
+        ).toPromise();
+
+        timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
+      }
+
+      timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
+
+      return () => clearTimeout(timeoutId);
+    },
+    [relayEnvironment, token.dbid, token.media?.__typename]
+  );
+
+  if (token.media?.__typename === 'SyncingMedia') {
+    return (
+      <LoadingContainer>
+        <LoadingText>Loading...</LoadingText>
+      </LoadingContainer>
+    );
+  }
+
   return (
     <NftFailureBoundary
       key={retryKey}
@@ -139,6 +189,27 @@ function SidebarNftIcon({
     </NftFailureBoundary>
   );
 }
+
+const LoadingContainer = styled.div`
+  width: ${SIDEBAR_ICON_DIMENSIONS}px;
+  height: ${SIDEBAR_ICON_DIMENSIONS}px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: ${colors.offWhite};
+`;
+
+const LoadingText = styled.span`
+  font-family: ${BODY_FONT_FAMILY};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+
+  color: ${colors.metal};
+`;
 
 type SidebarPreviewAssetProps = {
   tokenRef: SidebarNftIconPreviewAsset$key;
