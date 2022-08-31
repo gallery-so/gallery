@@ -31,7 +31,7 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
               onClick={() => onChange(chain.name)}
             >
               <ChainLogo src={chain.icon} />
-              <TitleXSBold>{chain.name}</TitleXSBold>
+              <TitleXSBold>{chain.shortName}</TitleXSBold>
             </ChainButton>
           );
         })}
