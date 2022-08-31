@@ -2,7 +2,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
 import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -12,14 +11,13 @@ import SearchBar from './SearchBar';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
-import { SidebarFragment$data, SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
+import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import { EditModeToken } from '../types';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import {
-  COLUMN_COUNT,
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
   SIDEBAR_ICON_DIMENSIONS,
@@ -27,22 +25,14 @@ import {
 } from 'constants/sidebar';
 import AddBlankBlock from './AddBlankBlock';
 import keyBy from 'lodash.keyby';
-import { SidebarNftIconFragment$key } from '../../../../../../__generated__/SidebarNftIconFragment.graphql';
-import { MultichainWalletSelector } from 'components/WalletSelector/multichain/MultichainWalletSelector';
-import { ETHEREUM } from 'types/Wallet';
-import { TezosAuthenticateWallet } from 'components/WalletSelector/multichain/tezos/TezosAuthenticateWallet';
 import {
   Chain,
   SidebarChains,
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
-import { groupBy } from 'graphql/jsutils/groupBy';
-import { readInlineData } from 'relay-runtime';
-import { SidebarGroupByChainFragment$key } from '../../../../../../__generated__/SidebarGroupByChainFragment.graphql';
 import {
   SidebarTokensFragment$data,
   SidebarTokensFragment$key,
 } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
-import IconContainer from 'components/core/Markdown/IconContainer';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
 
 type Props = {
