@@ -30,8 +30,6 @@ import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
 import { DAppClient } from '@airgap/beacon-sdk';
-import { RequestSignPayloadInput, SigningType } from '@airgap/beacon-types';
-import { char2Bytes } from '@taquito/utils';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 
 type Props = {
@@ -50,7 +48,8 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error>();
-  const [address, setAddress] = useState<string>();
+  const [account, setAccount] = useState<string>();
+  const [publicKey, setPublicKey] = useState<string>();
 
   const query = useFragment(
     graphql`
@@ -108,7 +107,6 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     async (address: string, publicKey: string) => {
       try {
         setIsConnecting(true);
-        setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt('Tezos');
         const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
@@ -118,6 +116,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
         }
 
         const payload = generatePayload(nonce, address);
+        setPendingState(PROMPT_SIGNATURE);
         const { signature } = await beaconClient.requestSignPayload(payload);
 
         const nonceNumber = getNonceNumber(nonce);
@@ -138,6 +137,8 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
             chain: 'Tezos',
           },
         });
+
+        console.log(signatureValid);
 
         trackAddWalletSuccess('Tezos');
         openManageWalletsModal(address);
@@ -174,31 +175,37 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
   useEffect(() => {
     async function authenticate() {
+      console.log('pending state', pendingState);
+
+      if (account && authenticatedUserAddresses.includes(account)) {
+        setPendingState(ADDRESS_ALREADY_CONNECTED);
+        return;
+      }
+
       try {
+        console.log(`Authenticating....`);
         const { publicKey, address } = await beaconClient.requestPermissions();
         if (!address || !publicKey) return;
 
-        if (authenticatedUserAddresses.includes(address)) {
-          setPendingState(ADDRESS_ALREADY_CONNECTED);
-          return;
-        }
+        setPendingState(CONFIRM_ADDRESS);
+        setAccount(address);
+        setPublicKey(publicKey);
 
         await attemptAddWallet(address, publicKey);
-      } catch (error) {}
-
-      // if (isMetamask) {
-      //   // For metamask, prompt the user to confirm the address provided by the extension is the one they want to connect with
-      //   setPendingState(CONFIRM_ADDRESS);
-      // }
+      } catch (error) {
+        setError(normalizeError(error));
+      }
     }
 
-    void authenticate();
-  }, [authenticatedUserAddresses, attemptAddWallet]);
+    if (pendingState === INITIAL) {
+      void authenticate();
+    }
+  }, [account, authenticatedUserAddresses, attemptAddWallet, pendingState]);
 
   if (error) {
     return (
       <WalletError
-        address={address}
+        address={account}
         error={error}
         reset={() => {
           setError(undefined);
@@ -208,48 +215,39 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     );
   }
 
-  if (pendingState === ADDRESS_ALREADY_CONNECTED && address) {
+  if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
       <div>
         <TitleS>Connect with Ethereum</TitleS>
         <Spacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
         <Spacer height={8} />
-        <BaseM color={colors.offBlack}>{address}</BaseM>
-        {/* {isMetamask && (
-          <>
-            <Spacer height={8} />
-            <BaseM>
-              If you want to connect a different address via Metamask, please switch accounts in the
-              extension and try again.
-            </BaseM>
-          </>
-        )} */}
+        <BaseM color={colors.offBlack}>{account}</BaseM>
       </div>
     );
   }
 
   // right now we only show this case for Metamask
-  //   if (pendingState === CONFIRM_ADDRESS && address) {
-  //     return (
-  //       <div>
-  //         <TitleS>Connect with Ethereum</TitleS>
-  //         <Spacer height={8} />
-  //         <BaseM>Confirm the following wallet address:</BaseM>
-  //         <Spacer height={8} />
-  //         <BaseM color={colors.offBlack}>{address}</BaseM>
-  //         <Spacer height={16} />
-  //         <BaseM>
-  //           If you want to connect a different address via Metamask, please switch accounts in the
-  //           extension and try again.
-  //         </BaseM>
-  //         <Spacer height={24} />
-  //         <StyledButton onClick={() => attemptAddWallet(address)} disabled={isConnecting}>
-  //           {isConnecting ? 'Connecting...' : 'Confirm'}
-  //         </StyledButton>
-  //       </div>
-  //     );
-  //   }
+  if (pendingState === CONFIRM_ADDRESS && account && publicKey) {
+    return (
+      <div>
+        <TitleS>Connect with Tezos</TitleS>
+        <Spacer height={8} />
+        <BaseM>Confirm the following wallet address:</BaseM>
+        <Spacer height={8} />
+        <BaseM color={colors.offBlack}>{account}</BaseM>
+        <Spacer height={16} />
+        <BaseM>
+          If you want to connect a different address via Tezos wallet, please switch accounts in the
+          extension and try again.
+        </BaseM>
+        <Spacer height={24} />
+        <StyledButton onClick={() => attemptAddWallet(account, publicKey)} disabled={isConnecting}>
+          {isConnecting ? 'Connecting...' : 'Confirm'}
+        </StyledButton>
+      </div>
+    );
+  }
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
