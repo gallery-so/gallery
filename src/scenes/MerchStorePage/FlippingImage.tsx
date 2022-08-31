@@ -6,7 +6,7 @@ type Props = {
   src: string;
   isFlipped: boolean;
   isInPreview?: boolean;
-  alt: string;
+  alt?: string;
 };
 
 export default function FlippingImage({ alt, src, isFlipped, isInPreview = false }: Props) {
