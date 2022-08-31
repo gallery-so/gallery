@@ -389,9 +389,11 @@ const CollectionTitleText = styled(TitleXS)`
   overflow: hidden;
 `;
 
-const CollectionTitleContainer = styled.div<{ expanded: boolean }>`
+const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded: boolean }>`
   display: flex;
   align-items: center;
+
+  cursor: pointer;
 
   padding-bottom: ${({ expanded }) =>
     expanded ? `${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px` : '0px'};
