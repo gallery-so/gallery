@@ -16,6 +16,8 @@ const Web3WalletProvider = memo(({ children }) => (
   <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
 ));
 
+Web3WalletProvider.displayName = 'Web3WalletProvider';
+
 let web3Root: ReturnType<typeof createWeb3ReactRoot>;
 
 // Create the react root once and never update it.
@@ -29,5 +31,7 @@ export const Web3ProviderNetwork = memo(({ children }) => {
 
   return <Web3ReactRoot getLibrary={getLibrary}>{children}</Web3ReactRoot>;
 });
+
+Web3ProviderNetwork.displayName = 'Web3ProviderNetwork';
 
 export default Web3WalletProvider;

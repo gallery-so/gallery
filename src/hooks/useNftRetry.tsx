@@ -7,6 +7,11 @@ import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { useNftRetryMutation } from '../../__generated__/useNftRetryMutation.graphql';
+import { useRelayEnvironment } from 'react-relay';
+
+// @ts-expect-error We're in untyped territory
+import { getFragmentResourceForEnvironment } from 'react-relay/lib/relay-hooks/FragmentResource';
+import { addBreadcrumb, Severity } from '@sentry/nextjs';
 
 type useNftRetryArgs = {
   tokenId: string;
@@ -74,11 +79,42 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     [pushToast, refreshed, reportError, shimmerContext, tokenId]
   );
 
-  const retry = useCallback(() => {
-    setIsFailed(false);
-    setRefreshed(true);
-    setRetryKey((previous) => previous + 1);
-  }, []);
+  const environment = useRelayEnvironment();
+  const FragmentResource = getFragmentResourceForEnvironment(environment);
+
+  const retry = useCallback(
+    () => {
+      addBreadcrumb({
+        message: 'Trying to clear the Relay FragmentResource cache',
+        level: Severity.Info,
+      });
+
+      // Wrapping this in a try catch since we have no idea
+      // if Relay wil introduce a breaking change here.
+      try {
+        /**
+         * WARNING: DO NOT COPY THIS CODE UNLESS YOU KNOW WHAT YOU ARE DOING
+         *
+         * There is a bug in Relay where fragments are not receiving updates
+         * if an underlying object's typename changes.
+         *
+         * We should report this at some point [GAL-371]
+         */
+        FragmentResource._cache._map.clear();
+      } catch (e) {
+        if (e instanceof Error || typeof e === 'string') {
+          reportError(e);
+        }
+      }
+
+      setIsFailed(false);
+      setRefreshed(true);
+      setRetryKey((previous) => previous + 1);
+    },
+    // Make sure this dep is `FragmentResource`, this is all untyped
+    // `FragmentResource._cache._map` might cause a HUGE ERROR
+    [FragmentResource, reportError]
+  );
 
   const [refresh] = usePromisifiedMutation<useNftRetryMutation>(graphql`
     mutation useNftRetryMutation($tokenId: DBID!) {

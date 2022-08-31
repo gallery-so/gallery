@@ -45,5 +45,7 @@ jobs:
         run: yarn install
       - name: Generate relay files
         run: yarn relay
+      - name: Generate GraphQL Codegen files
+        run: yarn graphql-codegen
       - name: Run unit tests
         run: yarn jest

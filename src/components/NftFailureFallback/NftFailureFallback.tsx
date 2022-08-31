@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import { RefreshIcon } from 'icons/RefreshIcon';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from 'components/core/Text/Text';
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import IconContainer from 'components/core/Markdown/IconContainer';
 
@@ -36,36 +36,53 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
 
   const [showTooltip, setShowTooltip] = useState(false);
 
+  useEffect(
+    // When you click the refresh icon, the element disappears.
+    // Therefore, we never get an onMouseLeave event to reset
+    // the tooltip state.
+    //
+    // This should ensure we reset the tooltip state when a refresh begins.
+    function resetTooltipWhenRefreshing() {
+      if (refreshing) {
+        setShowTooltip(false);
+      }
+    },
+    [refreshing]
+  );
+
   return (
-    <Wrapper>
-      {refreshing ? (
-        <Label size={size}>Loading...</Label>
-      ) : (
-        <Label size={size}>Could not load</Label>
-      )}
-      {!refreshing && (
-        <>
-          <Spacer height={spaceY} />
-          <IconButton
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-            refreshing={refreshing}
-            onMouseDown={handleMouseDown}
-            onClick={handleClick}
-          >
-            <IconContainer icon={<RefreshIcon />} />
-            <RefreshTooltip active={showTooltip} text="Refresh" />
-          </IconButton>
-        </>
-      )}
-    </Wrapper>
+    <AspectRatioWrapper>
+      <Wrapper>
+        {refreshing ? (
+          <Label size={size}>Loading...</Label>
+        ) : (
+          <Label size={size}>Could not load</Label>
+        )}
+        {!refreshing && (
+          <>
+            <Spacer height={spaceY} />
+            <IconButton
+              data-testid="RefreshButton"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              refreshing={refreshing}
+              onMouseDown={handleMouseDown}
+              onClick={handleClick}
+            >
+              <IconContainer icon={<RefreshIcon />} />
+              <RefreshTooltip active={showTooltip} text="Refresh" />
+            </IconButton>
+          </>
+        )}
+      </Wrapper>
+    </AspectRatioWrapper>
   );
 }
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
-  opacity: ${({ active }) => (active ? '1' : '0')};
   top: 0;
-  transform: translateY(-100%) translateX(0px); ;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transform: translateY(calc(-100% + ${({ active }) => (active ? -4 : 0)}px));
 `;
 
 const Label = styled(BaseM)<{ size: Size }>`
@@ -88,11 +105,23 @@ const IconButton = styled.button<{ refreshing: boolean }>`
   cursor: pointer;
 `;
 
-const Wrapper = styled.div`
-  cursor: pointer;
-
+// No support for aspect-ratio trick
+// https://css-tricks.com/aspect-ratio-boxes/
+const AspectRatioWrapper = styled.div`
   width: 100%;
-  aspect-ratio: 1;
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+`;
+
+// No support for aspect-ratio trick
+// https://css-tricks.com/aspect-ratio-boxes/
+const Wrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   display: flex;
   flex-direction: column;

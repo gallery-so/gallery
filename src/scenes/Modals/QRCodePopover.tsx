@@ -2,9 +2,12 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import QRCodeStyling from 'qr-code-styling';
 
 export function useQrCode() {
+  // Figure out if not using the QRCodeStyling type is actually
+  // helping with code splitting
+  //
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const QRCodeStyling = require('qr-code-styling');
   return new QRCodeStyling({
     width: 636, // 4 * 159px
@@ -69,7 +72,12 @@ export default function QRCodePopover({
   styledQrCode,
 }: {
   username: string;
-  styledQrCode: QRCodeStyling;
+
+  // Figure out if not using the QRCodeStyling type is actually
+  // helping with code splitting
+  //
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  styledQrCode: any;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 

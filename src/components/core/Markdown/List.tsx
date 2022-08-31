@@ -16,7 +16,7 @@ export default function List({
     const [start, end] = selectedRange;
     const selectedText = textArea.value.substring(start, end);
 
-    let allLines = textArea.value.split('\n');
+    const allLines = textArea.value.split('\n');
 
     // Map over each line and store in an array the number of characters in the total string up until that point
     const lineStartIndices = allLines.map((line, index) =>

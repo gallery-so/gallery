@@ -360,4 +360,6 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   );
 });
 
+CollectionEditorProvider.displayName = 'CollectionEditorProvider';
+
 export default CollectionEditorProvider;

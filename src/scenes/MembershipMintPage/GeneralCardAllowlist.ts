@@ -1,10 +1,10 @@
 import isProduction from 'utils/isProduction';
-import ALLOW_LIST_LEGGENDA from './data/leggenda';
-import ALLOW_LIST_POOLSUITE from './data/poolsuite';
-import ALLOW_LIST_CRYPTO_COVEN from './data/cryptocoven';
-import ALLOW_LIST_FWB from './data/fwb';
-import ALLOW_LIST_ZENECA from './data/zeneca';
-import ALLOW_LIST_CUSTOM from './data/custom';
+import { ALLOW_LIST_LEGGENDA } from './data/leggenda';
+import { ALLOW_LIST_POOLSUITE } from './data/poolsuite';
+import { ALLOW_LIST_CRYPTO_COVEN } from './data/cryptocoven';
+import { ALLOW_LIST_FWB } from './data/fwb';
+import { ALLOW_LIST_ZENECA } from './data/zeneca';
+import { ALLOW_LIST_CUSTOM } from './data/custom';
 
 const ALLOWLIST_DEV: string[] = [];
 

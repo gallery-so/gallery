@@ -109,6 +109,8 @@ const ShimmerProvider = memo(({ children }: Props) => {
   );
 });
 
+ShimmerProvider.displayName = 'ShimmerProvider';
+
 const Container = styled.div<{ overflowHidden: boolean }>`
   // Ensures that grid columns don't grow to fit their children
   // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size

@@ -8,4 +8,6 @@ const Boundary = memo(({ children }) => (
   </Suspense>
 ));
 
+Boundary.displayName = 'Boundary';
+
 export default Boundary;

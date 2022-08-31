@@ -111,7 +111,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         >
           {({ registerChild, measure }) => {
             return (
-              // @ts-ignore
+              // @ts-expect-error Bad types from react-virtualized
               <div ref={registerChild} key={key} style={style}>
                 <UserGalleryCollection
                   queryRef={query}

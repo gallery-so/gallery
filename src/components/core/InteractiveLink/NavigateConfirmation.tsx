@@ -4,6 +4,7 @@ import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
 import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM } from '../Text/Text';
+import { MODAL_PADDING_PX } from 'contexts/modal/constants';
 
 export default function VerifyNavigationPopover({ href }: { href: string }) {
   const { hideModal } = useModalActions();
@@ -31,8 +32,9 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
   );
 }
 
+// TODO: maybe the width should be set when triggering the modal, as opposed to this component
 const StyledConfirmation = styled.div`
-  width: 400px;
+  width: min(calc(100vw - ${MODAL_PADDING_PX * 4}px), 400px);
 `;
 
 const TextContainer = styled.div`

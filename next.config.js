@@ -3,10 +3,15 @@ const { withSentryConfig } = require('@sentry/nextjs');
 
 const moduleExports = {
   typescript: {
-    // If we ever move to github actions, we can turn this on
-    // to parallelize CI. Vercel can do a build while we are
-    // typechecking to save time.
-    ignoreBuildErrors: false,
+    // Save time in Vercel builds by avoiding a type check.
+    // This is fine since we do a type check in Github Actions.
+    ignoreBuildErrors: true,
+  },
+
+  eslint: {
+    // Save time in Vercel builds by avoiding linting.
+    // This is fine since we do a lint in Github Actions.
+    ignoreDuringBuilds: true,
   },
 
   webpack(config) {

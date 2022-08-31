@@ -63,7 +63,12 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     track('Follow Click', {
       followee: user.dbid,
     });
-    const optimisticNewFollowersList = [{ id: loggedInUserId! }, ...user.followers];
+
+    if (!loggedInUserId) {
+      return;
+    }
+
+    const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have followed ${user.username}.` });
   }, [loggedInUserId, user, track, followUser, pushToast]);
