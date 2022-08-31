@@ -15,10 +15,10 @@ export function useQrCode() {
     image: gLogoBase64,
     data: 'https://gallery.so/',
     margin: 0,
-    qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'Q' },
+    qrOptions: { typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' },
     imageOptions: { hideBackgroundDots: true, imageSize: 0.4, margin: 0 },
-    dotsOptions: { type: 'square', color: '#000000', gradient: undefined },
-    backgroundOptions: { color: '#ffffff', gradient: undefined },
+    dotsOptions: { type: 'square', color: '#000000', gradient: null },
+    backgroundOptions: { color: '#ffffff', gradient: null },
     dotsOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
@@ -29,7 +29,7 @@ export function useQrCode() {
         rotation: '0',
       },
     },
-    cornersSquareOptions: { color: '#000000' },
+    cornersSquareOptions: { type: '', color: '#000000' },
     cornersSquareOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
@@ -40,7 +40,7 @@ export function useQrCode() {
         rotation: '0',
       },
     },
-    cornersDotOptions: { color: '#000000' },
+    cornersDotOptions: { type: '', color: '#000000' },
     cornersDotOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
