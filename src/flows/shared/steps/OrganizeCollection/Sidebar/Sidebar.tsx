@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS, TitleXS } from 'components/core/Text/Text';
@@ -78,19 +78,19 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  const tokensFilteredBySearch = useMemo(() => {
-    if (debouncedSearchQuery) {
-      const searchResultNfts = [];
-      for (const resultId of searchResults) {
-        if (sidebarTokens[resultId]) {
-          searchResultNfts.push(sidebarTokens[resultId]);
-        }
-      }
-
-      return searchResultNfts;
+  const editModeTokensSearchResults = useMemo(() => {
+    if (!debouncedSearchQuery) {
+      return sidebarTokensAsArray;
     }
 
-    return sidebarTokensAsArray;
+    const searchResultNfts = [];
+    for (const resultId of searchResults) {
+      if (sidebarTokens[resultId]) {
+        searchResultNfts.push(sidebarTokens[resultId]);
+      }
+    }
+
+    return searchResultNfts;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
   const nftFragmentsKeyedByID = useMemo(
@@ -98,11 +98,17 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     [nonNullTokens]
   );
 
-  const nonNullEditModeTokens = useMemo(() => {
-    return tokensFilteredBySearch.filter((editModeToken) =>
-      Boolean(nftFragmentsKeyedByID[editModeToken.id])
-    );
-  }, [nftFragmentsKeyedByID, tokensFilteredBySearch]);
+  const editModeTokensFilteredToSelectedChain = useMemo(() => {
+    return editModeTokensSearchResults.filter((editModeToken) => {
+      const token = nftFragmentsKeyedByID[editModeToken.id];
+
+      if (!token) {
+        return false;
+      }
+
+      return token.chain === selectedChain;
+    });
+  }, [editModeTokensSearchResults, nftFragmentsKeyedByID, selectedChain]);
 
   return (
     <StyledSidebar>
@@ -127,10 +133,30 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         />
       </StyledSidebarContainer>
       <SidebarChains selected={selectedChain} onChange={setSelectedChain} />
-      <SidebarTokens tokenRefs={nonNullTokens} editModeTokens={nonNullEditModeTokens} />
+      <SidebarTokens
+        tokenRefs={nonNullTokens}
+        editModeTokens={editModeTokensFilteredToSelectedChain}
+      />
     </StyledSidebar>
   );
 }
+
+type CollectionGroup = {
+  title: string;
+  address: string;
+  tokens: Array<{
+    token: SidebarTokensFragment$data[number];
+    editModeToken: EditModeToken;
+  }>;
+};
+
+type TokenOrWhitespace =
+  | { token: SidebarTokensFragment$data[number]; editModeToken: EditModeToken }
+  | 'whitespace';
+
+type VirtualizedRow =
+  | { type: 'collection-title'; expanded: boolean; address: string; title: string }
+  | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
 
 type SidebarTokensProps = {
   tokenRefs: SidebarTokensFragment$key;
@@ -156,7 +182,10 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
     tokenRefs
   );
 
+  const virtualizedListRef = useRef<List | null>(null);
+
   const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
+  const [collectionExpandedMap, setCollectionExpandedMap] = useState(new Map<string, boolean>());
 
   const handleMarkErroredTokenId = useCallback((id) => {
     setErroredTokenIds((prev) => {
@@ -174,23 +203,9 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
     });
   }, []);
 
-  const [collectionExpandedMap, setCollectionExpandedMap] = useState<Map<string, boolean>>(
-    new Map()
-  );
-
-  type CollectionGroup = {
-    title: string;
-    address: string;
-    tokens: Array<{
-      token: SidebarTokensFragment$data[number];
-      editModeToken: EditModeToken;
-    }>;
-  };
-
   const groups: CollectionGroup[] = useMemo(() => {
-    const tokensKeyedById = keyBy(tokens, (token) => token.dbid);
-
     const map: Record<string, CollectionGroup> = {};
+    const tokensKeyedById = keyBy(tokens, (token) => token.dbid);
 
     for (const editModeToken of editModeTokens) {
       const token = tokensKeyedById[editModeToken.id];
@@ -231,14 +246,6 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
     });
   }, []);
 
-  type TokenOrWhitespace =
-    | { token: SidebarTokensFragment$data[number]; editModeToken: EditModeToken }
-    | 'whitespace';
-
-  type VirtualizedRow =
-    | { type: 'collection-title'; expanded: boolean; address: string; title: string }
-    | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
-
   const rows: VirtualizedRow[] = useMemo(() => {
     const rows: VirtualizedRow[] = [];
 
@@ -271,8 +278,6 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
 
     return rows;
   }, [collectionExpandedMap, erroredTokenIds, groups]);
-
-  console.log({ rows, groups });
 
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -328,7 +333,6 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
 
   const rowHeightCalculator = useCallback(
     ({ index }: Index) => {
-      console.log('rowHeightCalculator', index);
       const row = rows[index];
 
       if (row?.type === 'tokens') {
@@ -351,17 +355,21 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
     [rows]
   );
 
-  const ref = useRef<List | null>(null);
-  useEffect(() => {
-    ref.current?.recomputeRowHeights();
-  }, [collectionExpandedMap]);
+  // Important to useLayoutEffect to avoid flashing of the
+  // React Virtualized component.
+  useLayoutEffect(
+    function recomputeRowHeightsWhenCollectionExpanded() {
+      virtualizedListRef.current?.recomputeRowHeights();
+    },
+    [collectionExpandedMap]
+  );
 
   return (
     <StyledListTokenContainer>
       <AutoSizer>
         {({ width, height }) => (
           <List
-            ref={ref}
+            ref={virtualizedListRef}
             style={{ outline: 'none' }}
             rowRenderer={rowRenderer}
             rowCount={rows.length}
