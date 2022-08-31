@@ -4,9 +4,16 @@ import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
 import { useCallback, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { graphql } from 'react-relay';
+import { SidebarChainSelectorMutation } from '../../../../../../__generated__/SidebarChainSelectorMutation.graphql';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { Severity } from '@sentry/types';
 
 const chains = [
   { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
+  // TODO: Enable this once we launch Tezos
   // { name: 'Tezos', shortName: 'TEZ', icon: '/icons/tezos_logo.svg' },
   { name: 'POAP', shortName: 'POAP', icon: '/icons/poap_logo.svg' },
 ] as const;
@@ -19,12 +26,56 @@ type SidebarChainsProps = {
 };
 
 export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
-  const [refreshing, setRefreshing] = useState(false);
+  const [refresh] = usePromisifiedMutation<SidebarChainSelectorMutation>(graphql`
+    mutation SidebarChainSelectorMutation($chain: Chain!) {
+      syncTokens(chains: [$chain]) {
+        __typename
+        ... on SyncTokensPayload {
+          viewer {
+            ...CollectionEditorFragment
+          }
+        }
+      }
+    }
+  `);
+
+  const reportError = useReportError();
+  const { pushToast } = useToastActions();
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const handleRefresh = useCallback(() => {}, []);
-
   const selectedChain = chains.find((chain) => chain.name === selected);
+
+  const handleRefresh = useCallback(async () => {
+    if (!selectedChain) {
+      return;
+    }
+
+    pushToast({
+      message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+      autoClose: true,
+    });
+    const response = await refresh({
+      variables: {
+        chain: selectedChain.name,
+      },
+    });
+
+    if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+      pushToast({
+        autoClose: false,
+        message:
+          'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
+      });
+
+      reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
+        level: Severity.Error,
+        tags: {
+          chain: selectedChain.name,
+          responseTypename: response.syncTokens?.__typename,
+        },
+      });
+    }
+  }, [pushToast, refresh, reportError, selectedChain]);
 
   if (!selectedChain) {
     throw new Error('Yikes bud');
@@ -53,7 +104,6 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
         data-testid="RefreshButton"
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        refreshing={refreshing}
         onClick={handleRefresh}
       >
         <IconContainer icon={<RefreshIcon />} />
@@ -63,7 +113,7 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
   );
 }
 
-const IconButton = styled.button<{ refreshing: boolean }>`
+const IconButton = styled.button`
   position: relative;
 
   // Button Reset
