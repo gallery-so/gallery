@@ -32,6 +32,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       fragment MultichainWalletSelectorFragment on Query {
         ...EthereumAddWalletFragment
         ...GnosisSafeAddWalletFragment
+        ...TezosAddWalletFragment
       }
     `,
     queryRef

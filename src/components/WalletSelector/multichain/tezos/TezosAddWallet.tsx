@@ -21,7 +21,7 @@ import {
   useTrackAddWalletSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
-import { EthereumAddWalletFragment$key } from '__generated__/EthereumAddWalletFragment.graphql';
+import { TezosAddWalletFragment$key } from '__generated__/TezosAddWalletFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -33,7 +33,7 @@ import { DAppClient } from '@airgap/beacon-sdk';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 
 type Props = {
-  queryRef: EthereumAddWalletFragment$key;
+  queryRef: TezosAddWalletFragment$key;
   reset: () => void;
 };
 
@@ -53,7 +53,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
   const query = useFragment(
     graphql`
-      fragment EthereumAddWalletFragment on Query {
+      fragment TezosAddWalletFragment on Query {
         viewer {
           ... on Viewer {
             user {
