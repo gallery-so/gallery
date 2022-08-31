@@ -15,10 +15,7 @@ function MarkdownShortcutsWithTextArea() {
   return (
     <>
       <textarea id="textarea" data-testid="textarea" ref={ref}></textarea>
-      <MarkdownShortcuts
-        // @ts-expect-error
-        textAreaRef={ref}
-      />
+      <MarkdownShortcuts textAreaRef={ref} />
     </>
   );
 }

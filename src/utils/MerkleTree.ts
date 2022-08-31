@@ -13,6 +13,7 @@ export default class MerkleTree {
     // Filter empty strings and hash elements
     this.elements = elements
       .filter((el) => el)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .map((el) => Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el)!)));
     // Sort elements
     this.elements.sort(Buffer.compare);
@@ -112,6 +113,7 @@ export default class MerkleTree {
 
     // Convert element to 32 byte hash if it is not one already
     if (el.length !== 32 || !Buffer.isBuffer(el)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       hash = Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el)!));
     } else {
       hash = el;
