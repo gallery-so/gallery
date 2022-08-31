@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { TitleXSBold } from 'components/core/Text/Text';
 import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
+import { useCallback, useState } from 'react';
+import Tooltip from 'components/Tooltip/Tooltip';
 
 const chains = [
   { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
@@ -17,6 +19,17 @@ type SidebarChainsProps = {
 };
 
 export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
+  const [refreshing, setRefreshing] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleRefresh = useCallback(() => {}, []);
+
+  const selectedChain = chains.find((chain) => chain.name === selected);
+
+  if (!selectedChain) {
+    throw new Error('Yikes bud');
+  }
+
   return (
     <Container>
       <Chains>
@@ -36,10 +49,37 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
           );
         })}
       </Chains>
-      <IconContainer icon={<RefreshIcon />} />
+      <IconButton
+        data-testid="RefreshButton"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        refreshing={refreshing}
+        onClick={handleRefresh}
+      >
+        <IconContainer icon={<RefreshIcon />} />
+        <RefreshTooltip active={showTooltip} text={`Refresh ${selectedChain.shortName} Wallets`} />
+      </IconButton>
     </Container>
   );
 }
+
+const IconButton = styled.button<{ refreshing: boolean }>`
+  position: relative;
+
+  // Button Reset
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+
+  cursor: pointer;
+`;
+
+const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
+  bottom: 0;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
+`;
 
 const Chains = styled.div`
   display: flex;
