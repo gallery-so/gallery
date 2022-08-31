@@ -1,5 +1,5 @@
 // allow-listed Fri 3/4/2022
-export default [
+export const ALLOW_LIST_FWB = [
   '0x660f6d6c9bcd08b86b50e8e53b537f2b40f243bd',
   '0xc82adbf102aa5432f09730739921c63ee79459f8',
   '0x9ab0905b39505d8682b58a57a41c4100e9c62ab6',

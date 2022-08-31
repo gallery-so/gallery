@@ -301,4 +301,6 @@ const AuthProvider = memo(({ children }: Props) => {
   );
 });
 
+AuthProvider.displayName = 'AuthProvider';
+
 export default AuthProvider;

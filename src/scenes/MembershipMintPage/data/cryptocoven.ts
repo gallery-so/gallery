@@ -1,5 +1,5 @@
 // allow-listed Fri 2/11/2022
-export default [
+export const ALLOW_LIST_CRYPTO_COVEN = [
   '0xf9727c1c23c2c3b15d6ad13674360b1b8c32805d',
   '0x7721f140c2968d5c639a9b40a1e6ca48a9b7c41d',
   '0x00821c92cf69751e05f8fb3c1421e1b83761c592',

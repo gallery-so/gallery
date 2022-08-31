@@ -4,6 +4,8 @@ module.exports = {
   ignorePatterns: ['*.graphql.ts', 'src/__generated__/operations.ts'],
 
   rules: {
+    'react/no-unescaped-entities': 'off',
+
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
 

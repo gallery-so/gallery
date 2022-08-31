@@ -1,5 +1,5 @@
 // allow-listed Fri 4/1/2022
-export default [
+export const ALLOW_LIST_ZENECA = [
   '0x00000000000cd56832ce5dfbcbff02e7ec639bc9',
   '0x000091892804f655cc1aca5bbe42944dbb972ab1',
   '0x0013c382001df4022fe14814a865cef7fb814e14',

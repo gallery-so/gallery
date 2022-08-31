@@ -120,6 +120,7 @@ export default function WelcomeAnimation({ next }: Props) {
             }}
           >
             <Image
+              alt="Welcome to Gallery"
               width={animatedImage.width}
               src={animatedImage.src ?? ''}
               fadeInDelay={animatedImage.fadeInDelay}

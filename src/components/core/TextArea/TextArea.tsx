@@ -72,6 +72,8 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
 `;
 
+TextArea.displayName = 'TextArea';
+
 export default TextArea;
 
 type TextAreaWithCharCountProps = {

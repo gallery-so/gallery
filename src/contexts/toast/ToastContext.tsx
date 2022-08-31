@@ -84,4 +84,6 @@ const ToastProvider = memo(({ children }: Props) => {
   );
 });
 
+ToastProvider.displayName = 'ToastProvider';
+
 export default ToastProvider;
