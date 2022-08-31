@@ -1,5 +1,5 @@
 // allow-listed Tues 1/25/2022
-export default [
+export const ALLOW_LIST_POOLSUITE = [
   '0x3cc3d5e9224d60103d02632a52b5e23966db0938',
   '0xe1c7e4facc3ab6f5e129268a25864e2131c454eb',
   '0x2c7606b6dc6c7d67af1652cb0717d9ea8c787f95',

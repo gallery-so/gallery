@@ -3,6 +3,7 @@ import { useState, useRef, useCallback } from 'react';
 import { animated, useSpring } from 'react-spring';
 
 type Props = {
+  alt: string;
   src: string;
   width: number;
   fadeInDelay: number;
@@ -70,6 +71,7 @@ const config = {
 };
 
 function Image({
+  alt,
   width,
   src,
   fadeInDelay,
@@ -103,6 +105,7 @@ function Image({
     >
       <animated.div className="rotatable" style={{ transform: props.xys.to(trans) }}>
         <StyledImage
+          alt={alt}
           src={src}
           width={width}
           shouldFadeOut={shouldFadeOut}

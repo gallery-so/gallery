@@ -2,15 +2,14 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
-export default function FlippingImage({
-  src,
-  isFlipped,
-  isInPreview = false,
-}: {
+type Props = {
   src: string;
   isFlipped: boolean;
   isInPreview?: boolean;
-}) {
+  alt?: string;
+};
+
+export default function FlippingImage({ alt, src, isFlipped, isInPreview = false }: Props) {
   useEffect(() => {
     // pre-load the back of the image to prevent initial stutter on hover
     const img = new window.Image();
@@ -22,7 +21,7 @@ export default function FlippingImage({
       isFlippedCardInPreview={src === '/merch/card' && isFlipped && isInPreview}
       isCard={src === '/merch/card'}
     >
-      <Image src={isFlipped ? `${src}-back.jpg` : `${src}-front.jpg`} layout="fill" />
+      <Image alt={alt} src={isFlipped ? `${src}-back.jpg` : `${src}-front.jpg`} layout="fill" />
     </StyledContainer>
   );
 }

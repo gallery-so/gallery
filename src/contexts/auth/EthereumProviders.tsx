@@ -6,6 +6,7 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import merge from 'lodash.merge';
 import colors from 'components/core/colors';
+import { ReactNode } from 'react';
 
 // Unfortunately, RainbowKit has no way to customize font weight
 // https://github.com/rainbow-me/rainbowkit/discussions/361
@@ -81,10 +82,16 @@ const wagmiClient = createClient({
   provider,
 });
 
-export const EtheremProviders: React.FC<{}> = ({ children }) => (
-  <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains} theme={myCustomTheme}>
-      {children}
-    </RainbowKitProvider>
-  </WagmiConfig>
-);
+type Props = {
+  children: ReactNode;
+};
+
+export function EtheremProviders({ children }: Props) {
+  return (
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider chains={chains} theme={myCustomTheme}>
+        {children}
+      </RainbowKitProvider>
+    </WagmiConfig>
+  );
+}

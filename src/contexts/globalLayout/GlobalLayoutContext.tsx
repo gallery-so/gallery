@@ -263,6 +263,8 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 });
 
+GlobalLayoutContextProvider.displayName = 'GlobalLayoutContextProvider';
+
 type GlobalNavbarWithFadeEnabledProps = {
   queryRef: GlobalLayoutContextNavbarFragment$key;
   isVisible: boolean;

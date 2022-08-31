@@ -94,4 +94,6 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
   );
 });
 
+MembershipMintPageProvider.displayName = 'MembershipMintPageProvider';
+
 export default MembershipMintPageProvider;

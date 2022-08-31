@@ -33,3 +33,5 @@ export const SwrProvider = memo(({ children }) => {
 
   return <SWRConfig value={value}>{children}</SWRConfig>;
 });
+
+SwrProvider.displayName = 'SwrProvider';

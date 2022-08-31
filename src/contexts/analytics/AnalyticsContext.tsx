@@ -76,4 +76,6 @@ const AnalyticsProvider = memo(({ children }: Props) => {
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;
 });
 
+AnalyticsProvider.displayName = 'AnalyticsProvider';
+
 export default AnalyticsProvider;

@@ -48,6 +48,8 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
   );
 });
 
+Handle.displayName = 'Handle';
+
 const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   display: flex;
   background-color: ${colors.activeBlue};
@@ -116,6 +118,8 @@ export const Section = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+
+Section.displayName = 'Section';
 
 const StyledButtonContainer = styled.div<{ isActive: boolean }>`
   display: flex;

@@ -56,4 +56,6 @@ const WizardCallbackProvider = memo(({ children }: Props) => {
   return <WizardCallbackContext.Provider value={state}>{children}</WizardCallbackContext.Provider>;
 });
 
+WizardCallbackProvider.displayName = 'WizardCallbackProvider';
+
 export default WizardCallbackProvider;

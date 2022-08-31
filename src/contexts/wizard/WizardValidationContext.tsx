@@ -58,4 +58,6 @@ const WizardValidationProvider = memo(({ children }: Props) => {
   );
 });
 
+WizardValidationProvider.displayName = 'WizardValidationProvider';
+
 export default WizardValidationProvider;

@@ -1,1 +1,3 @@
-export default () => null;
+const ReactMarkdown = () => null;
+
+export default ReactMarkdown;

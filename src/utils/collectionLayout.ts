@@ -21,7 +21,7 @@ export function parseCollectionLayout<T>(
   // Hard to type this, need a second look
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collectionLayout: any,
-  ignoreWhitespace: boolean = false
+  ignoreWhitespace = false
 ): CollectionWithLayout<T> {
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {

@@ -102,4 +102,6 @@ const ErrorReportingProvider = memo(({ children }: Props) => {
   );
 });
 
+ErrorReportingProvider.displayName = 'ErrorReportingProvider';
+
 export default ErrorReportingProvider;

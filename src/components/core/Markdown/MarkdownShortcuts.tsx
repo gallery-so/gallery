@@ -12,7 +12,7 @@ export function setValueAndTriggerOnChange(
   newValue: string,
   selectionRange: [number, number]
 ) {
-  var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
+  const nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
     HTMLTextAreaElement.prototype,
     'value'
   )?.set;
@@ -32,7 +32,7 @@ export function setValueAndTriggerOnChange(
 }
 
 type Props = {
-  textAreaRef: React.MutableRefObject<HTMLTextAreaElement>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 };
 
 export default function MarkdownShortcuts({ textAreaRef }: Props) {

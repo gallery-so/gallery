@@ -61,4 +61,6 @@ const CollectionWizardProvider = memo(({ children }: Props) => {
   );
 });
 
+CollectionWizardProvider.displayName = 'CollectionWizardProvider';
+
 export default CollectionWizardProvider;

@@ -1,5 +1,5 @@
 // allow-listed Wed 1/19/2022
-export default [
+export const ALLOW_LIST_LEGGENDA = [
   '0x76a678aa5021b1f894d531b561d3cdf93ebadaa2',
   '0x547263cb2ddea3e6f83a05c06ef0ddfcbef52930',
   '0xd5a5c2ef8977ab40d920417018145508251a07c0',
