@@ -26,6 +26,7 @@ export type VirtualizedRow =
 
 type Props = {
   rows: VirtualizedRow[];
+  shouldUseCollectionGrouping: boolean;
   onToggleExpanded(address: string): void;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
@@ -36,6 +37,7 @@ export function SidebarList({
   onToggleExpanded,
   handleTokenRenderError,
   handleTokenRenderSuccess,
+  shouldUseCollectionGrouping,
 }: Props) {
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -134,7 +136,7 @@ export function SidebarList({
   );
 
   return (
-    <StyledListTokenContainer>
+    <StyledListTokenContainer shouldUseCollectionGrouping={shouldUseCollectionGrouping}>
       <AutoSizer>
         {({ width, height }) => (
           <List
@@ -168,9 +170,13 @@ const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded
     expanded ? `${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px` : '0px'};
 `;
 
-const StyledListTokenContainer = styled.div`
+const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
   width: 100%;
   flex-grow: 1;
+
+  // Need this since typically the CollectionTitle is responsible for the spacing between
+  // the SidebarChainSelector and the SidebarList component
+  margin-top: ${({ shouldUseCollectionGrouping }) => (shouldUseCollectionGrouping ? '0' : '12px')};
 `;
 
 const Selection = styled.div`

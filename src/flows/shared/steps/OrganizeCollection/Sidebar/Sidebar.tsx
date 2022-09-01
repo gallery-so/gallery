@@ -186,16 +186,16 @@ const SidebarTokens = ({
     });
   }, []);
 
+  const shouldUseCollectionGrouping = selectedChain !== 'POAP';
   const rows = useMemo(() => {
-    console.log({ selectedChain });
-    if (selectedChain === 'POAP') {
-      return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
-    } else {
+    if (shouldUseCollectionGrouping) {
       const groups = groupCollectionsByAddress({ tokens, editModeTokens });
 
       return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
+    } else {
+      return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
     }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, selectedChain, tokens]);
+  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
 
   // This ensures a user sees what they're searching for
   // even if they had a section collapsed before they
@@ -213,6 +213,7 @@ const SidebarTokens = ({
       onToggleExpanded={handleToggleExpanded}
       handleTokenRenderError={handleMarkErroredTokenId}
       handleTokenRenderSuccess={handleMarkSuccessTokenId}
+      shouldUseCollectionGrouping={shouldUseCollectionGrouping}
     />
   );
 };
