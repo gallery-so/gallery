@@ -68,6 +68,8 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   );
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  // TODO(Terence): Enable this when we enable POAP / Tezos
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -135,6 +137,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
       {/* TODO(Terence): Enable this when we enable POAP / Tezos */}
       {/*<SidebarChains selected={selectedChain} onChange={setSelectedChain} />*/}
       <SidebarTokens
+        debouncedSearchQuery={debouncedSearchQuery}
         tokenRefs={nonNullTokens}
         editModeTokens={editModeTokensFilteredToSelectedChain}
       />
@@ -160,11 +163,12 @@ type VirtualizedRow =
   | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
 
 type SidebarTokensProps = {
+  debouncedSearchQuery: string;
   tokenRefs: SidebarTokensFragment$key;
   editModeTokens: EditModeToken[];
 };
 
-const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
+const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
       fragment SidebarTokensFragment on Token @relay(plural: true) {
@@ -363,6 +367,16 @@ const SidebarTokens = ({ tokenRefs, editModeTokens }: SidebarTokensProps) => {
       virtualizedListRef.current?.recomputeRowHeights();
     },
     [collectionExpandedMap]
+  );
+
+  // This ensures a user sees what they're searching for
+  // even if they had a section collapsed before they
+  // started searching
+  useEffect(
+    function resetExpandedCollectionsWhenSearching() {
+      setCollectionExpandedMap(new Map());
+    },
+    [debouncedSearchQuery]
   );
 
   return (
