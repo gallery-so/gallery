@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
@@ -15,7 +15,6 @@ import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import { EditModeToken } from '../types';
-import { List } from 'react-virtualized';
 import keyBy from 'lodash.keyby';
 import {
   Chain,
@@ -23,7 +22,10 @@ import {
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
 import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
-import { createVirtualizedRows } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRows';
+import {
+  createVirtualizedRowsFromGroups,
+  createVirtualizedRowsFromTokens,
+} from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
 import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 
 type Props = {
@@ -125,8 +127,9 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
       </StyledSidebarContainer>
       <SidebarChains selected={selectedChain} onChange={setSelectedChain} />
       <SidebarTokens
-        debouncedSearchQuery={debouncedSearchQuery}
         tokenRefs={nonNullTokens}
+        selectedChain={selectedChain}
+        debouncedSearchQuery={debouncedSearchQuery}
         editModeTokens={editModeTokensFilteredToSelectedChain}
       />
     </StyledSidebar>
@@ -134,12 +137,18 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 }
 
 type SidebarTokensProps = {
+  selectedChain: Chain;
   debouncedSearchQuery: string;
-  tokenRefs: SidebarTokensFragment$key;
   editModeTokens: EditModeToken[];
+  tokenRefs: SidebarTokensFragment$key;
 };
 
-const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: SidebarTokensProps) => {
+const SidebarTokens = ({
+  tokenRefs,
+  editModeTokens,
+  debouncedSearchQuery,
+  selectedChain,
+}: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
       fragment SidebarTokensFragment on Token @relay(plural: true) {
@@ -191,15 +200,16 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
     });
   }, []);
 
-  const groups = useMemo(
-    () => groupCollectionsByAddress({ tokens, editModeTokens }),
-    [editModeTokens, tokens]
-  );
+  const rows = useMemo(() => {
+    console.log({ selectedChain });
+    if (selectedChain === 'POAP') {
+      return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
+    } else {
+      const groups = groupCollectionsByAddress({ tokens, editModeTokens });
 
-  const rows = useMemo(
-    () => createVirtualizedRows({ groups, erroredTokenIds, collapsedCollections }),
-    [collapsedCollections, erroredTokenIds, groups]
-  );
+      return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
+    }
+  }, [collapsedCollections, editModeTokens, erroredTokenIds, selectedChain, tokens]);
 
   // This ensures a user sees what they're searching for
   // even if they had a section collapsed before they
