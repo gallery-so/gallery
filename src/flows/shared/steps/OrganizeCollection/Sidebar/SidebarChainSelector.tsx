@@ -78,7 +78,7 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
   }, [pushToast, refresh, reportError, selectedChain]);
 
   if (!selectedChain) {
-    throw new Error('Yikes bud');
+    throw new Error(`Could not find a chain for selected value '${selected}'`);
   }
 
   return (
