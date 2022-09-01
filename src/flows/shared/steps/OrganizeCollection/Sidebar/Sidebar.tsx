@@ -25,18 +25,11 @@ import {
 } from 'constants/sidebar';
 import AddBlankBlock from './AddBlankBlock';
 import keyBy from 'lodash.keyby';
-import {
-  Chain,
-  SidebarChains,
-} from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
-import {
-  SidebarTokensFragment$data,
-  SidebarTokensFragment$key,
-} from '../../../../../../__generated__/SidebarTokensFragment.graphql';
+import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
+import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
 import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
 import { createVirtualizedRows } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRows';
-import { useSet } from 'hooks/useSet';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
