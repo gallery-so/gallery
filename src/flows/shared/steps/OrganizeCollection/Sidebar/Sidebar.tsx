@@ -3,22 +3,19 @@ import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import TextButton from 'components/core/Button/TextButton';
 import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SearchBar from './SearchBar';
-import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import { EditModeToken } from '../types';
 import keyBy from 'lodash.keyby';
 import {
   Chain,
-  SidebarChains,
+  SidebarChainSelector,
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
 import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
@@ -52,9 +49,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const viewer = useFragment(
     graphql`
       fragment SidebarViewerFragment on Viewer {
-        user {
-          dbid
-        }
+        ...SidebarChainSelectorFragment
       }
     `,
     viewerRef
@@ -64,10 +59,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-  const is3ac = useIs3ac(viewer.user?.dbid);
   const nonNullTokens = removeNullValues(allTokens);
-
-  const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
 
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
@@ -108,16 +100,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
       <StyledSidebarContainer>
         <Header>
           <TitleS>All pieces</TitleS>
-          {
-            // prevent accidental refreshing for profiles we want to keep in tact
-            is3ac ? null : (
-              <StyledRefreshButton
-                text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
-                onClick={handleRefreshNfts}
-                disabled={isRefreshingNfts}
-              />
-            )
-          }
         </Header>
         <SearchBar
           tokensRef={nonNullTokens}
@@ -125,7 +107,11 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      <SidebarChains selected={selectedChain} onChange={setSelectedChain} />
+      <SidebarChainSelector
+        viewerRef={viewer}
+        selected={selectedChain}
+        onChange={setSelectedChain}
+      />
       <SidebarTokens
         tokenRefs={nonNullTokens}
         selectedChain={selectedChain}
@@ -145,9 +131,9 @@ type SidebarTokensProps = {
 
 const SidebarTokens = ({
   tokenRefs,
+  selectedChain,
   editModeTokens,
   debouncedSearchQuery,
-  selectedChain,
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
@@ -259,16 +245,6 @@ const Header = styled.div`
   align-items: baseline;
   min-height: 52px;
   padding-bottom: 16px;
-`;
-
-// This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
-const StyledRefreshButton = styled(TextButton)`
-  & p {
-    font-size: 14px;
-    line-height: 18px;
-    text-transform: none;
-    text-decoration: underline;
-  }
 `;
 
 export default memo(Sidebar);

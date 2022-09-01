@@ -5,17 +5,20 @@ import { RefreshIcon } from 'icons/RefreshIcon';
 import { useCallback, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { graphql } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { SidebarChainSelectorMutation } from '../../../../../../__generated__/SidebarChainSelectorMutation.graphql';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { Severity } from '@sentry/types';
+import isViewerId3ac from 'hooks/oneOffs/useIs3ac';
+import { SidebarChainSelectorFragment$key } from '../../../../../../__generated__/SidebarChainSelectorFragment.graphql';
 
 const chains = [
   { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
+  { name: 'POAP', shortName: 'POAP', icon: '/icons/poap_logo.svg' },
+
   // TODO: Enable this once we launch Tezos
   // { name: 'Tezos', shortName: 'TEZ', icon: '/icons/tezos_logo.svg' },
-  { name: 'POAP', shortName: 'POAP', icon: '/icons/poap_logo.svg' },
 ] as const;
 
 export type Chain = typeof chains[number]['name'];
@@ -23,9 +26,21 @@ export type Chain = typeof chains[number]['name'];
 type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
+  viewerRef: SidebarChainSelectorFragment$key;
 };
 
-export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
+export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarChainsProps) {
+  const viewer = useFragment(
+    graphql`
+      fragment SidebarChainSelectorFragment on Viewer {
+        user {
+          dbid
+        }
+      }
+    `,
+    viewerRef
+  );
+
   const [refresh] = usePromisifiedMutation<SidebarChainSelectorMutation>(graphql`
     mutation SidebarChainSelectorMutation($chain: Chain!) {
       syncTokens(chains: [$chain]) {
@@ -43,6 +58,7 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
   const { pushToast } = useToastActions();
   const [showTooltip, setShowTooltip] = useState(false);
 
+  const is3ac = isViewerId3ac(viewer.user?.dbid);
   const selectedChain = chains.find((chain) => chain.name === selected);
 
   const handleRefresh = useCallback(async () => {
@@ -100,15 +116,20 @@ export function SidebarChains({ selected, onChange }: SidebarChainsProps) {
           );
         })}
       </Chains>
-      <IconButton
-        data-testid="RefreshButton"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onClick={handleRefresh}
-      >
-        <IconContainer icon={<RefreshIcon />} />
-        <RefreshTooltip active={showTooltip} text={`Refresh ${selectedChain.shortName} Wallets`} />
-      </IconButton>
+      {!is3ac && (
+        <IconButton
+          data-testid="RefreshButton"
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          onClick={handleRefresh}
+        >
+          <IconContainer icon={<RefreshIcon />} />
+          <RefreshTooltip
+            active={showTooltip}
+            text={`Refresh ${selectedChain.shortName} Wallets`}
+          />
+        </IconButton>
+      )}
     </Container>
   );
 }
