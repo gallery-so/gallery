@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
@@ -59,8 +59,9 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-  const nonNullTokens = removeNullValues(allTokens);
+  const isSearching = debouncedSearchQuery.length > 0;
 
+  const nonNullTokens = removeNullValues(allTokens);
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
   const editModeTokensSearchResults = useMemo(() => {
@@ -83,17 +84,24 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     [nonNullTokens]
   );
 
-  const editModeTokensFilteredToSelectedChain = useMemo(() => {
+  const tokensToDisplay = useMemo(() => {
     return editModeTokensSearchResults.filter((editModeToken) => {
       const token = nftFragmentsKeyedByID[editModeToken.id];
 
+      // Ensure we have a 1-1 match.
+      // Every EditModeToken should have a Token from Relay
       if (!token) {
         return false;
       }
 
+      // If we're searching, we want to search across all chains
+      if (isSearching) {
+        return true;
+      }
+
       return token.chain === selectedChain;
     });
-  }, [editModeTokensSearchResults, nftFragmentsKeyedByID, selectedChain]);
+  }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
 
   return (
     <StyledSidebar>
@@ -107,16 +115,17 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      <SidebarChainSelector
-        viewerRef={viewer}
-        selected={selectedChain}
-        onChange={setSelectedChain}
-      />
+      {!isSearching && (
+        <SidebarChainSelector
+          viewerRef={viewer}
+          selected={selectedChain}
+          onChange={setSelectedChain}
+        />
+      )}
       <SidebarTokens
         tokenRefs={nonNullTokens}
         selectedChain={selectedChain}
-        debouncedSearchQuery={debouncedSearchQuery}
-        editModeTokens={editModeTokensFilteredToSelectedChain}
+        editModeTokens={tokensToDisplay}
       />
     </StyledSidebar>
   );
@@ -124,21 +133,17 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 
 type SidebarTokensProps = {
   selectedChain: Chain;
-  debouncedSearchQuery: string;
   editModeTokens: EditModeToken[];
   tokenRefs: SidebarTokensFragment$key;
 };
 
-const SidebarTokens = ({
-  tokenRefs,
-  selectedChain,
-  editModeTokens,
-  debouncedSearchQuery,
-}: SidebarTokensProps) => {
+const SidebarTokens = ({ tokenRefs, selectedChain, editModeTokens }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
       fragment SidebarTokensFragment on Token @relay(plural: true) {
         dbid
+
+        chain
 
         contract {
           name
@@ -187,6 +192,7 @@ const SidebarTokens = ({
   }, []);
 
   const shouldUseCollectionGrouping = selectedChain !== 'POAP';
+
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
       const groups = groupCollectionsByAddress({ tokens, editModeTokens });
@@ -196,16 +202,6 @@ const SidebarTokens = ({
       return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
     }
   }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
-
-  // This ensures a user sees what they're searching for
-  // even if they had a section collapsed before they
-  // started searching
-  useEffect(
-    function resetExpandedCollectionsWhenSearching() {
-      setCollapsedCollections(new Set());
-    },
-    [debouncedSearchQuery]
-  );
 
   return (
     <SidebarList

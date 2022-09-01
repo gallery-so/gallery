@@ -31,13 +31,18 @@ export function groupCollectionsByAddress({
     }
 
     if (token.contract.contractAddress.address && token.contract.name) {
-      const group = map[token.contract.contractAddress.address] ?? {
-        title: token.contract.name,
-        address: token.contract.contractAddress.address,
+      // Since POAP tokens don't have unique contracts, we give them
+      // all a title of "POAP" and an address of "POAP"
+      const title = token.chain === 'POAP' ? 'POAP' : token.contract.name;
+      const address = token.chain === 'POAP' ? 'POAP' : token.contract.contractAddress.address;
+
+      const group = map[address] ?? {
+        title,
         tokens: [],
+        address: token.contract.contractAddress.address,
       };
 
-      map[token.contract.contractAddress.address] = group;
+      map[address] = group;
 
       group.tokens.push({
         token,
