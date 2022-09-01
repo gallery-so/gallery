@@ -148,6 +148,7 @@ const IconButton = styled.button`
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
   bottom: 0;
+  z-index: 1;
   opacity: ${({ active }) => (active ? 1 : 0)};
   transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
 `;
