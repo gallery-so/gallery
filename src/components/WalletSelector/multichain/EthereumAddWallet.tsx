@@ -13,7 +13,6 @@ import {
   PROMPT_SIGNATURE,
 } from 'types/Wallet';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import {
   isEarlyAccessError,
   useTrackAddWalletAttempt,
@@ -75,17 +74,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
     [viewer?.user?.wallets]
   );
 
-  const { showModal } = useModalActions();
-
-  const openManageWalletsModal = useCallback(
-    (address: string) => {
-      showModal({
-        content: <ManageWalletsModal queryRef={query} newAddress={address} />,
-        headerText: 'Connect your wallet',
-      });
-    },
-    [showModal, query]
-  );
+  const { hideModal } = useModalActions();
 
   const createNonce = useCreateNonce();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
@@ -131,7 +120,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
         });
 
         trackAddWalletSuccess('Ethereum');
-        openManageWalletsModal(address);
+        hideModal();
         setIsConnecting(false);
 
         return signatureValid;
@@ -157,8 +146,8 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
       trackAddWalletAttempt,
       createNonce,
       addWallet,
+      hideModal,
       trackAddWalletSuccess,
-      openManageWalletsModal,
       trackAddWalletError,
     ]
   );

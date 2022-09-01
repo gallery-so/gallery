@@ -13,7 +13,6 @@ import {
   PROMPT_SIGNATURE,
 } from 'types/Wallet';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import {
   isEarlyAccessError,
   useTrackAddWalletAttempt,
@@ -79,17 +78,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     [viewer?.user?.wallets]
   );
 
-  const { showModal } = useModalActions();
-
-  const openManageWalletsModal = useCallback(
-    (address: string) => {
-      showModal({
-        content: <ManageWalletsModal queryRef={query} newAddress={address} />,
-        headerText: 'Connect your wallet',
-      });
-    },
-    [showModal, query]
-  );
+  const { hideModal } = useModalActions();
 
   const createNonce = useCreateNonce();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
@@ -138,10 +127,8 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
           },
         });
 
-        console.log(signatureValid);
-
         trackAddWalletSuccess('Tezos');
-        openManageWalletsModal(address);
+        hideModal();
         setIsConnecting(false);
 
         return signatureValid;
@@ -167,23 +154,20 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       trackAddWalletAttempt,
       createNonce,
       addWallet,
+      hideModal,
       trackAddWalletSuccess,
-      openManageWalletsModal,
       trackAddWalletError,
     ]
   );
 
   useEffect(() => {
     async function authenticate() {
-      console.log('pending state', pendingState);
-
       if (account && authenticatedUserAddresses.includes(account)) {
         setPendingState(ADDRESS_ALREADY_CONNECTED);
         return;
       }
 
       try {
-        console.log(`Authenticating....`);
         const { publicKey, address } = await beaconClient.requestPermissions();
         if (!address || !publicKey) return;
 
@@ -218,7 +202,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
         <Spacer height={8} />
