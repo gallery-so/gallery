@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
@@ -123,6 +123,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         />
       )}
       <SidebarTokens
+        isSearching={isSearching}
         tokenRefs={nonNullTokens}
         selectedChain={selectedChain}
         editModeTokens={tokensToDisplay}
@@ -132,12 +133,18 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 }
 
 type SidebarTokensProps = {
+  isSearching: boolean;
   selectedChain: Chain;
   editModeTokens: EditModeToken[];
   tokenRefs: SidebarTokensFragment$key;
 };
 
-const SidebarTokens = ({ tokenRefs, selectedChain, editModeTokens }: SidebarTokensProps) => {
+const SidebarTokens = ({
+  tokenRefs,
+  isSearching,
+  selectedChain,
+  editModeTokens,
+}: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
       fragment SidebarTokensFragment on Token @relay(plural: true) {
@@ -191,7 +198,12 @@ const SidebarTokens = ({ tokenRefs, selectedChain, editModeTokens }: SidebarToke
     });
   }, []);
 
-  const shouldUseCollectionGrouping = selectedChain !== 'POAP';
+  let shouldUseCollectionGrouping: boolean;
+  if (isSearching) {
+    shouldUseCollectionGrouping = true;
+  } else {
+    shouldUseCollectionGrouping = selectedChain !== 'POAP';
+  }
 
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
@@ -202,6 +214,15 @@ const SidebarTokens = ({ tokenRefs, selectedChain, editModeTokens }: SidebarToke
       return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
     }
   }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+
+  useEffect(
+    function resetCollapsedSectionsWhileSearching() {
+      if (isSearching) {
+        setCollapsedCollections(new Set());
+      }
+    },
+    [isSearching]
+  );
 
   return (
     <SidebarList
