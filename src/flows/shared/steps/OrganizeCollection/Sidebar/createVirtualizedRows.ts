@@ -1,14 +1,5 @@
 import { CollectionGroup } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
-import { SidebarTokensFragment$data } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
-import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
-
-export type TokenOrWhitespace =
-  | { token: SidebarTokensFragment$data[number]; editModeToken: EditModeToken }
-  | 'whitespace';
-
-export type VirtualizedRow =
-  | { type: 'collection-title'; expanded: boolean; address: string; title: string }
-  | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
+import { VirtualizedRow } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 
 type createVirtualizedRowsArgs = {
   groups: CollectionGroup[];

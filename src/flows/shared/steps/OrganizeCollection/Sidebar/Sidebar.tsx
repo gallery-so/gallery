@@ -1,12 +1,11 @@
-import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { TitleS, TitleXS } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
 import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
-import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
@@ -16,20 +15,16 @@ import { removeNullValues } from 'utils/removeNullValues';
 import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import { EditModeToken } from '../types';
-import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
-import {
-  SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
-  SIDEBAR_COLLECTION_TITLE_HEIGHT,
-  SIDEBAR_ICON_DIMENSIONS,
-  SIDEBAR_ICON_GAP,
-} from 'constants/sidebar';
-import AddBlankBlock from './AddBlankBlock';
+import { List } from 'react-virtualized';
 import keyBy from 'lodash.keyby';
-import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
+import {
+  Chain,
+  SidebarChains,
+} from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
 import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
-import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
 import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
 import { createVirtualizedRows } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRows';
+import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -64,8 +59,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   );
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
-  // TODO(Terence): Enable this when we enable POAP / Tezos
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -130,8 +123,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      {/* TODO(Terence): Enable this when we enable POAP / Tezos */}
-      {/*<SidebarChains selected={selectedChain} onChange={setSelectedChain} />*/}
+      <SidebarChains selected={selectedChain} onChange={setSelectedChain} />
       <SidebarTokens
         debouncedSearchQuery={debouncedSearchQuery}
         tokenRefs={nonNullTokens}
@@ -153,20 +145,18 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
       fragment SidebarTokensFragment on Token @relay(plural: true) {
         dbid
 
-        ...SidebarNftIconFragment
-
         contract {
           name
           contractAddress {
             address
           }
         }
+
+        ...SidebarListTokenFragment
       }
     `,
     tokenRefs
   );
-
-  const virtualizedListRef = useRef<List | null>(null);
 
   const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
@@ -187,7 +177,7 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
     });
   }, []);
 
-  const toggleExpanded = useCallback((address: string) => {
+  const handleToggleExpanded = useCallback((address: string) => {
     setCollapsedCollections((previous) => {
       const next = new Set(previous);
 
@@ -201,97 +191,14 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
     });
   }, []);
 
-  const groups = useMemo(() => {
-    return groupCollectionsByAddress({ tokens, editModeTokens });
-  }, [editModeTokens, tokens]);
-
-  const rows = useMemo(() => {
-    return createVirtualizedRows({ groups, erroredTokenIds, collapsedCollections });
-  }, [collapsedCollections, erroredTokenIds, groups]);
-
-  const rowRenderer = useCallback(
-    ({ key, style, index }: ListRowProps) => {
-      const row = rows[index];
-
-      if (!row) {
-        return null;
-      }
-
-      if (row.type === 'collection-title') {
-        return (
-          <CollectionTitleContainer
-            expanded={row.expanded}
-            onClick={() => toggleExpanded(row.address)}
-            key={key}
-            style={style}
-          >
-            <ExpandedIcon expanded={row.expanded} />
-
-            <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-          </CollectionTitleContainer>
-        );
-      }
-
-      if (row.type === 'tokens') {
-        if (!row.expanded) {
-          return null;
-        }
-
-        return (
-          <Selection key={key} style={style}>
-            {row.tokens.map((tokenOrWhitespace) => {
-              if (tokenOrWhitespace === 'whitespace') {
-                return <AddBlankBlock key="whitespace" />;
-              }
-
-              return (
-                <SidebarNftIcon
-                  key={tokenOrWhitespace.token.dbid}
-                  tokenRef={tokenOrWhitespace.token}
-                  editModeToken={tokenOrWhitespace.editModeToken}
-                  handleTokenRenderError={handleMarkErroredTokenId}
-                  handleTokenRenderSuccess={handleMarkSuccessTokenId}
-                />
-              );
-            })}
-          </Selection>
-        );
-      }
-    },
-    [handleMarkErroredTokenId, handleMarkSuccessTokenId, rows, toggleExpanded]
+  const groups = useMemo(
+    () => groupCollectionsByAddress({ tokens, editModeTokens }),
+    [editModeTokens, tokens]
   );
 
-  const rowHeightCalculator = useCallback(
-    ({ index }: Index) => {
-      const row = rows[index];
-
-      if (row?.type === 'tokens') {
-        if (!row.expanded) {
-          return 0;
-        }
-
-        return SIDEBAR_ICON_DIMENSIONS + SIDEBAR_ICON_GAP;
-      } else if (row?.type === 'collection-title') {
-        if (row.expanded) {
-          return SIDEBAR_COLLECTION_TITLE_HEIGHT + SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE;
-        } else {
-          return SIDEBAR_COLLECTION_TITLE_HEIGHT;
-        }
-      }
-
-      // Maybe we should report an error here
-      return 0;
-    },
-    [rows]
-  );
-
-  // Important to useLayoutEffect to avoid flashing of the
-  // React Virtualized component.
-  useLayoutEffect(
-    function recomputeRowHeightsWhenCollectionExpanded() {
-      virtualizedListRef.current?.recomputeRowHeights();
-    },
-    [collapsedCollections]
+  const rows = useMemo(
+    () => createVirtualizedRows({ groups, erroredTokenIds, collapsedCollections }),
+    [collapsedCollections, erroredTokenIds, groups]
   );
 
   // This ensures a user sees what they're searching for
@@ -305,39 +212,14 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
   );
 
   return (
-    <StyledListTokenContainer>
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            ref={virtualizedListRef}
-            style={{ outline: 'none' }}
-            rowRenderer={rowRenderer}
-            rowCount={rows.length}
-            rowHeight={rowHeightCalculator}
-            width={width}
-            height={height}
-          />
-        )}
-      </AutoSizer>
-    </StyledListTokenContainer>
+    <SidebarList
+      rows={rows}
+      onToggleExpanded={handleToggleExpanded}
+      handleTokenRenderError={handleMarkErroredTokenId}
+      handleTokenRenderSuccess={handleMarkSuccessTokenId}
+    />
   );
 };
-
-const CollectionTitleText = styled(TitleXS)`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded: boolean }>`
-  display: flex;
-  align-items: center;
-
-  cursor: pointer;
-
-  padding-bottom: ${({ expanded }) =>
-    expanded ? `${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px` : '0px'};
-`;
 
 const StyledSidebar = styled.div`
   display: flex;
@@ -361,22 +243,12 @@ const StyledSidebarContainer = styled.div`
   }
 `;
 
-const StyledListTokenContainer = styled.div`
-  width: 100%;
-  flex-grow: 1;
-`;
-
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   min-height: 52px;
   padding-bottom: 16px;
-`;
-
-const Selection = styled.div`
-  display: flex;
-  grid-gap: ${SIDEBAR_ICON_GAP}px;
 `;
 
 // This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
