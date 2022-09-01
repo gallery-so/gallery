@@ -132,7 +132,8 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      <SidebarChains selected={selectedChain} onChange={setSelectedChain} />
+      {/* TODO(Terence): Enable this when we enable POAP / Tezos */}
+      {/*<SidebarChains selected={selectedChain} onChange={setSelectedChain} />*/}
       <SidebarTokens
         tokenRefs={nonNullTokens}
         editModeTokens={editModeTokensFilteredToSelectedChain}
