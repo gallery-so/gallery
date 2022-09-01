@@ -34,6 +34,9 @@ import {
   SidebarTokensFragment$key,
 } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
+import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
+import { createVirtualizedRows } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRows';
+import { useSet } from 'hooks/useSet';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -145,23 +148,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
   );
 }
 
-type CollectionGroup = {
-  title: string;
-  address: string;
-  tokens: Array<{
-    token: SidebarTokensFragment$data[number];
-    editModeToken: EditModeToken;
-  }>;
-};
-
-type TokenOrWhitespace =
-  | { token: SidebarTokensFragment$data[number]; editModeToken: EditModeToken }
-  | 'whitespace';
-
-type VirtualizedRow =
-  | { type: 'collection-title'; expanded: boolean; address: string; title: string }
-  | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
-
 type SidebarTokensProps = {
   debouncedSearchQuery: string;
   tokenRefs: SidebarTokensFragment$key;
@@ -189,8 +175,8 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
 
   const virtualizedListRef = useRef<List | null>(null);
 
-  const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
-  const [collectionExpandedMap, setCollectionExpandedMap] = useState(new Map<string, boolean>());
+  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
+  const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
 
   const handleMarkErroredTokenId = useCallback((id) => {
     setErroredTokenIds((prev) => {
@@ -208,81 +194,27 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
     });
   }, []);
 
-  const groups: CollectionGroup[] = useMemo(() => {
-    const map: Record<string, CollectionGroup> = {};
-    const tokensKeyedById = keyBy(tokens, (token) => token.dbid);
-
-    for (const editModeToken of editModeTokens) {
-      const token = tokensKeyedById[editModeToken.id];
-
-      if (!token?.contract?.contractAddress?.address || !token?.contract?.name) {
-        continue;
-      }
-
-      if (token.contract.contractAddress.address && token.contract.name) {
-        const group = map[token.contract.contractAddress.address] ?? {
-          title: token.contract.name,
-          address: token.contract.contractAddress.address,
-          tokens: [],
-        };
-
-        map[token.contract.contractAddress.address] = group;
-
-        group.tokens.push({
-          token,
-          editModeToken,
-        });
-      }
-    }
-
-    return Object.values(map);
-  }, [editModeTokens, tokens]);
-
   const toggleExpanded = useCallback((address: string) => {
-    setCollectionExpandedMap((previous) => {
-      const newMap = new Map(previous);
+    setCollapsedCollections((previous) => {
+      const next = new Set(previous);
 
-      // Default to expanded
-      const expanded = newMap.get(address) ?? true;
+      if (next.has(address)) {
+        next.delete(address);
+      } else {
+        next.add(address);
+      }
 
-      newMap.set(address, !expanded);
-
-      return newMap;
+      return next;
     });
   }, []);
 
-  const rows: VirtualizedRow[] = useMemo(() => {
-    const rows: VirtualizedRow[] = [];
+  const groups = useMemo(() => {
+    return groupCollectionsByAddress({ tokens, editModeTokens });
+  }, [editModeTokens, tokens]);
 
-    for (const group of groups) {
-      const tokensSortedByErrored = [...group.tokens].sort((a, b) => {
-        const aIsErrored = erroredTokenIds.has(a.token.dbid);
-        const bIsErrored = erroredTokenIds.has(b.token.dbid);
-
-        if (aIsErrored === bIsErrored) {
-          return 0;
-        } else if (aIsErrored) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-
-      // Default to expanded
-      const expanded = collectionExpandedMap.get(group.address) ?? true;
-
-      rows.push({ type: 'collection-title', expanded, address: group.address, title: group.title });
-
-      const COLUMNS_PER_ROW = 3;
-      for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
-        const rowTokens = tokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
-
-        rows.push({ type: 'tokens', tokens: rowTokens, expanded });
-      }
-    }
-
-    return rows;
-  }, [collectionExpandedMap, erroredTokenIds, groups]);
+  const rows = useMemo(() => {
+    return createVirtualizedRows({ groups, erroredTokenIds, collapsedCollections });
+  }, [collapsedCollections, erroredTokenIds, groups]);
 
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -366,7 +298,7 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
     function recomputeRowHeightsWhenCollectionExpanded() {
       virtualizedListRef.current?.recomputeRowHeights();
     },
-    [collectionExpandedMap]
+    [collapsedCollections]
   );
 
   // This ensures a user sees what they're searching for
@@ -374,7 +306,7 @@ const SidebarTokens = ({ tokenRefs, editModeTokens, debouncedSearchQuery }: Side
   // started searching
   useEffect(
     function resetExpandedCollectionsWhenSearching() {
-      setCollectionExpandedMap(new Map());
+      setCollapsedCollections(new Set());
     },
     [debouncedSearchQuery]
   );
