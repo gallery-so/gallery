@@ -85,6 +85,10 @@ const StyledSearchInput = styled.input`
   ::placeholder {
     color: ${colors.metal};
   }
+
+  &:focus {
+    color: ${colors.offBlack};
+  }
 `;
 
 export default SearchBar;
