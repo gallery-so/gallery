@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
@@ -15,6 +15,7 @@ import { TitleXS } from 'components/core/Text/Text';
 import { readInlineData } from 'relay-runtime';
 import { graphql } from 'react-relay';
 import { SidebarListTokenFragment$key } from '../../../../../../__generated__/SidebarListTokenFragment.graphql';
+import Tooltip from 'components/Tooltip/Tooltip';
 
 export type TokenOrWhitespace =
   | { token: SidebarListTokenFragment$key; editModeToken: EditModeToken }
@@ -57,7 +58,7 @@ export function SidebarList({
           >
             <ExpandedIcon expanded={row.expanded} />
 
-            <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
+            <CollectionTitleText text={row.title} />
           </CollectionTitleContainer>
         );
       }
@@ -141,7 +142,8 @@ export function SidebarList({
         {({ width, height }) => (
           <List
             ref={virtualizedListRef}
-            style={{ outline: 'none' }}
+            containerStyle={{ overflow: 'visible' }}
+            style={{ outline: 'none', overflow: 'visible' }}
             rowRenderer={rowRenderer}
             rowCount={rows.length}
             rowHeight={rowHeightCalculator}
@@ -154,7 +156,58 @@ export function SidebarList({
   );
 }
 
-const CollectionTitleText = styled(TitleXS)`
+type CollectionTitleTextProps = {
+  text: string;
+};
+
+function CollectionTitleText({ text }: CollectionTitleTextProps) {
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const ref = useRef<HTMLHeadingElement | null>(null);
+  useEffect(() => {
+    const element = ref.current;
+
+    if (!element) {
+      return;
+    }
+
+    if (element.offsetWidth < element.scrollWidth) {
+      setIsOverflowing(true);
+    }
+  }, []);
+
+  return (
+    <CollectionTitleWrapper
+      onMouseOver={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+    >
+      <CollectionTitleTextWrapper>
+        <StyledCollectionTitleText ref={ref}>{text}</StyledCollectionTitleText>
+      </CollectionTitleTextWrapper>
+      {isOverflowing && <TextOverflowTooltip active={showTooltip} text={text} />}
+    </CollectionTitleWrapper>
+  );
+}
+
+const CollectionTitleWrapper = styled.div`
+  position: relative;
+  overflow: visible;
+  min-width: 0;
+`;
+
+const CollectionTitleTextWrapper = styled.div`
+  overflow: hidden;
+`;
+
+const TextOverflowTooltip = styled(Tooltip)<{ active: boolean }>`
+  bottom: 0;
+  z-index: 1;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
+`;
+
+const StyledCollectionTitleText = styled(TitleXS)`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
