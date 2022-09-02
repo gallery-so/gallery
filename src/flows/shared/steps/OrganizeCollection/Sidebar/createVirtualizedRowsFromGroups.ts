@@ -1,5 +1,8 @@
 import { CollectionGroup } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
-import { VirtualizedRow } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
+import {
+  TokenOrWhitespace,
+  VirtualizedRow,
+} from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 import { SidebarTokensFragment$data } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import keyBy from 'lodash.keyby';
@@ -18,7 +21,7 @@ export function createVirtualizedRowsFromGroups({
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const tokensSortedByErrored = [...group.tokens].sort((a, b) => {
+    const tokensSortedByErrored: TokenOrWhitespace[] = [...group.tokens].sort((a, b) => {
       const aIsErrored = erroredTokenIds.has(a.token.dbid);
       const bIsErrored = erroredTokenIds.has(b.token.dbid);
 
@@ -30,6 +33,8 @@ export function createVirtualizedRowsFromGroups({
         return -1;
       }
     });
+
+    tokensSortedByErrored.unshift('whitespace');
 
     // Default to expanded
     const expanded = !collapsedCollections.has(group.address);
@@ -74,16 +79,24 @@ export function createVirtualizedRowsFromTokens({
     }
   });
 
+  const tokensSortedByErrored: TokenOrWhitespace[] = editModeTokensSortedByErrored.map(
+    (editModeToken) => {
+      return {
+        editModeToken,
+        token: tokensKeyedById[editModeToken.id],
+      };
+    }
+  );
+
+  tokensSortedByErrored.unshift('whitespace');
+
   const COLUMNS_PER_ROW = 3;
-  for (let i = 0; i < editModeTokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
-    const rowEditModeTokens = editModeTokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
+  for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
+    const rowTokens = tokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
 
     rows.push({
       type: 'tokens',
-      tokens: rowEditModeTokens.map((editModeToken) => ({
-        token: tokensKeyedById[editModeToken.id],
-        editModeToken,
-      })),
+      tokens: rowTokens,
       expanded: true,
     });
   }
