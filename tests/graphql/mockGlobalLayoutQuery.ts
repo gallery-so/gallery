@@ -20,6 +20,7 @@ export function mockGlobalLayoutQuery() {
             dbid: WALLETS.MainEthereum.DBID,
             chainAddress: {
               __typename: 'ChainAddress',
+              chain: WALLETS.MainEthereum.CHAIN,
               address: WALLETS.MainEthereum.ADDRESS,
             },
           },
