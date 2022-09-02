@@ -3,7 +3,10 @@ import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
+import {
+  SidebarTokensState,
+  useCollectionEditorActions,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
 import SearchBar from './SearchBar';
 import colors from 'components/core/colors';
@@ -25,6 +28,7 @@ import {
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
 import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 import { Button } from 'components/core/Button/Button';
+import { generate12DigitId } from 'utils/collectionLayout';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -56,6 +60,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     viewerRef
   );
 
+  const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -84,6 +89,15 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     () => keyBy(nonNullTokens, (token) => token.dbid),
     [nonNullTokens]
   );
+
+  const handleAddBlankBlockClick = useCallback(() => {
+    const id = `blank-${generate12DigitId()}`;
+    stageTokens([{ id, whitespace: 'whitespace' }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [stageTokens]);
 
   const tokensToDisplay = useMemo(() => {
     return editModeTokensSearchResults.filter((editModeToken) => {
@@ -123,7 +137,9 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
             selected={selectedChain}
             onChange={setSelectedChain}
           />
-          <AddBlankSpaceButton variant="secondary">ADD BLANK SPACE</AddBlankSpaceButton>
+          <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
+            ADD BLANK SPACE
+          </AddBlankSpaceButton>
         </>
       )}
       <SidebarTokens
