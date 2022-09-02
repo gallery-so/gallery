@@ -247,7 +247,10 @@ const StyledSidebar = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding: 16px;
+  // We need to save the bottom padding for the
+  // scrollable icon section. It will have its own padding
+  padding: 16px 16px 0 16px;
+
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
   user-select: none;
