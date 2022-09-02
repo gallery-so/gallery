@@ -28,4 +28,6 @@ const BeaconProvider = memo(({ children }: Props) => {
   return <BeaconContext.Provider value={state}>{children}</BeaconContext.Provider>;
 });
 
+BeaconProvider.displayName = 'BeaconProvider';
+
 export default BeaconProvider;
