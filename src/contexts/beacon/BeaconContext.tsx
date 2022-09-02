@@ -1,5 +1,5 @@
 import { DAppClient } from '@airgap/beacon-sdk';
-import { createContext, memo, ReactNode, useContext, useMemo } from 'react';
+import { createContext, memo, ReactNode, useContext } from 'react';
 
 export type BeaconState = DAppClient;
 
@@ -23,9 +23,7 @@ if (typeof window !== 'undefined') {
 }
 
 const BeaconProvider = memo(({ children }: Props) => {
-  const state = useMemo(() => {
-    return beaconClient;
-  }, [beaconClient]);
+  const state = beaconClient;
 
   return <BeaconContext.Provider value={state}>{children}</BeaconContext.Provider>;
 });

@@ -80,7 +80,14 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
         return await handleLogin(userId, address);
       }
     },
-    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
+    [
+      trackSignInAttempt,
+      beaconClient,
+      createNonce,
+      loginOrRedirectToOnboarding,
+      trackSignInSuccess,
+      handleLogin,
+    ]
   );
 
   useEffect(() => {
@@ -103,7 +110,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     }
 
     void authenticate();
-  }, [attemptAuthentication, trackSignInError]);
+  }, [attemptAuthentication, beaconClient, trackSignInError]);
 
   if (error) {
     return (

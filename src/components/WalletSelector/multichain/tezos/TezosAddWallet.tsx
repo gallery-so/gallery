@@ -149,6 +149,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       trackAddWalletAttempt,
       createNonce,
       addWallet,
+      beaconClient,
       hideModal,
       trackAddWalletSuccess,
       trackAddWalletError,
@@ -179,7 +180,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     if (pendingState === INITIAL) {
       void authenticate();
     }
-  }, [account, authenticatedUserAddresses, attemptAddWallet, pendingState]);
+  }, [account, authenticatedUserAddresses, attemptAddWallet, beaconClient, pendingState]);
 
   if (error) {
     return (
