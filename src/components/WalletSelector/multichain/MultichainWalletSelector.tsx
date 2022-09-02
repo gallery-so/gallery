@@ -17,6 +17,7 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
 import isProduction from 'utils/isProduction';
+import { TezosAddWallet } from './tezos/TezosAddWallet';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -31,6 +32,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       fragment MultichainWalletSelectorFragment on Query {
         ...EthereumAddWalletFragment
         ...GnosisSafeAddWalletFragment
+        ...TezosAddWalletFragment
       }
     `,
     queryRef
@@ -86,13 +88,13 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }
 
   if (selectedAuthMethod === supportedAuthMethods.tezos) {
-    // if (connectionMode === ADD_WALLET_TO_USER) {
-    //   return (
-    //     <StyledWalletSelector>
-    //       <EthereumAddWallet queryRef={query} reset={reset} />
-    //     </StyledWalletSelector>
-    //   );
-    // }
+    if (connectionMode === ADD_WALLET_TO_USER) {
+      return (
+        <StyledWalletSelector>
+          <TezosAddWallet queryRef={query} reset={reset} />
+        </StyledWalletSelector>
+      );
+    }
     if (connectionMode === AUTH) {
       return (
         <StyledWalletSelector>

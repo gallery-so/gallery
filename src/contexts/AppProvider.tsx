@@ -12,6 +12,7 @@ import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import Debugger from 'components/Debugger/Debugger';
 import isProduction from 'utils/isProduction';
+import BeaconProvider from './beacon/BeaconContext';
 
 type Props = {
   children: React.ReactNode;
@@ -30,14 +31,16 @@ export default function AppProvider({ children, relayCache }: Props) {
               <ErrorReportingProvider>
                 <Web3ProviderNetwork>
                   <SwrProvider>
-                    <GalleryNavigationProvider>
-                      <ModalProvider>
-                        <GlobalLayoutContextProvider>
-                          {isProd ? null : <Debugger />}
-                          {children}
-                        </GlobalLayoutContextProvider>
-                      </ModalProvider>
-                    </GalleryNavigationProvider>
+                    <BeaconProvider>
+                      <GalleryNavigationProvider>
+                        <ModalProvider>
+                          <GlobalLayoutContextProvider>
+                            {isProd ? null : <Debugger />}
+                            {children}
+                          </GlobalLayoutContextProvider>
+                        </ModalProvider>
+                      </GalleryNavigationProvider>
+                    </BeaconProvider>
                   </SwrProvider>
                 </Web3ProviderNetwork>
               </ErrorReportingProvider>

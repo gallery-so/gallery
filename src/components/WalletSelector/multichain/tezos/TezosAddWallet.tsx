@@ -20,35 +20,34 @@ import {
   useTrackAddWalletSuccess,
 } from 'contexts/analytics/authUtil';
 import { captureException } from '@sentry/nextjs';
-import { EthereumAddWalletFragment$key } from '__generated__/EthereumAddWalletFragment.graphql';
+import { TezosAddWalletFragment$key } from '__generated__/TezosAddWalletFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useAddWallet from '../mutations/useAddWallet';
-import { useAccount } from 'wagmi';
-import { signMessage } from '@wagmi/core';
-import { WalletError } from './WalletError';
-import { normalizeError } from './normalizeError';
+import useAddWallet from 'components/WalletSelector/mutations/useAddWallet';
+import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
+import { normalizeError } from '../normalizeError';
+import { WalletError } from '../WalletError';
+import { generatePayload, getNonceNumber } from './tezosUtils';
+import { useBeaconState } from 'contexts/beacon/BeaconContext';
 
 type Props = {
-  queryRef: EthereumAddWalletFragment$key;
+  queryRef: TezosAddWalletFragment$key;
   reset: () => void;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
-  const { address, connector } = useAccount();
-  const account = address?.toLowerCase();
-  const isMetamask = connector?.id === 'metaMask';
-
+export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error>();
+  const [account, setAccount] = useState<string>();
+  const [publicKey, setPublicKey] = useState<string>();
+  const beaconClient = useBeaconState();
 
   const query = useFragment(
     graphql`
-      fragment EthereumAddWalletFragment on Query {
+      fragment TezosAddWalletFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -84,49 +83,53 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
   /**
    * Add Wallet Pipeline:
    * 1. Fetch nonce from server with provided wallet address
-   * 2. Sign nonce with wallet (metamask / walletconnect / etc.)
+   * 2. Sign nonce with wallet (beacon)
    * 3. Add wallet address to user's account
    */
   const addWallet = useAddWallet();
   const attemptAddWallet = useCallback(
-    async (address: string) => {
+    async (address: string, publicKey: string) => {
       try {
         setIsConnecting(true);
-        setPendingState(PROMPT_SIGNATURE);
 
-        trackAddWalletAttempt('Ethereum');
-        const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
+        trackAddWalletAttempt('Tezos');
+        const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
         }
 
-        const signature = await signMessage({ message: nonce });
+        const payload = generatePayload(nonce, address);
+        setPendingState(PROMPT_SIGNATURE);
+        const { signature } = await beaconClient.requestSignPayload(payload);
+
+        const nonceNumber = getNonceNumber(nonce);
+
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {
               signature,
-              nonce,
+              nonce: nonceNumber,
               chainPubKey: {
-                pubKey: address,
-                chain: 'Ethereum',
+                pubKey: publicKey,
+                chain: 'Tezos',
               },
             },
           },
           chainAddress: {
             address,
-            chain: 'Ethereum',
+            chain: 'Tezos',
           },
         });
 
-        trackAddWalletSuccess('Ethereum');
+        trackAddWalletSuccess('Tezos');
         hideModal();
         setIsConnecting(false);
 
         return signatureValid;
-      } catch (error: unknown) {
+      } catch (error) {
         setIsConnecting(false);
-        trackAddWalletError('Ethereum', error);
+        trackAddWalletError('Tezos', error);
         // ignore early access errors
         if (!isEarlyAccessError(error)) {
           // capture all others
@@ -146,6 +149,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
       trackAddWalletAttempt,
       createNonce,
       addWallet,
+      beaconClient,
       hideModal,
       trackAddWalletSuccess,
       trackAddWalletError,
@@ -154,23 +158,29 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
 
   useEffect(() => {
     async function authenticate() {
-      if (account) {
-        if (authenticatedUserAddresses.includes(account)) {
-          setPendingState(ADDRESS_ALREADY_CONNECTED);
-          return;
-        }
+      if (account && authenticatedUserAddresses.includes(account)) {
+        setPendingState(ADDRESS_ALREADY_CONNECTED);
+        return;
+      }
 
-        if (isMetamask) {
-          // For metamask, prompt the user to confirm the address provided by the extension is the one they want to connect with
-          setPendingState(CONFIRM_ADDRESS);
-        } else {
-          await attemptAddWallet(account);
-        }
+      try {
+        const { publicKey, address } = await beaconClient.requestPermissions();
+        if (!address || !publicKey) return;
+
+        setPendingState(CONFIRM_ADDRESS);
+        setAccount(address);
+        setPublicKey(publicKey);
+
+        await attemptAddWallet(address, publicKey);
+      } catch (error) {
+        setError(normalizeError(error));
       }
     }
 
-    void authenticate();
-  }, [account, authenticatedUserAddresses, attemptAddWallet, isMetamask]);
+    if (pendingState === INITIAL) {
+      void authenticate();
+    }
+  }, [account, authenticatedUserAddresses, attemptAddWallet, beaconClient, pendingState]);
 
   if (error) {
     return (
@@ -188,40 +198,31 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
         <Spacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
-        {isMetamask && (
-          <>
-            <Spacer height={8} />
-            <BaseM>
-              If you want to connect a different address via Metamask, please switch accounts in the
-              extension and try again.
-            </BaseM>
-          </>
-        )}
       </div>
     );
   }
 
   // right now we only show this case for Metamask
-  if (pendingState === CONFIRM_ADDRESS && account) {
+  if (pendingState === CONFIRM_ADDRESS && account && publicKey) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>Confirm the following wallet address:</BaseM>
         <Spacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
         <Spacer height={16} />
         <BaseM>
-          If you want to connect a different address via Metamask, please switch accounts in the
+          If you want to connect a different address via Tezos wallet, please switch accounts in the
           extension and try again.
         </BaseM>
         <Spacer height={24} />
-        <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
+        <StyledButton onClick={() => attemptAddWallet(account, publicKey)} disabled={isConnecting}>
           {isConnecting ? 'Connecting...' : 'Confirm'}
         </StyledButton>
       </div>
@@ -231,7 +232,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <div>
-        <TitleS>Connect with Ethereum</TitleS>
+        <TitleS>Connect with Tezos</TitleS>
         <Spacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
@@ -241,7 +242,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
   // Default view for when pendingState === INITIAL
   return (
     <div>
-      <TitleS>Connect with Ethereum</TitleS>
+      <TitleS>Connect with Tezos</TitleS>
       <Spacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>

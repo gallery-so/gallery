@@ -14,23 +14,19 @@ import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
 import { WalletError } from '../WalletError';
 import { normalizeError } from '../normalizeError';
-import { DAppClient, RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
-import { char2Bytes } from '@taquito/utils';
+import { generatePayload, getNonceNumber } from './tezosUtils';
+import { useBeaconState } from 'contexts/beacon/BeaconContext';
 
 type Props = {
   reset: () => void;
 };
 
-let beaconClient: DAppClient;
-
-if (typeof window !== 'undefined') {
-  beaconClient = new DAppClient({ name: 'Gallery' });
-}
-
 export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
   const [address, setAddress] = useState<string>();
+
+  const beaconClient = useBeaconState();
 
   const { handleLogin } = useAuthActions();
 
@@ -57,23 +53,11 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
 
-      const formattedInput: string = ['Tezos Signed Message:', nonce].join(' ');
-
-      // https://tezostaquito.io/docs/signing
-      const bytes = char2Bytes(formattedInput);
-      const payloadBytes = '05' + '01' + '00' + char2Bytes(bytes.length.toString()) + bytes;
-
-      const payload: RequestSignPayloadInput = {
-        signingType: SigningType.MICHELINE,
-        payload: payloadBytes,
-        sourceAddress: address,
-      };
+      const payload = generatePayload(nonce, address);
 
       const { signature } = await beaconClient.requestSignPayload(payload);
 
-      // Get the nonce number
-      const splittedNonceMessage = formattedInput.split(' ');
-      const nonceNumber = splittedNonceMessage[splittedNonceMessage.length - 1];
+      const nonceNumber = getNonceNumber(nonce);
 
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
@@ -96,7 +80,14 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
         return await handleLogin(userId, address);
       }
     },
-    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
+    [
+      trackSignInAttempt,
+      beaconClient,
+      createNonce,
+      loginOrRedirectToOnboarding,
+      trackSignInSuccess,
+      handleLogin,
+    ]
   );
 
   useEffect(() => {
@@ -119,7 +110,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     }
 
     void authenticate();
-  }, [attemptAuthentication, trackSignInError]);
+  }, [attemptAuthentication, beaconClient, trackSignInError]);
 
   if (error) {
     return (

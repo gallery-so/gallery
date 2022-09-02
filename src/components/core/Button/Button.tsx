@@ -15,7 +15,7 @@ const alphaHex = (percentage: number) => {
 };
 
 type StyledButtonProps = {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'error';
   disabled?: boolean;
 };
 
@@ -73,11 +73,11 @@ const StyledButton = styled.button<StyledButtonProps>`
 
         &:hover:not(:disabled) {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack}${alphaHex(0.8)};
+          background: ${colors.offBlack} ${alphaHex(0.8)};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack}${alphaHex(0.2)};
+          background: ${colors.offBlack} ${alphaHex(0.2)};
         }
       `;
     }
@@ -95,12 +95,30 @@ const StyledButton = styled.button<StyledButtonProps>`
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          color: ${colors.shadow}${alphaHex(0.3)};
-          border-color: ${colors.porcelain}${alphaHex(0.4)};
+          color: ${colors.shadow} ${alphaHex(0.3)};
+          border-color: ${colors.porcelain} ${alphaHex(0.4)};
         }
       `;
     }
-  }}}
+
+    if (variant === 'error') {
+      return css`
+        background: transparent;
+        color: ${colors.shadow};
+        border: 1px solid transparent;
+        transition: all ${transitions.cubic};
+
+        &:hover:not(:disabled) {
+          border-color: ${colors.red};
+        }
+
+        &:hover {
+          color: ${colors.red};
+          border-color: ${colors.red};
+        }
+      `;
+    }
+  }}
 `;
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
