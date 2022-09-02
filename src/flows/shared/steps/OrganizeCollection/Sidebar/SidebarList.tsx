@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
-import AddBlankBlock from 'flows/shared/steps/OrganizeCollection/Sidebar/AddBlankBlock';
 import SidebarNftIcon from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarNftIcon';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
@@ -17,13 +16,14 @@ import { graphql } from 'react-relay';
 import { SidebarListTokenFragment$key } from '../../../../../../__generated__/SidebarListTokenFragment.graphql';
 import Tooltip from 'components/Tooltip/Tooltip';
 
-export type TokenOrWhitespace =
-  | { token: SidebarListTokenFragment$key; editModeToken: EditModeToken }
-  | 'whitespace';
+export type TokenAndEditModeToken = {
+  token: SidebarListTokenFragment$key;
+  editModeToken: EditModeToken;
+};
 
 export type VirtualizedRow =
   | { type: 'collection-title'; expanded: boolean; address: string; title: string }
-  | { type: 'tokens'; tokens: TokenOrWhitespace[]; expanded: boolean };
+  | { type: 'tokens'; tokens: TokenAndEditModeToken[]; expanded: boolean };
 
 type Props = {
   rows: VirtualizedRow[];
@@ -71,10 +71,6 @@ export function SidebarList({
         return (
           <Selection key={key} style={style}>
             {row.tokens.map((tokenOrWhitespace) => {
-              if (tokenOrWhitespace === 'whitespace') {
-                return <AddBlankBlock key="whitespace" />;
-              }
-
               const token = readInlineData(
                 graphql`
                   fragment SidebarListTokenFragment on Token @inline {

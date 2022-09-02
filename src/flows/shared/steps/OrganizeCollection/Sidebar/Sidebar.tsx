@@ -24,6 +24,7 @@ import {
   createVirtualizedRowsFromTokens,
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
 import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
+import { Button } from 'components/core/Button/Button';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -116,11 +117,14 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         />
       </StyledSidebarContainer>
       {!isSearching && (
-        <SidebarChainSelector
-          viewerRef={viewer}
-          selected={selectedChain}
-          onChange={setSelectedChain}
-        />
+        <>
+          <SidebarChainSelector
+            viewerRef={viewer}
+            selected={selectedChain}
+            onChange={setSelectedChain}
+          />
+          <AddBlankSpaceButton variant="secondary">ADD BLANK SPACE</AddBlankSpaceButton>
+        </>
       )}
       <SidebarTokens
         isSearching={isSearching}
@@ -131,6 +135,10 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     </StyledSidebar>
   );
 }
+
+const AddBlankSpaceButton = styled(Button)`
+  margin: 4px 0;
+`;
 
 type SidebarTokensProps = {
   isSearching: boolean;

@@ -1,6 +1,6 @@
 import { CollectionGroup } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
 import {
-  TokenOrWhitespace,
+  TokenAndEditModeToken,
   VirtualizedRow,
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 import { SidebarTokensFragment$data } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
@@ -21,7 +21,7 @@ export function createVirtualizedRowsFromGroups({
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const tokensSortedByErrored: TokenOrWhitespace[] = [...group.tokens].sort((a, b) => {
+    const tokensSortedByErrored: TokenAndEditModeToken[] = [...group.tokens].sort((a, b) => {
       const aIsErrored = erroredTokenIds.has(a.token.dbid);
       const bIsErrored = erroredTokenIds.has(b.token.dbid);
 
@@ -33,8 +33,6 @@ export function createVirtualizedRowsFromGroups({
         return -1;
       }
     });
-
-    tokensSortedByErrored.unshift('whitespace');
 
     // Default to expanded
     const expanded = !collapsedCollections.has(group.address);
@@ -79,7 +77,7 @@ export function createVirtualizedRowsFromTokens({
     }
   });
 
-  const tokensSortedByErrored: TokenOrWhitespace[] = editModeTokensSortedByErrored.map(
+  const tokensSortedByErrored: TokenAndEditModeToken[] = editModeTokensSortedByErrored.map(
     (editModeToken) => {
       return {
         editModeToken,
@@ -87,8 +85,6 @@ export function createVirtualizedRowsFromTokens({
       };
     }
   );
-
-  tokensSortedByErrored.unshift('whitespace');
 
   const COLUMNS_PER_ROW = 3;
   for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
