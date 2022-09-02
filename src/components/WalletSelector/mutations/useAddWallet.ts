@@ -22,6 +22,7 @@ export default function useAddWallet() {
                   dbid
                   chainAddress {
                     address
+                    chain
                   }
                 }
               }

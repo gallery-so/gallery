@@ -9,6 +9,7 @@ enum colors {
   hyperBlue = '#001CC1',
   activeBlue = '#0022F0',
   error = '#FF6666',
+  red = '#F00000',
 }
 
 export default colors;
