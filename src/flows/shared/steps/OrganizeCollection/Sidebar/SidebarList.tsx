@@ -58,7 +58,7 @@ export function SidebarList({
           >
             <ExpandedIcon expanded={row.expanded} />
 
-            <CollectionTitleText text={row.title} />
+            <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
           </CollectionTitleContainer>
         );
       }
@@ -137,9 +137,9 @@ export function SidebarList({
       <AutoSizer>
         {({ width, height }) => (
           <List
+            className="SidebarTokenList"
             ref={virtualizedListRef}
-            containerStyle={{ overflow: 'visible' }}
-            style={{ outline: 'none', overflow: 'visible' }}
+            style={{ outline: 'none' }}
             rowRenderer={rowRenderer}
             rowCount={rows.length}
             rowHeight={rowHeightCalculator}
@@ -152,58 +152,7 @@ export function SidebarList({
   );
 }
 
-type CollectionTitleTextProps = {
-  text: string;
-};
-
-function CollectionTitleText({ text }: CollectionTitleTextProps) {
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  const ref = useRef<HTMLHeadingElement | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-
-    if (!element) {
-      return;
-    }
-
-    if (element.offsetWidth < element.scrollWidth) {
-      setIsOverflowing(true);
-    }
-  }, []);
-
-  return (
-    <CollectionTitleWrapper
-      onMouseOver={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-    >
-      <CollectionTitleTextWrapper>
-        <StyledCollectionTitleText ref={ref}>{text}</StyledCollectionTitleText>
-      </CollectionTitleTextWrapper>
-      {isOverflowing && <TextOverflowTooltip active={showTooltip} text={text} />}
-    </CollectionTitleWrapper>
-  );
-}
-
-const CollectionTitleWrapper = styled.div`
-  position: relative;
-  overflow: visible;
-  min-width: 0;
-`;
-
-const CollectionTitleTextWrapper = styled.div`
-  overflow: hidden;
-`;
-
-const TextOverflowTooltip = styled(Tooltip)<{ active: boolean }>`
-  bottom: 0;
-  z-index: 1;
-  opacity: ${({ active }) => (active ? 1 : 0)};
-  transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
-`;
-
-const StyledCollectionTitleText = styled(TitleXS)`
+const CollectionTitleText = styled(TitleXS)`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
