@@ -14,23 +14,19 @@ import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
 import { WalletError } from '../WalletError';
 import { normalizeError } from '../normalizeError';
-import { DAppClient } from '@airgap/beacon-sdk';
 import { generatePayload, getNonceNumber } from './tezosUtils';
+import { useBeaconState } from 'contexts/beacon/BeaconContext';
 
 type Props = {
   reset: () => void;
 };
 
-let beaconClient: DAppClient;
-
-if (typeof window !== 'undefined') {
-  beaconClient = new DAppClient({ name: 'Gallery' });
-}
-
 export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
   const [address, setAddress] = useState<string>();
+
+  const beaconClient = useBeaconState();
 
   const { handleLogin } = useAuthActions();
 

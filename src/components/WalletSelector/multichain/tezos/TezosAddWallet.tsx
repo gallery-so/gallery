@@ -28,19 +28,13 @@ import useAddWallet from 'components/WalletSelector/mutations/useAddWallet';
 import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
-import { DAppClient } from '@airgap/beacon-sdk';
 import { generatePayload, getNonceNumber } from './tezosUtils';
+import { useBeaconState } from 'contexts/beacon/BeaconContext';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;
   reset: () => void;
 };
-
-let beaconClient: DAppClient;
-
-if (typeof window !== 'undefined') {
-  beaconClient = new DAppClient({ name: 'Gallery' });
-}
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
 export const TezosAddWallet = ({ queryRef, reset }: Props) => {
@@ -49,6 +43,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [error, setError] = useState<Error>();
   const [account, setAccount] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
+  const beaconClient = useBeaconState();
 
   const query = useFragment(
     graphql`
