@@ -2,15 +2,13 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 
 function Directions() {
   return (
     <DirectionsContainer>
       <StyledDirections>
-        <BaseXL>Add NFTs to your collection</BaseXL>
-        <Spacer height={8} />
+        <StyledDirectionsTitle>Add NFTs to your collection</StyledDirectionsTitle>
         <BaseM>Select NFTs to include in your collection. Drag and drop to rearrange.</BaseM>
       </StyledDirections>
     </DirectionsContainer>
@@ -30,6 +28,10 @@ const StyledDirections = styled.div`
   text-align: center;
 
   width: 269px;
+`;
+
+const StyledDirectionsTitle = styled(BaseXL)`
+  font-weight: 700;
 `;
 
 export default memo(Directions);
