@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import Spacer from 'components/core/Spacer/Spacer';
 import {
   isEarlyAccessError,
   useTrackSignInAttempt,
@@ -16,6 +14,7 @@ import { WalletError } from '../WalletError';
 import { normalizeError } from '../normalizeError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 import { useBeaconState } from 'contexts/beacon/BeaconContext';
+import WalletOnboardingMessage from '../WalletOnboardingMessage';
 
 type Props = {
   reset: () => void;
@@ -127,19 +126,18 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <div>
-        <TitleS>Connect with Tezos</TitleS>
-        <Spacer height={8} />
-        <BaseM>Sign the message with your wallet.</BaseM>
-      </div>
+      <WalletOnboardingMessage
+        title="Connect with Tezos wallet"
+        description="Sign the message with your wallet."
+      />
     );
   }
 
+  // Default view for when pendingState === INITIAL
   return (
-    <div>
-      <TitleS>Connect with Tezos</TitleS>
-      <Spacer height={8} />
-      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </div>
+    <WalletOnboardingMessage
+      title="Connect with Tezos wallet"
+      description="Approve your wallet to connect to Gallery."
+    />
   );
 };
