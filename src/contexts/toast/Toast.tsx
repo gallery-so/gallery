@@ -64,9 +64,9 @@ const _Animate = styled.div<{ isActive: boolean }>`
   animation-fill-mode: forwards;
 
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  left: 24px;
+  left: 0;
+  right: 0;
+  bottom: 16px;
 `;
 
 function Toast({ message, onClose }: Props) {
