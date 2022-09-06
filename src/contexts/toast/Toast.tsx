@@ -10,19 +10,13 @@ import styled, { css, keyframes } from 'styled-components';
 
 type Props = {
   message: string;
-  cornerPositioned?: boolean;
   onClose?: () => void;
   autoClose?: boolean;
 };
 
 const noop = () => {};
 
-export function AnimatedToast({
-  message,
-  cornerPositioned = true,
-  onClose = noop,
-  autoClose = true,
-}: Props) {
+export function AnimatedToast({ message, onClose = noop, autoClose = true }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   // This initializes as true so that there is not a jitter in the animation (if it were false, this would trigger the wrong CSS animation initially)
@@ -46,19 +40,19 @@ export function AnimatedToast({
 
   return (
     <_Animate isActive={isActive}>
-      <Toast message={message} onClose={handleClose} cornerPositioned={cornerPositioned} />
+      <Toast message={message} onClose={handleClose} />
     </_Animate>
   );
 }
 
 const translateUpAndFadeIn = keyframes`
-    from { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); };
-    to { opacity: 1; transform: translateY(0px); };
+    from { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); }
+    to { opacity: 1; transform: translateY(0px); }
 `;
 
 const translateDownAndFadeOut = keyframes`
-    from { opacity: 1; transform: translateY(0px); };
-    to { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); };
+    from { opacity: 1; transform: translateY(0px); }
+    to { opacity: 0; transform: translateY(${ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px); }
 `;
 
 const _Animate = styled.div<{ isActive: boolean }>`
@@ -66,6 +60,7 @@ const _Animate = styled.div<{ isActive: boolean }>`
   animation: ${({ isActive }) => css`
     ${isActive ? translateUpAndFadeIn : translateDownAndFadeOut} ${transitions.cubic}
   `};
+  animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   animation-fill-mode: forwards;
 
   position: fixed;
@@ -74,29 +69,33 @@ const _Animate = styled.div<{ isActive: boolean }>`
   left: 24px;
 `;
 
-function Toast({ message, onClose, cornerPositioned }: Props) {
+function Toast({ message, onClose }: Props) {
   const handleClose = useCallback(() => {
     onClose?.();
   }, [onClose]);
 
-  const pill = useMemo(
-    () => (
+  return (
+    <ToastContainer>
       <StyledToast>
-        <StyledClose onClick={handleClose}>&#x2715;</StyledClose>
         <BaseM>{message}</BaseM>
+        <StyledClose onClick={handleClose}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12.6667 3.33334L3.33337 12.6667" stroke="#141414" strokeMiterlimit="10" />
+            <path d="M3.33337 3.33334L12.6667 12.6667" stroke="#141414" strokeMiterlimit="10" />
+          </svg>
+        </StyledClose>
       </StyledToast>
-    ),
-    [handleClose, message]
+    </ToastContainer>
   );
-
-  if (cornerPositioned) {
-    return <CornerPosition>{pill}</CornerPosition>;
-  }
-
-  return pill;
 }
 
-const CornerPosition = styled.div`
+const ToastContainer = styled.div`
   z-index: 2; // appears above navbar
   display: flex;
   align-items: center;
@@ -104,19 +103,24 @@ const CornerPosition = styled.div`
 `;
 
 const StyledToast = styled.div`
-  position: relative;
+  display: flex;
+  align-items: center;
+
   border: 1px solid black;
-  padding: 16px 40px 16px 24px;
-  max-width: 80vw; // Set width of toast to 80% of viewport
+  padding: 8px 10px 8px 16px;
+  max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};
 `;
 
-const StyledClose = styled.span`
-  position: absolute;
-  right: 6px;
-  top: 7px;
-  padding: 10px;
+const StyledClose = styled.button`
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
   cursor: pointer;
+
+  background: none;
+  border: none;
+  padding: 0;
 `;
 
 export default Toast;
