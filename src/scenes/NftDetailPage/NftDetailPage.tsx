@@ -208,9 +208,8 @@ function NftDetailPage({
         {mountedNfts.map(({ token, visibility }) => (
           <_DirectionalFade key={token.token.dbid} visibility={visibility}>
             <NftDetailView
-              username={username}
-              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
               queryRef={token}
+              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
             />
           </_DirectionalFade>
         ))}

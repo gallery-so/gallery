@@ -78,11 +78,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView
-              username={event.owner.username ?? ''}
-              authenticatedUserOwnsAsset={false}
-              queryRef={event.token}
-            />
+            <NftDetailView authenticatedUserOwnsAsset={false} queryRef={event.token} />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,

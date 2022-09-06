@@ -5,18 +5,13 @@ import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
-import { useCallback, useState } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { NftAdditionalDetailsQuery } from '__generated__/NftAdditionalDetailsQuery.graphql';
-
-type Props = {
-  contractAddress: string | null;
-  tokenId: string | null;
-  dbId: string | null;
-  externalUrl: string | null;
-};
+import { NftAdditionalDetailsFragment$key } from '../../../__generated__/NftAdditionalDetailsFragment.graphql';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 // The backend converts all token IDs to hexadecimals; here, we convert back
 // https://stackoverflow.com/a/53751162
@@ -41,7 +36,28 @@ export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) 
 
 const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
-function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: Props) {
+type Props = {
+  tokenRef: NftAdditionalDetailsFragment$key;
+};
+
+function NftAdditionalDetails({ tokenRef }: Props) {
+  const token = useFragment(
+    graphql`
+      fragment NftAdditionalDetailsFragment on Token {
+        dbid
+        tokenId
+        externalUrl
+        contract {
+          contractAddress {
+            address
+          }
+        }
+      }
+    `,
+    tokenRef
+  );
+
+  // TODO: We should thread a query ref down to this somehow
   const query = useLazyLoadQuery<NftAdditionalDetailsQuery>(
     graphql`
       query NftAdditionalDetailsQuery {
@@ -52,10 +68,12 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
   );
 
   const [showDetails, setShowDetails] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const refreshToken = useRefreshToken();
+  const reportError = useReportError();
   const { pushToast } = useToastActions();
+  const [refreshToken, isRefreshing] = useRefreshToken();
+
+  const { dbid, tokenId, contract, externalUrl } = token;
 
   const handleToggleClick = useCallback(() => {
     setShowDetails((value) => !value);
@@ -63,38 +81,50 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
 
   const handleRefreshMetadata = useCallback(async () => {
     try {
-      if (!dbId) return;
-      setIsRefreshing(true);
       pushToast({
         message: 'This piece is being updated with the latest metadata. Check back in few minutes.',
         autoClose: true,
       });
-      await refreshToken(dbId);
+
+      await refreshToken(dbid);
     } catch (error: unknown) {
       if (error instanceof Error) {
+        reportError(error);
+
         pushToast({
           message: error.message,
           autoClose: true,
         });
-      }
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [dbId, pushToast, refreshToken]);
+      } else {
+        reportError('Error while refreshing token, unknown error');
 
-  // Check for contract address befor rendering additional details
-  const hasContractAddress = contractAddress !== null && contractAddress !== '' && tokenId;
+        pushToast({
+          message: "Something went wrong, we're looking into it now.",
+        });
+      }
+    }
+  }, [dbid, pushToast, refreshToken, reportError]);
+
+  const openSeaExternalUrl = useMemo(() => {
+    if (contract?.contractAddress?.address && tokenId) {
+      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    }
+
+    return null;
+  }, [contract?.contractAddress?.address, tokenId]);
 
   return (
     <StyledNftAdditionalDetails>
       {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
       {showDetails && (
         <div>
-          {hasContractAddress && (
+          {contract?.contractAddress?.address && (
             <>
               <TitleXS>Contract address</TitleXS>
-              <InteractiveLink href={`https://etherscan.io/address/${contractAddress}`}>
-                {contractAddress}
+              <InteractiveLink
+                href={`https://etherscan.io/address/${contract.contractAddress.address}`}
+              >
+                {contract.contractAddress.address}
               </InteractiveLink>
             </>
           )}
@@ -103,11 +133,9 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
           {tokenId && <BaseM>{hexHandler(tokenId)}</BaseM>}
           <Spacer height={16} />
           <StyledLinkContainer>
-            {hasContractAddress && (
+            {openSeaExternalUrl && (
               <>
-                <InteractiveLink href={getOpenseaExternalUrl(contractAddress, tokenId)}>
-                  View on OpenSea
-                </InteractiveLink>
+                <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
                 {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
                   <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
                     Refresh metadata

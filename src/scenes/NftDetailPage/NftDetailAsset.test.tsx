@@ -5,6 +5,7 @@ import { NftDetailAssetTestQuery } from '../../../__generated__/NftDetailAssetTe
 import { mockProviderQueries } from '../../../tests/graphql/mockProviderQueries';
 import { mockGraphqlQuery } from '../../../tests/graphql/mockGraphqlQuery';
 import {
+  Chain,
   NftDetailAssetTestQueryQuery,
   UseNftRetryMutationMutation,
 } from '../../__generated__/operations';
@@ -29,13 +30,7 @@ function Fixture() {
     throw new Error('Yikes');
   }
 
-  return (
-    <NftDetailView
-      authenticatedUserOwnsAsset={false}
-      username="TestUsername"
-      queryRef={query.collectionTokenById}
-    />
-  );
+  return <NftDetailView authenticatedUserOwnsAsset={false} queryRef={query.collectionTokenById} />;
 }
 
 const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
@@ -50,6 +45,10 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
     token: {
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
+      owner: {
+        id: 'GalleryUser:TestOwnerId',
+        username: 'Test Username',
+      },
       name: 'Test Token Name',
       description: 'Test Description',
       tokenId: '1',
@@ -63,6 +62,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'Contract',
         id: 'Contract:someContractId',
         name: 'Test Contract Name',
+        chain: Chain.Ethereum,
         contractAddress: {
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },

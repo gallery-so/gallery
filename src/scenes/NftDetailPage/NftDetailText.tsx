@@ -8,108 +8,137 @@ import NftAdditionalDetails, { getOpenseaExternalUrl } from './NftAdditionalDeta
 import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { graphql, useFragment } from 'react-relay';
+import { NftDetailTextFragment$key } from '../../../__generated__/NftDetailTextFragment.graphql';
+
+/**
+ * TODO: Figure out when to support creator addresses
+ */
+
+const SHOW_BUY_NOW_BUTTON = false;
 
 type Props = {
-  name: string | null;
-  description: string | null;
-  ownerUsername: string;
-  contractAddress: string | null;
-  tokenId: string | null;
-  dbId: string | null;
-  externalUrl: string | null;
-  // TODO [GAL-206]: support Creator Address post-merge
-  // creatorAddress: string | null;
-  contractName: string | null;
+  tokenRef: NftDetailTextFragment$key;
 };
 
-function NftDetailText({
-  name,
-  description,
-  ownerUsername,
-  contractAddress,
-  tokenId,
-  dbId,
-  externalUrl,
-  // TODO [GAL-206]: support Creator Address post-merge
-  // creatorAddress,
-  contractName,
-}: Props) {
-  const isMobile = useIsMobileWindowWidth();
-  const breakpoint = useBreakpoint();
-  const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-  // TODO [GAL-206]: support Creator Address post-merge
-  // const addressToUse = creatorAddress || contractAddress || '';
-  const addressToUse = contractAddress || '';
+function NftDetailText({ tokenRef }: Props) {
+  const token = useFragment(
+    graphql`
+      fragment NftDetailTextFragment on Token {
+        dbid
+        name
+        description
+        tokenId
+        externalUrl
+        owner {
+          username
+        }
+        contract {
+          name
+          chain
+          contractAddress {
+            address
+          }
+        }
 
-  // useRef to prevent rendered username from briefly changing before fade transition upon route change
-  const username = useRef(ownerUsername);
-
-  const showCommunityLink = useMemo(
-    () => !!contractAddress && !DISABLED_CONTRACTS.includes(contractAddress),
-    [contractAddress]
+        ...NftAdditionalDetailsFragment
+      }
+    `,
+    tokenRef
   );
 
-  const openseaExternalUrl = getOpenseaExternalUrl(contractAddress ?? '', tokenId ?? '');
   const track = useTrack();
+  const breakpoint = useBreakpoint();
+  const isMobile = useIsMobileWindowWidth();
+  const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
+
+  const showCommunityLink = useMemo(() => {
+    if (!token.contract?.contractAddress?.address) {
+      return false;
+    } else if (DISABLED_CONTRACTS.includes(token.contract.contractAddress.address)) {
+      return false;
+    }
+
+    return true;
+  }, [token.contract?.contractAddress?.address]);
+
+  const openseaExternalUrl = useMemo(() => {
+    if (token.contract?.contractAddress?.address && token.tokenId) {
+      getOpenseaExternalUrl(token.contract.contractAddress.address, token.tokenId);
+    }
+
+    return '';
+  }, [token.contract?.contractAddress?.address, token.tokenId]);
+
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
-      username: username.current.toLowerCase(),
-      contractAddress,
-      tokenId,
+      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
+      contractAddress: token.contract?.contractAddress?.address,
+      tokenId: token.tokenId,
       externaUrl: openseaExternalUrl,
     });
-  }, [track, contractAddress, tokenId, openseaExternalUrl]);
-
-  // use whenever we want to enable commerce in the future
-  const showBuyNowButton = false;
+  }, [
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+    openseaExternalUrl,
+  ]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      {name && (
+      {token.name && (
         <>
-          <TitleM>{name}</TitleM>
+          <TitleM>{token.name}</TitleM>
           <Spacer height={4} />
         </>
       )}
-      {contractName && showCommunityLink ? (
-        <InteractiveLink to={`/community/${contractAddress}`}>{contractName}</InteractiveLink>
+      {token.contract?.name && token.contract.contractAddress?.address && showCommunityLink ? (
+        <InteractiveLink
+          to={
+            token.contract.chain === 'POAP'
+              ? `/community/poap/${token.contract.contractAddress.address}`
+              : `/community/${token.contract.contractAddress.address}`
+          }
+        >
+          {token.contract.name}
+        </InteractiveLink>
       ) : (
-        <BaseM>{contractName}</BaseM>
+        <BaseM>{token.contract?.name}</BaseM>
       )}
       <Spacer height={isMobile ? 32 : 24} />
-      {description && (
+      {token.description && (
         <>
           <BaseM>
-            <Markdown text={description} />
+            <Markdown text={token.description} />
           </BaseM>
           <Spacer height={isMobile ? 32 : 24} />
         </>
       )}
-      <TitleXS>Owner</TitleXS>
-      <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
-      <Spacer height={16} />
-      {addressToUse && (
+      {token.owner?.username && (
+        <>
+          <TitleXS>Owner</TitleXS>
+          <InteractiveLink to={`/${token.owner.username}`}>{token.owner.username}</InteractiveLink>
+          <Spacer height={16} />
+        </>
+      )}
+      {token.contract?.contractAddress?.address && (
         <>
           <TitleXS>Creator</TitleXS>
           <BaseM>
-            <EnsOrAddress address={addressToUse} />
+            <EnsOrAddress address={token.contract.contractAddress.address} />
           </BaseM>
         </>
       )}
       <Spacer height={24} />
-      <NftAdditionalDetails
-        contractAddress={contractAddress}
-        tokenId={tokenId}
-        dbId={dbId}
-        externalUrl={externalUrl}
-      />
-      {showBuyNowButton && (
+      <NftAdditionalDetails tokenRef={token} />
+      {SHOW_BUY_NOW_BUTTON && (
         <>
           <Spacer height={24} />
           <HorizontalBreak />
