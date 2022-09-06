@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
@@ -14,7 +14,6 @@ import { TitleXS } from 'components/core/Text/Text';
 import { readInlineData } from 'relay-runtime';
 import { graphql } from 'react-relay';
 import { SidebarListTokenFragment$key } from '../../../../../../__generated__/SidebarListTokenFragment.graphql';
-import Tooltip from 'components/Tooltip/Tooltip';
 
 export type TokenAndEditModeToken = {
   token: SidebarListTokenFragment$key;

@@ -84,7 +84,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
         isFullPage: true,
       });
     },
-    [event.owner.username, event.token, showModal, track]
+    [event.token, showModal, track]
   );
 
   return (
