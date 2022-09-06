@@ -1,11 +1,11 @@
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import transitions, {
-  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TIMEOUT_MS,
+  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from 'components/core/transitions';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 type Props = {
