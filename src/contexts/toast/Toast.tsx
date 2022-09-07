@@ -7,6 +7,7 @@ import transitions, {
 } from 'components/core/transitions';
 import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import CloseIcon from 'icons/CloseIcon';
 
 type Props = {
   message: string;
@@ -79,16 +80,7 @@ function Toast({ message, onClose }: Props) {
       <StyledToast>
         <BaseM>{message}</BaseM>
         <StyledClose onClick={handleClose}>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12.6667 3.33334L3.33337 12.6667" stroke="#141414" strokeMiterlimit="10" />
-            <path d="M3.33337 3.33334L12.6667 12.6667" stroke="#141414" strokeMiterlimit="10" />
-          </svg>
+          <CloseIcon isActive />
         </StyledClose>
       </StyledToast>
     </ToastContainer>
