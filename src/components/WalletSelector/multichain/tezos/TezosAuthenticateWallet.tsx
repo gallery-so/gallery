@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import {
@@ -26,7 +26,9 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [address, setAddress] = useState<string>();
   const [wallet, setWallet] = useState<string>();
 
-  const messageHeaderText = `Connect with ${wallet} wallet`;
+  const messageHeaderText = useMemo(() => {
+    return `Connect with ${wallet} wallet`;
+  }, [wallet]);
 
   const { requestPermissions, requestSignature } = useBeaconActions();
 
