@@ -29,7 +29,7 @@ import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
-import { useBeaconState } from 'contexts/beacon/BeaconContext';
+import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 import WalletOnboardingMessage from '../WalletOnboardingMessage';
 
 type Props = {
@@ -44,7 +44,10 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [error, setError] = useState<Error>();
   const [account, setAccount] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
-  const beaconClient = useBeaconState();
+  const [wallet, setWallet] = useState<string>();
+  const { requestPermissions, requestSignature } = useBeaconActions();
+
+  const messageHeaderText = `Connect with ${wallet} wallet`;
 
   const query = useFragment(
     graphql`
@@ -102,7 +105,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
         const payload = generatePayload(nonce, address);
         setPendingState(PROMPT_SIGNATURE);
-        const { signature } = await beaconClient.requestSignPayload(payload);
+        const signature = await requestSignature(payload);
 
         const nonceNumber = getNonceNumber(nonce);
 
@@ -150,8 +153,8 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       trackAddWalletAttempt,
       createNonce,
       addWallet,
-      beaconClient,
       hideModal,
+      requestSignature,
       trackAddWalletSuccess,
       trackAddWalletError,
     ]
@@ -165,12 +168,13 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       }
 
       try {
-        const { publicKey, address } = await beaconClient.requestPermissions();
+        const { publicKey, address, wallet } = await requestPermissions();
         if (!address || !publicKey) return;
 
         setPendingState(CONFIRM_ADDRESS);
         setAccount(address);
         setPublicKey(publicKey);
+        setWallet(wallet);
 
         await attemptAddWallet(address, publicKey);
       } catch (error) {
@@ -181,7 +185,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     if (pendingState === INITIAL) {
       void authenticate();
     }
-  }, [account, authenticatedUserAddresses, attemptAddWallet, beaconClient, pendingState]);
+  }, [account, authenticatedUserAddresses, attemptAddWallet, pendingState, requestPermissions]);
 
   if (error) {
     return (
@@ -233,7 +237,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <WalletOnboardingMessage
-        title="Connect with Tezos wallet"
+        title={messageHeaderText}
         description="Sign the message with your wallet."
       />
     );
@@ -242,7 +246,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   // Default view for when pendingState === INITIAL
   return (
     <WalletOnboardingMessage
-      title="Connect with Tezos wallet"
+      title={messageHeaderText}
       description="Approve your wallet to connect to Gallery."
     />
   );
