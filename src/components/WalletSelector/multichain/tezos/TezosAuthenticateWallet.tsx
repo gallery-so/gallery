@@ -26,9 +26,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const [address, setAddress] = useState<string>();
   const [wallet, setWallet] = useState<string>();
 
-  const messageHeaderText = useMemo(() => {
-    return `Connect with ${wallet} wallet`;
-  }, [wallet]);
+  const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
   const { requestPermissions, requestSignature } = useBeaconActions();
 

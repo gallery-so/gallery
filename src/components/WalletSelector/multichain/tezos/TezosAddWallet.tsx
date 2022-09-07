@@ -47,9 +47,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [wallet, setWallet] = useState<string>();
   const { requestPermissions, requestSignature } = useBeaconActions();
 
-  const messageHeaderText = useMemo(() => {
-    return `Connect with ${wallet} wallet`;
-  }, [wallet]);
+  const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
   const query = useFragment(
     graphql`
