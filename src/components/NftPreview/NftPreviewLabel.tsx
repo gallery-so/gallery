@@ -2,48 +2,118 @@ import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 import { useMemo } from 'react';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { graphql, useFragment } from 'react-relay';
+import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
+import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
+import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
 
 type Props = {
   className?: string;
-  title?: string | null;
-  collectionName?: string | null;
-  contractAddress?: string | null;
+  tokenRef: NftPreviewLabelFragment$key;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function NftPreviewLabel({ className, title, collectionName, contractAddress }: Props) {
-  const showCommunityLink = useMemo(
-    () => !!contractAddress && !DISABLED_CONTRACTS.includes(contractAddress),
-    [contractAddress]
+function NftPreviewLabel({ className, tokenRef }: Props) {
+  const token = useFragment(
+    graphql`
+      fragment NftPreviewLabelFragment on Token {
+        name
+        chain
+
+        ...NftPreviewLabelCollectionNameFragment
+      }
+    `,
+    tokenRef
   );
+
+  // Since POAPs' collection names are the same as the
+  // token name, we don't want to show duplicate information
+  const showTitle = token.name && token.chain !== 'POAP';
 
   return (
     <StyledNftPreviewLabel className={className}>
-      {title && (
+      {showTitle && (
         <StyledBaseM color={colors.white} lines={1}>
-          {title}
+          {token.name}
         </StyledBaseM>
       )}
-      {collectionName &&
-        (showCommunityLink ? (
-          <div>
-            <StyledBaseM lines={2}>
-              <StyledInteractiveLink to={`/community/${contractAddress}`}>
-                {collectionName}
-              </StyledInteractiveLink>
-            </StyledBaseM>
-          </div>
-        ) : (
-          <StyledBaseM color={colors.white} lines={2}>
-            {collectionName}
-          </StyledBaseM>
-        ))}
+
+      <CollectionName tokenRef={token} />
     </StyledNftPreviewLabel>
   );
 }
+
+type CollectionNameProps = {
+  tokenRef: NftPreviewLabelCollectionNameFragment$key;
+};
+
+function CollectionName({ tokenRef }: CollectionNameProps) {
+  const token = useFragment(
+    graphql`
+      fragment NftPreviewLabelCollectionNameFragment on Token {
+        chain
+        contract {
+          name
+          contractAddress {
+            address
+          }
+        }
+
+        ...getCommunityUrlForTokenFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const collectionName = token.contract?.name;
+  const communityUrl = getCommunityUrlForToken(token);
+
+  const inner = useMemo(() => {
+    if (communityUrl) {
+      return (
+        <div>
+          <StyledBaseM lines={2}>
+            <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+          </StyledBaseM>
+        </div>
+      );
+    }
+
+    return (
+      <StyledBaseM color={colors.white} lines={2}>
+        {collectionName}
+      </StyledBaseM>
+    );
+  }, [collectionName, communityUrl]);
+
+  if (!collectionName) {
+    return null;
+  }
+
+  return (
+    <CommunityNameWrapper>
+      {token.chain === 'POAP' && <POAPLogo />}
+      <div>{inner}</div>
+    </CommunityNameWrapper>
+  );
+}
+
+const POAPLogo = styled.img.attrs({
+  src: '/icons/poap_logo.svg',
+  alt: 'POAP Logo',
+})`
+  width: 16px;
+  height: 16px;
+`;
+
+const CommunityNameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 0 4px;
+`;
 
 export const StyledNftPreviewLabel = styled.div`
   position: absolute;

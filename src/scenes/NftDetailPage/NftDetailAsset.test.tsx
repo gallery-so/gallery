@@ -80,6 +80,7 @@ const RetryImageMediaResponse: UseNftRetryMutationMutation = {
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
       name: 'Test Token Name',
+      chain: Chain.Ethereum,
       media: {
         __typename: 'ImageMedia',
         contentRenderURL: 'bad url here',
@@ -92,6 +93,7 @@ const RetryImageMediaResponse: UseNftRetryMutationMutation = {
       contract: {
         __typename: 'Contract',
         id: 'Contract:someContractId',
+        chain: Chain.Ethereum,
         name: 'Test Contract Name',
         contractAddress: {
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',

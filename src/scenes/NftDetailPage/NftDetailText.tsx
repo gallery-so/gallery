@@ -9,13 +9,13 @@ import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useCallback, useMemo } from 'react';
-import { DISABLED_CONTRACTS } from 'pages/community/[contractAddress]';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailTextFragment$key } from '../../../__generated__/NftDetailTextFragment.graphql';
+import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -48,6 +48,7 @@ function NftDetailText({ tokenRef }: Props) {
         }
 
         ...NftAdditionalDetailsFragment
+        ...getCommunityUrlForTokenFragment
       }
     `,
     tokenRef
@@ -57,16 +58,6 @@ function NftDetailText({ tokenRef }: Props) {
   const breakpoint = useBreakpoint();
   const isMobile = useIsMobileWindowWidth();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
-
-  const showCommunityLink = useMemo(() => {
-    if (!token.contract?.contractAddress?.address) {
-      return false;
-    } else if (DISABLED_CONTRACTS.includes(token.contract.contractAddress.address)) {
-      return false;
-    }
-
-    return true;
-  }, [token.contract?.contractAddress?.address]);
 
   const openseaExternalUrl = useMemo(() => {
     if (token.contract?.contractAddress?.address && token.tokenId) {
@@ -91,6 +82,8 @@ function NftDetailText({ tokenRef }: Props) {
     openseaExternalUrl,
   ]);
 
+  const communityUrl = getCommunityUrlForToken(token);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       {token.name && (
@@ -99,16 +92,8 @@ function NftDetailText({ tokenRef }: Props) {
           <Spacer height={4} />
         </>
       )}
-      {token.contract?.name && token.contract.contractAddress?.address && showCommunityLink ? (
-        <InteractiveLink
-          to={
-            token.contract.chain === 'POAP'
-              ? `/community/poap/${token.contract.contractAddress.address}`
-              : `/community/${token.contract.contractAddress.address}`
-          }
-        >
-          {token.contract.name}
-        </InteractiveLink>
+      {communityUrl && token.contract?.name ? (
+        <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
       ) : (
         <BaseM>{token.contract?.name}</BaseM>
       )}
