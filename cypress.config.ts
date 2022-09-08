@@ -21,7 +21,7 @@ export default defineConfig({
     },
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/integration/specs/**/*.{js,jsx,ts,tsx}',
-    supportFile: 'cypress/support/e2e.js',
+    supportFile: 'cypress/support/e2e.ts',
     fixturesFolder: 'cypress/fixtures',
   },
 });
