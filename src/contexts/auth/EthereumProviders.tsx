@@ -45,9 +45,9 @@ const myCustomTheme = merge(lightTheme(), {
     //   selectedOptionBorder: '...',
     //   standby: '...',
   },
-  // fonts: {
-  //   body: '...',
-  // },
+  fonts: {
+    body: 'ABC Diatype',
+  },
   radii: {
     actionButton: '0',
     connectButton: '0',
