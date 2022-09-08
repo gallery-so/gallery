@@ -112,6 +112,8 @@ const AspectRatioWrapper = styled.div`
   height: 0;
   padding-bottom: 100%;
   position: relative;
+
+  min-width: 150px;
 `;
 
 // No support for aspect-ratio trick
