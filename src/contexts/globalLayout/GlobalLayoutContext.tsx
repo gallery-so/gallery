@@ -359,9 +359,10 @@ function GlobalNavbarWithFadeEnabled({
     >
       {isBannerVisible && (
         <Banner
-          text="(OBJECTS) merch shop is now open."
+          text=""
           queryRef={query}
-          actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
+          // leaving this in to easily set up a banner for next time
+          // actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
           dismissOnActionComponentClick
         />
       )}
