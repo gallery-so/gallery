@@ -21,6 +21,7 @@ import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Stack/VStack';
 import { NftDetailTextNonPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextNonPOAPSectionFragment.graphql';
 import TextButton from 'components/core/Button/TextButton';
+import { HStack } from 'components/core/Stack/HStack';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -107,11 +108,15 @@ function NftDetailText({ tokenRef }: Props) {
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={4}>
           {token.name && <TitleM>{token.name}</TitleM>}
-          {communityUrl && token.contract?.name ? (
-            <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
-          ) : (
-            <BaseM>{token.contract?.name}</BaseM>
-          )}
+          <HStack alignItems="center" gap={4}>
+            {token.chain === 'POAP' && <PoapLogo />}
+
+            {communityUrl && token.contract?.name ? (
+              <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
+            ) : (
+              <BaseM>{token.contract?.name}</BaseM>
+            )}
+          </HStack>
         </VStack>
 
         {token.description && (
@@ -158,6 +163,11 @@ function NftDetailText({ tokenRef }: Props) {
     </StyledDetailLabel>
   );
 }
+
+const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo' })`
+  width: 16px;
+  height: 16px;
+`;
 
 type EthNftDetailSectionProps = {
   tokenRef: NftDetailTextNonPOAPSectionFragment$key;
