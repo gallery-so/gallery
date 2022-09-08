@@ -1,14 +1,13 @@
+import { format, parse } from 'date-fns';
 import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
 
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Markdown from 'components/core/Markdown/Markdown';
-import NftAdditionalDetails, { getOpenseaExternalUrl } from './NftAdditionalDetails';
 import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
@@ -16,6 +15,12 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailTextFragment$key } from '../../../__generated__/NftDetailTextFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
+import { NftDetailTextPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextPOAPSectionFragment.graphql';
+import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
+import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
+import { VStack } from 'components/core/Stack/VStack';
+import { NftDetailTextNonPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextNonPOAPSectionFragment.graphql';
+import TextButton from 'components/core/Button/TextButton';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -33,8 +38,10 @@ function NftDetailText({ tokenRef }: Props) {
       fragment NftDetailTextFragment on Token {
         dbid
         name
+        chain
         description
         tokenId
+        tokenMetadata
         externalUrl
         owner {
           username
@@ -47,12 +54,20 @@ function NftDetailText({ tokenRef }: Props) {
           }
         }
 
+        ...NftDetailTextNonPOAPSectionFragment
+        ...NftDetailTextPOAPSectionFragment
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
       }
     `,
     tokenRef
   );
+
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleToggleClick = useCallback(() => {
+    setShowDetails((previous) => !previous);
+  }, []);
 
   const track = useTrack();
   const breakpoint = useBreakpoint();
@@ -84,56 +99,141 @@ function NftDetailText({ tokenRef }: Props) {
 
   const communityUrl = getCommunityUrlForToken(token);
 
+  const metadata = JSON.parse(token.tokenMetadata ?? '{}');
+  const poapUrl = token.chain === 'POAP' ? metadata.event_url : null;
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
-      {token.name && (
-        <>
-          <TitleM>{token.name}</TitleM>
-          <Spacer height={4} />
-        </>
-      )}
-      {communityUrl && token.contract?.name ? (
-        <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
-      ) : (
-        <BaseM>{token.contract?.name}</BaseM>
-      )}
-      <Spacer height={isMobile ? 32 : 24} />
-      {token.description && (
-        <>
+      <VStack gap={isMobile ? 32 : 24}>
+        <VStack gap={4}>
+          {token.name && <TitleM>{token.name}</TitleM>}
+          {communityUrl && token.contract?.name ? (
+            <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
+          ) : (
+            <BaseM>{token.contract?.name}</BaseM>
+          )}
+        </VStack>
+
+        {token.description && (
           <BaseM>
             <Markdown text={token.description} />
           </BaseM>
-          <Spacer height={isMobile ? 32 : 24} />
-        </>
-      )}
-      {token.owner?.username && (
-        <>
-          <TitleXS>Owner</TitleXS>
-          <InteractiveLink to={`/${token.owner.username}`}>{token.owner.username}</InteractiveLink>
-          <Spacer height={16} />
-        </>
-      )}
-      {token.contract?.contractAddress?.address && (
-        <>
-          <TitleXS>Creator</TitleXS>
-          <BaseM>
-            <EnsOrAddress address={token.contract.contractAddress.address} />
-          </BaseM>
-        </>
-      )}
-      <Spacer height={24} />
-      <NftAdditionalDetails tokenRef={token} />
-      {SHOW_BUY_NOW_BUTTON && (
-        <>
-          <Spacer height={24} />
-          <HorizontalBreak />
-          <Spacer height={24} />
-          <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
-            <StyledButton>Buy Now</StyledButton>
-          </StyledInteractiveLink>
-        </>
-      )}
+        )}
+
+        <VStack gap={16}>
+          {token.owner?.username && (
+            <div>
+              <TitleXS>Owner</TitleXS>
+              <InteractiveLink to={`/${token.owner.username}`}>
+                {token.owner.username}
+              </InteractiveLink>
+            </div>
+          )}
+
+          {token.chain === 'POAP' ? (
+            <POAPNftDetailSection tokenRef={token} />
+          ) : (
+            <NonPOAPNftDetailSection tokenRef={token} />
+          )}
+
+          {showDetails && <NftAdditionalDetails tokenRef={token} />}
+
+          {SHOW_BUY_NOW_BUTTON && (
+            <VStack gap={24}>
+              <HorizontalBreak />
+              <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
+                <StyledButton>Buy Now</StyledButton>
+              </StyledInteractiveLink>
+            </VStack>
+          )}
+        </VStack>
+
+        <VStack gap={16}>
+          {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
+
+          {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
+          {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
+        </VStack>
+      </VStack>
     </StyledDetailLabel>
+  );
+}
+
+type EthNftDetailSectionProps = {
+  tokenRef: NftDetailTextNonPOAPSectionFragment$key;
+};
+function NonPOAPNftDetailSection({ tokenRef }: EthNftDetailSectionProps) {
+  const token = useFragment(
+    graphql`
+      fragment NftDetailTextNonPOAPSectionFragment on Token {
+        contract {
+          contractAddress {
+            address
+          }
+        }
+      }
+    `,
+    tokenRef
+  );
+
+  if (token.contract?.contractAddress?.address) {
+    return (
+      <div>
+        <TitleXS>Creator</TitleXS>
+        <BaseM>
+          <EnsOrAddress address={token.contract.contractAddress.address} />
+        </BaseM>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+type POAPNftDetailSectionProps = {
+  tokenRef: NftDetailTextPOAPSectionFragment$key;
+};
+
+function POAPNftDetailSection({ tokenRef }: POAPNftDetailSectionProps) {
+  const token = useFragment(
+    graphql`
+      fragment NftDetailTextPOAPSectionFragment on Token {
+        tokenMetadata
+      }
+    `,
+    tokenRef
+  );
+
+  if (!token.tokenMetadata) {
+    return null;
+  }
+
+  const metadata = JSON.parse(token.tokenMetadata);
+
+  const location =
+    metadata.city && metadata.country ? `${metadata.city}, ${metadata.country}` : null;
+
+  const parsedDate = metadata.created
+    ? parse(metadata.created, 'yyyy-MM-dd HH:mm:ss', new Date())
+    : null;
+
+  const formattedDate = parsedDate ? format(parsedDate, 'MMMM do, yyyy') : null;
+
+  return (
+    <VStack gap={16}>
+      {formattedDate && (
+        <div>
+          <TitleXS>Created</TitleXS>
+          <BaseM>{formattedDate}</BaseM>
+        </div>
+      )}
+      {location && (
+        <div>
+          <TitleXS>Location</TitleXS>
+          <BaseM>{location}</BaseM>
+        </div>
+      )}
+    </VStack>
   );
 }
 
