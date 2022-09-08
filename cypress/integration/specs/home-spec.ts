@@ -23,7 +23,11 @@ describe('Homepage test', () => {
     home.getSignInButton().click();
     home.getEthereumButton().click();
     home.getMetaMaskButton().click();
-    home.acceptMetamaskAccessRequest();
+    cy.wait(1000);
+    cy.acceptMetamaskAccess(false);
+    if (!cy.isMetamaskWindowActive()) return;
+    cy.confirmMetamaskSignatureRequest();
+    cy.wait(1000000);
     cy.url().should('include', `/home`);
   });
 });
