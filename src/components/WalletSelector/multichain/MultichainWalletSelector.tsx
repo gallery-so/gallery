@@ -18,6 +18,7 @@ import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
 import isProduction from 'utils/isProduction';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
+import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -52,6 +53,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   useMultiKeyDown(['Control', 't'], handleToggleTezosButton);
 
   const connectEthereum = useConnectEthereum();
+  const { requestPermissions: connectTezos } = useBeaconActions();
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -138,7 +140,14 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         disabled={!isTezosConnectEnabled}
         onClick={() => {
           console.log('connecting to tezos via beacon');
-          setSelectedAuthMethod(supportedAuthMethods.tezos);
+          connectTezos()
+            .then((address) => {
+              console.log('connected to tezos with', address);
+              setSelectedAuthMethod(supportedAuthMethods.tezos);
+            })
+            .catch((error) => {
+              console.log('failed to connect to tezos', error);
+            });
         }}
       />
       <WalletButton label="Solana" icon="solana" disabled />
