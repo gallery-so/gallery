@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import synpressPlugins from '@synthetixio/synpress/plugins';
 
 export default defineConfig({
   userAgent: 'synpress',
@@ -16,7 +17,7 @@ export default defineConfig({
   projectId: 'igfgns',
   e2e: {
     setupNodeEvents(on, config) {
-      return require('./cypress/plugins/index.js')(on, config);
+      synpressPlugins(on, config);
     },
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/integration/specs/**/*.{js,jsx,ts,tsx}',
