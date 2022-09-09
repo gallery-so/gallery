@@ -2,7 +2,11 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const INITIAL_STATE = new Map();
 
-export default function useMultiKeyDown(targetKeys: string[], callbackFn: () => void) {
+export default function useMultiKeyDown(_targetKeys: string[], callbackFn: () => void) {
+  const targetKeys = useMemo(() => {
+    return _targetKeys.map((k) => k.toLowerCase());
+  }, [_targetKeys]);
+
   if (!targetKeys.length) {
     throw new Error('target keys must be provided');
   }
@@ -12,7 +16,7 @@ export default function useMultiKeyDown(targetKeys: string[], callbackFn: () => 
 
   const areTargetKeysPressed = useMemo(() => {
     return targetKeys.reduce((curr, key) => {
-      return Boolean(curr && keyPressedMap.get(key));
+      return Boolean(curr && keyPressedMap.get(key.toLowerCase()));
     }, true);
   }, [keyPressedMap, targetKeys]);
 
@@ -20,8 +24,8 @@ export default function useMultiKeyDown(targetKeys: string[], callbackFn: () => 
     (key, status) => {
       setKeyPressedMap((prev) => {
         const next = new Map(prev);
-        if (targetKeys.includes(key)) {
-          next.set(key, status);
+        if (targetKeys.includes(key.toLowerCase())) {
+          next.set(key.toLowerCase(), status);
         }
         return next;
       });
