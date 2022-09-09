@@ -46,7 +46,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }, []);
 
   const handleToggleTezosButton = useCallback(() => {
-    return !isProd && setIsTezosConnectEnabled(true);
+    return setIsTezosConnectEnabled(true);
   }, []);
 
   useMultiKeyDown(['Shift', 't'], handleToggleTezosButton);
