@@ -2,7 +2,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from '../Text/Text';
 import { MODAL_PADDING_PX } from 'contexts/modal/constants';
 
@@ -16,7 +16,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
           Confirm that you are navigating to: <b>{href}</b>
         </StyledBaseM>
       </TextContainer>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <ButtonContainer>
         <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <Button

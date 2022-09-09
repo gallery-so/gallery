@@ -5,7 +5,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
@@ -169,7 +169,7 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
     return (
       <StyledWalletSelector>
         <TitleS>{displayedError.heading}</TitleS>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <StyledBody>
           <Markdown text={displayedError.body} />
         </StyledBody>
@@ -202,7 +202,7 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
         <StyledWalletSelector>
           <div>
             <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <BaseM>Approve your wallet to connect to Gallery.</BaseM>
           </div>
         </StyledWalletSelector>
@@ -225,7 +225,7 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
 
   return (
     <StyledWalletSelector>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       {availableWalletOptions.map((walletName) => (
         <WalletButton
           key={walletName}
@@ -235,7 +235,7 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
           setToPendingState={setToPendingState}
         />
       ))}
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );

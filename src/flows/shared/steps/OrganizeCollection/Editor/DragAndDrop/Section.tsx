@@ -5,7 +5,7 @@ import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
 import DragHandleIcon from 'src/icons/DragHandleIcon';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import noop from 'utils/noop';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { DraggableAttributes } from '@dnd-kit/core';
@@ -40,9 +40,9 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       data-cypress="draggable-handle"
       {...props}
     >
-      <Spacer width={2} />
+      <DeprecatedSpacer width={2} />
       <DragHandleIcon />
-      <Spacer width={2} />
+      <DeprecatedSpacer width={2} />
       <StyledLabelText>Section</StyledLabelText>
     </StyledLabel>
   );

@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
@@ -47,7 +47,7 @@ export default function FollowListUsers({
       {users.length === 0 && (
         <StyledEmptyList>
           <BaseM>{emptyListText}</BaseM>
-          <Spacer height={48} />
+          <DeprecatedSpacer height={48} />
         </StyledEmptyList>
       )}
     </StyledList>

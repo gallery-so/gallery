@@ -5,7 +5,7 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import ErrorText from 'components/core/Text/ErrorText';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -69,7 +69,7 @@ function AddUserInfo({ next }: WizardContext) {
         bio={bio}
         onBioChange={onBioChange}
       />
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <ErrorContainer>
         <ErrorText message={generalError} />
       </ErrorContainer>

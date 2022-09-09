@@ -1,5 +1,5 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import FollowButton from 'components/Follow/FollowButton';
 import styled from 'styled-components';
@@ -49,7 +49,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
             </InteractiveLink>{' '}
             followed you {followInfo.followedBack && 'back'}
           </BaseM>
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
         {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={queryRef} />}

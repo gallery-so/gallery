@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import { Button } from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
@@ -136,12 +136,12 @@ export function CustomizedGeneralMembershipMintPage({
           <StyledIneligibleMessageWrapper>
             <BaseXL>You are ineligible for this mint.</BaseXL>
 
-            <Spacer width={4} />
+            <DeprecatedSpacer width={4} />
             <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
               <InfoCircleIcon />
             </InteractiveLink>
           </StyledIneligibleMessageWrapper>
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
           <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
             <TitleXS color={colors.white}>View on Secondary</TitleXS>
           </StyledSecondaryLink>
@@ -158,12 +158,12 @@ export function CustomizedGeneralMembershipMintPage({
               <b>Early Access Allowlist</b> can still create a Gallery account.
             </BaseM>
 
-            <Spacer width={4} />
+            <DeprecatedSpacer width={4} />
             <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
               <InfoCircleIcon />
             </InteractiveLink>
           </StyledIneligibleMessageWrapper>
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
           <StyledSecondaryLink href="/auth">
             <Button>Create Account</Button>
           </StyledSecondaryLink>
@@ -203,7 +203,7 @@ export function CustomizedGeneralMembershipMintPage({
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
           <TitleM>{membershipNft.title}</TitleM>
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
           <StyledNftDescription>
             <Markdown text={membershipNft.description} />
           </StyledNftDescription>
@@ -215,7 +215,7 @@ export function CustomizedGeneralMembershipMintPage({
           )}
           {Boolean(totalSupply) && remainingSupply !== null && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <TitleXS>Available</TitleXS>
               <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
@@ -225,19 +225,19 @@ export function CustomizedGeneralMembershipMintPage({
           {children}
           {account && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <TitleXS>Connected wallet</TitleXS>
               <BaseM>{account}</BaseM>
             </>
           )}
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
           <HorizontalBreak />
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
 
           {PrimaryButton}
           {transactionHash && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <div>
                 <BaseM>
                   {transactionStatus === TransactionStatus.SUCCESS
@@ -252,7 +252,7 @@ export function CustomizedGeneralMembershipMintPage({
           )}
           {transactionStatus === TransactionStatus.SUCCESS && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <BaseM>You can now sign up for Gallery.</BaseM>
               <GalleryLink href="/auth">
                 <BaseM>Proceed to Onboarding</BaseM>
@@ -261,7 +261,7 @@ export function CustomizedGeneralMembershipMintPage({
           )}
           {error && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <ErrorText message={error} />
             </>
           )}

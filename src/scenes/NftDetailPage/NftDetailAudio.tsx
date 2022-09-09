@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
@@ -55,7 +55,7 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
         onError={handleError}
         src={token.media.contentRenderURL}
       />
-      {isDesktop && <Spacer height={40} />}
+      {isDesktop && <DeprecatedSpacer height={40} />}
     </StyledAudioContainer>
   );
 }

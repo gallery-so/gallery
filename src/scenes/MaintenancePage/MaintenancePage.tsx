@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
 import {
@@ -14,18 +14,18 @@ function MaintenancePage() {
   return (
     <StyledMaintenancePage>
       <StyledLogo src="/icons/logo-large.svg" />
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <StyledBaseM>
         Gallery is currently undergoing planned maintenance until{' '}
         <strong>Monday June 20th, 11:59am EST</strong> and is not usable at this time. Keep up to
         date on our socials.
       </StyledBaseM>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <StyledLinkContainer>
         <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
-        <Spacer width={8} />
+        <DeprecatedSpacer width={8} />
         <BaseM>·</BaseM>
-        <Spacer width={8} />
+        <DeprecatedSpacer width={8} />
         <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
       </StyledLinkContainer>
     </StyledMaintenancePage>

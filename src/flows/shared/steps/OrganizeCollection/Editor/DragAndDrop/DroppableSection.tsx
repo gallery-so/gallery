@@ -8,7 +8,7 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import PlusIcon from 'src/icons/PlusIcon';
 
 type Props = {
@@ -54,7 +54,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
   return (
     <>
       <StyledSectionWrapper onMouseDown={handleMouseDown}>
-        <Spacer height={6} />
+        <DeprecatedSpacer height={6} />
         <Section
           ref={setNodeRef}
           style={{
@@ -75,13 +75,13 @@ export default function DroppableSection({ children, columns, id, items, style, 
         </Section>
         {isActive && !isDragging && (
           <>
-            <Spacer height={12} />
+            <DeprecatedSpacer height={12} />
             <StyledAddSectionButton onClick={handleAddSectionClick}>
               <StyledPlusIcon />
             </StyledAddSectionButton>
           </>
         )}
-        <Spacer height={6} />
+        <DeprecatedSpacer height={6} />
       </StyledSectionWrapper>
     </>
   );

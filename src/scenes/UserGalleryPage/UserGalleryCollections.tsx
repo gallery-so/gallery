@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
@@ -120,7 +120,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   cacheHeight={cache.current.getHeight(index, 0)}
                   onLoad={measure}
                 />
-                <Spacer height={48} />
+                <DeprecatedSpacer height={48} />
               </div>
             );
           }}
@@ -142,7 +142,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   return (
     <StyledUserGalleryCollections>
-      <Spacer height={isMobile ? 48 : 80} />
+      <DeprecatedSpacer height={isMobile ? 48 : 80} />
       <WindowScroller>
         {({ height, registerChild, scrollTop, onChildScroll }) => (
           <AutoSizer disableHeight>

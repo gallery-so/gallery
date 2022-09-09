@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
@@ -90,7 +90,7 @@ function CollectionRow({ collectionRef, className }: Props) {
           </StyledBaseM>
         </TextContainer>
       </Header>
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       <Body>
         {firstThreeNfts.map((token) => (
           <BigNft key={token.id} tokenRef={token.token} />
@@ -198,7 +198,7 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
             {firstThreeNfts.map((token) => (
               <SmolNft key={token.id} tokenRef={token} />
             ))}
-            <Spacer width={2} />
+            <DeprecatedSpacer width={2} />
             <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (

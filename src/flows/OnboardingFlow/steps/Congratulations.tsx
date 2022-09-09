@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { usePreloadedQuery } from 'react-relay';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
@@ -27,9 +27,9 @@ function Congratulations() {
   return (
     <FullPageCenteredStep>
       <TitleL>Welcome to your Gallery</TitleL>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
     </FullPageCenteredStep>
   );

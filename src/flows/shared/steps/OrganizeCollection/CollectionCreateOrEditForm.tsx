@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import Input from 'components/core/Input/Input';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -146,7 +146,7 @@ function CollectionCreateOrEditForm({
 
   return (
     <StyledCollectionEditInfoForm>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <Input
         onChange={handleNameChange}
         defaultValue={unescapedCollectionName}
@@ -154,7 +154,7 @@ function CollectionCreateOrEditForm({
         autoFocus
         variant="grande"
       />
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
@@ -166,14 +166,14 @@ function CollectionCreateOrEditForm({
       />
       {generalError && (
         <>
-          <Spacer height={8} />
+          <DeprecatedSpacer height={8} />
           <ErrorText message={generalError} />
         </>
       )}
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
 
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       <ButtonContainer>
         <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
           {buttonText}

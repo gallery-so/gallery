@@ -1,6 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import Input from 'components/core/Input/Input';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { TitleS } from 'components/core/Text/Text';
 import { DEBUG_USERNAME_KEY } from 'constants/storageKeys';
@@ -93,21 +93,21 @@ const Debugger = () => {
   return isDebuggerVisible ? (
     <StyledDebugger>
       <TitleS>☢️ DEBUG MODE</TitleS>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <LoginContainer>
         <TitleS>Login As</TitleS>
-        <Spacer height={4} />
+        <DeprecatedSpacer height={4} />
         <LoginFormContainer>
           <Input onChange={handleUsernameChange} placeholder="Username" defaultValue={username} />
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledButton onClick={handleLogin} disabled={!username.length}>
             Submit
           </StyledButton>
         </LoginFormContainer>
-        <Spacer height={4} />
+        <DeprecatedSpacer height={4} />
         <ErrorText message={errorMessage} />
       </LoginContainer>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <LoggedInUserContainer>
         <TitleS>Detected User</TitleS>
         <StyledPre>{loggedInUserInfo}</StyledPre>

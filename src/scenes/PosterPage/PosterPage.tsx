@@ -6,7 +6,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 
 export default function PosterPage() {
@@ -39,12 +39,12 @@ export default function PosterPage() {
               <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
               poster.
             </BaseM>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <BaseM>
               We made the final poster available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
 
             <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM>
           </StyledParagraph>

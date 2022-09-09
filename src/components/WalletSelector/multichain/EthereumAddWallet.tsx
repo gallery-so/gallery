@@ -4,7 +4,7 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -189,13 +189,13 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Ethereum</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
         {isMetamask && (
           <>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <BaseM>
               If you want to connect a different address via Metamask, please switch accounts in the
               extension and try again.
@@ -211,16 +211,16 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Ethereum</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Confirm the following wallet address:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <BaseM>
           If you want to connect a different address via Metamask, please switch accounts in the
           extension and try again.
         </BaseM>
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
           {isConnecting ? 'Connecting...' : 'Confirm'}
         </StyledButton>
@@ -232,7 +232,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Ethereum</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
     );
@@ -242,7 +242,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
   return (
     <div>
       <TitleS>Connect with Ethereum</TitleS>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );

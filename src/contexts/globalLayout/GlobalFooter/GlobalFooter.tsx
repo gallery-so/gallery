@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { BaseS, TitleM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import {
   GALLERY_FAQ,
@@ -28,43 +28,43 @@ function GlobalFooter() {
           <Link href="/">
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
           <BaseS>BETA</BaseS>
         </LogoWrapper>
-        <Spacer height={4} />
+        <DeprecatedSpacer height={4} />
         <StyledLinkContainer>
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <StyledFooterLink href="/shop">
             Shop
-            <Spacer width={4} />
+            <DeprecatedSpacer width={4} />
             <StyledObjectsContainer>
               <StyledLogoBracketLeft color={colors.shadow} />
               <StyledShopText>OBJECTS</StyledShopText>
-              <Spacer width={1} />
+              <DeprecatedSpacer width={1} />
               <StyledLogoBracketRight color={colors.shadow} />
             </StyledObjectsContainer>
           </StyledFooterLink>
         </StyledLinkContainer>
       </MainContent>
-      {isMobile && <Spacer height={4} />}
+      {isMobile && <DeprecatedSpacer height={4} />}
       <BoringLegalContent>
         <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
-        <Spacer width={8} />
+        <DeprecatedSpacer width={8} />
         <BaseS color={colors.metal}>·</BaseS>
-        <Spacer width={8} />
+        <DeprecatedSpacer width={8} />
         <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
-        <Spacer width={8} />
+        <DeprecatedSpacer width={8} />
         <StyledFooterLink href="/terms">Terms</StyledFooterLink>
       </BoringLegalContent>
     </StyledGlobalFooter>

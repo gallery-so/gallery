@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useMintMerchContract } from 'hooks/useContract';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 
@@ -32,9 +32,9 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
           <StyledBaseM>Quantity bought</StyledBaseM>
           <StyledBaseM>{userOwnedSupply}</StyledBaseM>
         </StyledFlexContainer>
-        <Spacer height={4} />
+        <DeprecatedSpacer height={4} />
         <HorizontalBreak />
-        <Spacer height={4} />
+        <DeprecatedSpacer height={4} />
         <StyledFlexContainer>
           <StyledBaseM>Total paid</StyledBaseM>
           <StyledPrice>
@@ -42,7 +42,7 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
           </StyledPrice>
         </StyledFlexContainer>
       </UserOwnsContainer>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
     </>
   );
 }
@@ -91,7 +91,7 @@ export function MobileReceiptBox({
       </StyledMobileReceipt>
       {userOwnedSupply === MAX_NFTS_PER_WALLET && (
         <>
-          <Spacer height={12} />
+          <DeprecatedSpacer height={12} />
           <StyledOwnMaxText>
             You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will not be
             able to buy any more.
@@ -223,9 +223,9 @@ export default function PurchaseBox({
                 </StyledColumnButton>
               </StyledQuantityCounter>
             </StyledFlexContainer>
-            <Spacer height={4} />
+            <DeprecatedSpacer height={4} />
             <HorizontalBreak />
-            <Spacer height={4} />
+            <DeprecatedSpacer height={4} />
             <StyledPayAndPurchaseContainer>
               <StyledFlexContainerColumnOnMobile>
                 <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
@@ -235,7 +235,7 @@ export default function PurchaseBox({
               </StyledFlexContainerColumnOnMobile>
               {!isReceiptState && (
                 <>
-                  <Spacer height={16} />
+                  <DeprecatedSpacer height={16} />
                   <MerchMintButton
                     onMintSuccess={handlePurchaseClick}
                     quantity={quantity}
@@ -248,7 +248,7 @@ export default function PurchaseBox({
 
           {isReceiptState && (
             <>
-              <Spacer height={12} />
+              <DeprecatedSpacer height={12} />
               {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
                 isMobile ? (
                   ''

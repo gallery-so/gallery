@@ -1,5 +1,5 @@
 import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
@@ -74,7 +74,7 @@ function NftDetailText({
       {name && (
         <>
           <TitleM>{name}</TitleM>
-          <Spacer height={4} />
+          <DeprecatedSpacer height={4} />
         </>
       )}
       {contractName && showCommunityLink ? (
@@ -82,18 +82,18 @@ function NftDetailText({
       ) : (
         <BaseM>{contractName}</BaseM>
       )}
-      <Spacer height={isMobile ? 32 : 24} />
+      <DeprecatedSpacer height={isMobile ? 32 : 24} />
       {description && (
         <>
           <BaseM>
             <Markdown text={description} />
           </BaseM>
-          <Spacer height={isMobile ? 32 : 24} />
+          <DeprecatedSpacer height={isMobile ? 32 : 24} />
         </>
       )}
       <TitleXS>Owner</TitleXS>
       <InteractiveLink to={`/${username.current}`}>{username.current}</InteractiveLink>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       {addressToUse && (
         <>
           <TitleXS>Creator</TitleXS>
@@ -102,7 +102,7 @@ function NftDetailText({
           </BaseM>
         </>
       )}
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <NftAdditionalDetails
         contractAddress={contractAddress}
         tokenId={tokenId}
@@ -111,9 +111,9 @@ function NftDetailText({
       />
       {showBuyNowButton && (
         <>
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
           <HorizontalBreak />
-          <Spacer height={24} />
+          <DeprecatedSpacer height={24} />
           <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
             <StyledButton>Buy Now</StyledButton>
           </StyledInteractiveLink>

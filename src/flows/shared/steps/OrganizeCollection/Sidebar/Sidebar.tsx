@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import TextButton from 'components/core/Button/TextButton';
 import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
@@ -110,7 +110,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
         />
       </StyledSidebarContainer>
       <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
     </StyledSidebar>
   );
 }
