@@ -183,13 +183,9 @@ function NftPreview({
     <NftFailureBoundary
       key={retryKey}
       fallback={
-        <StyledNftPreview
-          backgroundColorOverride={backgroundColorOverride}
-          aspectRatio={aspectRatio}
-          fullWidth={fullWidth}
-        >
+        <NftFailureWrapper>
           <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
-        </StyledNftPreview>
+        </NftFailureWrapper>
       }
       onError={handleNftError}
     >
@@ -224,6 +220,11 @@ function NftPreview({
     </NftFailureBoundary>
   );
 }
+
+const NftFailureWrapper = styled.div`
+  width: 100%;
+  max-width: 400px;
+`;
 
 const StyledA = styled.a`
   display: flex;
