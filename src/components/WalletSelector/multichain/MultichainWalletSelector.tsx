@@ -49,7 +49,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     return !isProd && setIsTezosConnectEnabled(true);
   }, []);
 
-  useMultiKeyDown(['Control', 't'], handleToggleTezosButton);
+  useMultiKeyDown(['Shift', 't'], handleToggleTezosButton);
 
   const connectEthereum = useConnectEthereum();
 
@@ -143,7 +143,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       />
       <WalletButton label="Solana" icon="solana" disabled />
       <Spacer height={16} />
-      <BaseM>More wallets coming soon™</BaseM>
+      <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
