@@ -18,10 +18,9 @@ import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
 import { NftDetailTextPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextPOAPSectionFragment.graphql';
 import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import { VStack } from 'components/core/Stack/VStack';
 import { NftDetailTextNonPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextNonPOAPSectionFragment.graphql';
 import TextButton from 'components/core/Button/TextButton';
-import { HStack } from 'components/core/Stack/HStack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -108,7 +107,7 @@ function NftDetailText({ tokenRef }: Props) {
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={4}>
           {token.name && <TitleM>{token.name}</TitleM>}
-          <HStack alignItems="center" gap={4}>
+          <HStack align="center" gap={4}>
             {token.chain === 'POAP' && <PoapLogo />}
 
             {communityUrl && token.contract?.name ? (

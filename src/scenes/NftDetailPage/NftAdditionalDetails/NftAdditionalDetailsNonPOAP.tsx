@@ -1,6 +1,5 @@
 import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
@@ -12,7 +11,7 @@ import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { NftAdditionalDetailsNonPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsNonPOAPFragment.graphql';
 import { NftAdditionalDetailsNonPOAPQuery } from '../../../../__generated__/NftAdditionalDetailsNonPOAPQuery.graphql';
 import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
-import { VStack } from 'components/core/Stack/VStack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   tokenRef: NftAdditionalDetailsNonPOAPFragment$key;

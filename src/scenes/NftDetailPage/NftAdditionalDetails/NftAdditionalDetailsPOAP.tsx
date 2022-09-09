@@ -1,8 +1,8 @@
 import { useFragment } from 'react-relay';
 import { NftAdditionalDetailsPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsPOAPFragment.graphql';
 import { graphql } from 'relay-runtime';
-import { VStack } from 'components/core/Stack/VStack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type NftAdditionalDetailsPOAPProps = {
   tokenRef: NftAdditionalDetailsPOAPFragment$key;

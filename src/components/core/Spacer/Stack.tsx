@@ -17,8 +17,8 @@ import styled, { CSSProperties } from 'styled-components';
  */
 export const HStack = styled.div<{
   gap?: number;
-  align: CSSProperties['alignItems'];
-  justify: CSSProperties['justifyContent'];
+  align?: CSSProperties['alignItems'];
+  justify?: CSSProperties['justifyContent'];
 }>`
   gap: 0 ${({ gap }) => gap ?? 0}px;
 
@@ -31,8 +31,8 @@ export const HStack = styled.div<{
  */
 export const VStack = styled.div<{
   gap?: number;
-  align: CSSProperties['alignItems'];
-  justify: CSSProperties['justifyContent'];
+  align?: CSSProperties['alignItems'];
+  justify?: CSSProperties['justifyContent'];
 }>`
   gap: ${({ gap }) => gap ?? 0}px 0;
 
