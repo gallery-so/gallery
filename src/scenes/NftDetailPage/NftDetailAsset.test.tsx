@@ -45,6 +45,8 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
     token: {
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
+      chain: Chain.Ethereum,
+      tokenMetadata: '{}',
       owner: {
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
