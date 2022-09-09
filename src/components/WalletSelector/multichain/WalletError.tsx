@@ -3,6 +3,7 @@ import { isEarlyAccessError } from 'contexts/analytics/authUtil';
 import { UserRejectedRequestError } from 'wagmi';
 import { WalletSelectorError } from './WalletSelectorError';
 import { isWeb3Error } from 'types/Error';
+import { BeaconErrorType } from '@airgap/beacon-types';
 
 type ErrorMessage = {
   heading: string;
@@ -70,6 +71,10 @@ export const WalletError = ({ address, error, reset }: Props) => {
           heading: 'Authorization error',
           body: error.message,
         };
+      }
+
+      if (error.code === BeaconErrorType.ABORTED_ERROR) {
+        return getErrorMessage('REJECTED_SIGNATURE');
       }
 
       if (error.code) {

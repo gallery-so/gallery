@@ -45,7 +45,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [account, setAccount] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [wallet, setWallet] = useState<string>();
-  const { requestPermissions, requestSignature } = useBeaconActions();
+  const { getActiveAccount, requestSignature } = useBeaconActions();
 
   const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
@@ -168,7 +168,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       }
 
       try {
-        const { publicKey, address, wallet } = await requestPermissions();
+        const { publicKey, address, wallet } = await getActiveAccount();
         if (!address || !publicKey) return;
 
         setPendingState(CONFIRM_ADDRESS);
@@ -185,7 +185,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     if (pendingState === INITIAL) {
       void authenticate();
     }
-  }, [account, authenticatedUserAddresses, attemptAddWallet, pendingState, requestPermissions]);
+  }, [account, attemptAddWallet, authenticatedUserAddresses, getActiveAccount, pendingState]);
 
   if (error) {
     return (
