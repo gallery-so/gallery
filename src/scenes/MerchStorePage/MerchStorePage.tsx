@@ -8,7 +8,7 @@ import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalF
 import colors from 'components/core/colors';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 const items = [
   {
@@ -47,7 +47,7 @@ export default function MerchStorePage() {
       <StyledLogoContainer>
         <StyledLogoBracketLeft color={colors.offBlack} />
         <StyledShopText>OBJECTS</StyledShopText>
-        <Spacer width={1} />
+        <DeprecatedSpacer width={1} />
         <StyledLogoBracketRight color={colors.offBlack} />
       </StyledLogoContainer>
       <StyledItemsContainer>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import breakpoints from 'components/core/breakpoints';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -76,9 +76,10 @@ function UserGalleryCollection({
   const router = useRouter();
 
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectorsNote ?? ''), [
-    collection.collectorsNote,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectorsNote ?? ''),
+    [collection.collectorsNote]
+  );
 
   const username = router.query.username as string;
   const collectionUrl = `/${username}/${collection.dbid}`;
@@ -127,7 +128,7 @@ function UserGalleryCollection({
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <StyledShareButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <Spacer width={16} />
+            <DeprecatedSpacer width={16} />
             <StyledSettingsDropdown>
               <Dropdown>
                 {showEditActions && (
@@ -137,14 +138,14 @@ function UserGalleryCollection({
                       text="EDIT NAME & DESCRIPTION"
                       underlineOnHover
                     />
-                    <Spacer height={8} />
+                    <DeprecatedSpacer height={8} />
                     <UnstyledLink
                       href={`/edit?collectionId=${collection.dbid}`}
                       onClick={() => track('Update existing collection button clicked')}
                     >
                       <TextButton text="Edit Collection" underlineOnHover />
                     </UnstyledLink>
-                    <Spacer height={8} />
+                    <DeprecatedSpacer height={8} />
                   </>
                 )}
                 <UnstyledLink href={collectionUrl}>

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { Button } from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -40,7 +40,7 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
 
   return (
     <StyledConfirmation>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <ButtonContainer>
         <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>

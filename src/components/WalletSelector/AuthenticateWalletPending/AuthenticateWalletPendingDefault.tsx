@@ -7,7 +7,7 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   isNotEarlyAccessError,
@@ -136,7 +136,7 @@ function AuthenticateWalletPendingDefault({
     return (
       <StyledAuthenticateWalletPending>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </StyledAuthenticateWalletPending>
     );
@@ -145,7 +145,7 @@ function AuthenticateWalletPendingDefault({
   return (
     <StyledAuthenticateWalletPending>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </StyledAuthenticateWalletPending>
   );

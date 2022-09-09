@@ -1,4 +1,4 @@
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
@@ -93,7 +93,7 @@ export default function QRCodePopover({
   return (
     <StyledQRCodePopover>
       <StyledQRCode ref={ref} />
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <TitleM>
         <strong>{username}</strong>
       </TitleM>

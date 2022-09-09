@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
@@ -91,7 +91,7 @@ function LoggedInNav({ queryRef }: Props) {
           </Dropdown>
         </NavElement>
       )}
-      <Spacer width={24} />
+      <DeprecatedSpacer width={24} />
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
@@ -105,7 +105,7 @@ function LoggedInNav({ queryRef }: Props) {
                 <StyledObjectsContainer>
                   <StyledLogoBracketLeft color={colors.shadow} />
                   <StyledShopText>OBJECTS</StyledShopText>
-                  <Spacer width={1} />
+                  <DeprecatedSpacer width={1} />
                   <StyledLogoBracketRight color={colors.shadow} />
                 </StyledObjectsContainer>
               </ShopOptionContainer>

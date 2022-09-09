@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { TitleL } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
@@ -33,15 +33,15 @@ function MemberListPage({ queryRef }: Props) {
   return (
     <StyledPage>
       <MemberListPageProvider>
-        <Spacer height={208} />
+        <DeprecatedSpacer height={208} />
         <StyledBanner>
           <StyledBannerText>
             <i>Thank you,</i> for being a patron of Gallery.
           </StyledBannerText>
         </StyledBanner>
-        <Spacer height={isMobile ? 32 : 80} />
+        <DeprecatedSpacer height={isMobile ? 32 : 80} />
         <TokenHolderListFilter />
-        <Spacer height={isMobile ? 32 : 64} />
+        <DeprecatedSpacer height={isMobile ? 32 : 64} />
         <StyledTierWrapper>
           {removeNullValues(membershipTiers).map((tier) => (
             <MemberListTier key={tier.id} tierRef={tier} />

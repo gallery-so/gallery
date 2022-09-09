@@ -1,7 +1,7 @@
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
@@ -26,7 +26,7 @@ export default function GenericActionModal({
     <StyledModal>
       <LeaveWrapper>
         <BaseM>{bodyText}</BaseM>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <StyledButton onClick={handleClick}>{buttonText}</StyledButton>
       </LeaveWrapper>
     </StyledModal>

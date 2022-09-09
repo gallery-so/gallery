@@ -1,6 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -105,15 +105,15 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
               {event.token.token?.name}
             </InteractiveLink>
           </BaseM>
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <StyledContent>
           <StyledMediaWrapper>
             <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
           </StyledMediaWrapper>
-          <Spacer width={MIDDLE_GAP} />
+          <DeprecatedSpacer width={MIDDLE_GAP} />
           <StyledNoteWrapper>
             <StyledNote>
               <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />

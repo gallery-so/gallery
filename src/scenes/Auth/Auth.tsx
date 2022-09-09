@@ -5,7 +5,7 @@ import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import breakpoints from 'components/core/breakpoints';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 // Preloading images for the welcome screen
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
@@ -64,7 +64,7 @@ function Auth({ queryRef }: Props) {
       <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledBaseM>
-      <Spacer height={32} />
+      <DeprecatedSpacer height={32} />
     </StyledAuthPage>
   );
 }
