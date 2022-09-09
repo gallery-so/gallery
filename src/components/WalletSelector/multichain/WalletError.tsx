@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { isEarlyAccessError } from 'contexts/analytics/authUtil';
 import { UserRejectedRequestError } from 'wagmi';
 import { WalletSelectorError } from './WalletSelectorError';
-import { isWeb3Error } from 'types/Error';
+import { isBeaconError, isWeb3Error } from 'types/Error';
+import { BeaconErrorType } from '@airgap/beacon-types';
 
 type ErrorMessage = {
   heading: string;
@@ -74,6 +75,12 @@ export const WalletError = ({ address, error, reset }: Props) => {
 
       if (error.code) {
         return getErrorMessage(error.code);
+      }
+    }
+
+    if (isBeaconError(error)) {
+      if (error.code === BeaconErrorType.ABORTED_ERROR) {
+        return getErrorMessage('REJECTED_SIGNATURE');
       }
     }
 

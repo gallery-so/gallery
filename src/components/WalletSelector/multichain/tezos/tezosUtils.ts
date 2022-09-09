@@ -19,3 +19,9 @@ export function getNonceNumber(nonce: string) {
   const splittedNonceMessage = nonce.split(' ');
   return splittedNonceMessage[splittedNonceMessage.length - 1];
 }
+
+export function getErrorCode(error: any) {
+  // https://typedocs.walletbeacon.io/enums/beaconerrortype.html
+  // Example: [ABORTED_ERROR]:The action was aborted by the user.
+  return error.message.split(':')[0].replace('[', '').replace(']', '');
+}
