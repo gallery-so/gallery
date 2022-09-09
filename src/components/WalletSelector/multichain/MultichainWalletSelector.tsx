@@ -16,15 +16,12 @@ import { BaseM } from 'components/core/Text/Text';
 import Spacer from 'components/core/Spacer/Spacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
-import isProduction from 'utils/isProduction';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 
 type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
 };
-
-const isProd = isProduction();
 
 export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
