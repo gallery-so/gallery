@@ -1,11 +1,9 @@
-import { format, parse } from 'date-fns';
 import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
 
 import breakpoints, { size } from 'components/core/breakpoints';
 import styled from 'styled-components';
 import Markdown from 'components/core/Markdown/Markdown';
 import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useCallback, useMemo, useState } from 'react';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
@@ -15,10 +13,8 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailTextFragment$key } from '../../../__generated__/NftDetailTextFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
-import { NftDetailTextPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextPOAPSectionFragment.graphql';
 import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import { NftDetailTextNonPOAPSectionFragment$key } from '../../../__generated__/NftDetailTextNonPOAPSectionFragment.graphql';
 import TextButton from 'components/core/Button/TextButton';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
@@ -54,8 +50,6 @@ function NftDetailText({ tokenRef }: Props) {
           }
         }
 
-        ...NftDetailTextNonPOAPSectionFragment
-        ...NftDetailTextPOAPSectionFragment
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
       }
@@ -134,13 +128,7 @@ function NftDetailText({ tokenRef }: Props) {
             </div>
           )}
 
-          {token.chain === 'POAP' ? (
-            <POAPNftDetailSection tokenRef={token} />
-          ) : (
-            <NonPOAPNftDetailSection tokenRef={token} />
-          )}
-
-          {showDetails && <NftAdditionalDetails tokenRef={token} />}
+          {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
 
           {SHOW_BUY_NOW_BUTTON && (
             <VStack gap={24}>
@@ -167,84 +155,6 @@ const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo
   width: 16px;
   height: 16px;
 `;
-
-type EthNftDetailSectionProps = {
-  tokenRef: NftDetailTextNonPOAPSectionFragment$key;
-};
-function NonPOAPNftDetailSection({ tokenRef }: EthNftDetailSectionProps) {
-  const token = useFragment(
-    graphql`
-      fragment NftDetailTextNonPOAPSectionFragment on Token {
-        contract {
-          contractAddress {
-            address
-          }
-        }
-      }
-    `,
-    tokenRef
-  );
-
-  if (token.contract?.contractAddress?.address) {
-    return (
-      <div>
-        <TitleXS>Creator</TitleXS>
-        <BaseM>
-          <EnsOrAddress address={token.contract.contractAddress.address} />
-        </BaseM>
-      </div>
-    );
-  }
-
-  return null;
-}
-
-type POAPNftDetailSectionProps = {
-  tokenRef: NftDetailTextPOAPSectionFragment$key;
-};
-
-function POAPNftDetailSection({ tokenRef }: POAPNftDetailSectionProps) {
-  const token = useFragment(
-    graphql`
-      fragment NftDetailTextPOAPSectionFragment on Token {
-        tokenMetadata
-      }
-    `,
-    tokenRef
-  );
-
-  if (!token.tokenMetadata) {
-    return null;
-  }
-
-  const metadata = JSON.parse(token.tokenMetadata);
-
-  const location =
-    metadata.city && metadata.country ? `${metadata.city}, ${metadata.country}` : null;
-
-  const parsedDate = metadata.created
-    ? parse(metadata.created, 'yyyy-MM-dd HH:mm:ss', new Date())
-    : null;
-
-  const formattedDate = parsedDate ? format(parsedDate, 'MMMM do, yyyy') : null;
-
-  return (
-    <VStack gap={16}>
-      {formattedDate && (
-        <div>
-          <TitleXS>Created</TitleXS>
-          <BaseM>{formattedDate}</BaseM>
-        </div>
-      )}
-      {location && (
-        <div>
-          <TitleXS>Location</TitleXS>
-          <BaseM>{location}</BaseM>
-        </div>
-      )}
-    </VStack>
-  );
-}
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
   display: block;

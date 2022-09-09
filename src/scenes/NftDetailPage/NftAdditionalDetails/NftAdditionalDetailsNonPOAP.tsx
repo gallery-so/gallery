@@ -1,29 +1,31 @@
-import { FeatureFlag } from 'components/core/enums';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { NftAdditionalDetailsNonPOAPQuery } from '../../../../__generated__/NftAdditionalDetailsNonPOAPQuery.graphql';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
 import { useCallback, useMemo } from 'react';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import styled from 'styled-components';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { NftAdditionalDetailsNonPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsNonPOAPFragment.graphql';
-import { NftAdditionalDetailsNonPOAPQuery } from '../../../../__generated__/NftAdditionalDetailsNonPOAPQuery.graphql';
 import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
+import { BaseM, TitleXS } from 'components/core/Text/Text';
+import { EnsOrAddress } from 'components/EnsOrAddress';
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
+import styled from 'styled-components';
+import { NftAdditionalDetailsNonPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsNonPOAPFragment.graphql';
 
-type Props = {
+type NftAdditionaDetailsNonPOAPProps = {
+  showDetails: boolean;
   tokenRef: NftAdditionalDetailsNonPOAPFragment$key;
 };
 
-export function NftAdditionalDetailsNonPOAP({ tokenRef }: Props) {
+export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNonPOAPProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsNonPOAPFragment on Token {
         dbid
-        tokenId
         externalUrl
+        tokenId
         contract {
           contractAddress {
             address
@@ -44,11 +46,11 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: Props) {
     {}
   );
 
+  const { dbid, tokenId, contract, externalUrl } = token;
+
   const reportError = useReportError();
   const { pushToast } = useToastActions();
   const [refreshToken, isRefreshing] = useRefreshToken();
-
-  const { dbid, tokenId, contract, externalUrl } = token;
 
   const handleRefreshMetadata = useCallback(async () => {
     try {
@@ -86,6 +88,15 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: Props) {
 
   return (
     <VStack gap={16}>
+      {token.contract?.contractAddress?.address && (
+        <div>
+          <TitleXS>Creator</TitleXS>
+          <BaseM>
+            <EnsOrAddress address={token.contract.contractAddress.address} />
+          </BaseM>
+        </div>
+      )}
+
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>

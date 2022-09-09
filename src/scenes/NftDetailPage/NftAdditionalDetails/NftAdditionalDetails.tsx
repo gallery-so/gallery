@@ -5,10 +5,11 @@ import { NftAdditionalDetailsPOAP } from 'scenes/NftDetailPage/NftAdditionalDeta
 import { NftAdditionalDetailsNonPOAP } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsNonPOAP';
 
 type NftAdditionalDetailsProps = {
+  showDetails: boolean;
   tokenRef: NftAdditionalDetailsFragment$key;
 };
 
-export function NftAdditionalDetails({ tokenRef }: NftAdditionalDetailsProps) {
+export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDetailsProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsFragment on Token {
@@ -22,8 +23,8 @@ export function NftAdditionalDetails({ tokenRef }: NftAdditionalDetailsProps) {
   );
 
   if (token.chain === 'POAP') {
-    return <NftAdditionalDetailsPOAP tokenRef={token} />;
+    return <NftAdditionalDetailsPOAP showDetails={showDetails} tokenRef={token} />;
   }
 
-  return <NftAdditionalDetailsNonPOAP tokenRef={token} />;
+  return <NftAdditionalDetailsNonPOAP showDetails={showDetails} tokenRef={token} />;
 }
