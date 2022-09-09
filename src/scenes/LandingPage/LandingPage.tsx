@@ -40,7 +40,7 @@ export default function LandingPage() {
           <DeprecatedSpacer width={8} />
           <BaseS>·</BaseS>
           <DeprecatedSpacer width={8} />
-          <NavLink to="/shatt">Gallery of the Week</NavLink>
+          <NavLink to="/bastiboii">Gallery of the Week</NavLink>
         </StyledLinkContainer>
         <DeprecatedSpacer height={12} />
         <NavLink to="/shop">
