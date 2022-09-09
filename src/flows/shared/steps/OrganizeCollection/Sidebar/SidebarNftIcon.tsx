@@ -35,8 +35,7 @@ function SidebarNftIcon({
 }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
-      fragment SidebarNftIconFragment on Token
-      @refetchable(queryName: "RefetchableSidebarNftIconFragment") {
+      fragment SidebarNftIconFragment on Token {
         dbid
         contract {
           contractAddress {
