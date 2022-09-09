@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ButtonLink } from 'components/core/Button/Button';
 import GalleryIntro from 'components/GalleryTitleIntro/GalleryTitleIntro';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseS, TitleM, BlueLabel } from 'components/core/Text/Text';
 import NavLink from 'components/core/NavLink/NavLink';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -15,7 +15,7 @@ export default function LandingPage() {
   return (
     <StyledLandingPage>
       <GalleryIntro />
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       <StyledButtonContainer>
         <ButtonLink
           href="/auth"
@@ -24,7 +24,7 @@ export default function LandingPage() {
         >
           Sign In
         </ButtonLink>
-        <Spacer width={12} />
+        <DeprecatedSpacer width={12} />
         <ButtonLink
           href="/home"
           onClick={() => track('Landing page Explore button click')}
@@ -37,22 +37,22 @@ export default function LandingPage() {
       <StyledBottomContainer>
         <StyledLinkContainer>
           <NavLink to="/members">Members</NavLink>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <BaseS>·</BaseS>
-          <Spacer width={8} />
+          <DeprecatedSpacer width={8} />
           <NavLink to="/shatt">Gallery of the Week</NavLink>
         </StyledLinkContainer>
-        <Spacer height={12} />
+        <DeprecatedSpacer height={12} />
         <NavLink to="/shop">
           <StyledShopLinkContainer>
             Shop
-            <Spacer width={6} />
+            <DeprecatedSpacer width={6} />
             <StyledObjectsContainer>
               <StyledLogoBracketLeft color={colors.shadow} />
               <StyledShopText>OBJECTS</StyledShopText>
               <StyledLogoBracketRight color={colors.shadow} />
             </StyledObjectsContainer>
-            <Spacer width={6} />
+            <DeprecatedSpacer width={6} />
             <BlueLabel>New</BlueLabel>
           </StyledShopLinkContainer>
         </NavLink>

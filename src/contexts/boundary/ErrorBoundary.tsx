@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import formatError from 'errors/formatError';
 import { captureException } from '@sentry/nextjs';
@@ -28,12 +28,12 @@ class ErrorBoundary extends Component {
       return (
         <StyledErrorBoundary>
           <BaseXL>{errorMessage}</BaseXL>
-          <Spacer height={48} />
+          <DeprecatedSpacer height={48} />
           <StyledReachOut>
             If you&apos;re continuing to see this error, reach out to us on{' '}
             <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
           </StyledReachOut>
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
         </StyledErrorBoundary>
       );
     }

@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
@@ -48,7 +48,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   return (
     <StyledColumnAdjuster>
       <BaseM>Columns</BaseM>
-      <Spacer width={24} />
+      <DeprecatedSpacer width={24} />
       <StyledButtonContainer>
         <StyledColumnButton onClick={handleDecrementClick} disabled={columns <= 1}>
           <CircleMinusIcon />

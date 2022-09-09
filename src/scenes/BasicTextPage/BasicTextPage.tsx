@@ -1,5 +1,5 @@
 import { InternalMarkdown } from 'components/core/Markdown/Markdown';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TitleL } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
@@ -14,7 +14,7 @@ export default function BasicTextPage({ title, body }: Props) {
     <StyledPage>
       <StyledContent>
         <TitleL>{title}</TitleL>
-        <Spacer height={64} />
+        <DeprecatedSpacer height={64} />
         <StyledBody>
           <InternalMarkdown text={body} />
         </StyledBody>

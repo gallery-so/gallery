@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   isEarlyAccessError,
   useTrackSignInAttempt,
@@ -116,7 +116,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Ethereum</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
     );
@@ -125,7 +125,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   return (
     <div>
       <TitleS>Connect with Ethereum</TitleS>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import useSWR from 'swr';
-import Spacer from './core/Spacer/Spacer';
+import DeprecatedSpacer from './core/Spacer/DeprecatedSpacer';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
 
 type Props = {
@@ -26,7 +26,7 @@ export const EnsOrAddress = ({ address }: Props) => (
     fallback={
       // TODO: fallback that takes the height of the text element would appear post-fetch.
       // long-term, we're going to holistically re-think loading states on the app
-      <Spacer height={18} />
+      <DeprecatedSpacer height={18} />
     }
   >
     <PlainErrorBoundary fallback={<span title={address}>{address}</span>}>

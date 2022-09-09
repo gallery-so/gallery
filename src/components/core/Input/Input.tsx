@@ -2,7 +2,7 @@ import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
-import Spacer from '../Spacer/Spacer';
+import DeprecatedSpacer from '../Spacer/DeprecatedSpacer';
 import ErrorText from '../Text/ErrorText';
 
 type Props = {
@@ -38,7 +38,7 @@ function Input({
       />
       {errorMessage && (
         <>
-          <Spacer height={4} />
+          <DeprecatedSpacer height={4} />
           <ErrorText message={errorMessage} />
         </>
       )}

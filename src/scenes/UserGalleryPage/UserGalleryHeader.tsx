@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import QRCodeButton from './QRCodeButton';
@@ -66,9 +66,9 @@ function UserGalleryHeader({
           {isMobile && (
             <>
               <LinkButton textToCopy={`https://gallery.so/${username}`} />
-              <Spacer width={8} />
+              <DeprecatedSpacer width={8} />
               <QRCodeButton username={username} styledQrCode={styledQrCode} />
-              <Spacer width={8} />
+              <DeprecatedSpacer width={8} />
             </>
           )}
           {showMobileLayoutToggle && (
@@ -76,7 +76,7 @@ function UserGalleryHeader({
           )}
         </StyledButtonsWrapper>
       </StyledUsernameWrapper>
-      <Spacer height={2} />
+      <DeprecatedSpacer height={2} />
       <StyledUserDetails>
         {is3ac ? (
           <ExpandableBio text={unescapedBio} />
@@ -112,7 +112,7 @@ const ExpandableBio = ({ text }: { text: string }) => {
           CustomInternalLinkComponent={NftDetailViewer}
         />
       </BaseM>
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       {isExpanded ? null : <TextButton text="Read More" onClick={handleClick} />}
     </>
   );

@@ -2,7 +2,7 @@ import ActionText from 'components/core/ActionText/ActionText';
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import { fadeIn } from 'components/core/keyframes';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
@@ -44,9 +44,9 @@ function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
           Following
         </StyledNavControlText>
       </StyledTextWrapperLeft>
-      <Spacer width={10} />
+      <DeprecatedSpacer width={10} />
       <NavbarGLink />
-      <Spacer width={10} />
+      <DeprecatedSpacer width={10} />
       <StyledTextWrapper>
         <StyledNavControlText onClick={handleWorldwideModeClick} focused={feedMode === 'WORLDWIDE'}>
           Worldwide
@@ -139,7 +139,7 @@ export default function Feed({ queryRef }: Props) {
 
   return (
     <StyledFeed>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       {viewerUserId && feedMode === 'FOLLOWING' && (
         <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />
       )}

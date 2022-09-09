@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 
 import { isWeb3Error, Web3Error } from 'types/Error';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   INITIAL,
@@ -256,9 +256,9 @@ function AddWalletPendingGnosisSafe({
     return (
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
       </div>
     );

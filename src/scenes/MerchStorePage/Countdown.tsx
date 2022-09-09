@@ -3,7 +3,7 @@ import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } fro
 import { useState, useEffect } from 'react';
 import { BaseS, BaseM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import colors from 'components/core/colors';
 
@@ -45,7 +45,7 @@ export default function Countdown() {
           {text.split('\n').map((d, i) => (
             <BaseM key={i}>{d}</BaseM>
           ))}
-          <Spacer height={12} />
+          <DeprecatedSpacer height={12} />
           <StyledCountdown>
             <StyledCountdownText>
               <StyledNumber>{hours === 'NaN' ? ' ' : hours}</StyledNumber>
@@ -60,11 +60,11 @@ export default function Countdown() {
               <StyledCountdownLabel>{seconds === '1' ? 'sec' : 'secs'}</StyledCountdownLabel>
             </StyledCountdownText>
           </StyledCountdown>
-          <Spacer height={12} />
+          <DeprecatedSpacer height={12} />
           <StyledInteractiveLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
             See mint schedule
           </StyledInteractiveLink>
-          <Spacer height={32} />
+          <DeprecatedSpacer height={32} />
         </StyledContainer>
       )}
     </>
