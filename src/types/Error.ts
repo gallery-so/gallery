@@ -17,7 +17,7 @@ export function isWeb3Error(error: unknown): error is Web3Error {
 }
 
 export function isBeaconError(error: unknown): error is BeaconError {
-  const code = getErrorCode(error);
+  const code = getErrorCode(error as BeaconError);
 
   return typeof error === 'object' && error !== null && code in BeaconErrorType;
 }
