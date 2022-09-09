@@ -1,5 +1,5 @@
 import { BaseM, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef } from 'react';
 import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
@@ -128,14 +128,14 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
       {generalError && (
         <>
           <ErrorText message={generalError} />
-          <Spacer height={8} />
+          <DeprecatedSpacer height={8} />
         </>
       )}
 
       <StyledBottomButtonContainer>
         {isEditing ? (
           <>
-            <Spacer height={12} />
+            <DeprecatedSpacer height={12} />
             <SaveNoteButton
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
@@ -144,7 +144,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
           </>
         ) : (
           <>
-            <Spacer height={hasCollectorsNote ? 8 : 0} />
+            <DeprecatedSpacer height={hasCollectorsNote ? 8 : 0} />
             <EditNoteButton
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
@@ -178,7 +178,7 @@ function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
         <Markdown text={nftCollectorsNote} />
       </StyledCollectorsNote>
@@ -201,7 +201,7 @@ function NftDetailNote({
 }: Props) {
   return (
     <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       {authenticatedUserOwnsAsset ? (
         <NoteEditor
           nftCollectorsNote={nftCollectorsNote}

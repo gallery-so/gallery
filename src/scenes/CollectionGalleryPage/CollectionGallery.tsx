@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import NotFound from 'scenes/NotFound/NotFound';
 import CollectionGalleryHeader from './CollectionGalleryHeader';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -77,7 +77,7 @@ function CollectionGallery({ queryRef }: Props) {
   if (collection?.__typename === 'Collection') {
     return (
       <StyledCollectionGallery>
-        <Spacer height={isMobile ? 48 : 80} />
+        <DeprecatedSpacer height={isMobile ? 48 : 80} />
         <CollectionGalleryHeader
           queryRef={query}
           collectionRef={collection}
@@ -87,7 +87,7 @@ function CollectionGallery({ queryRef }: Props) {
         <NftGalleryWrapper>
           <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
         </NftGalleryWrapper>
-        <Spacer height={isMobile ? 16 : 64} />
+        <DeprecatedSpacer height={isMobile ? 16 : 64} />
       </StyledCollectionGallery>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {

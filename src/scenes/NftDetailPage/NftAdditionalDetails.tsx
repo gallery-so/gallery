@@ -1,7 +1,7 @@
 import TextButton from 'components/core/Button/TextButton';
 import { FeatureFlag } from 'components/core/enums';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
@@ -98,10 +98,10 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
               </InteractiveLink>
             </>
           )}
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
           <TitleXS>Token ID</TitleXS>
           {tokenId && <BaseM>{hexHandler(tokenId)}</BaseM>}
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
           <StyledLinkContainer>
             {hasContractAddress && (
               <>
@@ -117,7 +117,7 @@ function NftAdditionalDetails({ contractAddress, dbId, tokenId, externalUrl }: P
             )}
             {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
           </StyledLinkContainer>
-          <Spacer height={12} />
+          <DeprecatedSpacer height={12} />
           <TextButton text="Hide Details" onClick={handleToggleClick} />
         </div>
       )}

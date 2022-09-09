@@ -4,7 +4,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import breakpoints from 'components/core/breakpoints';
 import { useRouter } from 'next/router';
@@ -83,14 +83,14 @@ function EditUserInfoModal({ queryRef }: Props) {
       />
       {generalError && (
         <>
-          <Spacer height={8} />
+          <DeprecatedSpacer height={8} />
           <ErrorText message={generalError} />
         </>
       )}
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
 
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <Spacer height={12} />
+      <DeprecatedSpacer height={12} />
       <StyledButton onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
         Save
       </StyledButton>

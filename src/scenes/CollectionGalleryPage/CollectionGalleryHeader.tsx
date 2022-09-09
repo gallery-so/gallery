@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
@@ -200,7 +200,7 @@ function CollectionGalleryHeader({
           )}
           {shouldDisplayMobileLayoutToggle && (
             <>
-              <Spacer width={8} />
+              <DeprecatedSpacer width={8} />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
             </>
           )}
@@ -209,14 +209,14 @@ function CollectionGalleryHeader({
 
       {unescapedCollectorsNote && (
         <>
-          <Spacer height={isMobile ? 4 : 16} />
+          <DeprecatedSpacer height={isMobile ? 4 : 16} />
           <StyledCollectionNote>
             <Markdown text={unescapedCollectorsNote} />
           </StyledCollectionNote>
         </>
       )}
 
-      <Spacer height={isMobile ? 48 : 80} />
+      <DeprecatedSpacer height={isMobile ? 48 : 80} />
     </StyledCollectionGalleryHeaderWrapper>
   );
 }

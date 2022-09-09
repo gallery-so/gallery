@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
@@ -78,7 +78,7 @@ export default function ItemPage({
             {description.split('\n').map((d, i) => (
               <BaseM key={i}>{d}</BaseM>
             ))}
-            {!isMobile && <Spacer height={8} />}
+            {!isMobile && <DeprecatedSpacer height={8} />}
             <StyledPriceQuantityAndPurchaseContainer>
               <StyledPriceAndQuantity>
                 <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
@@ -91,7 +91,7 @@ export default function ItemPage({
                   // </BaseM>
                 }
               </StyledPriceAndQuantity>
-              {!isMobile && <Spacer height={16} />}
+              {!isMobile && <DeprecatedSpacer height={16} />}
               <PurchaseBox
                 label={label}
                 tokenId={tokenId}

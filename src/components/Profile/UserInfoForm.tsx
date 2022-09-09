@@ -5,7 +5,7 @@ import unescape from 'utils/unescape';
 import { TitleS } from 'components/core/Text/Text';
 import Input from 'components/core/Input/Input';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { MODAL_PADDING_PX } from 'contexts/modal/constants';
 
 type Props = {
@@ -74,7 +74,7 @@ function UserInfoForm({
   return (
     <StyledForm className={className} onSubmit={handleSubmit}>
       {mode === 'Add' ? <StyledTitleS>Add username and bio</StyledTitleS> : null}
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <Input
         onChange={handleUsernameChange}
         placeholder="Username"
@@ -83,7 +83,7 @@ function UserInfoForm({
         autoFocus={shouldAutofocusUsername}
         variant="grande"
       />
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."

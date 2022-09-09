@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
@@ -163,14 +163,14 @@ function OrganizeGallery({
 
   return (
     <StyledOrganizeGallery>
-      <Spacer height={GLOBAL_NAVBAR_HEIGHT} />
+      <DeprecatedSpacer height={GLOBAL_NAVBAR_HEIGHT} />
       <Content>
         <Header />
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         {isEmptyGallery ? (
           <StyledEmptyGalleryMessage>
             <BaseXL>Create your first collection</BaseXL>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <BaseM>
               Organize your gallery with collections. Use them to group NFTs by creator, theme, or
               anything that feels right.
@@ -179,7 +179,7 @@ function OrganizeGallery({
         ) : (
           <CollectionDnd galleryRef={gallery} />
         )}
-        <Spacer height={120} />
+        <DeprecatedSpacer height={120} />
       </Content>
     </StyledOrganizeGallery>
   );

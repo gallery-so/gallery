@@ -1,6 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseS } from 'components/core/Text/Text';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
@@ -56,7 +56,7 @@ export const StyledEventHeader = styled.div`
     line-height: 16px;
   }
 
-  ${Spacer} {
+  ${DeprecatedSpacer} {
     display: inline-block;
   }
 `;

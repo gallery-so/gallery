@@ -2,7 +2,7 @@ import UserGalleryCollections from 'scenes/UserGalleryPage/UserGalleryCollection
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
 import EmptyGallery from 'scenes/UserGalleryPage/EmptyGallery';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -79,7 +79,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <Spacer height={isMobile ? 48 : 80} />
+      <DeprecatedSpacer height={isMobile ? 48 : 80} />
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
@@ -88,7 +88,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
         setMobileLayout={setMobileLayout}
       />
       {collectionsView}
-      <Spacer height={32} />
+      <DeprecatedSpacer height={32} />
     </StyledUserGalleryLayout>
   );
 };

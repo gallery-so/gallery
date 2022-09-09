@@ -1,4 +1,4 @@
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -41,7 +41,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
       {isLoggedIn ? (
         <>
           <FollowButton queryRef={loggedInUserQuery} userRef={user} />
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
         </>
       ) : null}
       <FollowerListButton userRef={user} />

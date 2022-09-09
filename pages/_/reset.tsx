@@ -1,4 +1,4 @@
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TitleL, TitleS } from 'components/core/Text/Text';
 import { THREE_ARROWS_CAPITAL_BANNER_KEY } from 'constants/storageKeys';
 import usePersistedState from 'hooks/usePersistedState';
@@ -15,7 +15,7 @@ export default function Secret() {
   return (
     <StyledSecret>
       <TitleL>You've found the secret page</TitleL>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <TitleS>The banner has been restored</TitleS>
     </StyledSecret>
   );

@@ -13,7 +13,7 @@ import { EthereumAddWallet } from './EthereumAddWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
 import { BaseM } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
 import isProduction from 'utils/isProduction';
@@ -151,7 +151,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         }}
       />
       <WalletButton label="Solana" icon="solana" disabled />
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <BaseM>More wallets coming soon™</BaseM>
     </StyledWalletSelector>
   );

@@ -1,4 +1,4 @@
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import styled from 'styled-components';
@@ -62,16 +62,16 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   return (
     <MemberListPageProvider>
-      <Spacer height={80} />
+      <DeprecatedSpacer height={80} />
       <StyledHeader>
         <TitleL>{name}</TitleL>
         {description && (
           <StyledDescriptionWrapper>
-            <Spacer height={4} />
+            <DeprecatedSpacer height={4} />
             <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
               <Markdown text={formattedDescription} />
             </StyledBaseM>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             {isLineClampEnabled && (
               <TextButton
                 text={showExpandedDescription ? 'Show less' : 'Show More'}
@@ -81,13 +81,13 @@ export default function CommunityPageView({ communityRef }: Props) {
           </StyledDescriptionWrapper>
         )}
       </StyledHeader>
-      <Spacer height={isMobile ? 32 : 80} />
+      <DeprecatedSpacer height={isMobile ? 32 : 80} />
       <MemberListFilter />
-      <Spacer height={isMobile ? 32 : 64} />
+      <DeprecatedSpacer height={isMobile ? 32 : 64} />
       <StyledListWrapper>
         <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
       </StyledListWrapper>
-      <Spacer height={64} />
+      <DeprecatedSpacer height={64} />
     </MemberListPageProvider>
   );
 }

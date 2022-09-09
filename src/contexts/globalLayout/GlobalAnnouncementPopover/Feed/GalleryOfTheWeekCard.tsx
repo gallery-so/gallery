@@ -1,6 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import FollowButton from 'components/Follow/FollowButton';
@@ -67,10 +67,10 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
         <GotwContainer>
           <GotwHeader>
             <FollowButton queryRef={query} userRef={user} />
-            <Spacer width={8} />
+            <DeprecatedSpacer width={8} />
             <DescriptionText>{user.username}</DescriptionText>
           </GotwHeader>
-          <Spacer height={isMobile ? 16 : 32} />
+          <DeprecatedSpacer height={isMobile ? 16 : 32} />
           <GotwBody>
             {imageUrls.map((url) => (
               <GotwImageContainer key={url}>

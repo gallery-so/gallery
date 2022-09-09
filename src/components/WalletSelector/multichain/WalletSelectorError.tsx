@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 export const WalletSelectorError = ({ heading, body, reset }: Props) => (
   <>
     <TitleS>{heading}</TitleS>
-    <Spacer height={16} />
+    <DeprecatedSpacer height={16} />
     <StyledBody>
       <Markdown text={body} />
     </StyledBody>

@@ -7,7 +7,7 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { isWeb3Error, Web3Error } from 'types/Error';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -204,13 +204,13 @@ function AddWalletPendingDefault({
     return (
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
         {isMetamask && (
           <>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <BaseM>
               If you want to connect a different address via Metamask, please switch accounts in the
               extension and try again.
@@ -226,16 +226,16 @@ function AddWalletPendingDefault({
     return (
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Confirm the following wallet address:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account?.toLowerCase()}</BaseM>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <BaseM>
           If you want to connect a different address via Metamask, please switch accounts in the
           extension and try again.
         </BaseM>
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         <StyledButton
           onClick={() => attemptAddWallet(account.toLowerCase(), signer)}
           disabled={isConnecting}
@@ -250,7 +250,7 @@ function AddWalletPendingDefault({
     return (
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
       </div>
     );
@@ -260,7 +260,7 @@ function AddWalletPendingDefault({
   return (
     <div>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
     </div>
   );

@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import unescape from 'utils/unescape';
 import { useMemo } from 'react';
@@ -92,14 +92,14 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
               {unescape(event.collection.name ?? '')}
             </InteractiveLink>
           )}
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
         {showAdditionalPiecesIndicator && (
           <>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <StyledAdditionalPieces>
               +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
             </StyledAdditionalPieces>
