@@ -20,6 +20,7 @@ export const HStack = styled.div<{
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
 }>`
+  display: flex;
   gap: 0 ${({ gap }) => gap ?? 0}px;
 
   align-items: ${({ align }) => align ?? 'unset'};
@@ -34,6 +35,9 @@ export const VStack = styled.div<{
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
 }>`
+  display: flex;
+  flex-direction: column;
+
   gap: ${({ gap }) => gap ?? 0}px 0;
 
   align-items: ${({ align }) => align ?? 'unset'};
