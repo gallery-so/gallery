@@ -77,7 +77,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!event.collection.tokens.length) {
-    return null;
+    throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without any tokens');
   }
 
   return (

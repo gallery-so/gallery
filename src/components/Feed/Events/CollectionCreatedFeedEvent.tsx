@@ -72,7 +72,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length || !event.owner) {
-    return null;
+    throw new Error('Tried to render CollectionCreatedFeedEvent without an owner / tokens');
   }
 
   return (

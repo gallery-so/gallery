@@ -89,7 +89,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
     // case 'UserCreatedFeedEventData':
 
     default:
-      return null;
+      throw new Error('Tried to render unsupported feed event');
   }
 }
 

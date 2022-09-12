@@ -82,7 +82,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRe
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length) {
-    return null;
+    throw new Error('Tried to render TokensAddedToCollectionFeedEvent without any tokens');
   }
 
   return (
