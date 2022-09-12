@@ -104,7 +104,9 @@ export const SidebarTokens = ({
   );
 
   if (rows.length === 0) {
-    return <EmptySidebar chain={selectedChain} />;
+    return (
+      <EmptySidebar reason={isSearching ? 'no-search-results' : 'no-nfts'} chain={selectedChain} />
+    );
   }
 
   return (
