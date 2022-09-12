@@ -119,7 +119,13 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
       return token.chain === selectedChain;
     });
-  }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
+  }, [
+    editModeTokensSearchResults,
+    isPOAPEnabled,
+    isSearching,
+    nftFragmentsKeyedByID,
+    selectedChain,
+  ]);
 
   return (
     <StyledSidebar>

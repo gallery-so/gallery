@@ -2,7 +2,6 @@ import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import { useMemo } from 'react';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { graphql, useFragment } from 'react-relay';
 import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
