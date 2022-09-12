@@ -32,6 +32,8 @@ const StyledInnerEvent = styled.div`
 
 // base styles for feed events
 export const StyledEventWrapper = styled.div`
+  width: 100%;
+
   display: flex;
   justify-content: center;
 

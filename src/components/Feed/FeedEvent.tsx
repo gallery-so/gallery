@@ -12,6 +12,8 @@ import { FeedEventSocializeSection } from 'components/Feed/FeedEventSocializeSec
 import { ErrorBoundary } from '@sentry/nextjs';
 import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
@@ -125,11 +127,17 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
+      <StyledVStack gap={16}>
+        <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
-      <ErrorBoundary fallback={<></>}>
-        <FeedEventSocializeSection eventRef={event} />
-      </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <FeedEventSocializeSection eventRef={event} />
+        </ErrorBoundary>
+      </StyledVStack>
     </FeedEventErrorBoundary>
   );
 }
+
+const StyledVStack = styled(VStack)`
+  padding-bottom: 16px;
+`;
