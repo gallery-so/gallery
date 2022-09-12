@@ -8,6 +8,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
 import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   className?: string;
@@ -69,33 +70,27 @@ function CollectionName({ tokenRef }: CollectionNameProps) {
   const collectionName = token.contract?.name;
   const communityUrl = getCommunityUrlForToken(token);
 
-  const inner = useMemo(() => {
-    if (communityUrl) {
-      return (
-        <div>
-          <StyledBaseM lines={2}>
-            <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-          </StyledBaseM>
-        </div>
-      );
-    }
-
-    return (
-      <StyledBaseM color={colors.white} lines={2}>
-        {collectionName}
-      </StyledBaseM>
-    );
-  }, [collectionName, communityUrl]);
-
   if (!collectionName) {
     return null;
   }
 
   return (
-    <CommunityNameWrapper>
+    <HStack gap={4} justify="flex-end" align="center">
       {token.chain === 'POAP' && <POAPLogo />}
-      <div>{inner}</div>
-    </CommunityNameWrapper>
+      {communityUrl ? (
+        <>
+          <StyledBaseM lines={2}>
+            <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+          </StyledBaseM>
+        </>
+      ) : (
+        <>
+          <StyledBaseM color={colors.white} lines={2}>
+            {collectionName}
+          </StyledBaseM>
+        </>
+      )}
+    </HStack>
   );
 }
 
@@ -105,14 +100,6 @@ const POAPLogo = styled.img.attrs({
 })`
   width: 16px;
   height: 16px;
-`;
-
-const CommunityNameWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 0 4px;
 `;
 
 export const StyledNftPreviewLabel = styled.div`
