@@ -16,7 +16,6 @@ import { BaseM } from 'components/core/Text/Text';
 import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
-import isProduction from 'utils/isProduction';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 
@@ -24,8 +23,6 @@ type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
 };
-
-const isProd = isProduction();
 
 export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
   const query = useFragment(
@@ -47,10 +44,10 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }, []);
 
   const handleToggleTezosButton = useCallback(() => {
-    return !isProd && setIsTezosConnectEnabled(true);
+    return setIsTezosConnectEnabled(true);
   }, []);
 
-  useMultiKeyDown(['Control', 't'], handleToggleTezosButton);
+  useMultiKeyDown(['Shift', 't'], handleToggleTezosButton);
 
   const connectEthereum = useConnectEthereum();
   const { requestPermissions: connectTezos } = useBeaconActions();
@@ -152,7 +149,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
       />
       <WalletButton label="Solana" icon="solana" disabled />
       <DeprecatedSpacer height={16} />
-      <BaseM>More wallets coming soon™</BaseM>
+      <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }

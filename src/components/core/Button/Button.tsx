@@ -40,7 +40,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   &:not(:disabled) {
     cursor: pointer;
   }
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     pointer-events: none;
   }
 
@@ -48,7 +48,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     opacity: 1;
     transition: all ${transitions.cubic};
   }
-  &[aria-busy="true"] .Button-label {
+  &[aria-busy='true'] .Button-label {
     opacity: 0;
   }
 
@@ -61,7 +61,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     opacity: 0;
     transition: opacity ${transitions.cubic};
   }
-  &[aria-busy="true"] .Button-spinner {
+  &[aria-busy='true'] .Button-spinner {
     opacity: 1;
   }
 
@@ -106,7 +106,6 @@ const StyledButton = styled.button<StyledButtonProps>`
         background: transparent;
         color: ${colors.shadow};
         border: 1px solid transparent;
-        transition: all ${transitions.cubic};
 
         &:hover:not(:disabled) {
           border-color: ${colors.red};

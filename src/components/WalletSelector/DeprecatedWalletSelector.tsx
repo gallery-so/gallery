@@ -236,7 +236,7 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
         />
       ))}
       <DeprecatedSpacer height={16} />
-      <BaseM>More wallets coming soon™</BaseM>
+      <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
