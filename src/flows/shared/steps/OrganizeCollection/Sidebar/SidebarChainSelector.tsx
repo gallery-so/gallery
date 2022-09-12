@@ -175,6 +175,15 @@ const IconButton = styled.button<{ refreshing: boolean }>`
 
   cursor: pointer;
 
+  // Ensure we don't include the Tooltip in the outline
+  :focus-within {
+    outline: none;
+
+    ${StyledIconContainer} {
+      outline: auto;
+    }
+  }
+
   ${({ refreshing }) =>
     refreshing
       ? css`
