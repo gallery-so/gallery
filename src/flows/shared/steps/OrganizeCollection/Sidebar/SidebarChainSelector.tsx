@@ -27,19 +27,23 @@ export type Chain = typeof chains[number]['name'];
 type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
-  viewerRef: SidebarChainSelectorFragment$key;
+  queryRef: SidebarChainSelectorFragment$key;
 };
 
-export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarChainsProps) {
-  const viewer = useFragment(
+export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarChainsProps) {
+  const query = useFragment(
     graphql`
-      fragment SidebarChainSelectorFragment on Viewer {
-        user {
-          dbid
+      fragment SidebarChainSelectorFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
         }
       }
     `,
-    viewerRef
+    queryRef
   );
 
   const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
@@ -57,7 +61,7 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
         __typename
         ... on SyncTokensPayload {
           viewer {
-            ...CollectionEditorFragment
+            ...CollectionEditorViewerFragment
           }
         }
       }
@@ -68,7 +72,7 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
   const { pushToast } = useToastActions();
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const is3ac = isViewerId3ac(viewer.user?.dbid);
+  const is3ac = isViewerId3ac(query.viewer?.user?.dbid);
   const selectedChain = chains.find((chain) => chain.name === selected);
 
   const handleRefresh = useCallback(async () => {

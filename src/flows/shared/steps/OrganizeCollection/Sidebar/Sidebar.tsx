@@ -26,10 +26,10 @@ import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/Sid
 type Props = {
   sidebarTokens: SidebarTokensState;
   tokensRef: SidebarFragment$key;
-  viewerRef: SidebarViewerFragment$key;
+  queryRef: SidebarViewerFragment$key;
 };
 
-function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
+function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
       fragment SidebarFragment on Token @relay(plural: true) {
@@ -44,13 +44,13 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
     tokensRef
   );
 
-  const viewer = useFragment(
+  const query = useFragment(
     graphql`
-      fragment SidebarViewerFragment on Viewer {
+      fragment SidebarViewerFragment on Query {
         ...SidebarChainSelectorFragment
       }
     `,
-    viewerRef
+    queryRef
   );
 
   const { stageTokens } = useCollectionEditorActions();
@@ -126,7 +126,7 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
       {!isSearching && (
         <>
           <SidebarChainSelector
-            viewerRef={viewer}
+            queryRef={query}
             selected={selectedChain}
             onChange={setSelectedChain}
           />
