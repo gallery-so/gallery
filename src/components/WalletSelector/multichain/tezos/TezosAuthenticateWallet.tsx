@@ -28,7 +28,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
   const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
-  const { requestPermissions, requestSignature } = useBeaconActions();
+  const { getActiveAccount, requestSignature } = useBeaconActions();
 
   const { handleLogin } = useAuthActions();
 
@@ -95,7 +95,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   useEffect(() => {
     async function authenticate() {
       try {
-        const { publicKey, address, wallet } = await requestPermissions();
+        const { publicKey, address, wallet } = await getActiveAccount();
 
         if (!address || !publicKey) return;
         setAddress(address);
@@ -113,7 +113,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     }
 
     void authenticate();
-  }, [attemptAuthentication, requestPermissions, trackSignInError]);
+  }, [attemptAuthentication, getActiveAccount, trackSignInError]);
 
   if (error) {
     return (

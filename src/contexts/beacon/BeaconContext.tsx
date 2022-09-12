@@ -1,7 +1,12 @@
-import { DAppClient, ExtendedPeerInfo, RequestSignPayloadInput } from '@airgap/beacon-sdk';
+import {
+  DAppClient,
+  ExtendedPeerInfo,
+  NetworkType,
+  RequestSignPayloadInput,
+} from '@airgap/beacon-sdk';
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 
-type PermissionResponse = {
+type AccountResponse = {
   publicKey: string;
   address: string;
   wallet: string;
@@ -16,8 +21,9 @@ const FriendlyWalletNaming: friendlyWalletNamingType = {
 };
 
 type BeaconActions = {
-  requestPermissions: () => Promise<PermissionResponse>;
+  requestPermissions: () => Promise<string>;
   requestSignature: (payload: RequestSignPayloadInput) => Promise<string>;
+  getActiveAccount: () => Promise<AccountResponse>;
 };
 
 const BeaconActionsContext = createContext<BeaconActions | undefined>(undefined);
@@ -36,12 +42,33 @@ type Props = { children: ReactNode };
 let beaconClient: DAppClient;
 
 if (typeof window !== 'undefined') {
-  beaconClient = new DAppClient({ name: 'Gallery' });
+  beaconClient = new DAppClient({
+    name: 'Gallery',
+    preferredNetwork: NetworkType.MAINNET,
+  });
 }
 
 const BeaconProvider = memo(({ children }: Props) => {
   const requestPermissions = useCallback(async () => {
-    const { publicKey, address, senderId } = await beaconClient.requestPermissions();
+    const { address } = await beaconClient.requestPermissions();
+
+    return address;
+  }, []);
+
+  const requestSignature = useCallback(async (payload: RequestSignPayloadInput) => {
+    const { signature } = await beaconClient.requestSignPayload(payload);
+
+    return signature;
+  }, []);
+
+  const getActiveAccount = useCallback(async () => {
+    const activeAccount = await beaconClient.getActiveAccount();
+
+    if (!activeAccount) {
+      throw new Error('No active account');
+    }
+
+    const { publicKey, address, senderId } = activeAccount;
 
     // Get wallet name
     const peers = (await beaconClient.getPeers()) as ExtendedPeerInfo[];
@@ -56,18 +83,13 @@ const BeaconProvider = memo(({ children }: Props) => {
     };
   }, []);
 
-  const requestSignature = useCallback(async (payload: RequestSignPayloadInput) => {
-    const { signature } = await beaconClient.requestSignPayload(payload);
-
-    return signature;
-  }, []);
-
   const actions = useMemo(
     () => ({
+      getActiveAccount,
       requestPermissions,
       requestSignature,
     }),
-    [requestPermissions, requestSignature]
+    [getActiveAccount, requestPermissions, requestSignature]
   );
 
   return <BeaconActionsContext.Provider value={actions}>{children}</BeaconActionsContext.Provider>;
