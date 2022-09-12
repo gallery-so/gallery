@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { TitleXSBold } from 'components/core/Text/Text';
 import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
@@ -12,6 +12,7 @@ import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { Severity } from '@sentry/types';
 import isViewerId3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarChainSelectorFragment$key } from '../../../../../../__generated__/SidebarChainSelectorFragment.graphql';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 
 const chains = [
   { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
@@ -41,6 +42,15 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
     viewerRef
   );
 
+  const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
+
+  /**
+   * We're explicitly avoiding using the `isMutating` flag from the hook itself
+   * since that state is meant to be managed in the WizardState.
+   *
+   * This is because this refresh can happen in multiple places and we want
+   * to lock this refresh no matter where it originated from
+   */
   const [refresh] = usePromisifiedMutation<SidebarChainSelectorMutation>(graphql`
     mutation SidebarChainSelectorMutation($chain: Chain!) {
       syncTokens(chains: [$chain]) {
@@ -66,32 +76,45 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
       return;
     }
 
+    setIsRefreshingNfts(true);
+
     pushToast({
       message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
       autoClose: true,
     });
-    const response = await refresh({
-      variables: {
-        chain: selectedChain.name,
-      },
-    });
 
-    if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
-      pushToast({
-        autoClose: false,
-        message:
-          'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
-      });
-
-      reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
-        level: Severity.Error,
-        tags: {
+    try {
+      const response = await refresh({
+        variables: {
           chain: selectedChain.name,
-          responseTypename: response.syncTokens?.__typename,
         },
       });
+
+      if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+        pushToast({
+          autoClose: false,
+          message:
+            'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
+        });
+
+        reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
+          level: Severity.Error,
+          tags: {
+            chain: selectedChain.name,
+            responseTypename: response.syncTokens?.__typename,
+          },
+        });
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        reportError(e);
+      } else {
+        reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
+      }
+    } finally {
+      setIsRefreshingNfts(false);
     }
-  }, [pushToast, refresh, reportError, selectedChain]);
+  }, [pushToast, refresh, reportError, selectedChain, setIsRefreshingNfts]);
 
   if (!selectedChain) {
     throw new Error(`Could not find a chain for selected value '${selected}'`);
@@ -118,15 +141,16 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
       </Chains>
       {!is3ac && (
         <IconButton
+          refreshing={isRefreshingNfts}
           data-testid="RefreshButton"
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
         >
-          <IconContainer icon={<RefreshIcon />} />
+          <StyledIconContainer icon={<RefreshIcon />} />
           <RefreshTooltip
             active={showTooltip}
-            text={`Refresh ${selectedChain.shortName} Wallets`}
+            text={isRefreshingNfts ? `Refreshing...` : `Refresh ${selectedChain.shortName} Wallets`}
           />
         </IconButton>
       )}
@@ -134,7 +158,9 @@ export function SidebarChainSelector({ selected, onChange, viewerRef }: SidebarC
   );
 }
 
-const IconButton = styled.button`
+const StyledIconContainer = styled(IconContainer)``;
+
+const IconButton = styled.button<{ refreshing: boolean }>`
   position: relative;
 
   // Button Reset
@@ -144,6 +170,18 @@ const IconButton = styled.button`
   background: none;
 
   cursor: pointer;
+
+  ${({ refreshing }) =>
+    refreshing
+      ? css`
+          cursor: unset;
+
+          ${StyledIconContainer} {
+            pointer-events: none;
+            opacity: 0.2;
+          }
+        `
+      : ''};
 `;
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
