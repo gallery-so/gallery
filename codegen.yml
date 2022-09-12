@@ -3,6 +3,11 @@ documents: ./src/**/*.{ts,tsx}
 generates:
   ./__generated__/operations.ts:
     config:
+      scalars:
+          DBID: string
+          Address: string
+          PubKey: string
+          Time: string
       avoidOptionals: true
       autoSelectId: true
     plugins:
