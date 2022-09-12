@@ -19,47 +19,26 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEventData {
+        __typename
+
+        action
+        eventTime
+
         ... on CollectionCreatedFeedEventData {
           ...CollectionCreatedFeedEventFragment
-          collection {
-            dbid
-          }
         }
         ... on CollectorsNoteAddedToTokenFeedEventData {
           ...CollectorsNoteAddedToTokenFeedEventFragment
-          token {
-            id
-          }
         }
         ... on TokensAddedToCollectionFeedEventData {
           ...TokensAddedToCollectionFeedEventFragment
-          collection {
-            dbid
-          }
         }
         ... on UserFollowedUsersFeedEventData {
           ...UserFollowedUsersFeedEventFragment
-          owner {
-            username
-          }
-          followed {
-            user {
-              dbid
-              ...HoverCardOnUsernameFragment
-            }
-          }
         }
         ... on CollectorsNoteAddedToCollectionFeedEventData {
           ...CollectorsNoteAddedToCollectionFeedEventFragment
-          newCollectorsNote
-          collection {
-            dbid
-          }
         }
-        __typename
-        eventTime
-
-        action
       }
     `,
     eventRef
@@ -80,32 +59,14 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
 
   switch (event.__typename) {
     case 'CollectionCreatedFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
       return <CollectionCreatedFeedEvent eventRef={event} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
-      if (!event.token) {
-        return null;
-      }
       return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} queryRef={query} />;
     case 'TokensAddedToCollectionFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
       return <TokensAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
     case 'CollectorsNoteAddedToCollectionFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
-      if (!event.newCollectorsNote?.trim()) {
-        return null;
-      }
       return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
     case 'UserFollowedUsersFeedEventData':
-      if (!event.followed || !event.owner?.username) {
-        return null;
-      }
       return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
 
     // These event types are returned by the backend but are not currently spec'd to be displayed
