@@ -94,7 +94,10 @@ function NftDetailText({ tokenRef }: Props) {
   const communityUrl = getCommunityUrlForToken(token);
 
   const metadata = JSON.parse(token.tokenMetadata ?? '{}');
-  const poapUrl = token.chain === 'POAP' ? metadata.event_url : null;
+  const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
+
+  // TODO: GAL-413
+  const poapUrl = null;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
@@ -141,11 +144,12 @@ function NftDetailText({ tokenRef }: Props) {
         </VStack>
 
         <VStack gap={16}>
+          {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
           {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
-
-          {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
-          {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
         </VStack>
+
+        {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
+        {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
       </VStack>
     </StyledDetailLabel>
   );
