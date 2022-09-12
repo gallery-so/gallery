@@ -1,5 +1,5 @@
 import { mockGraphqlQuery } from './mockGraphqlQuery';
-import { GlobalLayoutContextQueryQuery } from '../../src/__generated__/operations';
+import { GlobalLayoutContextQueryQuery } from '../../__generated__/operations';
 import { GALLERY_USER_DBID, GALLERY_USER_ID, GALLERY_USER_USERNAME, WALLETS } from '../constants';
 
 export function mockGlobalLayoutQuery() {

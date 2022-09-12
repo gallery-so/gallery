@@ -8,7 +8,7 @@ import {
   Chain,
   NftDetailAssetTestQueryQuery,
   UseNftRetryMutationMutation,
-} from '../../__generated__/operations';
+} from '../../../__generated__/operations';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 
 function Fixture() {

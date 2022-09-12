@@ -1,4 +1,4 @@
-import { Chain } from '../src/__generated__/operations';
+import { Chain } from '../__generated__/operations';
 
 export const GALLERY_USER_DBID = 'TestUserId';
 export const GALLERY_USER_ID = `User:${GALLERY_USER_DBID}`;
