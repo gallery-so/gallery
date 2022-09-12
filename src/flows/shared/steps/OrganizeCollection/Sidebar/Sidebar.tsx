@@ -22,6 +22,8 @@ import {
 import { Button } from 'components/core/Button/Button';
 import { generate12DigitId } from 'utils/collectionLayout';
 import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -48,10 +50,13 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     graphql`
       fragment SidebarViewerFragment on Query {
         ...SidebarChainSelectorFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
 
   const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -104,6 +109,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
       // If we're searching, we want to search across all chains
       if (isSearching) {
+        // Unless POAP is disabled, then we want ONLY ETH STUFF
+        if (!isPOAPEnabled) {
+          return token.chain === 'Ethereum';
+        }
+
         return true;
       }
 
@@ -125,11 +135,13 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       </StyledSidebarContainer>
       {!isSearching && (
         <>
-          <SidebarChainSelector
-            queryRef={query}
-            selected={selectedChain}
-            onChange={setSelectedChain}
-          />
+          {isPOAPEnabled && (
+            <SidebarChainSelector
+              queryRef={query}
+              selected={selectedChain}
+              onChange={setSelectedChain}
+            />
+          )}
           <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
             ADD BLANK SPACE
           </AddBlankSpaceButton>
