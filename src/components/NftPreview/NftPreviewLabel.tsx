@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
 import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
-import { HStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   className?: string;
@@ -29,17 +29,20 @@ function NftPreviewLabel({ className, tokenRef }: Props) {
 
   // Since POAPs' collection names are the same as the
   // token name, we don't want to show duplicate information
-  const showTitle = token.name && token.chain !== 'POAP';
+  const showCollectionName = token.name && token.chain !== 'POAP';
 
   return (
     <StyledNftPreviewLabel className={className}>
-      {showTitle && (
-        <StyledBaseM color={colors.white} lines={1}>
-          {token.name}
-        </StyledBaseM>
-      )}
+      <HStack gap={4} justify={'end'} align="center">
+        {token.chain === 'POAP' && <POAPLogo />}
+        <VStack>
+          <StyledBaseM color={colors.white} lines={1}>
+            {token.name}
+          </StyledBaseM>
 
-      <CollectionName tokenRef={token} />
+          {showCollectionName && <CollectionName tokenRef={token} />}
+        </VStack>
+      </HStack>
     </StyledNftPreviewLabel>
   );
 }
@@ -73,23 +76,14 @@ function CollectionName({ tokenRef }: CollectionNameProps) {
     return null;
   }
 
-  return (
-    <HStack gap={4} justify="flex-end" align="center">
-      {token.chain === 'POAP' && <POAPLogo />}
-      {communityUrl ? (
-        <>
-          <StyledBaseM lines={2}>
-            <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-          </StyledBaseM>
-        </>
-      ) : (
-        <>
-          <StyledBaseM color={colors.white} lines={2}>
-            {collectionName}
-          </StyledBaseM>
-        </>
-      )}
-    </HStack>
+  return communityUrl ? (
+    <StyledBaseM lines={2}>
+      <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+    </StyledBaseM>
+  ) : (
+    <StyledBaseM color={colors.white} lines={2}>
+      {collectionName}
+    </StyledBaseM>
   );
 }
 
@@ -103,14 +97,16 @@ const POAPLogo = styled.img.attrs({
 
 export const StyledNftPreviewLabel = styled.div`
   position: absolute;
+
   display: flex;
   flex-direction: column;
+  justify-content: end;
+
   bottom: 0;
   width: 100%;
   text-align: right;
   padding: 8px;
   z-index: 10;
-  justify-content: end;
   // this helps position the label correctly in Safari
   // Safari differs from Chrome in how it renders height: 100% on position: absolute elements
   min-height: 56px;
