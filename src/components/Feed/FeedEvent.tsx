@@ -8,7 +8,7 @@ import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFe
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
 import FeedEventErrorBoundary from './FeedEventErrorBoundary';
-import { FeedEventSocializeSection } from 'components/Feed/FeedEventSocializeSection';
+import { FeedEventSocializeSection } from 'components/Feed/Socialize/FeedEventSocializeSection';
 import { ErrorBoundary } from '@sentry/nextjs';
 import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';

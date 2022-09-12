@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
+import { forwardRef } from 'react';
 
-export function CommentIcon() {
+type Props = {
+  onClick?: () => void;
+};
+
+export const CommentIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
   return (
-    <IconWrapper role="button">
+    <IconWrapper role="button" onClick={onClick} ref={ref}>
       <StyledSvg
         viewBox="0 0 24 24"
         fill="none"
@@ -14,11 +19,13 @@ export function CommentIcon() {
       </StyledSvg>
     </IconWrapper>
   );
-}
+});
 
-export function AdmireIcon() {
+CommentIcon.displayName = 'CommentIcon';
+
+export const AdmireIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
   return (
-    <IconWrapper role="button">
+    <IconWrapper ref={ref} role="button" onClick={onClick}>
       <StyledSvg
         viewBox="0 0 24 24"
         fill="none"
@@ -40,11 +47,15 @@ export function AdmireIcon() {
       </StyledSvg>
     </IconWrapper>
   );
-}
+});
+
+AdmireIcon.displayName = 'AdmireIcon';
 
 const StyledSvg = styled.svg`
   width: 24px;
   height: 24px;
+
+  pointer-events: none;
 
   transition: transform 150ms ease-in-out, color 150ms ease-in-out;
 `;
