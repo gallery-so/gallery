@@ -21,13 +21,16 @@ import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__gen
 import Markdown from 'components/core/Markdown/Markdown';
 
 type Props = {
-  eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
+  eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToCollectionFeedEvent({
+  eventDataRef,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
@@ -49,7 +52,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
         newCollectorsNote
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(

@@ -19,13 +19,13 @@ import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 
 type Props = {
-  eventRef: TokensAddedToCollectionFeedEventFragment$key;
+  eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -53,7 +53,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
         isPreFeed
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(

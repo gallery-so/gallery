@@ -8,36 +8,42 @@ import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFe
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
 import FeedEventErrorBoundary from './FeedEventErrorBoundary';
+import { FeedEventSocializeSection } from 'components/Feed/FeedEventSocializeSection';
+import { ErrorBoundary } from '@sentry/nextjs';
+import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
+import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 
-type Props = {
+type FeedEventProps = {
   eventRef: FeedEventFragment$key;
   queryRef: FeedEventQueryFragment$key;
   feedMode: FeedMode;
 };
 
-function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
+function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on FeedEventData {
-        __typename
+      fragment FeedEventFragment on FeedEvent {
+        eventData {
+          __typename
 
-        action
-        eventTime
+          action
+          eventTime
 
-        ... on CollectionCreatedFeedEventData {
-          ...CollectionCreatedFeedEventFragment
-        }
-        ... on CollectorsNoteAddedToTokenFeedEventData {
-          ...CollectorsNoteAddedToTokenFeedEventFragment
-        }
-        ... on TokensAddedToCollectionFeedEventData {
-          ...TokensAddedToCollectionFeedEventFragment
-        }
-        ... on UserFollowedUsersFeedEventData {
-          ...UserFollowedUsersFeedEventFragment
-        }
-        ... on CollectorsNoteAddedToCollectionFeedEventData {
-          ...CollectorsNoteAddedToCollectionFeedEventFragment
+          ... on CollectionCreatedFeedEventData {
+            ...CollectionCreatedFeedEventFragment
+          }
+          ... on CollectorsNoteAddedToTokenFeedEventData {
+            ...CollectorsNoteAddedToTokenFeedEventFragment
+          }
+          ... on TokensAddedToCollectionFeedEventData {
+            ...TokensAddedToCollectionFeedEventFragment
+          }
+          ... on UserFollowedUsersFeedEventData {
+            ...UserFollowedUsersFeedEventFragment
+          }
+          ... on CollectorsNoteAddedToCollectionFeedEventData {
+            ...CollectorsNoteAddedToCollectionFeedEventFragment
+          }
         }
       }
     `,
@@ -57,17 +63,27 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
     queryRef
   );
 
-  switch (event.__typename) {
+  switch (event.eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      return <CollectionCreatedFeedEvent eventRef={event} queryRef={query} />;
+      return <CollectionCreatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
-      return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} queryRef={query} />;
+      return (
+        <CollectorsNoteAddedToTokenFeedEvent eventDataRef={event.eventData} queryRef={query} />
+      );
     case 'TokensAddedToCollectionFeedEventData':
-      return <TokensAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
+      return <TokensAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToCollectionFeedEventData':
-      return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
+      return (
+        <CollectorsNoteAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />
+      );
     case 'UserFollowedUsersFeedEventData':
-      return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
+      return (
+        <UserFollowedUsersFeedEvent
+          eventDataRef={event.eventData}
+          queryRef={query}
+          feedMode={feedMode}
+        />
+      );
 
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':
@@ -77,10 +93,43 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
   }
 }
 
-export default function FeedEventWithBoundary(props: Props) {
+type FeedEventWithBoundaryProps = {
+  eventRef: FeedEventWithErrorBoundaryFragment$key;
+  queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
+  feedMode: FeedMode;
+};
+
+export default function FeedEventWithBoundary({
+  feedMode,
+  eventRef,
+  queryRef,
+}: FeedEventWithBoundaryProps) {
+  const event = useFragment(
+    graphql`
+      fragment FeedEventWithErrorBoundaryFragment on FeedEvent {
+        ...FeedEventFragment
+        ...FeedEventSocializeSectionFragment
+      }
+    `,
+    eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FeedEventWithErrorBoundaryQueryFragment on Query {
+        ...FeedEventQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <FeedEventErrorBoundary>
-      <FeedEvent {...props} />
+      <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
+
+      <ErrorBoundary fallback={<></>}>
+        <FeedEventSocializeSection eventRef={event} />
+      </ErrorBoundary>
     </FeedEventErrorBoundary>
   );
 }

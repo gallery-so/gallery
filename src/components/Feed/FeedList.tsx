@@ -38,7 +38,7 @@ export default function FeedList({
   const query = useFragment(
     graphql`
       fragment FeedListFragment on Query {
-        ...FeedEventQueryFragment
+        ...FeedEventWithErrorBoundaryQueryFragment
       }
     `,
     queryRef
@@ -46,9 +46,14 @@ export default function FeedList({
 
   const feedData = useFragment(
     graphql`
-      fragment FeedListEventDataFragment on FeedEventData @relay(plural: true) {
-        eventTime
-        ...FeedEventFragment
+      fragment FeedListEventDataFragment on FeedEvent @relay(plural: true) {
+        dbid
+
+        eventData {
+          eventTime
+        }
+
+        ...FeedEventWithErrorBoundaryFragment
       }
     `,
     feedEventRefs
@@ -93,12 +98,7 @@ export default function FeedList({
         {({ registerChild }) => (
           // @ts-expect-error: this is the suggested usage of registerChild
           <div ref={registerChild} style={style}>
-            <FeedEvent
-              eventRef={content}
-              key={content.eventTime}
-              queryRef={query}
-              feedMode={feedMode}
-            />
+            <FeedEvent eventRef={content} key={content.dbid} queryRef={query} feedMode={feedMode} />
           </div>
         )}
       </CellMeasurer>

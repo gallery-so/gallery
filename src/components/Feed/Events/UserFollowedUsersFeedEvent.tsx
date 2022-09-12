@@ -22,12 +22,12 @@ import UserFollowedYouEvent from './UserFollowedYouEvent';
 import { removeNullValues } from 'utils/removeNullValues';
 
 type Props = {
-  eventRef: UserFollowedUsersFeedEventFragment$key;
+  eventDataRef: UserFollowedUsersFeedEventFragment$key;
   queryRef: UserFollowedUsersFeedEventQueryFragment$key;
   feedMode: FeedMode;
 };
 
-export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMode }: Props) {
+export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
@@ -53,7 +53,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
       }
     `,
 
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(

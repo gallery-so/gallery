@@ -18,13 +18,13 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 
 type Props = {
-  eventRef: CollectionCreatedFeedEventFragment$key;
+  eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -45,7 +45,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
         }
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
