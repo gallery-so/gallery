@@ -6,6 +6,7 @@ import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragme
 import VideoWithLoading from 'components/LoadingAsset/VideoWithLoading';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import isVideoUrl from 'utils/isVideoUrl';
 
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;
@@ -75,7 +76,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
   // TODO: this is a hack to handle videos that are returned by OS as images.
   // i.e., assets that do not have animation_urls, and whose image_urls all contain
   // links to videos. we should be able to remove this hack once we're off of OS.
-  if (src.endsWith('.mp4') || src.endsWith('.webm')) {
+  if (isVideoUrl(src)) {
     return <VideoWithLoading onLoad={onLoad} src={src} />;
   }
 

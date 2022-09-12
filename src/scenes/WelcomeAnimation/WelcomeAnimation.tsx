@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import Image from './Image';
 import { AnimatedImage, animatedImages } from './Images';
@@ -97,12 +97,12 @@ export default function WelcomeAnimation({ next }: Props) {
       >
         <StyledTextContainer shouldFadeOut={shouldFadeOut}>
           <TitleL>Welcome to Gallery</TitleL>
-          <Spacer height={8} />
+          <DeprecatedSpacer height={8} />
           <StyledBodyText>
             This is your space to share your pieces and the stories that surround them. Curate,
             arrange, and display your collection exactly how it was meant to be.
           </StyledBodyText>
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
           <StyledButton onClick={handleClick}>Enter Gallery</StyledButton>
         </StyledTextContainer>
       </animated.div>

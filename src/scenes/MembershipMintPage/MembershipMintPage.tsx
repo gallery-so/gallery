@@ -3,7 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import { Button } from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
@@ -170,11 +170,11 @@ export function MembershipMintPage({
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
           <TitleM>{membershipNft.title}</TitleM>
-          <Spacer height={16} />
+          <DeprecatedSpacer height={16} />
           <StyledNftDescription>
             <Markdown text={membershipNft.description} />
           </StyledNftDescription>
-          <Spacer height={32} />
+          <DeprecatedSpacer height={32} />
           {Number(price) > 0 && (
             <>
               <TitleXS>Price</TitleXS>
@@ -183,7 +183,7 @@ export function MembershipMintPage({
           )}
           {Boolean(totalSupply) && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <TitleXS>Available</TitleXS>
               <BaseM>
                 {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
@@ -193,30 +193,30 @@ export function MembershipMintPage({
           {children}
           {account && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <TitleXS>Connected wallet</TitleXS>
               <BaseM>{account}</BaseM>
             </>
           )}
-          <Spacer height={32} />
+          <DeprecatedSpacer height={32} />
           <HorizontalBreak />
-          <Spacer height={32} />
+          <DeprecatedSpacer height={32} />
           {active && !canMintToken && transactionStatus === null && (
             <>
               <StyledIneligibleMessageWrapper>
                 <BaseXL>You are ineligible for this mint.</BaseXL>
-                <Spacer width={4} />
+                <DeprecatedSpacer width={4} />
                 <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
                   <InfoCircleIcon />
                 </InteractiveLink>
               </StyledIneligibleMessageWrapper>
-              <Spacer height={24} />
+              <DeprecatedSpacer height={24} />
             </>
           )}
           {PrimaryButton}
           {transactionHash && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <div>
                 <BaseM>
                   {transactionStatus === TransactionStatus.SUCCESS
@@ -231,7 +231,7 @@ export function MembershipMintPage({
           )}
           {transactionStatus === TransactionStatus.SUCCESS && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <BaseM>You can now sign up for Gallery.</BaseM>
               <GalleryLink href="/auth">
                 <BaseM>Proceed to Onboarding</BaseM>
@@ -240,7 +240,7 @@ export function MembershipMintPage({
           )}
           {error && (
             <>
-              <Spacer height={16} />
+              <DeprecatedSpacer height={16} />
               <ErrorText message={error} />
             </>
           )}

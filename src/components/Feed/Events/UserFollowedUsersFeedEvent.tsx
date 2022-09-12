@@ -1,7 +1,7 @@
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
@@ -154,7 +154,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
                   <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
                 )}
               </BaseM>
-              <Spacer width={4} />
+              <DeprecatedSpacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </StyledEventHeader>
           </StyledEventContent>
@@ -167,10 +167,10 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
                 <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
                 {genericFollows.length} collectors.
               </BaseM>
-              <Spacer width={4} />
+              <DeprecatedSpacer width={4} />
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </StyledEventHeader>
-            <Spacer height={16} />
+            <DeprecatedSpacer height={16} />
             <StyledSecondaryButton>See All</StyledSecondaryButton>
           </StyledEventContent>
         </CustomStyledEvent>

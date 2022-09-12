@@ -2,7 +2,7 @@ import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback, useEffect } from 'react';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -33,12 +33,12 @@ function CreateFirstCollection({ next }: WizardContext) {
   return (
     <FullPageCenteredStep withFooter>
       <BaseXL>Create your first collection</BaseXL>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <StyledBodyText>
         Organize your gallery with collections. Use them to group NFTs by creator, theme, or
         anything that feels right.
       </StyledBodyText>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
     </FullPageCenteredStep>
   );

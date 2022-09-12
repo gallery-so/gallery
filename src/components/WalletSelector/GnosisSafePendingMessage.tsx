@@ -1,6 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -38,15 +38,15 @@ function GnosisSafeListeningOnChainScreen({
   return (
     <StyledContentWrapper>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-      <Spacer height={8} />
+      <DeprecatedSpacer height={8} />
       <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <StyledLoaderWrapper>
         <StyledLoader />
       </StyledLoaderWrapper>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       <BaseM>Do not close this window.</BaseM>
     </StyledContentWrapper>
   );
@@ -66,11 +66,11 @@ function GnosisSafePendingMessage({
     return (
       <div>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         <BaseM>Do not close this window.</BaseM>
       </div>
     );
@@ -88,17 +88,17 @@ function GnosisSafePendingMessage({
   return (
     <StyledContentWrapper>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <Spacer height={24} />
+      <DeprecatedSpacer height={24} />
       {previousAttemptNonce && account ? (
         <>
           <BaseM>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
           </BaseM>
-          <Spacer height={48} />
+          <DeprecatedSpacer height={48} />
           <StyledButtonWrapper>
             <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
           </StyledButtonWrapper>
         </>

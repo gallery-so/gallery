@@ -4,7 +4,7 @@
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -123,7 +123,7 @@ function WizardFooter({
             : 'Back'}
         </ActionText>
       )}
-      <Spacer width={40} />
+      <DeprecatedSpacer width={40} />
       <Button
         onClick={handleNextClick}
         disabled={!isNextEnabled}
@@ -132,7 +132,7 @@ function WizardFooter({
       >
         {buttonText}
       </Button>
-      <Spacer width={24} />
+      <DeprecatedSpacer width={24} />
     </StyledWizardFooter>
   );
 }

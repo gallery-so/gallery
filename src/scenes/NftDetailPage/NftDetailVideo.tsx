@@ -4,6 +4,8 @@ import { graphql } from 'relay-runtime';
 import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
+import { useMemo } from 'react';
+import isVideoUrl from 'utils/isVideoUrl';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
@@ -29,6 +31,18 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
 
   const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
 
+  const poster = useMemo(() => {
+    if (!token?.previewURLs?.large) {
+      return undefined;
+    }
+
+    if (isVideoUrl(token.previewURLs.large)) {
+      return undefined;
+    }
+
+    return token.previewURLs.large;
+  }, [token?.previewURLs?.large]);
+
   return (
     <StyledVideo
       src={`${token.contentRenderURLs.large}#t=0.001`}
@@ -48,7 +62,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
        * a static poster in its place.
        */
       onError={handleError}
-      poster={token?.previewURLs?.large ?? ''}
+      poster={poster}
     />
   );
 }

@@ -10,6 +10,7 @@ import { StyledVideo } from './NftDetailVideo';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
+import isVideoUrl from 'utils/isVideoUrl';
 
 type Props = {
   tokenRef: NftDetailImageFragment$key;
@@ -56,7 +57,7 @@ function NftDetailImage({ tokenRef, onClick = noop, onLoad }: Props) {
   // TODO: this is a hack to handle videos that are returned by OS as images.
   // i.e., assets that do not have animation_urls, and whose image_urls all contain
   // links to videos. we should be able to remove this hack once we're off of OS.
-  if (url.endsWith('.mp4') || url.endsWith('.webm')) {
+  if (isVideoUrl(url)) {
     return (
       <StyledVideo
         onLoadedData={onLoad}

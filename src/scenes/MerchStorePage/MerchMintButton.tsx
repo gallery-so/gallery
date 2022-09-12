@@ -1,5 +1,5 @@
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import { BaseM } from 'components/core/Text/Text';
 import { useEffect, useMemo } from 'react';
@@ -58,7 +58,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
         {buttonText}
       </StyledButton>
-      {(transactionHash || error) && !isMobile && <Spacer height={8} />}
+      {(transactionHash || error) && !isMobile && <DeprecatedSpacer height={8} />}
 
       {transactionHash && (
         <>
@@ -79,7 +79,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       )}
       {error && (
         <>
-          {!isMobile && <Spacer height={8} />}
+          {!isMobile && <DeprecatedSpacer height={8} />}
           <BaseMError color={colors.error} dangerouslySetInnerHTML={{ __html: error }}></BaseMError>
         </>
       )}

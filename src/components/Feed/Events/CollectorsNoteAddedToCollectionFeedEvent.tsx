@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -89,18 +89,18 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
             {collectionName ? ' ' : ' their collection'}
             <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
           </BaseM>
-          <Spacer width={4} />
+          <DeprecatedSpacer width={4} />
           <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
         </StyledEventHeader>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <StyledQuote>
           <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
         </StyledQuote>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
         {showAdditionalPiecesIndicator && (
           <>
-            <Spacer height={8} />
+            <DeprecatedSpacer height={8} />
             <StyledAdditionalPieces>
               +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
             </StyledAdditionalPieces>

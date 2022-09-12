@@ -4,7 +4,7 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -45,7 +45,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
   const [account, setAccount] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [wallet, setWallet] = useState<string>();
-  const { requestPermissions, requestSignature } = useBeaconActions();
+  const { getActiveAccount, requestSignature } = useBeaconActions();
 
   const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
@@ -168,7 +168,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
       }
 
       try {
-        const { publicKey, address, wallet } = await requestPermissions();
+        const { publicKey, address, wallet } = await getActiveAccount();
         if (!address || !publicKey) return;
 
         setPendingState(CONFIRM_ADDRESS);
@@ -185,7 +185,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     if (pendingState === INITIAL) {
       void authenticate();
     }
-  }, [account, authenticatedUserAddresses, attemptAddWallet, pendingState, requestPermissions]);
+  }, [account, attemptAddWallet, authenticatedUserAddresses, getActiveAccount, pendingState]);
 
   if (error) {
     return (
@@ -204,9 +204,9 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Tezos</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
       </div>
     );
@@ -217,16 +217,16 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     return (
       <div>
         <TitleS>Connect with Tezos</TitleS>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM>Confirm the following wallet address:</BaseM>
-        <Spacer height={8} />
+        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
-        <Spacer height={16} />
+        <DeprecatedSpacer height={16} />
         <BaseM>
           If you want to connect a different address via Tezos wallet, please switch accounts in the
           extension and try again.
         </BaseM>
-        <Spacer height={24} />
+        <DeprecatedSpacer height={24} />
         <StyledButton onClick={() => attemptAddWallet(account, publicKey)} disabled={isConnecting}>
           {isConnecting ? 'Connecting...' : 'Confirm'}
         </StyledButton>

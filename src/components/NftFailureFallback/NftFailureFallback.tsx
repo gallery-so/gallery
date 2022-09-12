@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { RefreshIcon } from 'icons/RefreshIcon';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
@@ -60,7 +60,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
         )}
         {!refreshing && (
           <>
-            <Spacer height={spaceY} />
+            <DeprecatedSpacer height={spaceY} />
             <IconButton
               data-testid="RefreshButton"
               onMouseEnter={() => setShowTooltip(true)}

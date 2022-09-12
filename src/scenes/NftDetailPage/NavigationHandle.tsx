@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { Directions } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
@@ -46,7 +46,7 @@ function NavigationHandle({ direction, onClick }: Props) {
     <StyledNavigationHandle direction={direction}>
       <StyledTextWrapper direction={direction} onClick={onClick}>
         <StyledArrow>{arrow}</StyledArrow>
-        <Spacer width={3} />
+        <DeprecatedSpacer width={3} />
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
         </StyledHoverText>

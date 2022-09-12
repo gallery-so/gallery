@@ -1,5 +1,5 @@
 import { Button } from 'components/core/Button/Button';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
@@ -81,10 +81,10 @@ function ManageWallets({ newAddress, queryRef }: Props) {
 
   return (
     <StyledManageWallets>
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <BaseM>Add more wallets to access your other NFTs.</BaseM>
       <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
-      {errorMessage ? <StyledErrorText message={errorMessage} /> : <Spacer height={16} />}
+      {errorMessage ? <StyledErrorText message={errorMessage} /> : <DeprecatedSpacer height={16} />}
       {wallets.map((wallet) => (
         <ManageWalletsRow
           key={wallet.dbid}
@@ -97,7 +97,7 @@ function ManageWallets({ newAddress, queryRef }: Props) {
           isOnlyWalletConnected={wallets.length === 1}
         />
       ))}
-      <Spacer height={16} />
+      <DeprecatedSpacer height={16} />
       <StyledButton onClick={handleSubmit} disabled={addWalletDisabled}>
         Add new wallet
       </StyledButton>

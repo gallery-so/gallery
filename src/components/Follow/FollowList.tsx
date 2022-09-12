@@ -1,6 +1,6 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo, useState } from 'react';
@@ -46,7 +46,7 @@ export default function FollowList({ userRef }: Props) {
             active={displayedList === 'followers'}
           />
         </StyledHeaderTextRight>
-        <Spacer width={16} />
+        <DeprecatedSpacer width={16} />
         <StyledHeaderText>
           <StyledTextButton
             text="Following"

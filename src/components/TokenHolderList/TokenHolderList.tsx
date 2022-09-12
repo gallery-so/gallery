@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { TitleS } from 'components/core/Text/Text';
-import Spacer from 'components/core/Spacer/Spacer';
+import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import TokenHolderListItem from './TokenHolderListItem';
 import { Directions } from 'src/components/core/enums';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -62,7 +62,7 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
   return (
     <>
       <TitleS>{title}</TitleS>
-      <Spacer height={isMobile ? 24 : 16} />
+      <DeprecatedSpacer height={isMobile ? 24 : 16} />
       <StyledTokenHoldersWrapper>
         {filteredTokenHolders.map((tokenHolder, index) => (
           <TokenHolderListItem
@@ -73,7 +73,7 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
           />
         ))}
       </StyledTokenHoldersWrapper>
-      <Spacer height={56} />
+      <DeprecatedSpacer height={56} />
     </>
   );
 }
