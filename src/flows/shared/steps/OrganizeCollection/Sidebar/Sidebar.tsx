@@ -1,7 +1,7 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { BaseM, TitleDiatypeL, TitleL, TitleS } from 'components/core/Text/Text';
+import { TitleS } from 'components/core/Text/Text';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import {
   SidebarTokensState,
@@ -14,23 +14,14 @@ import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
-import { EditModeToken } from '../types';
 import keyBy from 'lodash.keyby';
 import {
   Chain,
   SidebarChainSelector,
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
-import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
-import { groupCollectionsByAddress } from 'flows/shared/steps/OrganizeCollection/Sidebar/groupCollectionsByAddress';
-import {
-  createVirtualizedRowsFromGroups,
-  createVirtualizedRowsFromTokens,
-} from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
-import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 import { Button } from 'components/core/Button/Button';
 import { generate12DigitId } from 'utils/collectionLayout';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
-import { EmptySidebar } from 'scenes/NftDetailPage/EmptySidebar';
+import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -157,113 +148,6 @@ function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
 const AddBlankSpaceButton = styled(Button)`
   margin: 4px 0;
 `;
-
-type SidebarTokensProps = {
-  isSearching: boolean;
-  selectedChain: Chain;
-  editModeTokens: EditModeToken[];
-  tokenRefs: SidebarTokensFragment$key;
-};
-
-const SidebarTokens = ({
-  tokenRefs,
-  isSearching,
-  selectedChain,
-  editModeTokens,
-}: SidebarTokensProps) => {
-  const tokens = useFragment(
-    graphql`
-      fragment SidebarTokensFragment on Token @relay(plural: true) {
-        dbid
-
-        chain
-
-        contract {
-          name
-          contractAddress {
-            address
-          }
-        }
-
-        ...SidebarListTokenFragment
-      }
-    `,
-    tokenRefs
-  );
-
-  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
-  const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
-
-  const handleMarkErroredTokenId = useCallback((id) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleMarkSuccessTokenId = useCallback((id) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
-
-  const handleToggleExpanded = useCallback((address: string) => {
-    setCollapsedCollections((previous) => {
-      const next = new Set(previous);
-
-      if (next.has(address)) {
-        next.delete(address);
-      } else {
-        next.add(address);
-      }
-
-      return next;
-    });
-  }, []);
-
-  let shouldUseCollectionGrouping: boolean;
-  if (isSearching) {
-    shouldUseCollectionGrouping = true;
-  } else {
-    shouldUseCollectionGrouping = selectedChain !== 'POAP';
-  }
-
-  const rows = useMemo(() => {
-    if (shouldUseCollectionGrouping) {
-      const groups = groupCollectionsByAddress({ tokens, editModeTokens });
-
-      return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
-    } else {
-      return createVirtualizedRowsFromTokens({ tokens, editModeTokens, erroredTokenIds });
-    }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
-
-  useEffect(
-    function resetCollapsedSectionsWhileSearching() {
-      if (isSearching) {
-        setCollapsedCollections(new Set());
-      }
-    },
-    [isSearching]
-  );
-
-  if (rows.length === 0) {
-    return <EmptySidebar chain={selectedChain} />;
-  }
-
-  return (
-    <SidebarList
-      rows={rows}
-      onToggleExpanded={handleToggleExpanded}
-      handleTokenRenderError={handleMarkErroredTokenId}
-      handleTokenRenderSuccess={handleMarkSuccessTokenId}
-      shouldUseCollectionGrouping={shouldUseCollectionGrouping}
-    />
-  );
-};
 
 const StyledSidebar = styled.div`
   display: flex;
