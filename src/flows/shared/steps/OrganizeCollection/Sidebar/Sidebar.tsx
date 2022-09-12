@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { TitleS } from 'components/core/Text/Text';
+import { BaseM, TitleDiatypeL, TitleL, TitleS } from 'components/core/Text/Text';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import {
   SidebarTokensState,
@@ -29,6 +29,8 @@ import {
 import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
 import { Button } from 'components/core/Button/Button';
 import { generate12DigitId } from 'utils/collectionLayout';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { EmptySidebar } from 'scenes/NftDetailPage/EmptySidebar';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -247,6 +249,10 @@ const SidebarTokens = ({
     },
     [isSearching]
   );
+
+  if (rows.length === 0) {
+    return <EmptySidebar chain={selectedChain} />;
+  }
 
   return (
     <SidebarList
