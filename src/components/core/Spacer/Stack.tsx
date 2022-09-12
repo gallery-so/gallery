@@ -19,12 +19,15 @@ export const HStack = styled.div<{
   gap?: number;
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
+  grow?: boolean;
 }>`
   display: flex;
   gap: 0 ${({ gap }) => gap ?? 0}px;
 
   align-items: ${({ align }) => align ?? 'unset'};
   justify-content: ${({ justify }) => justify ?? 'unset'};
+
+  flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
 `;
 
 /**
@@ -34,6 +37,7 @@ export const VStack = styled.div<{
   gap?: number;
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
+  grow?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -42,6 +46,8 @@ export const VStack = styled.div<{
 
   align-items: ${({ align }) => align ?? 'unset'};
   justify-content: ${({ justify }) => justify ?? 'unset'};
+
+  flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
 `;
 
 /**
