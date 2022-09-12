@@ -35,10 +35,16 @@ function NftPreviewLabel({ className, tokenRef }: Props) {
     <StyledNftPreviewLabel className={className}>
       <HStack gap={4} justify={'end'} align="center">
         {token.chain === 'POAP' && <POAPLogo />}
-        <VStack>
-          <StyledBaseM color={colors.white} lines={1}>
-            {token.name}
-          </StyledBaseM>
+        <VStack shrink>
+          {token.chain === 'POAP' ? (
+            <POAPTitle lines={1} color={colors.white}>
+              {token.name}
+            </POAPTitle>
+          ) : (
+            <StyledBaseM color={colors.white} lines={1}>
+              {token.name}
+            </StyledBaseM>
+          )}
 
           {showCollectionName && <CollectionName tokenRef={token} />}
         </VStack>
@@ -110,6 +116,8 @@ export const StyledNftPreviewLabel = styled.div`
   // this helps position the label correctly in Safari
   // Safari differs from Chrome in how it renders height: 100% on position: absolute elements
   min-height: 56px;
+
+  opacity: 1 !important;
 `;
 
 const StyledBaseM = styled(BaseM)<{ lines: number }>`
@@ -147,6 +155,22 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
     text-overflow: unset;
   }
 }
+`;
+
+/**
+ * Special version of the title component for POAPs
+ * that forces a single line with text ellipsis
+ *
+ * This is because we show the POAP Logo to the left
+ * of the text and multiline text causes unnecessary
+ * extra width to show up
+ */
+const POAPTitle = styled(StyledBaseM)`
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const StyledInteractiveLink = styled(InteractiveLink)`
