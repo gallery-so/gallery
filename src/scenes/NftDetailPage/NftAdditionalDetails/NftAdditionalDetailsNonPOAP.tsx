@@ -62,7 +62,11 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
       await refreshToken(dbid);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        reportError(error);
+        reportError(error, {
+          tags: {
+            tokenId: token.dbid,
+          },
+        });
 
         pushToast({
           message: error.message,
