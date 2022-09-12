@@ -95,9 +95,7 @@ function NftDetailText({ tokenRef }: Props) {
 
   const metadata = JSON.parse(token.tokenMetadata ?? '{}');
   const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
-
-  // TODO: GAL-413
-  const poapUrl = null;
+  const poapUrl = metadata.event_id ? `https://poap.gallery/event/${metadata.event_id}` : null;
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
