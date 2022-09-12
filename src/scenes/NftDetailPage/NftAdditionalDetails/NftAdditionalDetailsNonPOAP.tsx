@@ -80,7 +80,7 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
         });
       }
     }
-  }, [dbid, pushToast, refreshToken, reportError]);
+  }, [dbid, pushToast, refreshToken, reportError, token.dbid]);
 
   const openSeaExternalUrl = useMemo(() => {
     if (contract?.contractAddress?.address && tokenId) {
