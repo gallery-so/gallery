@@ -10,7 +10,7 @@
  * https://dev.to/domagojvidovic/dont-use-margins-for-spacing-between-components-use-gaps-4llc
  */
 
-import styled, { CSSProperties } from 'styled-components';
+import styled, { css, CSSProperties } from 'styled-components';
 
 /**
  * Horizontally stacked items with space between them
@@ -20,6 +20,7 @@ export const HStack = styled.div<{
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
   grow?: boolean;
+  shrink?: boolean;
 }>`
   display: flex;
   gap: 0 ${({ gap }) => gap ?? 0}px;
@@ -28,6 +29,13 @@ export const HStack = styled.div<{
   justify-content: ${({ justify }) => justify ?? 'unset'};
 
   flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
+
+  ${({ shrink }) =>
+    shrink &&
+    css`
+      flex-shrink: 1;
+      min-width: 0;
+    `}
 `;
 
 /**
@@ -38,6 +46,7 @@ export const VStack = styled.div<{
   align?: CSSProperties['alignItems'];
   justify?: CSSProperties['justifyContent'];
   grow?: boolean;
+  shrink?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -48,6 +57,13 @@ export const VStack = styled.div<{
   justify-content: ${({ justify }) => justify ?? 'unset'};
 
   flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
+
+  ${({ shrink }) =>
+    shrink &&
+    css`
+      flex-shrink: 1;
+      min-width: 0;
+    `}
 `;
 
 /**
