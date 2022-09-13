@@ -2,11 +2,11 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { FeedEventSocializeSectionFragment$key } from '__generated__/FeedEventSocializeSectionFragment.graphql';
 import { HStack } from 'components/core/Spacer/Stack';
-import { CommentIcon, AdmireIcon } from 'icons/SocializeIcons';
-import styled, { css, keyframes } from 'styled-components';
+import { AdmireIcon, CommentIcon } from 'icons/SocializeIcons';
+import styled from 'styled-components';
 import { CommentBox } from 'components/Feed/Socialize/CommentBox';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ClickLocation, useClickInAndOut } from 'components/Feed/Socialize/useClickInAndOut';
+import { useEffect, useRef, useState } from 'react';
+import { CommentSection } from 'components/Feed/Socialize/CommentSection';
 
 type FeedEventSocializeSectionProps = {
   eventRef: FeedEventSocializeSectionFragment$key;
@@ -24,58 +24,39 @@ export function FeedEventSocializeSection({ eventRef }: FeedEventSocializeSectio
 
   const [showCommentBox, setShowCommentBox] = useState(false);
 
-  const handleCommentEvent = useCallback((clickLocation: ClickLocation) => {
-    if (clickLocation === 'inside' || clickLocation === 'exact') {
-      setShowCommentBox((prev) => !prev);
-    } else if (clickLocation === 'outside') {
-      setShowCommentBox(false);
-    }
-  }, []);
-
   const commentIconRef = useRef<HTMLDivElement | null>(null);
 
-  useClickInAndOut(commentIconRef, handleCommentEvent);
+  useEffect(() => {
+    const handleClick = (e) => {
+      console.log('Click outside', e.target);
+      setShowCommentBox(false);
+    };
+
+    window.addEventListener('click', handleClick);
+
+    return () => {
+      window.removeEventListener('click', handleClick);
+    };
+  }, []);
 
   return (
-    <HStack justify="space-between">
-      <div></div>
+    <HStack justify="space-between" align="flex-start" gap={24}>
+      <CommentSection />
+
       <HStack align="center">
         <IconWrapper>
-          <AdmireIcon />
+          <AdmireIcon onClick={() => setShowCommentBox((prev) => !prev)} />
         </IconWrapper>
 
         <IconWrapper>
-          <CommentIcon ref={commentIconRef} />
+          <CommentIcon onClick={() => setShowCommentBox((prev) => !prev)} ref={commentIconRef} />
 
-          <CommentBoxWrapper active={showCommentBox}>
-            <CommentBox />
-          </CommentBoxWrapper>
+          <CommentBox onClose={() => setShowCommentBox(false)} active={showCommentBox} />
         </IconWrapper>
       </HStack>
     </HStack>
   );
 }
-
-const CommentBoxWrapper = styled.div<{ active: boolean }>`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-
-  z-index: 8;
-
-  transition: transform 300ms ease-out, opacity 300ms ease-in-out;
-
-  ${({ active }) =>
-    active
-      ? css`
-          opacity: 1;
-          transform: translateY(calc(100% + 8px));
-        `
-      : css`
-          opacity: 0;
-          transform: translateY(100%);
-        `}
-`;
 
 const IconWrapper = styled.div`
   position: relative;
