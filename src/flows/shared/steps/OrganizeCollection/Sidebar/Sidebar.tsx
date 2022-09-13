@@ -141,13 +141,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       </StyledSidebarContainer>
       {!isSearching && (
         <>
-          {isPOAPEnabled && (
-            <SidebarChainSelector
-              queryRef={query}
-              selected={selectedChain}
-              onChange={setSelectedChain}
-            />
-          )}
+          <SidebarChainSelector
+            queryRef={query}
+            selected={selectedChain}
+            onChange={setSelectedChain}
+          />
           <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
             ADD BLANK SPACE
           </AddBlankSpaceButton>

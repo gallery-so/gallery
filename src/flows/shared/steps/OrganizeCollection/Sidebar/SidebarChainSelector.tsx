@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { TitleXSBold } from 'components/core/Text/Text';
 import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
 import { useCallback, useState } from 'react';
@@ -13,16 +12,13 @@ import { Severity } from '@sentry/types';
 import isViewerId3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarChainSelectorFragment$key } from '../../../../../../__generated__/SidebarChainSelectorFragment.graphql';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
-
-const chains = [
-  { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
-  { name: 'POAP', shortName: 'POAP', icon: '/icons/poap_logo.svg' },
-
-  // TODO: Enable this once we launch Tezos
-  // { name: 'Tezos', shortName: 'TEZ', icon: '/icons/tezos_logo.svg' },
-] as const;
-
-export type Chain = typeof chains[number]['name'];
+import { SidebarChainButton } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainButton';
+import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
+import usePersistedState from 'hooks/usePersistedState';
+import { TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY } from 'utils/tezosEarlyAccess';
+import noop from 'utils/noop';
 
 type SidebarChainsProps = {
   selected: Chain;
@@ -41,6 +37,8 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
             }
           }
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -75,6 +73,15 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   const is3ac = isViewerId3ac(query.viewer?.user?.dbid);
   const selectedChain = chains.find((chain) => chain.name === selected);
 
+  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
+  const [tezosEnabled] = usePersistedState<boolean>(TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY, false);
+
+  const handleChainClick = useCallback(
+    (chain: Chain) => {
+      onChange(chain);
+    },
+    [onChange]
+  );
   const handleRefresh = useCallback(async () => {
     if (!selectedChain) {
       return;
@@ -130,16 +137,24 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
         {chains.map((chain) => {
           const isSelected = chain.name === selected;
 
+          let locked = true;
+          if (chain.name === 'Ethereum') {
+            locked = false;
+          } else if (chain.name === 'POAP') {
+            locked = isPOAPEnabled;
+          } else if (chain.name === 'Tezos') {
+            locked = !tezosEnabled;
+          }
+
           return (
-            <ChainButton
-              selected={isSelected}
-              role="button"
+            <SidebarChainButton
               key={chain.name}
-              onClick={() => onChange(chain.name)}
-            >
-              <ChainLogo src={chain.icon} />
-              <TitleXSBold>{chain.shortName}</TitleXSBold>
-            </ChainButton>
+              locked={locked}
+              icon={chain.icon}
+              title={chain.shortName}
+              isSelected={isSelected}
+              onClick={locked ? noop : () => handleChainClick(chain.name)}
+            />
           );
         })}
       </Chains>
@@ -206,25 +221,6 @@ const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
 
 const Chains = styled.div`
   display: flex;
-`;
-
-const ChainLogo = styled.img`
-  width: 16px;
-  height: 16px;
-
-  margin-right: 4px;
-`;
-
-const ChainButton = styled.div<{ selected: boolean }>`
-  display: flex;
-  align-items: center;
-
-  &:not(:last-child) {
-    margin-right: 16px;
-  }
-
-  cursor: pointer;
-  opacity: ${({ selected }) => (selected ? '1' : '.5')};
 `;
 
 const Container = styled.div`
