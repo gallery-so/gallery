@@ -132,6 +132,11 @@ const StyledNote = styled(TitleM)`
   overflow: hidden;
   line-clamp: 4;
   display: -webkit-box;
+  text-overflow: ellipsis;
+
+  /* For safari: we need to specify the height */
+  /* Default font size * line-height * line-clamp */
+  height: calc(1rem * 1.5 * 4);
 `;
 
 const StyledMediaWrapper = styled.div`
