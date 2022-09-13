@@ -116,8 +116,6 @@ export const StyledNftPreviewLabel = styled.div`
   // this helps position the label correctly in Safari
   // Safari differs from Chrome in how it renders height: 100% on position: absolute elements
   min-height: 56px;
-
-  opacity: 1 !important;
 `;
 
 const StyledBaseM = styled(BaseM)<{ lines: number }>`
