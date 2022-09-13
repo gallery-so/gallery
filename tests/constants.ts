@@ -1,4 +1,4 @@
-import { Chain } from '../src/__generated__/operations';
+import { Chain } from '../__generated__/operations';
 
 export const GALLERY_USER_DBID = 'TestUserId';
 export const GALLERY_USER_ID = `User:${GALLERY_USER_DBID}`;
@@ -9,8 +9,6 @@ export const WALLETS = {
     DBID: 'MainEthereum',
     ID: 'Wallet:MainEthereum',
     CHAIN: Chain.Ethereum,
-    ADDRESS: {
-      ADDRESS: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
-    },
+    ADDRESS: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
   },
 } as const;

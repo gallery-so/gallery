@@ -12,4 +12,5 @@ export enum DisplayLayout {
 
 export enum FeatureFlag {
   REFRESH_METADATA = 'REFRESH_METADATA',
+  POAP = 'POAP',
 }

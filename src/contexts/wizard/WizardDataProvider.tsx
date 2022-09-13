@@ -10,15 +10,11 @@ export type WizardDataState = {
   id: string;
   isRefreshingNfts: boolean;
   handleRefreshNfts: () => void;
+  setIsRefreshingNfts: (refreshing: boolean) => void;
   queryRef: PreloadedQuery<OrganizeCollectionQuery, Record<string, unknown>> | null | undefined;
 };
 
-const WizardDataContext = createContext<WizardDataState>({
-  id: '',
-  isRefreshingNfts: false,
-  handleRefreshNfts: () => {},
-  queryRef: null,
-});
+const WizardDataContext = createContext<WizardDataState | undefined>(undefined);
 
 export const useWizardId = (): WizardDataState['id'] => {
   const context = useContext(WizardDataContext);
@@ -66,7 +62,7 @@ export default memo(function WizardDataProvider({ id, children }: Props) {
   }, [loadQuery, pushToast, syncTokens]);
 
   const wizardDataState = useMemo(
-    () => ({ id, isRefreshingNfts, handleRefreshNfts, queryRef }),
+    () => ({ id, isRefreshingNfts, handleRefreshNfts, queryRef, setIsRefreshingNfts }),
     [id, isRefreshingNfts, handleRefreshNfts, queryRef]
   );
 

@@ -51,9 +51,11 @@ const nftPreviewTokenFragment = graphql`
         __typename
       }
     }
-    ...getVideoOrImageUrlForNftPreviewFragment
+
+    ...NftPreviewLabelFragment
     ...NftPreviewAssetFragment
     ...NftDetailAnimationFragment
+    ...getVideoOrImageUrlForNftPreviewFragment
   }
 `;
 
@@ -206,11 +208,7 @@ function NftPreview({
             {PreviewAsset}
             {hideLabelOnMobile ? null : (
               <StyledNftFooter>
-                <StyledNftLabel
-                  title={token.name}
-                  collectionName={token.contract?.name}
-                  contractAddress={contractAddress}
-                />
+                <StyledNftLabel tokenRef={token} />
                 <StyledGradient type="bottom" direction="down" />
               </StyledNftFooter>
             )}
@@ -271,16 +269,16 @@ const StyledNftPreview = styled.div<{
   max-width: ${({ aspectRatio }) => `calc(80vh * ${aspectRatio})`};
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: inherit;
-  
+
   // Only apply to safari. Somehow the height is not being set properly on safari.
-  @media not all and (min-resolution:.001dpcm) {
-     @supports (-webkit-appearance:none) {
-        height: initial;
-      }
+  @media not all and (min-resolution: 0.001dpcm) {
+    @supports (-webkit-appearance: none) {
+      height: initial;
+    }
   }
 
   ${({ backgroundColorOverride }) =>
-    backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
+    backgroundColorOverride && `background-color: ${backgroundColorOverride};`}
 
   &:hover ${StyledNftLabel} {
     transform: translateY(0px);

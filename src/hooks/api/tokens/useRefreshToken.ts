@@ -3,29 +3,30 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
 import { useRefreshTokenMutation } from '__generated__/useRefreshTokenMutation.graphql';
 
-export function useRefreshToken() {
-  const [refreshTokenMutate] = usePromisifiedMutation<useRefreshTokenMutation>(graphql`
-    mutation useRefreshTokenMutation($id: DBID!) {
-      refreshToken(tokenId: $id) {
-        ... on RefreshTokenPayload {
-          __typename
-          token {
-            id
+export function useRefreshToken(): [(tokenId: string) => Promise<void>, boolean] {
+  const [refreshTokenMutate, isRefreshing] =
+    usePromisifiedMutation<useRefreshTokenMutation>(graphql`
+      mutation useRefreshTokenMutation($id: DBID!) {
+        refreshToken(tokenId: $id) {
+          ... on RefreshTokenPayload {
+            __typename
+            token {
+              id
+            }
+          }
+          ... on ErrInvalidInput {
+            __typename
+            message
+          }
+          ... on ErrSyncFailed {
+            __typename
+            message
           }
         }
-        ... on ErrInvalidInput {
-          __typename
-          message
-        }
-        ... on ErrSyncFailed {
-          __typename
-          message
-        }
       }
-    }
-  `);
+    `);
 
-  return useCallback(
+  const refreshToken = useCallback(
     async (tokenId: string) => {
       const response = await refreshTokenMutate({ variables: { id: tokenId } });
       if (
@@ -41,4 +42,6 @@ export function useRefreshToken() {
     },
     [refreshTokenMutate]
   );
+
+  return [refreshToken, isRefreshing];
 }
