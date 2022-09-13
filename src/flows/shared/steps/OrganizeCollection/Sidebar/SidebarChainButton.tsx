@@ -1,7 +1,6 @@
 import { TitleXSBold } from 'components/core/Text/Text';
 import styled, { css } from 'styled-components';
 import Tooltip from 'components/Tooltip/Tooltip';
-import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { useState } from 'react';
 
 type Props = {
