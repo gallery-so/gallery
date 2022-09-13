@@ -2,231 +2,179 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
-import TextButton from 'components/core/Button/TextButton';
-import { SidebarTokensState } from 'contexts/collectionEditor/CollectionEditorContext';
+import {
+  SidebarTokensState,
+  useCollectionEditorActions,
+} from 'contexts/collectionEditor/CollectionEditorContext';
 import { convertObjectToArray } from '../convertObjectToArray';
-import SidebarNftIcon from './SidebarNftIcon';
 import SearchBar from './SearchBar';
-import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
 import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
-import { EditModeToken } from '../types';
-import { AutoSizer, List, ListRowProps } from 'react-virtualized';
-import { COLUMN_COUNT, SIDEBAR_ICON_DIMENSIONS, SIDEBAR_ICON_GAP } from 'constants/sidebar';
-import AddBlankBlock from './AddBlankBlock';
 import keyBy from 'lodash.keyby';
-import { SidebarNftIconFragment$key } from '../../../../../../__generated__/SidebarNftIconFragment.graphql';
+import {
+  Chain,
+  SidebarChainSelector,
+} from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
+import { Button } from 'components/core/Button/Button';
+import { generate12DigitId } from 'utils/collectionLayout';
+import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
   tokensRef: SidebarFragment$key;
-  viewerRef: SidebarViewerFragment$key;
+  queryRef: SidebarViewerFragment$key;
 };
 
-function Sidebar({ tokensRef, sidebarTokens, viewerRef }: Props) {
+function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
       fragment SidebarFragment on Token @relay(plural: true) {
         dbid
-        ...SidebarNftIconFragment
+        chain
+
         ...SearchBarFragment
+        ...SidebarTokensFragment
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokensRef
   );
 
-  const viewer = useFragment(
+  const query = useFragment(
     graphql`
-      fragment SidebarViewerFragment on Viewer {
-        user {
-          dbid
-        }
+      fragment SidebarViewerFragment on Query {
+        ...SidebarChainSelectorFragment
+        ...isFeatureEnabledFragment
       }
     `,
-    viewerRef
+    queryRef
   );
 
-  const is3ac = useIs3ac(viewer.user?.dbid);
+  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
 
-  const tokens = removeNullValues(allTokens);
-
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
+  const isSearching = debouncedSearchQuery.length > 0;
+
+  const nonNullTokens = removeNullValues(allTokens);
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  const tokensFilteredBySearch = useMemo(() => {
-    if (debouncedSearchQuery) {
-      const searchResultNfts = [];
-      for (const resultId of searchResults) {
-        if (sidebarTokens[resultId]) {
-          searchResultNfts.push(sidebarTokens[resultId]);
-        }
-      }
-
-      return searchResultNfts;
+  const editModeTokensSearchResults = useMemo(() => {
+    if (!debouncedSearchQuery) {
+      return sidebarTokensAsArray;
     }
 
-    return sidebarTokensAsArray;
+    const searchResultNfts = [];
+    for (const resultId of searchResults) {
+      if (sidebarTokens[resultId]) {
+        searchResultNfts.push(sidebarTokens[resultId]);
+      }
+    }
+
+    return searchResultNfts;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const nftFragmentsKeyedByID = useMemo(() => keyBy(tokens, (token) => token.dbid), [tokens]);
+  const nftFragmentsKeyedByID = useMemo(
+    () => keyBy(nonNullTokens, (token) => token.dbid),
+    [nonNullTokens]
+  );
 
-  const nonNullTokens = useMemo(() => {
-    return tokensFilteredBySearch.filter((editModeToken) =>
-      Boolean(nftFragmentsKeyedByID[editModeToken.id])
-    );
-  }, [nftFragmentsKeyedByID, tokensFilteredBySearch]);
+  const handleAddBlankBlockClick = useCallback(() => {
+    const id = `blank-${generate12DigitId()}`;
+    stageTokens([{ id, whitespace: 'whitespace' }]);
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [stageTokens]);
 
-  const { isRefreshingNfts, handleRefreshNfts } = useWizardState();
+  const tokensToDisplay = useMemo(() => {
+    return editModeTokensSearchResults.filter((editModeToken) => {
+      const token = nftFragmentsKeyedByID[editModeToken.id];
+
+      // Ensure we have a 1-1 match.
+      // Every EditModeToken should have a Token from Relay
+      if (!token) {
+        return false;
+      }
+
+      // If we're searching, we want to search across all chains
+      if (isSearching) {
+        // Unless POAP is disabled, then we want ONLY ETH STUFF
+        if (!isPOAPEnabled) {
+          return token.chain === 'Ethereum';
+        }
+
+        return true;
+      }
+
+      return token.chain === selectedChain;
+    });
+  }, [
+    editModeTokensSearchResults,
+    isPOAPEnabled,
+    isSearching,
+    nftFragmentsKeyedByID,
+    selectedChain,
+  ]);
 
   return (
     <StyledSidebar>
       <StyledSidebarContainer>
         <Header>
           <TitleS>All pieces</TitleS>
-          {
-            // prevent accidental refreshing for profiles we want to keep in tact
-            is3ac ? null : (
-              <StyledRefreshButton
-                text={isRefreshingNfts ? 'Refreshing...' : 'Refresh wallet'}
-                onClick={handleRefreshNfts}
-                disabled={isRefreshingNfts}
-              />
-            )
-          }
         </Header>
         <SearchBar
-          tokensRef={tokens}
+          tokensRef={nonNullTokens}
           setSearchResults={setSearchResults}
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
       </StyledSidebarContainer>
-      <SidebarTokens nftFragmentsKeyedByID={nftFragmentsKeyedByID} tokens={nonNullTokens} />
-      <DeprecatedSpacer height={12} />
+      {!isSearching && (
+        <>
+          {isPOAPEnabled && (
+            <SidebarChainSelector
+              queryRef={query}
+              selected={selectedChain}
+              onChange={setSelectedChain}
+            />
+          )}
+          <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
+            ADD BLANK SPACE
+          </AddBlankSpaceButton>
+        </>
+      )}
+      <SidebarTokens
+        isSearching={isSearching}
+        tokenRefs={nonNullTokens}
+        selectedChain={selectedChain}
+        editModeTokens={tokensToDisplay}
+      />
     </StyledSidebar>
   );
 }
 
-type SidebarTokensProps = {
-  nftFragmentsKeyedByID: { [id: string]: SidebarNftIconFragment$key };
-  tokens: EditModeToken[];
-};
-
-const SidebarTokens = ({ nftFragmentsKeyedByID, tokens }: SidebarTokensProps) => {
-  const [erroredTokenIds, setErroredTokenIds] = useState(new Set());
-
-  const handleMarkErroredTokenId = useCallback((id) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleMarkSuccessTokenId = useCallback((id) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
-
-  const displayedTokens = useMemo(() => {
-    const validTokens = [];
-    const unsupportedTokens = [];
-
-    for (const token of tokens) {
-      if (erroredTokenIds.has(token.token.dbid)) {
-        unsupportedTokens.push(token);
-        continue;
-      }
-      validTokens.push(token);
-    }
-
-    return [...validTokens, ...unsupportedTokens];
-  }, [erroredTokenIds, tokens]);
-
-  /**
-   * We render a row with three token.
-   */
-  type TokenOrWhitespace = EditModeToken | 'whitespace';
-  const rows = useMemo(() => {
-    const rows: TokenOrWhitespace[][] = [];
-
-    let row: TokenOrWhitespace[] = ['whitespace'];
-
-    displayedTokens.forEach((token, index) => {
-      row.push(token);
-
-      // if the row is full, push it to the rows array
-      if (row.length % COLUMN_COUNT === 0) {
-        rows.push(row);
-        row = [];
-        // make sure the final row gets pushed in even if it isn't full
-      } else if (row.length && index === displayedTokens.length - 1) {
-        rows.push(row);
-      }
-    });
-
-    return rows;
-  }, [displayedTokens]);
-
-  const rowRenderer = ({ key, style, index }: ListRowProps) => {
-    const row = rows[index];
-
-    if (!row) {
-      return null;
-    }
-
-    return (
-      <Selection key={key} style={style}>
-        {row.map((tokenOrWhitespace) => {
-          if (tokenOrWhitespace === 'whitespace') {
-            return <AddBlankBlock key="whitespace" />;
-          }
-          return (
-            <SidebarNftIcon
-              key={tokenOrWhitespace.token.dbid}
-              tokenRef={nftFragmentsKeyedByID[tokenOrWhitespace.token.dbid]}
-              editModeToken={tokenOrWhitespace}
-              handleTokenRenderError={handleMarkErroredTokenId}
-              handleTokenRenderSuccess={handleMarkSuccessTokenId}
-            />
-          );
-        })}
-      </Selection>
-    );
-  };
-
-  const rowHeight = SIDEBAR_ICON_DIMENSIONS + SIDEBAR_ICON_GAP;
-
-  return (
-    <StyledListTokenContainer>
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            style={{ outline: 'none' }}
-            rowRenderer={rowRenderer}
-            rowCount={rows.length}
-            rowHeight={rowHeight}
-            width={width}
-            height={height}
-          />
-        )}
-      </AutoSizer>
-    </StyledListTokenContainer>
-  );
-};
+const AddBlankSpaceButton = styled(Button)`
+  margin: 4px 0;
+`;
 
 const StyledSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  // We need to save the bottom padding for the
+  // scrollable icon section. It will have its own padding
+  padding: 16px 16px 0 16px;
+
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
   user-select: none;
@@ -236,20 +184,12 @@ const StyledSidebar = styled.div`
   }
 `;
 
-const LEFT_SIDEBAR_HEADER_HEIGHT = 120;
-
 const StyledSidebarContainer = styled.div`
-  padding: 16px;
-  height: ${LEFT_SIDEBAR_HEADER_HEIGHT}px;
+  padding-bottom: 8px;
 
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-const StyledListTokenContainer = styled.div`
-  width: 100%;
-  height: calc(100% - ${LEFT_SIDEBAR_HEADER_HEIGHT}px);
 `;
 
 const Header = styled.div`
@@ -258,22 +198,6 @@ const Header = styled.div`
   align-items: baseline;
   min-height: 52px;
   padding-bottom: 16px;
-`;
-
-const Selection = styled.div`
-  display: flex;
-  grid-gap: ${SIDEBAR_ICON_GAP}px;
-  padding-left: 16px;
-`;
-
-// This has the styling from InteractiveLink but we cannot use InteractiveLink because it is a TextButton
-const StyledRefreshButton = styled(TextButton)`
-  & p {
-    font-size: 14px;
-    line-height: 18px;
-    text-transform: none;
-    text-decoration: underline;
-  }
 `;
 
 export default memo(Sidebar);

@@ -10,12 +10,11 @@ import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
 
 type Props = {
-  username: string;
   authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewFragment$key;
 };
 
-export default function NftDetailView({ username, authenticatedUserOwnsAsset, queryRef }: Props) {
+export default function NftDetailView({ authenticatedUserOwnsAsset, queryRef }: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {
@@ -32,10 +31,8 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           tokenId
           externalUrl
           collectorsNote
-          # TODO [GAL-206]: support creator address post-merge
-          # creatorAddress @required(action: THROW) {
-          #   address
-          # }
+
+          ...NftDetailTextFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -74,18 +71,7 @@ export default function NftDetailView({ username, authenticatedUserOwnsAsset, qu
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText
-          name={token.name}
-          description={token.description}
-          ownerUsername={username}
-          contractAddress={token.contract?.contractAddress?.address ?? ''}
-          tokenId={token.tokenId}
-          dbId={token.dbid}
-          externalUrl={token.externalUrl}
-          // TODO [GAL-206]: support Creator Address post-merge
-          // creatorAddress={token.creatorAddress.address}
-          contractName={token.contract?.name ?? ''}
-        />
+        <NftDetailText tokenRef={token} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
