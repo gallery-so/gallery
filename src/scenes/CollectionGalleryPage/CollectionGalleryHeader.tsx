@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
@@ -23,6 +22,7 @@ import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
+import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -199,24 +199,22 @@ function CollectionGalleryHeader({
             </>
           )}
           {shouldDisplayMobileLayoutToggle && (
-            <>
-              <DeprecatedSpacer width={8} />
+            <HStack gap={8}>
+              <Spacer />
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-            </>
+            </HStack>
           )}
         </StyledCollectionActions>
       </StyledHeaderWrapper>
 
       {unescapedCollectorsNote && (
-        <>
-          <DeprecatedSpacer height={isMobile ? 4 : 16} />
+        <VStack gap={isMobile ? 4 : 16}>
+          <Spacer />
           <StyledCollectionNote>
             <Markdown text={unescapedCollectorsNote} />
           </StyledCollectionNote>
-        </>
+        </VStack>
       )}
-
-      <DeprecatedSpacer height={isMobile ? 48 : 80} />
     </StyledCollectionGalleryHeaderWrapper>
   );
 }

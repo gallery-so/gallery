@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import EmptyGallery from './EmptyGallery';
@@ -20,6 +19,7 @@ import {
   ListRowProps,
   WindowScroller,
 } from 'react-virtualized';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
@@ -112,7 +112,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
           {({ registerChild, measure }) => {
             return (
               // @ts-expect-error Bad types from react-virtualized
-              <div ref={registerChild} key={key} style={style}>
+              <VStack ref={registerChild} key={key} style={style} gap={48}>
                 <UserGalleryCollection
                   queryRef={query}
                   collectionRef={collection}
@@ -120,8 +120,8 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   cacheHeight={cache.current.getHeight(index, 0)}
                   onLoad={measure}
                 />
-                <DeprecatedSpacer height={48} />
-              </div>
+                <Spacer />
+              </VStack>
             );
           }}
         </CellMeasurer>
@@ -141,8 +141,8 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <StyledUserGalleryCollections>
-      <DeprecatedSpacer height={isMobile ? 48 : 80} />
+    <StyledUserGalleryCollections gap={isMobile ? 48 : 80}>
+      <Spacer />
       <WindowScroller>
         {({ height, registerChild, scrollTop, onChildScroll }) => (
           <AutoSizer disableHeight>
@@ -178,7 +178,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   );
 }
 
-const StyledUserGalleryCollections = styled.div`
+const StyledUserGalleryCollections = styled(VStack)`
   width: 100%;
 `;
 

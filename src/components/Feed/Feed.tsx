@@ -17,6 +17,7 @@ import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
+import { HStack } from 'components/core/Spacer/Stack';
 
 export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
 
@@ -38,15 +39,13 @@ function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
   }, [setFeedMode, track]);
 
   return (
-    <StyledFeedNavbarControl>
+    <StyledFeedNavbarControl gap={10}>
       <StyledTextWrapperLeft>
         <StyledNavControlText onClick={handleFollowingModeClick} focused={feedMode === 'FOLLOWING'}>
           Following
         </StyledNavControlText>
       </StyledTextWrapperLeft>
-      <DeprecatedSpacer width={10} />
       <NavbarGLink />
-      <DeprecatedSpacer width={10} />
       <StyledTextWrapper>
         <StyledNavControlText onClick={handleWorldwideModeClick} focused={feedMode === 'WORLDWIDE'}>
           Worldwide
@@ -72,7 +71,7 @@ const StyledTextWrapperLeft = styled(StyledTextWrapper)`
   justify-content: flex-end;
 `;
 
-const StyledFeedNavbarControl = styled.div`
+const StyledFeedNavbarControl = styled(HStack)`
   display: flex;
   align-items: center;
   justify-content: center;

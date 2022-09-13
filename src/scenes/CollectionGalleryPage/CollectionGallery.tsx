@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import NotFound from 'scenes/NotFound/NotFound';
 import CollectionGalleryHeader from './CollectionGalleryHeader';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -10,6 +9,7 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useEffect } from 'react';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import NavActionFollow from 'components/Follow/NavActionFollow';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: CollectionGalleryFragment$key;
@@ -76,18 +76,20 @@ function CollectionGallery({ queryRef }: Props) {
 
   if (collection?.__typename === 'Collection') {
     return (
-      <StyledCollectionGallery>
-        <DeprecatedSpacer height={isMobile ? 48 : 80} />
-        <CollectionGalleryHeader
-          queryRef={query}
-          collectionRef={collection}
-          mobileLayout={mobileLayout}
-          setMobileLayout={setMobileLayout}
-        />
-        <NftGalleryWrapper>
-          <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
-        </NftGalleryWrapper>
-        <DeprecatedSpacer height={isMobile ? 16 : 64} />
+      <StyledCollectionGallery gap={isMobile ? 16 : 64}>
+        <VStack gap={isMobile ? 48 : 80}>
+          <Spacer />
+          <CollectionGalleryHeader
+            queryRef={query}
+            collectionRef={collection}
+            mobileLayout={mobileLayout}
+            setMobileLayout={setMobileLayout}
+          />
+          <NftGalleryWrapper>
+            <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+          </NftGalleryWrapper>
+        </VStack>
+        <Spacer />
       </StyledCollectionGallery>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {
@@ -98,7 +100,7 @@ function CollectionGallery({ queryRef }: Props) {
   return null;
 }
 
-const StyledCollectionGallery = styled.div`
+const StyledCollectionGallery = styled(VStack)`
   display: flex;
   flex-direction: column;
   align-items: center;
