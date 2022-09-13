@@ -26,7 +26,7 @@ export function SidebarChainButton({ isSelected, onClick, icon, title, locked }:
       <ChainLogo src={icon} />
       <TitleXSBold>{title}</TitleXSBold>
 
-      {locked && <LockedChainTooltip active={showTooltip} text="Coming soon..." />}
+      {locked && <LockedChainTooltip active={showTooltip} text="Coming soon" />}
     </ChainButton>
   );
 }
