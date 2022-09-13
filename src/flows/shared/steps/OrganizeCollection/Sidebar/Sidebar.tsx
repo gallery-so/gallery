@@ -15,15 +15,13 @@ import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
 import keyBy from 'lodash.keyby';
-import {
-  Chain,
-  SidebarChainSelector,
-} from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
+import { SidebarChainSelector } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
 import { Button } from 'components/core/Button/Button';
 import { generate12DigitId } from 'utils/collectionLayout';
 import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
+import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -141,13 +139,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       </StyledSidebarContainer>
       {!isSearching && (
         <>
-          {isPOAPEnabled && (
-            <SidebarChainSelector
-              queryRef={query}
-              selected={selectedChain}
-              onChange={setSelectedChain}
-            />
-          )}
+          <SidebarChainSelector
+            queryRef={query}
+            selected={selectedChain}
+            onChange={setSelectedChain}
+          />
           <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
             ADD BLANK SPACE
           </AddBlankSpaceButton>
