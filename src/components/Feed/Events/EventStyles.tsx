@@ -20,7 +20,7 @@ export const StyledEvent = ({ children, className, onClick }: StyledEventProps) 
   );
 };
 
-const StyledInnerEvent = styled.div`
+export const StyledInnerEvent = styled.div`
   max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
