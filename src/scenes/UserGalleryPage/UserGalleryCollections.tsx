@@ -159,6 +159,9 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   scrollTop={scrollTop}
                   deferredMeasurementCache={cache.current}
                   rowRenderer={rowRenderer}
+                  style={{
+                    outline: 'none',
+                  }}
                   overscanIndicesGetter={({
                     cellCount,
                     overscanCellsCount,
