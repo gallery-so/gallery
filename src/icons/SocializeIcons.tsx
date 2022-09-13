@@ -3,12 +3,19 @@ import colors from 'components/core/colors';
 import { forwardRef } from 'react';
 
 type Props = {
-  onClick?: () => void;
+  onClick: () => void;
 };
 
 export const CommentIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
   return (
-    <IconWrapper role="button" onClick={onClick} ref={ref}>
+    <IconWrapper
+      role="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      ref={ref}
+    >
       <StyledSvg
         viewBox="0 0 24 24"
         fill="none"
@@ -25,7 +32,14 @@ CommentIcon.displayName = 'CommentIcon';
 
 export const AdmireIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
   return (
-    <IconWrapper ref={ref} role="button" onClick={onClick}>
+    <IconWrapper
+      ref={ref}
+      role="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+    >
       <StyledSvg
         viewBox="0 0 24 24"
         fill="none"
