@@ -127,10 +127,10 @@ export const organizeCollectionQuery = graphql`
             dbid @required(action: THROW)
           }
         }
-
-        ...CollectionEditorFragment
       }
     }
+
+    ...CollectionEditorFragment
   }
 `;
 
@@ -157,7 +157,7 @@ function DecoratedPreloadedCollectionEditor({ push }: DecoratedCollectionEditorP
 
   useWizardConfig({ push, galleryId });
 
-  return <CollectionEditor viewerRef={query.viewer} />;
+  return <CollectionEditor queryRef={query} />;
 }
 
 function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditorProps) {
@@ -177,7 +177,7 @@ function DecoratedLazyloadedCollectionEditor({ push }: DecoratedCollectionEditor
 
   useWizardConfig({ push, galleryId });
 
-  return <CollectionEditor viewerRef={query.viewer} />;
+  return <CollectionEditor queryRef={query} />;
 }
 
 function OrganizeCollectionWithProvider({ push }: WizardContext) {

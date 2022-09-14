@@ -1,8 +1,13 @@
 schema: ./schema.graphql
 documents: ./src/**/*.{ts,tsx}
 generates:
-  ./src/__generated__/operations.ts:
+  ./__generated__/operations.ts:
     config:
+      scalars:
+          DBID: string
+          Address: string
+          PubKey: string
+          Time: string
       avoidOptionals: true
       autoSelectId: true
     plugins:

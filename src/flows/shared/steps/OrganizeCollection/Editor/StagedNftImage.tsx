@@ -7,6 +7,8 @@ import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
+import { StagedNftImageImageFragment$key } from '../../../../../../__generated__/StagedNftImageImageFragment.graphql';
+import { StagedNftImageVideoFragment$key } from '../../../../../../__generated__/StagedNftImageVideoFragment.graphql';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;
@@ -24,6 +26,9 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
         contract {
           name
         }
+
+        ...StagedNftImageVideoFragment
+        ...StagedNftImageImageFragment
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -50,10 +55,9 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
         size={size}
         onLoad={onLoad}
         hideLabel={hideLabel}
-        tokenName={token.name}
+        tokenRef={token}
         url={result.urls.large}
         setNodeRef={setNodeRef}
-        collectionName={token.contract?.name ?? null}
         {...props}
       />
     );
@@ -63,10 +67,9 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
         size={size}
         onLoad={onLoad}
         hideLabel={hideLabel}
-        tokenName={token.name}
+        tokenRef={token}
         setNodeRef={setNodeRef}
         url={result.urls.large}
-        collectionName={token.contract?.name ?? null}
         {...props}
       />
     );
@@ -76,10 +79,9 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
 type StagedNftImageImageProps = {
   url: string;
   size: number;
-  tokenName: string | null;
   hideLabel: boolean;
   onLoad: () => void;
-  collectionName: string | null;
+  tokenRef: StagedNftImageImageFragment$key;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
@@ -87,12 +89,20 @@ function StagedNftImageImage({
   url,
   size,
   onLoad,
+  tokenRef,
   hideLabel,
-  tokenName,
   setNodeRef,
-  collectionName,
   ...props
 }: StagedNftImageImageProps) {
+  const token = useFragment(
+    graphql`
+      fragment StagedNftImageImageFragment on Token {
+        ...NftPreviewLabelFragment
+      }
+    `,
+    tokenRef
+  );
+
   const { handleError } = useThrowOnMediaFailure('StagedNftImageImage');
 
   // We have to use this since we're not using an actual img element
@@ -100,9 +110,7 @@ function StagedNftImageImage({
 
   return (
     <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>
-      {hideLabel ? null : (
-        <StyledNftPreviewLabel title={tokenName} collectionName={collectionName} />
-      )}
+      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} />}
     </StyledGridImage>
   );
 }
@@ -110,10 +118,9 @@ function StagedNftImageImage({
 type StagedNftImageVideoProps = {
   url: string;
   size: number;
-  tokenName: string | null;
   hideLabel: boolean;
   onLoad: () => void;
-  collectionName: string | null;
+  tokenRef: StagedNftImageVideoFragment$key;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
@@ -121,18 +128,24 @@ function StagedNftImageVideo({
   url,
   size,
   onLoad,
+  tokenRef,
   hideLabel,
-  tokenName,
   setNodeRef,
-  collectionName,
   ...props
 }: StagedNftImageVideoProps) {
+  const token = useFragment(
+    graphql`
+      fragment StagedNftImageVideoFragment on Token {
+        ...NftPreviewLabelFragment
+      }
+    `,
+    tokenRef
+  );
+
   return (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo onLoad={onLoad} src={url} />
-      {hideLabel ? null : (
-        <StyledNftPreviewLabel title={tokenName} collectionName={collectionName} />
-      )}
+      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} />}
     </VideoContainer>
   );
 }
@@ -154,7 +167,7 @@ type StyledGridImageProps = {
 };
 
 const StyledGridImage = styled.div<StyledGridImageProps>`
-  background-image: ${({ srcUrl }) => `url(${srcUrl})`}};
+  background-image: ${({ srcUrl }) => `url(${srcUrl})`};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

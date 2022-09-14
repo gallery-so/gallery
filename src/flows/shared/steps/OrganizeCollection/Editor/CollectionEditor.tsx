@@ -20,6 +20,7 @@ import { parseCollectionLayout } from 'utils/collectionLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { CollectionEditorViewerFragment$key } from '../../../../../../__generated__/CollectionEditorViewerFragment.graphql';
 
 function convertNftsToEditModeTokens(
   tokens: EditModeTokenChild[],
@@ -34,50 +35,71 @@ function convertNftsToEditModeTokens(
 }
 
 type Props = {
-  viewerRef: CollectionEditorFragment$key;
+  queryRef: CollectionEditorFragment$key;
 };
 
-function CollectionEditor({ viewerRef }: Props) {
-  const viewer = useFragment(
-    graphql`
-      fragment CollectionEditorFragment on Viewer {
-        user @required(action: THROW) {
-          galleries @required(action: THROW) {
-            collections @required(action: THROW) {
-              dbid
-              tokens {
-                token @required(action: THROW) {
-                  dbid @required(action: THROW)
-                  name @required(action: THROW)
-                  lastUpdated @required(action: THROW)
-                }
-                tokenSettings {
-                  renderLive
-                }
-              }
-              layout {
-                sections
-                sectionLayout {
-                  columns
-                  whitespace
-                }
-              }
+// Separated out so we can refresh data as a part of our sync tokens mutation
+const collectionEditorViewerFragment = graphql`
+  fragment CollectionEditorViewerFragment on Viewer {
+    user @required(action: THROW) {
+      galleries @required(action: THROW) {
+        collections @required(action: THROW) {
+          dbid
+          tokens {
+            token @required(action: THROW) {
+              dbid @required(action: THROW)
+              name @required(action: THROW)
+              lastUpdated @required(action: THROW)
+            }
+            tokenSettings {
+              renderLive
             }
           }
-          tokens {
-            dbid @required(action: THROW)
-            name @required(action: THROW)
-            lastUpdated @required(action: THROW)
-            ...SidebarFragment
-            ...StagingAreaFragment
+          layout {
+            sections
+            sectionLayout {
+              columns
+              whitespace
+            }
           }
         }
-        ...EditorMenuFragment
+      }
+      tokens {
+        dbid @required(action: THROW)
+        name @required(action: THROW)
+        lastUpdated @required(action: THROW)
+        ...SidebarFragment
+        ...StagingAreaFragment
+      }
+    }
+    ...EditorMenuFragment
+  }
+`;
+
+function CollectionEditor({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionEditorFragment on Query {
+        viewer {
+          ... on Viewer {
+            ...CollectionEditorViewerFragment
+          }
+        }
+
         ...SidebarViewerFragment
       }
     `,
-    viewerRef
+    queryRef
   );
+
+  const viewer = useFragment<CollectionEditorViewerFragment$key>(
+    collectionEditorViewerFragment,
+    query.viewer
+  );
+
+  if (!viewer) {
+    throw new Error('CollectionEditor rendered without a Viewer');
+  }
 
   const stagedCollectionState = useStagedCollectionState();
   const sidebarTokens = useSidebarTokensState();
@@ -223,7 +245,7 @@ function CollectionEditor({ viewerRef }: Props) {
   return (
     <StyledOrganizeCollection>
       <StyledSidebarContainer>
-        <Sidebar sidebarTokens={sidebarTokens} tokensRef={allNfts} viewerRef={viewer} />
+        <Sidebar sidebarTokens={sidebarTokens} tokensRef={allNfts} queryRef={query} />
       </StyledSidebarContainer>
       <StyledEditorContainer>
         {shouldDisplayEditor ? (

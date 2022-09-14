@@ -48,11 +48,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     showModal({
       content: (
         <StyledNftDetailViewPopover>
-          <NftDetailView
-            username={token?.collection?.gallery?.owner.username ?? ''}
-            authenticatedUserOwnsAsset={false}
-            queryRef={token}
-          />
+          <NftDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
         </StyledNftDetailViewPopover>
       ),
       isFullPage: true,

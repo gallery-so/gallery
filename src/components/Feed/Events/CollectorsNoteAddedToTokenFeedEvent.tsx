@@ -78,17 +78,13 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView
-              username={event.owner.username ?? ''}
-              authenticatedUserOwnsAsset={false}
-              queryRef={event.token}
-            />
+            <NftDetailView authenticatedUserOwnsAsset={false} queryRef={event.token} />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [event.owner.username, event.token, showModal, track]
+    [event.token, showModal, track]
   );
 
   return (
