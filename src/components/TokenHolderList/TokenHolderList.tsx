@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import TokenHolderListItem from './TokenHolderListItem';
 import { Directions } from 'src/components/core/enums';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -9,6 +8,7 @@ import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageCo
 import { MemberListTierFragment$data } from '__generated__/MemberListTierFragment.graphql';
 import { CommunityPageViewFragment$data } from '__generated__/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 // Get which side of the tokenHolder name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -60,21 +60,22 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <>
+    <VStack gap={isMobile ? 24 : 16}>
       <TitleS>{title}</TitleS>
-      <DeprecatedSpacer height={isMobile ? 24 : 16} />
-      <StyledTokenHoldersWrapper>
-        {filteredTokenHolders.map((tokenHolder, index) => (
-          <TokenHolderListItem
-            key={tokenHolder.user.dbid}
-            tokenHolderRef={tokenHolder}
-            direction={getPreviewDirection(index)}
-            fadeUsernames={fadeUsernames}
-          />
-        ))}
-      </StyledTokenHoldersWrapper>
-      <DeprecatedSpacer height={56} />
-    </>
+      <VStack gap={56}>
+        <StyledTokenHoldersWrapper>
+          {filteredTokenHolders.map((tokenHolder, index) => (
+            <TokenHolderListItem
+              key={tokenHolder.user.dbid}
+              tokenHolderRef={tokenHolder}
+              direction={getPreviewDirection(index)}
+              fadeUsernames={fadeUsernames}
+            />
+          ))}
+        </StyledTokenHoldersWrapper>
+        <Spacer />
+      </VStack>
+    </VStack>
   );
 }
 

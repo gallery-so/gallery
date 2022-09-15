@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useMintMerchContract } from 'hooks/useContract';
 import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
 
@@ -16,6 +15,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import transitions from 'components/core/transitions';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenId: number }) {
   const contract = useMintMerchContract();
@@ -26,15 +26,13 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
   });
 
   return (
-    <>
-      <UserOwnsContainer inReceipt={inReceipt}>
+    <VStack gap={8}>
+      <UserOwnsContainer inReceipt={inReceipt} gap={4}>
         <StyledFlexContainer>
           <StyledBaseM>Quantity bought</StyledBaseM>
           <StyledBaseM>{userOwnedSupply}</StyledBaseM>
         </StyledFlexContainer>
-        <DeprecatedSpacer height={4} />
         <HorizontalBreak />
-        <DeprecatedSpacer height={4} />
         <StyledFlexContainer>
           <StyledBaseM>Total paid</StyledBaseM>
           <StyledPrice>
@@ -42,8 +40,8 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
           </StyledPrice>
         </StyledFlexContainer>
       </UserOwnsContainer>
-      <DeprecatedSpacer height={8} />
-    </>
+      <Spacer />
+    </VStack>
   );
 }
 
@@ -68,7 +66,7 @@ export function MobileReceiptBox({
   });
 
   return (
-    <>
+    <VStack gap={12}>
       <StyledMobileReceipt>
         <StyledCloseIcon
           onClick={() => {
@@ -90,15 +88,12 @@ export function MobileReceiptBox({
         <UserOwnsBox inReceipt={true} tokenId={tokenId} />
       </StyledMobileReceipt>
       {userOwnedSupply === MAX_NFTS_PER_WALLET && (
-        <>
-          <DeprecatedSpacer height={12} />
-          <StyledOwnMaxText>
-            You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will not be
-            able to buy any more.
-          </StyledOwnMaxText>
-        </>
+        <StyledOwnMaxText>
+          You’ve reached the limit of 3 {label.toLowerCase()}s per collector, and you will not be
+          able to buy any more.
+        </StyledOwnMaxText>
       )}
-    </>
+    </VStack>
   );
 }
 
@@ -201,54 +196,51 @@ export default function PurchaseBox({
                 size.
               </StyledCheckoutDescription>
             )}
-            <StyledFlexContainer>
-              <StyledBaseM>{isReceiptState ? 'Quantity bought' : 'Quantity'}</StyledBaseM>
-              <StyledQuantityCounter>
-                <StyledColumnButton
-                  onClick={() => {
-                    setQuantity(quantity - 1);
-                  }}
-                  disabled={quantity <= 1 || isReceiptState || !active}
-                >
-                  <CircleMinusIcon />
-                </StyledColumnButton>
-                <StyledQuantity>{quantity}</StyledQuantity>
-                <StyledColumnButton
-                  onClick={() => {
-                    setQuantity(quantity + 1);
-                  }}
-                  disabled={quantity >= maxQuantity() || isReceiptState || !active}
-                >
-                  <CirclePlusIcon />
-                </StyledColumnButton>
-              </StyledQuantityCounter>
-            </StyledFlexContainer>
-            <DeprecatedSpacer height={4} />
-            <HorizontalBreak />
-            <DeprecatedSpacer height={4} />
-            <StyledPayAndPurchaseContainer>
-              <StyledFlexContainerColumnOnMobile>
-                <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
-                <StyledPrice>
-                  {(+ethers.utils.formatEther(tokenPrice) * quantity).toFixed(2)} Ξ
-                </StyledPrice>
-              </StyledFlexContainerColumnOnMobile>
-              {!isReceiptState && (
-                <>
-                  <DeprecatedSpacer height={16} />
+            <VStack gap={4}>
+              <StyledFlexContainer>
+                <StyledBaseM>{isReceiptState ? 'Quantity bought' : 'Quantity'}</StyledBaseM>
+                <StyledQuantityCounter>
+                  <StyledColumnButton
+                    onClick={() => {
+                      setQuantity(quantity - 1);
+                    }}
+                    disabled={quantity <= 1 || isReceiptState || !active}
+                  >
+                    <CircleMinusIcon />
+                  </StyledColumnButton>
+                  <StyledQuantity>{quantity}</StyledQuantity>
+                  <StyledColumnButton
+                    onClick={() => {
+                      setQuantity(quantity + 1);
+                    }}
+                    disabled={quantity >= maxQuantity() || isReceiptState || !active}
+                  >
+                    <CirclePlusIcon />
+                  </StyledColumnButton>
+                </StyledQuantityCounter>
+              </StyledFlexContainer>
+              <HorizontalBreak />
+              <StyledPayAndPurchaseContainer gap={16}>
+                <StyledFlexContainerColumnOnMobile>
+                  <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
+                  <StyledPrice>
+                    {(+ethers.utils.formatEther(tokenPrice) * quantity).toFixed(2)} Ξ
+                  </StyledPrice>
+                </StyledFlexContainerColumnOnMobile>
+                {!isReceiptState && (
                   <MerchMintButton
                     onMintSuccess={handlePurchaseClick}
                     quantity={quantity}
                     tokenId={tokenId}
                   />
-                </>
-              )}
-            </StyledPayAndPurchaseContainer>
+                )}
+              </StyledPayAndPurchaseContainer>
+            </VStack>
           </StyledCheckoutBox>
 
           {isReceiptState && (
-            <>
-              <DeprecatedSpacer height={12} />
+            <VStack gap={12}>
+              <Spacer />
               {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
                 isMobile ? (
                   ''
@@ -267,7 +259,7 @@ export default function PurchaseBox({
                   Purchase More
                 </StyledPurchaseMoreButton>
               )}
-            </>
+            </VStack>
           )}
         </StyledCheckoutAndReceiptContainer>
 
@@ -437,10 +429,8 @@ const StyledPurchaseMoreButton = styled(Button)`
   width: 100%;
 `;
 
-const UserOwnsContainer = styled.div<{ inReceipt: boolean }>`
+const UserOwnsContainer = styled(VStack)<{ inReceipt: boolean }>`
   padding: 0;
-  display: flex;
-  flex-direction: column;
   height: 100%;
   padding: 16px;
   border: 1px solid ${colors.porcelain};
@@ -479,7 +469,7 @@ const StyledPageOverlay = styled.div<{ show: boolean }>`
   pointer-events: ${({ show }) => (show ? 'all' : 'none')};
 `;
 
-const StyledPayAndPurchaseContainer = styled.div`
+const StyledPayAndPurchaseContainer = styled(VStack)`
   @media only screen and (max-width: 768px) {
     display: flex;
     flex-direction: row;

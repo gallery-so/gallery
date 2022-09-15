@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { BaseS, TitleM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import {
   GALLERY_FAQ,
@@ -16,6 +15,7 @@ import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
+import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -23,50 +23,43 @@ function GlobalFooter() {
   return (
     <StyledGlobalFooter isMobile={isMobile}>
       {isMobile && <StyledHr />}
-      <MainContent>
-        <LogoWrapper>
+      <VStack gap={4}>
+        <HStack gap={4}>
           <Link href="/">
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
-          <DeprecatedSpacer width={4} />
           <BaseS>BETA</BaseS>
-        </LogoWrapper>
-        <DeprecatedSpacer height={4} />
-        <StyledLinkContainer>
+        </HStack>
+        <HStack gap={8}>
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-          <DeprecatedSpacer width={8} />
           <StyledFooterLink href="/shop">
-            Shop
-            <DeprecatedSpacer width={4} />
-            <StyledObjectsContainer>
-              <StyledLogoBracketLeft color={colors.shadow} />
-              <StyledShopText>OBJECTS</StyledShopText>
-              <DeprecatedSpacer width={1} />
-              <StyledLogoBracketRight color={colors.shadow} />
-            </StyledObjectsContainer>
+            <HStack gap={4}>
+              Shop
+              <StyledObjectsContainer>
+                <StyledLogoBracketLeft color={colors.shadow} />
+                <HStack gap={1}>
+                  <StyledShopText>OBJECTS</StyledShopText>
+                  <StyledLogoBracketRight color={colors.shadow} />
+                </HStack>
+              </StyledObjectsContainer>
+            </HStack>
           </StyledFooterLink>
-        </StyledLinkContainer>
-      </MainContent>
-      {isMobile && <DeprecatedSpacer height={4} />}
-      <BoringLegalContent>
-        <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
-        <DeprecatedSpacer width={8} />
-        <BaseS color={colors.metal}>·</BaseS>
-        <DeprecatedSpacer width={8} />
-        <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
-        <DeprecatedSpacer width={8} />
-        <StyledFooterLink href="/terms">Terms</StyledFooterLink>
-      </BoringLegalContent>
+        </HStack>
+      </VStack>
+      <VStack gap={isMobile ? 4 : 0}>
+        <Spacer />
+        <HStack gap={8}>
+          <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
+          <BaseS color={colors.metal}>·</BaseS>
+          <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
+          <StyledFooterLink href="/terms">Terms</StyledFooterLink>
+        </HStack>
+      </VStack>
     </StyledGlobalFooter>
   );
 }
@@ -121,29 +114,15 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   }
 `;
 
-const MainContent = styled.div``;
-
-const LogoWrapper = styled.div`
-  display: flex;
-`;
-
 const StyledHr = styled.hr`
   border: 1px solid #f7f7f7;
   width: 100%;
   margin: 16px 0px;
 `;
 
-const BoringLegalContent = styled.div`
-  display: flex;
-`;
-
 const StyledLogo = styled.img`
   height: 24px;
   cursor: pointer;
-`;
-
-const StyledLinkContainer = styled.div`
-  display: flex;
 `;
 
 const StyledFooterLink = styled(NavLink)`

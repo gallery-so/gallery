@@ -1,4 +1,3 @@
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
 import styled from 'styled-components';
@@ -13,6 +12,7 @@ import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import formatUrl from 'utils/formatUrl';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -62,32 +62,52 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   return (
     <MemberListPageProvider>
-      <DeprecatedSpacer height={80} />
-      <StyledHeader>
-        <TitleL>{name}</TitleL>
-        {description && (
-          <StyledDescriptionWrapper>
-            <DeprecatedSpacer height={4} />
-            <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-              <Markdown text={formattedDescription} />
-            </StyledBaseM>
-            <DeprecatedSpacer height={8} />
-            {isLineClampEnabled && (
-              <TextButton
-                text={showExpandedDescription ? 'Show less' : 'Show More'}
-                onClick={handleShowMoreClick}
-              />
+      <VStack gap={80}>
+        <Spacer />
+        <VStack>
+          <StyledHeader>
+            <TitleL>{name}</TitleL>
+            {description && (
+              <StyledDescriptionWrapper>
+                <VStack gap={4}>
+                  <Spacer />
+                  <VStack gap={8}>
+                    <StyledBaseM
+                      showExpandedDescription={showExpandedDescription}
+                      ref={descriptionRef}
+                    >
+                      <Markdown text={formattedDescription} />
+                    </StyledBaseM>
+                    <Spacer />
+                  </VStack>
+                </VStack>
+                {isLineClampEnabled && (
+                  <TextButton
+                    text={showExpandedDescription ? 'Show less' : 'Show More'}
+                    onClick={handleShowMoreClick}
+                  />
+                )}
+              </StyledDescriptionWrapper>
             )}
-          </StyledDescriptionWrapper>
-        )}
-      </StyledHeader>
-      <DeprecatedSpacer height={isMobile ? 32 : 80} />
-      <MemberListFilter />
-      <DeprecatedSpacer height={isMobile ? 32 : 64} />
-      <StyledListWrapper>
-        <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
-      </StyledListWrapper>
-      <DeprecatedSpacer height={64} />
+          </StyledHeader>
+          <VStack gap={isMobile ? 32 : 64}>
+            <VStack gap={isMobile ? 32 : 80}>
+              <Spacer />
+              <MemberListFilter />
+            </VStack>
+            <Spacer />
+          </VStack>
+          <VStack gap={64}>
+            <StyledListWrapper>
+              <TokenHolderList
+                title="Members in this community"
+                tokenHoldersRef={community.owners}
+              />
+            </StyledListWrapper>
+            <Spacer />
+          </VStack>
+        </VStack>
+      </VStack>
     </MemberListPageProvider>
   );
 }

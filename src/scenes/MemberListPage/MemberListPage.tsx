@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { TitleL } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
@@ -10,6 +9,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: MemberListPageFragment$key;
@@ -31,28 +31,34 @@ function MemberListPage({ queryRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <StyledPage>
+    <StyledPage gap={208}>
       <MemberListPageProvider>
-        <DeprecatedSpacer height={208} />
-        <StyledBanner>
-          <StyledBannerText>
-            <i>Thank you,</i> for being a patron of Gallery.
-          </StyledBannerText>
-        </StyledBanner>
-        <DeprecatedSpacer height={isMobile ? 32 : 80} />
-        <TokenHolderListFilter />
-        <DeprecatedSpacer height={isMobile ? 32 : 64} />
-        <StyledTierWrapper>
-          {removeNullValues(membershipTiers).map((tier) => (
-            <MemberListTier key={tier.id} tierRef={tier} />
-          ))}
-        </StyledTierWrapper>
+        <Spacer />
+        <VStack>
+          <StyledBanner>
+            <StyledBannerText>
+              <i>Thank you,</i> for being a patron of Gallery.
+            </StyledBannerText>
+          </StyledBanner>
+          <VStack gap={isMobile ? 32 : 80}>
+            <Spacer />
+            <TokenHolderListFilter />
+          </VStack>
+          <VStack gap={isMobile ? 32 : 64}>
+            <Spacer />
+            <StyledTierWrapper>
+              {removeNullValues(membershipTiers).map((tier) => (
+                <MemberListTier key={tier.id} tierRef={tier} />
+              ))}
+            </StyledTierWrapper>
+          </VStack>
+        </VStack>
       </MemberListPageProvider>
     </StyledPage>
   );
 }
 
-const StyledPage = styled.div`
+const StyledPage = styled(VStack)`
   min-height: 100vh;
 
   margin-left: ${pageGutter.mobile}px;
