@@ -126,6 +126,7 @@ export default function FeedEventWithBoundary({
     graphql`
       fragment FeedEventWithErrorBoundaryQueryFragment on Query {
         ...FeedEventQueryFragment
+        ...FeedEventSocializeSectionQueryFragment
       }
     `,
     queryRef
@@ -139,7 +140,7 @@ export default function FeedEventWithBoundary({
         <ErrorBoundary fallback={<></>}>
           <SocializedSectionPadding>
             <SocializeSectionWrapper>
-              <FeedEventSocializeSection eventRef={event} />
+              <FeedEventSocializeSection eventRef={event} queryRef={query} />
             </SocializeSectionWrapper>
           </SocializedSectionPadding>
         </ErrorBoundary>

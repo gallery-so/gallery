@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export function SendButton({ onClick, enabled }: Props) {
   return (
-    <Wrapper>
+    <Wrapper disabled={!enabled} onClick={onClick}>
       <IconCircle enabled={enabled}>
         <SendIcon />
       </IconCircle>
@@ -29,10 +29,19 @@ const IconCircle = styled.div<{ enabled: boolean }>`
   align-items: center;
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div.attrs({ role: 'button' })<{ disabled: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          pointer-events: none;
+        `
+      : css`
+          cursor: pointer;
+        `}
 `;
 
 function SendIcon() {

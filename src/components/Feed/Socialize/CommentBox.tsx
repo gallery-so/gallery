@@ -5,21 +5,76 @@ import { SendButton } from 'components/Feed/Socialize/SendButton';
 import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
 import breakpoints from 'components/core/breakpoints';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
 
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
+  onClose: () => void;
   active: boolean;
+  eventRef: CommentBoxFragment$key;
 };
 
-export function CommentBox({ active }: Props) {
+export function CommentBox({ active, onClose, eventRef }: Props) {
+  const event = useFragment(
+    graphql`
+      fragment CommentBoxFragment on FeedEvent {
+        dbid
+      }
+    `,
+    eventRef
+  );
+
+  const [submitComment, isSubmittingComment] = usePromisifiedMutation<CommentBoxMutation>(graphql`
+    mutation CommentBoxMutation($eventId: DBID!, $comment: String!) {
+      commentOnFeedEvent(comment: $comment, feedEventId: $eventId) {
+        ... on CommentOnFeedEventPayload {
+          __typename
+
+          comment {
+            comment
+          }
+        }
+      }
+    }
+  `);
+
   const [value, setValue] = useState('');
+  const textareaRef = useRef<HTMLParagraphElement | null>(null);
+
+  const handleSubmit = useCallback(async () => {
+    if (isSubmittingComment || value.length === 0) {
+      return;
+    }
+
+    try {
+      const response = await submitComment({
+        variables: {
+          comment: value,
+          eventId: event.dbid,
+        },
+      });
+
+      if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
+        // Good to go
+        console.log(response);
+
+        onClose();
+      } else {
+        // error handle
+      }
+    } catch (e) {
+      // error handle
+    }
+  }, [event.dbid, isSubmittingComment, submitComment, value]);
 
   const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
     event.stopPropagation();
   }, []);
-
-  const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
   return (
     <CommentBoxWrapper active={active}>
@@ -54,7 +109,7 @@ export function CommentBox({ active }: Props) {
 
           <ControlsContainer gap={12} align="center">
             <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-            <SendButton enabled={value.length > 0} onClick={() => {}} />
+            <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
           </ControlsContainer>
         </InputWrapper>
       </Wrapper>

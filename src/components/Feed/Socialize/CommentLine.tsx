@@ -1,0 +1,70 @@
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { CommentLineFragment$key } from '__generated__/CommentLineFragment.graphql';
+import { HStack } from 'components/core/Spacer/Stack';
+import { formatDistanceToNowStrict } from 'date-fns';
+import styled from 'styled-components';
+import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
+
+type CommentLineProps = {
+  commentRef: CommentLineFragment$key;
+};
+
+export function CommentLine({ commentRef }: CommentLineProps) {
+  const comment = useFragment(
+    graphql`
+      fragment CommentLineFragment on Comment {
+        dbid
+
+        creationTime
+
+        comment @required(action: THROW)
+        commenter {
+          username
+        }
+      }
+    `,
+    commentRef
+  );
+
+  const timeAgo = comment.creationTime
+    ? formatDistanceToNowStrict(new Date(comment.creationTime))
+    : null;
+
+  return (
+    <HStack key={comment.dbid} gap={4} align="flex-end">
+      <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+      <CommentText>{comment.comment}</CommentText>
+      {timeAgo && <TimeAgoText>{timeAgo} ago</TimeAgoText>}
+    </HStack>
+  );
+}
+const TimeAgoText = styled.div`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 400;
+
+  color: ${colors.metal};
+`;
+
+const CommenterName = styled.div`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+`;
+
+const CommentText = styled.div`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 400;
+
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
