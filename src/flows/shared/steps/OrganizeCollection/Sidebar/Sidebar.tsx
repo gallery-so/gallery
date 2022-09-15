@@ -22,6 +22,7 @@ import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/Sid
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -127,7 +128,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   return (
     <StyledSidebar>
-      <StyledSidebarContainer>
+      <StyledSidebarContainer gap={8}>
         <Header>
           <TitleS>All pieces</TitleS>
         </Header>
@@ -136,19 +137,19 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           setSearchResults={setSearchResults}
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
+        {!isSearching && (
+          <>
+            <SidebarChainSelector
+              queryRef={query}
+              selected={selectedChain}
+              onChange={setSelectedChain}
+            />
+            <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
+              ADD BLANK SPACE
+            </AddBlankSpaceButton>
+          </>
+        )}
       </StyledSidebarContainer>
-      {!isSearching && (
-        <>
-          <SidebarChainSelector
-            queryRef={query}
-            selected={selectedChain}
-            onChange={setSelectedChain}
-          />
-          <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
-            ADD BLANK SPACE
-          </AddBlankSpaceButton>
-        </>
-      )}
       <SidebarTokens
         isSearching={isSearching}
         tokenRefs={nonNullTokens}
@@ -159,6 +160,10 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   );
 }
 
+const StyledSidebarContainer = styled(VStack)`
+  padding: 0 16px;
+`;
+
 const AddBlankSpaceButton = styled(Button)`
   margin: 4px 0;
 `;
@@ -167,21 +172,11 @@ const StyledSidebar = styled.div`
   display: flex;
   flex-direction: column;
 
-  // We need to save the bottom padding for the
-  // scrollable icon section. It will have its own padding
-  padding: 16px 16px 0 16px;
+  padding: 16px 0;
 
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
   user-select: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const StyledSidebarContainer = styled.div`
-  padding-bottom: 8px;
 
   &::-webkit-scrollbar {
     display: none;
