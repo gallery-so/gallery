@@ -1,6 +1,5 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { AnimatedToast } from './Toast';
-import { v4 } from 'uuid';
 
 type DismissToastHandler = () => void;
 
@@ -44,7 +43,7 @@ const ToastProvider = memo(({ children }: Props) => {
   const pushToast = useCallback(({ message, onDismiss = noop, autoClose = true }: ToastProps) => {
     setToasts((previousMessages) => [
       ...previousMessages,
-      { message, onDismiss, autoClose, id: v4() },
+      { message, onDismiss, autoClose, id: Date.now().toString() },
     ]);
   }, []);
 
