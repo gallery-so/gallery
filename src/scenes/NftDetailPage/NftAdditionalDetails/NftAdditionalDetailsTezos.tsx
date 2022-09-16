@@ -1,9 +1,8 @@
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useMemo } from 'react';
-import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
+import { hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
-import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
@@ -13,6 +12,7 @@ import { CopyableAddress } from 'components/CopyableAddress';
 import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
+import { graphqlTruncateAddress } from 'utils/wallet';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -33,7 +33,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
           }
           contractAddress {
             address
-            ...CopyableAddressFragment
+            ...walletTruncateAddressFragment
           }
         }
 
@@ -77,7 +77,9 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <CopyableAddress chainAddressRef={contract.contractAddress} />
+          <InteractiveLink href={`https://tzkt.io/${contract.contractAddress.address}/operations`}>
+            {graphqlTruncateAddress(contract.contractAddress)}
+          </InteractiveLink>
         </div>
       )}
 

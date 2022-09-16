@@ -77,7 +77,11 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <CopyableAddress chainAddressRef={contract.contractAddress} />
+          <InteractiveLink
+            href={`https://etherscan.io/address/${contract.contractAddress.address}`}
+          >
+            {contract.contractAddress.address}
+          </InteractiveLink>
         </div>
       )}
 

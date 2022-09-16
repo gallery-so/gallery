@@ -2,47 +2,40 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CopyableAddressFragment$key } from '__generated__/CopyableAddressFragment.graphql';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
-import { useMemo } from 'react';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
+import { graphqlTruncateAddress } from 'utils/wallet';
 
 type CopyableAddressProps = {
   chainAddressRef: CopyableAddressFragment$key;
 };
 
 export function CopyableAddress({ chainAddressRef }: CopyableAddressProps) {
-  const { chain, address } = useFragment(
+  const address = useFragment(
     graphql`
       fragment CopyableAddressFragment on ChainAddress {
         chain @required(action: THROW)
         address @required(action: THROW)
+
+        ...walletTruncateAddressFragment
       }
     `,
     chainAddressRef
   );
 
-  /**
-   * TODO: We should consolidate this with truncateAddress at some point
-   */
-  const truncatedAddress = useMemo(() => {
-    if (chain === 'Tezos') {
-      return `${address.slice(0, 6)}....${address.slice(-6)}`;
-    } else {
-      return `${address.slice(0, 8)}...${address.slice(-4)}`;
-    }
-  }, [address, chain]);
+  const truncatedAddress = graphqlTruncateAddress(address);
 
-  return <RawCopyableAddress address={address} truncatedAddress={truncatedAddress} />;
+  return <RawCopyableAddress address={address.address} truncatedAddress={truncatedAddress} />;
 }
 
 type RawCopyableAddressProps = {
   address: string;
-  truncatedAddress: string;
+  truncatedAddress: string | null;
 };
 
 export function RawCopyableAddress({ address, truncatedAddress }: RawCopyableAddressProps) {
   return (
     <CopyToClipboard textToCopy={address} successText="Address copied to clipboard.">
-      <StyledAnchor>{truncatedAddress}</StyledAnchor>
+      <StyledAnchor>{truncatedAddress || address}</StyledAnchor>
     </CopyToClipboard>
   );
 }
