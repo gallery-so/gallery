@@ -13,6 +13,7 @@ import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsNonPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsNonPOAPFragment.graphql';
+import { CopyableAddress } from 'components/CopyableAddress';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -27,8 +28,14 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
         externalUrl
         tokenId
         contract {
+          creatorAddress {
+            address
+            ...CopyableAddressFragment
+            ...EnsOrAddressWithSuspenseFragment
+          }
           contractAddress {
             address
+            ...CopyableAddressFragment
           }
         }
       }
@@ -92,23 +99,17 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
 
   return (
     <VStack gap={16}>
-      {token.contract?.contractAddress?.address && (
+      {token.contract?.creatorAddress?.address && (
         <div>
           <TitleXS>Creator</TitleXS>
-          <BaseM>
-            <EnsOrAddress address={token.contract.contractAddress.address} />
-          </BaseM>
+          <EnsOrAddress chainAddressRef={token.contract.creatorAddress} />
         </div>
       )}
 
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <InteractiveLink
-            href={`https://etherscan.io/address/${contract.contractAddress.address}`}
-          >
-            {contract.contractAddress.address}
-          </InteractiveLink>
+          <CopyableAddress chainAddressRef={contract.contractAddress} />
         </div>
       )}
 

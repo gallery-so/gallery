@@ -1,36 +1,63 @@
 import { Suspense } from 'react';
 import useSWR from 'swr';
-import DeprecatedSpacer from './core/Spacer/DeprecatedSpacer';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { CopyableAddress, RawCopyableAddress } from 'components/CopyableAddress';
+import { EnsOrAddressFragment$key } from '../../__generated__/EnsOrAddressFragment.graphql';
+import { EnsOrAddressWithSuspenseFragment$key } from '../../__generated__/EnsOrAddressWithSuspenseFragment.graphql';
 
-type Props = {
-  address?: string;
+type EnsNameProps = {
+  chainAddressRef: EnsOrAddressFragment$key;
 };
 
-const EnsName = ({ address }: Props) => {
+const EnsName = ({ chainAddressRef }: EnsNameProps) => {
+  const address = useFragment(
+    graphql`
+      fragment EnsOrAddressFragment on ChainAddress {
+        address @required(action: THROW)
+
+        ...CopyableAddressFragment
+      }
+    `,
+    chainAddressRef
+  );
+
   const { data } = useSWR(
-    address
-      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.toLowerCase())}`
+    chainAddressRef
+      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.address.toLowerCase())}`
       : null
   );
 
-  if (data?.address) {
-    return <span title={data.address}>{data.name || data.address}</span>;
+  if (data?.name) {
+    return <RawCopyableAddress address={data.address} truncatedAddress={data.name} />;
   }
 
-  return <span title={address}>{address}</span>;
+  return <CopyableAddress chainAddressRef={address} />;
 };
 
-export const EnsOrAddress = ({ address }: Props) => (
-  <Suspense
-    fallback={
-      // TODO: fallback that takes the height of the text element would appear post-fetch.
-      // long-term, we're going to holistically re-think loading states on the app
-      <DeprecatedSpacer height={18} />
-    }
-  >
-    <PlainErrorBoundary fallback={<span title={address}>{address}</span>}>
-      <EnsName address={address} />
-    </PlainErrorBoundary>
-  </Suspense>
-);
+type EnsOrAddressProps = {
+  chainAddressRef: EnsOrAddressWithSuspenseFragment$key;
+};
+
+export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
+  const address = useFragment(
+    graphql`
+      fragment EnsOrAddressWithSuspenseFragment on ChainAddress {
+        address
+
+        ...EnsOrAddressFragment
+        ...CopyableAddressFragment
+      }
+    `,
+    chainAddressRef
+  );
+
+  return (
+    <Suspense fallback={<CopyableAddress chainAddressRef={address} />}>
+      <PlainErrorBoundary fallback={<CopyableAddress chainAddressRef={address} />}>
+        <EnsName chainAddressRef={address} />
+      </PlainErrorBoundary>
+    </Suspense>
+  );
+};
