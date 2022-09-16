@@ -38,7 +38,7 @@ export function getCommunityUrlForToken(
   if (token.contract.chain === 'POAP') {
     return `/community/poap/${token.contract.contractAddress.address}`;
   } else if (token.contract.chain === 'Tezos') {
-    return `/community/tezos/${token.contract.contractAddress.address}`;
+    return `/community/tez/${token.contract.contractAddress.address}`;
   } else {
     return `/community/${token.contract.contractAddress.address}`;
   }
