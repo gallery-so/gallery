@@ -8,7 +8,6 @@ import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__/NftAdditionalDetailsTezosFragment.graphql';
-import { CopyableAddress } from 'components/CopyableAddress';
 import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';

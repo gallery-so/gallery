@@ -9,7 +9,6 @@ import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsEthFragment$key } from '../../../../__generated__/NftAdditionalDetailsEthFragment.graphql';
-import { CopyableAddress } from 'components/CopyableAddress';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { NftAdditionalDetailsEthQuery } from '../../../../__generated__/NftAdditionalDetailsEthQuery.graphql';
 
