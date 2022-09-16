@@ -13,6 +13,7 @@ import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdd
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
 import { graphqlTruncateAddress } from 'utils/wallet';
+import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -29,7 +30,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
         contract {
           creatorAddress {
             address
-            ...CopyableAddressFragment
+            ...TezosDomainOrAddressWithSuspenseFragment
           }
           contractAddress {
             address
@@ -70,7 +71,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {token.contract?.creatorAddress?.address && (
         <div>
           <TitleXS>Creator</TitleXS>
-          <CopyableAddress chainAddressRef={token.contract.creatorAddress} />
+          <TezosDomainOrAddress chainAddressRef={token.contract.creatorAddress} />
         </div>
       )}
 

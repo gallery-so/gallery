@@ -33,6 +33,7 @@ const EnsName = ({ chainAddressRef }: EnsNameProps) => {
     return <RawCopyableAddress address={data.address} truncatedAddress={data.name} />;
   }
 
+  // If we couldn't resolve, let's fallback to the default component
   return <CopyableAddress chainAddressRef={address} />;
 };
 
