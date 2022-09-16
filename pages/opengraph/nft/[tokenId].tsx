@@ -53,7 +53,7 @@ export default function OpenGraphCollectionPage() {
           )}
         </div>
       </div>
-      <style jsx>{`
+      <style>{`
         .page {
           min-height: 100vh;
           display: flex;
