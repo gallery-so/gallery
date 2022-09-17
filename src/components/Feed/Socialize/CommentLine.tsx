@@ -6,6 +6,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import styled from 'styled-components';
 import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import { useEffect, useState } from 'react';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -27,6 +28,15 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     `,
     commentRef
   );
+
+  const [, setCount] = useState(0);
+  useEffect(function rerenderEveryFewSecondsToUpdateTimeAgo() {
+    const intervalId = setInterval(() => {
+      setCount((previous) => previous + 1);
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const timeAgo = comment.creationTime
     ? formatDistanceToNowStrict(new Date(comment.creationTime))
