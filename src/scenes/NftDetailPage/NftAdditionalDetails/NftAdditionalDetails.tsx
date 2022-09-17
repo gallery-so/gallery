@@ -2,7 +2,8 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NftAdditionalDetailsFragment$key } from '../../../../__generated__/NftAdditionalDetailsFragment.graphql';
 import { NftAdditionalDetailsPOAP } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsPOAP';
-import { NftAdditionalDetailsNonPOAP } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsNonPOAP';
+import { NftAdditionalDetailsEth } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsEth';
+import { NftAdditionalDetailsTezos } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsTezos';
 
 type NftAdditionalDetailsProps = {
   showDetails: boolean;
@@ -16,7 +17,8 @@ export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDet
         chain
 
         ...NftAdditionalDetailsPOAPFragment
-        ...NftAdditionalDetailsNonPOAPFragment
+        ...NftAdditionalDetailsTezosFragment
+        ...NftAdditionalDetailsEthFragment
       }
     `,
     tokenRef
@@ -24,7 +26,9 @@ export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDet
 
   if (token.chain === 'POAP') {
     return <NftAdditionalDetailsPOAP showDetails={showDetails} tokenRef={token} />;
+  } else if (token.chain === 'Tezos') {
+    return <NftAdditionalDetailsTezos showDetails={showDetails} tokenRef={token} />;
   }
 
-  return <NftAdditionalDetailsNonPOAP showDetails={showDetails} tokenRef={token} />;
+  return <NftAdditionalDetailsEth showDetails={showDetails} tokenRef={token} />;
 }

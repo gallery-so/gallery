@@ -9,7 +9,6 @@ import { SidebarChainSelectorMutation } from '../../../../../../__generated__/Si
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { Severity } from '@sentry/types';
-import isViewerId3ac from 'hooks/oneOffs/useIs3ac';
 import { SidebarChainSelectorFragment$key } from '../../../../../../__generated__/SidebarChainSelectorFragment.graphql';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { SidebarChainButton } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainButton';
@@ -19,6 +18,7 @@ import { FeatureFlag } from 'components/core/enums';
 import usePersistedState from 'hooks/usePersistedState';
 import { TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY } from 'utils/tezosEarlyAccess';
 import noop from 'utils/noop';
+import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {
   selected: Chain;
@@ -70,7 +70,6 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   const { pushToast } = useToastActions();
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const is3ac = isViewerId3ac(query.viewer?.user?.dbid);
   const selectedChain = chains.find((chain) => chain.name === selected);
 
   const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
@@ -158,7 +157,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           );
         })}
       </Chains>
-      {!is3ac && (
+      {isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '') ? null : (
         <IconButton
           refreshing={isRefreshingNfts}
           data-testid="RefreshButton"

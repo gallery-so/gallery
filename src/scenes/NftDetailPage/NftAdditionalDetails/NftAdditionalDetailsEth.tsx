@@ -1,9 +1,5 @@
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { NftAdditionalDetailsNonPOAPQuery } from '../../../../__generated__/NftAdditionalDetailsNonPOAPQuery.graphql';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useRefreshToken } from 'hooks/api/tokens/useRefreshToken';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
@@ -12,75 +8,53 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
 import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
-import { NftAdditionalDetailsNonPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsNonPOAPFragment.graphql';
+import { NftAdditionalDetailsEthFragment$key } from '../../../../__generated__/NftAdditionalDetailsEthFragment.graphql';
+import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { NftAdditionalDetailsEthQuery } from '../../../../__generated__/NftAdditionalDetailsEthQuery.graphql';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
-  tokenRef: NftAdditionalDetailsNonPOAPFragment$key;
+  tokenRef: NftAdditionalDetailsEthFragment$key;
 };
 
-export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNonPOAPProps) {
+export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAPProps) {
   const token = useFragment(
     graphql`
-      fragment NftAdditionalDetailsNonPOAPFragment on Token {
+      fragment NftAdditionalDetailsEthFragment on Token {
         dbid
         externalUrl
         tokenId
         contract {
+          creatorAddress {
+            address
+            ...CopyableAddressFragment
+            ...EnsOrAddressWithSuspenseFragment
+          }
           contractAddress {
             address
+            ...CopyableAddressFragment
           }
         }
+
+        ...useRefreshMetadataFragment
       }
     `,
     tokenRef
   );
 
   // TODO: We should thread a query ref down to this somehow
-  const query = useLazyLoadQuery<NftAdditionalDetailsNonPOAPQuery>(
+  const query = useLazyLoadQuery<NftAdditionalDetailsEthQuery>(
     graphql`
-      query NftAdditionalDetailsNonPOAPQuery {
+      query NftAdditionalDetailsEthQuery {
         ...isFeatureEnabledFragment
       }
     `,
     {}
   );
 
-  const { dbid, tokenId, contract, externalUrl } = token;
+  const { tokenId, contract, externalUrl } = token;
 
-  const reportError = useReportError();
-  const { pushToast } = useToastActions();
-  const [refreshToken, isRefreshing] = useRefreshToken();
-
-  const handleRefreshMetadata = useCallback(async () => {
-    try {
-      pushToast({
-        message: 'This piece is being updated with the latest metadata. Check back in few minutes.',
-        autoClose: true,
-      });
-
-      await refreshToken(dbid);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        reportError(error, {
-          tags: {
-            tokenId: token.dbid,
-          },
-        });
-
-        pushToast({
-          message: error.message,
-          autoClose: true,
-        });
-      } else {
-        reportError('Error while refreshing token, unknown error');
-
-        pushToast({
-          message: "Something went wrong, we're looking into it now.",
-        });
-      }
-    }
-  }, [dbid, pushToast, refreshToken, reportError, token.dbid]);
+  const [refresh, isRefreshing] = useRefreshMetadata(token);
 
   const openSeaExternalUrl = useMemo(() => {
     if (contract?.contractAddress?.address && tokenId) {
@@ -92,12 +66,10 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
 
   return (
     <VStack gap={16}>
-      {token.contract?.contractAddress?.address && (
+      {token.contract?.creatorAddress?.address && (
         <div>
           <TitleXS>Creator</TitleXS>
-          <BaseM>
-            <EnsOrAddress address={token.contract.contractAddress.address} />
-          </BaseM>
+          <EnsOrAddress chainAddressRef={token.contract.creatorAddress} />
         </div>
       )}
 
@@ -124,7 +96,7 @@ export function NftAdditionalDetailsNonPOAP({ tokenRef }: NftAdditionaDetailsNon
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
             {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
-              <InteractiveLink onClick={handleRefreshMetadata} disabled={isRefreshing}>
+              <InteractiveLink onClick={refresh} disabled={isRefreshing}>
                 Refresh metadata
               </InteractiveLink>
             )}
