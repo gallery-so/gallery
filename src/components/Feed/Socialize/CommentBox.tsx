@@ -50,6 +50,15 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
+  const resetInputState = useCallback(() => {
+    setValue('');
+
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.innerText = '';
+    }
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     if (isSubmittingComment || value.length === 0) {
       return;
@@ -89,6 +98,8 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
         // Good to go
         console.log(response);
 
+        resetInputState();
+
         onClose();
       } else {
         // error handle
@@ -102,6 +113,7 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
     isSubmittingComment,
     onClose,
     onPotentialLayoutShift,
+    resetInputState,
     submitComment,
     value,
   ]);
@@ -177,17 +189,26 @@ const CommentBoxWrapper = styled.div<{ active: boolean }>`
 `;
 
 const ControlsContainer = styled(HStack)`
-  padding: 4px 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 16px;
 `;
 
 const InputWrapper = styled(HStack)`
   width: 100%;
   height: 100%;
-  background-color: ${colors.faint};
+
+  max-height: 150px;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
   padding: 0 8px;
 
-  position: relative;
+  background-color: ${colors.faint};
 `;
 
 const Textarea = styled(BaseM).attrs({
@@ -213,6 +234,7 @@ const Textarea = styled(BaseM).attrs({
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   width: 100%;
 
   border: 1px solid ${colors.offBlack};
