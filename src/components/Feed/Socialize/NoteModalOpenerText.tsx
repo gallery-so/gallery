@@ -39,6 +39,7 @@ export function NoteModalOpenerText({ children, eventRef }: Props) {
   return <Text onClick={handleClick}>{children}</Text>;
 }
 const Text = styled.div.attrs({ role: 'button' })`
+  cursor: pointer;
   font-family: ${BODY_FONT_FAMILY};
   font-size: 10px;
   line-height: 1;
@@ -47,4 +48,8 @@ const Text = styled.div.attrs({ role: 'button' })`
   text-decoration: underline;
 
   color: ${colors.shadow};
+
+  :hover {
+    text-decoration: none;
+  }
 `;
