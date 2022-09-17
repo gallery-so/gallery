@@ -14,12 +14,13 @@ import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  onClose: () => void;
   active: boolean;
+  onClose: () => void;
   eventRef: CommentBoxFragment$key;
+  onPotentialLayoutShift: () => void;
 };
 
-export function CommentBox({ active, onClose, eventRef }: Props) {
+export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentBoxFragment on FeedEvent {
@@ -73,6 +74,17 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
         },
       });
 
+      // Tell the virtualized list that some data has changed
+      // therefore this cell's height might change.
+      //
+      // Ideally, this lives in a useEffect inside of the
+      // changing data's component, but right now the virtualized
+      // list is remounting the component every update, causing
+      // an infinite useEffect to occur
+      setTimeout(() => {
+        onPotentialLayoutShift();
+      }, 100);
+
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         // Good to go
         console.log(response);
@@ -84,7 +96,15 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
     } catch (e) {
       // error handle
     }
-  }, [event.dbid, event.id, isSubmittingComment, onClose, submitComment, value]);
+  }, [
+    event.dbid,
+    event.id,
+    isSubmittingComment,
+    onClose,
+    onPotentialLayoutShift,
+    submitComment,
+    value,
+  ]);
 
   const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
     event.stopPropagation();

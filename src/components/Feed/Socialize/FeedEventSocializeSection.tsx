@@ -12,11 +12,16 @@ import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { FeedEventSocializeSectionAdmireMutation } from '../../../../__generated__/FeedEventSocializeSectionAdmireMutation.graphql';
 
 type FeedEventSocializeSectionProps = {
+  onPotentialLayoutShift: () => void;
   eventRef: FeedEventSocializeSectionFragment$key;
   queryRef: FeedEventSocializeSectionQueryFragment$key;
 };
 
-export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocializeSectionProps) {
+export function FeedEventSocializeSection({
+  eventRef,
+  queryRef,
+  onPotentialLayoutShift,
+}: FeedEventSocializeSectionProps) {
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
@@ -82,11 +87,22 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
         },
       });
 
+      // Tell the virtualized list that some data has changed
+      // therefore this cell's height might change.
+      //
+      // Ideally, this lives in a useEffect inside of the
+      // changing data's component, but right now the virtualized
+      // list is remounting the component every update, causing
+      // an infinite useEffect to occur
+      setTimeout(() => {
+        onPotentialLayoutShift();
+      }, 100);
+
       console.log(response);
     } catch (e) {
       // handle error state
     }
-  }, [admire, event.dbid, event.id]);
+  }, [admire, event.dbid, event.id, onPotentialLayoutShift]);
 
   useEffect(() => {
     const handleClick = () => {
@@ -114,7 +130,12 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
         <IconWrapper>
           <CommentIcon onClick={handleToggle} ref={commentIconRef} />
 
-          <CommentBox onClose={handleClose} eventRef={event} active={showCommentBox} />
+          <CommentBox
+            onPotentialLayoutShift={onPotentialLayoutShift}
+            onClose={handleClose}
+            eventRef={event}
+            active={showCommentBox}
+          />
         </IconWrapper>
       </HStack>
     </HStack>

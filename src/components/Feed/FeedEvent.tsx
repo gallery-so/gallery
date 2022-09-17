@@ -101,15 +101,17 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 }
 
 type FeedEventWithBoundaryProps = {
+  feedMode: FeedMode;
+  onPotentialLayoutShift: () => void;
   eventRef: FeedEventWithErrorBoundaryFragment$key;
   queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
-  feedMode: FeedMode;
 };
 
 export default function FeedEventWithBoundary({
   feedMode,
   eventRef,
   queryRef,
+  onPotentialLayoutShift,
 }: FeedEventWithBoundaryProps) {
   const event = useFragment(
     graphql`
@@ -139,7 +141,11 @@ export default function FeedEventWithBoundary({
         <ErrorBoundary fallback={<></>}>
           <SocializedSectionPadding>
             <SocializeSectionWrapper>
-              <FeedEventSocializeSection eventRef={event} queryRef={query} />
+              <FeedEventSocializeSection
+                eventRef={event}
+                queryRef={query}
+                onPotentialLayoutShift={onPotentialLayoutShift}
+              />
             </SocializeSectionWrapper>
           </SocializedSectionPadding>
         </ErrorBoundary>

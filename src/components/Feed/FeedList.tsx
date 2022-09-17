@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -67,43 +67,60 @@ export default function FeedList({
   }, []);
 
   // Function responsible for tracking the loaded state of each row.
-  const isRowLoaded = ({ index }: { index: number }) => !hasNext || !!feedData[index];
+  const isRowLoaded = useCallback(
+    ({ index }: { index: number }) => !hasNext || !!feedData[index],
+    [feedData, hasNext]
+  );
+
+  const virtualizedListRef = useRef<List | null>(null);
 
   //Render a list item or a loading indicator.
-  const rowRenderer = ({
-    index,
-    key,
-    parent,
-    style,
-  }: {
-    index: number;
-    key: string;
-    style: React.CSSProperties;
-    parent: MeasuredCellParent;
-  }) => {
-    if (!isRowLoaded({ index })) {
-      return <div />;
-    }
-    // graphql returns the oldest event at the top of the list, so display in opposite order
-    const content = feedData[feedData.length - index - 1];
+  const rowRenderer = useCallback(
+    ({
+      index,
+      key,
+      parent,
+      style,
+    }: {
+      index: number;
+      key: string;
+      style: React.CSSProperties;
+      parent: MeasuredCellParent;
+    }) => {
+      if (!isRowLoaded({ index })) {
+        return <div />;
+      }
+      // graphql returns the oldest event at the top of the list, so display in opposite order
+      const content = feedData[feedData.length - index - 1];
 
-    return (
-      <CellMeasurer
-        cache={measurerCache}
-        columnIndex={0}
-        rowIndex={index}
-        key={key}
-        parent={parent}
-      >
-        {({ registerChild }) => (
-          // @ts-expect-error: this is the suggested usage of registerChild
-          <div ref={registerChild} style={style}>
-            <FeedEvent eventRef={content} key={content.dbid} queryRef={query} feedMode={feedMode} />
-          </div>
-        )}
-      </CellMeasurer>
-    );
-  };
+      return (
+        <CellMeasurer
+          cache={measurerCache}
+          columnIndex={0}
+          rowIndex={index}
+          key={key}
+          parent={parent}
+        >
+          {({ registerChild }) => (
+            // @ts-expect-error: this is the suggested usage of registerChild
+            <div ref={registerChild} style={style}>
+              <FeedEvent
+                onPotentialLayoutShift={() => {
+                  measurerCache.clear(index, 0);
+                  virtualizedListRef.current?.recomputeRowHeights();
+                }}
+                eventRef={content}
+                key={content.dbid}
+                queryRef={query}
+                feedMode={feedMode}
+              />
+            </div>
+          )}
+        </CellMeasurer>
+      );
+    },
+    [feedData, feedMode, isRowLoaded, measurerCache, query]
+  );
 
   // If there are more items to be loaded then add extra rows
   const rowCount = hasNext ? feedData.length + 1 : feedData.length;
@@ -123,6 +140,7 @@ export default function FeedList({
           {({ width }) => (
             <div ref={registerChild}>
               <List
+                ref={virtualizedListRef}
                 autoHeight
                 width={width}
                 height={height}
