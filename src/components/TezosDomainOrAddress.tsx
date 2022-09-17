@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CopyableAddress, RawCopyableAddress } from 'components/CopyableAddress';
+import { LinkableAddress, RawLinkableAddress } from 'components/LinkableAddress';
 import { TezosDomainOrAddressFragment$key } from '../../__generated__/TezosDomainOrAddressFragment.graphql';
 import { TezosDomainOrAddressWithSuspenseFragment$key } from '../../__generated__/TezosDomainOrAddressWithSuspenseFragment.graphql';
 import { TezosToolkit } from '@taquito/taquito';
@@ -28,7 +28,7 @@ const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
       fragment TezosDomainOrAddressFragment on ChainAddress {
         address @required(action: THROW)
 
-        ...CopyableAddressFragment
+        ...LinkableAddressFragment
       }
     `,
     chainAddressRef
@@ -37,11 +37,11 @@ const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
   const { data: domain } = useSWR(address.address, tezosDomainFetcher);
 
   if (domain) {
-    return <RawCopyableAddress address={address.address} truncatedAddress={domain} />;
+    return <RawLinkableAddress address={address.address} truncatedAddress={domain} />;
   }
 
   // If we couldn't resolve, let's fallback to the default component
-  return <CopyableAddress chainAddressRef={address} />;
+  return <LinkableAddress chainAddressRef={address} />;
 };
 
 type TezosDomainOrAddressProps = {
@@ -55,15 +55,15 @@ export const TezosDomainOrAddress = ({ chainAddressRef }: TezosDomainOrAddressPr
         address
 
         ...TezosDomainOrAddressFragment
-        ...CopyableAddressFragment
+        ...LinkableAddressFragment
       }
     `,
     chainAddressRef
   );
 
   return (
-    <Suspense fallback={<CopyableAddress chainAddressRef={address} />}>
-      <PlainErrorBoundary fallback={<CopyableAddress chainAddressRef={address} />}>
+    <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
+      <PlainErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
         <TezosDomain chainAddressRef={address} />
       </PlainErrorBoundary>
     </Suspense>
