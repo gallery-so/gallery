@@ -1,5 +1,5 @@
 import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import { FeedEventSocializeSectionFragment$key } from '__generated__/FeedEventSocializeSectionFragment.graphql';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { AdmireIcon, CommentIcon } from 'icons/SocializeIcons';
@@ -20,6 +20,7 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
+        id
         dbid
 
         ...CommentBoxFragment
@@ -38,20 +39,18 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
     queryRef
   );
 
-  const [admire, isAdmiring] =
-    usePromisifiedMutation<FeedEventSocializeSectionAdmireMutation>(graphql`
-      mutation FeedEventSocializeSectionAdmireMutation($eventId: DBID!) {
-        admireFeedEvent(feedEventId: $eventId) {
-          ... on AdmireFeedEventPayload {
-            admire {
-              admirer {
-                username
-              }
-            }
+  const [admire] = usePromisifiedMutation<FeedEventSocializeSectionAdmireMutation>(graphql`
+    mutation FeedEventSocializeSectionAdmireMutation($eventId: DBID!, $connections: [ID!]!) {
+      admireFeedEvent(feedEventId: $eventId) {
+        ... on AdmireFeedEventPayload {
+          admire @prependNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
+            dbid
+            ...AdmireLineFragment
           }
         }
       }
-    `);
+    }
+  `);
 
   const commentIconRef = useRef<HTMLDivElement | null>(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
@@ -66,16 +65,31 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
 
   const handleAdmire = useCallback(async () => {
     try {
-      const response = await admire({ variables: { eventId: event.dbid } });
+      const connectionId = ConnectionHandler.getConnectionID(
+        event.id,
+        'CommentsAndAdmires_admires'
+      );
+
+      const response = await admire({
+        updater: (store) => {
+          const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+
+          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+        },
+        variables: {
+          eventId: event.dbid,
+          connections: [connectionId],
+        },
+      });
 
       console.log(response);
     } catch (e) {
       // handle error state
     }
-  }, [admire, event.dbid]);
+  }, [admire, event.dbid, event.id]);
 
   useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
+    const handleClick = () => {
       setShowCommentBox(false);
     };
 

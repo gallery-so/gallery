@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ReactNode, useCallback } from 'react';
-import { BODY_FONT_FAMILY, TitleXS } from 'components/core/Text/Text';
+import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';

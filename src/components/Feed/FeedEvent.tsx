@@ -14,7 +14,6 @@ import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/F
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
-import { StyledInnerEvent } from './Events/EventStyles';
 import {
   FEED_EVENT_ROW_WIDTH_DESKTOP,
   FEED_EVENT_ROW_WIDTH_TABLET,

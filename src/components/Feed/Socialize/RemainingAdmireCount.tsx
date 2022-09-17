@@ -20,6 +20,10 @@ export function RemainingAdmireCount({ remainingCount, eventRef }: RemainingAdmi
     eventRef
   );
 
+  if (remainingCount === 0) {
+    return null;
+  }
+
   return (
     <NoteModalOpenerText eventRef={event}>
       +{remainingCount} {remainingCount === 1 ? 'other' : 'others'}

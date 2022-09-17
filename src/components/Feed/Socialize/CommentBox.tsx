@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
-import { useCallback, MouseEventHandler, useState, useRef, useEffect } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { SendButton } from 'components/Feed/Socialize/SendButton';
 import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
@@ -23,6 +23,7 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentBoxFragment on FeedEvent {
+        id
         dbid
       }
     `,
@@ -30,13 +31,15 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
   );
 
   const [submitComment, isSubmittingComment] = usePromisifiedMutation<CommentBoxMutation>(graphql`
-    mutation CommentBoxMutation($eventId: DBID!, $comment: String!) {
+    mutation CommentBoxMutation($eventId: DBID!, $comment: String!, $connections: [ID!]!)
+    @raw_response_type {
       commentOnFeedEvent(comment: $comment, feedEventId: $eventId) {
         ... on CommentOnFeedEventPayload {
           __typename
 
-          comment {
-            comment
+          comment @prependNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
+            dbid
+            ...CommentLineFragment
           }
         }
       }
@@ -52,10 +55,21 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
     }
 
     try {
+      const connectionId = ConnectionHandler.getConnectionID(
+        event.id,
+        'CommentsAndAdmires_comments'
+      );
+
       const response = await submitComment({
+        updater: (store) => {
+          const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+
+          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+        },
         variables: {
           comment: value,
           eventId: event.dbid,
+          connections: [connectionId],
         },
       });
 
@@ -70,7 +84,7 @@ export function CommentBox({ active, onClose, eventRef }: Props) {
     } catch (e) {
       // error handle
     }
-  }, [event.dbid, isSubmittingComment, submitComment, value]);
+  }, [event.dbid, event.id, isSubmittingComment, onClose, submitComment, value]);
 
   const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
     event.stopPropagation();
