@@ -11,7 +11,6 @@ import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__
 import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
-import { graphqlTruncateAddress } from 'utils/wallet';
 import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
 import { LinkableAddress } from 'components/LinkableAddress';
 

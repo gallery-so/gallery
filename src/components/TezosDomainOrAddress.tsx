@@ -9,6 +9,7 @@ import { TezosDomainOrAddressWithSuspenseFragment$key } from '../../__generated_
 import { TezosToolkit } from '@taquito/taquito';
 import { TaquitoTezosDomainsClient } from '@tezos-domains/taquito-client';
 import { Tzip16Module } from '@taquito/tzip16';
+import { getExternalAddressLink } from 'utils/wallet';
 
 async function tezosDomainFetcher(address: string): Promise<string | null> {
   const tezos = new TezosToolkit('https://mainnet.api.tez.ie');
@@ -29,6 +30,7 @@ const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
         address @required(action: THROW)
 
         ...LinkableAddressFragment
+        ...walletGetExternalAddressLinkFragment
       }
     `,
     chainAddressRef
@@ -36,8 +38,10 @@ const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
 
   const { data: domain } = useSWR(address.address, tezosDomainFetcher);
 
-  if (domain) {
-    return <RawLinkableAddress address={address.address} truncatedAddress={domain} />;
+  const link = getExternalAddressLink(address);
+
+  if (domain && link) {
+    return <RawLinkableAddress link={link} address={address.address} truncatedAddress={domain} />;
   }
 
   // If we couldn't resolve, let's fallback to the default component
