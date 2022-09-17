@@ -76,7 +76,6 @@ export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocia
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      console.log('Click outside', event.target);
       setShowCommentBox(false);
     };
 
