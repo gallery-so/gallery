@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
 import { BaseM } from '../Text/Text';
-import MarkdownShortcuts from '../Markdown/MarkdownShortcuts';
+import MarkdownShortcuts, { setValueAndTriggerOnChange } from '../Markdown/MarkdownShortcuts';
 
 type TextAreaProps = {
   className?: string;
@@ -30,6 +30,47 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref
   ) => {
+    // If the user is pasting a link, automatically place it in a Markdown link
+    const handleKeyDown = useCallback(
+      async (event) => {
+        if (event.key === 'v' && event.metaKey) {
+          // Wrap in a try/catch because navigator.clipboard.readText() is not supported in Firefox. If it fails, pasting behavior will be default
+          try {
+            // FIXME: Handle Typescript error from forwardRef
+            if (ref.current) {
+              const textArea = ref.current;
+              const [selectionStart, selectionEnd] = [
+                textArea.selectionStart,
+                textArea.selectionEnd,
+              ];
+              const selectedText = textArea.value.substring(selectionStart, selectionEnd);
+              const pastedText = await navigator.clipboard.readText();
+              if (pastedText.startsWith('http')) {
+                event.preventDefault();
+
+                const textBeforeLink = textArea.value.substring(0, selectionStart);
+                const textAfterLink = textArea.value.substring(
+                  selectionStart + pastedText.length,
+                  selectionEnd + pastedText.length
+                );
+                const newValue = `${textBeforeLink}[${selectedText}](${pastedText})${textAfterLink}`;
+
+                const newSelectionStart = selectionStart + 1;
+                const newSelectionEnd = selectionStart + selectedText.length + 1;
+                setValueAndTriggerOnChange(textArea, newValue, [
+                  newSelectionStart,
+                  newSelectionEnd,
+                ]);
+              }
+            }
+          } catch (error) {
+            // Ignore error
+          }
+        }
+      },
+      [ref]
+    );
+
     return (
       <>
         <StyledTextArea
@@ -46,6 +87,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           textAreaHeight={textAreaHeight}
           ref={ref}
           hasPadding={hasPadding}
+          onKeyDown={handleKeyDown}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
