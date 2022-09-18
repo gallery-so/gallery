@@ -3,9 +3,10 @@ import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CopyableAddress, RawCopyableAddress } from 'components/CopyableAddress';
+import { LinkableAddress, RawLinkableAddress } from 'components/LinkableAddress';
 import { EnsOrAddressFragment$key } from '../../__generated__/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '../../__generated__/EnsOrAddressWithSuspenseFragment.graphql';
+import { getExternalAddressLink } from 'utils/wallet';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
@@ -17,7 +18,8 @@ const EnsName = ({ chainAddressRef }: EnsNameProps) => {
       fragment EnsOrAddressFragment on ChainAddress {
         address @required(action: THROW)
 
-        ...CopyableAddressFragment
+        ...LinkableAddressFragment
+        ...walletGetExternalAddressLinkFragment
       }
     `,
     chainAddressRef
@@ -29,12 +31,14 @@ const EnsName = ({ chainAddressRef }: EnsNameProps) => {
       : null
   );
 
-  if (data?.name) {
-    return <RawCopyableAddress address={data.address} truncatedAddress={data.name} />;
+  const link = getExternalAddressLink(address);
+
+  if (data?.name && link) {
+    return <RawLinkableAddress link={link} address={data.address} truncatedAddress={data.name} />;
   }
 
   // If we couldn't resolve, let's fallback to the default component
-  return <CopyableAddress chainAddressRef={address} />;
+  return <LinkableAddress chainAddressRef={address} />;
 };
 
 type EnsOrAddressProps = {
@@ -48,15 +52,15 @@ export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
         address
 
         ...EnsOrAddressFragment
-        ...CopyableAddressFragment
+        ...LinkableAddressFragment
       }
     `,
     chainAddressRef
   );
 
   return (
-    <Suspense fallback={<CopyableAddress chainAddressRef={address} />}>
-      <PlainErrorBoundary fallback={<CopyableAddress chainAddressRef={address} />}>
+    <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
+      <PlainErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
         <EnsName chainAddressRef={address} />
       </PlainErrorBoundary>
     </Suspense>
