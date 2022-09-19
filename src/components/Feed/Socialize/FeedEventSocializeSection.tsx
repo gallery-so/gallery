@@ -104,18 +104,6 @@ export function FeedEventSocializeSection({
     }
   }, [admire, event.dbid, event.id, onPotentialLayoutShift]);
 
-  useEffect(() => {
-    const handleClick = () => {
-      setShowCommentBox(false);
-    };
-
-    window.addEventListener('click', handleClick);
-
-    return () => {
-      window.removeEventListener('click', handleClick);
-    };
-  }, []);
-
   return (
     <HStack justify="space-between" align="flex-start" gap={24}>
       <VStack shrink>
