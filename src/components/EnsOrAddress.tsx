@@ -1,40 +1,68 @@
 import { Suspense } from 'react';
-import styled from 'styled-components';
 import useSWR from 'swr';
 import { PlainErrorBoundary } from './PlainErrorBoundary';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { LinkableAddress, RawLinkableAddress } from 'components/LinkableAddress';
+import { EnsOrAddressFragment$key } from '../../__generated__/EnsOrAddressFragment.graphql';
+import { EnsOrAddressWithSuspenseFragment$key } from '../../__generated__/EnsOrAddressWithSuspenseFragment.graphql';
+import { getExternalAddressLink } from 'utils/wallet';
 
-type Props = {
-  address?: string;
+type EnsNameProps = {
+  chainAddressRef: EnsOrAddressFragment$key;
 };
 
-const EnsName = ({ address }: Props) => {
+const EnsName = ({ chainAddressRef }: EnsNameProps) => {
+  const address = useFragment(
+    graphql`
+      fragment EnsOrAddressFragment on ChainAddress {
+        address @required(action: THROW)
+
+        ...LinkableAddressFragment
+        ...walletGetExternalAddressLinkFragment
+      }
+    `,
+    chainAddressRef
+  );
+
   const { data } = useSWR(
-    address
-      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.toLowerCase())}`
+    chainAddressRef
+      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.address.toLowerCase())}`
       : null
   );
 
-  if (data?.address) {
-    return <span title={data.address}>{data.name || data.address}</span>;
+  const link = getExternalAddressLink(address);
+
+  if (data?.name && link) {
+    return <RawLinkableAddress link={link} address={data.address} truncatedAddress={data.name} />;
   }
 
-  return <span title={address}>{address}</span>;
+  // If we couldn't resolve, let's fallback to the default component
+  return <LinkableAddress chainAddressRef={address} />;
 };
 
-export const EnsOrAddress = ({ address }: Props) => (
-  <Suspense
-    fallback={
-      // TODO: fallback that takes the height of the text element would appear post-fetch.
-      // long-term, we're going to holistically re-think loading states on the app
-      <StyledSpacer />
-    }
-  >
-    <PlainErrorBoundary fallback={<span title={address}>{address}</span>}>
-      <EnsName address={address} />
-    </PlainErrorBoundary>
-  </Suspense>
-);
+type EnsOrAddressProps = {
+  chainAddressRef: EnsOrAddressWithSuspenseFragment$key;
+};
 
-const StyledSpacer = styled.div`
-  height: 18px;
-`;
+export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
+  const address = useFragment(
+    graphql`
+      fragment EnsOrAddressWithSuspenseFragment on ChainAddress {
+        address
+
+        ...EnsOrAddressFragment
+        ...LinkableAddressFragment
+      }
+    `,
+    chainAddressRef
+  );
+
+  return (
+    <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
+      <PlainErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
+        <EnsName chainAddressRef={address} />
+      </PlainErrorBoundary>
+    </Suspense>
+  );
+};

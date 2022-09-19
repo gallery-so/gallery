@@ -65,7 +65,12 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         id: 'Contract:someContractId',
         name: 'Test Contract Name',
         chain: Chain.Ethereum,
+        creatorAddress: {
+          chain: Chain.Ethereum,
+          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+        },
         contractAddress: {
+          chain: Chain.Ethereum,
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
       },

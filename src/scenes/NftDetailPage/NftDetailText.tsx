@@ -93,7 +93,7 @@ function NftDetailText({ tokenRef }: Props) {
 
   const communityUrl = getCommunityUrlForToken(token);
 
-  const metadata = JSON.parse(token.tokenMetadata ?? '{}');
+  const metadata = JSON.parse(token.tokenMetadata ?? '{}') ?? {};
   const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
   const poapUrl = metadata.event_id ? `https://poap.gallery/event/${metadata.event_id}` : null;
 

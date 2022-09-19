@@ -190,7 +190,6 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   @media only screen and ${breakpoints.tablet} {
     width: 600px;
     min-height: 600px;
-    height: 100%;
   }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container

@@ -1,4 +1,3 @@
-import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainSelector';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import { SidebarTokensFragment$key } from '../../../../../../__generated__/SidebarTokensFragment.graphql';
 import { graphql, useFragment } from 'react-relay';
@@ -10,6 +9,7 @@ import {
 } from 'flows/shared/steps/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
 import { EmptySidebar } from 'flows/shared/steps/OrganizeCollection/Sidebar/EmptySidebar';
 import { SidebarList } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarList';
+import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 
 type SidebarTokensProps = {
   isSearching: boolean;

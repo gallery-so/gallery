@@ -17,6 +17,7 @@ import AnimatedModal from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
 import { v4 as uuid } from 'uuid';
 import useKeyDown from 'hooks/useKeyDown';
+import { getScrollBarWidth } from 'utils/getScrollbarWidth';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
@@ -177,7 +178,28 @@ function ModalProvider({ children }: Props) {
    * EFFECT: Prevent main body from being scrollable while any modals are open
    */
   useEffect(() => {
-    document.body.style.overflow = modals.length ? 'hidden' : 'unset';
+    const modalShowing = modals.length > 0;
+    const currentScrollbarWidth = getScrollBarWidth();
+
+    document.body.style.overflow = modalShowing ? 'hidden' : 'unset';
+
+    /**
+     * This section is to avoid layout shift when the scrollbar potentially disappears.
+     *
+     * If there's a scrollbar active on the body, we'll temporarily shift everything
+     * to the left by the scrollbar width to keep the layout consistent with
+     * where it was prior to the scrollbar disappearing
+     */
+    document.body.style.paddingRight = modalShowing ? `${currentScrollbarWidth}px` : 'unset';
+
+    const globalNavbar = document.querySelector('.GlobalNavbar') as HTMLElement | null;
+    if (globalNavbar) {
+      globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
+
+      globalNavbar.style.width = modalShowing
+        ? `calc(100vw - ${currentScrollbarWidth}px)`
+        : 'unset';
+    }
   }, [modals.length]);
 
   /**

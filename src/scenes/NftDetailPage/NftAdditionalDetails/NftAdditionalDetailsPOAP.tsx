@@ -23,7 +23,14 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
     return null;
   }
 
-  const { city, country, created, event_id: id, supply, chain } = JSON.parse(token.tokenMetadata);
+  const {
+    city,
+    country,
+    created,
+    event_id: id,
+    supply,
+    chain,
+  } = JSON.parse(token.tokenMetadata) ?? {};
 
   const location = city && country ? `${city}, ${country}` : null;
 

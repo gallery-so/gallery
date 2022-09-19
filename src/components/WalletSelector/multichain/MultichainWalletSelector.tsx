@@ -18,6 +18,8 @@ import useMultiKeyDown from 'hooks/useMultiKeyDown';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 import { VStack } from 'components/core/Spacer/Stack';
+import usePersistedState from 'hooks/usePersistedState';
+import { TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY } from 'utils/tezosEarlyAccess';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -37,15 +39,19 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   );
 
   const [selectedAuthMethod, setSelectedAuthMethod] = useState<SupportedAuthMethod>();
-  const [isTezosConnectEnabled, setIsTezosConnectEnabled] = useState(false);
 
   const reset = useCallback(() => {
     setSelectedAuthMethod(undefined);
   }, []);
 
+  const [tezosEnabled, setTezosEnabled] = usePersistedState<boolean>(
+    TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY,
+    false
+  );
+
   const handleToggleTezosButton = useCallback(() => {
-    return setIsTezosConnectEnabled(true);
-  }, []);
+    return setTezosEnabled(true);
+  }, [setTezosEnabled]);
 
   useMultiKeyDown(['Shift', 't'], handleToggleTezosButton);
 
@@ -135,7 +141,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
         <WalletButton
           label="Tezos"
           icon="tezos"
-          disabled={!isTezosConnectEnabled}
+          disabled={!tezosEnabled}
           onClick={() => {
             console.log('connecting to tezos via beacon');
             connectTezos()
