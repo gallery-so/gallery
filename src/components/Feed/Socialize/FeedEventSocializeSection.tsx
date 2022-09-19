@@ -48,6 +48,7 @@ export function FeedEventSocializeSection({
     mutation FeedEventSocializeSectionAdmireMutation($eventId: DBID!, $connections: [ID!]!) {
       admireFeedEvent(feedEventId: $eventId) {
         ... on AdmireFeedEventPayload {
+          __typename
           admire @prependNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
             dbid
             ...AdmireLineFragment
@@ -76,10 +77,12 @@ export function FeedEventSocializeSection({
       );
 
       const response = await admire({
-        updater: (store) => {
-          const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+        updater: (store, response) => {
+          if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
+            const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
 
-          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+          }
         },
         variables: {
           eventId: event.dbid,

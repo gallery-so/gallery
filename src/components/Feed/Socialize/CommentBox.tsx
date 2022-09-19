@@ -71,10 +71,12 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
       );
 
       const response = await submitComment({
-        updater: (store) => {
-          const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+        updater: (store, response) => {
+          if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
+            const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
 
-          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+          }
         },
         variables: {
           comment: value,
