@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
@@ -20,6 +19,7 @@ import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragme
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 import useKeyDown from 'hooks/useKeyDown';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type ConfigProps = {
   wizardId: string;
@@ -162,42 +162,38 @@ function OrganizeGallery({
   );
 
   return (
-    <StyledOrganizeGallery>
-      <DeprecatedSpacer height={GLOBAL_NAVBAR_HEIGHT} />
-      <Content>
+    <VStack gap={GLOBAL_NAVBAR_HEIGHT} align="center">
+      <Spacer />
+      <Content gap={24}>
         <Header />
-        <DeprecatedSpacer height={24} />
-        {isEmptyGallery ? (
-          <StyledEmptyGalleryMessage>
-            <BaseXL>Create your first collection</BaseXL>
-            <DeprecatedSpacer height={8} />
-            <BaseM>
-              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
-              anything that feels right.
-            </BaseM>
-          </StyledEmptyGalleryMessage>
-        ) : (
-          <CollectionDnd galleryRef={gallery} />
-        )}
-        <DeprecatedSpacer height={120} />
+        <VStack gap={120}>
+          {isEmptyGallery ? (
+            <StyledEmptyGalleryMessage gap={8}>
+              <BaseXL>Create your first collection</BaseXL>
+              <BaseM>
+                Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+                anything that feels right.
+              </BaseM>
+            </StyledEmptyGalleryMessage>
+          ) : (
+            <VStack>
+              <CollectionDnd galleryRef={gallery} />
+            </VStack>
+          )}
+          <Spacer />
+        </VStack>
       </Content>
-    </StyledOrganizeGallery>
+    </VStack>
   );
 }
 
-const StyledEmptyGalleryMessage = styled.div`
+const StyledEmptyGalleryMessage = styled(VStack)`
   text-align: center;
   max-width: 390px;
   margin: 240px auto 0;
 `;
 
-const StyledOrganizeGallery = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Content = styled.div`
+const Content = styled(VStack)`
   width: 100%;
   padding: 0 16px;
   max-width: 777px;

@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { Button } from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { DeleteCollectionConfirmationFragment$key } from '__generated__/DeleteCollectionConfirmationFragment.graphql';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   collectionRef: DeleteCollectionConfirmationFragment$key;
@@ -39,8 +39,8 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
   }, [collectionId, deleteCollection, hideModal, track]);
 
   return (
-    <StyledConfirmation>
-      <DeprecatedSpacer height={16} />
+    <StyledConfirmation gap={16}>
+      <Spacer />
       <ButtonContainer>
         <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
@@ -51,8 +51,9 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
   );
 }
 
-const StyledConfirmation = styled.div`
+const StyledConfirmation = styled(VStack)`
   width: 400px;
+  max-width: 100%;
 `;
 
 const ButtonContainer = styled.div`

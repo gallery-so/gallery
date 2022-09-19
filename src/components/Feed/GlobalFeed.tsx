@@ -1,6 +1,6 @@
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import styled from 'styled-components';
 import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
 import { GlobalFeedPaginationQuery } from '__generated__/GlobalFeedPaginationQuery.graphql';
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -63,7 +63,8 @@ export default function GlobalFeed({ queryRef }: Props) {
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
-    <StyledGlobalFeed>
+    <VStack gap={24}>
+      <Spacer />
       <FeedList
         queryRef={query}
         feedEventRefs={feedData}
@@ -71,11 +72,6 @@ export default function GlobalFeed({ queryRef }: Props) {
         hasNext={hasPrevious}
         feedMode={'WORLDWIDE'}
       />
-    </StyledGlobalFeed>
+    </VStack>
   );
 }
-
-const StyledGlobalFeed = styled.div`
-  display: flex;
-  flex-direction: column;
-`;

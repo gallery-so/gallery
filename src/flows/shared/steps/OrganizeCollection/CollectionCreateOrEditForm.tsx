@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import Input from 'components/core/Input/Input';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -17,6 +16,7 @@ import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -145,8 +145,8 @@ function CollectionCreateOrEditForm({
   ]);
 
   return (
-    <StyledCollectionEditInfoForm>
-      <DeprecatedSpacer height={16} />
+    <StyledCollectionEditInfoForm gap={16}>
+      <Spacer />
       <Input
         onChange={handleNameChange}
         defaultValue={unescapedCollectionName}
@@ -154,7 +154,6 @@ function CollectionCreateOrEditForm({
         autoFocus
         variant="grande"
       />
-      <DeprecatedSpacer height={16} />
       <StyledTextAreaWithCharCount
         onChange={handleDescriptionChange}
         placeholder="Tell us about your collection..."
@@ -165,28 +164,26 @@ function CollectionCreateOrEditForm({
         hasPadding
       />
       {generalError && (
-        <>
-          <DeprecatedSpacer height={8} />
+        <VStack gap={8}>
+          <Spacer />
           <ErrorText message={generalError} />
-        </>
+        </VStack>
       )}
-      <DeprecatedSpacer height={16} />
 
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <DeprecatedSpacer height={12} />
-      <ButtonContainer>
-        <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
-          {buttonText}
-        </Button>
-      </ButtonContainer>
+      <VStack gap={12}>
+        <Spacer />
+        <ButtonContainer>
+          <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
+            {buttonText}
+          </Button>
+        </ButtonContainer>
+      </VStack>
     </StyledCollectionEditInfoForm>
   );
 }
 
-const StyledCollectionEditInfoForm = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledCollectionEditInfoForm = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     padding: 0px;
   }

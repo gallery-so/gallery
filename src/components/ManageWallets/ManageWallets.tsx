@@ -1,5 +1,5 @@
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 import ErrorText from 'components/core/Text/ErrorText';
 import { BaseM } from 'components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
@@ -80,35 +80,35 @@ function ManageWallets({ newAddress, queryRef }: Props) {
   }, [newAddress, pushToast]);
 
   return (
-    <StyledManageWallets>
-      <DeprecatedSpacer height={16} />
-      <BaseM>Add more wallets to access your other NFTs.</BaseM>
-      <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
-      {errorMessage ? <StyledErrorText message={errorMessage} /> : <DeprecatedSpacer height={16} />}
-      {wallets.map((wallet) => (
-        <ManageWalletsRow
-          key={wallet.dbid}
-          walletId={wallet.dbid}
-          address={wallet.chainAddress.address}
-          chain={wallet.chainAddress.chain}
-          setErrorMessage={setErrorMessage}
-          userSigninAddress={userSigninAddress}
-          setRemovedAddress={setRemovedAddress}
-          isOnlyWalletConnected={wallets.length === 1}
-        />
-      ))}
-      <DeprecatedSpacer height={16} />
+    <VStack gap={16}>
+      <Spacer />
+      <VStack gap={16}>
+        <VStack>
+          <BaseM>Add more wallets to access your other NFTs.</BaseM>
+          <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
+          {errorMessage && <StyledErrorText message={errorMessage} />}
+        </VStack>
+        <VStack>
+          {wallets.map((wallet) => (
+            <ManageWalletsRow
+              key={wallet.dbid}
+              walletId={wallet.dbid}
+              address={wallet.chainAddress.address}
+              chain={wallet.chainAddress.chain}
+              setErrorMessage={setErrorMessage}
+              userSigninAddress={userSigninAddress}
+              setRemovedAddress={setRemovedAddress}
+              isOnlyWalletConnected={wallets.length === 1}
+            />
+          ))}
+        </VStack>
+      </VStack>
       <StyledButton onClick={handleSubmit} disabled={addWalletDisabled}>
         Add new wallet
       </StyledButton>
-    </StyledManageWallets>
+    </VStack>
   );
 }
-
-const StyledManageWallets = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const StyledButton = styled(Button)`
   align-self: flex-end;

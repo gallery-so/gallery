@@ -43,6 +43,7 @@ import { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import useKeyDown from 'hooks/useKeyDown';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -355,36 +356,38 @@ function StagingArea({ tokensRef }: Props) {
       >
         {/* Handles sorting for sections */}
         <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
-          {sectionIds.map((sectionId) => (
-            <DroppableSection
-              key={sectionId}
-              id={sectionId}
-              items={localStagedCollection[sectionId].items}
-              columns={localStagedCollection[sectionId].columns}
-            >
-              {/* Handles sorting for items in each section */}
-              <SortableContext
-                items={localStagedCollection[sectionId].items.map((item) => item.id)}
+          <VStack gap={12}>
+            {sectionIds.map((sectionId) => (
+              <DroppableSection
+                key={sectionId}
+                id={sectionId}
+                items={localStagedCollection[sectionId].items}
+                columns={localStagedCollection[sectionId].columns}
               >
-                {localStagedCollection[sectionId].items.map((item) => {
-                  const columns = localStagedCollection[sectionId].columns;
-                  const size = IMAGE_SIZES[columns];
-                  const stagedItemRef = nftFragmentsKeyedByID[item.id];
-                  if (isEditModeToken(item) && stagedItemRef) {
-                    return (
-                      <SortableStagedNft
-                        key={item.id}
-                        tokenRef={stagedItemRef}
-                        size={size}
-                        mini={columns > 4}
-                      />
-                    );
-                  }
-                  return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
-                })}
-              </SortableContext>
-            </DroppableSection>
-          ))}
+                {/* Handles sorting for items in each section */}
+                <SortableContext
+                  items={localStagedCollection[sectionId].items.map((item) => item.id)}
+                >
+                  {localStagedCollection[sectionId].items.map((item) => {
+                    const columns = localStagedCollection[sectionId].columns;
+                    const size = IMAGE_SIZES[columns];
+                    const stagedItemRef = nftFragmentsKeyedByID[item.id];
+                    if (isEditModeToken(item) && stagedItemRef) {
+                      return (
+                        <SortableStagedNft
+                          key={item.id}
+                          tokenRef={stagedItemRef}
+                          size={size}
+                          mini={columns > 4}
+                        />
+                      );
+                    }
+                    return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
+                  })}
+                </SortableContext>
+              </DroppableSection>
+            ))}
+          </VStack>
         </SortableContext>
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId ? (

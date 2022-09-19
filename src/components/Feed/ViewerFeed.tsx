@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
@@ -13,6 +12,7 @@ import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
 import { ITEMS_PER_PAGE } from './constants';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: ViewerFeedFragment$key;
@@ -85,24 +85,28 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
   return (
     <StyledViewerFeed>
       {noViewerFeedEvents ? (
-        <StyledEmptyFeed>
-          <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
-          <StyledEmptyFeedBody>
-            Discover new collectors to follow in the worldwide feed.
-          </StyledEmptyFeedBody>
-          <DeprecatedSpacer height={12} />
+        <StyledEmptyFeed gap={12}>
+          <VStack align="center">
+            <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
+            <StyledEmptyFeedBody>
+              Discover new collectors to follow in the worldwide feed.
+            </StyledEmptyFeedBody>
+          </VStack>
           <Button variant="secondary" onClick={handleSeeWorldwideClick}>
             See worldwide activity
           </Button>
         </StyledEmptyFeed>
       ) : (
-        <FeedList
-          feedEventRefs={feedData}
-          loadNextPage={loadNextPage}
-          hasNext={hasPrevious}
-          queryRef={query}
-          feedMode={'FOLLOWING'}
-        />
+        <VStack gap={24}>
+          <Spacer />
+          <FeedList
+            feedEventRefs={feedData}
+            loadNextPage={loadNextPage}
+            hasNext={hasPrevious}
+            queryRef={query}
+            feedMode={'FOLLOWING'}
+          />
+        </VStack>
       )}
     </StyledViewerFeed>
   );
@@ -113,9 +117,7 @@ const StyledViewerFeed = styled.div`
   flex-direction: column;
 `;
 
-const StyledEmptyFeed = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledEmptyFeed = styled(VStack)`
   align-items: center;
   justify-content: center;
   padding-top: 35vh;

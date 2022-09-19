@@ -4,7 +4,6 @@
 import { memo, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import useIsNextEnabled from 'contexts/wizard/useIsNextEnabled';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
@@ -16,6 +15,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useKeyDown from 'hooks/useKeyDown';
 import ActionText from 'components/core/ActionText/ActionText';
+import { HStack } from 'components/core/Spacer/Stack';
 
 function WizardFooter({
   step,
@@ -116,23 +116,23 @@ function WizardFooter({
 
   return (
     <StyledWizardFooter>
-      {shouldHideSecondaryButton ? null : (
-        <ActionText color={colors.metal} onClick={handlePreviousClick}>
-          {isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
-            ? 'Cancel'
-            : 'Back'}
-        </ActionText>
-      )}
-      <DeprecatedSpacer width={40} />
-      <Button
-        onClick={handleNextClick}
-        disabled={!isNextEnabled}
-        pending={isLoading}
-        data-testid="wizard-footer-next-button"
-      >
-        {buttonText}
-      </Button>
-      <DeprecatedSpacer width={24} />
+      <HStack gap={40} align="center">
+        {shouldHideSecondaryButton ? null : (
+          <ActionText color={colors.metal} onClick={handlePreviousClick}>
+            {isFirstStep || (step.id === 'organizeCollection' && wizardId !== 'onboarding')
+              ? 'Cancel'
+              : 'Back'}
+          </ActionText>
+        )}
+        <Button
+          onClick={handleNextClick}
+          disabled={!isNextEnabled}
+          pending={isLoading}
+          data-testid="wizard-footer-next-button"
+        >
+          {buttonText}
+        </Button>
+      </HStack>
     </StyledWizardFooter>
   );
 }
@@ -151,6 +151,7 @@ const StyledWizardFooter = styled.div`
 
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
+  padding-right: 24px;
 
   border-top: 1px solid ${colors.porcelain};
   background: ${colors.white};

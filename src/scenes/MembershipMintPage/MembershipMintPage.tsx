@@ -3,7 +3,6 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import { Button } from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
@@ -24,6 +23,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { GALLERY_FAQ } from 'constants/urls';
 import colors from 'components/core/colors';
 import { TransactionStatus } from 'constants/transaction';
+import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -169,81 +169,82 @@ export function MembershipMintPage({
       <StyledContent>
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
-          <TitleM>{membershipNft.title}</TitleM>
-          <DeprecatedSpacer height={16} />
-          <StyledNftDescription>
-            <Markdown text={membershipNft.description} />
-          </StyledNftDescription>
-          <DeprecatedSpacer height={32} />
-          {Number(price) > 0 && (
-            <>
-              <TitleXS>Price</TitleXS>
-              <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
-            </>
-          )}
-          {Boolean(totalSupply) && (
-            <>
-              <DeprecatedSpacer height={16} />
-              <TitleXS>Available</TitleXS>
-              <BaseM>
-                {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
-              </BaseM>
-            </>
-          )}
-          {children}
-          {account && (
-            <>
-              <DeprecatedSpacer height={16} />
-              <TitleXS>Connected wallet</TitleXS>
-              <BaseM>{account}</BaseM>
-            </>
-          )}
-          <DeprecatedSpacer height={32} />
-          <HorizontalBreak />
-          <DeprecatedSpacer height={32} />
-          {active && !canMintToken && transactionStatus === null && (
-            <>
-              <StyledIneligibleMessageWrapper>
-                <BaseXL>You are ineligible for this mint.</BaseXL>
-                <DeprecatedSpacer width={4} />
-                <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
-                  <InfoCircleIcon />
-                </InteractiveLink>
-              </StyledIneligibleMessageWrapper>
-              <DeprecatedSpacer height={24} />
-            </>
-          )}
-          {PrimaryButton}
-          {transactionHash && (
-            <>
-              <DeprecatedSpacer height={16} />
-              <div>
+          <VStack gap={32}>
+            <VStack gap={16}>
+              <TitleM>{membershipNft.title}</TitleM>
+              <StyledNftDescription>
+                <Markdown text={membershipNft.description} />
+              </StyledNftDescription>
+            </VStack>
+            <Spacer />
+          </VStack>
+          <VStack gap={16}>
+            {Number(price) > 0 && (
+              <VStack>
+                <TitleXS>Price</TitleXS>
+                <BaseM>{Number(price / 1000000000000000000)} ETH</BaseM>
+              </VStack>
+            )}
+            {Boolean(totalSupply) && (
+              <VStack>
+                <TitleXS>Available</TitleXS>
                 <BaseM>
-                  {transactionStatus === TransactionStatus.SUCCESS
-                    ? 'Transaction successful!'
-                    : 'Transaction submitted. This may take several minutes.'}
+                  {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
                 </BaseM>
-                <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
-                  <BaseM>View on Etherscan</BaseM>
+              </VStack>
+            )}
+            {children}
+            {account && (
+              <VStack>
+                <TitleXS>Connected wallet</TitleXS>
+                <BaseM>{account}asdas</BaseM>
+              </VStack>
+            )}
+          </VStack>
+          <VStack>
+            <VStack gap={32}>
+              <Spacer />
+              <HorizontalBreak />
+              <Spacer />
+            </VStack>
+            {active && !canMintToken && transactionStatus === null && (
+              <VStack gap={24}>
+                <HStack gap={4}>
+                  <BaseXL>You are ineligible for this mint.</BaseXL>
+                  <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+                    <InfoCircleIcon />
+                  </InteractiveLink>
+                </HStack>
+                <Spacer />
+              </VStack>
+            )}
+          </VStack>
+          <VStack gap={16}>
+            {PrimaryButton}
+            {transactionHash && (
+              <>
+                <div>
+                  <BaseM>
+                    {transactionStatus === TransactionStatus.SUCCESS
+                      ? 'Transaction successful!'
+                      : 'Transaction submitted. This may take several minutes.'}
+                  </BaseM>
+                  <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+                    <BaseM>View on Etherscan</BaseM>
+                  </GalleryLink>
+                </div>
+              </>
+            )}
+            {transactionStatus === TransactionStatus.SUCCESS && (
+              <>
+                <BaseM>You can now sign up for Gallery.</BaseM>
+                <GalleryLink href="/auth">
+                  <BaseM>Proceed to Onboarding</BaseM>
                 </GalleryLink>
-              </div>
-            </>
-          )}
-          {transactionStatus === TransactionStatus.SUCCESS && (
-            <>
-              <DeprecatedSpacer height={16} />
-              <BaseM>You can now sign up for Gallery.</BaseM>
-              <GalleryLink href="/auth">
-                <BaseM>Proceed to Onboarding</BaseM>
-              </GalleryLink>
-            </>
-          )}
-          {error && (
-            <>
-              <DeprecatedSpacer height={16} />
-              <ErrorText message={error} />
-            </>
-          )}
+              </>
+            )}
+            {error && <ErrorText message={error} />}
+          </VStack>
         </StyledDetailText>
       </StyledContent>
     </StyledMintPage>
@@ -324,11 +325,6 @@ const StyledVideo = styled.video`
     height: 600px;
     width: 600px;
   }
-`;
-
-const StyledIneligibleMessageWrapper = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const InfoCircleIcon = styled.div`

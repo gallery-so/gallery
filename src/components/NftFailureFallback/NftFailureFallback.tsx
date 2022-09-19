@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { RefreshIcon } from 'icons/RefreshIcon';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import IconContainer from 'components/core/Markdown/IconContainer';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Size = 'tiny' | 'medium';
 
@@ -59,8 +59,8 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
           <Label size={size}>Could not load</Label>
         )}
         {!refreshing && (
-          <>
-            <DeprecatedSpacer height={spaceY} />
+          <VStack gap={spaceY}>
+            <Spacer />
             <IconButton
               data-testid="RefreshButton"
               onMouseEnter={() => setShowTooltip(true)}
@@ -72,7 +72,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
               <IconContainer icon={<RefreshIcon />} />
               <RefreshTooltip active={showTooltip} text="Refresh" />
             </IconButton>
-          </>
+          </VStack>
         )}
       </Wrapper>
     </AspectRatioWrapper>

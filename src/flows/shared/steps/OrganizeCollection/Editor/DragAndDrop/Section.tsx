@@ -5,10 +5,10 @@ import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 import TrashIcon from 'src/icons/Trash';
 import DragHandleIcon from 'src/icons/DragHandleIcon';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import noop from 'utils/noop';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { DraggableAttributes } from '@dnd-kit/core';
+import { HStack } from 'components/core/Spacer/Stack';
 
 interface Props {
   children: ReactNode;
@@ -40,10 +40,10 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       data-cypress="draggable-handle"
       {...props}
     >
-      <DeprecatedSpacer width={2} />
-      <DragHandleIcon />
-      <DeprecatedSpacer width={2} />
-      <StyledLabelText>Section</StyledLabelText>
+      <HStack gap={2} align="center">
+        <DragHandleIcon />
+        <StyledLabelText>Section</StyledLabelText>
+      </HStack>
     </StyledLabel>
   );
 });
@@ -54,7 +54,7 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   display: flex;
   background-color: ${colors.activeBlue};
   border-radius: 2px;
-  padding-right: 6px;
+  padding: 0 6px 0 2px;
   align-items: center;
   width: fit-content;
 

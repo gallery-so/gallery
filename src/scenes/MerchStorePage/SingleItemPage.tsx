@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
 import { useMintMerchContract } from 'hooks/useContract';
@@ -13,6 +12,7 @@ import { truncateAddress } from 'utils/wallet';
 import { useState } from 'react';
 import noop from 'utils/noop';
 import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 export default function ItemPage({
   label,
@@ -33,9 +33,9 @@ export default function ItemPage({
 
   const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
     useMintContractWithQuantity({
-      contract,
-      tokenId,
-    });
+    contract,
+    tokenId,
+  });
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -71,14 +71,15 @@ export default function ItemPage({
           >
             <FlippingImage isFlipped={isFlipped} src={image} />
           </StyledImageContainer>
-          <StyledContent>
-            <TitleM>
-              {title} {label}
-            </TitleM>
-            {description.split('\n').map((d, i) => (
-              <BaseM key={i}>{d}</BaseM>
-            ))}
-            {!isMobile && <DeprecatedSpacer height={8} />}
+          <StyledContent gap={!isMobile ? 8 : 0}>
+            <VStack>
+              <TitleM>
+                {title} {label}
+              </TitleM>
+              {description.split('\n').map((d, i) => (
+                <BaseM key={i}>{d}</BaseM>
+              ))}
+            </VStack>
             <StyledPriceQuantityAndPurchaseContainer>
               <StyledPriceAndQuantity>
                 <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
@@ -88,19 +89,21 @@ export default function ItemPage({
                     : ''}
                 </BaseM>
               </StyledPriceAndQuantity>
-              {!isMobile && <DeprecatedSpacer height={16} />}
-              <PurchaseBox
-                label={label}
-                tokenId={tokenId}
-                // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
-                disabled={publicSupply - usedPublicSupply == 0}
-                quantity={quantity}
-                setQuantity={setQuantity}
-                isReceiptState={isReceiptState}
-                setIsReceiptState={setIsReceiptState}
-                showBox={showBox}
-                setShowBox={setShowBox}
-              />
+              <VStack gap={!isMobile ? 16 : 0}>
+                <Spacer />
+                <PurchaseBox
+                  label={label}
+                  tokenId={tokenId}
+                  // We don't want to disable the button if the user is not logged in. So we don't simply check equality between these two variables, which will be undefined if the user is not logged in.
+                  disabled={publicSupply - usedPublicSupply == 0}
+                  quantity={quantity}
+                  setQuantity={setQuantity}
+                  isReceiptState={isReceiptState}
+                  setIsReceiptState={setIsReceiptState}
+                  showBox={showBox}
+                  setShowBox={setShowBox}
+                />
+              </VStack>
             </StyledPriceQuantityAndPurchaseContainer>
           </StyledContent>
         </StyledWrapper>
@@ -145,12 +148,9 @@ const StyledWrapper = styled.div`
     place-items: center;
   }
 `;
-const StyledContent = styled.div`
+const StyledContent = styled(VStack)`
   z-index: 1; // appear above flipping image
 
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   padding: 0 ${pageGutter.mobile}px;
   width: 360px;
   margin: 0 auto;

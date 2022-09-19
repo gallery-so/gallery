@@ -1,5 +1,4 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import FollowButton from 'components/Follow/FollowButton';
 import styled from 'styled-components';
@@ -9,6 +8,7 @@ import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import { graphql, useFragment } from 'react-relay';
 import { UserFollowedYouEventFragment$key } from '../../../../__generated__/UserFollowedYouEventFragment.graphql';
 import { UserFollowedYouEventEventFragment$key } from '../../../../__generated__/UserFollowedYouEventEventFragment.graphql';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -43,14 +43,15 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     <StyledEvent>
       <StyledEventContent>
         <StyledEventHeader>
-          <BaseM>
-            <InteractiveLink to={`/${event.owner.username}`}>
-              {event.owner.username}
-            </InteractiveLink>{' '}
-            followed you {followInfo.followedBack && 'back'}
-          </BaseM>
-          <DeprecatedSpacer width={4} />
-          <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+          <HStack gap={4} inline>
+            <BaseM>
+              <InteractiveLink to={`/${event.owner.username}`}>
+                {event.owner.username}
+              </InteractiveLink>{' '}
+              followed you {followInfo.followedBack && 'back'}
+            </BaseM>
+            <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+          </HStack>
         </StyledEventHeader>
         {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={queryRef} />}
       </StyledEventContent>

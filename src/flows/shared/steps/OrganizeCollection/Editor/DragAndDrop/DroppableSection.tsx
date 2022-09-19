@@ -8,8 +8,8 @@ import {
 } from 'contexts/collectionEditor/CollectionEditorContext';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import PlusIcon from 'src/icons/PlusIcon';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   children: React.ReactNode;
@@ -53,45 +53,36 @@ export default function DroppableSection({ children, columns, id, items, style, 
 
   return (
     <>
-      <StyledSectionWrapper onMouseDown={handleMouseDown}>
-        <DeprecatedSpacer height={6} />
-        <Section
-          ref={setNodeRef}
-          style={{
-            ...style,
-            transition,
-            transform: CSS.Translate.toString(transform),
-            opacity: isDragging ? 0.5 : undefined,
-          }}
-          draggableAttributes={attributes}
-          draggableListeners={listeners}
-          columns={columns}
-          {...props}
-          isActive={isActive}
-          isEmpty={items.length === 0}
-          handleDeleteSectionClick={handleDeleteSectionClick}
-        >
-          {children}
-        </Section>
-        {isActive && !isDragging && (
-          <>
-            <DeprecatedSpacer height={12} />
+      <VStack gap={6} align="center" onMouseDown={handleMouseDown}>
+        <VStack gap={12} align="center">
+          <Section
+            ref={setNodeRef}
+            style={{
+              ...style,
+              transition,
+              transform: CSS.Translate.toString(transform),
+              opacity: isDragging ? 0.5 : undefined,
+            }}
+            draggableAttributes={attributes}
+            draggableListeners={listeners}
+            columns={columns}
+            {...props}
+            isActive={isActive}
+            isEmpty={items.length === 0}
+            handleDeleteSectionClick={handleDeleteSectionClick}
+          >
+            {children}
+          </Section>
+          {isActive && !isDragging && (
             <StyledAddSectionButton onClick={handleAddSectionClick}>
               <StyledPlusIcon />
             </StyledAddSectionButton>
-          </>
-        )}
-        <DeprecatedSpacer height={6} />
-      </StyledSectionWrapper>
+          )}
+        </VStack>
+      </VStack>
     </>
   );
 }
-
-const StyledSectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 
 const StyledAddSectionButton = styled.button`
   display: flex;

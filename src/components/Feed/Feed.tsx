@@ -2,7 +2,6 @@ import ActionText from 'components/core/ActionText/ActionText';
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
 import { fadeIn } from 'components/core/keyframes';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import NavbarGLink from 'components/NavbarGLink';
@@ -17,7 +16,7 @@ import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
-import { HStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
 
@@ -138,7 +137,6 @@ export default function Feed({ queryRef }: Props) {
 
   return (
     <StyledFeed>
-      <DeprecatedSpacer height={24} />
       {viewerUserId && feedMode === 'FOLLOWING' && (
         <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />
       )}
@@ -147,11 +145,9 @@ export default function Feed({ queryRef }: Props) {
   );
 }
 
-const StyledFeed = styled.div`
+const StyledFeed = styled(VStack)`
   width: 100vw;
-  display: flex;
   flex: 1;
-  flex-direction: column;
 
   @media only screen and ${breakpoints.desktop} {
     width: ${FEED_MAX_WIDTH}px;

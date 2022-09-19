@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import formatError from 'errors/formatError';
 import { captureException } from '@sentry/nextjs';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 class ErrorBoundary extends Component {
   static getDerivedStateFromError(error: Error) {
@@ -26,14 +26,15 @@ class ErrorBoundary extends Component {
       const errorMessage = formatError(this.state.error);
 
       return (
-        <StyledErrorBoundary>
-          <BaseXL>{errorMessage}</BaseXL>
-          <DeprecatedSpacer height={48} />
-          <StyledReachOut>
-            If you&apos;re continuing to see this error, reach out to us on{' '}
-            <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
-          </StyledReachOut>
-          <DeprecatedSpacer height={16} />
+        <StyledErrorBoundary gap={16} justify="center" align="center">
+          <VStack gap={48}>
+            <BaseXL>{errorMessage}</BaseXL>
+            <StyledReachOut>
+              If you&apos;re continuing to see this error, reach out to us on{' '}
+              <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
+            </StyledReachOut>
+          </VStack>
+          <Spacer />
         </StyledErrorBoundary>
       );
     }
@@ -42,11 +43,7 @@ class ErrorBoundary extends Component {
   }
 }
 
-const StyledErrorBoundary = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+const StyledErrorBoundary = styled(VStack)`
   height: 100vh;
 `;
 

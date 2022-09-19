@@ -21,8 +21,9 @@ export const HStack = styled.div<{
   justify?: CSSProperties['justifyContent'];
   grow?: boolean;
   shrink?: boolean;
+  inline?: boolean;
 }>`
-  display: flex;
+  display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   gap: 0 ${({ gap }) => gap ?? 0}px;
 
   align-items: ${({ align }) => align ?? 'unset'};

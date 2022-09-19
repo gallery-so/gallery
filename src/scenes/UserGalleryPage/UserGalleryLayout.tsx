@@ -2,7 +2,6 @@ import UserGalleryCollections from 'scenes/UserGalleryPage/UserGalleryCollection
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
 import EmptyGallery from 'scenes/UserGalleryPage/EmptyGallery';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -12,6 +11,7 @@ import styled from 'styled-components';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -79,16 +79,19 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <DeprecatedSpacer height={isMobile ? 48 : 80} />
-      <UserGalleryHeader
-        userRef={user}
-        showMobileLayoutToggle={showMobileLayoutToggle}
-        isMobile={isMobile}
-        mobileLayout={mobileLayout}
-        setMobileLayout={setMobileLayout}
-      />
-      {collectionsView}
-      <DeprecatedSpacer height={32} />
+      <VStack gap={isMobile ? 48 : 80}>
+        <Spacer />
+        <UserGalleryHeader
+          userRef={user}
+          showMobileLayoutToggle={showMobileLayoutToggle}
+          isMobile={isMobile}
+          mobileLayout={mobileLayout}
+          setMobileLayout={setMobileLayout}
+        />
+      </VStack>
+      <VStack gap={32} align="center" justify="center" grow>
+        {collectionsView}
+      </VStack>
     </StyledUserGalleryLayout>
   );
 };
@@ -96,7 +99,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 const StyledUserGalleryLayout = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   max-width: 1200px;
 `;

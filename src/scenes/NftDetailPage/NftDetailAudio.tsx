@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -43,26 +43,30 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
   }
 
   return (
-    <StyledAudioContainer>
+    <StyledAudioContainer gap={isDesktop ? 40 : 0}>
       {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
-      <ImageWithLoading onLoad={noop} src={token.media?.previewURLs.large} alt={token.name ?? ''} />
-      <StyledAudio
-        controls
-        loop
-        controlsList="nodownload"
-        preload="none"
-        onLoad={onLoad}
-        onError={handleError}
-        src={token.media.contentRenderURL}
-      />
-      {isDesktop && <DeprecatedSpacer height={40} />}
+      <VStack>
+        <ImageWithLoading
+          onLoad={noop}
+          src={token.media?.previewURLs.large}
+          alt={token.name ?? ''}
+        />
+        <StyledAudio
+          controls
+          loop
+          controlsList="nodownload"
+          preload="none"
+          onLoad={onLoad}
+          onError={handleError}
+          src={token.media.contentRenderURL}
+        />
+      </VStack>
+      <Spacer />
     </StyledAudioContainer>
   );
 }
 
-const StyledAudioContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledAudioContainer = styled(VStack)`
   width: 100%;
 `;
 

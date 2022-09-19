@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { HStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
 import {
   useCollectionEditorActions,
@@ -46,9 +46,8 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   );
 
   return (
-    <StyledColumnAdjuster>
+    <HStack gap={24} align="center" justify="space-between">
       <BaseM>Columns</BaseM>
-      <DeprecatedSpacer width={24} />
       <StyledButtonContainer>
         <StyledColumnButton onClick={handleDecrementClick} disabled={columns <= 1}>
           <CircleMinusIcon />
@@ -58,15 +57,9 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
           <CirclePlusIcon />
         </StyledColumnButton>
       </StyledButtonContainer>
-    </StyledColumnAdjuster>
+    </HStack>
   );
 }
-
-const StyledColumnAdjuster = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const StyledButtonContainer = styled.div`
   display: flex;

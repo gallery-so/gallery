@@ -1,6 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
 import FollowButton from 'components/Follow/FollowButton';
@@ -64,13 +64,11 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
   return (
     <Link href={`/${user.username}`} passHref>
       <StyledAnchor target="_blank" rel="noopener noreferrer">
-        <GotwContainer>
-          <GotwHeader>
+        <GotwContainer gap={isMobile ? 16 : 32}>
+          <GotwHeader gap={8}>
             <FollowButton queryRef={query} userRef={user} />
-            <DeprecatedSpacer width={8} />
             <DescriptionText>{user.username}</DescriptionText>
           </GotwHeader>
-          <DeprecatedSpacer height={isMobile ? 16 : 32} />
           <GotwBody>
             {imageUrls.map((url) => (
               <GotwImageContainer key={url}>
@@ -88,7 +86,7 @@ const StyledAnchor = styled.a`
   text-decoration: none;
 `;
 
-const GotwContainer = styled.div`
+const GotwContainer = styled(VStack)`
   background: ${colors.white};
   border: 1px solid;
   cursor: pointer;
@@ -110,8 +108,7 @@ const GotwContainer = styled.div`
   }
 `;
 
-const GotwHeader = styled.div`
-  display: flex;
+const GotwHeader = styled(HStack)`
   align-items: center;
 `;
 

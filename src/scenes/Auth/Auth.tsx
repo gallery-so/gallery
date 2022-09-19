@@ -5,12 +5,12 @@ import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import breakpoints from 'components/core/breakpoints';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 // Preloading images for the welcome screen
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 import { graphql, useFragment } from 'react-relay';
 import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {
@@ -57,24 +57,19 @@ function Auth({ queryRef }: Props) {
   }
 
   return (
-    <StyledAuthPage>
+    <StyledAuthPage gap={32} align="center" justify="center">
       <StyledWalletSelectorWrapper>
         <WalletSelector queryRef={query} />
       </StyledWalletSelectorWrapper>
       <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledBaseM>
-      <DeprecatedSpacer height={32} />
+      <Spacer />
     </StyledAuthPage>
   );
 }
 
-const StyledAuthPage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
+const StyledAuthPage = styled(VStack)`
   height: 100vh;
 `;
 

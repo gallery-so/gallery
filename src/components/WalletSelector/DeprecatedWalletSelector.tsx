@@ -5,7 +5,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useCallback, useMemo, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import breakpoints from 'components/core/breakpoints';
@@ -19,6 +18,7 @@ import { graphql, useFragment } from 'react-relay';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 import { DeprecatedWalletSelectorFragment$key } from '__generated__/DeprecatedWalletSelectorFragment.graphql';
 import { ConnectionMode } from './WalletSelector';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -168,11 +168,12 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
   if (displayedError) {
     return (
       <StyledWalletSelector>
-        <TitleS>{displayedError.heading}</TitleS>
-        <DeprecatedSpacer height={16} />
-        <StyledBody>
-          <Markdown text={displayedError.body} />
-        </StyledBody>
+        <VStack gap={16}>
+          <TitleS>{displayedError.heading}</TitleS>
+          <StyledBody>
+            <Markdown text={displayedError.body} />
+          </StyledBody>
+        </VStack>
         {error instanceof UnsupportedChainIdError ? (
           <StyledRetryButton onClick={handleSwitchNetwork}>Switch Network</StyledRetryButton>
         ) : (
@@ -200,11 +201,10 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
     if (connectionMode === CONNECT_WALLET_ONLY) {
       return (
         <StyledWalletSelector>
-          <div>
+          <VStack gap={8}>
             <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-            <DeprecatedSpacer height={8} />
             <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-          </div>
+          </VStack>
         </StyledWalletSelector>
       );
     }
@@ -224,27 +224,26 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
   }
 
   return (
-    <StyledWalletSelector>
-      <DeprecatedSpacer height={16} />
-      {availableWalletOptions.map((walletName) => (
-        <WalletButton
-          key={walletName}
-          walletName={walletName}
-          activate={activate}
-          connector={walletConnectorMap[walletName]}
-          setToPendingState={setToPendingState}
-        />
-      ))}
-      <DeprecatedSpacer height={16} />
+    <StyledWalletSelector gap={16}>
+      <Spacer />
+      <VStack>
+        {availableWalletOptions.map((walletName) => (
+          <WalletButton
+            key={walletName}
+            walletName={walletName}
+            activate={activate}
+            connector={walletConnectorMap[walletName]}
+            setToPendingState={setToPendingState}
+          />
+        ))}
+      </VStack>
       <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
 
-const StyledWalletSelector = styled.div`
+const StyledWalletSelector = styled(VStack)`
   text-align: center;
-  display: flex;
-  flex-direction: column;
   width: 320px;
   justify-content: center;
 

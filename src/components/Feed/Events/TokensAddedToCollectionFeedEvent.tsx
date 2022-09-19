@@ -1,6 +1,5 @@
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -17,6 +16,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -91,26 +91,27 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
       onClick={() => track('Feed: Clicked Tokens added to collection event')}
     >
       <StyledEvent>
-        <StyledEventHeader>
-          <BaseM>
-            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
-            {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-            {collectionName ? ' ' : ' their collection'}
-            <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-          </BaseM>
-          <DeprecatedSpacer width={4} />
-          <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-        </StyledEventHeader>
-        <DeprecatedSpacer height={16} />
-        <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-        {showAdditionalPiecesIndicator && !isPreFeed && (
-          <>
-            <DeprecatedSpacer height={8} />
-            <StyledAdditionalPieces>
-              +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-            </StyledAdditionalPieces>
-          </>
-        )}
+        <VStack gap={16}>
+          <StyledEventHeader>
+            <HStack gap={4} inline>
+              <BaseM>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
+                {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+                {collectionName ? ' ' : ' their collection'}
+                <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+              </BaseM>
+              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+            </HStack>
+          </StyledEventHeader>
+          <VStack gap={8}>
+            <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+            {showAdditionalPiecesIndicator && !isPreFeed && (
+              <StyledAdditionalPieces>
+                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+              </StyledAdditionalPieces>
+            )}
+          </VStack>
+        </VStack>
       </StyledEvent>
     </UnstyledLink>
   );

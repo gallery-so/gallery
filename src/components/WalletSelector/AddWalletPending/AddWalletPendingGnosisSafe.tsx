@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 
 import { isWeb3Error, Web3Error } from 'types/Error';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   INITIAL,
@@ -36,6 +35,7 @@ import { AddWalletPendingGnosisSafeFragment$key } from '__generated__/AddWalletP
 import { removeNullValues } from 'utils/removeNullValues';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -254,13 +254,11 @@ function AddWalletPendingGnosisSafe({
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
-      </div>
+      </VStack>
     );
   }
 

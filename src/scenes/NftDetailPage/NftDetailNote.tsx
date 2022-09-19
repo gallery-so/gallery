@@ -1,5 +1,4 @@
 import { BaseM, TitleXS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import TextButton from 'components/core/Button/TextButton';
 import { useCallback, useState, useMemo, useRef } from 'react';
 import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
@@ -12,6 +11,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { Spacer, VStack } from 'components/core/Spacer/Stack';
 
 const MAX_CHAR_COUNT = 1200;
 
@@ -126,40 +126,35 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
         </StyledCollectorsNote>
       )}
       {generalError && (
-        <>
+        <VStack gap={8}>
           <ErrorText message={generalError} />
-          <DeprecatedSpacer height={8} />
-        </>
+          <Spacer />
+        </VStack>
       )}
 
-      <StyledBottomButtonContainer>
+      <VStack>
         {isEditing ? (
-          <>
-            <DeprecatedSpacer height={12} />
+          <VStack gap={12}>
+            <Spacer />
             <SaveNoteButton
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
               onClick={handleSubmitCollectorsNote}
             />
-          </>
+          </VStack>
         ) : (
-          <>
-            <DeprecatedSpacer height={hasCollectorsNote ? 8 : 0} />
+          <VStack gap={hasCollectorsNote ? 8 : 0}>
+            <Spacer />
             <EditNoteButton
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
             />
-          </>
+          </VStack>
         )}
-      </StyledBottomButtonContainer>
+      </VStack>
     </div>
   );
 }
-
-const StyledBottomButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const SaveNoteButton = styled(TextButton)`
   display: flex;
@@ -176,13 +171,12 @@ type NoteViewerProps = {
 
 function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
-    <>
+    <VStack gap={8}>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
-      <DeprecatedSpacer height={8} />
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
         <Markdown text={nftCollectorsNote} />
       </StyledCollectorsNote>
-    </>
+    </VStack>
   );
 }
 
@@ -201,16 +195,18 @@ function NftDetailNote({
 }: Props) {
   return (
     <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
-      <DeprecatedSpacer height={12} />
-      {authenticatedUserOwnsAsset ? (
-        <NoteEditor
-          nftCollectorsNote={nftCollectorsNote}
-          tokenId={tokenId}
-          collectionId={collectionId}
-        />
-      ) : (
-        <NoteViewer nftCollectorsNote={nftCollectorsNote} />
-      )}
+      <VStack gap={12}>
+        <Spacer />
+        {authenticatedUserOwnsAsset ? (
+          <NoteEditor
+            nftCollectorsNote={nftCollectorsNote}
+            tokenId={tokenId}
+            collectionId={collectionId}
+          />
+        ) : (
+          <NoteViewer nftCollectorsNote={nftCollectorsNote} />
+        )}
+      </VStack>
     </StyledContainer>
   );
 }

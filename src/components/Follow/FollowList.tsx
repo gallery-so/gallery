@@ -1,6 +1,5 @@
 import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo, useState } from 'react';
@@ -9,6 +8,7 @@ import styled from 'styled-components';
 import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
 import FollowListUsers from './FollowListUsers';
 import { removeNullValues } from 'utils/removeNullValues';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: FollowListFragment$key;
@@ -38,7 +38,7 @@ export default function FollowList({ userRef }: Props) {
 
   return (
     <StyledFollowList fullscreen={isMobile}>
-      <StyledHeader>
+      <StyledHeader gap={16} justify="center">
         <StyledHeaderTextRight>
           <StyledTextButton
             text="Followers"
@@ -46,7 +46,6 @@ export default function FollowList({ userRef }: Props) {
             active={displayedList === 'followers'}
           />
         </StyledHeaderTextRight>
-        <DeprecatedSpacer width={16} />
         <StyledHeaderText>
           <StyledTextButton
             text="Following"
@@ -73,11 +72,8 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   padding: ${MODAL_PADDING_THICC_PX}px 8px;
 `;
 
-const StyledHeader = styled.div`
+const StyledHeader = styled(HStack)`
   padding-bottom: ${MODAL_PADDING_THICC_PX}px;
-
-  display: flex;
-  justify-content: center;
 `;
 
 const StyledHeaderText = styled.div`
