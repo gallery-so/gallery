@@ -17,6 +17,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
