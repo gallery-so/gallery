@@ -123,45 +123,62 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
   }, []);
 
   return (
-    <CommentBoxWrapper active={active}>
-      <Wrapper onClick={handleClick}>
-        <InputWrapper gap={12}>
-          {/* Purposely not using a controlled input here to avoid cursor jitter */}
-          <Textarea
-            ref={textareaRef}
-            onInput={(event) => {
-              const nextValue = event.currentTarget.textContent ?? '';
+    <>
+      {active && <ClickPreventingOverlay onClick={onClose} />}
+      <CommentBoxWrapper active={active}>
+        <Wrapper onClick={handleClick}>
+          <InputWrapper gap={12}>
+            {/* Purposely not using a controlled input here to avoid cursor jitter */}
+            <Textarea
+              ref={textareaRef}
+              onInput={(event) => {
+                const nextValue = event.currentTarget.textContent ?? '';
 
-              if (nextValue.length > MAX_TEXT_LENGTH) {
-                event.currentTarget.textContent = nextValue.slice(0, 100);
+                if (nextValue.length > MAX_TEXT_LENGTH) {
+                  event.currentTarget.textContent = nextValue.slice(0, 100);
 
-                const range = document.createRange();
-                const selection = window.getSelection();
+                  const range = document.createRange();
+                  const selection = window.getSelection();
 
-                if (!selection) {
-                  return;
+                  if (!selection) {
+                    return;
+                  }
+
+                  range.setStart(event.currentTarget.childNodes[0], 100);
+                  range.setEnd(event.currentTarget.childNodes[0], 100);
+                  range.collapse(true);
+                  selection.removeAllRanges();
+                  selection.addRange(range);
+                } else {
+                  setValue(nextValue);
                 }
+              }}
+            />
 
-                range.setStart(event.currentTarget.childNodes[0], 100);
-                range.setEnd(event.currentTarget.childNodes[0], 100);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              } else {
-                setValue(nextValue);
-              }
-            }}
-          />
-
-          <ControlsContainer gap={12} align="center">
-            <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-            <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
-          </ControlsContainer>
-        </InputWrapper>
-      </Wrapper>
-    </CommentBoxWrapper>
+            <ControlsContainer gap={12} align="center">
+              <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
+              <SendButton
+                enabled={value.length > 0 && !isSubmittingComment}
+                onClick={handleSubmit}
+              />
+            </ControlsContainer>
+          </InputWrapper>
+        </Wrapper>
+      </CommentBoxWrapper>
+    </>
   );
 }
+
+const ClickPreventingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  // Higher than whole page / header
+  z-index: 10;
+`;
 
 const CommentBoxWrapper = styled.div<{ active: boolean }>`
   @media only screen and ${breakpoints.mobileLarge} {
@@ -171,7 +188,8 @@ const CommentBoxWrapper = styled.div<{ active: boolean }>`
     bottom: 0;
     right: 0;
 
-    z-index: 8;
+    // Higher than the Overlay
+    z-index: 11;
 
     transition: transform 300ms ease-out, opacity 300ms ease-in-out;
 
