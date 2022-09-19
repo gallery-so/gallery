@@ -148,6 +148,7 @@ export default function FeedList({
                 rowCount={rowCount}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
+                style={{ willChange: 'auto' }}
               />
               {hasNext && (
                 <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
