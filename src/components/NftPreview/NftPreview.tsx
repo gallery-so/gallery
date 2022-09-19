@@ -131,8 +131,8 @@ function NftPreview({
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
     useNftRetry({
-    tokenId: token.dbid,
-  });
+      tokenId: token.dbid,
+    });
 
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
