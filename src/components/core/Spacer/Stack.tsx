@@ -48,8 +48,9 @@ export const VStack = styled.div<{
   justify?: CSSProperties['justifyContent'];
   grow?: boolean;
   shrink?: boolean;
+  inline?: boolean;
 }>`
-  display: flex;
+  display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   flex-direction: column;
 
   gap: ${({ gap }) => gap ?? 0}px 0;
