@@ -11,7 +11,7 @@ type ToastProps = {
 
 type ToastActions = {
   pushToast: ({ message, onDismiss, autoClose }: ToastProps) => void;
-  dismissToast: () => void;
+  dismissToast: (id: string) => void;
   dismissAllToasts: () => void;
 };
 
@@ -29,6 +29,7 @@ export const useToastActions = (): ToastActions => {
 const noop = () => {};
 
 type ToastType = {
+  id: string;
   message: string;
   onDismiss: DismissToastHandler;
   autoClose: boolean;
@@ -40,19 +41,25 @@ const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
   const pushToast = useCallback(({ message, onDismiss = noop, autoClose = true }: ToastProps) => {
-    setToasts((previousMessages) => [...previousMessages, { message, onDismiss, autoClose }]);
+    setToasts((previousMessages) => [
+      ...previousMessages,
+      { message, onDismiss, autoClose, id: Date.now().toString() },
+    ]);
   }, []);
 
-  // TODO: allow consumer to specify which toast to dismissbyID
-  const dismissToast = useCallback(() => {
-    setToasts((previousMessages) => {
-      if (previousMessages.length === 0) {
-        return previousMessages;
+  const dismissToast = useCallback((id: string) => {
+    setToasts((previous) => {
+      const toastToRemove = previous.find((toast) => toast.id === id);
+
+      if (!toastToRemove) {
+        return previous;
       }
 
-      const toastToDismiss = previousMessages[previousMessages.length - 1];
-      toastToDismiss.onDismiss();
-      return previousMessages.slice(0, -1);
+      const nextToasts = previous.filter((toast) => toast !== toastToRemove);
+
+      toastToRemove.onDismiss();
+
+      return nextToasts;
     });
   }, []);
 
@@ -71,11 +78,11 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, autoClose }) => (
+      {toasts.map(({ message, autoClose, id }) => (
         <AnimatedToast
           key={message}
           message={message}
-          onClose={dismissToast}
+          onClose={() => dismissToast(id)}
           autoClose={autoClose}
         />
       ))}

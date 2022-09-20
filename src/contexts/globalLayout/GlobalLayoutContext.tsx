@@ -351,6 +351,7 @@ function GlobalNavbarWithFadeEnabled({
 
   return (
     <StyledGlobalNavbarWithFadeEnabled
+      className="GlobalNavbar"
       isVisible={isVisible}
       transitionStyles={transitionStyles}
       zIndex={zIndex}

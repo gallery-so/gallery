@@ -13,11 +13,11 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
 import { useQrCode } from 'scenes/Modals/QRCodePopover';
-import useIs3ac from 'hooks/oneOffs/useIs3ac';
 import TextButton from 'components/core/Button/TextButton';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
+import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -45,9 +45,9 @@ function UserGalleryHeader({
     userRef
   );
 
-  const { dbid, username, bio } = user;
+  const { username, bio } = user;
 
-  const is3ac = useIs3ac(dbid);
+  const is3ac = useIs3acProfilePage();
   const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);

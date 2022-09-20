@@ -138,7 +138,7 @@ export function SidebarList({
           <List
             className="SidebarTokenList"
             ref={virtualizedListRef}
-            style={{ outline: 'none' }}
+            style={{ outline: 'none', padding: '0 16px' }}
             rowRenderer={rowRenderer}
             rowCount={rows.length}
             rowHeight={rowHeightCalculator}
@@ -168,7 +168,6 @@ const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded
 `;
 
 const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
-  width: 100%;
   flex-grow: 1;
 
   // Need this since typically the CollectionTitle is responsible for the spacing between

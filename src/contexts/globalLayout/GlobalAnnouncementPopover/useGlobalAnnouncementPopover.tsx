@@ -1,5 +1,5 @@
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIs3acProfilePage } from 'hooks/oneOffs/useIs3ac';
+import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';

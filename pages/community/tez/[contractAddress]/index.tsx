@@ -4,25 +4,27 @@ import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 import { MetaTagProps } from 'pages/_app';
 import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { DISABLED_CONTRACTS } from 'utils/getCommunityUrlForToken';
+import { ContractAddressTezosQuery } from '../../../../__generated__/ContractAddressTezosQuery.graphql';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
 };
 
 export default function CommunityPage({ contractAddress }: CommunityPageProps) {
-  const query = useLazyLoadQuery<ContractAddressQuery>(
+  const query = useLazyLoadQuery<ContractAddressTezosQuery>(
     graphql`
-      query ContractAddressQuery($communityAddress: ChainAddressInput!, $forceRefresh: Boolean) {
+      query ContractAddressTezosQuery(
+        $communityAddress: ChainAddressInput!
+        $forceRefresh: Boolean
+      ) {
         ...CommunityPageFragment
       }
     `,
     {
       communityAddress: {
         address: contractAddress,
-        chain: 'Ethereum',
+        chain: 'Tezos',
       },
       forceRefresh: false,
     }
@@ -30,10 +32,6 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
 
   if (!contractAddress) {
     // Something went horribly wrong
-    return <GalleryRedirect to="/" />;
-  }
-
-  if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return <GalleryRedirect to="/" />;
   }
 
