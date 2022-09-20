@@ -76,7 +76,7 @@ function CollectionGallery({ queryRef }: Props) {
 
   if (collection?.__typename === 'Collection') {
     return (
-      <StyledCollectionGallery gap={isMobile ? 16 : 64}>
+      <StyledCollectionGallery align="center" gap={isMobile ? 16 : 64}>
         <VStack gap={isMobile ? 48 : 80}>
           <Spacer />
           <CollectionGalleryHeader
@@ -101,9 +101,6 @@ function CollectionGallery({ queryRef }: Props) {
 }
 
 const StyledCollectionGallery = styled(VStack)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
 
   max-width: 1200px;
