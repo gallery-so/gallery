@@ -36,9 +36,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         if (event.key === 'v' && event.metaKey) {
           // Wrap in a try/catch because navigator.clipboard.readText() is not supported in Firefox. If it fails, pasting behavior will be default
           try {
-            // FIXME: Handle Typescript error from forwardRef
-            if (ref.current) {
-              const textArea = ref.current;
+            // @ts-expect-error: Handle Typescript error from forwardRef
+            if (ref?.current) {
+              // @ts-expect-error: Handle Typescript error from forwardRef
+              const textArea = ref?.current;
               const [selectionStart, selectionEnd] = [
                 textArea.selectionStart,
                 textArea.selectionEnd,
