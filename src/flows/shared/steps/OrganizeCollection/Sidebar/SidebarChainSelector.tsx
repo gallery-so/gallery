@@ -140,7 +140,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           if (chain.name === 'Ethereum') {
             locked = false;
           } else if (chain.name === 'POAP') {
-            locked = isPOAPEnabled;
+            locked = !isPOAPEnabled;
           } else if (chain.name === 'Tezos') {
             locked = !tezosEnabled;
           }
