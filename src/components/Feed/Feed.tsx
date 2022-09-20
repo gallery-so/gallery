@@ -38,7 +38,7 @@ function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
   }, [setFeedMode, track]);
 
   return (
-    <StyledFeedNavbarControl gap={10}>
+    <StyledFeedNavbarControl justify="center" align="center" gap={10}>
       <StyledTextWrapperLeft>
         <StyledNavControlText onClick={handleFollowingModeClick} focused={feedMode === 'FOLLOWING'}>
           Following
@@ -71,9 +71,6 @@ const StyledTextWrapperLeft = styled(StyledTextWrapper)`
 `;
 
 const StyledFeedNavbarControl = styled(HStack)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
 `;
 

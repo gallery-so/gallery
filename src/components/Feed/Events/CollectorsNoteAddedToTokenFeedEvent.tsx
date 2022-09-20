@@ -106,7 +106,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </HStack>
           </StyledEventHeader>
-          <StyledContent gap={MIDDLE_GAP}>
+          <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>
             <StyledMediaWrapper>
               <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
             </StyledMediaWrapper>
@@ -136,10 +136,6 @@ const StyledMediaWrapper = styled.div`
 `;
 
 const StyledContent = styled(HStack)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   @media only screen and ${breakpoints.desktop} {
     margin: 0 80px;
   }
