@@ -110,8 +110,8 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }
 
   return (
-    <StyledWalletSelector gap={16}>
-      <VStack justify="center">
+    <StyledWalletSelector gap={24}>
+      <VStack justify="center" gap={8}>
         <WalletButton
           label={supportedAuthMethods.ethereum.name}
           icon="ethereum"
