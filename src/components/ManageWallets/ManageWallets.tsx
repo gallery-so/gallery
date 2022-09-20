@@ -81,7 +81,6 @@ function ManageWallets({ newAddress, queryRef }: Props) {
 
   return (
     <VStack gap={16}>
-      <Spacer />
       <VStack gap={16}>
         <VStack>
           <BaseM>Add more wallets to access your other NFTs.</BaseM>
