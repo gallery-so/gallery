@@ -92,9 +92,11 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
               Discover new collectors to follow in the worldwide feed.
             </StyledEmptyFeedBody>
           </VStack>
-          <Button variant="secondary" onClick={handleSeeWorldwideClick}>
-            See worldwide activity
-          </Button>
+          <VStack>
+            <Button variant="secondary" onClick={handleSeeWorldwideClick}>
+              See worldwide activity
+            </Button>
+          </VStack>
         </StyledEmptyFeed>
       ) : (
         <VStack gap={24}>
