@@ -5,7 +5,7 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { AdmireIcon, CommentIcon } from 'icons/SocializeIcons';
 import styled from 'styled-components';
 import { CommentBox } from 'components/Feed/Socialize/CommentBox';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { CommentsAndAdmires } from 'components/Feed/Socialize/CommentsAndAdmires';
 import { FeedEventSocializeSectionQueryFragment$key } from '../../../../__generated__/FeedEventSocializeSectionQueryFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
