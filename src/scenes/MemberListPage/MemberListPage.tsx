@@ -3,7 +3,6 @@ import { TitleL } from 'components/core/Text/Text';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -27,8 +26,6 @@ function MemberListPage({ queryRef }: Props) {
     `,
     queryRef
   );
-
-  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledPage>

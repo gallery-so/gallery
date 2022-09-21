@@ -12,7 +12,7 @@ import { truncateAddress } from 'utils/wallet';
 import { useState } from 'react';
 import noop from 'utils/noop';
 import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export default function ItemPage({
   label,
@@ -89,8 +89,7 @@ export default function ItemPage({
                     : ''}
                 </BaseM>
               </StyledPriceAndQuantity>
-              <VStack gap={!isMobile ? 16 : 0}>
-                <Spacer />
+              <StyledPurchaseBoxContainer>
                 <PurchaseBox
                   label={label}
                   tokenId={tokenId}
@@ -103,7 +102,7 @@ export default function ItemPage({
                   showBox={showBox}
                   setShowBox={setShowBox}
                 />
-              </VStack>
+              </StyledPurchaseBoxContainer>
             </StyledPriceQuantityAndPurchaseContainer>
           </StyledContent>
         </StyledWrapper>
@@ -173,6 +172,7 @@ const StyledPriceAndQuantity = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-bottom: 16px;
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
@@ -225,3 +225,9 @@ const StyledPrice = styled(BaseM)`
     font-weight: bold;
   }
 `;
+
+const StyledPurchaseBoxContainer = styled.div`
+  @media only screen and (max-width: 768px) {
+    padding-top: 16px;
+  }
+`

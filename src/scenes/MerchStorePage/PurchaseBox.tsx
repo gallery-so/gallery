@@ -15,7 +15,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import transitions from 'components/core/transitions';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenId: number }) {
   const contract = useMintMerchContract();
@@ -26,7 +26,7 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
   });
 
   return (
-    <VStack gap={8}>
+    <StyledUserOwnedBox>
       <UserOwnsContainer inReceipt={inReceipt} gap={4}>
         <StyledFlexContainer>
           <StyledBaseM>Quantity bought</StyledBaseM>
@@ -40,8 +40,7 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
           </StyledPrice>
         </StyledFlexContainer>
       </UserOwnsContainer>
-      <Spacer />
-    </VStack>
+    </StyledUserOwnedBox>
   );
 }
 
@@ -239,8 +238,7 @@ export default function PurchaseBox({
           </StyledCheckoutBox>
 
           {isReceiptState && (
-            <VStack gap={12}>
-              <Spacer />
+            <StyledLimitReachedContainer>
               {userOwnedSupply === MAX_NFTS_PER_WALLET ? (
                 isMobile ? (
                   ''
@@ -259,7 +257,7 @@ export default function PurchaseBox({
                   Purchase More
                 </StyledPurchaseMoreButton>
               )}
-            </VStack>
+            </StyledLimitReachedContainer>
           )}
         </StyledCheckoutAndReceiptContainer>
 
@@ -429,8 +427,11 @@ const StyledPurchaseMoreButton = styled(Button)`
   width: 100%;
 `;
 
+const StyledUserOwnedBox = styled.div`
+  padding-bottom: 8px;
+`;
+
 const UserOwnsContainer = styled(VStack)<{ inReceipt: boolean }>`
-  padding: 0;
   height: 100%;
   padding: 16px;
   border: 1px solid ${colors.porcelain};
@@ -495,6 +496,10 @@ const StyledFlexContainerColumnOnMobile = styled.div`
 
 const StyledSoldOutContainer = styled.div`
   text-align: center;
+`;
+
+const StyledLimitReachedContainer = styled.div`
+  padding-top: 12px;
 `;
 
 const StyledOwnMaxText = styled(BaseM)`

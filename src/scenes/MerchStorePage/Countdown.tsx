@@ -5,7 +5,7 @@ import { BaseS, BaseM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import colors from 'components/core/colors';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export default function Countdown() {
   const [nextTime, setNextTime] = useState('');

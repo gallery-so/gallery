@@ -10,7 +10,6 @@ import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCol
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import {
   AutoSizer,
   CellMeasurer,
@@ -68,7 +67,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 
   const nonNullCollections = removeNullValues(collections);
-  const isMobile = useIsMobileWindowWidth();
 
   const cache = useRef(
     new CellMeasurerCache({
