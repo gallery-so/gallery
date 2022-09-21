@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { NftAdditionalDetailsEthFragment$key } from '../../../../__generated__/NftAdditionalDetailsEthFragment.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { NftAdditionalDetailsEthQuery } from '../../../../__generated__/NftAdditionalDetailsEthQuery.graphql';
+import { LinkableAddress } from 'components/LinkableAddress';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -27,12 +28,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
         contract {
           creatorAddress {
             address
-            ...CopyableAddressFragment
+            ...LinkableAddressFragment
             ...EnsOrAddressWithSuspenseFragment
           }
           contractAddress {
             address
-            ...CopyableAddressFragment
+            ...LinkableAddressFragment
           }
         }
 
@@ -76,11 +77,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <InteractiveLink
-            href={`https://etherscan.io/address/${contract.contractAddress.address}`}
-          >
-            {contract.contractAddress.address}
-          </InteractiveLink>
+          <LinkableAddress chainAddressRef={contract.contractAddress} />
         </div>
       )}
 

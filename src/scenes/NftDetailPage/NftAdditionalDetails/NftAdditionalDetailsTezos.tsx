@@ -11,8 +11,8 @@ import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__
 import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
-import { graphqlTruncateAddress } from 'utils/wallet';
 import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
+import { LinkableAddress } from 'components/LinkableAddress';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -33,7 +33,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
           }
           contractAddress {
             address
-            ...walletTruncateAddressFragment
+            ...LinkableAddressFragment
           }
         }
 
@@ -77,9 +77,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <InteractiveLink href={`https://tzkt.io/${contract.contractAddress.address}/operations`}>
-            {graphqlTruncateAddress(contract.contractAddress)}
-          </InteractiveLink>
+          <LinkableAddress chainAddressRef={contract.contractAddress} />
         </div>
       )}
 

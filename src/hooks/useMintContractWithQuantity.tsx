@@ -57,7 +57,12 @@ export default function useMintContractWithQuantity({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (contract: any) => {
       if (contract && address) {
-        return web3.utils.hexToNumber(await contract.balanceOfType(tokenId, address));
+        try {
+          const balance = await contract.balanceOfType(tokenId, address);
+          return web3.utils.hexToNumber(balance);
+        } catch {
+          return 0;
+        }
       }
     },
     [address, tokenId]

@@ -5,7 +5,7 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  POAP: false,
+  POAP: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
