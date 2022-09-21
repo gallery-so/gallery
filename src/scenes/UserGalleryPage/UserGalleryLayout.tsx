@@ -80,15 +80,13 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <StyledUserGalleryHeaderContainer>
-        <UserGalleryHeader
-          userRef={user}
-          showMobileLayoutToggle={showMobileLayoutToggle}
-          isMobile={isMobile}
-          mobileLayout={mobileLayout}
-          setMobileLayout={setMobileLayout}
-        />
-      </StyledUserGalleryHeaderContainer>
+      <UserGalleryHeader
+        userRef={user}
+        showMobileLayoutToggle={showMobileLayoutToggle}
+        isMobile={isMobile}
+        mobileLayout={mobileLayout}
+        setMobileLayout={setMobileLayout}
+      />
       <VStack gap={32} align="center" justify="center" grow>
         {collectionsView}
       </VStack>
@@ -99,12 +97,9 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
-`;
-
-const StyledUserGalleryHeaderContainer = styled.div`
-  padding-top: 48px;
+  padding: 48px 0 32px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding-top: 80px;
+    padding: 80px 0 32px;
   }
 `;
