@@ -14,11 +14,6 @@ import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/F
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
-import {
-  FEED_EVENT_ROW_WIDTH_DESKTOP,
-  FEED_EVENT_ROW_WIDTH_TABLET,
-} from 'components/Feed/dimensions';
-import breakpoints from 'components/core/breakpoints';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
@@ -139,38 +134,16 @@ export default function FeedEventWithBoundary({
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         <ErrorBoundary fallback={<></>}>
-          <SocializedSectionPadding>
-            <SocializeSectionWrapper>
-              <FeedEventSocializeSection
-                eventRef={event}
-                queryRef={query}
-                onPotentialLayoutShift={onPotentialLayoutShift}
-              />
-            </SocializeSectionWrapper>
-          </SocializedSectionPadding>
+          <FeedEventSocializeSection
+            eventRef={event}
+            queryRef={query}
+            onPotentialLayoutShift={onPotentialLayoutShift}
+          />
         </ErrorBoundary>
       </StyledVStack>
     </FeedEventErrorBoundary>
   );
 }
-
-const SocializedSectionPadding = styled.div`
-  padding: 0 16px;
-`;
-
-// Modeled after StyledEventInner
-const SocializeSectionWrapper = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
-  width: 100%;
-
-  @media only screen and ${breakpoints.desktop} {
-    max-width: initial;
-    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
-  }
-
-  // Center in space
-  margin: 0 auto;
-`;
 
 const StyledVStack = styled(VStack)`
   padding-bottom: 16px;

@@ -10,6 +10,11 @@ import { CommentsAndAdmires } from 'components/Feed/Socialize/CommentsAndAdmires
 import { FeedEventSocializeSectionQueryFragment$key } from '../../../../__generated__/FeedEventSocializeSectionQueryFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { FeedEventSocializeSectionAdmireMutation } from '../../../../__generated__/FeedEventSocializeSectionAdmireMutation.graphql';
+import {
+  FEED_EVENT_ROW_WIDTH_DESKTOP,
+  FEED_EVENT_ROW_WIDTH_TABLET,
+} from 'components/Feed/dimensions';
+import breakpoints from 'components/core/breakpoints';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;
@@ -108,30 +113,52 @@ export function FeedEventSocializeSection({
   }, [admire, event.dbid, event.id, onPotentialLayoutShift]);
 
   return (
-    <HStack justify="space-between" align="flex-start" gap={24}>
-      <VStack shrink>
-        <CommentsAndAdmires eventRef={event} queryRef={query} />
-      </VStack>
+    <SocializedSectionPadding>
+      <SocializeSectionWrapper>
+        <HStack justify="space-between" align="flex-start" gap={24}>
+          <VStack shrink>
+            <CommentsAndAdmires eventRef={event} queryRef={query} />
+          </VStack>
 
-      <HStack align="center">
-        <IconWrapper>
-          <AdmireIcon onClick={handleAdmire} />
-        </IconWrapper>
+          <HStack align="center">
+            <IconWrapper>
+              <AdmireIcon onClick={handleAdmire} />
+            </IconWrapper>
 
-        <IconWrapper>
-          <CommentIcon onClick={handleToggle} ref={commentIconRef} />
+            <IconWrapper>
+              <CommentIcon onClick={handleToggle} ref={commentIconRef} />
 
-          <CommentBox
-            onPotentialLayoutShift={onPotentialLayoutShift}
-            onClose={handleClose}
-            eventRef={event}
-            active={showCommentBox}
-          />
-        </IconWrapper>
-      </HStack>
-    </HStack>
+              <CommentBox
+                onPotentialLayoutShift={onPotentialLayoutShift}
+                onClose={handleClose}
+                eventRef={event}
+                active={showCommentBox}
+              />
+            </IconWrapper>
+          </HStack>
+        </HStack>
+      </SocializeSectionWrapper>
+    </SocializedSectionPadding>
   );
 }
+
+const SocializedSectionPadding = styled.div`
+  padding: 0 16px;
+`;
+
+// Modeled after StyledEventInner
+const SocializeSectionWrapper = styled.div`
+  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: initial;
+    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+  }
+
+  // Center in space
+  margin: 0 auto;
+`;
 
 const IconWrapper = styled.div`
   position: relative;
