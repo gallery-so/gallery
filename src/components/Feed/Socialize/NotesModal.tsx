@@ -91,7 +91,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
           {({ registerChild }) => {
             if (admireOrComment.__typename === 'Admire') {
               return (
-                // @ts-expect-error yikes
+                // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
                     <TitleS>{admireOrComment.admirer?.username ?? '<unknown>'}</TitleS>
@@ -103,7 +103,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
               );
             } else if (admireOrComment.__typename === 'Comment') {
               return (
-                // @ts-expect-error yikes
+                // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
                     <TitleS>{admireOrComment.commenter?.username ?? '<unknown>'}</TitleS>
