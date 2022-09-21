@@ -4,7 +4,7 @@ import { BaseXL, BaseM } from 'components/core/Text/Text';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import formatError from 'errors/formatError';
 import { captureException } from '@sentry/nextjs';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 class ErrorBoundary extends Component {
   static getDerivedStateFromError(error: Error) {
@@ -34,7 +34,6 @@ class ErrorBoundary extends Component {
               <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
             </StyledReachOut>
           </VStack>
-          <Spacer />
         </StyledErrorBoundary>
       );
     }
@@ -45,6 +44,7 @@ class ErrorBoundary extends Component {
 
 const StyledErrorBoundary = styled(VStack)`
   height: 100vh;
+  padding-bottom: 16px;
 `;
 
 const StyledReachOut = styled(BaseM)`

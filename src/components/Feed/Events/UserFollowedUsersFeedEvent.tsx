@@ -163,7 +163,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
       ) : (
         <CustomStyledEvent onClick={handleSeeMoreClick}>
           <StyledEventContent>
-            <VStack gap={16}>
+            <StyledEventHeaderContainer gap={16} grow>
               <StyledEventHeader>
                 <HStack gap={4} inline>
                   <BaseM>
@@ -174,7 +174,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
                 </HStack>
               </StyledEventHeader>
               <StyledSecondaryButton>See All</StyledSecondaryButton>
-            </VStack>
+            </StyledEventHeaderContainer>
           </StyledEventContent>
         </CustomStyledEvent>
       )}
@@ -194,6 +194,12 @@ const StyledEventContent = styled.div`
   display: flex;
   flex-direction: column;
 
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
+`;
+
+const StyledEventHeaderContainer = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }

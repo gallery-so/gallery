@@ -23,7 +23,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { GALLERY_FAQ } from 'constants/urls';
 import colors from 'components/core/colors';
 import { TransactionStatus } from 'constants/transaction';
-import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -169,15 +169,14 @@ export function MembershipMintPage({
       <StyledContent>
         <MembershipNftVisual src={membershipNft.videoUrl} />
         <StyledDetailText>
-          <VStack gap={32}>
+          <StyledDetailHeader>
             <VStack gap={16}>
               <TitleM>{membershipNft.title}</TitleM>
               <StyledNftDescription>
                 <Markdown text={membershipNft.description} />
               </StyledNftDescription>
             </VStack>
-            <Spacer />
-          </VStack>
+          </StyledDetailHeader>
           <VStack gap={16}>
             {Number(price) > 0 && (
               <VStack>
@@ -202,21 +201,18 @@ export function MembershipMintPage({
             )}
           </VStack>
           <VStack>
-            <VStack gap={32}>
-              <Spacer />
+            <StyledHorizontalBreak>
               <HorizontalBreak />
-              <Spacer />
-            </VStack>
+            </StyledHorizontalBreak>
             {active && !canMintToken && transactionStatus === null && (
-              <VStack gap={24}>
-                <HStack gap={4}>
+              <StyledIneligibleText>
+                <HStack gap={4} align="center">
                   <BaseXL>You are ineligible for this mint.</BaseXL>
                   <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
                     <InfoCircleIcon />
                   </InteractiveLink>
                 </HStack>
-                <Spacer />
-              </VStack>
+              </StyledIneligibleText>
             )}
           </VStack>
           <VStack gap={16}>
@@ -262,6 +258,10 @@ const StyledDetailText = styled.div`
     margin-top: 0px;
     max-width: 296px;
   }
+`;
+
+const StyledDetailHeader = styled.div`
+  padding-bottom: 32px;
 `;
 
 const StyledNftDescription = styled(BaseM)`
@@ -310,6 +310,10 @@ export const StyledMintPage = styled.div`
   }
 `;
 
+const StyledHorizontalBreak = styled.div`
+  padding: 32px 0px;
+`;
+
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -344,4 +348,8 @@ const StyledSecondaryLink = styled.a`
   &:hover {
     opacity: 0.8;
   }
+`;
+
+const StyledIneligibleText = styled.div`
+  padding-bottom: 24px;
 `;

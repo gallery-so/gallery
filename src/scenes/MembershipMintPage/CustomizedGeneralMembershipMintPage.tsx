@@ -23,7 +23,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { GALLERY_FAQ } from 'constants/urls';
 import colors from 'components/core/colors';
 import { TransactionStatus } from 'constants/transaction';
-import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -210,32 +210,25 @@ export function CustomizedGeneralMembershipMintPage({
             </>
           )}
           {Boolean(totalSupply) && remainingSupply !== null && (
-            <VStack gap={16}>
-              <Spacer />
-              <VStack>
-                <TitleXS>Available</TitleXS>
-                <BaseM>
-                  {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
-                </BaseM>
-              </VStack>
-            </VStack>
+            <StyledAvailableTextContainer>
+              <TitleXS>Available</TitleXS>
+              <BaseM>
+                {membershipNft.tokenId === 6 ? 0 : remainingSupply}/{totalSupply}
+              </BaseM>
+            </StyledAvailableTextContainer>
           )}
           {children}
-          <VStack gap={24}>
-            <Spacer />
+          <StyledMintFooter gap={24}>
             {account && (
-              <VStack gap={16}>
-                <VStack>
-                  <TitleXS>Connected wallet</TitleXS>
-                  <BaseM>{account}</BaseM>
-                </VStack>
+              <VStack>
+                <TitleXS>Connected wallet</TitleXS>
+                <BaseM>{account}</BaseM>
               </VStack>
             )}
             <HorizontalBreak />
             {PrimaryButton}
-          </VStack>
-          <VStack gap={16}>
-            <Spacer />
+          </StyledMintFooter>
+          <StyledMintMessageSection gap={16}>
             {transactionHash && (
               <VStack>
                 <BaseM>
@@ -257,7 +250,7 @@ export function CustomizedGeneralMembershipMintPage({
               </VStack>
             )}
             {error && <ErrorText message={error} />}
-          </VStack>
+          </StyledMintMessageSection>
         </StyledDetailText>
       </StyledContent>
     </StyledMintPage>
@@ -357,4 +350,16 @@ const StyledSecondaryLink = styled.a`
   &:hover {
     opacity: 0.8;
   }
+`;
+
+const StyledAvailableTextContainer = styled.div`
+  padding-top: 16px;
+`;
+
+const StyledMintFooter = styled(VStack)`
+  padding-top: 24px;
+`;
+
+const StyledMintMessageSection = styled(VStack)`
+  padding-top: 16px;
 `;

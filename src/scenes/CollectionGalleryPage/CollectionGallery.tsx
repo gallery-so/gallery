@@ -9,7 +9,7 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { useEffect } from 'react';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: CollectionGalleryFragment$key;
@@ -76,9 +76,8 @@ function CollectionGallery({ queryRef }: Props) {
 
   if (collection?.__typename === 'Collection') {
     return (
-      <StyledCollectionGallery align="center" gap={isMobile ? 16 : 64}>
+      <StyledCollectionGallery isMobile={isMobile} align="center">
         <VStack gap={isMobile ? 48 : 80}>
-          <Spacer />
           <CollectionGalleryHeader
             queryRef={query}
             collectionRef={collection}
@@ -89,7 +88,6 @@ function CollectionGallery({ queryRef }: Props) {
             <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
           </NftGalleryWrapper>
         </VStack>
-        <Spacer />
       </StyledCollectionGallery>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {
@@ -100,10 +98,10 @@ function CollectionGallery({ queryRef }: Props) {
   return null;
 }
 
-const StyledCollectionGallery = styled(VStack)`
+const StyledCollectionGallery = styled(VStack)<{ isMobile: boolean }>`
   width: 100%;
-
   max-width: 1200px;
+  padding: ${({ isMobile }) => (isMobile ? '48px 0 16px 0' : '80px 0 64px 0')};
 `;
 
 const NftGalleryWrapper = styled.div`

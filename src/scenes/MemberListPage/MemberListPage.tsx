@@ -9,7 +9,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: MemberListPageFragment$key;
@@ -31,28 +31,21 @@ function MemberListPage({ queryRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <StyledPage gap={208}>
+    <StyledPage>
       <MemberListPageProvider>
-        <Spacer />
-        <VStack>
-          <StyledBanner>
-            <StyledBannerText>
-              <i>Thank you,</i> for being a patron of Gallery.
-            </StyledBannerText>
-          </StyledBanner>
-          <VStack gap={isMobile ? 32 : 80}>
-            <Spacer />
-            <TokenHolderListFilter />
-          </VStack>
-          <VStack gap={isMobile ? 32 : 64}>
-            <Spacer />
-            <StyledTierWrapper>
-              {removeNullValues(membershipTiers).map((tier) => (
-                <MemberListTier key={tier.id} tierRef={tier} />
-              ))}
-            </StyledTierWrapper>
-          </VStack>
-        </VStack>
+        <StyledBanner>
+          <StyledBannerText>
+            <i>Thank you,</i> for being a patron of Gallery.
+          </StyledBannerText>
+        </StyledBanner>
+        <StyledTokenHolderListFilterContainer>
+          <TokenHolderListFilter />
+        </StyledTokenHolderListFilterContainer>
+        <StyledTierWrapper>
+          {removeNullValues(membershipTiers).map((tier) => (
+            <MemberListTier key={tier.id} tierRef={tier} />
+          ))}
+        </StyledTierWrapper>
       </MemberListPageProvider>
     </StyledPage>
   );
@@ -66,6 +59,8 @@ const StyledPage = styled(VStack)`
   justify-content: flex-start;
   max-width: 100vw;
 
+  padding-top: 208px;
+
   @media only screen and ${breakpoints.tablet} {
     margin-left: ${pageGutter.tablet}px;
     margin-right: ${pageGutter.tablet}px;
@@ -74,7 +69,7 @@ const StyledPage = styled(VStack)`
   @media only screen and ${breakpoints.desktop} {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 208px 32px 0;
   }
 `;
 
@@ -90,6 +85,14 @@ const StyledBannerText = styled(TitleL)`
   @media only screen and ${breakpoints.tablet} {
     font-size: 48px;
     line-height: 56px;
+  }
+`;
+
+const StyledTokenHolderListFilterContainer = styled.div`
+  padding: 32px 0 32px 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 80px 0 64px 0;
   }
 `;
 

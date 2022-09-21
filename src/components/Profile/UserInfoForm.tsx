@@ -5,8 +5,7 @@ import unescape from 'utils/unescape';
 import { TitleS } from 'components/core/Text/Text';
 import Input from 'components/core/Input/Input';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import { MODAL_PADDING_PX } from 'contexts/modal/constants';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   className?: string;
@@ -72,8 +71,8 @@ function UserInfoForm({
   const shouldAutofocusBio = !shouldAutofocusUsername;
 
   return (
-    <VStack gap={16} className={className} onSubmit={handleSubmit}>
-      {mode === 'Add' ? <StyledTitleS>Add username and bio</StyledTitleS> : <Spacer />}
+    <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
+      {mode === 'Add' && <TitleS>Add username and bio</TitleS>}
       <Input
         onChange={handleUsernameChange}
         placeholder="Username"
@@ -92,12 +91,12 @@ function UserInfoForm({
         showMarkdownShortcuts
         hasPadding
       />
-    </VStack>
+    </StyledUserInformContainer>
   );
 }
 
-const StyledTitleS = styled(TitleS)`
-  padding-bottom: ${MODAL_PADDING_PX}px;
+const StyledUserInformContainer = styled(VStack)`
+  padding-top: 16px;
 `;
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`

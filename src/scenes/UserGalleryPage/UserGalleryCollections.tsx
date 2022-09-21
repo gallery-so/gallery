@@ -19,7 +19,7 @@ import {
   ListRowProps,
   WindowScroller,
 } from 'react-virtualized';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
@@ -112,7 +112,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
           {({ registerChild, measure }) => {
             return (
               // @ts-expect-error Bad types from react-virtualized
-              <VStack ref={registerChild} key={key} style={style} gap={48}>
+              <StyledUserGalleryCollectionContainer ref={registerChild} key={key} style={style}>
                 <UserGalleryCollection
                   queryRef={query}
                   collectionRef={collection}
@@ -120,8 +120,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   cacheHeight={cache.current.getHeight(index, 0)}
                   onLoad={measure}
                 />
-                <Spacer />
-              </VStack>
+              </StyledUserGalleryCollectionContainer>
             );
           }}
         </CellMeasurer>
@@ -141,8 +140,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <StyledUserGalleryCollections gap={isMobile ? 48 : 80}>
-      <Spacer />
+    <StyledUserGalleryCollections>
       <WindowScroller>
         {({ height, registerChild, scrollTop, onChildScroll }) => (
           <AutoSizer disableHeight>
@@ -178,8 +176,17 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   );
 }
 
-const StyledUserGalleryCollections = styled(VStack)`
+const StyledUserGalleryCollections = styled.div`
   width: 100%;
+  padding-top: 48px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 80px;
+  }
+`;
+
+const StyledUserGalleryCollectionContainer = styled.div`
+  padding-bottom: 48px;
 `;
 
 export default UserGalleryCollections;

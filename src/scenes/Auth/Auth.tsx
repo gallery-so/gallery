@@ -10,7 +10,7 @@ import breakpoints from 'components/core/breakpoints';
 import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 import { graphql, useFragment } from 'react-relay';
 import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {
@@ -64,13 +64,13 @@ function Auth({ queryRef }: Props) {
       <StyledBaseM>
         Gallery is non-custodial and secure.{'\n'} We will never request access to your NFTs.
       </StyledBaseM>
-      <Spacer />
     </StyledAuthPage>
   );
 }
 
 const StyledAuthPage = styled(VStack)`
   height: 100vh;
+  padding-bottom: 32px;
 `;
 
 const StyledWalletSelectorWrapper = styled.div`

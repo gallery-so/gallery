@@ -12,7 +12,7 @@ import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
 import { ITEMS_PER_PAGE } from './constants';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: ViewerFeedFragment$key;
@@ -20,11 +20,10 @@ type Props = {
 };
 
 export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
-  const {
-    data: query,
-    loadPrevious,
-    hasPrevious,
-  } = usePaginationFragment<FeedByUserIdPaginationQuery, ViewerFeedFragment$key>(
+  const { data: query, loadPrevious, hasPrevious } = usePaginationFragment<
+    FeedByUserIdPaginationQuery,
+    ViewerFeedFragment$key
+  >(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         ...FeedListFragment
@@ -99,16 +98,13 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
           </VStack>
         </StyledEmptyFeed>
       ) : (
-        <VStack gap={24}>
-          <Spacer />
-          <FeedList
-            feedEventRefs={feedData}
-            loadNextPage={loadNextPage}
-            hasNext={hasPrevious}
-            queryRef={query}
-            feedMode={'FOLLOWING'}
-          />
-        </VStack>
+        <FeedList
+          feedEventRefs={feedData}
+          loadNextPage={loadNextPage}
+          hasNext={hasPrevious}
+          queryRef={query}
+          feedMode={'FOLLOWING'}
+        />
       )}
     </StyledViewerFeed>
   );

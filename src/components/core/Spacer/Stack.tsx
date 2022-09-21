@@ -22,6 +22,7 @@ export const HStack = styled.div<{
   grow?: boolean;
   shrink?: boolean;
   inline?: boolean;
+  wrap?: CSSProperties['flexWrap'];
 }>`
   display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   gap: 0 ${({ gap }) => gap ?? 0}px;
@@ -30,6 +31,8 @@ export const HStack = styled.div<{
   justify-content: ${({ justify }) => justify ?? 'unset'};
 
   flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
+
+  flex-wrap: ${({ wrap }) => wrap ?? 'unset'};
 
   ${({ shrink }) =>
     shrink &&
@@ -49,6 +52,7 @@ export const VStack = styled.div<{
   grow?: boolean;
   shrink?: boolean;
   inline?: boolean;
+  wrap?: CSSProperties['flexWrap'];
 }>`
   display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   flex-direction: column;
@@ -59,6 +63,9 @@ export const VStack = styled.div<{
   justify-content: ${({ justify }) => justify ?? 'unset'};
 
   flex-grow: ${({ grow }) => (grow ? '1' : 'unset')};
+
+  flex-wrap: ${({ wrap }) => wrap ?? 'unset'};
+
 
   ${({ shrink }) =>
     shrink &&

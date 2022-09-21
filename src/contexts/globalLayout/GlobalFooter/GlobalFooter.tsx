@@ -15,7 +15,7 @@ import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
-import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -51,15 +51,14 @@ function GlobalFooter() {
           </StyledFooterLink>
         </HStack>
       </VStack>
-      <VStack gap={isMobile ? 4 : 0}>
-        <Spacer />
+      <StyledFooterLinkContainer isMobile={isMobile}>
         <HStack gap={8}>
           <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
           <BaseS color={colors.metal}>·</BaseS>
           <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
           <StyledFooterLink href="/terms">Terms</StyledFooterLink>
         </HStack>
-      </VStack>
+      </StyledFooterLinkContainer>
     </StyledGlobalFooter>
   );
 }
@@ -123,6 +122,10 @@ const StyledHr = styled.hr`
 const StyledLogo = styled.img`
   height: 24px;
   cursor: pointer;
+`;
+
+const StyledFooterLinkContainer = styled.div<{ isMobile: boolean }>`
+  padding-top: ${({ isMobile }) => (isMobile ? '4px' : '0px')};
 `;
 
 const StyledFooterLink = styled(NavLink)`

@@ -18,7 +18,7 @@ import { graphql, useFragment } from 'react-relay';
 import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
 import { DeprecatedWalletSelectorFragment$key } from '__generated__/DeprecatedWalletSelectorFragment.graphql';
 import { ConnectionMode } from './WalletSelector';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,
@@ -225,7 +225,6 @@ export default function DeprecatedWalletSelector({ connectionMode = AUTH, queryR
 
   return (
     <StyledWalletSelector gap={16}>
-      <Spacer />
       <VStack>
         {availableWalletOptions.map((walletName) => (
           <WalletButton
@@ -246,6 +245,7 @@ const StyledWalletSelector = styled(VStack)`
   text-align: center;
   width: 320px;
   justify-content: center;
+  padding-top: 16px;
 
   @media only screen and ${breakpoints.mobileLarge} {
     width: 400px;

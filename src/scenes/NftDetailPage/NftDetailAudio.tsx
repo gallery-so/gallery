@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
-import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -32,7 +32,6 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
     tokenRef
   );
 
-  const isDesktop = useIsDesktopWindowWidth();
   const { handleError } = useThrowOnMediaFailure('NftDetailAudio');
 
   if (token.media.__typename !== 'AudioMedia') {
@@ -43,31 +42,29 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
   }
 
   return (
-    <StyledAudioContainer gap={isDesktop ? 40 : 0}>
+    <StyledAudioContainer>
       {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
-      <VStack>
-        <ImageWithLoading
-          onLoad={noop}
-          src={token.media?.previewURLs.large}
-          alt={token.name ?? ''}
-        />
-        <StyledAudio
-          controls
-          loop
-          controlsList="nodownload"
-          preload="none"
-          onLoad={onLoad}
-          onError={handleError}
-          src={token.media.contentRenderURL}
-        />
-      </VStack>
-      <Spacer />
+      <ImageWithLoading onLoad={noop} src={token.media?.previewURLs.large} alt={token.name ?? ''} />
+      <StyledAudio
+        controls
+        loop
+        controlsList="nodownload"
+        preload="none"
+        onLoad={onLoad}
+        onError={handleError}
+        src={token.media.contentRenderURL}
+      />
     </StyledAudioContainer>
   );
 }
 
 const StyledAudioContainer = styled(VStack)`
   width: 100%;
+  padding-bottom: 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: 40px;
+  }
 `;
 
 const StyledAudio = styled.audio`

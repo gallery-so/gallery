@@ -19,7 +19,7 @@ import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragme
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 import useKeyDown from 'hooks/useKeyDown';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type ConfigProps = {
   wizardId: string;
@@ -162,30 +162,28 @@ function OrganizeGallery({
   );
 
   return (
-    <VStack gap={GLOBAL_NAVBAR_HEIGHT} align="center">
-      <Spacer />
+    <StyledOrganizeGallery align="center">
       <Content gap={24}>
         <Header />
-        <VStack gap={120}>
-          {isEmptyGallery ? (
-            <StyledEmptyGalleryMessage gap={8}>
-              <BaseXL>Create your first collection</BaseXL>
-              <BaseM>
-                Organize your gallery with collections. Use them to group NFTs by creator, theme, or
-                anything that feels right.
-              </BaseM>
-            </StyledEmptyGalleryMessage>
-          ) : (
-            <VStack>
-              <CollectionDnd galleryRef={gallery} />
-            </VStack>
-          )}
-          <Spacer />
-        </VStack>
+        {isEmptyGallery ? (
+          <StyledEmptyGalleryMessage gap={8}>
+            <BaseXL>Create your first collection</BaseXL>
+            <BaseM>
+              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+              anything that feels right.
+            </BaseM>
+          </StyledEmptyGalleryMessage>
+        ) : (
+          <CollectionDnd galleryRef={gallery} />
+        )}
       </Content>
-    </VStack>
+    </StyledOrganizeGallery>
   );
 }
+
+const StyledOrganizeGallery = styled(VStack)`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+`;
 
 const StyledEmptyGalleryMessage = styled(VStack)`
   text-align: center;
@@ -195,7 +193,7 @@ const StyledEmptyGalleryMessage = styled(VStack)`
 
 const Content = styled(VStack)`
   width: 100%;
-  padding: 0 16px;
+  padding: 0 16px 120px 0;
   max-width: 777px;
 `;
 

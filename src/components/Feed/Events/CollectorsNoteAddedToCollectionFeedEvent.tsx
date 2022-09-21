@@ -18,7 +18,7 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import Markdown from 'components/core/Markdown/Markdown';
-import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -102,12 +102,9 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
           </VStack>
           <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
           {showAdditionalPiecesIndicator && (
-            <VStack gap={8}>
-              <Spacer />
-              <StyledAdditionalPieces>
-                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-              </StyledAdditionalPieces>
-            </VStack>
+            <StyledAdditionalPieces>
+              +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+            </StyledAdditionalPieces>
           )}
         </VStack>
       </StyledEvent>
@@ -118,6 +115,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
+  padding-top: 8px;
 `;
 
 const StyledQuote = styled(BaseM)`

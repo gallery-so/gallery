@@ -22,7 +22,7 @@ import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import { HStack, Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -125,11 +125,11 @@ function CollectionGalleryHeader({
 
   return (
     <StyledCollectionGalleryHeaderWrapper>
-      <StyledHeaderWrapper>
+      <HStack align="flex-start" justify="space-between" wrap="wrap">
         {isMobile ? (
           <StyledBreadcrumbsWrapper>
-            <StyledUsernameWrapper>
-              <StyledUsernameAndSeparatorWrapper>
+            <HStack align="flex-start" justify="space-between">
+              <HStack>
                 {username ? (
                   <UnstyledLink href={`/${username}`}>
                     <StyledUsernameMobile>{username}</StyledUsernameMobile>
@@ -138,27 +138,27 @@ function CollectionGalleryHeader({
                 {username && collection.name ? (
                   <StyledSeparatorMobile>/</StyledSeparatorMobile>
                 ) : null}
-              </StyledUsernameAndSeparatorWrapper>
-            </StyledUsernameWrapper>
+              </HStack>
+            </HStack>
             <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
           </StyledBreadcrumbsWrapper>
         ) : (
           <StyledBreadcrumbsWrapper>
-            <StyledUsernameWrapper>
-              <StyledUsernameAndSeparatorWrapper>
+            <HStack align="flex-start" justify="space-between">
+              <HStack>
                 {username ? (
                   <UnstyledLink href={`/${username}`}>
                     <StyledUsername>{username}</StyledUsername>
                   </UnstyledLink>
                 ) : null}
                 {username && collection.name ? <StyledSeparator>/</StyledSeparator> : null}
-              </StyledUsernameAndSeparatorWrapper>
-            </StyledUsernameWrapper>
+              </HStack>
+            </HStack>
             <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
           </StyledBreadcrumbsWrapper>
         )}
 
-        <StyledCollectionActions>
+        <StyledCollectionActions align="center" justify="flex-end">
           {showEditActions ? (
             <>
               {isMobile ? (
@@ -199,59 +199,33 @@ function CollectionGalleryHeader({
             </>
           )}
           {shouldDisplayMobileLayoutToggle && (
-            <HStack gap={8}>
-              <Spacer />
+            <StyledMobileLayoutToggleContainer>
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-            </HStack>
+            </StyledMobileLayoutToggleContainer>
           )}
         </StyledCollectionActions>
-      </StyledHeaderWrapper>
+      </HStack>
 
       {unescapedCollectorsNote && (
-        <VStack gap={isMobile ? 4 : 16}>
-          <Spacer />
-          <StyledCollectionNote>
-            <Markdown text={unescapedCollectorsNote} />
-          </StyledCollectionNote>
-        </VStack>
+        <StyledCollectionNote>
+          <Markdown text={unescapedCollectorsNote} />
+        </StyledCollectionNote>
       )}
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
 
-const StyledCollectionGalleryHeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledCollectionGalleryHeaderWrapper = styled(VStack)`
   width: 100%;
-`;
-
-const StyledHeaderWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
 `;
 
 const BreadcrumbsWrapperWidth = 80;
 
-const StyledBreadcrumbsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledBreadcrumbsWrapper = styled(VStack)`
   max-width: calc(100% - ${BreadcrumbsWrapperWidth}px);
   @media only screen and ${breakpoints.mobileLarge} {
     flex-direction: row;
   }
-`;
-
-const StyledUsernameWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
-const StyledUsernameAndSeparatorWrapper = styled.div`
-  display: flex;
 `;
 
 const StyledCollectionName = styled(TitleL)`
@@ -298,18 +272,20 @@ const StyledUsernameMobile = styled(TitleM)`
 const StyledCollectionNote = styled(BaseM)`
   width: 100%;
   word-break: break-word;
+  padding-top: 4px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
+    padding-top: 16px;
   }
 `;
 
-const StyledCollectionActions = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
+const StyledCollectionActions = styled(HStack)`
   width: ${BreadcrumbsWrapperWidth}px;
+`;
+
+const StyledMobileLayoutToggleContainer = styled.div`
+  padding-left: 8px;
 `;
 
 export default CollectionGalleryHeader;

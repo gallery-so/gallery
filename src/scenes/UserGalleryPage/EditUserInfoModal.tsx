@@ -9,7 +9,7 @@ import breakpoints from 'components/core/breakpoints';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { EditUserInfoModalFragment$key } from '__generated__/EditUserInfoModalFragment.graphql';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: EditUserInfoModalFragment$key;
@@ -73,7 +73,7 @@ function EditUserInfoModal({ queryRef }: Props) {
 
   return (
     <StyledEditUserInfoModal gap={16}>
-      <VStack>
+      <VStack gap={8}>
         <UserInfoForm
           onSubmit={handleSubmit}
           username={username}
@@ -82,20 +82,14 @@ function EditUserInfoModal({ queryRef }: Props) {
           bio={bio}
           onBioChange={onBioChange}
         />
-        {generalError && (
-          <VStack gap={8}>
-            <Spacer />
-            <ErrorText message={generalError} />
-          </VStack>
-        )}
+        {generalError && <ErrorText message={generalError} />}
       </VStack>
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <VStack gap={12}>
-        <Spacer />
-        <StyledButton onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
+      <StyledButtonContainer justify="flex-end">
+        <Button onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
           Save
-        </StyledButton>
-      </VStack>
+        </Button>
+      </StyledButtonContainer>
     </StyledEditUserInfoModal>
   );
 }
@@ -106,8 +100,8 @@ const StyledEditUserInfoModal = styled(VStack)`
   }
 `;
 
-const StyledButton = styled(Button)`
-  align-self: flex-end;
+const StyledButtonContainer = styled(HStack)`
+  padding-top: 12px;
 `;
 
 export default EditUserInfoModal;

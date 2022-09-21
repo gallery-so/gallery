@@ -11,7 +11,7 @@ import ErrorText from 'components/core/Text/ErrorText';
 import formatError from 'errors/formatError';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 const MAX_CHAR_COUNT = 1200;
 
@@ -125,40 +125,36 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
           <Markdown text={collectorsNote} />
         </StyledCollectorsNote>
       )}
-      {generalError && (
-        <VStack gap={8}>
-          <ErrorText message={generalError} />
-          <Spacer />
-        </VStack>
-      )}
+      {generalError && <StyledErrorText message={generalError} />}
 
       <VStack>
         {isEditing ? (
-          <VStack gap={12}>
-            <Spacer />
-            <SaveNoteButton
+          <StyledSaveNoteButton justify="flex-end">
+            <TextButton
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
               onClick={handleSubmitCollectorsNote}
             />
-          </VStack>
+          </StyledSaveNoteButton>
         ) : (
-          <VStack gap={hasCollectorsNote ? 8 : 0}>
-            <Spacer />
+          <StyledEditNoteButtonContainer hasCollectorsNote={hasCollectorsNote}>
             <EditNoteButton
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
             />
-          </VStack>
+          </StyledEditNoteButtonContainer>
         )}
       </VStack>
     </div>
   );
 }
 
-const SaveNoteButton = styled(TextButton)`
-  display: flex;
-  justify-content: end;
+const StyledSaveNoteButton = styled(HStack)`
+  padding-top: 12px;
+`;
+
+const StyledEditNoteButtonContainer = styled.div<{ hasCollectorsNote: boolean }>`
+  padding-top: ${({ hasCollectorsNote }) => (hasCollectorsNote ? '8px' : '0px')};
 `;
 
 const EditNoteButton = styled(TextButton)`
@@ -195,23 +191,21 @@ function NftDetailNote({
 }: Props) {
   return (
     <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
-      <VStack gap={12}>
-        <Spacer />
-        {authenticatedUserOwnsAsset ? (
-          <NoteEditor
-            nftCollectorsNote={nftCollectorsNote}
-            tokenId={tokenId}
-            collectionId={collectionId}
-          />
-        ) : (
-          <NoteViewer nftCollectorsNote={nftCollectorsNote} />
-        )}
-      </VStack>
+      {authenticatedUserOwnsAsset ? (
+        <NoteEditor
+          nftCollectorsNote={nftCollectorsNote}
+          tokenId={tokenId}
+          collectionId={collectionId}
+        />
+      ) : (
+        <NoteViewer nftCollectorsNote={nftCollectorsNote} />
+      )}
     </StyledContainer>
   );
 }
 
 const StyledContainer = styled.div<{ footerHeight: number }>`
+  padding-top: 12px;
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;
   max-width: 296px;
@@ -270,6 +264,10 @@ const StyledCollectorsNote = styled(BaseM)<CollectorsNoteProps>`
   :last-child {
     margin-bottom: 40px; /* line-height * 2, because textarea leaves one line at bottom + char count */
   }
+`;
+
+const StyledErrorText = styled(ErrorText)`
+  padding-bottom: 8px;
 `;
 
 export default NftDetailNote;

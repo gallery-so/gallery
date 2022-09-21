@@ -7,7 +7,7 @@ import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
 import { DeleteCollectionConfirmationFragment$key } from '__generated__/DeleteCollectionConfirmationFragment.graphql';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   collectionRef: DeleteCollectionConfirmationFragment$key;
@@ -39,26 +39,21 @@ function DeleteCollectionConfirmation({ collectionRef }: Props) {
   }, [collectionId, deleteCollection, hideModal, track]);
 
   return (
-    <StyledConfirmation gap={16}>
-      <Spacer />
-      <ButtonContainer>
+    <StyledConfirmation>
+      <HStack justify="flex-end">
         <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
           Delete
         </StyledButton>
-      </ButtonContainer>
+      </HStack>
     </StyledConfirmation>
   );
 }
 
-const StyledConfirmation = styled(VStack)`
+const StyledConfirmation = styled.div`
   width: 400px;
   max-width: 100%;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  padding-top: 16px;
 `;
 
 const StyledCancelButton = styled(Button).attrs({ variant: 'secondary' })`

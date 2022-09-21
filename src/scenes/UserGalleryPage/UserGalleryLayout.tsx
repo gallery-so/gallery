@@ -11,7 +11,8 @@ import styled from 'styled-components';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -79,8 +80,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <VStack gap={isMobile ? 48 : 80}>
-        <Spacer />
+      <StyledUserGalleryHeaderContainer>
         <UserGalleryHeader
           userRef={user}
           showMobileLayoutToggle={showMobileLayoutToggle}
@@ -88,7 +88,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
           mobileLayout={mobileLayout}
           setMobileLayout={setMobileLayout}
         />
-      </VStack>
+      </StyledUserGalleryHeaderContainer>
       <VStack gap={32} align="center" justify="center" grow>
         {collectionsView}
       </VStack>
@@ -96,9 +96,15 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   );
 };
 
-const StyledUserGalleryLayout = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
+`;
+
+const StyledUserGalleryHeaderContainer = styled.div`
+  padding-top: 48px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 80px;
+  }
 `;

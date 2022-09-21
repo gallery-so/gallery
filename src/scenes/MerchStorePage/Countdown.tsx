@@ -41,7 +41,7 @@ export default function Countdown() {
   return (
     <>
       {showCounter && (
-        <StyledContainer gap={32}>
+        <StyledContainer align="center" justify="center">
           <VStack gap={12}>
             {text.split('\n').map((d, i) => (
               <BaseM key={i}>{d}</BaseM>
@@ -64,7 +64,6 @@ export default function Countdown() {
               See mint schedule
             </StyledInteractiveLink>
           </VStack>
-          <Spacer />
         </StyledContainer>
       )}
     </>
@@ -72,9 +71,7 @@ export default function Countdown() {
 }
 
 const StyledContainer = styled(VStack)`
-  align-items: center;
-  justify-content: center;
-
+  padding-bottom: 32px;
   // This ensures that the countdown is visible on mobile, but when it goes away at public mint, the page still has proper margins around the header
   @media screen and (max-width: 768px) {
     margin-top: 60px;

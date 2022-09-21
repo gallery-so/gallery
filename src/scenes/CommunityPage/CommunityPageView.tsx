@@ -12,7 +12,7 @@ import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import formatUrl from 'utils/formatUrl';
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -62,55 +62,39 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   return (
     <MemberListPageProvider>
-      <VStack gap={80}>
-        <Spacer />
-        <VStack>
-          <StyledHeader>
-            <TitleL>{name}</TitleL>
-            {description && (
-              <StyledDescriptionWrapper>
-                <VStack gap={4}>
-                  <Spacer />
-                  <VStack gap={8}>
-                    <StyledBaseM
-                      showExpandedDescription={showExpandedDescription}
-                      ref={descriptionRef}
-                    >
-                      <Markdown text={formattedDescription} />
-                    </StyledBaseM>
-                    <Spacer />
-                  </VStack>
-                </VStack>
-                {isLineClampEnabled && (
-                  <TextButton
-                    text={showExpandedDescription ? 'Show less' : 'Show More'}
-                    onClick={handleShowMoreClick}
-                  />
-                )}
-              </StyledDescriptionWrapper>
-            )}
-          </StyledHeader>
-          <VStack gap={isMobile ? 32 : 64}>
-            <VStack gap={isMobile ? 32 : 80}>
-              <Spacer />
-              <MemberListFilter />
-            </VStack>
-            <Spacer />
-          </VStack>
-          <VStack gap={64}>
-            <StyledListWrapper>
-              <TokenHolderList
-                title="Members in this community"
-                tokenHoldersRef={community.owners}
-              />
-            </StyledListWrapper>
-            <Spacer />
-          </VStack>
-        </VStack>
-      </VStack>
+      <StyledCommunityPageContainer>
+        <StyledHeader>
+          <TitleL>{name}</TitleL>
+          {description && (
+            <StyledDescriptionWrapper gap={8}>
+              <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
+                <Markdown text={formattedDescription} />
+              </StyledBaseM>
+              {isLineClampEnabled && (
+                <TextButton
+                  text={showExpandedDescription ? 'Show less' : 'Show More'}
+                  onClick={handleShowMoreClick}
+                />
+              )}
+            </StyledDescriptionWrapper>
+          )}
+        </StyledHeader>
+
+        <StyledMemberListFilterContainer isMobile={isMobile}>
+          <MemberListFilter />
+        </StyledMemberListFilterContainer>
+
+        <StyledListWrapper>
+          <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
+        </StyledListWrapper>
+      </StyledCommunityPageContainer>
     </MemberListPageProvider>
   );
 }
+
+const StyledCommunityPageContainer = styled.div`
+  padding: 80px 0 64px;
+`;
 
 const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
   -webkit-line-clamp: ${({ showExpandedDescription }) => (showExpandedDescription ? 'initial' : 4)};
@@ -128,7 +112,8 @@ const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
   }
 `;
 
-const StyledDescriptionWrapper = styled.div`
+const StyledDescriptionWrapper = styled(VStack)`
+  padding-top: 4px;
   @media only screen and ${breakpoints.tablet} {
     width: 50%;
   }
@@ -142,4 +127,8 @@ const StyledListWrapper = styled.div`
 
 const StyledHeader = styled.div`
   width: 100%;
+`;
+
+const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
+  padding: ${({ isMobile }) => (isMobile ? '32px 0' : '80px 0 64px')};
 `;

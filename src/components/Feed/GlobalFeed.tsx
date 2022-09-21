@@ -1,4 +1,3 @@
-import { Spacer, VStack } from 'components/core/Spacer/Stack';
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
@@ -63,15 +62,12 @@ export default function GlobalFeed({ queryRef }: Props) {
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
-    <VStack gap={24}>
-      <Spacer />
-      <FeedList
-        queryRef={query}
-        feedEventRefs={feedData}
-        loadNextPage={loadNextPage}
-        hasNext={hasPrevious}
-        feedMode={'WORLDWIDE'}
-      />
-    </VStack>
+    <FeedList
+      queryRef={query}
+      feedEventRefs={feedData}
+      loadNextPage={loadNextPage}
+      hasNext={hasPrevious}
+      feedMode={'WORLDWIDE'}
+    />
   );
 }
