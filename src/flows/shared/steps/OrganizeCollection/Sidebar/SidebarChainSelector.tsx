@@ -72,7 +72,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
 
   const selectedChain = chains.find((chain) => chain.name === selected);
 
-  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
+  const isPOAPEnabled = true;
   const [tezosEnabled] = usePersistedState<boolean>(TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY, false);
 
   const handleChainClick = useCallback(
@@ -140,7 +140,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           if (chain.name === 'Ethereum') {
             locked = false;
           } else if (chain.name === 'POAP') {
-            locked = isPOAPEnabled;
+            locked = !isPOAPEnabled;
           } else if (chain.name === 'Tezos') {
             locked = !tezosEnabled;
           }
