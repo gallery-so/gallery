@@ -360,7 +360,7 @@ function GlobalNavbarWithFadeEnabled({
       {isBannerVisible && (
         <Banner
           localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
-          text="Gallery now supports POAP! Curate them in your editor today."
+          text="You can now showcase POAPs on your gallery ✨"
           queryRef={query}
           actionComponent={<NavLink to="/edit">Add Poaps</NavLink>}
           dismissOnActionComponentClick
