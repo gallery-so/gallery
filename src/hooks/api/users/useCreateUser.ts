@@ -88,7 +88,7 @@ export default function useCreateUser() {
         throw new Error('The username is taken');
       }
       if (response.createUser?.__typename === 'ErrInvalidInput') {
-        throw new Error('Username is invalid');
+        throw new Error('Username or bio is invalid');
       }
 
       return response;
