@@ -6,6 +6,7 @@ import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { useMemo } from 'react';
 import isVideoUrl from 'utils/isVideoUrl';
+import { isSafari } from 'utils/browser';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
@@ -48,9 +49,14 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
       src={`${token.contentRenderURLs.large}#t=0.001`}
       muted
       autoPlay
-      loop
       playsInline
       controls={!hideControls}
+      /**
+       * Disable video looping if browser is Safari. As of Sept 2022, there's a bug on Safari
+       * where data will continuously download each time the video loops, at worst case leading
+       * to several gigabytes being fetched (which is really bad on mobile devices)
+       */
+      loop={!isSafari()}
       onLoadedData={onLoad}
       /**
        * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
