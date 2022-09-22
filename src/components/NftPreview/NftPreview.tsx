@@ -12,7 +12,6 @@ import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql
 import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
 import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import { useContentState } from 'contexts/shimmer/ShimmerContext';
@@ -20,6 +19,7 @@ import { useNftRetry } from 'hooks/useNftRetry';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
+import { isFirefox } from 'utils/browser';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
