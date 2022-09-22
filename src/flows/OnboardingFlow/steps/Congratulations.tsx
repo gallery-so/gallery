@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { usePreloadedQuery } from 'react-relay';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
 import { ButtonLink } from 'components/core/Button/Button';
+import { VStack } from 'components/core/Spacer/Stack';
 
 function Congratulations() {
   const { queryRef } = useWizardState();
@@ -26,11 +26,13 @@ function Congratulations() {
 
   return (
     <FullPageCenteredStep>
-      <TitleL>Welcome to your Gallery</TitleL>
-      <DeprecatedSpacer height={8} />
-      <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
-      <DeprecatedSpacer height={24} />
-      <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
+      <VStack gap={24}>
+        <VStack gap={8}>
+          <TitleL>Welcome to your Gallery</TitleL>
+          <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
+        </VStack>
+        <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
+      </VStack>
     </FullPageCenteredStep>
   );
 }

@@ -3,9 +3,9 @@ import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } fro
 import { useState, useEffect } from 'react';
 import { BaseS, BaseM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import colors from 'components/core/colors';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export default function Countdown() {
   const [nextTime, setNextTime] = useState('');
@@ -41,42 +41,37 @@ export default function Countdown() {
   return (
     <>
       {showCounter && (
-        <StyledContainer>
-          {text.split('\n').map((d, i) => (
-            <BaseM key={i}>{d}</BaseM>
-          ))}
-          <DeprecatedSpacer height={12} />
-          <StyledCountdown>
-            <StyledCountdownText>
-              <StyledNumber>{hours === 'NaN' ? ' ' : hours}</StyledNumber>
-              <StyledCountdownLabel>{hours === '1' ? 'hr' : 'hrs'}</StyledCountdownLabel>
-            </StyledCountdownText>
-            <StyledCountdownText>
-              <StyledNumber>{minutes === 'NaN' ? ' ' : minutes}</StyledNumber>
-              <StyledCountdownLabel>{minutes === '1' ? 'min' : 'mins'}</StyledCountdownLabel>
-            </StyledCountdownText>
-            <StyledCountdownText>
-              <StyledNumber>{seconds === 'NaN' ? ' ' : seconds}</StyledNumber>
-              <StyledCountdownLabel>{seconds === '1' ? 'sec' : 'secs'}</StyledCountdownLabel>
-            </StyledCountdownText>
-          </StyledCountdown>
-          <DeprecatedSpacer height={12} />
-          <StyledInteractiveLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
-            See mint schedule
-          </StyledInteractiveLink>
-          <DeprecatedSpacer height={32} />
+        <StyledContainer align="center" justify="center">
+          <VStack gap={12}>
+            {text.split('\n').map((d, i) => (
+              <BaseM key={i}>{d}</BaseM>
+            ))}
+            <StyledCountdown>
+              <StyledCountdownText>
+                <StyledNumber>{hours === 'NaN' ? ' ' : hours}</StyledNumber>
+                <StyledCountdownLabel>{hours === '1' ? 'hr' : 'hrs'}</StyledCountdownLabel>
+              </StyledCountdownText>
+              <StyledCountdownText>
+                <StyledNumber>{minutes === 'NaN' ? ' ' : minutes}</StyledNumber>
+                <StyledCountdownLabel>{minutes === '1' ? 'min' : 'mins'}</StyledCountdownLabel>
+              </StyledCountdownText>
+              <StyledCountdownText>
+                <StyledNumber>{seconds === 'NaN' ? ' ' : seconds}</StyledNumber>
+                <StyledCountdownLabel>{seconds === '1' ? 'sec' : 'secs'}</StyledCountdownLabel>
+              </StyledCountdownText>
+            </StyledCountdown>
+            <StyledInteractiveLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
+              See mint schedule
+            </StyledInteractiveLink>
+          </VStack>
         </StyledContainer>
       )}
     </>
   );
 }
 
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
+const StyledContainer = styled(VStack)`
+  padding-bottom: 32px;
   // This ensures that the countdown is visible on mobile, but when it goes away at public mint, the page still has proper margins around the header
   @media screen and (max-width: 768px) {
     margin-top: 60px;

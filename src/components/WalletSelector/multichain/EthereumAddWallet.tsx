@@ -4,7 +4,6 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -30,6 +29,7 @@ import { useAccount } from 'wagmi';
 import { signMessage } from '@wagmi/core';
 import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: EthereumAddWalletFragment$key;
@@ -187,64 +187,57 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with Ethereum</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
         {isMetamask && (
-          <>
-            <DeprecatedSpacer height={8} />
-            <BaseM>
-              If you want to connect a different address via Metamask, please switch accounts in the
-              extension and try again.
-            </BaseM>
-          </>
+          <BaseM>
+            If you want to connect a different address via Metamask, please switch accounts in the
+            extension and try again.
+          </BaseM>
         )}
-      </div>
+      </VStack>
     );
   }
 
   // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account) {
     return (
-      <div>
-        <TitleS>Connect with Ethereum</TitleS>
-        <DeprecatedSpacer height={8} />
-        <BaseM>Confirm the following wallet address:</BaseM>
-        <DeprecatedSpacer height={8} />
-        <BaseM color={colors.offBlack}>{account}</BaseM>
-        <DeprecatedSpacer height={16} />
-        <BaseM>
-          If you want to connect a different address via Metamask, please switch accounts in the
-          extension and try again.
-        </BaseM>
-        <DeprecatedSpacer height={24} />
+      <VStack gap={24}>
+        <VStack gap={16}>
+          <VStack gap={8}>
+            <TitleS>Connect with Ethereum</TitleS>
+            <BaseM>Confirm the following wallet address:</BaseM>
+            <BaseM color={colors.offBlack}>{account}</BaseM>
+          </VStack>
+          <BaseM>
+            If you want to connect a different address via Metamask, please switch accounts in the
+            extension and try again.
+          </BaseM>
+        </VStack>
         <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
           {isConnecting ? 'Connecting...' : 'Confirm'}
         </StyledButton>
-      </div>
+      </VStack>
     );
   }
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with Ethereum</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
-      </div>
+      </VStack>
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
-    <div>
+    <VStack gap={8}>
       <TitleS>Connect with Ethereum</TitleS>
-      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </div>
+    </VStack>
   );
 };
 

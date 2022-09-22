@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import Dropdown from 'components/core/Dropdown/Dropdown';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
@@ -16,6 +15,7 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { TitleM } from 'components/core/Text/Text';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -74,7 +74,7 @@ function LoggedInNav({ queryRef }: Props) {
   const userOwnsCollectionOrGallery = routerQuery?.username === username;
 
   return (
-    <StyledLoggedInNav>
+    <HStack gap={24}>
       {userOwnsCollectionOrGallery && (
         <NavElement>
           <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
@@ -91,7 +91,6 @@ function LoggedInNav({ queryRef }: Props) {
           </Dropdown>
         </NavElement>
       )}
-      <DeprecatedSpacer width={24} />
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
@@ -104,9 +103,10 @@ function LoggedInNav({ queryRef }: Props) {
                 <StyledShopTextButton text="shop" />
                 <StyledObjectsContainer>
                   <StyledLogoBracketLeft color={colors.shadow} />
-                  <StyledShopText>OBJECTS</StyledShopText>
-                  <DeprecatedSpacer width={1} />
-                  <StyledLogoBracketRight color={colors.shadow} />
+                  <HStack gap={1}>
+                    <StyledShopText>OBJECTS</StyledShopText>
+                    <StyledLogoBracketRight color={colors.shadow} />
+                  </HStack>
                 </StyledObjectsContainer>
               </ShopOptionContainer>
             </UnstyledLink>
@@ -114,13 +114,9 @@ function LoggedInNav({ queryRef }: Props) {
           </Dropdown>
         </StyledDropdownWrapper>
       </NavElement>
-    </StyledLoggedInNav>
+    </HStack>
   );
 }
-
-const StyledLoggedInNav = styled.div`
-  display: flex;
-`;
 
 // Notification blue dot, to be used in the future
 // const StyledCircle = styled.div`

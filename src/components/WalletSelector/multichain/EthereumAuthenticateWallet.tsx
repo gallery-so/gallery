@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   isEarlyAccessError,
   useTrackSignInAttempt,
@@ -16,6 +15,7 @@ import { useAccount } from 'wagmi';
 import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { signMessage } from '@wagmi/core';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   reset: () => void;
@@ -114,19 +114,17 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with Ethereum</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
-      </div>
+      </VStack>
     );
   }
 
   return (
-    <div>
+    <VStack gap={8}>
       <TitleS>Connect with Ethereum</TitleS>
-      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </div>
+    </VStack>
   );
 };

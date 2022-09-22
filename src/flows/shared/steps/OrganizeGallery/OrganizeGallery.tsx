@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { WizardContext } from 'react-albus';
 import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
@@ -20,6 +19,7 @@ import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragme
 import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 import useKeyDown from 'hooks/useKeyDown';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type ConfigProps = {
   wizardId: string;
@@ -162,15 +162,12 @@ function OrganizeGallery({
   );
 
   return (
-    <StyledOrganizeGallery>
-      <DeprecatedSpacer height={GLOBAL_NAVBAR_HEIGHT} />
-      <Content>
+    <StyledOrganizeGallery align="center">
+      <Content gap={24}>
         <Header />
-        <DeprecatedSpacer height={24} />
         {isEmptyGallery ? (
-          <StyledEmptyGalleryMessage>
+          <StyledEmptyGalleryMessage gap={8}>
             <BaseXL>Create your first collection</BaseXL>
-            <DeprecatedSpacer height={8} />
             <BaseM>
               Organize your gallery with collections. Use them to group NFTs by creator, theme, or
               anything that feels right.
@@ -179,27 +176,24 @@ function OrganizeGallery({
         ) : (
           <CollectionDnd galleryRef={gallery} />
         )}
-        <DeprecatedSpacer height={120} />
       </Content>
     </StyledOrganizeGallery>
   );
 }
 
-const StyledEmptyGalleryMessage = styled.div`
+const StyledOrganizeGallery = styled(VStack)`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+`;
+
+const StyledEmptyGalleryMessage = styled(VStack)`
   text-align: center;
   max-width: 390px;
   margin: 240px auto 0;
 `;
 
-const StyledOrganizeGallery = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Content = styled.div`
+const Content = styled(VStack)`
   width: 100%;
-  padding: 0 16px;
+  padding: 0 16px 120px 0;
   max-width: 777px;
 `;
 

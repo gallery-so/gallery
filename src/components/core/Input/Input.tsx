@@ -2,7 +2,7 @@ import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
-import DeprecatedSpacer from '../Spacer/DeprecatedSpacer';
+import { VStack } from '../Spacer/Stack';
 import ErrorText from '../Text/ErrorText';
 
 type Props = {
@@ -23,7 +23,7 @@ function Input({
   variant = 'medium',
 }: Props) {
   return (
-    <>
+    <VStack gap={4}>
       <StyledBigInput
         autoFocus={autoFocus}
         placeholder={placeholder}
@@ -36,13 +36,8 @@ function Input({
         spellCheck="false"
         variant={variant}
       />
-      {errorMessage && (
-        <>
-          <DeprecatedSpacer height={4} />
-          <ErrorText message={errorMessage} />
-        </>
-      )}
-    </>
+      {errorMessage && <ErrorText message={errorMessage} />}
+    </VStack>
   );
 }
 

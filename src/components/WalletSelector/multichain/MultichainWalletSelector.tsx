@@ -13,11 +13,11 @@ import { EthereumAddWallet } from './EthereumAddWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
 import { BaseM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import useMultiKeyDown from 'hooks/useMultiKeyDown';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
+import { VStack } from 'components/core/Spacer/Stack';
 import usePersistedState from 'hooks/usePersistedState';
 import { TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY } from 'utils/tezosEarlyAccess';
 
@@ -110,62 +110,60 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
   }
 
   return (
-    <StyledWalletSelector>
-      <WalletButton
-        label={supportedAuthMethods.ethereum.name}
-        icon="ethereum"
-        onClick={() => {
-          console.log('connecting to ethereum');
-          connectEthereum().then(
-            (address) => {
-              console.log('connected to ethereum with', address);
-              setSelectedAuthMethod(supportedAuthMethods.ethereum);
-            },
-            (error) => {
-              console.log('failed to connect to ethereum', error);
-            }
-          );
-        }}
-      />
-      {connectionMode !== CONNECT_WALLET_ONLY ? (
+    <StyledWalletSelector gap={24}>
+      <VStack justify="center" gap={8}>
         <WalletButton
-          label={supportedAuthMethods.gnosisSafe.name}
-          icon="gnosis_safe"
+          label={supportedAuthMethods.ethereum.name}
+          icon="ethereum"
           onClick={() => {
-            console.log('connecting to gnosis safe via walletconnect');
-            setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+            console.log('connecting to ethereum');
+            connectEthereum().then(
+              (address) => {
+                console.log('connected to ethereum with', address);
+                setSelectedAuthMethod(supportedAuthMethods.ethereum);
+              },
+              (error) => {
+                console.log('failed to connect to ethereum', error);
+              }
+            );
           }}
         />
-      ) : null}
-      <WalletButton
-        label="Tezos"
-        icon="tezos"
-        disabled={!tezosEnabled}
-        onClick={() => {
-          console.log('connecting to tezos via beacon');
-          connectTezos()
-            .then((address) => {
-              console.log('connected to tezos with', address);
-              setSelectedAuthMethod(supportedAuthMethods.tezos);
-            })
-            .catch((error) => {
-              console.log('failed to connect to tezos', error);
-            });
-        }}
-      />
-      <WalletButton label="Solana" icon="solana" disabled />
-      <DeprecatedSpacer height={16} />
+        {connectionMode !== CONNECT_WALLET_ONLY ? (
+          <WalletButton
+            label={supportedAuthMethods.gnosisSafe.name}
+            icon="gnosis_safe"
+            onClick={() => {
+              console.log('connecting to gnosis safe via walletconnect');
+              setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+            }}
+          />
+        ) : null}
+        <WalletButton
+          label="Tezos"
+          icon="tezos"
+          disabled={!tezosEnabled}
+          onClick={() => {
+            console.log('connecting to tezos via beacon');
+            connectTezos()
+              .then((address) => {
+                console.log('connected to tezos with', address);
+                setSelectedAuthMethod(supportedAuthMethods.tezos);
+              })
+              .catch((error) => {
+                console.log('failed to connect to tezos', error);
+              });
+          }}
+        />
+        <WalletButton label="Solana" icon="solana" disabled />
+      </VStack>
       <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
 
-const StyledWalletSelector = styled.div`
+const StyledWalletSelector = styled(VStack)`
   text-align: center;
-  display: flex;
-  flex-direction: column;
   width: 320px;
-  justify-content: center;
 
   @media only screen and ${breakpoints.mobileLarge} {
     width: 400px;

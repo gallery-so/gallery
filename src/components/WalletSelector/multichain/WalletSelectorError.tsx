@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   heading: string;
@@ -11,14 +11,15 @@ type Props = {
 };
 
 export const WalletSelectorError = ({ heading, body, reset }: Props) => (
-  <>
+  <VStack gap={16}>
     <TitleS>{heading}</TitleS>
-    <DeprecatedSpacer height={16} />
-    <StyledBody>
-      <Markdown text={body} />
-    </StyledBody>
-    <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
-  </>
+    <VStack>
+      <StyledBody>
+        <Markdown text={body} />
+      </StyledBody>
+      <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
+    </VStack>
+  </VStack>
 );
 
 const StyledBody = styled(BaseM)`

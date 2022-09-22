@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import QRCodeButton from './QRCodeButton';
@@ -18,6 +17,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -55,20 +55,18 @@ function UserGalleryHeader({
   const styledQrCode = useQrCode();
 
   return (
-    <StyledUserGalleryHeader>
+    <StyledUserGalleryHeader gap={2}>
       <StyledUsernameWrapper>
         {isMobile ? (
           <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
         ) : (
           <StyledUsername>{displayName}</StyledUsername>
         )}
-        <StyledButtonsWrapper>
+        <StyledButtonsWrapper gap={8} align="center" justify="space-between">
           {isMobile && (
             <>
               <LinkButton textToCopy={`https://gallery.so/${username}`} />
-              <DeprecatedSpacer width={8} />
               <QRCodeButton username={username} styledQrCode={styledQrCode} />
-              <DeprecatedSpacer width={8} />
             </>
           )}
           {showMobileLayoutToggle && (
@@ -76,7 +74,6 @@ function UserGalleryHeader({
           )}
         </StyledButtonsWrapper>
       </StyledUsernameWrapper>
-      <DeprecatedSpacer height={2} />
       <StyledUserDetails>
         {is3ac ? (
           <ExpandableBio text={unescapedBio} />
@@ -105,16 +102,15 @@ const ExpandableBio = ({ text }: { text: string }) => {
   }, [track]);
 
   return (
-    <>
+    <VStack gap={12}>
       <BaseM>
         <Markdown
           text={isExpanded ? text : truncated}
           CustomInternalLinkComponent={NftDetailViewer}
         />
       </BaseM>
-      <DeprecatedSpacer height={12} />
       {isExpanded ? null : <TextButton text="Read More" onClick={handleClick} />}
-    </>
+    </VStack>
   );
 };
 
@@ -137,10 +133,7 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
-const StyledUserGalleryHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledUserGalleryHeader = styled(VStack)`
   width: 100%;
 `;
 
@@ -161,12 +154,8 @@ const StyledUsernameMobile = styled(TitleM)`
   width: calc(100% - 48px);
 `;
 
-const StyledButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const StyledButtonsWrapper = styled(HStack)`
   height: 36px;
-
   @media only screen and ${breakpoints.mobile} {
     height: 28px;
   }

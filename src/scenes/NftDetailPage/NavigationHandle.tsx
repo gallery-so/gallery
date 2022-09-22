@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import ActionText from 'components/core/ActionText/ActionText';
 import colors from 'components/core/colors';
 import transitions from 'components/core/transitions';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { Directions } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
@@ -11,6 +10,7 @@ import ArrowLeft from 'public/icons/arrow_left.svg';
 import ArrowRight from 'public/icons/arrow_right.svg';
 import ArrowLeftIcon from 'src/icons/ArrowLeftIcon';
 import ArrowRightIcon from 'src/icons/ArrowRightIcon';
+import { HStack } from 'components/core/Spacer/Stack';
 
 const ARROWS = new Map<number, ReactElement>([
   [Directions.LEFT, <ArrowLeftIcon key={1} />],
@@ -44,9 +44,8 @@ function NavigationHandle({ direction, onClick }: Props) {
 
   return (
     <StyledNavigationHandle direction={direction}>
-      <StyledTextWrapper direction={direction} onClick={onClick}>
+      <StyledTextWrapper gap={3} direction={direction} onClick={onClick}>
         <StyledArrow>{arrow}</StyledArrow>
-        <DeprecatedSpacer width={3} />
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
         </StyledHoverText>
@@ -67,8 +66,7 @@ const StyledArrow = styled.div`
   }
 `;
 
-const StyledTextWrapper = styled.div<{ direction: Directions }>`
-  display: flex;
+const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
   position: absolute;

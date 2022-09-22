@@ -4,12 +4,12 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import ErrorText from 'components/core/Text/ErrorText';
 import breakpoints from 'components/core/breakpoints';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import { EditUserInfoModalFragment$key } from '__generated__/EditUserInfoModalFragment.graphql';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: EditUserInfoModalFragment$key;
@@ -57,11 +57,11 @@ function EditUserInfoModal({ queryRef }: Props) {
 
   const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
     useUserInfoForm({
-      onSuccess: closeModalAndNavigateToNewUsername,
-      existingUsername: existingUser.username ?? undefined,
-      existingBio: existingUser.bio ?? undefined,
-      userId: existingUser.dbid,
-    });
+    onSuccess: closeModalAndNavigateToNewUsername,
+    existingUsername: existingUser.username ?? undefined,
+    existingBio: existingUser.bio ?? undefined,
+    userId: existingUser.dbid,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,43 +72,36 @@ function EditUserInfoModal({ queryRef }: Props) {
   }, [onEditUser]);
 
   return (
-    <StyledEditUserInfoModal>
-      <UserInfoForm
-        onSubmit={handleSubmit}
-        username={username}
-        usernameError={usernameError}
-        onUsernameChange={onUsernameChange}
-        bio={bio}
-        onBioChange={onBioChange}
-      />
-      {generalError && (
-        <>
-          <DeprecatedSpacer height={8} />
-          <ErrorText message={generalError} />
-        </>
-      )}
-      <DeprecatedSpacer height={16} />
-
+    <StyledEditUserInfoModal gap={16}>
+      <VStack gap={8}>
+        <UserInfoForm
+          onSubmit={handleSubmit}
+          username={username}
+          usernameError={usernameError}
+          onUsernameChange={onUsernameChange}
+          bio={bio}
+          onBioChange={onBioChange}
+        />
+        {generalError && <ErrorText message={generalError} />}
+      </VStack>
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <DeprecatedSpacer height={12} />
-      <StyledButton onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
-        Save
-      </StyledButton>
+      <StyledButtonContainer justify="flex-end">
+        <Button onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
+          Save
+        </Button>
+      </StyledButtonContainer>
     </StyledEditUserInfoModal>
   );
 }
 
-const StyledEditUserInfoModal = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledEditUserInfoModal = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     width: 480px;
   }
 `;
 
-const StyledButton = styled(Button)`
-  align-self: flex-end;
+const StyledButtonContainer = styled(HStack)`
+  padding-top: 12px;
 `;
 
 export default EditUserInfoModal;

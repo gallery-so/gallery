@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { RefreshIcon } from 'icons/RefreshIcon';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from 'components/core/Text/Text';
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import IconContainer from 'components/core/Markdown/IconContainer';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Size = 'tiny' | 'medium';
 
@@ -52,27 +52,24 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
 
   return (
     <AspectRatioWrapper>
-      <Wrapper>
+      <Wrapper gap={spaceY} align="center" justify="center">
         {refreshing ? (
           <Label size={size}>Loading...</Label>
         ) : (
           <Label size={size}>Could not load</Label>
         )}
         {!refreshing && (
-          <>
-            <DeprecatedSpacer height={spaceY} />
-            <IconButton
-              data-testid="RefreshButton"
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-              refreshing={refreshing}
-              onMouseDown={handleMouseDown}
-              onClick={handleClick}
-            >
-              <IconContainer icon={<RefreshIcon />} />
-              <RefreshTooltip active={showTooltip} text="Refresh" />
-            </IconButton>
-          </>
+          <IconButton
+            data-testid="RefreshButton"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            refreshing={refreshing}
+            onMouseDown={handleMouseDown}
+            onClick={handleClick}
+          >
+            <IconContainer icon={<RefreshIcon />} />
+            <RefreshTooltip active={showTooltip} text="Refresh" />
+          </IconButton>
         )}
       </Wrapper>
     </AspectRatioWrapper>
@@ -116,17 +113,12 @@ const AspectRatioWrapper = styled.div`
 
 // No support for aspect-ratio trick
 // https://css-tricks.com/aspect-ratio-boxes/
-const Wrapper = styled.div`
+const Wrapper = styled(VStack)`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 
   background-color: ${colors.offWhite};
 `;

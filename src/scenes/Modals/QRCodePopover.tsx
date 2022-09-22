@@ -1,4 +1,4 @@
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
@@ -92,11 +92,12 @@ export default function QRCodePopover({
 
   return (
     <StyledQRCodePopover>
-      <StyledQRCode ref={ref} />
-      <DeprecatedSpacer height={24} />
-      <TitleM>
-        <strong>{username}</strong>
-      </TitleM>
+      <VStack gap={24} align="center">
+        <StyledQRCode ref={ref} />
+        <TitleM>
+          <strong>{username}</strong>
+        </TitleM>
+      </VStack>
       <StyledBaseM>Scan to open {username}'s gallery in a new browser tab.</StyledBaseM>
     </StyledQRCodePopover>
   );

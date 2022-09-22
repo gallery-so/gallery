@@ -1,7 +1,6 @@
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import FollowListUsers from 'components/Follow/FollowListUsers';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
@@ -20,6 +19,7 @@ import { FeedMode } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 import { removeNullValues } from 'utils/removeNullValues';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventRef: UserFollowedUsersFeedEventFragment$key;
@@ -148,30 +148,33 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
         <CustomStyledEvent onClick={handleSeeFollowedUserClick}>
           <StyledEventContent>
             <StyledEventHeader>
-              <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
-                )}
-              </BaseM>
-              <DeprecatedSpacer width={4} />
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              <HStack gap={4} inline>
+                <BaseM>
+                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                  {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                    <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
+                  )}
+                </BaseM>
+                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              </HStack>
             </StyledEventHeader>
           </StyledEventContent>
         </CustomStyledEvent>
       ) : (
         <CustomStyledEvent onClick={handleSeeMoreClick}>
           <StyledEventContent>
-            <StyledEventHeader>
-              <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                {genericFollows.length} collectors.
-              </BaseM>
-              <DeprecatedSpacer width={4} />
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </StyledEventHeader>
-            <DeprecatedSpacer height={16} />
-            <StyledSecondaryButton>See All</StyledSecondaryButton>
+            <StyledEventHeaderContainer gap={16} grow>
+              <StyledEventHeader>
+                <HStack gap={4} inline>
+                  <BaseM>
+                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                    {genericFollows.length} collectors.
+                  </BaseM>
+                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                </HStack>
+              </StyledEventHeader>
+              <StyledSecondaryButton>See All</StyledSecondaryButton>
+            </StyledEventHeaderContainer>
           </StyledEventContent>
         </CustomStyledEvent>
       )}
@@ -191,6 +194,12 @@ const StyledEventContent = styled.div`
   display: flex;
   flex-direction: column;
 
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
+`;
+
+const StyledEventHeaderContainer = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }

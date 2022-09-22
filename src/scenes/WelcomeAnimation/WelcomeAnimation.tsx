@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import Image from './Image';
 import { AnimatedImage, animatedImages } from './Images';
@@ -10,6 +9,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -95,14 +95,14 @@ export default function WelcomeAnimation({ next }: Props) {
           transform: props.xy.to(getTransformCallback(textAnimationOptions)),
         }}
       >
-        <StyledTextContainer shouldFadeOut={shouldFadeOut}>
-          <TitleL>Welcome to Gallery</TitleL>
-          <DeprecatedSpacer height={8} />
-          <StyledBodyText>
-            This is your space to share your pieces and the stories that surround them. Curate,
-            arrange, and display your collection exactly how it was meant to be.
-          </StyledBodyText>
-          <DeprecatedSpacer height={16} />
+        <StyledTextContainer shouldFadeOut={shouldFadeOut} gap={16}>
+          <VStack gap={8} align="center">
+            <TitleL>Welcome to Gallery</TitleL>
+            <StyledBodyText>
+              This is your space to share your pieces and the stories that surround them. Curate,
+              arrange, and display your collection exactly how it was meant to be.
+            </StyledBodyText>
+          </VStack>
           <StyledButton onClick={handleClick}>Enter Gallery</StyledButton>
         </StyledTextContainer>
       </animated.div>
@@ -151,11 +151,9 @@ const fadeOut = keyframes`
   to { opacity: 0; };
 `;
 
-const StyledTextContainer = styled.div<{
+const StyledTextContainer = styled(VStack)<{
   shouldFadeOut: boolean;
 }>`
-  display: flex;
-  flex-direction: column;
   align-items: center;
   opacity: 0;
   animation: ${fadeInGrow} 1s forwards;

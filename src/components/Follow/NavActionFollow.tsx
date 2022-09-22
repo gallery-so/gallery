@@ -1,7 +1,6 @@
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { HStack } from 'components/core/Spacer/Stack';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
@@ -37,19 +36,9 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const isLoggedIn = !!loggedInUserId;
 
   return (
-    <StyledNavActionFollow>
-      {isLoggedIn ? (
-        <>
-          <FollowButton queryRef={loggedInUserQuery} userRef={user} />
-          <DeprecatedSpacer width={4} />
-        </>
-      ) : null}
+    <HStack gap={4} align="center">
+      {isLoggedIn ? <FollowButton queryRef={loggedInUserQuery} userRef={user} /> : null}
       <FollowerListButton userRef={user} />
-    </StyledNavActionFollow>
+    </HStack>
   );
 }
-
-const StyledNavActionFollow = styled.div`
-  display: flex;
-  align-items: center;
-`;
