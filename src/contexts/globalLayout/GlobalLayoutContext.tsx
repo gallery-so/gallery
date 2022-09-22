@@ -30,7 +30,6 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import NavLink from 'components/core/NavLink/NavLink';
 
@@ -360,11 +359,12 @@ function GlobalNavbarWithFadeEnabled({
     >
       {isBannerVisible && (
         <Banner
-          text=""
+          localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
+          text="Gallery now supports POAP! Curate them in your editor today."
           queryRef={query}
-          // leaving this in to easily set up a banner for next time
-          // actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
+          actionComponent={<NavLink to="/edit">Add Poaps</NavLink>}
           dismissOnActionComponentClick
+          requireAuth
         />
       )}
       <GlobalNavbar
@@ -375,10 +375,6 @@ function GlobalNavbarWithFadeEnabled({
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
-
-const StyledUnstyledLink = styled(UnstyledLink)`
-  display: flex;
-`;
 
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;

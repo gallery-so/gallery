@@ -194,11 +194,14 @@ function ModalProvider({ children }: Props) {
 
     const globalNavbar = document.querySelector('.GlobalNavbar') as HTMLElement | null;
     if (globalNavbar) {
-      globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
-
-      globalNavbar.style.width = modalShowing
-        ? `calc(100vw - ${currentScrollbarWidth}px)`
-        : 'unset';
+      /**
+       * Commenting this out to prevent a regression on the banner width not extending to 100%.
+       * Leaving the code in tho in case scrollbar issue comes back
+       */
+      // globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
+      // globalNavbar.style.width = modalShowing
+      //   ? `calc(100vw - ${currentScrollbarWidth}px)`
+      //   : 'unset';
     }
   }, [modals.length]);
 
