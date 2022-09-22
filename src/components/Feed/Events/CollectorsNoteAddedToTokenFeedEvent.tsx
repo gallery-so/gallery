@@ -129,6 +129,13 @@ const StyledNote = styled(TitleM)`
   overflow: hidden;
   line-clamp: 4;
   display: -webkit-box;
+  text-overflow: ellipsis;
+
+  * {
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
 `;
 
 const StyledMediaWrapper = styled.div`
