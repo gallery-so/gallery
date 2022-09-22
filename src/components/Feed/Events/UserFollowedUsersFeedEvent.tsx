@@ -210,7 +210,7 @@ const StyledSecondaryButton = styled(Button).attrs({ variant: 'secondary' })`
   width: 100%;
   @media only screen and ${breakpoints.tablet} {
     width: fit-content;
-    align-self: end;
+    align-self: flex-end;
   }
 `;
 

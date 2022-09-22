@@ -33,7 +33,7 @@ function NftPreviewLabel({ className, tokenRef }: Props) {
 
   return (
     <StyledNftPreviewLabel className={className}>
-      <HStack gap={4} justify={'end'} align="center">
+      <HStack gap={4} justify={'flex-end'} align="center">
         {token.chain === 'POAP' && <POAPLogo />}
         <VStack shrink>
           {token.chain === 'POAP' ? (
@@ -106,7 +106,7 @@ export const StyledNftPreviewLabel = styled.div`
 
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
 
   bottom: 0;
   width: 100%;
