@@ -18,6 +18,8 @@ type Props = {
   requireAuth?: boolean;
   actionComponent?: React.ReactNode;
   dismissOnActionComponentClick?: boolean;
+  // a localStorage key to keep track of whether the banner has been dismissed
+  localStorageKey?: string;
 };
 
 export default function Banner({
@@ -27,6 +29,7 @@ export default function Banner({
   requireAuth = false,
   actionComponent,
   dismissOnActionComponentClick = false,
+  localStorageKey = GLOBAL_BANNER_STORAGE_KEY,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -45,7 +48,7 @@ export default function Banner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [dismissed, setDismissed] = usePersistedState(GLOBAL_BANNER_STORAGE_KEY || '', false);
+  const [dismissed, setDismissed] = usePersistedState(localStorageKey, false);
 
   const hideBanner = useCallback(() => {
     setDismissed(true);
@@ -142,6 +145,7 @@ const StyledAction = styled.div`
   display: flex;
   align-items: center;
   margin-top: 16px;
+  line-height: 14px;
 
   @media only screen and ${breakpoints.tablet} {
     margin-top: 0px;
