@@ -198,9 +198,16 @@ export function useThrowOnMediaFailure(
     [shimmerContext]
   );
 
-  // ignore throwing an error and triggering the refresh error boundary
-  // if the rendered element is a video and the browser is iOS Safari;
-  // there's a widespread issue with certain videos failing to load on iOS.
+  /**
+   * there's a widespread issue with certain videos failing to load on iOS;
+   * ignore throwing an error and triggering the refresh error boundary
+   * if the rendered element is a video and the browser is iOS Safari.
+   *
+   * ideally we should just always throw an error and have the error boundary
+   * decide to continue to render the children instead of the fallback; however,
+   * this triggers a re-render, resets the error state, and continuously tries
+   * to load the video.
+   */
   const shouldIgnoreError = componentName === 'NftDetailVideo' && isIosSafari();
 
   if (hasFailed && !shouldIgnoreError) {
