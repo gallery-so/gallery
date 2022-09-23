@@ -24,6 +24,7 @@ export default function useGlobalAnnouncementPopover(
             }
           }
         }
+        ...GlobalAnnouncementPopover
       }
     `,
     queryRef
@@ -47,7 +48,7 @@ export default function useGlobalAnnouncementPopover(
   useEffect(() => {
     async function handleMount() {
       if (dismissedOnSession) return;
-      if (!is3acProfilePage) return;
+      // if (!is3acProfilePage) return;
 
       // enable this if we only want to display the popover once globally (across page refreshes)
       // if (dismissed) return;
@@ -62,7 +63,7 @@ export default function useGlobalAnnouncementPopover(
       await handlePreloadFonts();
       setTimeout(() => {
         showModal({
-          content: <GlobalAnnouncementPopover />,
+          content: <GlobalAnnouncementPopover queryRef={query} />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
