@@ -12,6 +12,7 @@ import { useRelayEnvironment } from 'react-relay';
 // @ts-expect-error We're in untyped territory
 import { getFragmentResourceForEnvironment } from 'react-relay/lib/relay-hooks/FragmentResource';
 import { addBreadcrumb, Severity } from '@sentry/nextjs';
+import { isIosSafari } from 'utils/browser';
 
 type useNftRetryArgs = {
   tokenId: string;
@@ -188,13 +189,21 @@ export function useThrowOnMediaFailure(
   const [hasFailed, setHasFailed] = useState(false);
 
   const shimmerContext = useContext(ShimmerActionContext);
-  const handleError = useCallback(() => {
-    shimmerContext?.setContentIsLoaded();
+  const handleError = useCallback(
+    (e) => {
+      shimmerContext?.setContentIsLoaded(e);
 
-    setHasFailed(true);
-  }, [shimmerContext]);
+      setHasFailed(true);
+    },
+    [shimmerContext]
+  );
 
-  if (hasFailed) {
+  // ignore throwing an error and triggering the refresh error boundary
+  // if the rendered element is a video and the browser is iOS Safari;
+  // there's a widespread issue with certain videos failing to load on iOS.
+  const shouldIgnoreError = componentName === 'NftDetailVideo' && isIosSafari();
+
+  if (hasFailed && !shouldIgnoreError) {
     throw new CouldNotRenderNftError(componentName, 'Could not load media', metadata);
   }
 

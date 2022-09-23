@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
 import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { useMemo } from 'react';
+import { SyntheticEvent, useCallback, useMemo, useState } from 'react';
 import isVideoUrl from 'utils/isVideoUrl';
 import { isSafari } from 'utils/browser';
 
@@ -30,8 +30,19 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     mediaRef
   );
 
+  const [errored, setErrored] = useState(false);
+
   const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
 
+  const handleVideoLoadError = useCallback(
+    (e: SyntheticEvent<HTMLVideoElement, Event>) => {
+      setErrored(true);
+      handleError(e);
+    },
+    [handleError]
+  );
+
+  // poster image is displayed mid-load, or as a fallback if the load fails
   const poster = useMemo(() => {
     if (!token?.previewURLs?.large) {
       return undefined;
@@ -44,13 +55,17 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     return token.previewURLs.large;
   }, [token?.previewURLs?.large]);
 
+  // if there's an issue loading the video, controls need to be disabled in order
+  // to render the poster fallback
+  const shouldHideControls = hideControls || errored;
+
   return (
     <StyledVideo
       src={`${token.contentRenderURLs.large}#t=0.001`}
       muted
       autoPlay
       playsInline
-      controls={!hideControls}
+      controls={!shouldHideControls}
       /**
        * Disable video looping if browser is Safari. As of Sept 2022, there's a bug on Safari
        * where data will continuously download each time the video loops, at worst case leading
@@ -67,7 +82,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
        * and even Opensea itself cannot load videos on iOS. The best we can do is render
        * a static poster in its place.
        */
-      onError={handleError}
+      onError={handleVideoLoadError}
       poster={poster}
     />
   );
