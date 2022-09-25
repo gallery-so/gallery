@@ -1,14 +1,11 @@
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
 import { hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__/NftAdditionalDetailsTezosFragment.graphql';
-import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
 import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
@@ -41,16 +38,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       }
     `,
     tokenRef
-  );
-
-  // TODO: We should thread a query ref down to this somehow
-  const query = useLazyLoadQuery<NftAdditionalDetailsTezosQuery>(
-    graphql`
-      query NftAdditionalDetailsTezosQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
   );
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
@@ -92,11 +79,9 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
         {objktExternalUrl && (
           <>
             <InteractiveLink href={objktExternalUrl}>View on Objkt</InteractiveLink>
-            {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
-              <InteractiveLink onClick={refresh} disabled={isRefreshing}>
-                Refresh metadata
-              </InteractiveLink>
-            )}
+            <InteractiveLink onClick={refresh} disabled={isRefreshing}>
+              Refresh metadata
+            </InteractiveLink>
           </>
         )}
         {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
