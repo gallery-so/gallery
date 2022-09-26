@@ -1,6 +1,6 @@
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
@@ -55,7 +55,18 @@ export default function useGlobalAnnouncementPopover({
   // tracks dismissal on session, not persisted across refreshes
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
 
-  const { showModal } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
+
+  const shouldHidePopover = useMemo(() => {
+    // hide modal on opengraph pages
+    if (asPath.includes('opengraph')) return true;
+    // hide announcement modal on announcements page
+    if (asPath === '/announcements') return true;
+    // hide for new users onboarding
+    if (asPath === '/welcome' || query.viewer?.user?.username === '') return true;
+
+    return false;
+  }, [asPath, query.viewer?.user?.username]);
 
   useEffect(() => {
     async function handleMount() {
@@ -63,24 +74,21 @@ export default function useGlobalAnnouncementPopover({
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
       if (authRequired && !isAuthenticated) return;
-      // hide modal on opengraph pages
-      if (asPath.includes('opengraph')) return;
-      // hide announcement modal on announcements page
-      if (asPath === '/announcements') return;
-      // hide for new users onboarding
-      if (asPath === '/welcome' || query.viewer?.user?.username === '') return;
+
+      if (shouldHidePopover) return;
 
       // prevent font flicker on popover load
       await handlePreloadFonts();
 
       setTimeout(() => {
         showModal({
+          id: 'global-announcement-popover',
           content: <GlobalAnnouncementPopover queryRef={query} />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
-        setDismissedOnLocalStorage(true);
-        setDismissedOnSession(true);
+        // setDismissedOnLocalStorage(true);
+        // setDismissedOnSession(true);
       }, popoverDelayMs);
     }
 
@@ -96,7 +104,19 @@ export default function useGlobalAnnouncementPopover({
     popoverDelayMs,
     dismissVariant,
     dismissedOnSession,
+    shouldHidePopover,
   ]);
+
+  useEffect(
+    function handleCloseModalOnRedirect() {
+      if (shouldHidePopover) {
+        hideModal({
+          id: 'global-announcement-popover',
+        });
+      }
+    },
+    [hideModal, shouldHidePopover]
+  );
 }
 
 async function handlePreloadFonts() {
