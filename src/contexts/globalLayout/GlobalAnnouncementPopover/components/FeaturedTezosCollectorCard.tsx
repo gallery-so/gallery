@@ -11,94 +11,82 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from 'utils/removeNullValues';
+import { FeaturedTezosCollectorCardCollectionFragment$key } from '__generated__/FeaturedTezosCollectorCardCollectionFragment.graphql';
 import { FeaturedTezosCollectorCardFragment$key } from '__generated__/FeaturedTezosCollectorCardFragment.graphql';
 
 type FeaturedTezosCollectorCardProps = {
   queryRef: FeaturedTezosCollectorCardFragment$key;
+  collectionRef: FeaturedTezosCollectorCardCollectionFragment$key;
 };
 
-export default function FeaturedTezosCollectorCard({ queryRef }: FeaturedTezosCollectorCardProps) {
+export default function FeaturedTezosCollectorCard({
+  queryRef,
+  collectionRef,
+}: FeaturedTezosCollectorCardProps) {
   const query = useFragment(
     graphql`
-      fragment FeaturedTezosCollectorCardFragment on Query
-      @argumentDefinitions(
-        collectionId: { type: "DBID!", defaultValue: "2FBRDB7lb5WSqRKmQWJdPh25lUD" }
-      ) {
-        collection: collectionById(id: $collectionId) {
-          ... on ErrCollectionNotFound {
-            __typename
-          }
-
-          ... on Collection {
-            __typename
-
-            tokens {
-              token {
-                ...getVideoOrImageUrlForNftPreviewFragment
-              }
-            }
-
-            gallery {
-              owner {
-                username
-                ...FollowButtonUserFragment
-              }
-            }
-          }
-        }
+      fragment FeaturedTezosCollectorCardFragment on Query {
         ...FollowButtonQueryFragment
       }
     `,
     queryRef
   );
 
-  const { collection } = query;
+  const collection = useFragment(
+    graphql`
+      fragment FeaturedTezosCollectorCardCollectionFragment on Collection {
+        tokens {
+          token {
+            ...getVideoOrImageUrlForNftPreviewFragment
+          }
+        }
+
+        gallery {
+          owner {
+            username
+            ...FollowButtonUserFragment
+          }
+        }
+      }
+    `,
+    collectionRef
+  );
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  if (!collection || collection?.__typename === 'ErrCollectionNotFound') {
-    // TODO: report error to sentry to feature another collection for that user.
-    // for now, we'll simply not return a card
+  const imageUrls = removeNullValues(
+    removeNullValues(collection.tokens)
+      .map((galleryToken) => {
+        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
+      })
+      .map((token) => token?.urls.large)
+  ).slice(0, 4);
+
+  const owner = collection.gallery?.owner;
+
+  if (!owner) {
     return null;
   }
 
-  if (collection?.__typename === 'Collection') {
-    const imageUrls = removeNullValues(
-      removeNullValues(collection.tokens)
-        .map((galleryToken) => {
-          return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
-        })
-        .map((token) => token?.urls.large)
-    ).slice(0, 4);
-
-    const owner = collection.gallery?.owner;
-
-    if (!owner) {
-      return null;
-    }
-
-    return (
-      <Link href={`/${owner.username}`} passHref>
-        <StyledAnchor target="_blank" rel="noopener noreferrer">
-          <GotwContainer gap={isMobile ? 16 : 32}>
-            <GotwHeader gap={8}>
-              <FollowButton queryRef={query} userRef={owner} />
-              <DescriptionText>{owner.username}</DescriptionText>
-            </GotwHeader>
-            <GotwBody>
-              {imageUrls.map((url) => (
-                <GotwImageContainer key={url}>
-                  <GotwImage src={url} />
-                </GotwImageContainer>
-              ))}
-            </GotwBody>
-          </GotwContainer>
-        </StyledAnchor>
-      </Link>
-    );
-  }
-
-  return null;
+  return (
+    <Link href={`/${owner.username}`} passHref>
+      <StyledAnchor target="_blank" rel="noopener noreferrer">
+        <GotwContainer gap={isMobile ? 16 : 32}>
+          <GotwHeader gap={8}>
+            <FollowButton queryRef={query} userRef={owner} />
+            <DescriptionText>{owner.username}</DescriptionText>
+          </GotwHeader>
+          <GotwBody>
+            {imageUrls.map((url) => (
+              <GotwImageContainer key={url}>
+                <GotwImage src={url} />
+              </GotwImageContainer>
+            ))}
+          </GotwBody>
+        </GotwContainer>
+      </StyledAnchor>
+    </Link>
+  );
 }
 
 const StyledAnchor = styled.a`

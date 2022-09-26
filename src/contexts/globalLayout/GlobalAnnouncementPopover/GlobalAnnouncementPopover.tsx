@@ -12,14 +12,34 @@ import { useCallback } from 'react';
 import { AuthModal } from 'hooks/useAuthModal';
 import { GlobalAnnouncementPopoverFragment$key } from '__generated__/GlobalAnnouncementPopoverFragment.graphql';
 import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
+import { removeNullValues } from 'utils/removeNullValues';
+import { FragmentRefs } from 'relay-runtime';
 
 type Props = {
   queryRef: GlobalAnnouncementPopoverFragment$key;
 };
 
-const FEATURED_COLLECTION_IDS = [
+export const FEATURED_TEZOS_COLLECTION_IDS = [
+  // bastiboii
+  '2EsMiniw7WGzp8yR3iUXwj2SjcR',
   // curated
   '2FBRDB7lb5WSqRKmQWJdPh25lUD',
+  // rudxane
+  '2F2tLTe7VQ9zFKfzhMA9p41QbWm',
+  // 1mposter
+  '2FEmDXlEjNQXtorn4WKh6Vyizc6',
+  // duaneking
+  '2EsMhMU7Ite54MHjLL7cdf3bIoB',
+  // the_ayybee_gallery
+  '2FEs5fgkmIIvoHrD7nkhyCOYMrB',
+  // masisus
+  '2EtEXRDVBB5KTSPl48CVxxy1jcN',
+  // supertank1e
+  '2F0lVnwvDzD3l8FtvjG11v9XQep',
+  // hardi
+  '2FJJtUdlivSVsyWMno5tSbZumlj',
+  // sbiernacki
+  '2F0BXXyhwhzNFO7Kh02Jw95y9WE',
 ];
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
@@ -34,6 +54,19 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               id
               username
             }
+          }
+        }
+        collections: collectionsByIds(ids: $collectionIds) {
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+          ... on ErrInvalidInput {
+            __typename
+          }
+          ... on Collection {
+            __typename
+            dbid
+            ...FeaturedTezosCollectorCardCollectionFragment
           }
         }
         ...ManageWalletsModalFragment
@@ -52,8 +85,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  console.log('globalannouncementpopover', query);
-
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   const handleCreateGalleryClick = useCallback(() => {
@@ -70,6 +101,18 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const handleViewTezosGallerisClick = useCallback(() => {
     document.getElementById('featured-tezos')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  console.log('globalannouncementpopover', query);
+
+  // TODO: definitely shouldn't have to do this, but for some reason typescript doesn't understand
+  // that `.filter` should remove any entities that are not of typename `Collection`
+  const collections = (removeNullValues(query.collections).filter(
+    (collection) => collection.__typename === 'Collection'
+  ) ?? []) as {
+    readonly __typename: 'Collection';
+    readonly dbid: string;
+    readonly ' $fragmentSpreads': FragmentRefs<'FeaturedTezosCollectorCardCollectionFragment'>;
+  }[];
 
   return (
     <StyledGlobalAnnouncementPopover>
@@ -163,12 +206,13 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </DesktopSecondaryHeaderContainer>
               <GalleryOfTheWeekContainer id="featured-tezos">
-                {FEATURED_COLLECTION_IDS.map((id) => (
-                  <FeaturedTezosCollectorCard key={id} queryRef={query} />
+                {collections.map((collection) => (
+                  <FeaturedTezosCollectorCard
+                    key={collection.dbid}
+                    queryRef={query}
+                    collectionRef={collection}
+                  />
                 ))}
-                {/* {galleryOfTheWeekWinners.map((userRef) => (
-                  <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-                ))} */}
               </GalleryOfTheWeekContainer>
             </VStack>
           </>
