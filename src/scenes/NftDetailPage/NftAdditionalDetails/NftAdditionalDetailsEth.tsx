@@ -1,16 +1,13 @@
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
 import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import { EnsOrAddress } from 'components/EnsOrAddress';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsEthFragment$key } from '../../../../__generated__/NftAdditionalDetailsEthFragment.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { NftAdditionalDetailsEthQuery } from '../../../../__generated__/NftAdditionalDetailsEthQuery.graphql';
 import { LinkableAddress } from 'components/LinkableAddress';
 
 type NftAdditionaDetailsNonPOAPProps = {
@@ -41,16 +38,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       }
     `,
     tokenRef
-  );
-
-  // TODO: We should thread a query ref down to this somehow
-  const query = useLazyLoadQuery<NftAdditionalDetailsEthQuery>(
-    graphql`
-      query NftAdditionalDetailsEthQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
   );
 
   const { tokenId, contract, externalUrl } = token;
@@ -92,11 +79,9 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
         {openSeaExternalUrl && (
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
-            {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
-              <InteractiveLink onClick={refresh} disabled={isRefreshing}>
-                Refresh metadata
-              </InteractiveLink>
-            )}
+            <InteractiveLink onClick={refresh} disabled={isRefreshing}>
+              Refresh metadata
+            </InteractiveLink>
           </>
         )}
         {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}

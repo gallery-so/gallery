@@ -13,11 +13,6 @@ import { SidebarChainSelectorFragment$key } from '../../../../../../__generated_
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { SidebarChainButton } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainButton';
 import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
-import usePersistedState from 'hooks/usePersistedState';
-import { TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY } from 'utils/tezosEarlyAccess';
-import noop from 'utils/noop';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {
@@ -71,9 +66,6 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   const [showTooltip, setShowTooltip] = useState(false);
 
   const selectedChain = chains.find((chain) => chain.name === selected);
-
-  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
-  const [tezosEnabled] = usePersistedState<boolean>(TEZOS_EARLY_ACCESS_LOCAL_STORAGE_KEY, false);
 
   const handleChainClick = useCallback(
     (chain: Chain) => {
@@ -136,23 +128,14 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
         {chains.map((chain) => {
           const isSelected = chain.name === selected;
 
-          let locked = true;
-          if (chain.name === 'Ethereum') {
-            locked = false;
-          } else if (chain.name === 'POAP') {
-            locked = !isPOAPEnabled;
-          } else if (chain.name === 'Tezos') {
-            locked = !tezosEnabled;
-          }
-
           return (
             <SidebarChainButton
               key={chain.name}
-              locked={locked}
+              locked={false}
               icon={chain.icon}
               title={chain.shortName}
               isSelected={isSelected}
-              onClick={locked ? noop : () => handleChainClick(chain.name)}
+              onClick={() => handleChainClick(chain.name)}
             />
           );
         })}

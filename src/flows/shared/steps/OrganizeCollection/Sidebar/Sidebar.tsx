@@ -19,8 +19,6 @@ import { SidebarChainSelector } from 'flows/shared/steps/OrganizeCollection/Side
 import { Button } from 'components/core/Button/Button';
 import { generate12DigitId } from 'utils/collectionLayout';
 import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { VStack } from 'components/core/Spacer/Stack';
 
@@ -54,8 +52,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     `,
     queryRef
   );
-
-  const isPOAPEnabled = isFeatureEnabled(FeatureFlag.POAP, query);
 
   const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -108,23 +104,12 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
       // If we're searching, we want to search across all chains
       if (isSearching) {
-        // Unless POAP is disabled, then we want ONLY ETH STUFF
-        if (!isPOAPEnabled) {
-          return token.chain === 'Ethereum';
-        }
-
         return true;
       }
 
       return token.chain === selectedChain;
     });
-  }, [
-    editModeTokensSearchResults,
-    isPOAPEnabled,
-    isSearching,
-    nftFragmentsKeyedByID,
-    selectedChain,
-  ]);
+  }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
 
   return (
     <StyledSidebar>
