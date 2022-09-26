@@ -31,14 +31,16 @@ import { generatePayload, getNonceNumber } from './tezosUtils';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 import WalletOnboardingMessage from '../WalletOnboardingMessage';
 import { VStack } from 'components/core/Spacer/Stack';
+import noop from 'utils/noop';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;
   reset: () => void;
+  onSuccess?: () => void;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-export const TezosAddWallet = ({ queryRef, reset }: Props) => {
+export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error>();
@@ -128,6 +130,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
         trackAddWalletSuccess('Tezos');
         hideModal();
+        onSuccess();
         setIsConnecting(false);
 
         return signatureValid;
@@ -152,10 +155,11 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     [
       trackAddWalletAttempt,
       createNonce,
-      addWallet,
-      hideModal,
       requestSignature,
+      addWallet,
       trackAddWalletSuccess,
+      hideModal,
+      onSuccess,
       trackAddWalletError,
     ]
   );

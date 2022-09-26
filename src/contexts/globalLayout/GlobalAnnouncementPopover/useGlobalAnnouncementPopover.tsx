@@ -1,18 +1,30 @@
 import { useModalActions } from 'contexts/modal/ModalContext';
-import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 import { useGlobalAnnouncementPopoverFragment$key } from '../../../../__generated__/useGlobalAnnouncementPopoverFragment.graphql';
+import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
+import usePersistedState from 'hooks/usePersistedState';
 
-const AUTH_REQUIRED = false;
-const GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS = 0;
+type Props = {
+  queryRef: useGlobalAnnouncementPopoverFragment$key;
+  authRequired?: boolean;
+  popoverDelayMs?: number;
+  // `session` will make ensure the modal re-appears if the user refreshes the page.
+  // this is used for a consistent experience on presentational profiles (e.g. 3AC gallery)
+  // `global` will make sure the modal only appears once ever, unless the user clears
+  // their localStorage
+  dismissVariant?: 'session' | 'global';
+};
 
-export default function useGlobalAnnouncementPopover(
-  queryRef: useGlobalAnnouncementPopoverFragment$key
-) {
+export default function useGlobalAnnouncementPopover({
+  queryRef,
+  authRequired = false,
+  popoverDelayMs = 0,
+  dismissVariant = 'global',
+}: Props) {
   const query = useFragment(
     graphql`
       fragment useGlobalAnnouncementPopoverFragment on Query {
@@ -24,6 +36,7 @@ export default function useGlobalAnnouncementPopover(
             }
           }
         }
+        ...GlobalAnnouncementPopoverFragment
       }
     `,
     queryRef
@@ -33,45 +46,81 @@ export default function useGlobalAnnouncementPopover(
 
   const { asPath } = useRouter();
 
-  // enable this if we only want to display the popover once globally (across page refreshes)
-  // const [dismissed, setDismissed] = usePersistedState(FEED_ANNOUNCEMENT_STORAGE_KEY, false);
+  // tracks dismissal on localStorage, persisted across refreshes
+  const [dismissedOnLocalStorage, setDismissedOnLocalStorage] = usePersistedState(
+    TEZOS_ANNOUNCEMENT_STORAGE_KEY,
+    false
+  );
 
-  // track dismissal separately from above in case we want the popover to be displayed
-  // again when the user refreshes, but *not* when the user navigates between pages
+  // tracks dismissal on session, not persisted across refreshes
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
 
-  const is3acProfilePage = useIs3acProfilePage();
+  const { showModal, hideModal } = useModalActions();
 
-  const { showModal } = useModalActions();
+  const shouldHidePopover = useMemo(() => {
+    // hide modal on opengraph pages
+    if (asPath.includes('opengraph')) return true;
+    // hide announcement modal on announcements page
+    if (asPath === '/announcements') return true;
+    // hide on auth page
+    if (asPath === '/auth') return true;
+    // hide on edit page
+    if (asPath === '/edit') return true;
+    // hide for new users onboarding
+    if (asPath === '/welcome' || query.viewer?.user?.username === '') return true;
+
+    return false;
+  }, [asPath, query.viewer?.user?.username]);
 
   useEffect(() => {
     async function handleMount() {
-      if (dismissedOnSession) return;
-      if (!is3acProfilePage) return;
+      if (dismissVariant === 'session' && dismissedOnSession) return;
+      if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
-      // enable this if we only want to display the popover once globally (across page refreshes)
-      // if (dismissed) return;
-      if (AUTH_REQUIRED && !isAuthenticated) return;
-      // hide modal on opengraph pages
-      if (asPath.includes('opengraph')) return;
-      // hide announcement modal on announcements page
-      if (asPath === '/announcements') return;
-      // hide for new users onboarding
-      if (asPath === '/welcome' || query.viewer?.user?.username === '') return;
+      if (authRequired && !isAuthenticated) return;
+
+      if (shouldHidePopover) return;
+
       // prevent font flicker on popover load
       await handlePreloadFonts();
+
       setTimeout(() => {
         showModal({
-          content: <GlobalAnnouncementPopover />,
+          id: 'global-announcement-popover',
+          content: <GlobalAnnouncementPopover queryRef={query} />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
+        setDismissedOnLocalStorage(true);
         setDismissedOnSession(true);
-      }, GLOBAL_ANNOUNCEMENT_POPOVER_DELAY_MS);
+      }, popoverDelayMs);
     }
 
     handleMount();
-  }, [isAuthenticated, showModal, query, asPath, dismissedOnSession, is3acProfilePage]);
+  }, [
+    isAuthenticated,
+    showModal,
+    query,
+    asPath,
+    dismissedOnLocalStorage,
+    setDismissedOnLocalStorage,
+    authRequired,
+    popoverDelayMs,
+    dismissVariant,
+    dismissedOnSession,
+    shouldHidePopover,
+  ]);
+
+  useEffect(
+    function handleCloseModalOnRedirect() {
+      if (shouldHidePopover) {
+        hideModal({
+          id: 'global-announcement-popover',
+        });
+      }
+    },
+    [hideModal, shouldHidePopover]
+  );
 }
 
 async function handlePreloadFonts() {

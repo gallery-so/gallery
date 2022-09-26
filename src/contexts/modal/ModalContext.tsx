@@ -52,6 +52,7 @@ type HideModalFnProps = {
 type ModalActions = {
   showModal: (s: ShowModalFnProps) => void;
   hideModal: (h?: HideModalFnProps) => void;
+  clearAllModals: () => void;
 };
 
 const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
@@ -149,19 +150,20 @@ function ModalProvider({ children }: Props) {
     });
   }, []);
 
-  const actions = useMemo(
-    () => ({
-      showModal,
-      hideModal,
-    }),
-    [showModal, hideModal]
-  );
-
   const dismountModal = useCallback((modalId) => {
     setModals((prev) => prev.filter(({ id }) => id !== modalId));
   }, []);
 
   const clearAllModals = useCallback(() => setModals([]), []);
+
+  const actions = useMemo(
+    () => ({
+      showModal,
+      hideModal,
+      clearAllModals,
+    }),
+    [showModal, hideModal, clearAllModals]
+  );
 
   /**
    * EFFECT: Close modal on route change

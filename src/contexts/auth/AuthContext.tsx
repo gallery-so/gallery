@@ -16,6 +16,7 @@ import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 import {
   GLOBAL_BANNER_STORAGE_KEY,
+  TEZOS_ANNOUNCEMENT_STORAGE_KEY,
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
 } from 'constants/storageKeys';
 import { useToastActions } from 'contexts/toast/ToastContext';
@@ -156,7 +157,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setLocallyLoggedInWalletAddress('');
     // keep around dismissed state of banner so that user doesn't
     // encounter it again on login
-    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY]);
+    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY, TEZOS_ANNOUNCEMENT_STORAGE_KEY]);
   }, [setLocallyLoggedInWalletAddress]);
 
   const logoutOnServer = useLogout();

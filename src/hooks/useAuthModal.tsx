@@ -5,12 +5,14 @@ import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
+import { WalletSelectorVariant } from 'components/WalletSelector/multichain/MultichainWalletSelector';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
+  variant?: WalletSelectorVariant;
 };
 
-const AuthModal = ({ queryRef }: ModalProps) => {
+export const AuthModal = ({ queryRef, variant }: ModalProps) => {
   const { hideModal } = useModalActions();
 
   const query = useFragment(
@@ -42,7 +44,7 @@ const AuthModal = ({ queryRef }: ModalProps) => {
 
   return (
     <Container>
-      <WalletSelector queryRef={query} />
+      <WalletSelector queryRef={query} variant={variant} />
     </Container>
   );
 };

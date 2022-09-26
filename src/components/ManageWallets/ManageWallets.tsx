@@ -17,11 +17,12 @@ import ManageWalletsRow from './ManageWalletsRow';
 type Props = {
   newAddress?: string;
   queryRef: ManageWalletsFragment$key;
+  onTezosAddWalletSuccess?: () => void;
 };
 
 const MAX_ALLOWED_ADDRESSES = 10;
 
-function ManageWallets({ newAddress, queryRef }: Props) {
+function ManageWallets({ newAddress, queryRef, onTezosAddWalletSuccess }: Props) {
   const { viewer } = useFragment(
     graphql`
       fragment ManageWalletsFragment on Query {
@@ -53,8 +54,8 @@ function ManageWallets({ newAddress, queryRef }: Props) {
   const showAddWalletModal = useAddWalletModal();
 
   const handleSubmit = useCallback(async () => {
-    showAddWalletModal();
-  }, [showAddWalletModal]);
+    showAddWalletModal({ onTezosAddWalletSuccess });
+  }, [onTezosAddWalletSuccess, showAddWalletModal]);
 
   const addWalletDisabled = useMemo(() => wallets.length >= MAX_ALLOWED_ADDRESSES, [wallets]);
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');

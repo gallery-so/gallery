@@ -7,9 +7,10 @@ import { ManageWalletsModalFragment$key } from '__generated__/ManageWalletsModal
 type Props = {
   queryRef: ManageWalletsModalFragment$key;
   newAddress?: string;
+  onTezosAddWalletSuccess?: () => void;
 };
 
-function ManageWalletsModal({ newAddress, queryRef }: Props) {
+function ManageWalletsModal({ newAddress, queryRef, onTezosAddWalletSuccess }: Props) {
   const query = useFragment(
     graphql`
       fragment ManageWalletsModalFragment on Query {
@@ -21,7 +22,11 @@ function ManageWalletsModal({ newAddress, queryRef }: Props) {
 
   return (
     <StyledManageWalletsModal>
-      <ManageWallets queryRef={query} newAddress={newAddress} />
+      <ManageWallets
+        queryRef={query}
+        newAddress={newAddress}
+        onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+      />
     </StyledManageWalletsModal>
   );
 }

@@ -18,12 +18,21 @@ import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 import { VStack } from 'components/core/Spacer/Stack';
 
+export type WalletSelectorVariant = 'default' | 'tezos-announcement';
+
 type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
+  variant?: WalletSelectorVariant;
+  onTezosAddWalletSuccess?: () => void;
 };
 
-export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+export function MultichainWalletSelector({
+  queryRef,
+  connectionMode = AUTH,
+  variant = 'default',
+  onTezosAddWalletSuccess,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment MultichainWalletSelectorFragment on Query {
@@ -82,7 +91,7 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
-          <TezosAddWallet queryRef={query} reset={reset} />
+          <TezosAddWallet queryRef={query} reset={reset} onSuccess={onTezosAddWalletSuccess} />
         </StyledWalletSelector>
       );
     }
@@ -97,51 +106,58 @@ export function MultichainWalletSelector({ connectionMode = AUTH, queryRef }: Pr
 
   return (
     <StyledWalletSelector gap={24}>
-      <VStack justify="center" gap={8}>
-        <WalletButton
-          label={supportedAuthMethods.ethereum.name}
-          icon="ethereum"
-          onClick={() => {
-            console.log('connecting to ethereum');
-            connectEthereum().then(
-              (address) => {
-                console.log('connected to ethereum with', address);
-                setSelectedAuthMethod(supportedAuthMethods.ethereum);
-              },
-              (error) => {
-                console.log('failed to connect to ethereum', error);
-              }
-            );
-          }}
-        />
-        {connectionMode !== CONNECT_WALLET_ONLY ? (
+      <VStack gap={16}>
+        {variant === 'tezos-announcement' && (
+          <StyledDescription>
+            If you’re a new user, connect your Tezos wallet. If you’re an existing user, sign in
+            with your Ethereum address before adding your Tezos wallet.
+          </StyledDescription>
+        )}
+        <VStack justify="center" gap={8}>
           <WalletButton
-            label={supportedAuthMethods.gnosisSafe.name}
-            icon="gnosis_safe"
+            label={supportedAuthMethods.ethereum.name}
+            icon="ethereum"
             onClick={() => {
-              console.log('connecting to gnosis safe via walletconnect');
-              setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+              console.log('connecting to ethereum');
+              connectEthereum().then(
+                (address) => {
+                  console.log('connected to ethereum with', address);
+                  setSelectedAuthMethod(supportedAuthMethods.ethereum);
+                },
+                (error) => {
+                  console.log('failed to connect to ethereum', error);
+                }
+              );
             }}
           />
-        ) : null}
-        <WalletButton
-          label="Tezos"
-          icon="tezos"
-          onClick={() => {
-            console.log('connecting to tezos via beacon');
-            connectTezos()
-              .then((address) => {
-                console.log('connected to tezos with', address);
-                setSelectedAuthMethod(supportedAuthMethods.tezos);
-              })
-              .catch((error) => {
-                console.log('failed to connect to tezos', error);
-              });
-          }}
-        />
-        <WalletButton label="Solana" icon="solana" disabled />
+          {connectionMode !== CONNECT_WALLET_ONLY ? (
+            <WalletButton
+              label={supportedAuthMethods.gnosisSafe.name}
+              icon="gnosis_safe"
+              onClick={() => {
+                console.log('connecting to gnosis safe via walletconnect');
+                setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+              }}
+            />
+          ) : null}
+          <WalletButton
+            label="Tezos"
+            icon="tezos"
+            onClick={() => {
+              console.log('connecting to tezos via beacon');
+              connectTezos()
+                .then((address) => {
+                  console.log('connected to tezos with', address);
+                  setSelectedAuthMethod(supportedAuthMethods.tezos);
+                })
+                .catch((error) => {
+                  console.log('failed to connect to tezos', error);
+                });
+            }}
+          />
+          <WalletButton label="Solana" icon="solana" disabled />
+        </VStack>
       </VStack>
-      <BaseM>More chains coming soon™</BaseM>
     </StyledWalletSelector>
   );
 }
@@ -154,4 +170,8 @@ const StyledWalletSelector = styled(VStack)`
     width: 400px;
     max-width: 480px;
   }
+`;
+
+const StyledDescription = styled(BaseM)`
+  text-align: left;
 `;
