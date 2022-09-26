@@ -124,6 +124,12 @@ const GotwBody = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   grid-gap: 24px;
+
+  // neat little hack that exempts the last row from having its content centered
+  :after {
+    content: '';
+    flex: auto;
+  }
 `;
 
 const GotwImageContainer = styled.div`
