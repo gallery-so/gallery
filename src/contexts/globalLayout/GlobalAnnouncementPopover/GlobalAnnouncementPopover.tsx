@@ -5,18 +5,22 @@ import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { GlobalAnnouncementPopover$key } from '__generated__/GlobalAnnouncementPopover.graphql';
-import GalleryOfTheWeekCard from './Feed/GalleryOfTheWeekCard';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import { AuthModal } from 'hooks/useAuthModal';
+import { GlobalAnnouncementPopoverFragment$key } from '__generated__/GlobalAnnouncementPopoverFragment.graphql';
+import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
 
 type Props = {
-  queryRef: GlobalAnnouncementPopover$key;
+  queryRef: GlobalAnnouncementPopoverFragment$key;
 };
+
+const FEATURED_COLLECTION_IDS = [
+  // curated
+  '2FBRDB7lb5WSqRKmQWJdPh25lUD',
+];
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
@@ -34,6 +38,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
         }
         ...ManageWalletsModalFragment
         ...useAuthModalFragment
+        ...FeaturedTezosCollectorCardFragment
       }
     `,
     queryRef
@@ -47,7 +52,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  console.log(query);
+  console.log('globalannouncementpopover', query);
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
@@ -158,6 +163,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </DesktopSecondaryHeaderContainer>
               <GalleryOfTheWeekContainer id="featured-tezos">
+                {FEATURED_COLLECTION_IDS.map((id) => (
+                  <FeaturedTezosCollectorCard key={id} queryRef={query} />
+                ))}
                 {/* {galleryOfTheWeekWinners.map((userRef) => (
                   <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
                 ))} */}
