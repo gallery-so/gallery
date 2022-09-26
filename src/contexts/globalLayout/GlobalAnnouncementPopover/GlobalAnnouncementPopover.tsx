@@ -227,7 +227,7 @@ const StyledGlobalAnnouncementPopover = styled.div`
   flex-direction: column;
   align-items: center;
   background: ${colors.offWhite};
-  padding: 92px 16px 0px;
+  padding: 92px 16px;
 
   min-height: 100vh;
 `;

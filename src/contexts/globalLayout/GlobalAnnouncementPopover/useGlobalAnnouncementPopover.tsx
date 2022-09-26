@@ -62,6 +62,10 @@ export default function useGlobalAnnouncementPopover({
     if (asPath.includes('opengraph')) return true;
     // hide announcement modal on announcements page
     if (asPath === '/announcements') return true;
+    // hide on auth page
+    if (asPath === '/auth') return true;
+    // hide on edit page
+    if (asPath === '/edit') return true;
     // hide for new users onboarding
     if (asPath === '/welcome' || query.viewer?.user?.username === '') return true;
 

@@ -106,12 +106,12 @@ export function MultichainWalletSelector({
     <StyledWalletSelector gap={24}>
       <VStack gap={16}>
         {variant === 'tezos-announcement' && (
-          <BaseM>
+          <StyledDescription>
             If you’re a new user, connect your Tezos wallet. If you’re an existing user, sign in
             with your Ethereum address before adding your Tezos wallet.
-          </BaseM>
+          </StyledDescription>
         )}
-        <StyledWalletList justify="center" gap={8}>
+        <VStack justify="center" gap={8}>
           <WalletButton
             label={supportedAuthMethods.ethereum.name}
             icon="ethereum"
@@ -154,13 +154,14 @@ export function MultichainWalletSelector({
             }}
           />
           <WalletButton label="Solana" icon="solana" disabled />
-        </StyledWalletList>
+        </VStack>
       </VStack>
     </StyledWalletSelector>
   );
 }
 
 const StyledWalletSelector = styled(VStack)`
+  text-align: center;
   width: 320px;
 
   @media only screen and ${breakpoints.mobileLarge} {
@@ -169,6 +170,6 @@ const StyledWalletSelector = styled(VStack)`
   }
 `;
 
-const StyledWalletList = styled(VStack)`
-  text-align: center;
+const StyledDescription = styled(BaseM)`
+  text-align: left;
 `;
