@@ -14,6 +14,7 @@ import { GlobalAnnouncementPopoverFragment$key } from '__generated__/GlobalAnnou
 import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
 import { removeNullValues } from 'utils/removeNullValues';
 import { FragmentRefs } from 'relay-runtime';
+import { useRouter } from 'next/router';
 
 type Props = {
   queryRef: GlobalAnnouncementPopoverFragment$key;
@@ -81,7 +82,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
   }
 
-  const { showModal } = useModalActions();
+  const { showModal, clearAllModals } = useModalActions();
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -94,9 +95,22 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     });
   }, [query, showModal]);
 
+  const { push } = useRouter();
+
   const handleManageWalletsClick = useCallback(() => {
-    showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
-  }, [query, showModal]);
+    showModal({
+      content: (
+        <ManageWalletsModal
+          queryRef={query}
+          onTezosAddWalletSuccess={() => {
+            clearAllModals();
+            push('/edit');
+          }}
+        />
+      ),
+      headerText: 'Manage accounts',
+    });
+  }, [clearAllModals, push, query, showModal]);
 
   const handleViewTezosGallerisClick = useCallback(() => {
     document.getElementById('featured-tezos')?.scrollIntoView({ behavior: 'smooth' });
@@ -297,14 +311,6 @@ const DesktopIntroText = styled.span`
 
 const DesktopDescriptionText = styled(TitleM)`
   font-style: normal;
-`;
-
-const DesktopDescriptionTextItalic = styled.span`
-  // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
-  font-family: 'GT Alpina Condensed';
-  font-size: 24px;
-  font-weight: 800;
-  font-style: italic;
 `;
 
 const DesktopButtonContainer = styled.div`

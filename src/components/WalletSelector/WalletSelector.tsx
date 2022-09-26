@@ -17,9 +17,15 @@ type Props = {
   connectionMode?: ConnectionMode;
   queryRef: WalletSelectorFragment$key;
   variant?: WalletSelectorVariant;
+  onTezosAddWalletSuccess?: () => void;
 };
 
-export default function WalletSelector({ queryRef, connectionMode = AUTH, variant }: Props) {
+export default function WalletSelector({
+  queryRef,
+  connectionMode = AUTH,
+  variant,
+  onTezosAddWalletSuccess,
+}: Props) {
   // Our feature flags are semi-global flags and I want to be able to toggle
   // this new multichain behavior on a per-user basis, to not block anyone if
   // authentication breaks while I am working on the new stuff. Anyone can opt
@@ -44,7 +50,12 @@ export default function WalletSelector({ queryRef, connectionMode = AUTH, varian
   );
 
   return isMultichain ? (
-    <MultichainWalletSelector connectionMode={connectionMode} queryRef={query} variant={variant} />
+    <MultichainWalletSelector
+      connectionMode={connectionMode}
+      queryRef={query}
+      variant={variant}
+      onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+    />
   ) : (
     <DeprecatedWalletSelector connectionMode={connectionMode} queryRef={query} />
   );

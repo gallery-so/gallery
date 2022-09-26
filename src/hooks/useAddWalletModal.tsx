@@ -10,9 +10,10 @@ import { useAddWalletModalQuery } from '__generated__/useAddWalletModalQuery.gra
 
 type ModalProps = {
   queryRef: useAddWalletModalFragment$key;
+  onTezosAddWalletSuccess?: () => void;
 };
 
-const AddWalletModal = ({ queryRef }: ModalProps) => {
+const AddWalletModal = ({ queryRef, onTezosAddWalletSuccess }: ModalProps) => {
   const query = useFragment(
     graphql`
       fragment useAddWalletModalFragment on Query {
@@ -24,7 +25,11 @@ const AddWalletModal = ({ queryRef }: ModalProps) => {
 
   return (
     <Container>
-      <WalletSelector connectionMode={ADD_WALLET_TO_USER} queryRef={query} />
+      <WalletSelector
+        connectionMode={ADD_WALLET_TO_USER}
+        queryRef={query}
+        onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+      />
     </Container>
   );
 };
@@ -41,9 +46,21 @@ export default function useAddWalletModal() {
     {}
   );
 
-  return useCallback(() => {
-    showModal({ content: <AddWalletModal queryRef={query} />, headerText: 'Connect your wallet' });
-  }, [query, showModal]);
+  return useCallback(
+    (props?: { onTezosAddWalletSuccess?: () => void }) => {
+      showModal({
+        id: 'add-wallet-modal',
+        content: (
+          <AddWalletModal
+            queryRef={query}
+            onTezosAddWalletSuccess={props?.onTezosAddWalletSuccess}
+          />
+        ),
+        headerText: 'Connect your wallet',
+      });
+    },
+    [query, showModal]
+  );
 }
 
 const Container = styled.div`

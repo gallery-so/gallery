@@ -24,12 +24,14 @@ type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
   variant?: WalletSelectorVariant;
+  onTezosAddWalletSuccess?: () => void;
 };
 
 export function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant = 'default',
+  onTezosAddWalletSuccess,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -89,7 +91,7 @@ export function MultichainWalletSelector({
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
-          <TezosAddWallet queryRef={query} reset={reset} />
+          <TezosAddWallet queryRef={query} reset={reset} onSuccess={onTezosAddWalletSuccess} />
         </StyledWalletSelector>
       );
     }
