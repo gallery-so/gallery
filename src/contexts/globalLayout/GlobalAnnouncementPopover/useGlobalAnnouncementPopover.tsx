@@ -91,8 +91,8 @@ export default function useGlobalAnnouncementPopover({
           isFullPage: true,
           headerVariant: 'thicc',
         });
-        // setDismissedOnLocalStorage(true);
-        // setDismissedOnSession(true);
+        setDismissedOnLocalStorage(true);
+        setDismissedOnSession(true);
       }, popoverDelayMs);
     }
 
