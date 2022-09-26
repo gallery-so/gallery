@@ -1,7 +1,10 @@
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
-import { MultichainWalletSelector } from './multichain/MultichainWalletSelector';
+import {
+  MultichainWalletSelector,
+  WalletSelectorVariant,
+} from './multichain/MultichainWalletSelector';
 import DeprecatedWalletSelector from './DeprecatedWalletSelector';
 
 // AUTH: authenticate with wallet (sign in)
@@ -13,9 +16,10 @@ export type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CO
 type Props = {
   connectionMode?: ConnectionMode;
   queryRef: WalletSelectorFragment$key;
+  variant?: WalletSelectorVariant;
 };
 
-export default function WalletSelector({ connectionMode = AUTH, queryRef }: Props) {
+export default function WalletSelector({ queryRef, connectionMode = AUTH, variant }: Props) {
   // Our feature flags are semi-global flags and I want to be able to toggle
   // this new multichain behavior on a per-user basis, to not block anyone if
   // authentication breaks while I am working on the new stuff. Anyone can opt
@@ -40,7 +44,7 @@ export default function WalletSelector({ connectionMode = AUTH, queryRef }: Prop
   );
 
   return isMultichain ? (
-    <MultichainWalletSelector connectionMode={connectionMode} queryRef={query} />
+    <MultichainWalletSelector connectionMode={connectionMode} queryRef={query} variant={variant} />
   ) : (
     <DeprecatedWalletSelector connectionMode={connectionMode} queryRef={query} />
   );

@@ -12,6 +12,7 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
+import { AuthModal } from 'hooks/useAuthModal';
 
 type Props = {
   queryRef: GlobalAnnouncementPopover$key;
@@ -22,12 +23,7 @@ type Props = {
 export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment GlobalAnnouncementPopover on Query {
-        ...GalleryOfTheWeekCardQueryFragment
-        galleryOfTheWeekWinners @required(action: LOG) {
-          dbid
-          ...GalleryOfTheWeekCardUserFragment
-        }
+      fragment GlobalAnnouncementPopoverFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -37,6 +33,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
           }
         }
         ...ManageWalletsModalFragment
+        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -48,14 +45,18 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
 
   const { showModal } = useModalActions();
 
-  const { galleryOfTheWeekWinners: rawData } = query;
-  const galleryOfTheWeekWinners = removeNullValues(rawData);
-
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   console.log(query);
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
+
+  const handleCreateGalleryClick = useCallback(() => {
+    showModal({
+      content: <AuthModal queryRef={query} variant="tezos-announcement" />,
+      headerText: 'Create account',
+    });
+  }, [query, showModal]);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
@@ -115,9 +116,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </MobileSecondaryHeaderContainer>
               <GalleryOfTheWeekContainer id="featured-tezos">
-                {galleryOfTheWeekWinners.map((userRef) => (
+                {/* {galleryOfTheWeekWinners.map((userRef) => (
                   <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-                ))}
+                ))} */}
               </GalleryOfTheWeekContainer>
             </VStack>
           </>
@@ -135,8 +136,10 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   </DesktopDescriptionText>
                   <DesktopButtonContainer>
                     <HStack gap={32}>
-                      {isAuthenticated && (
+                      {isAuthenticated ? (
                         <Button onClick={handleManageWalletsClick}>Add your Tezos wallet</Button>
+                      ) : (
+                        <Button onClick={handleCreateGalleryClick}>Create your gallery</Button>
                       )}
                       <TextButton onClick={handleViewTezosGallerisClick} text="Tezos Galleries ↓" />
                     </HStack>
@@ -155,9 +158,9 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </DesktopSecondaryHeaderContainer>
               <GalleryOfTheWeekContainer id="featured-tezos">
-                {galleryOfTheWeekWinners.map((userRef) => (
+                {/* {galleryOfTheWeekWinners.map((userRef) => (
                   <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-                ))}
+                ))} */}
               </GalleryOfTheWeekContainer>
             </VStack>
           </>
@@ -173,6 +176,8 @@ const StyledGlobalAnnouncementPopover = styled.div`
   align-items: center;
   background: ${colors.offWhite};
   padding: 92px 16px 0px;
+
+  min-height: 100vh;
 `;
 
 ////////////////////////// MOBILE //////////////////////////

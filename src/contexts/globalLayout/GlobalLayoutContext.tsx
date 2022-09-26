@@ -235,7 +235,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   // Keeping this around for the next time we want to use it
-  useGlobalAnnouncementPopover(query);
+  useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   return (
     // note: we render the navbar here, above the main contents of the app,
