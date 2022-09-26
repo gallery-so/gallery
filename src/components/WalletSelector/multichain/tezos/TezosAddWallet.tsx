@@ -155,10 +155,11 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
     [
       trackAddWalletAttempt,
       createNonce,
-      addWallet,
-      hideModal,
       requestSignature,
+      addWallet,
       trackAddWalletSuccess,
+      hideModal,
+      onSuccess,
       trackAddWalletError,
     ]
   );

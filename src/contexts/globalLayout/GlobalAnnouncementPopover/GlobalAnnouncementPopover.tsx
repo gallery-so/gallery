@@ -279,10 +279,6 @@ const MobileButtonContainer = styled.div`
   width: 100%;
 `;
 
-const StyledMobileButton = styled(Button)`
-  width: 100%;
-`;
-
 const MobileStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
