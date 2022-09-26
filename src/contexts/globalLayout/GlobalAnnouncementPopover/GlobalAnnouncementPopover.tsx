@@ -155,10 +155,10 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   </VStack>
                   <MobileButtonContainer>
                     <VStack gap={16} align="center">
-                      {isAuthenticated && (
-                        <StyledMobileButton onClick={handleManageWalletsClick}>
-                          Add your Tezos wallet
-                        </StyledMobileButton>
+                      {isAuthenticated ? (
+                        <Button onClick={handleManageWalletsClick}>Add your Tezos wallet</Button>
+                      ) : (
+                        <Button onClick={handleCreateGalleryClick}>Create your gallery</Button>
                       )}
                       <TextButton onClick={handleViewTezosGallerisClick} text="Tezos Galleries ↓" />
                     </VStack>
@@ -178,9 +178,13 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </MobileSecondaryHeaderContainer>
               <GalleryOfTheWeekContainer id="featured-tezos">
-                {/* {galleryOfTheWeekWinners.map((userRef) => (
-                  <GalleryOfTheWeekCard key={userRef.dbid} queryRef={query} userRef={userRef} />
-                ))} */}
+                {collections.map((collection) => (
+                  <FeaturedTezosCollectorCard
+                    key={collection.dbid}
+                    queryRef={query}
+                    collectionRef={collection}
+                  />
+                ))}
               </GalleryOfTheWeekContainer>
             </VStack>
           </>
