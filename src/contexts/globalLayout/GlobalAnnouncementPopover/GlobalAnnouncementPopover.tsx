@@ -116,8 +116,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     document.getElementById('featured-tezos')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  console.log('globalannouncementpopover', query);
-
   // TODO: definitely shouldn't have to do this, but for some reason typescript doesn't understand
   // that `.filter` should remove any entities that are not of typename `Collection`
   const collections = (removeNullValues(query.collections).filter(
