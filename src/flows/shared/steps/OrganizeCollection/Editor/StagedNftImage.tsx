@@ -110,7 +110,7 @@ function StagedNftImageImage({
 
   return (
     <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>
-      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} />}
+      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} interactive={false} />}
     </StyledGridImage>
   );
 }
@@ -145,7 +145,7 @@ function StagedNftImageVideo({
   return (
     <VideoContainer ref={setNodeRef} size={size} {...props}>
       <StyledGridVideo onLoad={onLoad} src={url} />
-      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} />}
+      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} interactive={false} />}
     </VideoContainer>
   );
 }
