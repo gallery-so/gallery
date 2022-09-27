@@ -76,7 +76,7 @@ function UserGalleryHeader({
 
   const userBadges = useMemo(() => {
     if (!badges || !isArtGobblersEnabled) return [];
-    return badges.filter((badge) => badge?.name && badge.imageURL);
+    return badges.filter((badge) => badge?.imageURL);
   }, [badges, isArtGobblersEnabled]);
 
   return (
