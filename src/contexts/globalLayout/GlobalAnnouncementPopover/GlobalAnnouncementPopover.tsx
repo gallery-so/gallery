@@ -41,6 +41,10 @@ export const FEATURED_TEZOS_COLLECTION_IDS = [
   '2FJJtUdlivSVsyWMno5tSbZumlj',
   // sbiernacki
   '2F0BXXyhwhzNFO7Kh02Jw95y9WE',
+  // theblkchain
+  '2FJZqjWN1z87BcedVCOjS6wf2bh',
+  //jeres
+  '2F86xvV2khiVFAIRe7KnFCKFpM7',
 ];
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
