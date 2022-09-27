@@ -86,7 +86,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
             <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
             <BaseM>
               added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
-              {collectionName && `, `}
+              {collectionName ? `, ` : ' '}
             </BaseM>
             <HStack gap={4} inline>
               {collectionName && (
