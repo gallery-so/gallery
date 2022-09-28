@@ -7,12 +7,16 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import formatUrl from 'utils/formatUrl';
-import { VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
+import colors from 'components/core/colors';
+import LayoutToggleButton from './LayoutToggleButton';
+import { DisplayLayout } from 'components/core/enums';
+import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -37,6 +41,9 @@ export default function CommunityPageView({ communityRef }: Props) {
   );
   const { name, description } = community;
   const isMobile = useIsMobileWindowWidth();
+
+  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.LIST);
+  const isGrid = useMemo(() => layout === DisplayLayout.LIST, [layout]);
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -63,30 +70,53 @@ export default function CommunityPageView({ communityRef }: Props) {
   return (
     <MemberListPageProvider>
       <StyledCommunityPageContainer>
-        <StyledHeader>
-          <TitleL>{name}</TitleL>
-          {description && (
-            <StyledDescriptionWrapper gap={8}>
-              <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-                <Markdown text={formattedDescription} />
-              </StyledBaseM>
-              {isLineClampEnabled && (
-                <TextButton
-                  text={showExpandedDescription ? 'Show less' : 'Show More'}
-                  onClick={handleShowMoreClick}
-                />
+        <VStack gap={24}>
+          <HStack>
+            <StyledHeader>
+              <TitleL>{name}</TitleL>
+              {description && (
+                <StyledDescriptionWrapper gap={8}>
+                  <StyledBaseM
+                    showExpandedDescription={showExpandedDescription}
+                    ref={descriptionRef}
+                  >
+                    <Markdown text={formattedDescription} />
+                  </StyledBaseM>
+                  {isLineClampEnabled && (
+                    <TextButton
+                      text={showExpandedDescription ? 'Show less' : 'Show More'}
+                      onClick={handleShowMoreClick}
+                    />
+                  )}
+                </StyledDescriptionWrapper>
               )}
-            </StyledDescriptionWrapper>
+            </StyledHeader>
+            <StyledLayoutToggleButtonContainer>
+              <LayoutToggleButton layout={layout} setLayout={setLayout} />
+            </StyledLayoutToggleButtonContainer>
+          </HStack>
+
+          <StyledBreakLine />
+
+          {!isGrid && (
+            <StyledMemberListFilterContainer isMobile={isMobile}>
+              <MemberListFilter />
+            </StyledMemberListFilterContainer>
           )}
-        </StyledHeader>
 
-        <StyledMemberListFilterContainer isMobile={isMobile}>
-          <MemberListFilter />
-        </StyledMemberListFilterContainer>
-
-        <StyledListWrapper>
-          <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
-        </StyledListWrapper>
+          {isGrid ? (
+            <StyledListWrapper>
+              <CommunityHolderGrid />
+            </StyledListWrapper>
+          ) : (
+            <StyledListWrapper>
+              <TokenHolderList
+                title="Members in this community"
+                tokenHoldersRef={community.owners}
+              />
+            </StyledListWrapper>
+          )}
+        </VStack>
       </StyledCommunityPageContainer>
     </MemberListPageProvider>
   );
@@ -129,6 +159,17 @@ const StyledHeader = styled.div`
   width: 100%;
 `;
 
+const StyledLayoutToggleButtonContainer = styled.div`
+  align-self: flex-end;
+`;
+
+const StyledBreakLine = styled.hr`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.faint};
+  border: none;
+`;
+
 const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '32px 0' : '80px 0 64px')};
+  padding: ${({ isMobile }) => (isMobile ? '0 0 32px 0' : '0 0 48px 0')};
 `;
