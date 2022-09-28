@@ -7,7 +7,8 @@
       "@types/puppeteer-core",
       "@synthetixio/synpress/support",
       "cypress-wait-until",
-      "@testing-library/cypress"
+      "@testing-library/cypress",
+      "@percy/cypress"
     ],
     "outDir": "./output"
   },

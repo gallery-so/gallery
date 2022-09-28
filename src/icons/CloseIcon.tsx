@@ -32,12 +32,14 @@ type DecoratedCloseIconProps = {
   className?: string;
   onClick?: () => void;
   variant?: ModalPaddingVariant;
+  dataTestId?: string;
 };
 
 export function DecoratedCloseIcon({
   className,
   onClick,
   variant = 'standard',
+  dataTestId,
 }: DecoratedCloseIconProps) {
   const [isHoveringOverCloseIcon, setIsHoveringOverCloseIcon] = useState(false);
 
@@ -56,6 +58,7 @@ export function DecoratedCloseIcon({
       onMouseEnter={handleCloseHover}
       onMouseLeave={handleCloseLeave}
       variant={variant}
+      data-testid={dataTestId}
     >
       <CloseIcon isActive={isHoveringOverCloseIcon} />
     </StyledDecoratedCloseIcon>

@@ -6,6 +6,7 @@ describe('Homepage test', () => {
   beforeEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps();
     cy.visit('/');
+    home.closeGlobalAnnouncement();
   });
 
   it('should render the homepage', () => {

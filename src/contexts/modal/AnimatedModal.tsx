@@ -88,7 +88,11 @@ function AnimatedModal({
           >
             <StyledHeader>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
-              <StyledDecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+              <StyledDecoratedCloseIcon
+                onClick={hideModal}
+                variant={headerVariant}
+                dataTestId="close-modal"
+              />
             </StyledHeader>
             {content}
           </StyledContent>
