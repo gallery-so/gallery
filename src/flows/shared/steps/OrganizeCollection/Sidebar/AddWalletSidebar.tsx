@@ -1,5 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import { VStack } from 'components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -27,7 +28,11 @@ export function AddWalletSidebar({ queryRef }: Props) {
   }, [query, showModal]);
 
   return (
-    <VStack align="center" grow justify="center">
+    <VStack gap={8} align="center" grow justify="center">
+      <VStack align="center">
+        <TitleDiatypeL>It&apos;s looking empty</TitleDiatypeL>
+        <BaseM>You do not have any Tezos NFTs</BaseM>
+      </VStack>
       <Button variant="secondary" onClick={handleManageWalletsClick}>
         Connect Tezos Wallet
       </Button>

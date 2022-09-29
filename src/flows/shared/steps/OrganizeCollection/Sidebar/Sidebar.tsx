@@ -79,8 +79,9 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
   // Only show blank space + add account button
-  // if the user don't have tezos account
-  // & the selected chain is tezos
+  // 1. if the user don't have tezos account
+  // 2. the selected chain is tezos
+  // In future, we might enabled this on other chain too
   const isTezosAccountConnected = useMemo(() => {
     if (selectedChain !== 'Tezos') return true;
 
