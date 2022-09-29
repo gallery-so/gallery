@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql, useFragment } from 'react-relay';
@@ -29,6 +29,9 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           ... on Viewer {
             user {
               dbid
+              wallets {
+                chain
+              }
             }
           }
         }
@@ -66,6 +69,14 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   const [showTooltip, setShowTooltip] = useState(false);
 
   const selectedChain = chains.find((chain) => chain.name === selected);
+
+  const userHasTezosWallet = useMemo(() => {
+    return query.viewer?.user?.wallets?.some((wallet) => wallet?.chain === 'Tezos');
+  }, [query.viewer?.user?.wallets]);
+
+  const disabledTezosRefreshButton = useMemo(() => {
+    return selectedChain?.name === 'Tezos' && !userHasTezosWallet;
+  }, [selectedChain, userHasTezosWallet]);
 
   const handleChainClick = useCallback(
     (chain: Chain) => {
@@ -147,6 +158,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
+          disabled={disabledTezosRefreshButton}
         >
           <StyledIconContainer icon={<RefreshIcon />} />
           <RefreshTooltip
@@ -192,6 +204,12 @@ const IconButton = styled.button<{ refreshing: boolean }>`
           }
         `
       : ''};
+
+  :disabled {
+    ${StyledIconContainer} {
+      cursor: not-allowed;
+    }
+  }
 `;
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
