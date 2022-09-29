@@ -104,8 +104,6 @@ export const SidebarTokens = ({
   );
 
   if (rows.length === 0) {
-    // TODO: If there is no tezos show CTA button
-
     return (
       <EmptySidebar reason={isSearching ? 'no-search-results' : 'no-nfts'} chain={selectedChain} />
     );

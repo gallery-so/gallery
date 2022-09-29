@@ -21,6 +21,7 @@ import { generate12DigitId } from 'utils/collectionLayout';
 import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { VStack } from 'components/core/Spacer/Stack';
+import { AddWalletSidebar } from './AddWalletSidebar';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -50,7 +51,10 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           ... on Viewer {
             user {
               wallets {
-                chain
+                chainAddress {
+                  address
+                  chain
+                }
               }
             }
           }
@@ -58,6 +62,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
         ...SidebarChainSelectorFragment
         ...isFeatureEnabledFragment
+        ...AddWalletSidebarQueryFragment
       }
     `,
     queryRef
@@ -73,11 +78,14 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const nonNullTokens = removeNullValues(allTokens);
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  const isShowAddBlankSpace = useMemo(() => {
+  // Only show blank space + add account button
+  // if the user don't have tezos account
+  // & the selected chain is tezos
+  const isTezosAccountConnected = useMemo(() => {
     if (selectedChain !== 'Tezos') return true;
 
     const isUserHasTezosWallet = query.viewer?.user?.wallets?.some(
-      (wallet) => wallet?.chain === 'Tezos'
+      (wallet) => wallet?.chainAddress?.chain === 'Tezos'
     );
 
     return isUserHasTezosWallet;
@@ -148,7 +156,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
               selected={selectedChain}
               onChange={setSelectedChain}
             />
-            {isShowAddBlankSpace && (
+            {isTezosAccountConnected && (
               <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
                 ADD BLANK SPACE
               </AddBlankSpaceButton>
@@ -156,12 +164,17 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           </>
         )}
       </StyledSidebarContainer>
-      <SidebarTokens
-        isSearching={isSearching}
-        tokenRefs={nonNullTokens}
-        selectedChain={selectedChain}
-        editModeTokens={tokensToDisplay}
-      />
+
+      {isTezosAccountConnected ? (
+        <SidebarTokens
+          isSearching={isSearching}
+          tokenRefs={nonNullTokens}
+          selectedChain={selectedChain}
+          editModeTokens={tokensToDisplay}
+        />
+      ) : (
+        <AddWalletSidebar queryRef={query} />
+      )}
     </StyledSidebar>
   );
 }
