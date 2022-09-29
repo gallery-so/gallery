@@ -88,7 +88,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       (wallet) => wallet?.chainAddress?.chain === 'Tezos'
     );
 
-    return isUserHasTezosWallet;
+    return isUserHasTezosWallet ?? false;
   }, [query, selectedChain]);
 
   const editModeTokensSearchResults = useMemo(() => {
@@ -152,6 +152,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         {!isSearching && (
           <>
             <SidebarChainSelector
+              isTezosAccountConnected={isTezosAccountConnected}
               queryRef={query}
               selected={selectedChain}
               onChange={setSelectedChain}

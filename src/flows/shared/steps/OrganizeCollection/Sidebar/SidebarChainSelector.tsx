@@ -16,12 +16,18 @@ import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/cha
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {
+  isTezosAccountConnected: boolean;
   selected: Chain;
   onChange: (chain: Chain) => void;
   queryRef: SidebarChainSelectorFragment$key;
 };
 
-export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarChainsProps) {
+export function SidebarChainSelector({
+  isTezosAccountConnected,
+  selected,
+  onChange,
+  queryRef,
+}: SidebarChainsProps) {
   const query = useFragment(
     graphql`
       fragment SidebarChainSelectorFragment on Query {
@@ -29,9 +35,6 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           ... on Viewer {
             user {
               dbid
-              wallets {
-                chain
-              }
             }
           }
         }
@@ -69,14 +72,6 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   const [showTooltip, setShowTooltip] = useState(false);
 
   const selectedChain = chains.find((chain) => chain.name === selected);
-
-  const userHasTezosWallet = useMemo(() => {
-    return query.viewer?.user?.wallets?.some((wallet) => wallet?.chain === 'Tezos');
-  }, [query.viewer?.user?.wallets]);
-
-  const disabledTezosRefreshButton = useMemo(() => {
-    return selectedChain?.name === 'Tezos' && !userHasTezosWallet;
-  }, [selectedChain, userHasTezosWallet]);
 
   const handleChainClick = useCallback(
     (chain: Chain) => {
@@ -158,7 +153,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
-          disabled={disabledTezosRefreshButton}
+          disabled={!isTezosAccountConnected}
         >
           <StyledIconContainer icon={<RefreshIcon />} />
           <RefreshTooltip
