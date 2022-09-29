@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql, useFragment } from 'react-relay';
