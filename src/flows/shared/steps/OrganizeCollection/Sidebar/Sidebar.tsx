@@ -46,6 +46,16 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment SidebarViewerFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              wallets {
+                chain
+              }
+            }
+          }
+        }
+
         ...SidebarChainSelectorFragment
         ...isFeatureEnabledFragment
       }
@@ -63,6 +73,16 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const nonNullTokens = removeNullValues(allTokens);
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
+  const isShowAddBlankSpace = useMemo(() => {
+    if (selectedChain !== 'Tezos') return true;
+
+    const isUserHasTezosWallet = query.viewer?.user?.wallets?.some(
+      (wallet) => wallet?.chain === 'Tezos'
+    );
+
+    return isUserHasTezosWallet;
+  }, [query, selectedChain]);
+
   const editModeTokensSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
       return sidebarTokensAsArray;
@@ -78,10 +98,9 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     return searchResultNfts;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const nftFragmentsKeyedByID = useMemo(
-    () => keyBy(nonNullTokens, (token) => token.dbid),
-    [nonNullTokens]
-  );
+  const nftFragmentsKeyedByID = useMemo(() => keyBy(nonNullTokens, (token) => token.dbid), [
+    nonNullTokens,
+  ]);
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
@@ -129,9 +148,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
               selected={selectedChain}
               onChange={setSelectedChain}
             />
-            <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
-              ADD BLANK SPACE
-            </AddBlankSpaceButton>
+            {isShowAddBlankSpace && (
+              <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
+                ADD BLANK SPACE
+              </AddBlankSpaceButton>
+            )}
           </>
         )}
       </StyledSidebarContainer>
