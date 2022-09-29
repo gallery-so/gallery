@@ -84,8 +84,8 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
-        {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on FxHash</InteractiveLink>}
-        {objktUrl && <InteractiveLink href={objktUrl}>View on Objkt</InteractiveLink>}
+        {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
+        {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
         <InteractiveLink onClick={refresh} disabled={isRefreshing}>
           Refresh metadata
         </InteractiveLink>
