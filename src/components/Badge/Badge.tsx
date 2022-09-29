@@ -1,15 +1,29 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Tooltip from 'components/Tooltip/Tooltip';
 import { useCallback, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { BadgeFragment$key } from '__generated__/BadgeFragment.graphql';
 
 type Props = {
-  name: string;
-  imageURL: string;
+  badgeRef: BadgeFragment$key;
 };
 
-export default function Badge({ name, imageURL }: Props) {
+export default function Badge({ badgeRef }: Props) {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const badge = useFragment(
+    graphql`
+      fragment BadgeFragment on Badge {
+        name
+        imageURL
+      }
+    `,
+    badgeRef
+  );
+
+  const { name, imageURL } = badge;
+
   const handleMouseEnter = useCallback(() => {
     setShowTooltip(true);
   }, []);
@@ -23,7 +37,7 @@ export default function Badge({ name, imageURL }: Props) {
 
   return (
     <InteractiveLink to={communityUrl}>
-      <StyledTooltip text={name} showTooltip={showTooltip} />
+      <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <StyledBadge src={imageURL} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit} />
     </InteractiveLink>
   );
@@ -31,7 +45,7 @@ export default function Badge({ name, imageURL }: Props) {
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : 0)}px);
+  transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
 `;
 
 const StyledBadge = styled.img`

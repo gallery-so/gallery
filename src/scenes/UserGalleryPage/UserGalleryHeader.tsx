@@ -48,6 +48,7 @@ function UserGalleryHeader({
         badges {
           name
           imageURL
+          ...BadgeFragment
         }
       }
     `,
@@ -76,7 +77,8 @@ function UserGalleryHeader({
 
   const userBadges = useMemo(() => {
     if (!badges || !isArtGobblersEnabled) return [];
-    return badges.filter((badge) => badge?.imageURL);
+
+    return badges.filter((badge) => badge && badge?.imageURL);
   }, [badges, isArtGobblersEnabled]);
 
   return (
@@ -88,9 +90,10 @@ function UserGalleryHeader({
           ) : (
             <StyledUsername>{displayName}</StyledUsername>
           )}
-          {userBadges.map((badge) => (
-            <Badge key={badge?.name} name={badge?.name || ''} imageURL={badge?.imageURL || ''} />
-          ))}
+          {userBadges.map((badge) => {
+            if (!badge) return null;
+            return <Badge key={badge?.name} badgeRef={badge} />;
+          })}
         </HStack>
 
         <StyledButtonsWrapper gap={8} align="center" justify="space-between">
