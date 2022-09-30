@@ -48,6 +48,7 @@ function CreateFirstCollection({ next }: WizardContext) {
 
 const StyledBodyText = styled(BaseM)`
   max-width: 390px;
+  text-align: center;
 `;
 
 const StyledButton = styled(Button)`
