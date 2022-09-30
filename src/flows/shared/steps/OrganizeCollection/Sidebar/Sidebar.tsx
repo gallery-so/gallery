@@ -79,17 +79,19 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
   // Only show blank space + add account button
-  // 1. if the user don't have tezos account
-  // 2. the selected chain is tezos
-  // In future, we might enabled this on other chain too
-  const isTezosAccountConnected = useMemo(() => {
-    if (selectedChain !== 'Tezos') return true;
+  // 1. if the user don't have selected account
+  // 2. the selected chain is selected account
+  const ownsWalletFromSelectedChain = useMemo(() => {
+    let chain = selectedChain;
+    if (selectedChain === 'POAP') {
+      chain = 'Ethereum';
+    }
 
-    const isUserHasTezosWallet = query.viewer?.user?.wallets?.some(
-      (wallet) => wallet?.chainAddress?.chain === 'Tezos'
+    const ownsWalletFromChain = query.viewer?.user?.wallets?.some(
+      (wallet) => wallet?.chainAddress?.chain === chain
     );
 
-    return isUserHasTezosWallet ?? false;
+    return ownsWalletFromChain ?? false;
   }, [query, selectedChain]);
 
   const editModeTokensSearchResults = useMemo(() => {
@@ -153,12 +155,12 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         {!isSearching && (
           <>
             <SidebarChainSelector
-              isTezosAccountConnected={isTezosAccountConnected}
+              isTezosAccountConnected={ownsWalletFromSelectedChain}
               queryRef={query}
               selected={selectedChain}
               onChange={setSelectedChain}
             />
-            {isTezosAccountConnected && (
+            {ownsWalletFromSelectedChain && (
               <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
                 ADD BLANK SPACE
               </AddBlankSpaceButton>
@@ -166,8 +168,9 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           </>
         )}
       </StyledSidebarContainer>
+      <AddWalletSidebar selectedChain={selectedChain} queryRef={query} />
 
-      {isTezosAccountConnected ? (
+      {ownsWalletFromSelectedChain ? (
         <SidebarTokens
           isSearching={isSearching}
           tokenRefs={nonNullTokens}
@@ -175,7 +178,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           editModeTokens={tokensToDisplay}
         />
       ) : (
-        <AddWalletSidebar queryRef={query} />
+        <AddWalletSidebar selectedChain={selectedChain} queryRef={query} />
       )}
     </StyledSidebar>
   );
