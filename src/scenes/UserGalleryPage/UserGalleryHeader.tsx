@@ -90,10 +90,7 @@ function UserGalleryHeader({
           ) : (
             <StyledUsername>{displayName}</StyledUsername>
           )}
-          {userBadges.map((badge) => {
-            if (!badge) return null;
-            return <Badge key={badge?.name} badgeRef={badge} />;
-          })}
+          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
         </HStack>
 
         <StyledButtonsWrapper gap={8} align="center" justify="space-between">
