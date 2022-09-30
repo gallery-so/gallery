@@ -18,9 +18,13 @@ import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import Badge from 'components/Badge/Badge';
+import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
+import { UserGalleryHeaderQueryFragment$key } from '__generated__/UserGalleryHeaderQueryFragment.graphql';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
+  queryRef: UserGalleryHeaderQueryFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
@@ -29,6 +33,7 @@ type Props = {
 
 function UserGalleryHeader({
   userRef,
+  queryRef,
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
@@ -40,12 +45,26 @@ function UserGalleryHeader({
         username @required(action: THROW)
         dbid
         bio
+        badges {
+          name
+          imageURL
+          ...BadgeFragment
+        }
       }
     `,
     userRef
   );
 
-  const { username, bio } = user;
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryHeaderQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { username, bio, badges } = user;
 
   const is3ac = useIs3acProfilePage();
   const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
@@ -54,14 +73,26 @@ function UserGalleryHeader({
 
   const styledQrCode = useQrCode();
 
+  const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
+
+  const userBadges = useMemo(() => {
+    if (!badges || !isArtGobblersEnabled) return [];
+
+    return badges.filter((badge) => badge && badge?.imageURL);
+  }, [badges, isArtGobblersEnabled]);
+
   return (
     <StyledUserGalleryHeader gap={2}>
-      <StyledUsernameWrapper>
-        {isMobile ? (
-          <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
-        ) : (
-          <StyledUsername>{displayName}</StyledUsername>
-        )}
+      <HStack align="flex-start" justify="space-between">
+        <HStack align="center" gap={8}>
+          {isMobile ? (
+            <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
+          ) : (
+            <StyledUsername>{displayName}</StyledUsername>
+          )}
+          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        </HStack>
+
         <StyledButtonsWrapper gap={8} align="center" justify="space-between">
           {isMobile && (
             <>
@@ -73,7 +104,7 @@ function UserGalleryHeader({
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledButtonsWrapper>
-      </StyledUsernameWrapper>
+      </HStack>
       <StyledUserDetails>
         {is3ac ? (
           <ExpandableBio text={unescapedBio} />
@@ -137,21 +168,17 @@ const StyledUserGalleryHeader = styled(VStack)`
   width: 100%;
 `;
 
-const StyledUsernameWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+  flex: 1;
 `;
 
 const StyledUsernameMobile = styled(TitleM)`
   font-style: normal;
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+  flex: 1;
 `;
 
 const StyledButtonsWrapper = styled(HStack)`

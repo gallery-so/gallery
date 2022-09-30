@@ -4,18 +4,22 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 
 export enum FeatureFlag {
   REFRESH_METADATA = 'REFRESH_METADATA',
+  ART_GOBBLERS = 'ART_GOBBLERS',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
+  ART_GOBBLERS: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
+  ART_GOBBLERS: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
+  ART_GOBBLERS: false,
 };
 
 const EMPLOYEE_USER_IDS = new Set(
