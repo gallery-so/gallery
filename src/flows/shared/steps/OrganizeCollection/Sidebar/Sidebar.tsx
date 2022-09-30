@@ -168,7 +168,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           </>
         )}
       </StyledSidebarContainer>
-      <AddWalletSidebar selectedChain={selectedChain} queryRef={query} />
 
       {ownsWalletFromSelectedChain ? (
         <SidebarTokens
