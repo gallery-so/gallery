@@ -32,8 +32,8 @@ function CreateFirstCollection({ next }: WizardContext) {
 
   return (
     <FullPageCenteredStep withFooter>
-      <VStack gap={24}>
-        <VStack gap={8}>
+      <VStack gap={24} align="center">
+        <VStack gap={8} align="center">
           <BaseXL>Create your first collection</BaseXL>
           <StyledBodyText>
             Organize your gallery with collections. Use them to group NFTs by creator, theme, or
@@ -48,7 +48,6 @@ function CreateFirstCollection({ next }: WizardContext) {
 
 const StyledBodyText = styled(BaseM)`
   max-width: 390px;
-  text-align: center;
 `;
 
 const StyledButton = styled(Button)`
