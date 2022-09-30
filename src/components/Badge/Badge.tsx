@@ -1,6 +1,6 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Tooltip from 'components/Tooltip/Tooltip';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { BadgeFragment$key } from '__generated__/BadgeFragment.graphql';
@@ -17,12 +17,28 @@ export default function Badge({ badgeRef }: Props) {
       fragment BadgeFragment on Badge {
         name
         imageURL
+        contract {
+          chain
+          contractAddress {
+            address
+          }
+        }
       }
     `,
     badgeRef
   );
 
-  const { name, imageURL } = badge;
+  const { name, imageURL, contract } = badge;
+
+  const communityUrl = useMemo(() => {
+    if (contract?.chain === 'POAP') {
+      return `/community/poap/${contract?.contractAddress?.address}`;
+    } else if (contract?.chain === 'Tezos') {
+      return `/community/tez/${contract?.contractAddress?.address}`;
+    } else {
+      return `/community/${contract?.contractAddress?.address}`;
+    }
+  }, [contract]);
 
   const handleMouseEnter = useCallback(() => {
     setShowTooltip(true);
@@ -31,9 +47,6 @@ export default function Badge({ badgeRef }: Props) {
   const handleMouseExit = useCallback(() => {
     setShowTooltip(false);
   }, []);
-
-  // TODO: replace with badge contract address
-  const communityUrl = '/community/0x31982936afe7fc432ec1a2766bdba4d07a779b30';
 
   return (
     <InteractiveLink to={communityUrl}>
