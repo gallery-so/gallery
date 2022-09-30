@@ -21,6 +21,7 @@ import { generate12DigitId } from 'utils/collectionLayout';
 import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarTokens';
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { VStack } from 'components/core/Spacer/Stack';
+import { AddWalletSidebar } from './AddWalletSidebar';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -46,8 +47,22 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment SidebarViewerFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              wallets {
+                chainAddress {
+                  address
+                  chain
+                }
+              }
+            }
+          }
+        }
+
         ...SidebarChainSelectorFragment
         ...isFeatureEnabledFragment
+        ...AddWalletSidebarQueryFragment
       }
     `,
     queryRef
@@ -62,6 +77,22 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   const nonNullTokens = removeNullValues(allTokens);
   const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
+
+  // Only show blank space + add account button
+  // 1. if the user don't have selected account
+  // 2. the selected chain is selected account
+  const ownsWalletFromSelectedChain = useMemo(() => {
+    let chain = selectedChain;
+    if (selectedChain === 'POAP') {
+      chain = 'Ethereum';
+    }
+
+    const ownsWalletFromChain = query.viewer?.user?.wallets?.some(
+      (wallet) => wallet?.chainAddress?.chain === chain
+    );
+
+    return ownsWalletFromChain ?? false;
+  }, [query, selectedChain]);
 
   const editModeTokensSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
@@ -78,10 +109,9 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     return searchResultNfts;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const nftFragmentsKeyedByID = useMemo(
-    () => keyBy(nonNullTokens, (token) => token.dbid),
-    [nonNullTokens]
-  );
+  const nftFragmentsKeyedByID = useMemo(() => keyBy(nonNullTokens, (token) => token.dbid), [
+    nonNullTokens,
+  ]);
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;
@@ -125,22 +155,30 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         {!isSearching && (
           <>
             <SidebarChainSelector
+              ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
               queryRef={query}
               selected={selectedChain}
               onChange={setSelectedChain}
             />
-            <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
-              ADD BLANK SPACE
-            </AddBlankSpaceButton>
+            {ownsWalletFromSelectedChain && (
+              <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
+                ADD BLANK SPACE
+              </AddBlankSpaceButton>
+            )}
           </>
         )}
       </StyledSidebarContainer>
-      <SidebarTokens
-        isSearching={isSearching}
-        tokenRefs={nonNullTokens}
-        selectedChain={selectedChain}
-        editModeTokens={tokensToDisplay}
-      />
+
+      {ownsWalletFromSelectedChain ? (
+        <SidebarTokens
+          isSearching={isSearching}
+          tokenRefs={nonNullTokens}
+          selectedChain={selectedChain}
+          editModeTokens={tokensToDisplay}
+        />
+      ) : (
+        <AddWalletSidebar selectedChain={selectedChain} queryRef={query} />
+      )}
     </StyledSidebar>
   );
 }

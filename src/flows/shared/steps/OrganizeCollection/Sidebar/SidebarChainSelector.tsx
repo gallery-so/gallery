@@ -16,12 +16,18 @@ import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/cha
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {
+  ownsWalletFromSelectedChain: boolean;
   selected: Chain;
   onChange: (chain: Chain) => void;
   queryRef: SidebarChainSelectorFragment$key;
 };
 
-export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarChainsProps) {
+export function SidebarChainSelector({
+  ownsWalletFromSelectedChain,
+  selected,
+  onChange,
+  queryRef,
+}: SidebarChainsProps) {
   const query = useFragment(
     graphql`
       fragment SidebarChainSelectorFragment on Query {
@@ -147,6 +153,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
+          disabled={!ownsWalletFromSelectedChain}
         >
           <StyledIconContainer icon={<RefreshIcon />} />
           <RefreshTooltip
@@ -192,6 +199,12 @@ const IconButton = styled.button<{ refreshing: boolean }>`
           }
         `
       : ''};
+
+  :disabled {
+    ${StyledIconContainer} {
+      cursor: not-allowed;
+    }
+  }
 `;
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
