@@ -155,7 +155,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         {!isSearching && (
           <>
             <SidebarChainSelector
-              isTezosAccountConnected={ownsWalletFromSelectedChain}
+              ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
               queryRef={query}
               selected={selectedChain}
               onChange={setSelectedChain}

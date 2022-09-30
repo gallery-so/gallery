@@ -16,14 +16,14 @@ import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/cha
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {
-  isTezosAccountConnected: boolean;
+  ownsWalletFromSelectedChain: boolean;
   selected: Chain;
   onChange: (chain: Chain) => void;
   queryRef: SidebarChainSelectorFragment$key;
 };
 
 export function SidebarChainSelector({
-  isTezosAccountConnected,
+  ownsWalletFromSelectedChain,
   selected,
   onChange,
   queryRef,
@@ -153,7 +153,7 @@ export function SidebarChainSelector({
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
-          disabled={!isTezosAccountConnected}
+          disabled={!ownsWalletFromSelectedChain}
         >
           <StyledIconContainer icon={<RefreshIcon />} />
           <RefreshTooltip
