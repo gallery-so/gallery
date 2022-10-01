@@ -24,6 +24,7 @@ type Props = {
   connectionMode?: ConnectionMode;
   queryRef: MultichainWalletSelectorFragment$key;
   variant?: WalletSelectorVariant;
+  onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
 };
 
@@ -31,6 +32,7 @@ export function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant = 'default',
+  onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
 }: Props) {
   const query = useFragment(
@@ -57,7 +59,7 @@ export function MultichainWalletSelector({
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <StyledWalletSelector>
-          <EthereumAddWallet queryRef={query} reset={reset} />
+          <EthereumAddWallet queryRef={query} reset={reset} onSuccess={onEthAddWalletSuccess} />
         </StyledWalletSelector>
       );
     }

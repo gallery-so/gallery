@@ -30,14 +30,16 @@ import { signMessage } from '@wagmi/core';
 import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { VStack } from 'components/core/Spacer/Stack';
+import noop from 'utils/noop';
 
 type Props = {
   queryRef: EthereumAddWalletFragment$key;
   reset: () => void;
+  onSuccess?: () => void;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
+export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => {
   const { address, connector } = useAccount();
   const account = address?.toLowerCase();
   const isMetamask = connector?.id === 'metaMask';
@@ -121,10 +123,11 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
 
         trackAddWalletSuccess('Ethereum');
         hideModal();
+        onSuccess();
         setIsConnecting(false);
 
         return signatureValid;
-      } catch (error: unknown) {
+      } catch (error) {
         setIsConnecting(false);
         trackAddWalletError('Ethereum', error);
         // ignore early access errors
@@ -149,6 +152,7 @@ export const EthereumAddWallet = ({ queryRef, reset }: Props) => {
       hideModal,
       trackAddWalletSuccess,
       trackAddWalletError,
+      onSuccess,
     ]
   );
 

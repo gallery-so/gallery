@@ -34,7 +34,11 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
   const handleManageWalletsClick = useCallback(() => {
     showModal({
       content: (
-        <ManageWalletsModal queryRef={query} onTezosAddWalletSuccess={onNewWallectConnected} />
+        <ManageWalletsModal
+          queryRef={query}
+          onTezosAddWalletSuccess={onNewWallectConnected}
+          onEthAddWalletSuccess={onNewWallectConnected}
+        />
       ),
       headerText: 'Manage accounts',
     });

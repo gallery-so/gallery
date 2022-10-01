@@ -190,8 +190,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         },
       });
 
-      console.log(selectedChain);
-
       if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
         pushToast({
           autoClose: false,
