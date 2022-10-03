@@ -148,6 +148,7 @@ export default function FeedList({
                 rowCount={rowCount}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
+                // Need this to ensure we can use position: fixed beneath the element
                 style={{ willChange: 'auto' }}
               />
               {hasNext && (
