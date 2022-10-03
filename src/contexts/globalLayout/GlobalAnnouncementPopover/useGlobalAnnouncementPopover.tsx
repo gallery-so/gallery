@@ -68,6 +68,8 @@ export default function useGlobalAnnouncementPopover({
     if (asPath === '/edit') return true;
     // hide for new users onboarding
     if (asPath === '/welcome' || query.viewer?.user?.username === '') return true;
+    // hide for curated for now
+    if (asPath.toLowerCase().includes('curated')) return true;
 
     return false;
   }, [asPath, query.viewer?.user?.username]);
