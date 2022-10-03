@@ -14,6 +14,8 @@ import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/F
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
+import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
+import { FeatureFlag } from 'components/core/enums';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
@@ -123,23 +125,29 @@ export default function FeedEventWithBoundary({
       fragment FeedEventWithErrorBoundaryQueryFragment on Query {
         ...FeedEventQueryFragment
         ...FeedEventSocializeSectionQueryFragment
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.ADMIRE_COMMENT, query);
 
   return (
     <FeedEventErrorBoundary>
       <StyledVStack gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
-        <ErrorBoundary fallback={<></>}>
-          <FeedEventSocializeSection
-            eventRef={event}
-            queryRef={query}
-            onPotentialLayoutShift={onPotentialLayoutShift}
-          />
-        </ErrorBoundary>
+        {isAdmireCommentEnabled && (
+          <ErrorBoundary fallback={<></>}>
+            <FeedEventSocializeSection
+              eventRef={event}
+              queryRef={query}
+              onPotentialLayoutShift={onPotentialLayoutShift}
+            />
+          </ErrorBoundary>
+        )}
       </StyledVStack>
     </FeedEventErrorBoundary>
   );
