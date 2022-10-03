@@ -10,8 +10,8 @@ export enum FeatureFlag {
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  ADMIRE_COMMENT: false,
   ART_GOBBLERS: false,
+  ADMIRE_COMMENT: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
@@ -22,8 +22,8 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  ADMIRE_COMMENT: false,
   ART_GOBBLERS: false,
+  ADMIRE_COMMENT: false,
 };
 
 const EMPLOYEE_USER_IDS = new Set(
