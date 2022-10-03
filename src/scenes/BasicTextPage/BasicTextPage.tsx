@@ -1,5 +1,5 @@
 import { InternalMarkdown } from 'components/core/Markdown/Markdown';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { VStack } from 'components/core/Spacer/Stack';
 import { TitleL } from 'components/core/Text/Text';
 import styled from 'styled-components';
 
@@ -12,9 +12,8 @@ type Props = {
 export default function BasicTextPage({ title, body }: Props) {
   return (
     <StyledPage>
-      <StyledContent>
+      <StyledContent gap={64}>
         <TitleL>{title}</TitleL>
-        <DeprecatedSpacer height={64} />
         <StyledBody>
           <InternalMarkdown text={body} />
         </StyledBody>
@@ -31,7 +30,7 @@ const StyledPage = styled.div`
 `;
 
 // Apply a generalized version of Gallery's style to the body text
-const StyledContent = styled.div`
+const StyledContent = styled(VStack)`
   max-width: 800px;
   font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
   font-size: 14px;

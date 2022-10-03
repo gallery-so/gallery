@@ -1,16 +1,13 @@
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
 import { hexHandler } from 'utils/getOpenseaExternalUrl';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import isFeatureEnabled from 'utils/graphql/isFeatureEnabled';
-import { FeatureFlag } from 'components/core/enums';
 import styled from 'styled-components';
 import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__/NftAdditionalDetailsTezosFragment.graphql';
-import { NftAdditionalDetailsTezosQuery } from '../../../../__generated__/NftAdditionalDetailsTezosQuery.graphql';
 import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { getObjktExternalUrl } from 'utils/getObjktExternalUrl';
+import { getFxHashExternalUrl, getObjktExternalUrl } from 'utils/getTezosExternalUrl';
 import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
 import { LinkableAddress } from 'components/LinkableAddress';
 
@@ -43,26 +40,24 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
     tokenRef
   );
 
-  // TODO: We should thread a query ref down to this somehow
-  const query = useLazyLoadQuery<NftAdditionalDetailsTezosQuery>(
-    graphql`
-      query NftAdditionalDetailsTezosQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
-  );
-
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
   const { tokenId, contract, externalUrl } = token;
 
-  const objktExternalUrl = useMemo(() => {
+  const { fxhashUrl, objktUrl } = useMemo(() => {
     if (token.contract?.contractAddress?.address && token.tokenId) {
-      return getObjktExternalUrl(token.contract.contractAddress.address, hexHandler(token.tokenId));
+      const contractAddress = token.contract.contractAddress.address;
+      const tokenId = hexHandler(token.tokenId);
+      return {
+        fxhashUrl: getFxHashExternalUrl(contractAddress, tokenId),
+        objktUrl: getObjktExternalUrl(contractAddress, tokenId),
+      };
     }
 
-    return null;
+    return {
+      fxhashUrl: null,
+      objktUrl: null,
+    };
   }, [token.contract?.contractAddress?.address, token.tokenId]);
 
   return (
@@ -89,16 +84,11 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
-        {objktExternalUrl && (
-          <>
-            <InteractiveLink href={objktExternalUrl}>View on Objkt</InteractiveLink>
-            {isFeatureEnabled(FeatureFlag.REFRESH_METADATA, query) && (
-              <InteractiveLink onClick={refresh} disabled={isRefreshing}>
-                Refresh metadata
-              </InteractiveLink>
-            )}
-          </>
-        )}
+        {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
+        {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
+        <InteractiveLink onClick={refresh} disabled={isRefreshing}>
+          Refresh metadata
+        </InteractiveLink>
         {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
       </StyledLinkContainer>
     </VStack>

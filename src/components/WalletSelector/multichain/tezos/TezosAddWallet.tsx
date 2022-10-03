@@ -4,7 +4,6 @@ import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -31,14 +30,17 @@ import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
 import WalletOnboardingMessage from '../WalletOnboardingMessage';
+import { VStack } from 'components/core/Spacer/Stack';
+import noop from 'utils/noop';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;
   reset: () => void;
+  onSuccess?: () => void;
 };
 
 // This Pending screen is dislayed after the connector has been activated, while we wait for a signature
-export const TezosAddWallet = ({ queryRef, reset }: Props) => {
+export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error>();
@@ -128,6 +130,7 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
         trackAddWalletSuccess('Tezos');
         hideModal();
+        onSuccess();
         setIsConnecting(false);
 
         return signatureValid;
@@ -152,10 +155,11 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
     [
       trackAddWalletAttempt,
       createNonce,
-      addWallet,
-      hideModal,
       requestSignature,
+      addWallet,
       trackAddWalletSuccess,
+      hideModal,
+      onSuccess,
       trackAddWalletError,
     ]
   );
@@ -202,35 +206,33 @@ export const TezosAddWallet = ({ queryRef, reset }: Props) => {
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with Tezos</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account}</BaseM>
-      </div>
+      </VStack>
     );
   }
 
   // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account && publicKey) {
     return (
-      <div>
-        <TitleS>Connect with Tezos</TitleS>
-        <DeprecatedSpacer height={8} />
-        <BaseM>Confirm the following wallet address:</BaseM>
-        <DeprecatedSpacer height={8} />
-        <BaseM color={colors.offBlack}>{account}</BaseM>
-        <DeprecatedSpacer height={16} />
-        <BaseM>
-          If you want to connect a different address via Tezos wallet, please switch accounts in the
-          extension and try again.
-        </BaseM>
-        <DeprecatedSpacer height={24} />
+      <VStack gap={24}>
+        <VStack gap={16}>
+          <VStack gap={8}>
+            <TitleS>Connect with Tezos</TitleS>
+            <BaseM>Confirm the following wallet address:</BaseM>
+            <BaseM color={colors.offBlack}>{account}</BaseM>
+          </VStack>
+          <BaseM>
+            If you want to connect a different address via Tezos wallet, please switch accounts in
+            the extension and try again.
+          </BaseM>
+        </VStack>
         <StyledButton onClick={() => attemptAddWallet(account, publicKey)} disabled={isConnecting}>
           {isConnecting ? 'Connecting...' : 'Confirm'}
         </StyledButton>
-      </div>
+      </VStack>
     );
   }
 

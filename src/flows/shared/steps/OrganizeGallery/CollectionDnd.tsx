@@ -23,6 +23,7 @@ import { graphql, useFragment } from 'react-relay';
 import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import keyBy from 'lodash.keyby';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -137,9 +138,11 @@ function CollectionDnd({ galleryRef }: Props) {
       modifiers={modifiers}
     >
       <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
-        {sortedCollections.map((collection) => (
-          <CollectionRowWrapper key={collection.id} collectionRef={collection} />
-        ))}
+        <VStack gap={16}>
+          {sortedCollections.map((collection) => (
+            <CollectionRowWrapper key={collection.id} collectionRef={collection} />
+          ))}
+        </VStack>
       </SortableContext>
       <DragOverlay dropAnimation={dropAnimation}>
         {activeCollection ? <CollectionRowDragging collectionRef={activeCollection} /> : null}

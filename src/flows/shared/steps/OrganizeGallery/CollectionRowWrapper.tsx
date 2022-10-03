@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import SortableCollectionRow from './SortableCollectionRow';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowWrapperFragment$key } from '__generated__/CollectionRowWrapperFragment.graphql';
@@ -22,7 +21,6 @@ function CollectionRowWrapper({ collectionRef }: Props) {
   return (
     <StyledCollectionRowWrapper>
       <SortableCollectionRow collectionRef={collection} />
-      <DeprecatedSpacer height={16} />
     </StyledCollectionRowWrapper>
   );
 }

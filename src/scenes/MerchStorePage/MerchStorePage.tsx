@@ -8,7 +8,7 @@ import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalF
 import colors from 'components/core/colors';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { HStack } from 'components/core/Spacer/Stack';
 
 const items = [
   {
@@ -46,9 +46,10 @@ export default function MerchStorePage() {
       <Countdown />
       <StyledLogoContainer>
         <StyledLogoBracketLeft color={colors.offBlack} />
-        <StyledShopText>OBJECTS</StyledShopText>
-        <DeprecatedSpacer width={1} />
-        <StyledLogoBracketRight color={colors.offBlack} />
+        <HStack gap={1}>
+          <StyledShopText>OBJECTS</StyledShopText>
+          <StyledLogoBracketRight color={colors.offBlack} />
+        </HStack>
       </StyledLogoContainer>
       <StyledItemsContainer>
         {items.map((item) => (

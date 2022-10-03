@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import isFirefox from 'utils/isFirefox';
 import isSvg from 'utils/isSvg';
 import noop from 'utils/noop';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
+import { isFirefox } from 'utils/browser';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container

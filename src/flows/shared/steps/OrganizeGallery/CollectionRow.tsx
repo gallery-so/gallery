@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
@@ -16,6 +15,7 @@ import {
   BigNftContainer,
 } from 'flows/shared/steps/OrganizeGallery/BigNft';
 import { SmolNft, SmolNftContainer } from 'flows/shared/steps/OrganizeGallery/SmolNft';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   className?: string;
@@ -72,7 +72,7 @@ function CollectionRow({ collectionRef, className }: Props) {
   }, [unescapedCollectorsNote]);
 
   return (
-    <StyledCollectionRow className={className} isHidden={isHidden}>
+    <StyledCollectionRow gap={12} className={className} isHidden={isHidden}>
       <Header>
         <TextContainer>
           <TitleS>
@@ -90,7 +90,6 @@ function CollectionRow({ collectionRef, className }: Props) {
           </StyledBaseM>
         </TextContainer>
       </Header>
-      <DeprecatedSpacer height={12} />
       <Body>
         {firstThreeNfts.map((token) => (
           <BigNft key={token.id} tokenRef={token.token} />
@@ -108,10 +107,7 @@ type StyledCollectionRowProps = {
   isHidden?: boolean;
 };
 
-const StyledCollectionRow = styled.div<StyledCollectionRowProps>`
-  display: flex;
-  flex-direction: column;
-
+const StyledCollectionRow = styled(VStack)<StyledCollectionRowProps>`
   width: 100%;
   padding: 16px;
 
@@ -194,11 +190,12 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
     <StyledCompactNfts>
       <Content>
         {hasMoreThanFiveNfts ? (
-          <NftsWithMoreText>
-            {firstThreeNfts.map((token) => (
-              <SmolNft key={token.id} tokenRef={token} />
-            ))}
-            <DeprecatedSpacer width={2} />
+          <NftsWithMoreText gap={2} align="center">
+            <HStack>
+              {firstThreeNfts.map((token) => (
+                <SmolNft key={token.id} tokenRef={token} />
+              ))}
+            </HStack>
             <BaseM>+{overflowCountText} more</BaseM>
           </NftsWithMoreText>
         ) : (
@@ -234,9 +231,7 @@ const Content = styled.div`
   }
 `;
 
-const NftsWithMoreText = styled.div`
-  display: flex;
-  align-items: center;
+const NftsWithMoreText = styled(HStack)`
   column-gap: 4px;
 
   white-space: nowrap;

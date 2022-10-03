@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import styled from 'styled-components';
 import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
 import { GlobalFeedPaginationQuery } from '__generated__/GlobalFeedPaginationQuery.graphql';
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -62,19 +61,12 @@ export default function GlobalFeed({ queryRef }: Props) {
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   return (
-    <StyledGlobalFeed>
-      <FeedList
-        queryRef={query}
-        feedEventRefs={feedData}
-        loadNextPage={loadNextPage}
-        hasNext={hasPrevious}
-        feedMode={'WORLDWIDE'}
-      />
-    </StyledGlobalFeed>
+    <FeedList
+      queryRef={query}
+      feedEventRefs={feedData}
+      loadNextPage={loadNextPage}
+      hasNext={hasPrevious}
+      feedMode={'WORLDWIDE'}
+    />
   );
 }
-
-const StyledGlobalFeed = styled.div`
-  display: flex;
-  flex-direction: column;
-`;

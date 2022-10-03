@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
 import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
-import { useIsDesktopWindowWidth } from 'hooks/useWindowSize';
 import noop from 'utils/noop';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
+import { VStack } from 'components/core/Spacer/Stack';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -32,7 +32,6 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
     tokenRef
   );
 
-  const isDesktop = useIsDesktopWindowWidth();
   const { handleError } = useThrowOnMediaFailure('NftDetailAudio');
 
   if (token.media.__typename !== 'AudioMedia') {
@@ -55,15 +54,17 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
         onError={handleError}
         src={token.media.contentRenderURL}
       />
-      {isDesktop && <DeprecatedSpacer height={40} />}
     </StyledAudioContainer>
   );
 }
 
-const StyledAudioContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledAudioContainer = styled(VStack)`
   width: 100%;
+  padding-bottom: 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-bottom: 40px;
+  }
 `;
 
 const StyledAudio = styled.audio`

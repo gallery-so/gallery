@@ -1,10 +1,10 @@
 import { BaseM } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import styled from 'styled-components';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export default function GenericActionModal({
   action,
@@ -24,9 +24,8 @@ export default function GenericActionModal({
 
   return (
     <StyledModal>
-      <LeaveWrapper>
+      <LeaveWrapper gap={16}>
         <BaseM>{bodyText}</BaseM>
-        <DeprecatedSpacer height={16} />
         <StyledButton onClick={handleClick}>{buttonText}</StyledButton>
       </LeaveWrapper>
     </StyledModal>
@@ -47,10 +46,8 @@ const StyledButton = styled(Button)`
   align-self: flex-end;
 `;
 
-const LeaveWrapper = styled.div`
-  display: flex;
+const LeaveWrapper = styled(VStack)`
   justify-content: center;
-  flex-direction: column;
   justify-content: center;
   place-items: center;
   height: 100%;

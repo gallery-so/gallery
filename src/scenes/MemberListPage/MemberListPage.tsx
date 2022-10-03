@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 import { TitleL } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import MemberListTier from './MemberListTier';
 import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: MemberListPageFragment$key;
@@ -28,20 +27,17 @@ function MemberListPage({ queryRef }: Props) {
     queryRef
   );
 
-  const isMobile = useIsMobileWindowWidth();
-
   return (
     <StyledPage>
       <MemberListPageProvider>
-        <DeprecatedSpacer height={208} />
         <StyledBanner>
           <StyledBannerText>
             <i>Thank you,</i> for being a patron of Gallery.
           </StyledBannerText>
         </StyledBanner>
-        <DeprecatedSpacer height={isMobile ? 32 : 80} />
-        <TokenHolderListFilter />
-        <DeprecatedSpacer height={isMobile ? 32 : 64} />
+        <StyledTokenHolderListFilterContainer>
+          <TokenHolderListFilter />
+        </StyledTokenHolderListFilterContainer>
         <StyledTierWrapper>
           {removeNullValues(membershipTiers).map((tier) => (
             <MemberListTier key={tier.id} tierRef={tier} />
@@ -52,13 +48,15 @@ function MemberListPage({ queryRef }: Props) {
   );
 }
 
-const StyledPage = styled.div`
+const StyledPage = styled(VStack)`
   min-height: 100vh;
 
   margin-left: ${pageGutter.mobile}px;
   margin-right: ${pageGutter.mobile}px;
   justify-content: flex-start;
   max-width: 100vw;
+
+  padding-top: 208px;
 
   @media only screen and ${breakpoints.tablet} {
     margin-left: ${pageGutter.tablet}px;
@@ -68,7 +66,7 @@ const StyledPage = styled.div`
   @media only screen and ${breakpoints.desktop} {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 208px 32px 0;
   }
 `;
 
@@ -84,6 +82,14 @@ const StyledBannerText = styled(TitleL)`
   @media only screen and ${breakpoints.tablet} {
     font-size: 48px;
     line-height: 56px;
+  }
+`;
+
+const StyledTokenHolderListFilterContainer = styled.div`
+  padding: 32px 0 32px 0;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 80px 0 64px 0;
   }
 `;
 

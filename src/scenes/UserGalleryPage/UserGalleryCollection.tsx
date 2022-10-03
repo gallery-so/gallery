@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import breakpoints from 'components/core/breakpoints';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
@@ -23,6 +22,7 @@ import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -124,33 +124,32 @@ function UserGalleryCollection({
           <UnstyledLink href={collectionUrl}>
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
-          <StyledOptionsContainer>
+          <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <StyledShareButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <DeprecatedSpacer width={16} />
             <StyledSettingsDropdown>
               <Dropdown>
-                {showEditActions && (
-                  <>
-                    <TextButton
-                      onClick={handleEditNameClick}
-                      text="EDIT NAME & DESCRIPTION"
-                      underlineOnHover
-                    />
-                    <DeprecatedSpacer height={8} />
-                    <UnstyledLink
-                      href={`/edit?collectionId=${collection.dbid}`}
-                      onClick={() => track('Update existing collection button clicked')}
-                    >
-                      <TextButton text="Edit Collection" underlineOnHover />
-                    </UnstyledLink>
-                    <DeprecatedSpacer height={8} />
-                  </>
-                )}
-                <UnstyledLink href={collectionUrl}>
-                  <TextButton text="View Collection" underlineOnHover />
-                </UnstyledLink>
+                <VStack gap={8}>
+                  {showEditActions && (
+                    <>
+                      <TextButton
+                        onClick={handleEditNameClick}
+                        text="EDIT NAME & DESCRIPTION"
+                        underlineOnHover
+                      />
+                      <UnstyledLink
+                        href={`/edit?collectionId=${collection.dbid}`}
+                        onClick={() => track('Update existing collection button clicked')}
+                      >
+                        <TextButton text="Edit Collection" underlineOnHover />
+                      </UnstyledLink>
+                    </>
+                  )}
+                  <UnstyledLink href={collectionUrl}>
+                    <TextButton text="View Collection" underlineOnHover />
+                  </UnstyledLink>
+                </VStack>
               </Dropdown>
             </StyledSettingsDropdown>
           </StyledOptionsContainer>
@@ -246,8 +245,7 @@ const StyledCollectorsNote = styled(BaseM)`
   }
 `;
 
-const StyledOptionsContainer = styled.div`
-  display: flex;
+const StyledOptionsContainer = styled(HStack)`
   flex-direction: row;
   align-items: center;
   justify-content: center;

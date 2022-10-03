@@ -2,21 +2,20 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM } from '../Text/Text';
 import { MODAL_PADDING_PX } from 'contexts/modal/constants';
+import { VStack } from '../Spacer/Stack';
 
 export default function VerifyNavigationPopover({ href }: { href: string }) {
   const { hideModal } = useModalActions();
 
   return (
-    <StyledConfirmation>
+    <StyledConfirmation gap={16}>
       <TextContainer>
         <StyledBaseM>
           Confirm that you are navigating to: <b>{href}</b>
         </StyledBaseM>
       </TextContainer>
-      <DeprecatedSpacer height={16} />
       <ButtonContainer>
         <StyledCancelButton onClick={() => hideModal()}>Cancel</StyledCancelButton>
         <Button
@@ -33,7 +32,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
 }
 
 // TODO: maybe the width should be set when triggering the modal, as opposed to this component
-const StyledConfirmation = styled.div`
+const StyledConfirmation = styled(VStack)`
   width: min(calc(100vw - ${MODAL_PADDING_PX * 4}px), 400px);
 `;
 

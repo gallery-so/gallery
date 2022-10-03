@@ -30,9 +30,9 @@ import {
 } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import NavLink from 'components/core/NavLink/NavLink';
+import { FEATURED_TEZOS_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
@@ -78,13 +78,13 @@ type FadeTriggerType = 'route' | 'scroll' | 'hover';
 const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
     graphql`
-      query GlobalLayoutContextQuery {
+      query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
         ...GlobalLayoutContextNavbarFragment
         # Keeping this around for the next time we want to use it
         ...useGlobalAnnouncementPopoverFragment
       }
     `,
-    {}
+    { collectionIds: FEATURED_TEZOS_COLLECTION_IDS }
   );
 
   // whether the global banner is visible
@@ -236,7 +236,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   // Keeping this around for the next time we want to use it
-  useGlobalAnnouncementPopover(query);
+  useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -360,11 +360,12 @@ function GlobalNavbarWithFadeEnabled({
     >
       {isBannerVisible && (
         <Banner
-          text=""
+          localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
+          text="You can now showcase POAPs on your gallery ✨"
           queryRef={query}
-          // leaving this in to easily set up a banner for next time
-          // actionComponent={<NavLink to="/shop">VISIT SHOP</NavLink>}
+          actionComponent={<NavLink to="/edit">Add Poaps</NavLink>}
           dismissOnActionComponentClick
+          requireAuth
         />
       )}
       <GlobalNavbar
@@ -375,10 +376,6 @@ function GlobalNavbarWithFadeEnabled({
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
-
-const StyledUnstyledLink = styled(UnstyledLink)`
-  display: flex;
-`;
 
 const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;

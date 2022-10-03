@@ -55,7 +55,6 @@ const StyledButton = styled.button<{
   background: ${colors.white};
   border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.offBlack)};
   padding: 8px 16px;
-  margin-bottom: 8px;
   font-size: 16px;
   transition: border-color ${transitions.cubic};
 

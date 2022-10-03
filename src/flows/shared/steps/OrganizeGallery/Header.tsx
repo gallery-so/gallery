@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { withWizard, WizardComponentProps } from 'react-albus';
 import { Button } from 'components/core/Button/Button';
 
@@ -17,7 +16,6 @@ function Header({ wizard: { push } }: WizardComponentProps) {
         <BaseM>Drag to re-order collections</BaseM>
       </TitleContainer>
       <OptionsContainer>
-        <DeprecatedSpacer width={16} />
         <Button variant="secondary" onClick={handleAddCollection}>
           Add
         </Button>

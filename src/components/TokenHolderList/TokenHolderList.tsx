@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import TokenHolderListItem from './TokenHolderListItem';
 import { Directions } from 'src/components/core/enums';
 import { removeNullValues } from 'utils/removeNullValues';
@@ -9,6 +8,7 @@ import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageCo
 import { MemberListTierFragment$data } from '__generated__/MemberListTierFragment.graphql';
 import { CommunityPageViewFragment$data } from '__generated__/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 // Get which side of the tokenHolder name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left
@@ -60,9 +60,8 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <>
+    <VStack gap={isMobile ? 24 : 16}>
       <TitleS>{title}</TitleS>
-      <DeprecatedSpacer height={isMobile ? 24 : 16} />
       <StyledTokenHoldersWrapper>
         {filteredTokenHolders.map((tokenHolder, index) => (
           <TokenHolderListItem
@@ -73,14 +72,13 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
           />
         ))}
       </StyledTokenHoldersWrapper>
-      <DeprecatedSpacer height={56} />
-    </>
+    </VStack>
   );
 }
 
-const StyledTokenHoldersWrapper = styled.div`
-  display: flex;
+const StyledTokenHoldersWrapper = styled(HStack)`
   flex-wrap: wrap;
+  padding-bottom: 56px;
 `;
 
 export default TokenHolderList;

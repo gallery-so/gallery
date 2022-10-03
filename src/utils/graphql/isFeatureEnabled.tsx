@@ -1,24 +1,29 @@
-import { FeatureFlag } from 'components/core/enums';
 import { readInlineData, graphql } from 'relay-runtime';
 import isProduction from 'utils/isProduction';
 import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFragment.graphql';
 
+export enum FeatureFlag {
+  REFRESH_METADATA = 'REFRESH_METADATA',
+  ART_GOBBLERS = 'ART_GOBBLERS',
+  ADMIRE_COMMENT = 'ADMIRE_COMMENT',
+}
+
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  POAP: true,
   ADMIRE_COMMENT: false,
+  ART_GOBBLERS: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  POAP: true,
+  ART_GOBBLERS: true,
   ADMIRE_COMMENT: false,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
-  POAP: true,
   ADMIRE_COMMENT: false,
+  ART_GOBBLERS: false,
 };
 
 const EMPLOYEE_USER_IDS = new Set(

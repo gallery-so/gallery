@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
@@ -13,6 +12,7 @@ import { FeedMode } from './Feed';
 
 import FeedList from './FeedList';
 import { ITEMS_PER_PAGE } from './constants';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: ViewerFeedFragment$key;
@@ -20,11 +20,10 @@ type Props = {
 };
 
 export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
-  const {
-    data: query,
-    loadPrevious,
-    hasPrevious,
-  } = usePaginationFragment<FeedByUserIdPaginationQuery, ViewerFeedFragment$key>(
+  const { data: query, loadPrevious, hasPrevious } = usePaginationFragment<
+    FeedByUserIdPaginationQuery,
+    ViewerFeedFragment$key
+  >(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         ...FeedListFragment
@@ -84,15 +83,18 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
   return (
     <StyledViewerFeed>
       {noViewerFeedEvents ? (
-        <StyledEmptyFeed>
-          <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
-          <StyledEmptyFeedBody>
-            Discover new collectors to follow in the worldwide feed.
-          </StyledEmptyFeedBody>
-          <DeprecatedSpacer height={12} />
-          <Button variant="secondary" onClick={handleSeeWorldwideClick}>
-            See worldwide activity
-          </Button>
+        <StyledEmptyFeed gap={12}>
+          <VStack align="center">
+            <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
+            <StyledEmptyFeedBody>
+              Discover new collectors to follow in the worldwide feed.
+            </StyledEmptyFeedBody>
+          </VStack>
+          <VStack>
+            <Button variant="secondary" onClick={handleSeeWorldwideClick}>
+              See worldwide activity
+            </Button>
+          </VStack>
         </StyledEmptyFeed>
       ) : (
         <FeedList
@@ -112,9 +114,7 @@ const StyledViewerFeed = styled.div`
   flex-direction: column;
 `;
 
-const StyledEmptyFeed = styled.div`
-  display: flex;
-  flex-direction: column;
+const StyledEmptyFeed = styled(VStack)`
   align-items: center;
   justify-content: center;
   padding-top: 35vh;

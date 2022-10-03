@@ -6,8 +6,8 @@ import ActionText from 'components/core/ActionText/ActionText';
 import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { VStack } from 'components/core/Spacer/Stack';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();
@@ -33,21 +33,18 @@ export default function PosterPage() {
         </StyledImageContainer>
         <StyledContent>
           <TitleM>2022 Community Poster</TitleM>
-          <StyledParagraph>
+          <VStack gap={16}>
             <BaseM>
               Thank you for being a member of Gallery. Members celebrated our{' '}
               <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
               poster.
             </BaseM>
-            <DeprecatedSpacer height={8} />
             <BaseM>
               We made the final poster available to mint as a commemorative token for early
               believers in our mission and product.
             </BaseM>
-            <DeprecatedSpacer height={8} />
-
             <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM>
-          </StyledParagraph>
+          </VStack>
 
           {!isMobile && <HorizontalBreak />}
 
@@ -131,11 +128,6 @@ const StyledContent = styled.div`
     margin: 0;
     padding: 0;
   }
-`;
-
-const StyledParagraph = styled.div`
-  display: grid;
-  gap: 8px;
 `;
 
 const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`

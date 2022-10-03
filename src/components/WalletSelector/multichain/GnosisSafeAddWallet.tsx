@@ -7,7 +7,6 @@ import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import { normalizeError } from './normalizeError';
 
 import { Web3Error } from 'types/Error';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import {
   ADDRESS_ALREADY_CONNECTED,
   INITIAL,
@@ -39,6 +38,7 @@ import useAddWallet from '../mutations/useAddWallet';
 import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 import { walletconnect } from '../../../connectors';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   queryRef: GnosisSafeAddWalletFragment$key;
@@ -262,13 +262,11 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <div>
+      <VStack gap={8}>
         <TitleS>Connect with Gnosis Safe</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>The following address is already connected to this account:</BaseM>
-        <DeprecatedSpacer height={8} />
         <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
-      </div>
+      </VStack>
     );
   }
 

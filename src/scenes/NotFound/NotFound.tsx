@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { TitleL, BaseM } from 'components/core/Text/Text';
 import { ButtonLink } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   resource?: string;
@@ -11,22 +11,21 @@ type Props = {
 
 function NotFound({ resource = 'user' }: Props) {
   return (
-    <StyledNotFound>
-      <TitleL>404</TitleL>
-      <DeprecatedSpacer height={16} />
-      <StyledBody>
-        The {resource} doesn&apos;t exist. If you think this is a bug, tag us on{' '}
-        <GalleryLink href={GALLERY_TWITTER}>@GALLERY</GalleryLink> or find us on{' '}
-        <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
-      </StyledBody>
-      <DeprecatedSpacer height={32} />
+    <StyledNotFound gap={32}>
+      <VStack gap={16} align="center">
+        <TitleL>404</TitleL>
+        <StyledBody>
+          The {resource} doesn&apos;t exist. If you think this is a bug, tag us on{' '}
+          <GalleryLink href={GALLERY_TWITTER}>@GALLERY</GalleryLink> or find us on{' '}
+          <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
+        </StyledBody>
+      </VStack>
       <ButtonLink href="/">Take me back</ButtonLink>
     </StyledNotFound>
   );
 }
 
-const StyledNotFound = styled.div`
-  display: flex;
+const StyledNotFound = styled(VStack)`
   justify-content: center;
   align-items: center;
   flex-direction: column;

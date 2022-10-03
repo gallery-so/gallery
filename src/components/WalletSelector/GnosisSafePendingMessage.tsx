@@ -1,6 +1,5 @@
 import { Button } from 'components/core/Button/Button';
 import { BaseM, TitleS } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -8,6 +7,7 @@ import { useMemo, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { getLocalStorageItem } from 'utils/localStorage';
+import { VStack } from 'components/core/Spacer/Stack';
 
 const GNOSIS_NONCE_STORAGE_KEY = 'gallery_gnosis_nonce';
 
@@ -36,19 +36,17 @@ function GnosisSafeListeningOnChainScreen({
   }, [manuallyValidateSignature]);
 
   return (
-    <StyledContentWrapper>
+    <VStack gap={24}>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <DeprecatedSpacer height={24} />
-      <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-      <DeprecatedSpacer height={8} />
-      <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
-      <DeprecatedSpacer height={24} />
+      <VStack gap={8}>
+        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+        <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
+      </VStack>
       <StyledLoaderWrapper>
         <StyledLoader />
       </StyledLoaderWrapper>
-      <DeprecatedSpacer height={24} />
       <BaseM>Do not close this window.</BaseM>
-    </StyledContentWrapper>
+    </VStack>
   );
 }
 
@@ -64,15 +62,14 @@ function GnosisSafePendingMessage({
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <div>
+      <VStack gap={24}>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <DeprecatedSpacer height={24} />
-        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-        <DeprecatedSpacer height={8} />
-        <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
-        <DeprecatedSpacer height={24} />
+        <VStack gap={8}>
+          <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+          <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
+        </VStack>
         <BaseM>Do not close this window.</BaseM>
-      </div>
+      </VStack>
     );
   }
 
@@ -86,38 +83,28 @@ function GnosisSafePendingMessage({
   }
 
   return (
-    <StyledContentWrapper>
+    <VStack gap={24}>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <DeprecatedSpacer height={24} />
       {previousAttemptNonce && account ? (
-        <>
+        <VStack gap={48}>
           <BaseM>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
           </BaseM>
-          <DeprecatedSpacer height={48} />
-          <StyledButtonWrapper>
+          <StyledButtonWrapper gap={8}>
             <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-            <DeprecatedSpacer height={8} />
             <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
           </StyledButtonWrapper>
-        </>
+        </VStack>
       ) : (
         <BaseM>Approve your wallet to connect to Gallery.</BaseM>
       )}
-    </StyledContentWrapper>
+    </VStack>
   );
 }
 
-const StyledContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledButtonWrapper = styled.div`
+const StyledButtonWrapper = styled(VStack)`
   justify-content: space-around;
-  display: flex;
-  flex-direction: column;
 `;
 
 const StyledRestartButton = styled(Button).attrs({ variant: 'secondary' })`

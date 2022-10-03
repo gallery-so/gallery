@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import QRCodeButton from './QRCodeButton';
@@ -18,9 +17,14 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
 import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
+import Badge from 'components/Badge/Badge';
+import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
+import { UserGalleryHeaderQueryFragment$key } from '__generated__/UserGalleryHeaderQueryFragment.graphql';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
+  queryRef: UserGalleryHeaderQueryFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
@@ -29,6 +33,7 @@ type Props = {
 
 function UserGalleryHeader({
   userRef,
+  queryRef,
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
@@ -40,12 +45,26 @@ function UserGalleryHeader({
         username @required(action: THROW)
         dbid
         bio
+        badges {
+          name
+          imageURL
+          ...BadgeFragment
+        }
       }
     `,
     userRef
   );
 
-  const { username, bio } = user;
+  const query = useFragment(
+    graphql`
+      fragment UserGalleryHeaderQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { username, bio, badges } = user;
 
   const is3ac = useIs3acProfilePage();
   const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
@@ -54,29 +73,38 @@ function UserGalleryHeader({
 
   const styledQrCode = useQrCode();
 
+  const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
+
+  const userBadges = useMemo(() => {
+    if (!badges || !isArtGobblersEnabled) return [];
+
+    return badges.filter((badge) => badge && badge?.imageURL);
+  }, [badges, isArtGobblersEnabled]);
+
   return (
-    <StyledUserGalleryHeader>
-      <StyledUsernameWrapper>
-        {isMobile ? (
-          <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
-        ) : (
-          <StyledUsername>{displayName}</StyledUsername>
-        )}
-        <StyledButtonsWrapper>
+    <StyledUserGalleryHeader gap={2}>
+      <HStack align="flex-start" justify="space-between">
+        <HStack align="center" gap={8}>
+          {isMobile ? (
+            <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
+          ) : (
+            <StyledUsername>{displayName}</StyledUsername>
+          )}
+          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        </HStack>
+
+        <StyledButtonsWrapper gap={8} align="center" justify="space-between">
           {isMobile && (
             <>
               <LinkButton textToCopy={`https://gallery.so/${username}`} />
-              <DeprecatedSpacer width={8} />
               <QRCodeButton username={username} styledQrCode={styledQrCode} />
-              <DeprecatedSpacer width={8} />
             </>
           )}
           {showMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledButtonsWrapper>
-      </StyledUsernameWrapper>
-      <DeprecatedSpacer height={2} />
+      </HStack>
       <StyledUserDetails>
         {is3ac ? (
           <ExpandableBio text={unescapedBio} />
@@ -105,16 +133,15 @@ const ExpandableBio = ({ text }: { text: string }) => {
   }, [track]);
 
   return (
-    <>
+    <VStack gap={12}>
       <BaseM>
         <Markdown
           text={isExpanded ? text : truncated}
           CustomInternalLinkComponent={NftDetailViewer}
         />
       </BaseM>
-      <DeprecatedSpacer height={12} />
       {isExpanded ? null : <TextButton text="Read More" onClick={handleClick} />}
-    </>
+    </VStack>
   );
 };
 
@@ -137,36 +164,25 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
-const StyledUserGalleryHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledUserGalleryHeader = styled(VStack)`
   width: 100%;
-`;
-
-const StyledUsernameWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
 `;
 
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+  flex: 1;
 `;
 
 const StyledUsernameMobile = styled(TitleM)`
   font-style: normal;
   overflow-wrap: break-word;
   width: calc(100% - 48px);
+  flex: 1;
 `;
 
-const StyledButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const StyledButtonsWrapper = styled(HStack)`
   height: 36px;
-
   @media only screen and ${breakpoints.mobile} {
     height: 28px;
   }

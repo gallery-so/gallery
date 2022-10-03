@@ -5,12 +5,12 @@ import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import UserInfoForm from 'components/Profile/UserInfoForm';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import ErrorText from 'components/core/Text/ErrorText';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useWizardValidationActions } from 'contexts/wizard/WizardValidationContext';
 import { useWizardState } from 'contexts/wizard/WizardDataProvider';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type ConfigProps = {
   onNext: () => Promise<void>;
@@ -27,11 +27,11 @@ function useWizardConfig({ onNext }: ConfigProps) {
 function AddUserInfo({ next }: WizardContext) {
   const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
     useUserInfoForm({
-      onSuccess: next,
-      userId: undefined,
-      existingUsername: '',
-      existingBio: '',
-    });
+    onSuccess: next,
+    userId: undefined,
+    existingUsername: '',
+    existingBio: '',
+  });
 
   const { setNextEnabled } = useWizardValidationActions();
 
@@ -60,19 +60,20 @@ function AddUserInfo({ next }: WizardContext) {
 
   return (
     <FullPageCenteredStep withFooter>
-      <StyledUserInfoForm
-        mode="Add"
-        onSubmit={handleSubmit}
-        username={username}
-        usernameError={usernameError}
-        onUsernameChange={onUsernameChange}
-        bio={bio}
-        onBioChange={onBioChange}
-      />
-      <DeprecatedSpacer height={8} />
-      <ErrorContainer>
-        <ErrorText message={generalError} />
-      </ErrorContainer>
+      <VStack gap={8}>
+        <StyledUserInfoForm
+          mode="Add"
+          onSubmit={handleSubmit}
+          username={username}
+          usernameError={usernameError}
+          onUsernameChange={onUsernameChange}
+          bio={bio}
+          onBioChange={onBioChange}
+        />
+        <ErrorContainer>
+          <ErrorText message={generalError} />
+        </ErrorContainer>
+      </VStack>
     </FullPageCenteredStep>
   );
 }

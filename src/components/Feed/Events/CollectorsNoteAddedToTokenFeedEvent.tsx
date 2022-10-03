@@ -1,6 +1,5 @@
 import breakpoints from 'components/core/breakpoints';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -17,6 +16,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import Markdown from 'components/core/Markdown/Markdown';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
@@ -90,32 +90,33 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
   return (
     <StyledClickHandler onClick={handleEventClick}>
       <StyledEvent>
-        <StyledEventHeader>
-          <BaseM>
-            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's note
-            to{' '}
-            <InteractiveLink
-              to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
-              onClick={handleEventClick}
-            >
-              {event.token.token?.name}
-            </InteractiveLink>
-          </BaseM>
-          <DeprecatedSpacer width={4} />
-          <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-        </StyledEventHeader>
-        <DeprecatedSpacer height={16} />
-        <StyledContent>
-          <StyledMediaWrapper>
-            <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
-          </StyledMediaWrapper>
-          <DeprecatedSpacer width={MIDDLE_GAP} />
-          <StyledNoteWrapper>
-            <StyledNote>
-              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
-            </StyledNote>
-          </StyledNoteWrapper>
-        </StyledContent>
+        <VStack gap={16}>
+          <StyledEventHeader>
+            <HStack gap={4} inline>
+              <BaseM>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's
+                note to{' '}
+                <InteractiveLink
+                  to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
+                  onClick={handleEventClick}
+                >
+                  {event.token.token?.name}
+                </InteractiveLink>
+              </BaseM>
+              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+            </HStack>
+          </StyledEventHeader>
+          <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>
+            <StyledMediaWrapper>
+              <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
+            </StyledMediaWrapper>
+            <StyledNoteWrapper>
+              <StyledNote>
+                <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+              </StyledNote>
+            </StyledNoteWrapper>
+          </StyledContent>
+        </VStack>
       </StyledEvent>
     </StyledClickHandler>
   );
@@ -128,17 +129,20 @@ const StyledNote = styled(TitleM)`
   overflow: hidden;
   line-clamp: 4;
   display: -webkit-box;
+  text-overflow: ellipsis;
+
+  * {
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
 `;
 
 const StyledMediaWrapper = styled.div`
   width: 50%;
 `;
 
-const StyledContent = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+const StyledContent = styled(HStack)`
   @media only screen and ${breakpoints.desktop} {
     margin: 0 80px;
   }

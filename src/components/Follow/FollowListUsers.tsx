@@ -1,12 +1,12 @@
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { FollowListUsersFragment$key } from '../../../__generated__/FollowListUsersFragment.graphql';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
@@ -45,9 +45,8 @@ export default function FollowListUsers({
         </StyledListItem>
       ))}
       {users.length === 0 && (
-        <StyledEmptyList>
+        <StyledEmptyList gap={48} align="center" justify="center">
           <BaseM>{emptyListText}</BaseM>
-          <DeprecatedSpacer height={48} />
         </StyledEmptyList>
       )}
     </StyledList>
@@ -76,10 +75,6 @@ const StyledListItem = styled.a`
   }
 `;
 
-const StyledEmptyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const StyledEmptyList = styled(VStack)`
   height: 100%;
-  justify-content: center;
 `;

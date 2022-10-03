@@ -1,6 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import Input from 'components/core/Input/Input';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 import ErrorText from 'components/core/Text/ErrorText';
 import { TitleS } from 'components/core/Text/Text';
 import { DEBUG_USERNAME_KEY } from 'constants/storageKeys';
@@ -92,26 +92,29 @@ const Debugger = () => {
 
   return isDebuggerVisible ? (
     <StyledDebugger>
-      <TitleS>☢️ DEBUG MODE</TitleS>
-      <DeprecatedSpacer height={24} />
-      <LoginContainer>
-        <TitleS>Login As</TitleS>
-        <DeprecatedSpacer height={4} />
-        <LoginFormContainer>
-          <Input onChange={handleUsernameChange} placeholder="Username" defaultValue={username} />
-          <DeprecatedSpacer width={8} />
-          <StyledButton onClick={handleLogin} disabled={!username.length}>
-            Submit
-          </StyledButton>
-        </LoginFormContainer>
-        <DeprecatedSpacer height={4} />
-        <ErrorText message={errorMessage} />
-      </LoginContainer>
-      <DeprecatedSpacer height={16} />
-      <LoggedInUserContainer>
-        <TitleS>Detected User</TitleS>
-        <StyledPre>{loggedInUserInfo}</StyledPre>
-      </LoggedInUserContainer>
+      <VStack gap={16}>
+        <VStack gap={24}>
+          <TitleS>☢️ DEBUG MODE</TitleS>
+          <LoginContainer gap={4}>
+            <TitleS>Login As</TitleS>
+            <HStack gap={8}>
+              <Input
+                onChange={handleUsernameChange}
+                placeholder="Username"
+                defaultValue={username}
+              />
+              <StyledButton onClick={handleLogin} disabled={!username.length}>
+                Submit
+              </StyledButton>
+            </HStack>
+            <ErrorText message={errorMessage} />
+          </LoginContainer>
+        </VStack>
+        <LoggedInUserContainer>
+          <TitleS>Detected User</TitleS>
+          <StyledPre>{loggedInUserInfo}</StyledPre>
+        </LoggedInUserContainer>
+      </VStack>
     </StyledDebugger>
   ) : null;
 };
@@ -128,17 +131,13 @@ const StyledDebugger = styled.div`
   background: white;
 `;
 
-const LoginContainer = styled.div`
+const LoginContainer = styled(VStack)`
   display: flex;
   flex-direction: column;
 
   input {
     width: 100%;
   }
-`;
-
-const LoginFormContainer = styled.div`
-  display: flex;
 `;
 
 const StyledButton = styled(Button)`

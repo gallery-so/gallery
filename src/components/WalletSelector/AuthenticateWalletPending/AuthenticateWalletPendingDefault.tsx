@@ -2,12 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import styled from 'styled-components';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { isWeb3Error, Web3Error } from 'types/Error';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { signMessageWithEOA } from '../walletUtils';
 import {
   isNotEarlyAccessError,
@@ -18,6 +16,7 @@ import {
 import { captureException } from '@sentry/nextjs';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -134,23 +133,19 @@ function AuthenticateWalletPendingDefault({
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <StyledAuthenticateWalletPending>
+      <VStack gap={8}>
         <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <DeprecatedSpacer height={8} />
         <BaseM>Sign the message with your wallet.</BaseM>
-      </StyledAuthenticateWalletPending>
+      </VStack>
     );
   }
 
   return (
-    <StyledAuthenticateWalletPending>
+    <VStack gap={8}>
       <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <DeprecatedSpacer height={8} />
       <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </StyledAuthenticateWalletPending>
+    </VStack>
   );
 }
-
-const StyledAuthenticateWalletPending = styled.div``;
 
 export default AuthenticateWalletPendingDefault;

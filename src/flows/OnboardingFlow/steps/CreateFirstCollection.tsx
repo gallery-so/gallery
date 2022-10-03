@@ -2,11 +2,11 @@ import { WizardContext } from 'react-albus';
 import styled from 'styled-components';
 import { BaseXL, BaseM } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback, useEffect } from 'react';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type ConfigProps = {
   onNext: () => void;
@@ -32,14 +32,16 @@ function CreateFirstCollection({ next }: WizardContext) {
 
   return (
     <FullPageCenteredStep withFooter>
-      <BaseXL>Create your first collection</BaseXL>
-      <DeprecatedSpacer height={8} />
-      <StyledBodyText>
-        Organize your gallery with collections. Use them to group NFTs by creator, theme, or
-        anything that feels right.
-      </StyledBodyText>
-      <DeprecatedSpacer height={24} />
-      <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
+      <VStack gap={24} align="center">
+        <VStack gap={8} align="center">
+          <BaseXL>Create your first collection</BaseXL>
+          <StyledBodyText>
+            Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+            anything that feels right.
+          </StyledBodyText>
+        </VStack>
+        <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
+      </VStack>
     </FullPageCenteredStep>
   );
 }

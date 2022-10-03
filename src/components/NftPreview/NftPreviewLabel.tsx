@@ -12,9 +12,12 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 type Props = {
   className?: string;
   tokenRef: NftPreviewLabelFragment$key;
+  // if true, the community link will appear clickable.
+  // if false, the label will appear flat.
+  interactive?: boolean;
 };
 
-function NftPreviewLabel({ className, tokenRef }: Props) {
+function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewLabelFragment on Token {
@@ -27,26 +30,24 @@ function NftPreviewLabel({ className, tokenRef }: Props) {
     tokenRef
   );
 
-  // Since POAPs' collection names are the same as the
-  // token name, we don't want to show duplicate information
-  const showCollectionName = token.name && token.chain !== 'POAP';
+  const showCollectionName = Boolean(token.name);
 
   return (
     <StyledNftPreviewLabel className={className}>
-      <HStack gap={4} justify={'end'} align="center">
+      <HStack gap={4} justify={'flex-end'} align="center">
         {token.chain === 'POAP' && <POAPLogo />}
         <VStack shrink>
-          {token.chain === 'POAP' ? (
-            <POAPTitle lines={1} color={colors.white}>
-              {token.name}
-            </POAPTitle>
-          ) : (
-            <StyledBaseM color={colors.white} lines={1}>
-              {token.name}
-            </StyledBaseM>
-          )}
+          {
+            // Since POAPs' collection names are the same as the
+            // token name, we don't want to show duplicate information
+            token.chain === 'POAP' ? null : (
+              <StyledBaseM color={colors.white} lines={1}>
+                {token.name}
+              </StyledBaseM>
+            )
+          }
 
-          {showCollectionName && <CollectionName tokenRef={token} />}
+          {showCollectionName && <CollectionName tokenRef={token} interactive={interactive} />}
         </VStack>
       </HStack>
     </StyledNftPreviewLabel>
@@ -55,9 +56,10 @@ function NftPreviewLabel({ className, tokenRef }: Props) {
 
 type CollectionNameProps = {
   tokenRef: NftPreviewLabelCollectionNameFragment$key;
+  interactive?: boolean;
 };
 
-function CollectionName({ tokenRef }: CollectionNameProps) {
+function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   const token = useFragment(
     graphql`
       fragment NftPreviewLabelCollectionNameFragment on Token {
@@ -82,7 +84,21 @@ function CollectionName({ tokenRef }: CollectionNameProps) {
     return null;
   }
 
-  return communityUrl ? (
+  const shouldDisplayLinkToCommunityPage = communityUrl && interactive;
+
+  if (token.chain === 'POAP') {
+    return shouldDisplayLinkToCommunityPage ? (
+      <POAPTitle lines={2}>
+        <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+      </POAPTitle>
+    ) : (
+      <POAPTitle color={colors.white} lines={2}>
+        {collectionName}
+      </POAPTitle>
+    );
+  }
+
+  return shouldDisplayLinkToCommunityPage ? (
     <StyledBaseM lines={2}>
       <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
     </StyledBaseM>
@@ -106,7 +122,7 @@ export const StyledNftPreviewLabel = styled.div`
 
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
 
   bottom: 0;
   width: 100%;

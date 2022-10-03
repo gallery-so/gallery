@@ -1,6 +1,5 @@
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { BaseM, BaseS } from 'components/core/Text/Text';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -19,6 +18,7 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import Markdown from 'components/core/Markdown/Markdown';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -86,29 +86,30 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       onClick={() => track('Feed: Clicked Description added to collection event')}
     >
       <StyledEvent>
-        <StyledEventHeader>
-          <BaseM>
-            <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description to
-            {collectionName ? ' ' : ' their collection'}
-            <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-          </BaseM>
-          <DeprecatedSpacer width={4} />
-          <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-        </StyledEventHeader>
-        <DeprecatedSpacer height={8} />
-        <StyledQuote>
-          <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
-        </StyledQuote>
-        <DeprecatedSpacer height={16} />
-        <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-        {showAdditionalPiecesIndicator && (
-          <>
-            <DeprecatedSpacer height={8} />
+        <VStack gap={16}>
+          <VStack gap={8}>
+            <StyledEventHeader>
+              <HStack gap={4} inline>
+                <BaseM>
+                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description
+                  to
+                  {collectionName ? ' ' : ' their collection'}
+                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                </BaseM>
+                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              </HStack>
+            </StyledEventHeader>
+            <StyledQuote>
+              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+            </StyledQuote>
+          </VStack>
+          <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+          {showAdditionalPiecesIndicator && (
             <StyledAdditionalPieces>
               +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
             </StyledAdditionalPieces>
-          </>
-        )}
+          )}
+        </VStack>
       </StyledEvent>
     </UnstyledLink>
   );
@@ -117,6 +118,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
+  padding-top: 8px;
 `;
 
 const StyledQuote = styled(BaseM)`

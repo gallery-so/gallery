@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import unescape from 'utils/unescape';
 
 import Input from 'components/core/Input/Input';
-import DeprecatedSpacer from 'components/core/Spacer/DeprecatedSpacer';
 import { Button } from 'components/core/Button/Button';
 import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import ErrorText from 'components/core/Text/ErrorText';
@@ -17,6 +16,7 @@ import { getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   onNext: WizardContext['next'];
@@ -146,47 +146,39 @@ function CollectionCreateOrEditForm({
 
   return (
     <StyledCollectionEditInfoForm>
-      <DeprecatedSpacer height={16} />
-      <Input
-        onChange={handleNameChange}
-        defaultValue={unescapedCollectionName}
-        placeholder="Collection name"
-        autoFocus
-        variant="grande"
-      />
-      <DeprecatedSpacer height={16} />
-      <StyledTextAreaWithCharCount
-        onChange={handleDescriptionChange}
-        placeholder="Tell us about your collection..."
-        defaultValue={unescapedCollectorsNote}
-        currentCharCount={description.length}
-        maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
-        showMarkdownShortcuts
-        hasPadding
-      />
-      {generalError && (
-        <>
-          <DeprecatedSpacer height={8} />
-          <ErrorText message={generalError} />
-        </>
-      )}
-      <DeprecatedSpacer height={16} />
-
-      {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-      <DeprecatedSpacer height={12} />
-      <ButtonContainer>
-        <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
-          {buttonText}
-        </Button>
-      </ButtonContainer>
+      <VStack gap={16}>
+        <Input
+          onChange={handleNameChange}
+          defaultValue={unescapedCollectionName}
+          placeholder="Collection name"
+          autoFocus
+          variant="grande"
+        />
+        <VStack>
+          <StyledTextAreaWithCharCount
+            onChange={handleDescriptionChange}
+            placeholder="Tell us about your collection..."
+            defaultValue={unescapedCollectorsNote}
+            currentCharCount={description.length}
+            maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
+            showMarkdownShortcuts
+            hasPadding
+          />
+          {generalError && <StyledErrorText message={generalError} />}
+        </VStack>
+        {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
+        <ButtonContainer justify="flex-end">
+          <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
+            {buttonText}
+          </Button>
+        </ButtonContainer>
+      </VStack>
     </StyledCollectionEditInfoForm>
   );
 }
 
-const StyledCollectionEditInfoForm = styled.div`
-  display: flex;
-  flex-direction: column;
-
+const StyledCollectionEditInfoForm = styled(VStack)`
+  padding-top: 16px;
   @media only screen and ${breakpoints.tablet} {
     padding: 0px;
   }
@@ -196,9 +188,12 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
+const ButtonContainer = styled(HStack)`
+  padding-top: 12px;
+`;
+
+const StyledErrorText = styled(ErrorText)`
+  padding-top: 8px;
 `;
 
 export default CollectionCreateOrEditForm;
