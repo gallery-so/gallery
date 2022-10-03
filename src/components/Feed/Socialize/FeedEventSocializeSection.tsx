@@ -15,6 +15,8 @@ import {
   FEED_EVENT_ROW_WIDTH_TABLET,
 } from 'components/Feed/dimensions';
 import breakpoints from 'components/core/breakpoints';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;
@@ -74,7 +76,20 @@ export function FeedEventSocializeSection({
     setShowCommentBox((previous) => !previous);
   }, []);
 
+  const reportError = useReportError();
+  const { pushToast } = useToastActions();
   const handleAdmire = useCallback(async () => {
+    const errorMetadata: AdditionalContext['tags'] = {
+      eventId: event.dbid,
+    };
+
+    function pushErrorToast() {
+      pushToast({
+        autoClose: true,
+        message: `Something went wrong while admiring this post. We're actively looking into it.`,
+      });
+    }
+
     try {
       const connectionId = ConnectionHandler.getConnectionID(
         event.id,
@@ -95,22 +110,22 @@ export function FeedEventSocializeSection({
         },
       });
 
-      // Tell the virtualized list that some data has changed
-      // therefore this cell's height might change.
-      //
-      // Ideally, this lives in a useEffect inside of the
-      // changing data's component, but right now the virtualized
-      // list is remounting the component every update, causing
-      // an infinite useEffect to occur
-      setTimeout(() => {
-        onPotentialLayoutShift();
-      }, 100);
-
-      console.log(response);
-    } catch (e) {
-      // handle error state
-    }
-  }, [admire, event.dbid, event.id, onPotentialLayoutShift]);
+      if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
+        // Tell the virtualized list that some data has changed
+        // therefore this cell's height might change.
+        //
+        // Ideally, this lives in a useEffect inside of the
+        // changing data's component, but right now the virtualized
+        // list is remounting the component every update, causing
+        // an infinite useEffect to occur
+        setTimeout(() => {
+          onPotentialLayoutShift();
+        }, 100);
+      } else {
+        pushErrorToast();
+      }
+    } catch (e) {}
+  }, [admire, event.dbid, event.id, onPotentialLayoutShift, pushToast]);
 
   return (
     <SocializedSectionPadding>
