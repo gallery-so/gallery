@@ -8,10 +8,17 @@ type Props = {
   setMobileLayout: (layout: DisplayLayout) => void;
 };
 
-const ListLayoutIcon = () => (
+export const ListLayoutIcon = () => (
   // Although the svg has a height and width of 24, it is actually 18px (per Figma)
   // Notice how the path elements begin at 21; there is simply padding around the icon
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <g>
       <path d="M21 3H3V21H21V3Z" />
       <path d="M21 15H3" strokeMiterlimit="10" />
@@ -20,8 +27,15 @@ const ListLayoutIcon = () => (
   </svg>
 );
 
-const GridLayoutIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const GridLayoutIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="M15 3V21" strokeMiterlimit="10" />
     <path d="M9 3V21" strokeMiterlimit="10" />
     <path d="M21 3H3V21H21V3Z" />

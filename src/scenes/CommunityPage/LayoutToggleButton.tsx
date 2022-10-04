@@ -1,28 +1,8 @@
 import colors from 'components/core/colors';
 import { DisplayLayout } from 'components/core/enums';
 import { useMemo } from 'react';
+import { GridLayoutIcon, ListLayoutIcon } from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import styled from 'styled-components';
-
-const GridLayoutIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 3V21" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M9 3V21" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M21 3H3V21H21V3Z" stroke="currentColor" />
-    <path d="M21 15H3" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M21 9H3" stroke="currentColor" strokeMiterlimit="10" />
-  </svg>
-);
-
-const ListLayoutIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 6H21" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M8 12H21" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M8 18H21" stroke="currentColor" strokeMiterlimit="10" />
-    <path d="M3 6H4.5" stroke="currentColor" />
-    <path d="M3 12H4.5" stroke="currentColor" />
-    <path d="M3 18H4.5" stroke="currentColor" />
-  </svg>
-);
 
 type Props = {
   layout: DisplayLayout;
