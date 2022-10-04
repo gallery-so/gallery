@@ -28,6 +28,9 @@ export default function CommunityPageView({ communityRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
+        contractAddress {
+          address
+        }
         owners {
           user @required(action: THROW) {
             dbid
@@ -39,11 +42,17 @@ export default function CommunityPageView({ communityRef }: Props) {
     `,
     communityRef
   );
-  const { name, description } = community;
+  const { name, description, contractAddress } = community;
   const isMobile = useIsMobileWindowWidth();
 
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.LIST);
   const isGrid = useMemo(() => layout === DisplayLayout.LIST, [layout]);
+
+  // TODO: Replace with the art gobbler contract address
+  const isArtGobbler = useMemo(
+    () => contractAddress?.address === '0x23581767a106ae21c074b2276d25e5c3e136a68b',
+    [contractAddress]
+  );
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
