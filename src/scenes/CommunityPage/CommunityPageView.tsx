@@ -17,12 +17,15 @@ import colors from 'components/core/colors';
 import LayoutToggleButton from './LayoutToggleButton';
 import { DisplayLayout } from 'components/core/enums';
 import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
+import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
+import { CommunityPageViewQueryFragment$key } from '__generated__/CommunityPageViewQueryFragment.graphql';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
+  queryRef: CommunityPageViewQueryFragment$key;
 };
 
-export default function CommunityPageView({ communityRef }: Props) {
+export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageViewFragment on Community {
@@ -38,19 +41,34 @@ export default function CommunityPageView({ communityRef }: Props) {
           }
           ...TokenHolderListItemFragment
         }
+        ...CommunityHolderGridFragment
       }
     `,
     communityRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityPageViewQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const { name, description, contractAddress } = community;
   const isMobile = useIsMobileWindowWidth();
 
-  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.LIST);
-  const isGrid = useMemo(() => layout === DisplayLayout.LIST, [layout]);
+  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
+  const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
+
+  const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
 
   // TODO: Replace with the art gobbler contract address
   const isArtGobbler = useMemo(
-    () => contractAddress?.address === '0x23581767a106ae21c074b2276d25e5c3e136a68b',
+    () =>
+      contractAddress?.address === '0x23581767a106ae21c074b2276d25e5c3e136a68b' &&
+      isArtGobblersEnabled,
     [contractAddress]
   );
 
@@ -79,53 +97,52 @@ export default function CommunityPageView({ communityRef }: Props) {
   return (
     <MemberListPageProvider>
       <StyledCommunityPageContainer>
-        <VStack gap={24}>
-          <HStack>
-            <StyledHeader>
-              <TitleL>{name}</TitleL>
-              {description && (
-                <StyledDescriptionWrapper gap={8}>
-                  <StyledBaseM
-                    showExpandedDescription={showExpandedDescription}
-                    ref={descriptionRef}
-                  >
-                    <Markdown text={formattedDescription} />
-                  </StyledBaseM>
-                  {isLineClampEnabled && (
-                    <TextButton
-                      text={showExpandedDescription ? 'Show less' : 'Show More'}
-                      onClick={handleShowMoreClick}
-                    />
-                  )}
-                </StyledDescriptionWrapper>
-              )}
-            </StyledHeader>
+        <HStack>
+          <StyledHeader>
+            <TitleL>{name}</TitleL>
+            {description && (
+              <StyledDescriptionWrapper gap={8}>
+                <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
+                  <Markdown text={formattedDescription} />
+                </StyledBaseM>
+                {isLineClampEnabled && (
+                  <TextButton
+                    text={showExpandedDescription ? 'Show less' : 'Show More'}
+                    onClick={handleShowMoreClick}
+                  />
+                )}
+              </StyledDescriptionWrapper>
+            )}
+          </StyledHeader>
+
+          {isArtGobbler && (
             <StyledLayoutToggleButtonContainer>
               <LayoutToggleButton layout={layout} setLayout={setLayout} />
             </StyledLayoutToggleButtonContainer>
-          </HStack>
+          )}
+        </HStack>
 
-          <StyledBreakLine />
-
-          {!isGrid && (
+        {isGrid && isArtGobbler ? (
+          <StyledGridViewContainer gap={24}>
+            <StyledBreakLine />
+            <StyledListWrapper>
+              <CommunityHolderGrid communityRef={community} />
+            </StyledListWrapper>
+          </StyledGridViewContainer>
+        ) : (
+          <>
             <StyledMemberListFilterContainer isMobile={isMobile}>
               <MemberListFilter />
             </StyledMemberListFilterContainer>
-          )}
 
-          {isGrid ? (
-            <StyledListWrapper>
-              <CommunityHolderGrid />
-            </StyledListWrapper>
-          ) : (
             <StyledListWrapper>
               <TokenHolderList
                 title="Members in this community"
                 tokenHoldersRef={community.owners}
               />
             </StyledListWrapper>
-          )}
-        </VStack>
+          </>
+        )}
       </StyledCommunityPageContainer>
     </MemberListPageProvider>
   );
@@ -172,6 +189,10 @@ const StyledLayoutToggleButtonContainer = styled.div`
   align-self: flex-end;
 `;
 
+const StyledGridViewContainer = styled(VStack)`
+  padding-top: 24px;
+`;
+
 const StyledBreakLine = styled.hr`
   width: 100%;
   height: 1px;
@@ -180,5 +201,5 @@ const StyledBreakLine = styled.hr`
 `;
 
 const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '0 0 32px 0' : '0 0 48px 0')};
+  padding: ${({ isMobile }) => (isMobile ? '32px 0' : '80px 0 64px')};
 `;
