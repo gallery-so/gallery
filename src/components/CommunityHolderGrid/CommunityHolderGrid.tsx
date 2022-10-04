@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { CommunityHolderGridFragment$key } from '__generated__/CommunityHolderGridFragment.graphql';
 import CommunityHolderGridItem from './CommunityHolderGridItem';
+import { useMemo } from 'react';
 
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
@@ -26,19 +27,26 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
 
   const totalHolders = community?.owners?.length;
 
-  const filteredHolders =
-    community?.owners?.filter(
-      (holder) => holder?.previewTokens && holder?.previewTokens?.length > 0
-    ) || [];
+  const filteredHolders = useMemo(() => {
+    const result = [];
+
+    for (const holder of community?.owners ?? []) {
+      if (holder?.previewTokens?.length) {
+        result.push(holder);
+      }
+    }
+
+    return result;
+  }, [community.owners]);
 
   return (
     <VStack gap={16}>
       <TitleS>Gallery members ({totalHolders})</TitleS>
 
       <StyledCommunityHolderGrid>
-        {filteredHolders.map((holder) =>
-          holder ? <CommunityHolderGridItem holderRef={holder} /> : null
-        )}
+        {filteredHolders.map((holder) => (
+          <CommunityHolderGridItem key={holder.displayName} holderRef={holder} />
+        ))}
       </StyledCommunityHolderGrid>
     </VStack>
   );
