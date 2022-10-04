@@ -69,7 +69,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     () =>
       contractAddress?.address === '0x23581767a106ae21c074b2276d25e5c3e136a68b' &&
       isArtGobblersEnabled,
-    [contractAddress]
+    [contractAddress, isArtGobblersEnabled]
   );
 
   // whether "Show More" has been clicked or not
