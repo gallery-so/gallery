@@ -1,5 +1,6 @@
 import colors from 'components/core/colors';
 import { DisplayLayout } from 'components/core/enums';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 const GridLayoutIcon = () => (
@@ -37,7 +38,7 @@ export default function LayoutToggleButton({ layout, setLayout }: Props) {
     setLayout(DisplayLayout.LIST);
   };
 
-  const isGrid = layout === DisplayLayout.GRID;
+  const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
 
   return (
     <StyledLayoutToggleButtonContainer>
