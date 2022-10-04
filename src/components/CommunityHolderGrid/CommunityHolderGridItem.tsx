@@ -1,3 +1,5 @@
+import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -24,15 +26,18 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 
   const firstImage = holder?.previewTokens ? holder?.previewTokens[0] : null;
 
+  const galleryLink = `/${holder?.user?.username}`;
+
   return (
-    <StyledCommunityHolderGridItemContainer>
+    <VStack gap={8}>
       {firstImage && <StyledNftImage src={firstImage} />}
-      <BaseM>{holder?.displayName}</BaseM>
-    </StyledCommunityHolderGridItemContainer>
+      <VStack>
+        <BaseM>Untitled</BaseM>
+        <InteractiveLink to={galleryLink}>{holder?.displayName}</InteractiveLink>
+      </VStack>
+    </VStack>
   );
 }
-
-const StyledCommunityHolderGridItemContainer = styled.div``;
 
 const StyledNftImage = styled.img`
   min-height: 240px;
