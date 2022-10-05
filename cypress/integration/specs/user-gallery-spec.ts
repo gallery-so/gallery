@@ -1,12 +1,6 @@
-import Page from '../pages/page';
-
-const page = new Page();
-
 describe('user gallery tests', () => {
   beforeEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps();
-    cy.visit('/');
-    page.closeGlobalAnnouncement();
   });
 
   it('should render the static collection', () => {
