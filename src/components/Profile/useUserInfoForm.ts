@@ -66,6 +66,9 @@ export default function useUserInfoForm({
 
   const usernameFieldIsDirty = useRef(false);
 
+  // This cannot be derived from a "null" `usernameError`
+  // since the value starts off as empty when the form is empty
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
   const [usernameError, setUsernameError] = useState('');
 
   // Generic error that doesn't belong to username / bio
@@ -130,6 +133,8 @@ export default function useUserInfoForm({
 
   const handleUsernameChange = useCallback((username: string) => {
     setUsername(username);
+
+    setIsUsernameValid(false);
     usernameFieldIsDirty.current = true;
   }, []);
 
@@ -150,15 +155,19 @@ export default function useUserInfoForm({
       ]);
 
       if (clientSideUsernameError) {
-        setUsernameError(clientSideUsernameError || '');
+        setUsernameError(clientSideUsernameError);
 
         return;
+      } else {
+        setUsernameError('');
       }
 
       isUsernameAvailableFetcher(debouncedUsername)
         .then((isUsernameAvailable) => {
           if (!isUsernameAvailable) {
             setUsernameError('Username is taken');
+          } else {
+            setIsUsernameValid(true);
           }
         })
         .catch((error) => {
@@ -178,18 +187,25 @@ export default function useUserInfoForm({
     [debouncedUsername, isUsernameAvailableFetcher, reportError]
   );
 
-  const values = useMemo(
+  return useMemo(
     () => ({
       bio,
       username,
       generalError,
       usernameError,
+      isUsernameValid,
       onBioChange: setBio,
       onEditUser: handleCreateOrEditUser,
       onUsernameChange: handleUsernameChange,
     }),
-    [bio, generalError, handleCreateOrEditUser, handleUsernameChange, username, usernameError]
+    [
+      bio,
+      generalError,
+      handleCreateOrEditUser,
+      handleUsernameChange,
+      isUsernameValid,
+      username,
+      usernameError,
+    ]
   );
-
-  return values;
 }
