@@ -18,6 +18,7 @@ import useDebounce from 'hooks/useDebounce';
 import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
 import { useTrackCreateUserSuccess } from 'contexts/analytics/authUtil';
 import { useUserInfoFormIsUsernameAvailableQuery } from '../../../__generated__/useUserInfoFormIsUsernameAvailableQuery.graphql';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
   onSuccess: (username: string) => void;
@@ -60,22 +61,28 @@ export default function useUserInfoForm({
   existingBio,
   userId,
 }: Props) {
+  const [bio, setBio] = useState(existingBio ?? '');
   const [username, setUsername] = useState(existingUsername ?? '');
-  const [usernameError, setUsernameError] = useState('');
+
   const usernameFieldIsDirty = useRef(false);
 
-  const [bio, setBio] = useState(existingBio ?? '');
+  const [usernameError, setUsernameError] = useState('');
 
   // Generic error that doesn't belong to username / bio
   const [generalError, setGeneralError] = useState('');
+
   const updateUser = useUpdateUser();
   const createUser = useCreateUser();
+  const reportError = useReportError();
   const authPayloadQuery = useAuthPayloadQuery();
+  const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const trackCreateUserSuccess = useTrackCreateUserSuccess(
     authPayloadQuery?.userFriendlyWalletName
   );
 
-  const handleCreateOrEditUser = useCallback(async () => {
+  const debouncedUsername = useDebounce(username, 500);
+
+  const handleCreateOrEditUser = useCallback(async (): Promise<{ success: boolean }> => {
     setGeneralError('');
 
     if (usernameError) {
@@ -94,15 +101,19 @@ export default function useUserInfoForm({
         if (!authPayloadQuery) {
           throw new Error('Auth signature for creating user not found');
         }
+
         await createUser(authPayloadQuery, username, bio);
         trackCreateUserSuccess();
       }
+
       onSuccess(username);
+
       return { success: true };
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));
       }
+
       return { success: false };
     }
   }, [
@@ -122,47 +133,60 @@ export default function useUserInfoForm({
     usernameFieldIsDirty.current = true;
   }, []);
 
-  const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
-
-  const debouncedUsername = useDebounce(username, 500);
-
-  // validate username
-  useEffect(() => {
-    async function validateUsername() {
+  useEffect(
+    function validateUsername() {
       setGeneralError('');
 
-      if (debouncedUsername.length >= 2) {
-        const clientSideUsernameError = validate(debouncedUsername, [
-          required,
-          minLength(2),
-          maxLength(20),
-          alphanumericUnderscores,
-          noConsecutivePeriodsOrUnderscores,
-        ]);
+      if (debouncedUsername.length < 2) {
+        return;
+      }
 
+      const clientSideUsernameError = validate(debouncedUsername, [
+        required,
+        minLength(2),
+        maxLength(20),
+        alphanumericUnderscores,
+        noConsecutivePeriodsOrUnderscores,
+      ]);
+
+      if (clientSideUsernameError) {
         setUsernameError(clientSideUsernameError || '');
 
-        if (usernameFieldIsDirty.current && !clientSideUsernameError) {
-          const isUsernameAvailable = await isUsernameAvailableFetcher(debouncedUsername);
+        return;
+      }
+
+      isUsernameAvailableFetcher(debouncedUsername)
+        .then((isUsernameAvailable) => {
           if (!isUsernameAvailable) {
             setUsernameError('Username is taken');
           }
-        }
-      }
-    }
+        })
+        .catch((error) => {
+          if (error instanceof Error) {
+            reportError(error);
+          } else {
+            reportError('Failure while validating username', {
+              tags: { username: debouncedUsername },
+            });
+          }
 
-    validateUsername();
-  }, [debouncedUsername, isUsernameAvailableFetcher]);
+          setGeneralError(
+            "Something went wrong while validating your username. We're looking into it."
+          );
+        });
+    },
+    [debouncedUsername, isUsernameAvailableFetcher, reportError]
+  );
 
   const values = useMemo(
     () => ({
-      username,
-      onUsernameChange: handleUsernameChange,
-      usernameError,
       bio,
-      onBioChange: setBio,
+      username,
       generalError,
+      usernameError,
+      onBioChange: setBio,
       onEditUser: handleCreateOrEditUser,
+      onUsernameChange: handleUsernameChange,
     }),
     [bio, generalError, handleCreateOrEditUser, handleUsernameChange, username, usernameError]
   );
