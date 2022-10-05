@@ -57,5 +57,6 @@ jobs:
       - run: yarn run cypress:gh
         env:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          PERCY_TOKEN: ${{secrets.PERCY_TOKEN}}
           PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
           NETWORK_NAME: main
