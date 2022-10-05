@@ -7,6 +7,7 @@ import RightContent from './RightContent';
 import LeftContent from './LeftContent';
 import CenterContent from './CenterContent';
 import NavbarGLink from 'components/NavbarGLink';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/constants';
 
 export type Props = {
   queryRef: GlobalNavbarFragment$key;
@@ -38,8 +39,6 @@ function GlobalNavbar({ queryRef, customLeftContent, customCenterContent }: Prop
     </StyledGlobalNavbar>
   );
 }
-
-export const GLOBAL_NAVBAR_HEIGHT = 64;
 
 const StyledGlobalNavbar = styled.div`
   width: 100%;
