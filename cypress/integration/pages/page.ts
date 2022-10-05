@@ -8,6 +8,6 @@ export default class Page {
   }
 
   closeGlobalAnnouncement() {
-    cy.get('[data-testid="close-modal"]').click();
+    cy.get('[data-testid="close-modal"]')?.click();
   }
 }
