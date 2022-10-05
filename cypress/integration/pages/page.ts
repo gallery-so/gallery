@@ -8,6 +8,7 @@ export default class Page {
   }
 
   closeGlobalAnnouncement() {
+    // close announcement popover if present
     cy.get('[data-testid="close-modal"]')?.click();
   }
 }
