@@ -34,3 +34,11 @@ Plugin dependency file if we want to extend the cypress functionality from a thi
 ### Support
 
 This is where you can create custom commands or overwrite existing cypress commands.
+
+## Visual Diffing
+
+We use [Percy](https://percy.io/bf41c983/gallery) for visual diffing.
+
+In these integration tests, you can call `cy.percySnapshot()` to take a snapshot of a given page or part of a page. When the Cypress tests run in CI, the snapshots will be taken and sent to Percy, which will then compare them to previous snapshots and flag if anything has changed.
+
+If the visual diffs fail, spot-check the snapshot and confirm whether the UI looks as expected. Because we're snapshotting galleries with dynamic art, the Percy builds _are_ likely to show failures that need to be confirmed or rejected by a human.
