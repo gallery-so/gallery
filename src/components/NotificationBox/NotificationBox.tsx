@@ -30,7 +30,7 @@ export function NotificationBox({ queryRef }: NotificationBoxProps) {
   );
 
   const [count, setCount] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
 
   const handleCountClick = useCallback(() => {
     setIsDropdownOpen((previous) => !previous);

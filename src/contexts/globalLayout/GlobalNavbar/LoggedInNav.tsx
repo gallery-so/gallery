@@ -16,6 +16,7 @@ import { TitleM } from 'components/core/Text/Text';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
 import { HStack } from 'components/core/Spacer/Stack';
+import { NotificationBox } from 'components/NotificationBox/NotificationBox';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -30,6 +31,7 @@ function LoggedInNav({ queryRef }: Props) {
         ...EditUserInfoModalFragment
         ...ManageWalletsModalFragment
         ...isFeatureEnabledFragment
+        ...NotificationBoxFragment
 
         viewer {
           ... on Viewer {
@@ -91,29 +93,33 @@ function LoggedInNav({ queryRef }: Props) {
           </Dropdown>
         </NavElement>
       )}
-      <NavElement>
-        <StyledDropdownWrapper hasNotification={false}>
-          <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={`/${username}`}>
-              <TextButton text="My Gallery" />
-            </UnstyledLink>
-            <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <UnstyledLink href="/shop">
-              <ShopOptionContainer>
-                <StyledShopTextButton text="shop" />
-                <StyledObjectsContainer>
-                  <StyledLogoBracketLeft color={colors.shadow} />
-                  <HStack gap={1}>
-                    <StyledShopText>OBJECTS</StyledShopText>
-                    <StyledLogoBracketRight color={colors.shadow} />
-                  </HStack>
-                </StyledObjectsContainer>
-              </ShopOptionContainer>
-            </UnstyledLink>
-            <TextButton text="Sign out" onClick={handleSignOutClick} />
-          </Dropdown>
-        </StyledDropdownWrapper>
-      </NavElement>
+      <HStack gap={8}>
+        <NotificationBox queryRef={query} />
+
+        <NavElement>
+          <StyledDropdownWrapper hasNotification={false}>
+            <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
+              <UnstyledLink href={`/${username}`}>
+                <TextButton text="My Gallery" />
+              </UnstyledLink>
+              <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
+              <UnstyledLink href="/shop">
+                <ShopOptionContainer>
+                  <StyledShopTextButton text="shop" />
+                  <StyledObjectsContainer>
+                    <StyledLogoBracketLeft color={colors.shadow} />
+                    <HStack gap={1}>
+                      <StyledShopText>OBJECTS</StyledShopText>
+                      <StyledLogoBracketRight color={colors.shadow} />
+                    </HStack>
+                  </StyledObjectsContainer>
+                </ShopOptionContainer>
+              </UnstyledLink>
+              <TextButton text="Sign out" onClick={handleSignOutClick} />
+            </Dropdown>
+          </StyledDropdownWrapper>
+        </NavElement>
+      </HStack>
     </HStack>
   );
 }
