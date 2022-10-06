@@ -15,7 +15,6 @@ import { TitleXS } from 'components/core/Text/Text';
 import { readInlineData } from 'relay-runtime';
 import { graphql } from 'react-relay';
 import { SidebarListTokenFragment$key } from '../../../../../../__generated__/SidebarListTokenFragment.graphql';
-import nextClientPagesLoader from 'next/dist/build/webpack/loaders/next-client-pages-loader';
 
 export type TokenAndEditModeToken = {
   token: SidebarListTokenFragment$key;
