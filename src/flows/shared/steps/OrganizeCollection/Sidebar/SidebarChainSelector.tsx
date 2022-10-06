@@ -3,14 +3,8 @@ import IconContainer from 'components/core/Markdown/IconContainer';
 import { RefreshIcon } from 'icons/RefreshIcon';
 import { useCallback, useState } from 'react';
 import Tooltip from 'components/Tooltip/Tooltip';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql, useFragment } from 'react-relay';
-import { SidebarChainSelectorMutation } from '../../../../../../__generated__/SidebarChainSelectorMutation.graphql';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { Severity } from '@sentry/types';
 import { SidebarChainSelectorFragment$key } from '../../../../../../__generated__/SidebarChainSelectorFragment.graphql';
-import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { SidebarChainButton } from 'flows/shared/steps/OrganizeCollection/Sidebar/SidebarChainButton';
 import { Chain, chains } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
@@ -20,6 +14,8 @@ type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
   queryRef: SidebarChainSelectorFragment$key;
+  handleRefresh: () => void;
+  isRefreshingNfts: boolean;
 };
 
 export function SidebarChainSelector({
@@ -27,6 +23,8 @@ export function SidebarChainSelector({
   selected,
   onChange,
   queryRef,
+  handleRefresh,
+  isRefreshingNfts,
 }: SidebarChainsProps) {
   const query = useFragment(
     graphql`
@@ -45,30 +43,6 @@ export function SidebarChainSelector({
     queryRef
   );
 
-  const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
-
-  /**
-   * We're explicitly avoiding using the `isMutating` flag from the hook itself
-   * since that state is meant to be managed in the WizardState.
-   *
-   * This is because this refresh can happen in multiple places and we want
-   * to lock this refresh no matter where it originated from
-   */
-  const [refresh] = usePromisifiedMutation<SidebarChainSelectorMutation>(graphql`
-    mutation SidebarChainSelectorMutation($chain: Chain!) {
-      syncTokens(chains: [$chain]) {
-        __typename
-        ... on SyncTokensPayload {
-          viewer {
-            ...CollectionEditorViewerFragment
-          }
-        }
-      }
-    }
-  `);
-
-  const reportError = useReportError();
-  const { pushToast } = useToastActions();
   const [showTooltip, setShowTooltip] = useState(false);
 
   const selectedChain = chains.find((chain) => chain.name === selected);
@@ -79,50 +53,6 @@ export function SidebarChainSelector({
     },
     [onChange]
   );
-  const handleRefresh = useCallback(async () => {
-    if (!selectedChain) {
-      return;
-    }
-
-    setIsRefreshingNfts(true);
-
-    pushToast({
-      message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
-      autoClose: true,
-    });
-
-    try {
-      const response = await refresh({
-        variables: {
-          chain: selectedChain.name,
-        },
-      });
-
-      if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
-        pushToast({
-          autoClose: false,
-          message:
-            'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
-        });
-
-        reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
-          level: Severity.Error,
-          tags: {
-            chain: selectedChain.name,
-            responseTypename: response.syncTokens?.__typename,
-          },
-        });
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        reportError(e);
-      } else {
-        reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
-      }
-    } finally {
-      setIsRefreshingNfts(false);
-    }
-  }, [pushToast, refresh, reportError, selectedChain, setIsRefreshingNfts]);
 
   if (!selectedChain) {
     throw new Error(`Could not find a chain for selected value '${selected}'`);

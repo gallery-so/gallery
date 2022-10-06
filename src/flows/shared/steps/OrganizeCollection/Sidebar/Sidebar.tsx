@@ -22,6 +22,12 @@ import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/Sid
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
+import { useWizardState } from 'contexts/wizard/WizardDataProvider';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { Severity } from '@sentry/nextjs';
+import { SidebarMutation } from '__generated__/SidebarMutation.graphql';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -72,6 +78,10 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
+
+  const { pushToast } = useToastActions();
+  const reportError = useReportError();
 
   const isSearching = debouncedSearchQuery.length > 0;
 
@@ -141,6 +151,71 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     });
   }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
 
+  /**
+   * We're explicitly avoiding using the `isMutating` flag from the hook itself
+   * since that state is meant to be managed in the WizardState.
+   *
+   * This is because this refresh can happen in multiple places and we want
+   * to lock this refresh no matter where it originated from
+   */
+  const [refresh] = usePromisifiedMutation<SidebarMutation>(graphql`
+    mutation SidebarMutation($chain: Chain!) {
+      syncTokens(chains: [$chain]) {
+        __typename
+        ... on SyncTokensPayload {
+          viewer {
+            ...CollectionEditorViewerFragment
+          }
+        }
+      }
+    }
+  `);
+
+  const handleRefresh = useCallback(async () => {
+    if (!selectedChain) {
+      return;
+    }
+
+    setIsRefreshingNfts(true);
+
+    pushToast({
+      message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+      autoClose: true,
+    });
+
+    try {
+      const response = await refresh({
+        variables: {
+          chain: selectedChain,
+        },
+      });
+
+      if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+        pushToast({
+          autoClose: false,
+          message:
+            'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
+        });
+
+        reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
+          level: Severity.Error,
+          tags: {
+            chain: selectedChain,
+            responseTypename: response.syncTokens?.__typename,
+          },
+        });
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        reportError(e);
+      } else {
+        reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
+      }
+    } finally {
+      setIsRefreshingNfts(false);
+    }
+  }, [pushToast, refresh, reportError, selectedChain, setIsRefreshingNfts]);
+
   return (
     <StyledSidebar>
       <StyledSidebarContainer gap={8}>
@@ -159,6 +234,8 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
               queryRef={query}
               selected={selectedChain}
               onChange={setSelectedChain}
+              handleRefresh={handleRefresh}
+              isRefreshingNfts={isRefreshingNfts}
             />
             {ownsWalletFromSelectedChain && (
               <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
@@ -177,7 +254,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           editModeTokens={tokensToDisplay}
         />
       ) : (
-        <AddWalletSidebar selectedChain={selectedChain} queryRef={query} />
+        <AddWalletSidebar
+          selectedChain={selectedChain}
+          queryRef={query}
+          handleRefresh={handleRefresh}
+        />
       )}
     </StyledSidebar>
   );

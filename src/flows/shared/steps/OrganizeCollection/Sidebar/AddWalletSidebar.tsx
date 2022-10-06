@@ -11,9 +11,10 @@ import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 type Props = {
   queryRef: AddWalletSidebarQueryFragment$key;
   selectedChain: Chain;
+  handleRefresh: () => void;
 };
 
-export function AddWalletSidebar({ selectedChain, queryRef }: Props) {
+export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment AddWalletSidebarQueryFragment on Query {
@@ -23,11 +24,25 @@ export function AddWalletSidebar({ selectedChain, queryRef }: Props) {
     queryRef
   );
 
-  const { showModal } = useModalActions();
+  const { showModal, clearAllModals } = useModalActions();
+
+  const onNewWallectConnected = useCallback(async () => {
+    handleRefresh();
+    clearAllModals();
+  }, [handleRefresh, clearAllModals]);
 
   const handleManageWalletsClick = useCallback(() => {
-    showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
-  }, [query, showModal]);
+    showModal({
+      content: (
+        <ManageWalletsModal
+          queryRef={query}
+          onTezosAddWalletSuccess={onNewWallectConnected}
+          onEthAddWalletSuccess={onNewWallectConnected}
+        />
+      ),
+      headerText: 'Manage accounts',
+    });
+  }, [onNewWallectConnected, query, showModal]);
 
   const ctaButtonText = useMemo(() => {
     const renameEthAccounts = ['Ethereum', 'POAP'];
