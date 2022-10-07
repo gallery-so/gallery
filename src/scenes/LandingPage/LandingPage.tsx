@@ -38,7 +38,7 @@ export default function LandingPage() {
         <HStack gap={8}>
           <NavLink to="/members">Members</NavLink>
           <BaseS>·</BaseS>
-          <NavLink to="/bastiboii">Gallery of the Week</NavLink>
+          <NavLink to="/qaulv">Gallery of the Week</NavLink>
         </HStack>
         <NavLink to="/shop">
           <HStack gap={6}>
