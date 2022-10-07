@@ -15,11 +15,13 @@ describe('user gallery tests', () => {
     cy.percySnapshot('user gallery: live collection 1');
   });
 
-  // it('should render the second live collection', () => {
-  //   cy.visit('/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle');
-  //   cy.wait(3000);
-  //   cy.percySnapshot('user gallery: live collection 2');
-  // });
+  it('should render the second live collection', () => {
+    cy.visit('/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle');
+    cy.wait(3000);
+    cy.percySnapshot('user gallery: live collection 2', {
+      'percy-css': 'iframe {\n  display: none;\n}\n',
+    });
+  });
 
   it('should render the third live collection', () => {
     cy.visit('/percyio/2EmOUGtyR0O85qUwwnWurfRopYq');
