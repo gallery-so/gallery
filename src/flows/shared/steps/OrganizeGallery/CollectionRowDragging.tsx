@@ -7,10 +7,11 @@ import CollectionRow from './CollectionRow';
 import CollectionRowSettings from './CollectionRowSettings';
 
 type Props = {
+  onEditCollection: (dbid: string) => void;
   collectionRef: CollectionRowDraggingFragment$key;
 };
 
-function CollectionRowDragging({ collectionRef }: Props) {
+function CollectionRowDragging({ collectionRef, onEditCollection }: Props) {
   const collection = useFragment(
     graphql`
       fragment CollectionRowDraggingFragment on Collection {
@@ -25,7 +26,7 @@ function CollectionRowDragging({ collectionRef }: Props) {
   return (
     <StyledCollectionRowDragging>
       <>
-        <CollectionRowSettings collectionRef={collection} />
+        <CollectionRowSettings collectionRef={collection} onEditCollection={onEditCollection} />
         <StyledCollectionRow collectionRef={collection} isMouseUp={isMouseUp} />
       </>
     </StyledCollectionRowDragging>

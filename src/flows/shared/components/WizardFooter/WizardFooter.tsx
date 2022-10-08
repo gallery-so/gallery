@@ -16,6 +16,7 @@ import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import useKeyDown from 'hooks/useKeyDown';
 import ActionText from 'components/core/ActionText/ActionText';
 import { HStack } from 'components/core/Spacer/Stack';
+import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/constants';
 
 function WizardFooter({
   step,
@@ -136,8 +137,6 @@ function WizardFooter({
     </StyledWizardFooter>
   );
 }
-
-export const FOOTER_HEIGHT = 56;
 
 const StyledWizardFooter = styled.div`
   position: fixed;

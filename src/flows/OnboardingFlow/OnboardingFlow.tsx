@@ -28,7 +28,6 @@ function OnboardingFlow() {
             <>
               <FadeTransitioner locationKey={wizardProps.step.id}>
                 <Steps key={wizardProps.step.id} step={wizardProps.step}>
-                  <Step id="welcome" render={Welcome} />
                   <Step id="addUserInfo" render={AddUserInfo} />
                   <Step id="create" render={CreateFirstCollection} />
                   <Step id="organizeCollection" render={OrganizeCollection} />

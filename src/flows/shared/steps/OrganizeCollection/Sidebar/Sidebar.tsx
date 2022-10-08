@@ -2,7 +2,6 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { TitleS } from 'components/core/Text/Text';
-import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
 import {
   SidebarTokensState,
   useCollectionEditorActions,
@@ -22,12 +21,12 @@ import { SidebarTokens } from 'flows/shared/steps/OrganizeCollection/Sidebar/Sid
 import { Chain } from 'flows/shared/steps/OrganizeCollection/Sidebar/chains';
 import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
-import { useWizardState } from 'contexts/wizard/WizardDataProvider';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { Severity } from '@sentry/nextjs';
 import { SidebarMutation } from '__generated__/SidebarMutation.graphql';
+import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/constants';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -78,7 +77,11 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-  const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
+
+  // TODO(Terence): Figure out where to store this state;
+  const isRefreshingNfts = false;
+  const setIsRefreshingNfts = useCallback(() => {}, []);
+  // const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
@@ -119,9 +122,10 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     return searchResultNfts;
   }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
 
-  const nftFragmentsKeyedByID = useMemo(() => keyBy(nonNullTokens, (token) => token.dbid), [
-    nonNullTokens,
-  ]);
+  const nftFragmentsKeyedByID = useMemo(
+    () => keyBy(nonNullTokens, (token) => token.dbid),
+    [nonNullTokens]
+  );
 
   const handleAddBlankBlockClick = useCallback(() => {
     const id = `blank-${generate12DigitId()}`;

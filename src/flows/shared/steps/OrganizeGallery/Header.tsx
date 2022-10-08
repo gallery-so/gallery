@@ -1,14 +1,12 @@
-import { useCallback } from 'react';
 import styled from 'styled-components';
 import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import { withWizard, WizardComponentProps } from 'react-albus';
 import { Button } from 'components/core/Button/Button';
 
-function Header({ wizard: { push } }: WizardComponentProps) {
-  const handleAddCollection = useCallback(() => {
-    push('organizeCollection');
-  }, [push]);
+type Props = {
+  onAddCollection: () => void;
+};
 
+export default function Header({ onAddCollection }: Props) {
   return (
     <StyledHeader>
       <TitleContainer>
@@ -16,7 +14,7 @@ function Header({ wizard: { push } }: WizardComponentProps) {
         <BaseM>Drag to re-order collections</BaseM>
       </TitleContainer>
       <OptionsContainer>
-        <Button variant="secondary" onClick={handleAddCollection}>
+        <Button variant="secondary" onClick={onAddCollection}>
           Add
         </Button>
       </OptionsContainer>
@@ -43,5 +41,3 @@ const OptionsContainer = styled.div`
 
   text-transform: uppercase;
 `;
-
-export default withWizard(Header);

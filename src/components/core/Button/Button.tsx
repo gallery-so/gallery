@@ -61,9 +61,13 @@ const StyledButton = styled.button<StyledButtonProps>`
     opacity: 0;
     transition: opacity ${transitions.cubic};
   }
+
   &[aria-busy='true'] .Button-spinner {
     opacity: 1;
   }
+
+  // TODO(Terence): Review disabled state with Jess
+  opacity: ${({ disabled }) => (disabled ? '.8' : '1')};
 
   ${({ variant = 'primary' }) => {
     if (variant === 'primary') {

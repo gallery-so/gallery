@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { withWizard, WizardComponentProps } from 'react-albus';
 import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import noop from 'utils/noop';
@@ -17,9 +16,10 @@ import Settings from 'public/icons/ellipses.svg';
 
 type Props = {
   collectionRef: CollectionRowSettingsFragment$key;
+  onEditCollection: (dbid: string) => void;
 };
 
-function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & WizardComponentProps) {
+function CollectionRowSettings({ collectionRef, onEditCollection }: Props) {
   const collection = useFragment(
     graphql`
       fragment CollectionRowSettingsFragment on Collection {
@@ -37,7 +37,6 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
   );
 
   const { showModal } = useModalActions();
-  const { setCollectionIdBeingEdited } = useCollectionWizardActions();
 
   const { dbid, name, collectorsNote, hidden, gallery } = collection;
 
@@ -45,9 +44,9 @@ function CollectionRowSettings({ collectionRef, wizard: { push } }: Props & Wiza
 
   const handleEditCollectionClick = useCallback(() => {
     track('Update existing collection button clicked');
-    setCollectionIdBeingEdited(dbid);
-    push('organizeCollection');
-  }, [dbid, push, setCollectionIdBeingEdited, track]);
+
+    onEditCollection(dbid);
+  }, [dbid, onEditCollection, track]);
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -124,4 +123,4 @@ const StyledSettings = styled(Settings)`
   right: 0;
 `;
 
-export default withWizard(CollectionRowSettings);
+export default CollectionRowSettings;

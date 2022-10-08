@@ -39,9 +39,10 @@ const modifiers = [restrictToVerticalAxis, restrictToWindowEdges];
 
 type Props = {
   galleryRef: CollectionDndFragment$key;
+  onEditCollection: (dbid: string) => void;
 };
 
-function CollectionDnd({ galleryRef }: Props) {
+function CollectionDnd({ galleryRef, onEditCollection }: Props) {
   const gallery = useFragment(
     graphql`
       fragment CollectionDndFragment on Gallery {
@@ -145,7 +146,12 @@ function CollectionDnd({ galleryRef }: Props) {
         </VStack>
       </SortableContext>
       <DragOverlay dropAnimation={dropAnimation}>
-        {activeCollection ? <CollectionRowDragging collectionRef={activeCollection} /> : null}
+        {activeCollection ? (
+          <CollectionRowDragging
+            onEditCollection={onEditCollection}
+            collectionRef={activeCollection}
+          />
+        ) : null}
       </DragOverlay>
     </DndContext>
   );

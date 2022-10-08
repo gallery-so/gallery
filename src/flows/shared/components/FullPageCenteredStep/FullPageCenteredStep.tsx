@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT } from '../WizardFooter/WizardFooter';
+import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/constants';
 
 type Props = {
   children: ReactNode | ReactNode[];

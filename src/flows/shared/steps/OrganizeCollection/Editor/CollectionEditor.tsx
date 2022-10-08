@@ -36,6 +36,7 @@ function convertNftsToEditModeTokens(
 
 type Props = {
   queryRef: CollectionEditorFragment$key;
+  onValidChange: (valid: boolean) => void;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
@@ -76,7 +77,7 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-function CollectionEditor({ queryRef }: Props) {
+function CollectionEditor({ queryRef, onValidChange }: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorFragment on Query {
@@ -103,15 +104,15 @@ function CollectionEditor({ queryRef }: Props) {
 
   const stagedCollectionState = useStagedCollectionState();
   const sidebarTokens = useSidebarTokensState();
-  const { setNextEnabled } = useWizardValidationActions();
 
-  useEffect(() => {
-    setNextEnabled(Object.keys(stagedCollectionState).length > 0);
+  useEffect(
+    function notifyParentWhenCollectionIsValid() {
+      const isCollectionValid = Object.keys(stagedCollectionState).length > 0;
 
-    return () => {
-      setNextEnabled(true);
-    };
-  }, [setNextEnabled, stagedCollectionState]);
+      onValidChange(isCollectionValid);
+    },
+    [stagedCollectionState, onValidChange]
+  );
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
     useCollectionEditorActions();

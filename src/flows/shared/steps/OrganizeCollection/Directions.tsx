@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import { BaseXL, BaseM } from 'components/core/Text/Text';
-import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/WizardFooter';
+import { FOOTER_HEIGHT } from 'flows/shared/components/WizardFooter/constants';
 
 function Directions() {
   return (
