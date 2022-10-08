@@ -9,7 +9,7 @@ import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import CollectionCreateOrEditForm from 'flows/../../components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';

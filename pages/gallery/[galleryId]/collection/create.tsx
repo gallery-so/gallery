@@ -11,53 +11,34 @@ import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.g
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
-import { OnboardingFooter } from 'flows/../../src/components/Onboarding/WizardFooter/OnboardingFooter';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'flows/../../src/components/Onboarding/WizardFooter/constants';
 import { GetServerSideProps } from 'next';
+import { WizardFooter } from 'components/WizardFooter';
+import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 
-function LazyLoadedCollectionEditor() {
+type Props = {
+  galleryId: string;
+};
+
+function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const query = useLazyLoadQuery<OrganizeCollectionQuery>(
     graphql`
       query OrganizeCollectionQuery {
-        viewer @required(action: THROW) {
-          ... on Viewer {
-            __typename
-            user @required(action: THROW) {
-              username
-              galleries @required(action: THROW) {
-                dbid @required(action: THROW)
-              }
-            }
-          }
-        }
-
         ...CollectionEditorFragment
       }
     `,
     {}
   );
 
-  if (query.viewer.__typename !== 'Viewer') {
-    throw new Error(
-      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer.__typename}`
-    );
-  }
-
-  // We don't have to handle multi-gallery here since the user is
-  // going through onboarding and we can assume they only have one gallery
-  const galleryId = query.viewer.user.galleries[0]?.dbid;
-
-  if (!galleryId) {
-    throw new Error(`OrganizeCollection expected galleryId`);
-  }
-
   const track = useTrack();
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
 
-  const { push, query: urlQuery, back } = useRouter();
+  const { push, back, replace } = useRouter();
+
+  const editGalleryUrl = `/gallery/${galleryId}/edit`;
+
   const handleNext = useCallback(() => {
     track('Save new collection button clicked');
 
@@ -66,8 +47,7 @@ function LazyLoadedCollectionEditor() {
         <CollectionCreateOrEditForm
           onNext={() => {
             push({
-              pathname: getStepUrl('organize-gallery'),
-              query: { ...urlQuery },
+              pathname: editGalleryUrl,
             });
           }}
           galleryId={galleryId}
@@ -79,55 +59,61 @@ function LazyLoadedCollectionEditor() {
     });
   }, [
     collectionMetadata.tokenSettings,
+    editGalleryUrl,
     galleryId,
     push,
     showModal,
     stagedCollectionState,
     track,
-    urlQuery,
   ]);
+
+  const canGoBack = useCanGoBack();
+  const handlePrevious = useCallback(() => {
+    if (canGoBack) {
+      back();
+    } else {
+      replace(editGalleryUrl);
+    }
+  }, [back, canGoBack, editGalleryUrl, replace]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
     <FullPageCenteredStep>
       <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />;
-      <OnboardingFooter
-        step={'organize-collection'}
-        onNext={handleNext}
+      <WizardFooter
         isNextEnabled={isCollectionValid}
-        onPrevious={back}
+        nextText={'Save'}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        previousText="Cancel"
       />
     </FullPageCenteredStep>
   );
 }
 
-type Props = {
-  collectionId: string | null;
-};
-
-export default function OrganizeCollectionWithProvider({ collectionId }: Props) {
+export default function OrganizeCollectionWithProvider({ galleryId }: Props) {
   return (
-    <CollectionWizardContext initialCollectionId={collectionId ?? undefined}>
+    <CollectionWizardContext>
       <CollectionEditorProvider>
-        <LazyLoadedCollectionEditor />
+        <LazyLoadedCollectionEditor galleryId={galleryId} />
       </CollectionEditorProvider>
     </CollectionWizardContext>
   );
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
-  if (Array.isArray(params?.collectionId)) {
-    return {
-      props: {
-        collectionId: null,
-      },
-    };
+  if (Array.isArray(params?.galleryId)) {
+    throw new Error('Tried to create a new collection with multiple gallery ids in the url.');
+  }
+
+  if (!params?.galleryId) {
+    throw new Error('Tried to create a new collection without a gallery set.');
   }
 
   return {
     props: {
-      collectionId: params?.collectionId ?? null,
+      galleryId: params?.galleryId,
     },
   };
 };

@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import UserInfoForm from 'components/Profile/UserInfoForm';
-import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
+import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import ErrorText from 'components/core/Text/ErrorText';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { OnboardingFooter } from 'flows/shared/components/WizardFooter/OnboardingFooter';
+import { OnboardingFooter } from 'flows/../../src/components/Onboarding/WizardFooter/OnboardingFooter';
 
 function AddUserInfo() {
   const { push, query, back } = useRouter();

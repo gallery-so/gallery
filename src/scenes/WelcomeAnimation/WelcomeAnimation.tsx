@@ -11,7 +11,7 @@ import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'flows/shared/components/WizardFooter/constants';
+import { getStepUrl } from 'flows/../../components/Onboarding/WizardFooter/constants';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.

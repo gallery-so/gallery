@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
+import { StagedCollection } from 'flows/../../../components/ManageGallery/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';

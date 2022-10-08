@@ -17,7 +17,7 @@ import { graphql } from 'relay-runtime';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
-import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
+import CollectionCreateOrEditForm from 'flows/../../components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
+import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { useLazyLoadQuery } from 'react-relay';
 import { ButtonLink } from 'components/core/Button/Button';
 import { VStack } from 'components/core/Spacer/Stack';

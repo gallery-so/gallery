@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { organizeCollectionQuery } from 'flows/shared/steps/OrganizeCollection/OrganizeCollection';
+import { organizeCollectionQuery } from 'flows/../../components/ManageGallery/OrganizeCollection/OrganizeCollection';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 import { ReactNode, createContext, useContext, memo, useMemo, useState, useCallback } from 'react';
 import { PreloadedQuery, useQueryLoader } from 'react-relay';
