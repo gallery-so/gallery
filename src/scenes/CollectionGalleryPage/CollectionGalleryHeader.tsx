@@ -9,7 +9,6 @@ import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import CollectionCreateOrEditForm from 'flows/../../components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -23,6 +22,7 @@ import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGal
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;

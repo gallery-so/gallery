@@ -7,7 +7,6 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
@@ -15,15 +14,16 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
+import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
 
 type Props = {
   galleryId: string;
 };
 
 function LazyLoadedCollectionEditor({ galleryId }: Props) {
-  const query = useLazyLoadQuery<OrganizeCollectionQuery>(
+  const query = useLazyLoadQuery<createCollectionQuery>(
     graphql`
-      query OrganizeCollectionQuery {
+      query createCollectionQuery {
         ...CollectionEditorFragment
       }
     `,

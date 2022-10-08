@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { StagedCollection } from 'flows/../../../components/ManageGallery/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { fetchQuery, graphql } from 'relay-runtime';
 import { useRelayEnvironment } from 'react-relay';
@@ -9,6 +8,7 @@ import { useUpdateCollectionTokensMutation } from '__generated__/useUpdateCollec
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { captureException } from '@sentry/nextjs';
+import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
 
 type Props = {
   collectionId: string;

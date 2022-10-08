@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { StagedCollection } from 'flows/../../../components/ManageGallery/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
 
 type Props = {
   galleryId: string;

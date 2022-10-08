@@ -6,8 +6,8 @@ import { useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'flows/../../src/components/Onboarding/WizardFooter/constants';
-import { OnboardingFooter } from 'flows/../../src/components/Onboarding/WizardFooter/OnboardingFooter';
+import { getStepUrl } from 'components/Onboarding/constants';
+import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 
 export default function CreateFirstCollection() {
   const track = useTrack();

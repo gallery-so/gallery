@@ -8,7 +8,7 @@ import useUserInfoForm from 'components/Profile/useUserInfoForm';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { OnboardingFooter } from 'flows/../../src/components/Onboarding/WizardFooter/OnboardingFooter';
+import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 
 function AddUserInfo() {
   const { push, query, back } = useRouter();

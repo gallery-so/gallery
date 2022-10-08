@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { getStepUrl } from 'flows/../../src/components/Onboarding/WizardFooter/constants';
 import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
 import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
+import { getStepUrl } from 'components/Onboarding/constants';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(

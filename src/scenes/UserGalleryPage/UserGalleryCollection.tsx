@@ -17,12 +17,12 @@ import { graphql } from 'relay-runtime';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
-import CollectionCreateOrEditForm from 'flows/../../components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;

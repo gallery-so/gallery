@@ -7,19 +7,19 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { OrganizeCollectionQuery } from '__generated__/OrganizeCollectionQuery.graphql';
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
-import { OnboardingFooter } from 'flows/../../src/components/Onboarding/WizardFooter/OnboardingFooter';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'flows/../../src/components/Onboarding/WizardFooter/constants';
 import { GetServerSideProps } from 'next';
+import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
+import { getStepUrl } from 'components/Onboarding/constants';
+import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 
 function LazyLoadedCollectionEditor() {
-  const query = useLazyLoadQuery<OrganizeCollectionQuery>(
+  const query = useLazyLoadQuery<organizeCollectionPageQuery>(
     graphql`
-      query OrganizeCollectionQuery {
+      query organizeCollectionPageQuery {
         viewer @required(action: THROW) {
           ... on Viewer {
             __typename
