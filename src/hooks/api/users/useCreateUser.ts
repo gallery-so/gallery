@@ -1,10 +1,13 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
-import { graphql } from 'relay-runtime';
+import { fetchQuery, graphql } from 'relay-runtime';
 import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
 import { useCreateUserMutation } from '../../../../__generated__/useCreateUserMutation.graphql';
+import { useRelayEnvironment } from 'react-relay';
 
 export default function useCreateUser() {
+  const environment = useRelayEnvironment();
+
   const [createUser] = usePromisifiedMutation<useCreateUserMutation>(
     graphql`
       mutation useCreateUserMutation(
@@ -91,8 +94,25 @@ export default function useCreateUser() {
         throw new Error('Username or bio is invalid');
       }
 
+      await fetchQuery(
+        environment,
+        graphql`
+          query useCreateUserRefreshViewerQuery {
+            viewer {
+              ... on Viewer {
+                user {
+                  id
+                  dbid
+                }
+              }
+            }
+          }
+        `,
+        {}
+      ).toPromise();
+
       return response;
     },
-    [createUser]
+    [createUser, environment]
   );
 }

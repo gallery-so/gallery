@@ -11,6 +11,7 @@ import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
+import { getStepUrl } from 'flows/shared/components/WizardFooter/constants';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -81,7 +82,12 @@ export default function WelcomeAnimation() {
     // Delay next so we can show a transition animation
     setShouldFadeOut(true);
     setTimeout(() => {
-      push('/onboarding/add-user-info', { query: { ...query } });
+      push({
+        pathname: getStepUrl('add-user-info'),
+        query: {
+          ...query,
+        },
+      });
     }, FADE_DURATION);
   }, [push, query, track]);
 

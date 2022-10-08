@@ -45,7 +45,10 @@ function LazyLoadedCollectionEditor() {
       content: (
         <CollectionCreateOrEditForm
           onNext={() => {
-            push(getStepUrl('organize-gallery'), { query: { ...urlQuery } });
+            push({
+              pathname: getStepUrl('organize-gallery'),
+              query: { ...urlQuery },
+            });
           }}
           galleryId={galleryId}
           stagedCollection={stagedCollectionState}
@@ -94,6 +97,14 @@ export default function OrganizeCollectionWithProvider({ collectionId }: Props) 
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
+  if (Array.isArray(params?.collectionId)) {
+    return {
+      props: {
+        collectionId: null,
+      },
+    };
+  }
+
   return {
     props: {
       collectionId: params?.collectionId ?? null,

@@ -67,7 +67,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   }
 
   // TODO(Terence): Review disabled state with Jess
-  opacity: ${({ disabled }) => (disabled ? '.8' : '1')};
+  opacity: ${({ disabled }) => (disabled ? '.5' : '1')};
 
   ${({ variant = 'primary' }) => {
     if (variant === 'primary') {

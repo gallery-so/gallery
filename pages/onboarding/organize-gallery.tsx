@@ -4,23 +4,23 @@ import styled from 'styled-components';
 import { useWizardCallback } from 'contexts/wizard/WizardCallbackContext';
 
 import { WizardContext } from 'react-albus';
-import { useWizardId } from 'contexts/wizard/WizardDataProvider';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import detectMobileDevice from 'utils/detectMobileDevice';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useRouter } from 'next/router';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
-import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { OrganizeGalleryFragment$key } from '__generated__/OrganizeGalleryFragment.graphql';
-import { OrganizeGalleryQuery } from '__generated__/OrganizeGalleryQuery.graphql';
 import useKeyDown from 'hooks/useKeyDown';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import { VStack } from 'components/core/Spacer/Stack';
 import Header from 'flows/shared/steps/OrganizeGallery/Header';
 import { getStepUrl } from 'flows/shared/components/WizardFooter/constants';
 import CollectionDnd from 'flows/shared/steps/OrganizeGallery/CollectionDnd';
+import { organizeGalleryQuery } from '../../__generated__/OrganizeGalleryQuery.graphql';
+import { organizeGalleryFragment$key } from '../../__generated__/OrganizeGalleryFragment.graphql';
+import FullPageCenteredStep from 'flows/shared/components/FullPageCenteredStep/FullPageCenteredStep';
+import { OnboardingFooter } from 'flows/shared/components/WizardFooter/OnboardingFooter';
 
 type ConfigProps = {
   wizardId: string;
@@ -42,62 +42,7 @@ function useNotOptimizedForMobileWarning() {
   }, [pushToast]);
 }
 
-function useWizardConfig({ wizardId, username, next }: ConfigProps) {
-  const { setOnNext, setOnPrevious } = useWizardCallback();
-  const canGoBack = useCanGoBack();
-
-  const clearOnNext = useCallback(() => {
-    setOnNext(undefined);
-    setOnPrevious(undefined);
-  }, [setOnNext, setOnPrevious]);
-
-  const { replace, back, push } = useRouter();
-  const returnToPrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      void replace(`/${username}`);
-    }
-
-    clearOnNext();
-  }, [canGoBack, clearOnNext, back, replace, username]);
-
-  const track = useTrack();
-
-  const saveGalleryAndReturnToProfile = useCallback(async () => {
-    clearOnNext();
-    // Save gallery changes (re-ordered collections)
-    if (wizardId === 'onboarding') {
-      track('Publish gallery');
-      next();
-      return;
-    }
-
-    void push(`/${username}`);
-  }, [clearOnNext, next, push, username, wizardId, track]);
-
-  useKeyDown('Escape', saveGalleryAndReturnToProfile);
-
-  useEffect(() => {
-    setOnNext(saveGalleryAndReturnToProfile);
-    setOnPrevious(returnToPrevious);
-  }, [setOnPrevious, setOnNext, saveGalleryAndReturnToProfile, returnToPrevious]);
-}
-
-export default function LazyOrganizeGallery(props: WizardContext) {
-  const query = useLazyLoadQuery<OrganizeGalleryQuery>(
-    graphql`
-      query organizeGalleryQuery {
-        ...OrganizeGalleryFragment
-      }
-    `,
-    {}
-  );
-
-  return <OrganizeGallery {...props} queryRef={query} />;
-}
-
-function OrganizeGallery({ queryRef }: { queryRef: OrganizeGalleryFragment$key }) {
+function OrganizeGallery({ queryRef }: { queryRef: organizeGalleryFragment$key }) {
   const query = useFragment(
     graphql`
       fragment organizeGalleryFragment on Query {
@@ -137,34 +82,67 @@ function OrganizeGallery({ queryRef }: { queryRef: OrganizeGalleryFragment$key }
     [gallery.collections.length]
   );
 
-  const { push, query: urlQuery } = useRouter();
+  const { push, query: urlQuery, back } = useRouter();
   const handleAddCollection = useCallback(() => {
-    push(getStepUrl('create'), { query: { ...urlQuery } });
+    push({
+      pathname: getStepUrl('create'),
+      query: { ...urlQuery },
+    });
   }, [push, urlQuery]);
 
   const handleEditCollection = useCallback(() => {
     // TODO(Terence): Heavily test this
-    push(getStepUrl('organize-collection'), { query: { ...urlQuery } });
+    // We need to make sure the flow of going back and forth between steps works.
+    push({
+      pathname: getStepUrl('organize-collection'),
+      query: { ...urlQuery },
+    });
+  }, [push, urlQuery]);
+
+  const handleNext = useCallback(() => {
+    return push({ pathname: getStepUrl('congratulations'), query: { ...urlQuery } });
   }, [push, urlQuery]);
 
   return (
-    <StyledOrganizeGallery align="center">
-      <Content gap={24}>
-        <Header onAddCollection={handleAddCollection} />
-        {isEmptyGallery ? (
-          <StyledEmptyGalleryMessage gap={8}>
-            <BaseXL>Create your first collection</BaseXL>
-            <BaseM>
-              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
-              anything that feels right.
-            </BaseM>
-          </StyledEmptyGalleryMessage>
-        ) : (
-          <CollectionDnd onEditCollection={handleEditCollection} galleryRef={gallery} />
-        )}
-      </Content>
-    </StyledOrganizeGallery>
+    <FullPageCenteredStep withFooter>
+      <StyledOrganizeGallery align="center">
+        <Content gap={24}>
+          <Header onAddCollection={handleAddCollection} />
+          {isEmptyGallery ? (
+            <StyledEmptyGalleryMessage gap={8}>
+              <BaseXL>Create your first collection</BaseXL>
+              <BaseM>
+                Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+                anything that feels right.
+              </BaseM>
+            </StyledEmptyGalleryMessage>
+          ) : (
+            <CollectionDnd onEditCollection={handleEditCollection} galleryRef={gallery} />
+          )}
+        </Content>
+      </StyledOrganizeGallery>
+
+      <OnboardingFooter
+        step={'organize-gallery'}
+        onNext={handleNext}
+        isNextEnabled={true}
+        onPrevious={back}
+      />
+    </FullPageCenteredStep>
   );
+}
+
+export default function LazyOrganizeGallery(props: WizardContext) {
+  const query = useLazyLoadQuery<organizeGalleryQuery>(
+    graphql`
+      query organizeGalleryQuery {
+        ...organizeGalleryFragment
+      }
+    `,
+    {}
+  );
+
+  return <OrganizeGallery {...props} queryRef={query} />;
 }
 
 const StyledOrganizeGallery = styled(VStack)`

@@ -16,7 +16,10 @@ export default function CreateFirstCollection() {
   const handleNextClick = useCallback(() => {
     track('Start new collection');
 
-    push(getStepUrl('organize-collection'), { query: { ...query } });
+    push({
+      pathname: getStepUrl('organize-collection'),
+      query: { ...query },
+    });
   }, [push, query, track]);
 
   return (

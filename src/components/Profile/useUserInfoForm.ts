@@ -114,7 +114,10 @@ export default function useUserInfoForm({
       return { success: true };
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setGeneralError(formatError(error));
+        if (error.message === 'Authentication failed') {
+        } else {
+          setGeneralError(formatError(error));
+        }
       }
 
       return { success: false };
