@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
-import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
+import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import { getStepUrl } from 'components/Onboarding/constants';
+import { VStack } from 'components/core/Spacer/Stack';
+import FullPageStep from 'components/Onboarding/FullPageStep';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(
@@ -39,12 +41,14 @@ export default function OrganizeGalleryPage() {
   }, [push, urlQuery]);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <OrganizeGallery
-        queryRef={query}
-        onAddCollection={handleAddCollection}
-        onEditCollection={handleEditCollection}
-      />
+    <VStack>
+      <FullPageStep withFooter>
+        <OrganizeGallery
+          queryRef={query}
+          onAddCollection={handleAddCollection}
+          onEditCollection={handleEditCollection}
+        />
+      </FullPageStep>
 
       <OnboardingFooter
         step="organize-gallery"
@@ -52,6 +56,6 @@ export default function OrganizeGalleryPage() {
         isNextEnabled={true}
         onPrevious={back}
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }

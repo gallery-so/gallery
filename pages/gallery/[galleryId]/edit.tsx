@@ -4,7 +4,10 @@ import { graphql } from 'relay-runtime';
 import { useCallback } from 'react';
 import { editGalleryPageQuery } from '../../../__generated__/editGalleryPageQuery.graphql';
 import { useRouter } from 'next/router';
-import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
+import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
+import { WizardFooter } from 'components/WizardFooter';
+import { VStack } from 'components/core/Spacer/Stack';
+import FullPageStep from 'components/Onboarding/FullPageStep';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
@@ -38,12 +41,16 @@ export default function EditGalleryPage() {
   );
 
   return (
-    <FullPageCenteredStep withFooter>
-      <OrganizeGallery
-        onAddCollection={handleAddCollection}
-        onEditCollection={handleEditCollection}
-        queryRef={query}
-      />
-    </FullPageCenteredStep>
+    <VStack>
+      <FullPageStep withFooter>
+        <OrganizeGallery
+          onAddCollection={handleAddCollection}
+          onEditCollection={handleEditCollection}
+          queryRef={query}
+        />
+      </FullPageStep>
+
+      <WizardFooter isNextEnabled={true} nextText={'Done'} onNext={() => {}} />
+    </VStack>
   );
 }

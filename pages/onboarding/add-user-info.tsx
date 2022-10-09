@@ -10,12 +10,13 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
+import { getStepUrl } from 'components/Onboarding/constants';
 
 function AddUserInfo() {
   const { push, query, back } = useRouter();
 
   const handleFormSuccess = useCallback(() => {
-    push('/onboarding/create', { query: { ...query } });
+    push({ pathname: getStepUrl('create'), query: { ...query } });
   }, [push, query]);
 
   const {
@@ -54,21 +55,23 @@ function AddUserInfo() {
   }, [bio.length, isLocked, onEditUser, syncTokens, track]);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <VStack gap={8}>
-        <StyledUserInfoForm
-          bio={bio}
-          mode="Add"
-          onSubmit={handleSubmit}
-          username={username}
-          usernameError={usernameError}
-          onUsernameChange={onUsernameChange}
-          onBioChange={onBioChange}
-        />
-        <ErrorContainer>
-          <ErrorText message={generalError} />
-        </ErrorContainer>
-      </VStack>
+    <VStack>
+      <FullPageCenteredStep withFooter>
+        <VStack gap={8}>
+          <StyledUserInfoForm
+            bio={bio}
+            mode="Add"
+            onSubmit={handleSubmit}
+            username={username}
+            usernameError={usernameError}
+            onUsernameChange={onUsernameChange}
+            onBioChange={onBioChange}
+          />
+          <ErrorContainer>
+            <ErrorText message={generalError} />
+          </ErrorContainer>
+        </VStack>
+      </FullPageCenteredStep>
 
       <OnboardingFooter
         step={'add-user-info'}
@@ -76,7 +79,7 @@ function AddUserInfo() {
         isNextEnabled={isUsernameValid}
         onPrevious={back}
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }
 

@@ -23,17 +23,19 @@ export default function CreateFirstCollection() {
   }, [push, query, track]);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <VStack gap={24} align="center">
-        <VStack gap={8} align="center">
-          <BaseXL>Create your first collection</BaseXL>
-          <StyledBodyText>
-            Organize your gallery with collections. Use them to group NFTs by creator, theme, or
-            anything that feels right.
-          </StyledBodyText>
+    <VStack>
+      <FullPageCenteredStep withFooter>
+        <VStack gap={24} align="center">
+          <VStack gap={8} align="center">
+            <BaseXL>Create your first collection</BaseXL>
+            <StyledBodyText>
+              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+              anything that feels right.
+            </StyledBodyText>
+          </VStack>
+          <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
         </VStack>
-        <StyledButton onClick={handleNextClick}>New Collection</StyledButton>
-      </VStack>
+      </FullPageCenteredStep>
 
       <OnboardingFooter
         step={'create'}
@@ -41,7 +43,7 @@ export default function CreateFirstCollection() {
         isNextEnabled={true}
         onPrevious={back}
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }
 

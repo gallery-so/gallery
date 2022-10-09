@@ -9,12 +9,13 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
 import { getStepUrl } from 'components/Onboarding/constants';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
+import { VStack } from 'components/core/Spacer/Stack';
+import FullPageStep from 'components/Onboarding/FullPageStep';
 
 function LazyLoadedCollectionEditor() {
   const query = useLazyLoadQuery<organizeCollectionPageQuery>(
@@ -90,15 +91,18 @@ function LazyLoadedCollectionEditor() {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />;
+    <VStack>
+      <FullPageStep withFooter>
+        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />;
+      </FullPageStep>
+
       <OnboardingFooter
         step={'organize-collection'}
         onNext={handleNext}
         isNextEnabled={isCollectionValid}
         onPrevious={back}
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }
 

@@ -6,7 +6,6 @@ import CollectionEditorProvider, {
 import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { WizardFooter } from 'components/WizardFooter';
@@ -14,6 +13,8 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { editCollectionQuery } from '../../../../../__generated__/editCollectionQuery.graphql';
+import FullPageStep from 'components/Onboarding/FullPageStep';
+import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   galleryId: string;
@@ -46,6 +47,8 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         stagedCollection: stagedCollectionState,
         tokenSettings: collectionMetadata.tokenSettings,
       });
+
+      replace(editGalleryUrl);
     } catch (error: unknown) {
       if (error instanceof Error) {
         pushToast({
@@ -58,7 +61,9 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   }, [
     collectionId,
     collectionMetadata.tokenSettings,
+    editGalleryUrl,
     pushToast,
+    replace,
     stagedCollectionState,
     updateCollection,
   ]);
@@ -75,8 +80,11 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    <VStack>
+      <FullPageStep withFooter>
+        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      </FullPageStep>
+
       <WizardFooter
         isNextEnabled={isCollectionValid}
         nextText={'Save'}
@@ -84,7 +92,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         onPrevious={handlePrevious}
         previousText="Cancel"
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }
 

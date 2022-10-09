@@ -9,12 +9,13 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
+import { VStack } from 'components/core/Spacer/Stack';
+import FullPageStep from 'components/Onboarding/FullPageStep';
 
 type Props = {
   galleryId: string;
@@ -79,8 +80,11 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageCenteredStep withFooter>
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    <VStack>
+      <FullPageStep withFooter>
+        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      </FullPageStep>
+
       <WizardFooter
         isNextEnabled={isCollectionValid}
         nextText={'Save'}
@@ -88,7 +92,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
         onPrevious={handlePrevious}
         previousText="Cancel"
       />
-    </FullPageCenteredStep>
+    </VStack>
   );
 }
 

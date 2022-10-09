@@ -12,12 +12,11 @@ type Props = {
 /**
  * A helper component to easily generate full-page steps where the content is centered
  */
-export default function FullPageCenteredStep({ children, withFooter }: Props) {
+export default function FullPageStep({ children, withFooter }: Props) {
   return (
     <GalleryRoute
       element={<StyledPage withFooter={withFooter}>{children}</StyledPage>}
       navbar={false}
-      banner={false}
       footer={false}
     />
   );
@@ -26,7 +25,5 @@ export default function FullPageCenteredStep({ children, withFooter }: Props) {
 const StyledPage = styled.div<{ withFooter?: boolean }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   height: calc(100vh - ${({ withFooter }) => (withFooter ? FOOTER_HEIGHT : 0)}px);
 `;
