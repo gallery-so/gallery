@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import { useCallback } from 'react';
 import { editGalleryPageQuery } from '../../../__generated__/editGalleryPageQuery.graphql';
 import { useRouter } from 'next/router';
+import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
@@ -37,10 +38,12 @@ export default function EditGalleryPage() {
   );
 
   return (
-    <OrganizeGallery
-      onAddCollection={handleAddCollection}
-      onEditCollection={handleEditCollection}
-      queryRef={query}
-    />
+    <FullPageCenteredStep withFooter>
+      <OrganizeGallery
+        onAddCollection={handleAddCollection}
+        onEditCollection={handleEditCollection}
+        queryRef={query}
+      />
+    </FullPageCenteredStep>
   );
 }

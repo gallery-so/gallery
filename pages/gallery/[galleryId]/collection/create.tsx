@@ -79,8 +79,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageCenteredStep>
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />;
+    <FullPageCenteredStep withFooter>
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
       <WizardFooter
         isNextEnabled={isCollectionValid}
         nextText={'Save'}

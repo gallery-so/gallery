@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
+import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type Props = {
   children: ReactNode | ReactNode[];
@@ -12,7 +13,14 @@ type Props = {
  * A helper component to easily generate full-page steps where the content is centered
  */
 export default function FullPageCenteredStep({ children, withFooter }: Props) {
-  return <StyledPage withFooter={withFooter}>{children}</StyledPage>;
+  return (
+    <GalleryRoute
+      element={<StyledPage withFooter={withFooter}>{children}</StyledPage>}
+      navbar={false}
+      banner={false}
+      footer={false}
+    />
+  );
 }
 
 const StyledPage = styled.div<{ withFooter?: boolean }>`

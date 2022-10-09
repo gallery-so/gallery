@@ -94,6 +94,8 @@ export default function useCreateUser() {
         throw new Error('Username or bio is invalid');
       }
 
+      // Update the cache with a fresh user.
+      // This is to ensure the entire app knows we're logged in now
       await fetchQuery(
         environment,
         graphql`
@@ -102,7 +104,6 @@ export default function useCreateUser() {
               ... on Viewer {
                 user {
                   id
-                  dbid
                 }
               }
             }

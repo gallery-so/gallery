@@ -90,7 +90,7 @@ function LazyLoadedCollectionEditor() {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageCenteredStep>
+    <FullPageCenteredStep withFooter>
       <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />;
       <OnboardingFooter
         step={'organize-collection'}

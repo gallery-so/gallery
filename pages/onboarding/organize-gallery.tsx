@@ -39,7 +39,7 @@ export default function OrganizeGalleryPage() {
   }, [push, urlQuery]);
 
   return (
-    <FullPageCenteredStep>
+    <FullPageCenteredStep withFooter>
       <OrganizeGallery
         queryRef={query}
         onAddCollection={handleAddCollection}

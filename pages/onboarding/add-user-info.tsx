@@ -9,6 +9,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
+import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 
 function AddUserInfo() {
   const { push, query, back } = useRouter();
@@ -34,17 +35,23 @@ function AddUserInfo() {
   });
 
   const track = useTrack();
+  const { isLocked, syncTokens } = useSyncTokens();
 
   const handleSubmit = useCallback(async () => {
     const { success } = await onEditUser();
-    if (success) {
-      track('Save Name & Bio', { added_bio: bio.length > 0 });
 
-      // begin pre-fetching NFTs for user before they get to the collection editor phase
-      // TODO(Terence): Figure out a way to store a preloaded query in context
-      // handleRefreshNfts();
+    if (!success) {
+      return;
     }
-  }, [bio.length, onEditUser, track]);
+
+    track('Save Name & Bio', { added_bio: bio.length > 0 });
+
+    if (!isLocked) {
+      // Start the sync tokens mutation so the user
+      // sees their NFTs loaded ASAP.
+      syncTokens();
+    }
+  }, [bio.length, isLocked, onEditUser, syncTokens, track]);
 
   return (
     <FullPageCenteredStep withFooter>

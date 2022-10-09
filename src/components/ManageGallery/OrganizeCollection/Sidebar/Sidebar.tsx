@@ -22,11 +22,9 @@ import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chain
 import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { Severity } from '@sentry/nextjs';
-import { SidebarMutation } from '__generated__/SidebarMutation.graphql';
 import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
+import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -77,11 +75,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-
-  // TODO(Terence): Figure out where to store this state;
-  const isRefreshingNfts = false;
-  const setIsRefreshingNfts = useCallback(() => {}, []);
-  // const { isRefreshingNfts, setIsRefreshingNfts } = useWizardState();
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
@@ -155,32 +148,12 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     });
   }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
 
-  /**
-   * We're explicitly avoiding using the `isMutating` flag from the hook itself
-   * since that state is meant to be managed in the WizardState.
-   *
-   * This is because this refresh can happen in multiple places and we want
-   * to lock this refresh no matter where it originated from
-   */
-  const [refresh] = usePromisifiedMutation<SidebarMutation>(graphql`
-    mutation SidebarMutation($chain: Chain!) {
-      syncTokens(chains: [$chain]) {
-        __typename
-        ... on SyncTokensPayload {
-          viewer {
-            ...CollectionEditorViewerFragment
-          }
-        }
-      }
-    }
-  `);
+  const { isLocked, syncTokens } = useSyncTokens();
 
   const handleRefresh = useCallback(async () => {
-    if (!selectedChain) {
+    if (!selectedChain || isLocked) {
       return;
     }
-
-    setIsRefreshingNfts(true);
 
     pushToast({
       message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
@@ -188,37 +161,15 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     });
 
     try {
-      const response = await refresh({
-        variables: {
-          chain: selectedChain,
-        },
-      });
-
-      if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
-        pushToast({
-          autoClose: false,
-          message:
-            'There was an error while trying to sync your tokens. We have been notified and are looking into it.',
-        });
-
-        reportError('Error while syncing tokens for chain. Typename was not `SyncTokensPayload`', {
-          level: Severity.Error,
-          tags: {
-            chain: selectedChain,
-            responseTypename: response.syncTokens?.__typename,
-          },
-        });
-      }
+      await syncTokens();
     } catch (e) {
       if (e instanceof Error) {
         reportError(e);
       } else {
         reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
       }
-    } finally {
-      setIsRefreshingNfts(false);
     }
-  }, [pushToast, refresh, reportError, selectedChain, setIsRefreshingNfts]);
+  }, [isLocked, pushToast, reportError, selectedChain, syncTokens]);
 
   return (
     <StyledSidebar>
@@ -239,7 +190,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
               selected={selectedChain}
               onChange={setSelectedChain}
               handleRefresh={handleRefresh}
-              isRefreshingNfts={isRefreshingNfts}
+              isRefreshingNfts={isLocked}
             />
             {ownsWalletFromSelectedChain && (
               <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
@@ -280,7 +231,7 @@ const StyledSidebar = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding: 16px 0;
+  padding-top: 16px;
 
   height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
