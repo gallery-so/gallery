@@ -142,6 +142,11 @@ export default function useUserInfoForm({
     function validateUsername() {
       setGeneralError('');
 
+      // it doesn't make sense to tell users their current username is taken!
+      if (existingUsername && debouncedUsername === existingUsername) {
+        return;
+      }
+
       if (debouncedUsername.length < 2) {
         return;
       }
@@ -184,7 +189,7 @@ export default function useUserInfoForm({
           );
         });
     },
-    [debouncedUsername, isUsernameAvailableFetcher, reportError]
+    [debouncedUsername, existingUsername, isUsernameAvailableFetcher, reportError]
   );
 
   return useMemo(
