@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
-import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import { getStepUrl } from 'components/Onboarding/constants';
 import { VStack } from 'components/core/Spacer/Stack';

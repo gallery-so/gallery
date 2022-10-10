@@ -8,7 +8,7 @@ import colors from 'components/core/colors';
 import isPromise from 'utils/isPromise';
 import ActionText from 'components/core/ActionText/ActionText';
 import { HStack } from 'components/core/Spacer/Stack';
-import { FOOTER_HEIGHT, StepName } from 'components/Onboarding/constants';
+import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 
 type Props = {
   isNextEnabled: boolean;

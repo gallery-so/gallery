@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import TextButton from 'components/core/Button/TextButton';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useCollectionWizardActions } from 'contexts/wizard/CollectionWizardContext';
 import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
 import noop from 'utils/noop';
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
