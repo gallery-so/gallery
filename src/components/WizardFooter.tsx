@@ -6,6 +6,7 @@ import isPromise from 'utils/isPromise';
 import ActionText from 'components/core/ActionText/ActionText';
 import { HStack } from 'components/core/Spacer/Stack';
 import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
   isNextEnabled: boolean;
@@ -18,6 +19,7 @@ type Props = {
 export function WizardFooter({ onNext, onPrevious, isNextEnabled, nextText, previousText }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const reportError = useReportError();
   const handleNextClick = useCallback(async () => {
     const response = onNext();
 
@@ -26,17 +28,24 @@ export function WizardFooter({ onNext, onPrevious, isNextEnabled, nextText, prev
       try {
         setIsLoading(true);
         await response;
-      } catch {
+      } catch (error) {
         // If we want, we can display an error on the wizard
         // itself if the async request goes awry. that said,
         // we'll generally want to handle this on the Step
         // component itself
-        // TODO(Terence): Report the error here at least
+        //
+        // Just in case, we'll report the error here if all went wrong
+
+        if (error instanceof Error) {
+          reportError(error);
+        } else {
+          reportError('Uncaught error in WizardFooter onNext');
+        }
       }
 
       setIsLoading(false);
     }
-  }, [onNext]);
+  }, [onNext, reportError]);
 
   return (
     <StyledWizardFooter>
