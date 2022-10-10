@@ -86,8 +86,8 @@ type ChainAddress {
 
 
 type ChainPubKey {
-  pubKey: PubKey
-  chain: Chain
+    pubKey: PubKey
+    chain: Chain
 }
 
 type ChainTokens {
@@ -224,11 +224,11 @@ type UnknownMedia implements Media {
 }
 
 type SyncingMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type InvalidMedia implements Media {
@@ -253,9 +253,15 @@ enum Chain {
     Tezos
     POAP
 }
+
 enum WalletType {
     EOA
     GnosisSafe
+}
+
+enum InteractionType {
+    Admire
+    Comment
 }
 
 type Token implements Node {
@@ -355,24 +361,24 @@ type MembershipTier implements Node {
 }
 
 type Community implements Node
-  @goGqlId(fields: ["contractAddress", "chain"])
-  @goEmbedHelper {
-  dbid: DBID!
-  id: ID!
+@goGqlId(fields: ["contractAddress", "chain"])
+@goEmbedHelper {
+    dbid: DBID!
+    id: ID!
 
-  lastUpdated: Time
+    lastUpdated: Time
 
-  contractAddress: ChainAddress
-  creatorAddress: ChainAddress
-  chain: Chain
-  name: String
-  description: String
-  previewImage: String
-  profileImageURL: String
-  profileBannerURL: String
-  badgeURL: String
+    contractAddress: ChainAddress
+    creatorAddress: ChainAddress
+    chain: Chain
+    name: String
+    description: String
+    previewImage: String
+    profileImageURL: String
+    profileBannerURL: String
+    badgeURL: String
 
-  owners: [TokenHolder] @goField(forceResolver: true)
+    owners: [TokenHolder] @goField(forceResolver: true)
 }
 
 type Contract implements Node {
@@ -464,7 +470,7 @@ type FollowInfo {
 type FeedEventAdmireEdge {
     node: Admire
     event: FeedEvent
-    cursor: ID!
+    cursor: String!
 }
 
 type FeedEventAdmiresConnection {
@@ -474,9 +480,9 @@ type FeedEventAdmiresConnection {
 }
 
 type FeedEventCommentEdge {
-    node:Comment
+    node: Comment
     event: FeedEvent
-    cursor: ID!
+    cursor: String!
 }
 
 type FeedEventCommentsConnection {
@@ -484,16 +490,16 @@ type FeedEventCommentsConnection {
     pageInfo: PageInfo!
 }
 
-union AdmireOrComment = Admire | Comment
+union Interaction = Admire | Comment
 
-type FeedEventAdmiresAndCommentEdge {
-    node: AdmireOrComment
+type FeedEventInteractionsEdge {
+    node: Interaction
     event: FeedEvent
-    cursor: ID!
+    cursor: String!
 }
 
-type FeedEventAdmiresAndCommentsConnection {
-    edges: [FeedEventAdmiresAndCommentEdge]
+type FeedEventInteractionsConnection {
+    edges: [FeedEventInteractionsEdge]
     pageInfo: PageInfo!
 }
 
@@ -510,7 +516,7 @@ type FeedEvent implements Node {
     eventData: FeedEventData @goField(forceResolver: true)
     admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection @goField(forceResolver: true)
     comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection @goField(forceResolver: true)
-    admiresAndComments(before: String, after: String, first: Int, last: Int): FeedEventAdmiresAndCommentsConnection @goField(forceResolver: true)
+    interactions(before: String, after: String, first: Int, last: Int): FeedEventInteractionsConnection @goField(forceResolver: true)
 }
 
 type UserCreatedFeedEventData implements FeedEventData {
@@ -793,8 +799,8 @@ type SyncTokensPayload {
 
 union RefreshTokenPayloadOrError =
     RefreshTokenPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshTokenPayload {
     token: Token
@@ -802,8 +808,8 @@ type RefreshTokenPayload {
 
 union RefreshCollectionPayloadOrError =
     RefreshCollectionPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshCollectionPayload {
     collection: Collection
@@ -811,8 +817,8 @@ type RefreshCollectionPayload {
 
 union RefreshContractPayloadOrError =
     RefreshContractPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshContractPayload {
     contract: Contract
@@ -972,27 +978,27 @@ type UnfollowUserPayload {
 
 union AdmireFeedEventPayloadOrError =
     AdmireFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 union RemoveAdmirePayloadOrError =
     RemoveAdmirePayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 union CommentOnFeedEventPayloadOrError =
     CommentOnFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 union RemoveCommentPayloadOrError =
     RemoveCommentPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 type AdmireFeedEventPayload {
     viewer: Viewer
@@ -1001,20 +1007,20 @@ type AdmireFeedEventPayload {
 }
 
 type RemoveAdmirePayload {
-  viewer: Viewer
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type CommentOnFeedEventPayload {
-  viewer: Viewer
-  comment: Comment @goField(forceResolver: true)
-  replyToComment: Comment @goField(forceResolver: true)
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    comment: Comment @goField(forceResolver: true)
+    replyToComment: Comment @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type RemoveCommentPayload {
-  viewer: Viewer
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type Mutation {
