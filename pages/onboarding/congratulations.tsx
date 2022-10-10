@@ -27,7 +27,7 @@ export default function Congratulations() {
 
   if (query.viewer?.__typename !== 'Viewer') {
     throw new Error(
-      `OrganizeCollection expected Viewer to be type 'Viewer' but got: ${query.viewer?.__typename}`
+      `Congratulations expected Viewer to be type 'Viewer' but got: ${query.viewer?.__typename}`
     );
   }
 
