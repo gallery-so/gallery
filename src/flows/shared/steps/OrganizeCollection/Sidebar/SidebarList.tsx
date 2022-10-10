@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import throttle from 'lodash.throttle';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { EditModeToken } from 'flows/shared/steps/OrganizeCollection/types';
 import { ExpandedIcon } from 'flows/shared/steps/OrganizeCollection/Sidebar/ExpandedIcon';
@@ -122,14 +123,36 @@ export function SidebarList({
   );
 
   const virtualizedListRef = useRef<List | null>(null);
+
+  /**
+   * We have to use a throttled version here due to the following:
+   *
+   * If a user has a bunch of broken NFTs, the parent component
+   * will re-render a bunch of times while those NFTs progressively fail.
+   *
+   * Each re-render causes the "rows" to change, causing this effect
+   * to fire too many times. If we don't throttle, React thinks
+   * we're in an infinite loop and throws an error.
+   *
+   * We're using throttle not debounce here since we want
+   * to recompute the row heights as soon as possible to
+   * avoid any weird layout flickering while searching.
+   */
+  const throttledRecomputeRowHeights = useMemo(() => {
+    return throttle(
+      () => {
+        virtualizedListRef.current?.recomputeRowHeights();
+      },
+      200,
+      { leading: true, trailing: true }
+    );
+  }, []);
+
   // Important to useLayoutEffect to avoid flashing of the
   // React Virtualized component.
-  useLayoutEffect(
-    function recomputeRowHeightsWhenCollectionExpanded() {
-      virtualizedListRef.current?.recomputeRowHeights();
-    },
-    [rows]
-  );
+  useLayoutEffect(() => {
+    throttledRecomputeRowHeights();
+  }, [rows, throttledRecomputeRowHeights]);
 
   return (
     <StyledListTokenContainer shouldUseCollectionGrouping={shouldUseCollectionGrouping}>

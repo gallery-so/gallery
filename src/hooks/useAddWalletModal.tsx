@@ -11,9 +11,14 @@ import { useAddWalletModalQuery } from '__generated__/useAddWalletModalQuery.gra
 type ModalProps = {
   queryRef: useAddWalletModalFragment$key;
   onTezosAddWalletSuccess?: () => void;
+  onEthAddWalletSuccess?: () => void;
 };
 
-const AddWalletModal = ({ queryRef, onTezosAddWalletSuccess }: ModalProps) => {
+const AddWalletModal = ({
+  queryRef,
+  onEthAddWalletSuccess,
+  onTezosAddWalletSuccess,
+}: ModalProps) => {
   const query = useFragment(
     graphql`
       fragment useAddWalletModalFragment on Query {
@@ -28,6 +33,7 @@ const AddWalletModal = ({ queryRef, onTezosAddWalletSuccess }: ModalProps) => {
       <WalletSelector
         connectionMode={ADD_WALLET_TO_USER}
         queryRef={query}
+        onEthAddWalletSuccess={onEthAddWalletSuccess}
         onTezosAddWalletSuccess={onTezosAddWalletSuccess}
       />
     </Container>
@@ -46,14 +52,20 @@ export default function useAddWalletModal() {
     {}
   );
 
+  type Props = {
+    onEthAddWalletSuccess?: () => void;
+    onTezosAddWalletSuccess?: () => void;
+  };
+
   return useCallback(
-    (props?: { onTezosAddWalletSuccess?: () => void }) => {
+    ({ onEthAddWalletSuccess, onTezosAddWalletSuccess }: Props) => {
       showModal({
         id: 'add-wallet-modal',
         content: (
           <AddWalletModal
             queryRef={query}
-            onTezosAddWalletSuccess={props?.onTezosAddWalletSuccess}
+            onTezosAddWalletSuccess={onEthAddWalletSuccess}
+            onEthAddWalletSuccess={onTezosAddWalletSuccess}
           />
         ),
         headerText: 'Connect your wallet',

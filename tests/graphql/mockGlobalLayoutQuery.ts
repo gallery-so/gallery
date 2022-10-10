@@ -3,7 +3,6 @@ import { GlobalLayoutContextQueryQuery } from '../../__generated__/operations';
 import { GALLERY_USER_DBID, GALLERY_USER_ID, GALLERY_USER_USERNAME, WALLETS } from '../constants';
 
 export function mockGlobalLayoutQuery() {
-  // @ts-expect-error: fix this later
   const response: GlobalLayoutContextQueryQuery = {
     __typename: 'Query',
     viewer: {

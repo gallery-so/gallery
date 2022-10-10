@@ -25,23 +25,27 @@ function useWizardConfig({ onNext }: ConfigProps) {
 }
 
 function AddUserInfo({ next }: WizardContext) {
-  const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
-    useUserInfoForm({
+  const {
+    bio,
+    username,
+    onEditUser,
+    onBioChange,
+    generalError,
+    usernameError,
+    isUsernameValid,
+    onUsernameChange,
+  } = useUserInfoForm({
+    existingBio: '',
     onSuccess: next,
     userId: undefined,
     existingUsername: '',
-    existingBio: '',
   });
 
   const { setNextEnabled } = useWizardValidationActions();
 
   useEffect(() => {
-    if (username.length < 2) {
-      setNextEnabled(false);
-      return;
-    }
-    setNextEnabled(!usernameError);
-  }, [setNextEnabled, username, usernameError]);
+    setNextEnabled(isUsernameValid);
+  }, [isUsernameValid, setNextEnabled]);
 
   const track = useTrack();
 
