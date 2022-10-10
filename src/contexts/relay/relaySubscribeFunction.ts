@@ -4,14 +4,9 @@ import { Client, createClient } from 'graphql-ws';
 let websocketClient: Client;
 
 if (typeof window !== 'undefined') {
-  if (!process.env.NEXT_PUBLIC_GRAPHQL_SUBSCRIPTION_URL) {
-    throw new Error(
-      'Could not create websocket client w/o `NEXT_PUBLIC_GRAPHQL_SUBSCRIPTION_URL` environment variable set.'
-    );
-  }
-
   websocketClient = createClient({
-    url: process.env.NEXT_PUBLIC_GRAPHQL_SUBSCRIPTION_URL,
+    url:
+      process.env.NEXT_PUBLIC_GRAPHQL_SUBSCRIPTION_URL ?? 'ws://localhost:4000/glry/graphql/query',
   });
 }
 
