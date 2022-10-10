@@ -7,18 +7,26 @@ import { useRouter } from 'next/router';
 import { WizardFooter } from 'components/WizardFooter';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
+import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
     graphql`
       query editGalleryPageQuery {
         ...OrganizeGalleryFragment
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
       }
     `,
     {}
   );
 
-  const { push, query: urlQuery } = useRouter();
+  const { push, back, query: urlQuery } = useRouter();
 
   const handleAddCollection = useCallback(() => {
     if (!urlQuery.galleryId) {
@@ -39,6 +47,17 @@ export default function EditGalleryPage() {
     [push, urlQuery.galleryId]
   );
 
+  const canGoBack = useCanGoBack();
+  const handleDone = useCallback(() => {
+    if (canGoBack) {
+      back();
+    } else if (query.viewer?.user?.username) {
+      push(`/${query.viewer.user.username}`);
+    } else {
+      push(`/home`);
+    }
+  }, [back, canGoBack, push, query.viewer?.user?.username]);
+
   return (
     <VStack>
       <FullPageStep withFooter>
@@ -49,7 +68,7 @@ export default function EditGalleryPage() {
         />
       </FullPageStep>
 
-      <WizardFooter isNextEnabled={true} nextText={'Done'} onNext={() => {}} />
+      <WizardFooter isNextEnabled={true} nextText={'Done'} onNext={handleDone} />
     </VStack>
   );
 }
