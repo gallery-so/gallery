@@ -24,7 +24,6 @@ export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPaylo
 
 export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   const { query } = useRouter();
-  console.log(query);
 
   // need weird typechecking logic in this func due to the fact that nextjs queries can be
   // a variety of types, and doesn't offer generics

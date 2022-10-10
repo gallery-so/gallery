@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
@@ -12,23 +12,31 @@ import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
-import { editCollectionQuery } from '../../../../../__generated__/editCollectionQuery.graphql';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
+import { getStepUrl } from 'components/Onboarding/constants';
+import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
+import { UrlObject } from 'url';
 
 type Props = {
-  galleryId: string;
   collectionId: string;
 };
 
-function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
-  const query = useLazyLoadQuery<editCollectionQuery>(
+function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
+  const query = useLazyLoadQuery<editCollectionOnboardingQuery>(
     graphql`
-      query editCollectionQuery {
+      query editCollectionOnboardingQuery($collectionId: DBID!) {
+        collectionById(id: $collectionId) {
+          ... on Collection {
+            gallery {
+              dbid
+            }
+          }
+        }
         ...CollectionEditorFragment
       }
     `,
-    {}
+    { collectionId }
   );
 
   const { pushToast } = useToastActions();
@@ -36,9 +44,19 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
 
-  const { back, replace } = useRouter();
+  const { back, replace, query: urlQuery } = useRouter();
 
-  const editGalleryUrl = `/gallery/${galleryId}/edit`;
+  const returnUrl: UrlObject = useMemo(() => {
+    // We want to pull out the query params relevant to this page
+    // so we can navigate back to the old page without extra params.
+    const nextParams = { ...urlQuery };
+    delete nextParams.collectionId;
+
+    return {
+      pathname: getStepUrl('organize-gallery'),
+      query: nextParams,
+    };
+  }, [urlQuery]);
 
   const handleNext = useCallback(async () => {
     try {
@@ -48,7 +66,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         tokenSettings: collectionMetadata.tokenSettings,
       });
 
-      replace(editGalleryUrl);
+      replace(returnUrl);
     } catch (error: unknown) {
       if (error instanceof Error) {
         pushToast({
@@ -61,9 +79,9 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   }, [
     collectionId,
     collectionMetadata.tokenSettings,
-    editGalleryUrl,
     pushToast,
     replace,
+    returnUrl,
     stagedCollectionState,
     updateCollection,
   ]);
@@ -73,9 +91,9 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
     if (canGoBack) {
       back();
     } else {
-      replace(editGalleryUrl);
+      replace(returnUrl);
     }
-  }, [back, canGoBack, editGalleryUrl, replace]);
+  }, [back, canGoBack, replace, returnUrl]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
@@ -96,25 +114,19 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   );
 }
 
-export default function OrganizeCollectionWithProvider({ galleryId, collectionId }: Props) {
+export default function OrganizeCollectionOnboardingWithProvider({ collectionId }: Props) {
+  console.log('Initial render', collectionId);
+
   return (
     <CollectionWizardContext initialCollectionId={collectionId}>
       <CollectionEditorProvider>
-        <LazyLoadedCollectionEditor collectionId={collectionId} galleryId={galleryId} />
+        <LazyLoadedCollectionEditorOnboarding collectionId={collectionId} />
       </CollectionEditorProvider>
     </CollectionWizardContext>
   );
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
-  if (Array.isArray(query.galleryId)) {
-    throw new Error('Tried to edit a collection with multiple gallery ids in the url.');
-  }
-
-  if (!query.galleryId) {
-    throw new Error('Tried to edit a collection without a gallery set.');
-  }
-
   if (Array.isArray(query.collectionId)) {
     throw new Error('Tried to edit a collection with multiple collection ids the url.');
   }
@@ -125,7 +137,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
 
   return {
     props: {
-      galleryId: query.galleryId,
       collectionId: query.collectionId,
     },
   };

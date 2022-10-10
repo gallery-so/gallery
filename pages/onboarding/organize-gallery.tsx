@@ -21,19 +21,20 @@ export default function OrganizeGalleryPage() {
   const { push, query: urlQuery, back } = useRouter();
   const handleAddCollection = useCallback(() => {
     push({
-      pathname: getStepUrl('create'),
-      query: { ...urlQuery },
-    });
-  }, [push, urlQuery]);
-
-  const handleEditCollection = useCallback(() => {
-    // TODO(Terence): Heavily test this
-    // We need to make sure the flow of going back and forth between steps works.
-    push({
       pathname: getStepUrl('organize-collection'),
       query: { ...urlQuery },
     });
   }, [push, urlQuery]);
+
+  const handleEditCollection = useCallback(
+    (dbid: string) => {
+      push({
+        pathname: getStepUrl('edit-collection'),
+        query: { ...urlQuery, collectionId: dbid },
+      });
+    },
+    [push, urlQuery]
+  );
 
   const handleNext = useCallback(() => {
     return push({ pathname: getStepUrl('congratulations'), query: { ...urlQuery } });

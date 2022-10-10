@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import { useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
 import { getStepUrl } from 'components/Onboarding/constants';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
+import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 
 export default function CreateFirstCollection() {
   const track = useTrack();

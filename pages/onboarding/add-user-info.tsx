@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import UserInfoForm from 'components/Profile/UserInfoForm';
-import FullPageCenteredStep from 'flows/../../src/components/Onboarding/FullPageCenteredStep/FullPageCenteredStep';
 import ErrorText from 'components/core/Text/ErrorText';
 
 import useUserInfoForm from 'components/Profile/useUserInfoForm';
@@ -11,12 +10,24 @@ import { useRouter } from 'next/router';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 import { getStepUrl } from 'components/Onboarding/constants';
+import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 
 function AddUserInfo() {
-  const { push, query, back } = useRouter();
+  const { push, back, query } = useRouter();
 
   const handleFormSuccess = useCallback(() => {
-    push({ pathname: getStepUrl('create'), query: { ...query } });
+    // After we've created an account, we can remove these
+    // params from the URL since we won't need them
+    // and it looks better if the URL is clean
+    const nextParams = { ...query };
+    delete nextParams.signature;
+    delete nextParams.nonce;
+    delete nextParams.chain;
+    delete nextParams.address;
+    delete nextParams.authMechanism;
+    delete nextParams.userFriendlyWalletName;
+
+    push({ pathname: getStepUrl('create') });
   }, [push, query]);
 
   const {

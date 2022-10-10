@@ -6,6 +6,7 @@ export const STEPS = [
   'create',
   'organize-collection',
   'organize-gallery',
+  'edit-collection',
   'congratulations',
 ] as const;
 
@@ -16,6 +17,7 @@ export const FOOTER_BUTTON_TEXT_MAP: { [key in StepName]: string } = {
   'add-user-info': 'Next',
   create: 'New Collection',
   'organize-collection': 'Continue',
+  'edit-collection': 'Save',
   'organize-gallery': 'Publish Gallery',
   congratulations: 'Done',
 };

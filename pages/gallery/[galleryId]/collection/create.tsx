@@ -106,18 +106,18 @@ export default function OrganizeCollectionWithProvider({ galleryId }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
-  if (Array.isArray(params?.galleryId)) {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
+  if (Array.isArray(query.galleryId)) {
     throw new Error('Tried to create a new collection with multiple gallery ids in the url.');
   }
 
-  if (!params?.galleryId) {
+  if (!query.galleryId) {
     throw new Error('Tried to create a new collection without a gallery set.');
   }
 
   return {
     props: {
-      galleryId: params?.galleryId,
+      galleryId: query.galleryId,
     },
   };
 };

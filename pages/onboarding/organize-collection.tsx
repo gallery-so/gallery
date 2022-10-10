@@ -10,7 +10,6 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
 import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
 import { getStepUrl } from 'components/Onboarding/constants';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
@@ -106,32 +105,12 @@ function LazyLoadedCollectionEditor() {
   );
 }
 
-type Props = {
-  collectionId: string | null;
-};
-
-export default function OrganizeCollectionWithProvider({ collectionId }: Props) {
+export default function OrganizeCollectionWithProvider() {
   return (
-    <CollectionWizardContext initialCollectionId={collectionId ?? undefined}>
+    <CollectionWizardContext>
       <CollectionEditorProvider>
         <LazyLoadedCollectionEditor />
       </CollectionEditorProvider>
     </CollectionWizardContext>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
-  if (Array.isArray(params?.collectionId)) {
-    return {
-      props: {
-        collectionId: null,
-      },
-    };
-  }
-
-  return {
-    props: {
-      collectionId: params?.collectionId ?? null,
-    },
-  };
-};
