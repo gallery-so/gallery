@@ -1,6 +1,3 @@
-/**
- * TODO: this should be abstracted to be shared with WizardFooter
- */
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from 'components/core/Button/Button';
