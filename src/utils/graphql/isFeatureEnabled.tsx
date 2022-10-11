@@ -17,7 +17,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
   ART_GOBBLERS: true,
-  ADMIRE_COMMENT: false,
+  ADMIRE_COMMENT: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {

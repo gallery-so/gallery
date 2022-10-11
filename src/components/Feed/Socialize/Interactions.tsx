@@ -14,7 +14,7 @@ type Props = {
   queryRef: CommentsAndAdmiresQueryFragment$key;
 };
 
-export function CommentsAndAdmires({ eventRef, queryRef }: Props) {
+export function Interactions({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentsAndAdmiresFragment on FeedEvent {
