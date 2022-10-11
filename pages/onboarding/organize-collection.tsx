@@ -61,6 +61,8 @@ function LazyLoadedCollectionEditor() {
   const handleNext = useCallback(() => {
     track('Save new collection button clicked');
 
+    // TODO: Replace the current url with the collection edit url so they don't
+    // accidentally create another collection if they go back
     showModal({
       content: (
         <CollectionCreateOrEditForm
