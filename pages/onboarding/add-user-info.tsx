@@ -11,15 +11,35 @@ import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 import { getStepUrl } from 'components/Onboarding/constants';
 import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { addUserInfoQuery } from '../../__generated__/addUserInfoQuery.graphql';
 
 function AddUserInfo() {
-  const { push, back, query } = useRouter();
+  const query = useLazyLoadQuery<addUserInfoQuery>(
+    graphql`
+      query addUserInfoQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+              bio
+              username
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const { push, back, query: urlQuery } = useRouter();
 
   const handleFormSuccess = useCallback(() => {
     // After we've created an account, we can remove these
     // params from the URL since we won't need them
     // and it looks better if the URL is clean
-    const nextParams = { ...query };
+    const nextParams = { ...urlQuery };
     delete nextParams.signature;
     delete nextParams.nonce;
     delete nextParams.chain;
@@ -28,7 +48,7 @@ function AddUserInfo() {
     delete nextParams.userFriendlyWalletName;
 
     push({ pathname: getStepUrl('create') });
-  }, [push, query]);
+  }, [push, urlQuery]);
 
   const {
     bio,
@@ -40,10 +60,10 @@ function AddUserInfo() {
     isUsernameValid,
     onUsernameChange,
   } = useUserInfoForm({
-    existingBio: '',
     onSuccess: handleFormSuccess,
-    userId: undefined,
-    existingUsername: '',
+    userId: query.viewer?.user?.dbid,
+    existingBio: query.viewer?.user?.bio ?? '',
+    existingUsername: query.viewer?.user?.username ?? '',
   });
 
   const track = useTrack();
