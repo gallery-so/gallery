@@ -10,6 +10,8 @@ import { animated, useSpring } from 'react-spring';
 import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
+import { useRouter } from 'next/router';
+import { getStepUrl } from 'components/Onboarding/constants';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -35,13 +37,9 @@ function getTransformCallback(animatedImage: AnimatedImage) {
   return (x: number, y: number) => `translate3d(${x / movementRatio}px,${y / movementRatio}px,0)`;
 }
 
-type Props = {
-  next: () => void;
-};
-
 type AspectRatio = 'vertical' | 'horizontal' | undefined;
 
-export default function WelcomeAnimation({ next }: Props) {
+export default function WelcomeAnimation() {
   const [props, set] = useSpring(() => ({
     xy: [0, 0],
     config: { mass: 10, tension: 550, friction: 140 },
@@ -77,15 +75,21 @@ export default function WelcomeAnimation({ next }: Props) {
 
   const track = useTrack();
 
+  const { push, query } = useRouter();
   const handleClick = useCallback(() => {
     track('Click through welcome page');
 
     // Delay next so we can show a transition animation
     setShouldFadeOut(true);
     setTimeout(() => {
-      next();
+      push({
+        pathname: getStepUrl('add-user-info'),
+        query: {
+          ...query,
+        },
+      });
     }, FADE_DURATION);
-  }, [track, next]);
+  }, [push, query, track]);
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
@@ -137,18 +141,18 @@ export default function WelcomeAnimation({ next }: Props) {
 }
 
 const fadeInGrow = keyframes`
-  from { opacity: 0; transform: scale(0.8); };
-  to { opacity: 1; transform: scale(1.0); };
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1.0); }
 `;
 
 const fadeOutGrow = keyframes`
-  from { opacity: 1; transform: scale(1.0); };
-  to { opacity: 0; transform: scale(1.8); };
+  from { opacity: 1; transform: scale(1.0); }
+  to { opacity: 0; transform: scale(1.8); }
 `;
 
 const fadeOut = keyframes`
-  from { opacity: 1; };
-  to { opacity: 0; };
+  from { opacity: 1; }
+  to { opacity: 0; }
 `;
 
 const StyledTextContainer = styled(VStack)<{

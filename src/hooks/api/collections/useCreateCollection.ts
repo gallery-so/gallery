@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
 
 type Props = {
   galleryId: string;
@@ -23,6 +23,8 @@ export default function useCreateCollection() {
           __typename
 
           collection {
+            dbid
+
             gallery {
               # This is how we update all galleries in the app.
               # Any other component that needs data from a collection
@@ -79,6 +81,8 @@ export default function useCreateCollection() {
         // TODO(Terence): How do we really want to handle this.
         throw new Error('something went wrong while creating your collection');
       }
+
+      return response;
     },
     [createCollection]
   );

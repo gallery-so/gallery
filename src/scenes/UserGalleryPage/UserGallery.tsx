@@ -22,6 +22,11 @@ function UserGallery({ queryRef }: Props) {
             user {
               dbid
             }
+            viewerGalleries {
+              gallery {
+                dbid
+              }
+            }
           }
         }
 
@@ -46,6 +51,8 @@ function UserGallery({ queryRef }: Props) {
   const { user } = query;
   const { push } = useRouter();
 
+  const galleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
+
   const loggedInUserId = query.viewer?.user?.dbid;
   const isLoggedIn = Boolean(loggedInUserId);
 
@@ -54,8 +61,8 @@ function UserGallery({ queryRef }: Props) {
   const navigateToEdit = useCallback(() => {
     if (!isLoggedIn) return;
     if (isModalOpenRef.current) return;
-    void push(`/edit`);
-  }, [push, isLoggedIn, isModalOpenRef]);
+    void push(`/gallery/${galleryId}/edit`);
+  }, [isLoggedIn, isModalOpenRef, push, galleryId]);
 
   useKeyDown('e', navigateToEdit);
 
