@@ -40,34 +40,6 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
 
   const editGalleryUrl = `/gallery/${galleryId}/edit`;
 
-  const handleNext = useCallback(async () => {
-    try {
-      await updateCollection({
-        collectionId,
-        stagedCollection: stagedCollectionState,
-        tokenSettings: collectionMetadata.tokenSettings,
-      });
-
-      replace(editGalleryUrl);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        pushToast({
-          message:
-            'There was an error updating your collection. If the issue persists, please contact us on Discord.',
-        });
-        return;
-      }
-    }
-  }, [
-    collectionId,
-    collectionMetadata.tokenSettings,
-    editGalleryUrl,
-    pushToast,
-    replace,
-    stagedCollectionState,
-    updateCollection,
-  ]);
-
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
     if (canGoBack) {
@@ -76,6 +48,34 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       replace(editGalleryUrl);
     }
   }, [back, canGoBack, editGalleryUrl, replace]);
+
+  const handleNext = useCallback(async () => {
+    try {
+      await updateCollection({
+        collectionId,
+        stagedCollection: stagedCollectionState,
+        tokenSettings: collectionMetadata.tokenSettings,
+      });
+
+      handlePrevious();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        pushToast({
+          message:
+            'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+        });
+
+        return;
+      }
+    }
+  }, [
+    collectionId,
+    collectionMetadata.tokenSettings,
+    handlePrevious,
+    pushToast,
+    stagedCollectionState,
+    updateCollection,
+  ]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
