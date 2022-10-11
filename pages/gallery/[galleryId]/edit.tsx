@@ -68,7 +68,7 @@ export default function EditGalleryPage() {
         />
       </FullPageStep>
 
-      <WizardFooter isNextEnabled={true} nextText={'Done'} onNext={handleDone} />
+      <WizardFooter isNextEnabled nextText="Done" onNext={handleDone} />
     </VStack>
   );
 }

@@ -69,6 +69,8 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   ]);
 
   const canGoBack = useCanGoBack();
+  console.log(window.history);
+  console.log({ canGoBack });
   const handlePrevious = useCallback(() => {
     if (canGoBack) {
       back();
