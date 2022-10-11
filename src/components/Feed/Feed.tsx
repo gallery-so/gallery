@@ -4,7 +4,7 @@ import colors from 'components/core/colors';
 import { fadeIn } from 'components/core/keyframes';
 import transitions from 'components/core/transitions';
 import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
-import NavbarGLink from 'components/NavbarGLink';
+import GalleryCenterContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryCenterContent';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
@@ -44,7 +44,7 @@ function FeedNavbarControl({ setFeedMode, feedMode }: ControlProps) {
           Following
         </StyledNavControlText>
       </StyledTextWrapperLeft>
-      <NavbarGLink />
+      <GalleryCenterContent />
       <StyledTextWrapper>
         <StyledNavControlText onClick={handleWorldwideModeClick} focused={feedMode === 'WORLDWIDE'}>
           Worldwide

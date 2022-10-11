@@ -55,6 +55,7 @@ type GlobalLayoutActions = {
   setIsPageInSuspenseState: (b: boolean) => void;
   setCustomNavLeftContent: (e: ReactElement | null) => void;
   setCustomNavCenterContent: (e: ReactElement | null) => void;
+  setCustomNavRightContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -221,6 +222,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const [customNavLeftContent, setCustomNavLeftContent] = useState<ReactElement | null>(null);
   const [customNavCenterContent, setCustomNavCenterContent] = useState<ReactElement | null>(null);
+  const [customNavRightContent, setCustomNavRightContent] = useState<ReactElement | null>(null);
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
@@ -229,6 +231,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       setIsPageInSuspenseState,
       setCustomNavLeftContent,
       setCustomNavCenterContent,
+      setCustomNavRightContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
@@ -250,6 +253,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         customLeftContent={customNavLeftContent}
         customCenterContent={customNavCenterContent}
+        customRightContent={customNavRightContent}
       />
 
       <GlobalLayoutStateContext.Provider value={state}>
@@ -272,6 +276,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   isBannerVisible: boolean;
   customLeftContent: GlobalNavbarProps['customLeftContent'];
   customCenterContent: GlobalNavbarProps['customCenterContent'];
+  customRightContent: GlobalNavbarProps['customRightContent'];
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -283,11 +288,11 @@ function GlobalNavbarWithFadeEnabled({
   isBannerVisible,
   customLeftContent,
   customCenterContent,
+  customRightContent,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
-        ...GlobalNavbarFragment
         ...GlobalBannerFragment
         ...isFeatureEnabledFragment
       }
@@ -367,9 +372,9 @@ function GlobalNavbarWithFadeEnabled({
         />
       )}
       <GlobalNavbar
-        queryRef={query}
         customLeftContent={customLeftContent}
         customCenterContent={customCenterContent}
+        customRightContent={customRightContent}
       />
     </StyledGlobalNavbarWithFadeEnabled>
   );
