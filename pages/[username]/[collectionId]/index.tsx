@@ -26,13 +26,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
     return <GalleryRedirect to="/" />;
   }
 
-  return (
-    <GalleryRoute
-      element={
-        <CollectionGalleryPage queryRef={query} collectionId={collectionId} username={username} />
-      }
-    />
-  );
+  return <GalleryRoute element={<CollectionGalleryPage queryRef={query} username={username} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = async ({

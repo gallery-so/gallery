@@ -64,15 +64,15 @@ export default function useGlobalAnnouncementPopover({
     if (asPath === '/announcements') return true;
     // hide on auth page
     if (asPath === '/auth') return true;
-    // hide on edit page
-    if (asPath === '/edit') return true;
+    // hide on editor pages
+    if (asPath.toLowerCase().includes('/edit')) return true;
     // hide for new users onboarding
-    if (asPath === '/welcome' || query.viewer?.user?.username === '') return true;
+    if (asPath.toLowerCase().includes('/onboarding')) return true;
     // hide for curated for now
     if (asPath.toLowerCase().includes('curated')) return true;
 
     return false;
-  }, [asPath, query.viewer?.user?.username]);
+  }, [asPath]);
 
   useEffect(() => {
     async function handleMount() {

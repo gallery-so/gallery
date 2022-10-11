@@ -14,21 +14,11 @@ import { useModalState } from 'contexts/modal/ModalContext';
 
 type CollectionGalleryPageProps = {
   username: string;
-  collectionId: string;
   queryRef: CollectionGalleryPageFragment$key;
 };
 
-function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionGalleryPageProps) {
+function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
-
-  const track = useTrack();
-
-  useEffect(() => {
-    track('Page View: Collection', {
-      username,
-      collectionId,
-    });
-  }, [username, collectionId, track]);
 
   const query = useFragment(
     graphql`
@@ -40,11 +30,45 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
             }
           }
         }
+        collection: collectionById(id: $collectionId) {
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on Collection {
+            __typename
+            dbid
+
+            gallery @required(action: THROW) {
+              dbid
+            }
+          }
+        }
         ...CollectionGalleryFragment
       }
     `,
     queryRef
   );
+
+  if (query?.collection?.__typename !== 'Collection') {
+    throw new Error('CollectionGalleryPage expected valid Collection');
+  }
+
+  const {
+    collection: {
+      dbid: collectionId,
+      gallery: { dbid: galleryId },
+    },
+  } = query;
+
+  const track = useTrack();
+
+  useEffect(() => {
+    track('Page View: Collection', {
+      username,
+      collectionId,
+    });
+  }, [username, collectionId, track]);
 
   const { push } = useRouter();
 
@@ -57,11 +81,11 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     if (!isLoggedIn) return;
     if (isModalOpenRef.current) return;
     if (userOwnsCollection) {
-      void push(`/edit?collectionId=${collectionId}`);
+      void push(`/gallery/${galleryId}/collection/${collectionId}/edit`);
     } else {
-      void push(`/edit`);
+      void push(`/gallery/${galleryId}/edit`);
     }
-  }, [push, collectionId, userOwnsCollection, isLoggedIn, isModalOpenRef]);
+  }, [isLoggedIn, isModalOpenRef, userOwnsCollection, push, galleryId, collectionId]);
 
   useKeyDown('e', navigateToEdit);
 

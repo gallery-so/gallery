@@ -1,12 +1,12 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { generate12DigitId } from 'utils/collectionLayout';
 import {
   EditModeToken,
   StagedCollection,
   StagingItem,
-} from 'flows/shared/steps/OrganizeCollection/types';
-import { generate12DigitId } from 'utils/collectionLayout';
+} from 'components/ManageGallery/OrganizeCollection/types';
 
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;
