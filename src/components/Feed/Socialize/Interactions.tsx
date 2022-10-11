@@ -84,7 +84,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
     return comments;
   }, [event.admires?.edges]);
 
-  const totalAdmiresAndComments =
+  const totalInteractions =
     (event.admires?.pageInfo.total ?? 0) + (event.comments?.pageInfo.total ?? 0);
 
   if (nonNullComments.length) {
@@ -92,10 +92,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
 
     // 2 comments and "+ x others" below
     // Not hard coding 2 here since there might only be one comment from the slice
-    const remainingAdmiresAndComments = Math.max(
-      totalAdmiresAndComments - lastTwoComments.length,
-      0
-    );
+    const remainingAdmiresAndComments = Math.max(totalInteractions - lastTwoComments.length, 0);
 
     return (
       <VStack gap={8}>
@@ -107,10 +104,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
       </VStack>
     );
   } else if (nonNullAdmires.length) {
-    const remainingAdmiresAndComments = Math.max(
-      totalAdmiresAndComments - nonNullAdmires.length,
-      0
-    );
+    const remainingInteractions = Math.max(totalInteractions - nonNullAdmires.length, 0);
 
     if (nonNullAdmires.length === 1) {
       // show just the admire line "robin admired this"
@@ -121,7 +115,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
         <VStack gap={8}>
           <AdmireLine admireRef={admire} queryRef={query} />
 
-          <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} eventRef={event} />
+          <RemainingAdmireCount remainingCount={remainingInteractions} eventRef={event} />
         </VStack>
       );
     } else {
@@ -132,7 +126,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
             {event.admires?.pageInfo.total} admired this
           </NoteModalOpenerText>
 
-          <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} eventRef={event} />
+          <RemainingAdmireCount remainingCount={remainingInteractions} eventRef={event} />
         </VStack>
       );
     }
