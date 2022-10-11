@@ -9,6 +9,7 @@ import { ConnectionHandler, graphql } from 'relay-runtime';
 import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
+import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
 
 const MAX_TEXT_LENGTH = 100;
 
@@ -16,10 +17,27 @@ type Props = {
   active: boolean;
   onClose: () => void;
   eventRef: CommentBoxFragment$key;
+  queryRef: CommentBoxQueryFragment$key;
   onPotentialLayoutShift: () => void;
 };
 
-export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }: Props) {
+export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLayoutShift }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommentBoxQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
   const event = useFragment(
     graphql`
       fragment CommentBoxFragment on FeedEvent {
@@ -73,6 +91,8 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
         'NotesModal_interactions'
       );
 
+      const optimisticId = Math.random().toString();
+      console.log('ooptimsitci id', optimisticId);
       const response = await submitComment({
         updater: (store, response) => {
           if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
@@ -80,6 +100,21 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
           }
+        },
+        optimisticResponse: {
+          commentOnFeedEvent: {
+            __typename: 'CommentOnFeedEventPayload',
+            comment: {
+              comment: value,
+              commenter: {
+                id: query.viewer?.user?.id ?? 'unknown',
+                username: query.viewer?.user?.username ?? null,
+              },
+              creationTime: new Date().toISOString(),
+              dbid: optimisticId,
+              id: `Comment:${optimisticId}`,
+            },
+          },
         },
         variables: {
           comment: value,

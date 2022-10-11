@@ -46,13 +46,15 @@ export function FeedEventSocializeSection({
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...InteractionsQueryFragment
+        ...CommentBoxQueryFragment
       }
     `,
     queryRef
   );
 
   const [admire] = usePromisifiedMutation<FeedEventSocializeSectionAdmireMutation>(graphql`
-    mutation FeedEventSocializeSectionAdmireMutation($eventId: DBID!, $connections: [ID!]!) {
+    mutation FeedEventSocializeSectionAdmireMutation($eventId: DBID!, $connections: [ID!]!)
+    @raw_response_type {
       admireFeedEvent(feedEventId: $eventId) {
         ... on AdmireFeedEventPayload {
           __typename
@@ -108,6 +110,7 @@ export function FeedEventSocializeSection({
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
           }
         },
+        // TODO(Terence): Add an optimistic update here
         variables: {
           eventId: event.dbid,
           connections: [interactionsConnection, notesModalConnection],
@@ -127,9 +130,25 @@ export function FeedEventSocializeSection({
         }, 100);
       } else {
         pushErrorToast();
+        reportError(
+          `Could not post comment on feed event, typename was ${response.admireFeedEvent?.__typename}`,
+          {
+            tags: errorMetadata,
+          }
+        );
       }
-    } catch (e) {}
-  }, [admire, event.dbid, event.id, onPotentialLayoutShift, pushToast]);
+    } catch (error) {
+      pushErrorToast();
+
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError(`Could not post comment on feed event for an unknown reason`, {
+          tags: errorMetadata,
+        });
+      }
+    }
+  }, [admire, event.dbid, event.id, onPotentialLayoutShift, pushToast, reportError]);
 
   return (
     <SocializedSectionPadding>
@@ -151,6 +170,7 @@ export function FeedEventSocializeSection({
                 onPotentialLayoutShift={onPotentialLayoutShift}
                 onClose={handleClose}
                 eventRef={event}
+                queryRef={query}
                 active={showCommentBox}
               />
             </IconWrapper>
