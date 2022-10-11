@@ -147,6 +147,7 @@ export default function useUserInfoForm({
 
       // it doesn't make sense to tell users their current username is taken!
       if (existingUsername && debouncedUsername === existingUsername) {
+        setIsUsernameValid(true);
         return;
       }
 
