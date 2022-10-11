@@ -7,6 +7,7 @@ export function mockGlobalLayoutQuery() {
     __typename: 'Query',
     viewer: {
       __typename: 'Viewer',
+      viewerGalleries: [],
       user: {
         __typename: 'GalleryUser',
         id: GALLERY_USER_ID,
