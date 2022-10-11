@@ -4,7 +4,6 @@ import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { SendButton } from 'components/Feed/Socialize/SendButton';
 import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
-import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
 import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
@@ -65,15 +64,19 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
     }
 
     try {
-      const connectionId = ConnectionHandler.getConnectionID(
+      const interactionsConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'CommentsAndAdmires_comments'
+        'Interactions_comments'
+      );
+      const notesModalConnection = ConnectionHandler.getConnectionID(
+        event.id,
+        'NotesModal_interactions'
       );
 
       const response = await submitComment({
         updater: (store, response) => {
           if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-            const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+            const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
           }
@@ -81,7 +84,7 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
         variables: {
           comment: value,
           eventId: event.dbid,
-          connections: [connectionId],
+          connections: [interactionsConnection, notesModalConnection],
         },
       });
 
@@ -97,9 +100,6 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
       }, 100);
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-        // Good to go
-        console.log(response);
-
         resetInputState();
 
         onClose();
@@ -139,6 +139,7 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
                 if (nextValue.length > MAX_TEXT_LENGTH) {
                   event.currentTarget.textContent = nextValue.slice(0, 100);
 
+                  // Set the cursor to the end of the editable content
                   const range = document.createRange();
                   const selection = window.getSelection();
 
@@ -146,11 +147,12 @@ export function CommentBox({ active, onClose, eventRef, onPotentialLayoutShift }
                     return;
                   }
 
-                  range.setStart(event.currentTarget.childNodes[0], 100);
-                  range.setEnd(event.currentTarget.childNodes[0], 100);
+                  range.setStart(event.currentTarget.childNodes[0], MAX_TEXT_LENGTH);
+                  range.setEnd(event.currentTarget.childNodes[0], MAX_TEXT_LENGTH);
                   range.collapse(true);
                   selection.removeAllRanges();
                   selection.addRange(range);
+                  // End range garbage
                 } else {
                   setValue(nextValue);
                 }
@@ -183,29 +185,27 @@ const ClickPreventingOverlay = styled.div`
 `;
 
 const CommentBoxWrapper = styled.div<{ active: boolean }>`
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
+  width: 375px;
 
-    position: absolute;
-    bottom: 0;
-    right: 0;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 
-    // Higher than the Overlay
-    z-index: 11;
+  // Higher than the Overlay
+  z-index: 11;
 
-    transition: transform 300ms ease-out, opacity 300ms ease-in-out;
+  transition: transform 300ms ease-out, opacity 300ms ease-in-out;
 
-    ${({ active }) =>
-      active
-        ? css`
-            opacity: 1;
-            transform: translateY(calc(100% + 8px));
-          `
-        : css`
-            opacity: 0;
-            transform: translateY(100%);
-          `}
-  }
+  ${({ active }) =>
+    active
+      ? css`
+          opacity: 1;
+          transform: translateY(calc(100% + 8px));
+        `
+      : css`
+          opacity: 0;
+          transform: translateY(100%);
+        `}
 `;
 
 const ControlsContainer = styled(HStack)`

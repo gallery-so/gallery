@@ -2,23 +2,23 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CommentLine } from 'components/Feed/Socialize/CommentLine';
-import { CommentsAndAdmiresFragment$key } from '../../../../__generated__/CommentsAndAdmiresFragment.graphql';
 import { AdmireLine } from 'components/Feed/Socialize/AdmireLine';
-import { CommentsAndAdmiresQueryFragment$key } from '../../../../__generated__/CommentsAndAdmiresQueryFragment.graphql';
 import { RemainingAdmireCount } from 'components/Feed/Socialize/RemainingAdmireCount';
 import { NoteModalOpenerText } from 'components/Feed/Socialize/NoteModalOpenerText';
 import { useMemo } from 'react';
+import { InteractionsQueryFragment$key } from '../../../../__generated__/InteractionsQueryFragment.graphql';
+import { InteractionsFragment$key } from '../../../../__generated__/InteractionsFragment.graphql';
 
 type Props = {
-  eventRef: CommentsAndAdmiresFragment$key;
-  queryRef: CommentsAndAdmiresQueryFragment$key;
+  eventRef: InteractionsFragment$key;
+  queryRef: InteractionsQueryFragment$key;
 };
 
 export function Interactions({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment CommentsAndAdmiresFragment on FeedEvent {
-        admires(first: 1) @connection(key: "CommentsAndAdmires_admires") {
+      fragment InteractionsFragment on FeedEvent {
+        admires(first: 1) @connection(key: "Interactions_admires") {
           pageInfo {
             total
           }
@@ -31,7 +31,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
           }
         }
 
-        comments(first: 2) @connection(key: "CommentsAndAdmires_comments") {
+        comments(first: 2) @connection(key: "Interactions_comments") {
           pageInfo {
             total
           }
@@ -53,7 +53,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment CommentsAndAdmiresQueryFragment on Query {
+      fragment InteractionsQueryFragment on Query {
         ...AdmireLineQueryFragment
       }
     `,

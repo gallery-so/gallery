@@ -1,4 +1,4 @@
-import { useFragment } from 'react-relay';
+import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NotesModalFragment$key } from '__generated__/NotesModalFragment.graphql';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
@@ -15,18 +15,26 @@ import {
 } from 'react-virtualized';
 import { useCallback, useMemo, useState } from 'react';
 
+export const NOTES_PER_PAGE = 10;
+
 type NotesModalProps = {
   fullscreen: boolean;
   eventRef: NotesModalFragment$key;
 };
 
 export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
-  const feedEvent = useFragment(
+  const {
+    data: feedEvent,
+    loadNext,
+    hasNext,
+  } = usePaginationFragment(
     graphql`
-      fragment NotesModalFragment on FeedEvent {
+      fragment NotesModalFragment on FeedEvent
+      @refetchable(queryName: "NotesModalRefetchableFragment") {
         dbid
 
-        admiresAndComments {
+        interactions(first: $interactionsFirst, after: $interactionsAfter)
+          @connection(key: "NotesModal_interactions") {
           edges {
             node {
               ... on Admire {
@@ -55,19 +63,21 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     eventRef
   );
 
-  const nonNullAdmiresAndComments = useMemo(() => {
-    const admiresAndComments = [];
+  const nonNullInteractionsAndSeeMore = useMemo(() => {
+    const interactions = [];
 
-    for (const admireOrComment of feedEvent.admiresAndComments?.edges ?? []) {
-      if (admireOrComment?.node) {
-        admiresAndComments.push(admireOrComment.node);
+    for (const interaction of feedEvent.interactions?.edges ?? []) {
+      if (interaction?.node) {
+        interactions.push(interaction.node);
       }
     }
 
-    return admiresAndComments;
-  }, [feedEvent.admiresAndComments?.edges]);
+    if (hasNext) {
+      interactions.push({ kind: 'see-more' });
+    }
 
-  console.log(nonNullAdmiresAndComments);
+    return interactions;
+  }, [feedEvent.interactions?.edges, hasNext]);
 
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({
@@ -76,9 +86,13 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     });
   });
 
+  const handleSeeMore = useCallback(() => {
+    loadNext(10);
+  }, [loadNext]);
+
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const admireOrComment = nonNullAdmiresAndComments[index];
+      const interaction = nonNullInteractionsAndSeeMore[index];
 
       return (
         <CellMeasurer
@@ -89,25 +103,34 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
           parent={parent}
         >
           {({ registerChild }) => {
-            if (admireOrComment.__typename === 'Admire') {
+            if ('kind' in interaction) {
+              return (
+                // @ts-expect-error Bad types from react-virtualized
+                <ListItem ref={registerChild} style={style}>
+                  <SeeMoreContainer role="button" onClick={handleSeeMore}>
+                    <TitleXS color={colors.shadow}>See More</TitleXS>
+                  </SeeMoreContainer>
+                </ListItem>
+              );
+            } else if (interaction.__typename === 'Admire') {
               return (
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
-                    <TitleS>{admireOrComment.admirer?.username ?? '<unknown>'}</TitleS>
+                    <TitleS>{interaction.admirer?.username ?? '<unknown>'}</TitleS>
                     <BaseM>admired this</BaseM>
                   </HStack>
 
                   <TimeAgoText color={colors.metal}>Just now</TimeAgoText>
                 </ListItem>
               );
-            } else if (admireOrComment.__typename === 'Comment') {
+            } else if (interaction.__typename === 'Comment') {
               return (
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
-                    <TitleS>{admireOrComment.commenter?.username ?? '<unknown>'}</TitleS>
-                    <BaseM>{admireOrComment.comment}</BaseM>
+                    <TitleS>{interaction.commenter?.username ?? '<unknown>'}</TitleS>
+                    <BaseM>{interaction.comment}</BaseM>
                   </HStack>
 
                   <TimeAgoText color={colors.metal}>Just now</TimeAgoText>
@@ -120,7 +143,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
         </CellMeasurer>
       );
     },
-    [measurerCache, nonNullAdmiresAndComments]
+    [handleSeeMore, measurerCache, nonNullInteractionsAndSeeMore]
   );
 
   return (
@@ -136,7 +159,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                 width={width}
                 height={height}
                 rowRenderer={rowRenderer}
-                rowCount={nonNullAdmiresAndComments.length}
+                rowCount={nonNullInteractionsAndSeeMore.length}
                 rowHeight={measurerCache.rowHeight}
               />
             )}
@@ -146,6 +169,10 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     </ModalContent>
   );
 }
+
+const SeeMoreContainer = styled.div`
+  cursor: pointer;
+`;
 
 const TimeAgoText = styled(BaseS)`
   white-space: nowrap;

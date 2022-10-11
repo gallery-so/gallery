@@ -6,7 +6,7 @@ import { AdmireIcon, CommentIcon } from 'icons/SocializeIcons';
 import styled from 'styled-components';
 import { CommentBox } from 'components/Feed/Socialize/CommentBox';
 import { useCallback, useRef, useState } from 'react';
-import { CommentsAndAdmires } from 'components/Feed/Socialize/CommentsAndAdmires';
+import { Interactions } from 'components/Feed/Socialize/Interactions';
 import { FeedEventSocializeSectionQueryFragment$key } from '../../../../__generated__/FeedEventSocializeSectionQueryFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { FeedEventSocializeSectionAdmireMutation } from '../../../../__generated__/FeedEventSocializeSectionAdmireMutation.graphql';
@@ -36,7 +36,7 @@ export function FeedEventSocializeSection({
         dbid
 
         ...CommentBoxFragment
-        ...CommentsAndAdmiresFragment
+        ...InteractionsFragment
       }
     `,
     eventRef
@@ -45,7 +45,7 @@ export function FeedEventSocializeSection({
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
-        ...CommentsAndAdmiresQueryFragment
+        ...InteractionsQueryFragment
       }
     `,
     queryRef
@@ -91,22 +91,26 @@ export function FeedEventSocializeSection({
     }
 
     try {
-      const connectionId = ConnectionHandler.getConnectionID(
+      const interactionsConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'CommentsAndAdmires_admires'
+        'Interactions_admires'
+      );
+      const notesModalConnection = ConnectionHandler.getConnectionID(
+        event.id,
+        'NotesModal_interactions'
       );
 
       const response = await admire({
         updater: (store, response) => {
           if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
-            const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+            const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
           }
         },
         variables: {
           eventId: event.dbid,
-          connections: [connectionId],
+          connections: [interactionsConnection, notesModalConnection],
         },
       });
 
@@ -132,7 +136,7 @@ export function FeedEventSocializeSection({
       <SocializeSectionWrapper>
         <HStack justify="space-between" align="flex-start" gap={24}>
           <VStack shrink>
-            <CommentsAndAdmires eventRef={event} queryRef={query} />
+            <Interactions eventRef={event} queryRef={query} />
           </VStack>
 
           <HStack align="center">
