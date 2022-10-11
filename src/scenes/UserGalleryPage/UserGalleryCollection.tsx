@@ -70,7 +70,10 @@ function UserGalleryCollection({
 
   const loggedInUserId = useLoggedInUserId(query);
   const showEditActions = loggedInUserId === collection.gallery.owner.id;
-  const galleryId = collection.gallery.dbid;
+  const {
+    dbid: collectionId,
+    gallery: { dbid: galleryId },
+  } = collection;
 
   const { showModal } = useModalActions();
   const router = useRouter();
@@ -82,7 +85,7 @@ function UserGalleryCollection({
   );
 
   const username = router.query.username as string;
-  const collectionUrl = `/${username}/${collection.dbid}`;
+  const collectionUrl = `/${username}/${collectionId}`;
 
   const track = useTrack();
 
@@ -108,14 +111,14 @@ function UserGalleryCollection({
           // No need for onNext because this isn't part of a wizard
           onNext={noop}
           galleryId={galleryId}
-          collectionId={collection.dbid}
+          collectionId={collectionId}
           collectionName={collection.name}
           collectionCollectorsNote={collection.collectorsNote ?? ''}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
+  }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
@@ -139,7 +142,7 @@ function UserGalleryCollection({
                         underlineOnHover
                       />
                       <UnstyledLink
-                        href={`/edit?collectionId=${collection.dbid}`}
+                        href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
                         onClick={() => track('Update existing collection button clicked')}
                       >
                         <TextButton text="Edit Collection" underlineOnHover />
