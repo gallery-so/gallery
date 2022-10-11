@@ -17,6 +17,8 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { getStepUrl } from 'components/Onboarding/constants';
 import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
 import { UrlObject } from 'url';
+import { useModalActions } from 'contexts/modal/ModalContext';
+import GenericActionModal from 'scenes/Modals/GenericActionModal';
 
 type Props = {
   collectionId: string;
@@ -40,6 +42,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   );
 
   const { pushToast } = useToastActions();
+  const { showModal } = useModalActions();
   const updateCollection = useUpdateCollectionTokens();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
@@ -88,12 +91,22 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      replace(returnUrl);
-    }
-  }, [back, canGoBack, replace, returnUrl]);
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            if (canGoBack) {
+              back();
+            } else {
+              replace(returnUrl);
+            }
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [back, canGoBack, replace, returnUrl, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 

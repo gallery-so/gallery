@@ -15,6 +15,8 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import { editCollectionQuery } from '../../../../../__generated__/editCollectionQuery.graphql';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
+import { useModalActions } from 'contexts/modal/ModalContext';
+import GenericActionModal from 'scenes/Modals/GenericActionModal';
 
 type Props = {
   galleryId: string;
@@ -31,6 +33,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
     {}
   );
 
+  const { showModal } = useModalActions();
   const { pushToast } = useToastActions();
   const updateCollection = useUpdateCollectionTokens();
   const stagedCollectionState = useStagedCollectionState();
@@ -42,12 +45,22 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      replace(editGalleryUrl);
-    }
-  }, [back, canGoBack, editGalleryUrl, replace]);
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            if (canGoBack) {
+              back();
+            } else {
+              replace(editGalleryUrl);
+            }
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
   const handleNext = useCallback(async () => {
     try {
