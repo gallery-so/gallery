@@ -32,8 +32,8 @@ function LoggedInNav({ queryRef }: Props) {
         ...isFeatureEnabledFragment
 
         viewer {
+          __typename
           ... on Viewer {
-            __typename
             user {
               username
             }
@@ -53,7 +53,10 @@ function LoggedInNav({ queryRef }: Props) {
     query: { username: routerUsername, collectionId },
   } = useRouter();
 
-  const galleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
+  const galleryId =
+    query.viewer && 'viewerGalleries' in query.viewer
+      ? query.viewer?.viewerGalleries?.[0]?.gallery?.dbid
+      : null;
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
