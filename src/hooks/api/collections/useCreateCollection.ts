@@ -23,6 +23,8 @@ export default function useCreateCollection() {
           __typename
 
           collection {
+            dbid
+
             gallery {
               # This is how we update all galleries in the app.
               # Any other component that needs data from a collection
@@ -79,6 +81,8 @@ export default function useCreateCollection() {
         // TODO(Terence): How do we really want to handle this.
         throw new Error('something went wrong while creating your collection');
       }
+
+      return response;
     },
     [createCollection]
   );

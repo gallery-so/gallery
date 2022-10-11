@@ -18,7 +18,7 @@ import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  onNext: () => void;
+  onNext: (collectionId: string) => void;
   galleryId: string;
   collectionId?: string;
   collectionName?: string;
@@ -74,10 +74,13 @@ function CollectionCreateOrEditForm({
     return hasEnteredValue ? 'save' : 'skip';
   }, [hasEnteredValue, stagedCollection]);
 
-  const goToNextStep = useCallback(() => {
-    onNext();
-    hideModal();
-  }, [onNext, hideModal]);
+  const goToNextStep = useCallback(
+    (collectionId: string) => {
+      onNext(collectionId);
+      hideModal();
+    },
+    [onNext, hideModal]
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,26 +106,32 @@ function CollectionCreateOrEditForm({
           title,
           description,
         });
-        await updateCollection(collectionId, title, description);
-      }
 
-      // Collection is being created
-      if (!collectionId && stagedCollection) {
+        await updateCollection(collectionId, title, description);
+
+        goToNextStep(collectionId);
+      } else if (stagedCollection) {
         track('Create collection', {
           added_name: title.length > 0,
           added_description: description.length > 0,
           nft_ids: getTokenIdsFromCollection(stagedCollection),
         });
-        await createCollection({
+
+        const response = await createCollection({
           galleryId,
           title,
           description,
           stagedCollection: stagedCollection,
           tokenSettings,
         });
-      }
 
-      goToNextStep();
+        if (
+          response.createCollection?.__typename === 'CreateCollectionPayload' &&
+          response.createCollection.collection
+        ) {
+          goToNextStep(response.createCollection.collection.dbid);
+        }
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(formatError(error));

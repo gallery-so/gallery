@@ -57,17 +57,23 @@ function LazyLoadedCollectionEditor() {
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
 
-  const { push, query: urlQuery, back } = useRouter();
+  const { push, query: urlQuery, back, replace } = useRouter();
   const handleNext = useCallback(() => {
     track('Save new collection button clicked');
 
-    // TODO: Replace the current url with the collection edit url so they don't
-    // accidentally create another collection if they go back
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          onNext={() => {
-            push({
+          onNext={async (collectionId) => {
+            // Replace the current route with the "edit-collection" route
+            // so if the user hits the back button, they'll rightfully
+            // be editing a collection instead of creating another one.
+            await replace({
+              pathname: getStepUrl('edit-collection'),
+              query: { ...urlQuery, collectionId },
+            });
+
+            await push({
               pathname: getStepUrl('organize-gallery'),
               query: { ...urlQuery },
             });
@@ -83,6 +89,7 @@ function LazyLoadedCollectionEditor() {
     collectionMetadata.tokenSettings,
     galleryId,
     push,
+    replace,
     showModal,
     stagedCollectionState,
     track,
