@@ -88,7 +88,10 @@ function CollectionGalleryHeader({
 
   const track = useTrack();
 
-  const { dbid: collectionId } = collection;
+  const {
+    dbid: collectionId,
+    gallery: { dbid: galleryId },
+  } = collection;
 
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: `/${username}/${collectionId}` });
@@ -107,7 +110,7 @@ function CollectionGalleryHeader({
         <CollectionCreateOrEditForm
           // No need for onNext because this isn't part of a wizard
           onNext={noop}
-          galleryId={collection.gallery.dbid}
+          galleryId={galleryId}
           collectionId={collectionId}
           collectionName={collection.name ?? undefined}
           collectionCollectorsNote={collection.collectorsNote ?? undefined}
@@ -115,13 +118,7 @@ function CollectionGalleryHeader({
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [
-    collection.collectorsNote,
-    collectionId,
-    collection.gallery.dbid,
-    collection.name,
-    showModal,
-  ]);
+  }, [collection.collectorsNote, collectionId, galleryId, collection.name, showModal]);
 
   return (
     <StyledCollectionGalleryHeaderWrapper>
@@ -176,7 +173,7 @@ function CollectionGalleryHeader({
                     <>
                       <NavElement>
                         <UnstyledLink
-                          href={`/edit?collectionId=${collectionId}`}
+                          href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
                           onClick={() => track('Update existing collection')}
                         >
                           <TextButton text="Edit Collection" />
