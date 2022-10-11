@@ -37,6 +37,11 @@ function LoggedInNav({ queryRef }: Props) {
             user {
               username
             }
+            viewerGalleries {
+              gallery {
+                dbid
+              }
+            }
           }
         }
       }
@@ -44,7 +49,11 @@ function LoggedInNav({ queryRef }: Props) {
     queryRef
   );
 
-  const { query: routerQuery } = useRouter();
+  const {
+    query: { username: routerUsername, collectionId },
+  } = useRouter();
+
+  const galleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({ content: <ManageWalletsModal queryRef={query} />, headerText: 'Manage accounts' });
@@ -71,7 +80,7 @@ function LoggedInNav({ queryRef }: Props) {
   }
 
   const username = query.viewer.user?.username;
-  const userOwnsCollectionOrGallery = routerQuery?.username === username;
+  const userOwnsCollectionOrGallery = routerUsername === username;
 
   return (
     <HStack gap={24}>
@@ -80,12 +89,12 @@ function LoggedInNav({ queryRef }: Props) {
           <Dropdown mainText="Edit" shouldCloseOnMenuItemClick>
             <UnstyledLink
               href={
-                routerQuery.collectionId
-                  ? `/edit?collectionId=${routerQuery.collectionId}`
-                  : '/edit'
+                collectionId
+                  ? `/gallery/${galleryId}/collection/${collectionId}/edit`
+                  : `/gallery/${galleryId}/edit`
               }
             >
-              <TextButton text={routerQuery.collectionId ? 'Edit Collection' : 'Edit Gallery'} />
+              <TextButton text={collectionId ? 'Edit Collection' : 'Edit Gallery'} />
             </UnstyledLink>
             <TextButton text="Name & Bio" onClick={handleEditNameClick} />
           </Dropdown>

@@ -83,7 +83,7 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
     if (userOwnsCollection) {
       void push(`/gallery/${galleryId}/collection/${collectionId}/edit`);
     } else {
-      void push(`/edit`);
+      void push(`/gallery/${galleryId}/edit`);
     }
   }, [isLoggedIn, isModalOpenRef, userOwnsCollection, push, galleryId, collectionId]);
 
