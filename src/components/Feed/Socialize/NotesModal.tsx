@@ -14,6 +14,7 @@ import {
   ListRowRenderer,
 } from 'react-virtualized';
 import { useCallback, useMemo, useState } from 'react';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 export const NOTES_PER_PAGE = 10;
 
@@ -113,6 +114,10 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                 </ListItem>
               );
             } else if (interaction.__typename === 'Admire') {
+              const timeAgo = interaction.creationTime
+                ? formatDistanceToNowStrict(new Date(interaction.creationTime))
+                : null;
+
               return (
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
@@ -121,10 +126,14 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                     <BaseM>admired this</BaseM>
                   </HStack>
 
-                  <TimeAgoText color={colors.metal}>Just now</TimeAgoText>
+                  <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
                 </ListItem>
               );
             } else if (interaction.__typename === 'Comment') {
+              const timeAgo = interaction.creationTime
+                ? formatDistanceToNowStrict(new Date(interaction.creationTime))
+                : null;
+
               return (
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
@@ -133,7 +142,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                     <BaseM>{interaction.comment}</BaseM>
                   </HStack>
 
-                  <TimeAgoText color={colors.metal}>Just now</TimeAgoText>
+                  <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
                 </ListItem>
               );
             } else {
