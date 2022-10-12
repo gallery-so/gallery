@@ -17,6 +17,8 @@ import {
 import breakpoints from 'components/core/breakpoints';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
+import { AuthModal } from 'hooks/useAuthModal';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;
@@ -45,8 +47,18 @@ export function FeedEventSocializeSection({
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+            user {
+              username
+            }
+          }
+        }
+
         ...InteractionsQueryFragment
         ...CommentBoxQueryFragment
+        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -67,6 +79,10 @@ export function FeedEventSocializeSection({
     }
   `);
 
+  const reportError = useReportError();
+  const { pushToast } = useToastActions();
+  const { showModal } = useModalActions();
+
   const commentIconRef = useRef<HTMLDivElement | null>(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
 
@@ -75,12 +91,27 @@ export function FeedEventSocializeSection({
   }, []);
 
   const handleToggle = useCallback(() => {
-    setShowCommentBox((previous) => !previous);
-  }, []);
+    if (query.viewer?.__typename !== 'Viewer') {
+      showModal({
+        content: <AuthModal queryRef={query} />,
+      });
 
-  const reportError = useReportError();
-  const { pushToast } = useToastActions();
+      return;
+    }
+
+    setShowCommentBox((previous) => !previous);
+  }, [query, showModal]);
+
   const handleAdmire = useCallback(async () => {
+    console.log(query.viewer);
+    if (query.viewer?.__typename !== 'Viewer') {
+      showModal({
+        content: <AuthModal queryRef={query} />,
+      });
+
+      return;
+    }
+
     const errorMetadata: AdditionalContext['tags'] = {
       eventId: event.dbid,
     };
@@ -148,7 +179,16 @@ export function FeedEventSocializeSection({
         });
       }
     }
-  }, [admire, event.dbid, event.id, onPotentialLayoutShift, pushToast, reportError]);
+  }, [
+    admire,
+    event.dbid,
+    event.id,
+    onPotentialLayoutShift,
+    pushToast,
+    query,
+    reportError,
+    showModal,
+  ]);
 
   return (
     <SocializedSectionPadding>
