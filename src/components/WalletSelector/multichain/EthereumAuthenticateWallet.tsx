@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
 import {
@@ -15,7 +14,7 @@ import { useAccount } from 'wagmi';
 import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { signMessage } from '@wagmi/core';
-import { VStack } from 'components/core/Spacer/Stack';
+import WalletOnboardingMessage from './WalletOnboardingMessage';
 
 type Props = {
   reset: () => void;
@@ -114,17 +113,17 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with Ethereum</TitleS>
-        <BaseM>Sign the message with your wallet.</BaseM>
-      </VStack>
+      <WalletOnboardingMessage
+        title="Connect with Ethereum"
+        description="Sign the message with your wallet."
+      />
     );
   }
 
   return (
-    <VStack gap={8}>
-      <TitleS>Connect with Ethereum</TitleS>
-      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </VStack>
+    <WalletOnboardingMessage
+      title="Connect with Ethereum"
+      description="Sign the message with your wallet."
+    />
   );
 };

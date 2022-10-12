@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM, BaseXL } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
 import Markdown from 'components/core/Markdown/Markdown';
 import { VStack } from 'components/core/Spacer/Stack';
@@ -11,19 +11,22 @@ type Props = {
 };
 
 export const WalletSelectorError = ({ heading, body, reset }: Props) => (
-  <VStack gap={16}>
-    <TitleS>{heading}</TitleS>
+  <VStack gap={30}>
     <VStack>
+      <StyledTitle>{heading}</StyledTitle>
       <StyledBody>
         <Markdown text={body} />
       </StyledBody>
-      <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
     </VStack>
+    <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
   </VStack>
 );
 
+const StyledTitle = styled(BaseXL)`
+  font-weight: 700;
+`;
+
 const StyledBody = styled(BaseM)`
-  margin-bottom: 30px;
   white-space: pre-wrap;
 `;
 

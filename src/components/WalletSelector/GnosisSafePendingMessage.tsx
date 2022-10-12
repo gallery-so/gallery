@@ -1,5 +1,5 @@
 import { Button } from 'components/core/Button/Button';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM, BaseXL, TitleS } from 'components/core/Text/Text';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -63,7 +63,7 @@ function GnosisSafePendingMessage({
   if (pendingState === PROMPT_SIGNATURE) {
     return (
       <VStack gap={24}>
-        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
+        <StyledTitle>Connect with {userFriendlyWalletName}</StyledTitle>
         <VStack gap={8}>
           <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
           <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
@@ -83,10 +83,10 @@ function GnosisSafePendingMessage({
   }
 
   return (
-    <VStack gap={24}>
-      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
+    <VStack>
+      <StyledTitle>Connect with {userFriendlyWalletName}</StyledTitle>
       {previousAttemptNonce && account ? (
-        <VStack gap={48}>
+        <VStack gap={24}>
           <BaseM>
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
@@ -102,6 +102,9 @@ function GnosisSafePendingMessage({
     </VStack>
   );
 }
+const StyledTitle = styled(BaseXL)`
+  font-weight: 700;
+`;
 
 const StyledButtonWrapper = styled(VStack)`
   justify-content: space-around;

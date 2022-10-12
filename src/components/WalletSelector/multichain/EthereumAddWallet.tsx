@@ -31,6 +31,7 @@ import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { VStack } from 'components/core/Spacer/Stack';
 import noop from 'utils/noop';
+import WalletOnboardingMessage from './WalletOnboardingMessage';
 
 type Props = {
   queryRef: EthereumAddWalletFragment$key;
@@ -229,19 +230,19 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with Ethereum</TitleS>
-        <BaseM>Sign the message with your wallet.</BaseM>
-      </VStack>
+      <WalletOnboardingMessage
+        title="Connect with Ethereum"
+        description="Sign the message with your wallet."
+      />
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
-    <VStack gap={8}>
-      <TitleS>Connect with Ethereum</TitleS>
-      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </VStack>
+    <WalletOnboardingMessage
+      title="Connect with Ethereum"
+      description="Approve your wallet to connect to Gallery."
+    />
   );
 };
 
