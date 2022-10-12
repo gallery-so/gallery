@@ -91,7 +91,7 @@ function GnosisSafePendingMessage({
             We detected that you previously tried signing a message. Would you like to try
             authenticating again using the same transaction?
           </BaseM>
-          <StyledButtonWrapper gap={8}>
+          <StyledButtonWrapper gap={8} align='center'>
             <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
             <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
           </StyledButtonWrapper>
@@ -111,7 +111,7 @@ const StyledButtonWrapper = styled(VStack)`
 `;
 
 const StyledRestartButton = styled(Button).attrs({ variant: 'secondary' })`
-  border: none;
+  border-color: transparent;
   color: ${colors.metal};
 `;
 
