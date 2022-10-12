@@ -23,7 +23,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   REFRESH_METADATA: true,
   ART_GOBBLERS: false,
-  ADMIRE_COMMENT: false,
+  ADMIRE_COMMENT: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(
