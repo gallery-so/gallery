@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
@@ -15,6 +14,7 @@ import transitions, {
 import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -89,7 +89,9 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
+        <Link href={`/${user.username}`}>
+          <TitleDiatypeM>{user.username}</TitleDiatypeM>
+        </Link>
       </StyledLinkContainer>
       <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
         {isActive && (
