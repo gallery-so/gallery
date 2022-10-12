@@ -19,6 +19,7 @@ import { useToastActions } from 'contexts/toast/ToastContext';
 import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { AuthModal } from 'hooks/useAuthModal';
+import colors from 'components/core/colors';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;
@@ -253,6 +254,9 @@ const SocializeSectionWrapper = styled.div`
 
   // Center in space
   margin: 0 auto;
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid ${colors.faint};
 `;
 
 const IconWrapper = styled.div`
