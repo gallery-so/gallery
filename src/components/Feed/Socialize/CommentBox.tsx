@@ -241,6 +241,7 @@ const CommentBoxWrapper = styled.div<{ active: boolean }>`
         `
       : css`
           opacity: 0;
+          pointer-events: none;
           transform: translateY(100%);
         `}
 `;
