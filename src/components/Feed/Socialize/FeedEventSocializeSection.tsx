@@ -51,6 +51,8 @@ export function FeedEventSocializeSection({
           ... on Viewer {
             __typename
             user {
+              id
+              dbid
               username
             }
           }
@@ -133,6 +135,7 @@ export function FeedEventSocializeSection({
         'NotesModal_interactions'
       );
 
+      const optimisticAdmireId = Math.random().toString();
       const response = await admire({
         updater: (store, response) => {
           if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
@@ -141,7 +144,20 @@ export function FeedEventSocializeSection({
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
           }
         },
-        // TODO(Terence): Add an optimistic update here
+        optimisticResponse: {
+          admireFeedEvent: {
+            __typename: 'AdmireFeedEventPayload',
+            admire: {
+              id: `Admire:${optimisticAdmireId}`,
+              dbid: optimisticAdmireId,
+              admirer: {
+                id: query.viewer?.user?.id ?? 'unknown',
+                dbid: query.viewer?.user?.dbid ?? 'unknown',
+                username: query.viewer?.user?.username ?? null,
+              },
+            },
+          },
+        },
         variables: {
           eventId: event.dbid,
           connections: [interactionsConnection, notesModalConnection],
