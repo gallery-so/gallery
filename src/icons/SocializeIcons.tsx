@@ -86,11 +86,8 @@ const IconWrapper = styled.div`
   :active ${StyledSvg} {
     // Spec says 21.6 px which is 24 * .9
     transform: scale(0.9);
+    color: ${colors.activeBlue} !important;
   }
 
   color: ${colors.offBlack};
-
-  &:hover {
-    color: ${colors.activeBlue} !important;
-  }
 `;
