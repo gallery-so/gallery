@@ -280,7 +280,7 @@ const Textarea = styled(BaseM).attrs({
 
   color: ${colors.metal};
 
-  padding: 6px 0;
+  padding: 6px 64px 6px 0;
 
   :focus {
     outline: none;
