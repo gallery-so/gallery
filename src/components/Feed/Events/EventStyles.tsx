@@ -43,9 +43,6 @@ export const StyledEventWrapper = styled.div`
   }
 
   cursor: pointer;
-  &:hover {
-    background: ${colors.faint};
-  }
 `;
 
 export const StyledEventHeader = styled.div`
