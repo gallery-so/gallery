@@ -171,7 +171,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
             <Textarea
               ref={textareaRef}
               onInput={(event) => {
-                const nextValue = event.currentTarget.textContent ?? '';
+                const nextValue = event.currentTarget.innerText ?? '';
 
                 if (nextValue.length > MAX_TEXT_LENGTH) {
                   event.currentTarget.textContent = nextValue.slice(0, 100);

@@ -42,10 +42,16 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     ? formatDistanceToNowStrict(new Date(comment.creationTime))
     : null;
 
+  const lines = comment.comment.split('\n');
+  const firstFourLines = lines.slice(0, 4).join('\n');
+
   return (
-    <HStack key={comment.dbid} gap={4} align="flex-end">
+    <HStack key={comment.dbid} gap={4} align="flex-start">
       <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-      <CommentText>{comment.comment}</CommentText>
+      <CommentText>
+        {firstFourLines}
+        {lines.length > 4 ? '...' : ''}
+      </CommentText>
       {timeAgo && <TimeAgoText>{timeAgo} ago</TimeAgoText>}
     </HStack>
   );
@@ -74,7 +80,5 @@ const CommentText = styled.div`
 
   flex-shrink: 1;
   min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  white-space: pre-line;
 `;
