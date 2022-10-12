@@ -150,6 +150,8 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     isSubmittingComment,
     onClose,
     onPotentialLayoutShift,
+    query.viewer?.user?.id,
+    query.viewer?.user?.username,
     resetInputState,
     submitComment,
     value,
