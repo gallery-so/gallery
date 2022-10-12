@@ -8,6 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { getLocalStorageItem } from 'utils/localStorage';
 import { VStack } from 'components/core/Spacer/Stack';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 const GNOSIS_NONCE_STORAGE_KEY = 'gallery_gnosis_nonce';
 
@@ -82,24 +83,21 @@ function GnosisSafePendingMessage({
     );
   }
 
-  return (
-    <VStack>
-      <StyledTitle>Connect with {userFriendlyWalletName}</StyledTitle>
-      {previousAttemptNonce && account ? (
-        <VStack gap={24}>
-          <BaseM>
-            We detected that you previously tried signing a message. Would you like to try
-            authenticating again using the same transaction?
-          </BaseM>
-          <StyledButtonWrapper gap={8} align='center'>
-            <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-            <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
-          </StyledButtonWrapper>
-        </VStack>
-      ) : (
-        <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-      )}
-    </VStack>
+  return previousAttemptNonce && account ? (
+    <EmptyState
+      title={`Connect with ${userFriendlyWalletName}`}
+      description="We detected that you previously tried signing a message. Would you like to try authenticating again using the same transaction?"
+    >
+      <StyledButtonWrapper gap={8} align="center" justify="space-around">
+        <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
+        <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
+      </StyledButtonWrapper>
+    </EmptyState>
+  ) : (
+    <EmptyState
+      title={`Connect with ${userFriendlyWalletName}`}
+      description="Approve your wallet to connect to Gallery."
+    />
   );
 }
 const StyledTitle = styled(BaseXL)`
@@ -107,7 +105,7 @@ const StyledTitle = styled(BaseXL)`
 `;
 
 const StyledButtonWrapper = styled(VStack)`
-  justify-content: space-around;
+  padding-top: 24px;
 `;
 
 const StyledRestartButton = styled(Button).attrs({ variant: 'secondary' })`

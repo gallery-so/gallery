@@ -33,7 +33,7 @@ import { graphql } from 'relay-runtime';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
 import { VStack } from 'components/core/Spacer/Stack';
-import WalletOnboardingMessage from '../multichain/WalletOnboardingMessage';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -244,7 +244,7 @@ function AddWalletPendingDefault({
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <WalletOnboardingMessage
+      <EmptyState
         title={`Connect with ${userFriendlyWalletName}`}
         description="Sign the message with your wallet."
       />
@@ -253,7 +253,7 @@ function AddWalletPendingDefault({
 
   // Default view for when pendingState === INITIAL
   return (
-    <WalletOnboardingMessage
+    <EmptyState
       title={`Connect with ${userFriendlyWalletName}`}
       description="Approve your wallet to connect to Gallery."
     />

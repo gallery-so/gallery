@@ -14,7 +14,7 @@ import { useAccount } from 'wagmi';
 import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
 import { signMessage } from '@wagmi/core';
-import WalletOnboardingMessage from './WalletOnboardingMessage';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   reset: () => void;
@@ -113,17 +113,11 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <WalletOnboardingMessage
-        title="Connect with Ethereum"
-        description="Sign the message with your wallet."
-      />
+      <EmptyState title="Connect with Ethereum" description="Sign the message with your wallet." />
     );
   }
 
   return (
-    <WalletOnboardingMessage
-      title="Connect with Ethereum"
-      description="Sign the message with your wallet."
-    />
+    <EmptyState title="Connect with Ethereum" description="Sign the message with your wallet." />
   );
 };

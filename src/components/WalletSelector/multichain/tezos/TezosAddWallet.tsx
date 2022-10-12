@@ -29,9 +29,9 @@ import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
-import WalletOnboardingMessage from '../WalletOnboardingMessage';
 import { VStack } from 'components/core/Spacer/Stack';
 import noop from 'utils/noop';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;
@@ -238,16 +238,13 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <WalletOnboardingMessage
-        title={messageHeaderText}
-        description="Sign the message with your wallet."
-      />
+      <EmptyState title={messageHeaderText} description="Sign the message with your wallet." />
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
-    <WalletOnboardingMessage
+    <EmptyState
       title={messageHeaderText}
       description="Approve your wallet to connect to Gallery."
     />
