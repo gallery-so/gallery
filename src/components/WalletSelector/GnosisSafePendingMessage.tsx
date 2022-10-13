@@ -1,5 +1,5 @@
 import { Button } from 'components/core/Button/Button';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -8,6 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { getLocalStorageItem } from 'utils/localStorage';
 import { VStack } from 'components/core/Spacer/Stack';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 const GNOSIS_NONCE_STORAGE_KEY = 'gallery_gnosis_nonce';
 
@@ -36,17 +37,18 @@ function GnosisSafeListeningOnChainScreen({
   }, [manuallyValidateSignature]);
 
   return (
-    <VStack gap={24}>
-      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <VStack gap={8}>
-        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-        <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
+    <EmptyState title={`Connect with ${userFriendlyWalletName}`}>
+      <VStack gap={24}>
+        <VStack>
+          <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+          <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
+        </VStack>
+        <StyledLoaderWrapper>
+          <StyledLoader />
+        </StyledLoaderWrapper>
+        <BaseM>Do not close this window.</BaseM>
       </VStack>
-      <StyledLoaderWrapper>
-        <StyledLoader />
-      </StyledLoaderWrapper>
-      <BaseM>Do not close this window.</BaseM>
-    </VStack>
+    </EmptyState>
   );
 }
 
@@ -60,16 +62,19 @@ function GnosisSafePendingMessage({
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
 
+  const title = `Connect with ${userFriendlyWalletName}`;
+
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <VStack gap={24}>
-        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <VStack gap={8}>
-          <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-          <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
+      <EmptyState title={title}>
+        <VStack gap={24}>
+          <VStack>
+            <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+            <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
+          </VStack>
+          <BaseM>Do not close this window.</BaseM>
         </VStack>
-        <BaseM>Do not close this window.</BaseM>
-      </VStack>
+      </EmptyState>
     );
   }
 
@@ -82,33 +87,27 @@ function GnosisSafePendingMessage({
     );
   }
 
-  return (
-    <VStack gap={24}>
-      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      {previousAttemptNonce && account ? (
-        <VStack gap={48}>
-          <BaseM>
-            We detected that you previously tried signing a message. Would you like to try
-            authenticating again using the same transaction?
-          </BaseM>
-          <StyledButtonWrapper gap={8}>
-            <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-            <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
-          </StyledButtonWrapper>
-        </VStack>
-      ) : (
-        <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-      )}
-    </VStack>
+  return previousAttemptNonce && account ? (
+    <EmptyState
+      title={title}
+      description="We detected that you previously tried signing a message. Would you like to try authenticating again using the same transaction?"
+    >
+      <StyledButtonWrapper gap={8} align="center" justify="space-around">
+        <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
+        <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
+      </StyledButtonWrapper>
+    </EmptyState>
+  ) : (
+    <EmptyState title={title} description="Approve your wallet to connect to Gallery." />
   );
 }
 
 const StyledButtonWrapper = styled(VStack)`
-  justify-content: space-around;
+  padding-top: 24px;
 `;
 
 const StyledRestartButton = styled(Button).attrs({ variant: 'secondary' })`
-  border: none;
+  border-color: transparent;
   color: ${colors.metal};
 `;
 
