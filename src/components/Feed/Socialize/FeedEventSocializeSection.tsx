@@ -107,7 +107,6 @@ export function FeedEventSocializeSection({
   }, [query, showModal]);
 
   const handleAdmire = useCallback(async () => {
-    console.log(query.viewer);
     if (query.viewer?.__typename !== 'Viewer') {
       showModal({
         content: <AuthModal queryRef={query} />,
