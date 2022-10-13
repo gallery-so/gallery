@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import colors from 'components/core/colors';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import { normalizeError } from './normalizeError';
@@ -39,6 +39,7 @@ import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
 import { walletconnect } from '../../../connectors';
 import { VStack } from 'components/core/Spacer/Stack';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   queryRef: GnosisSafeAddWalletFragment$key;
@@ -167,7 +168,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
         await listenForGnosisSignature(address, nonce, walletconnect);
 
         await authenticateWithBackend(address, nonce);
-      } catch (error: unknown) {
+      } catch (error) {
         handleError(error);
       }
     },
@@ -197,7 +198,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
         // Once signed, call the backend as usual
         void authenticateWithBackend(account, nonce);
       }
-    } catch (error: unknown) {
+    } catch (error) {
       handleError(error);
     }
   }, [account, authenticateWithBackend, handleError, pendingState, nonce]);
@@ -262,11 +263,12 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with Gnosis Safe</TitleS>
-        <BaseM>The following address is already connected to this account:</BaseM>
-        <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
-      </VStack>
+      <EmptyState title="Connect with Gnosis Safe">
+        <VStack>
+          <BaseM>The following address is already connected to this account:</BaseM>
+          <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
+        </VStack>
+      </EmptyState>
     );
   }
 
