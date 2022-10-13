@@ -105,6 +105,12 @@ export default function FeedList({
             // @ts-expect-error: this is the suggested usage of registerChild
             <div ref={registerChild} style={style}>
               <FeedEvent
+                // Here, we're listening to our children for anything that might cause
+                // the height of this list item to change height.
+                // Right now, this consists of "admiring", and "commenting"
+                //
+                // Whenever the height changes, we need to ask react-virtualized
+                // to re-evaluate the height of the item to keep the virtualization good.
                 onPotentialLayoutShift={() => {
                   measurerCache.clear(index, 0);
                   virtualizedListRef.current?.recomputeRowHeights();
