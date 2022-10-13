@@ -1,6 +1,13 @@
 import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
-import { MouseEventHandler, useCallback, useRef, useState } from 'react';
+import {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SendButton } from 'components/Feed/Socialize/SendButton';
 import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
@@ -10,6 +17,7 @@ import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFrag
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
+import useKeyDown from 'hooks/useKeyDown';
 
 const MAX_TEXT_LENGTH = 100;
 
@@ -92,7 +100,6 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
       );
 
       const optimisticId = Math.random().toString();
-      console.log('ooptimsitci id', optimisticId);
       const response = await submitComment({
         updater: (store, response) => {
           if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
@@ -157,9 +164,24 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     value,
   ]);
 
+  useEffect(() => {
+    if (active) {
+      textareaRef.current?.focus();
+    }
+  }, [active]);
+
   const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
     event.stopPropagation();
   }, []);
+
+  const handleInputKeyDown = useCallback<KeyboardEventHandler>(
+    async (event) => {
+      if (event.key === 'Enter' && event.metaKey) {
+        await handleSubmit();
+      }
+    },
+    [handleSubmit]
+  );
 
   return (
     <>
@@ -169,6 +191,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
           <InputWrapper gap={12}>
             {/* Purposely not using a controlled input here to avoid cursor jitter */}
             <Textarea
+              onKeyDown={handleInputKeyDown}
               ref={textareaRef}
               onInput={(event) => {
                 const nextValue = event.currentTarget.innerText ?? '';
