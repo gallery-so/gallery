@@ -14,7 +14,7 @@ import {
   ListRowRenderer,
 } from 'react-virtualized';
 import { useCallback, useMemo, useState } from 'react';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { getTimeSince } from 'utils/time';
 
 export const NOTES_PER_PAGE = 10;
 
@@ -115,7 +115,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
               );
             } else if (interaction.__typename === 'Admire') {
               const timeAgo = interaction.creationTime
-                ? formatDistanceToNowStrict(new Date(interaction.creationTime))
+                ? getTimeSince(interaction.creationTime)
                 : null;
 
               return (
@@ -131,7 +131,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
               );
             } else if (interaction.__typename === 'Comment') {
               const timeAgo = interaction.creationTime
-                ? formatDistanceToNowStrict(new Date(interaction.creationTime))
+                ? getTimeSince(interaction.creationTime)
                 : null;
 
               return (

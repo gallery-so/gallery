@@ -2,11 +2,11 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CommentLineFragment$key } from '__generated__/CommentLineFragment.graphql';
 import { HStack } from 'components/core/Spacer/Stack';
-import { formatDistanceToNowStrict } from 'date-fns';
 import styled from 'styled-components';
 import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useEffect, useState } from 'react';
+import { getTimeSince } from 'utils/time';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -38,15 +38,13 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     return () => clearInterval(intervalId);
   }, []);
 
-  const timeAgo = comment.creationTime
-    ? formatDistanceToNowStrict(new Date(comment.creationTime))
-    : null;
+  const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
   return (
     <HStack key={comment.dbid} gap={4} align="flex-start">
       <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
       <CommentText>{comment.comment}</CommentText>
-      {timeAgo && <TimeAgoText>{timeAgo} ago</TimeAgoText>}
+      {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
   );
 }
