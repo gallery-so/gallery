@@ -17,7 +17,6 @@ import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFrag
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
-import useKeyDown from 'hooks/useKeyDown';
 
 const MAX_TEXT_LENGTH = 100;
 

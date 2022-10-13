@@ -13,7 +13,6 @@ import { ErrorBoundary } from '@sentry/nextjs';
 import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
-import styled from 'styled-components';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 
 type FeedEventProps = {
