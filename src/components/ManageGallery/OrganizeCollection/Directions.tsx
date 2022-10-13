@@ -8,7 +8,7 @@ function Directions() {
   return (
     <DirectionsContainer align="center" justify="center">
       <StyledDirections>
-        <StyledEmptyState
+        <EmptyState
           title="Add NFTs to your collection"
           description="Select NFTs to include in your collection. Drag and drop to rearrange."
           isEditor
@@ -26,10 +26,6 @@ const DirectionsContainer = styled(VStack)`
 const StyledDirections = styled.div`
   text-align: center;
   max-width: 269px;
-`;
-
-const StyledEmptyState = styled(EmptyState)`
-  background-color: red;
 `;
 
 export default memo(Directions);
