@@ -135,7 +135,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <StyledVStack gap={16}>
+      <VStack gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {isAdmireCommentEnabled && (
@@ -147,11 +147,7 @@ export default function FeedEventWithBoundary({
             />
           </ErrorBoundary>
         )}
-      </StyledVStack>
+      </VStack>
     </FeedEventErrorBoundary>
   );
 }
-
-const StyledVStack = styled(VStack)`
-  padding-bottom: 16px;
-`;
