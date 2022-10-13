@@ -68,6 +68,7 @@ type GalleryUser implements Node {
     isAuthenticatedUser: Boolean
     followers: [GalleryUser] @goField(forceResolver: true)
     following: [GalleryUser] @goField(forceResolver: true)
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection @goField(forceResolver: true)
 }
 
 type Wallet implements Node {
@@ -470,7 +471,7 @@ type FollowInfo {
 type FeedEventAdmireEdge {
     node: Admire
     event: FeedEvent
-    cursor: String!
+    cursor: String
 }
 
 type FeedEventAdmiresConnection {
@@ -482,7 +483,7 @@ type FeedEventAdmiresConnection {
 type FeedEventCommentEdge {
     node: Comment
     event: FeedEvent
-    cursor: String!
+    cursor: String
 }
 
 type FeedEventCommentsConnection {
@@ -495,14 +496,13 @@ union Interaction = Admire | Comment
 type FeedEventInteractionsEdge {
     node: Interaction
     event: FeedEvent
-    cursor: String!
+    cursor: String
 }
 
 type FeedEventInteractionsConnection {
     edges: [FeedEventInteractionsEdge]
     pageInfo: PageInfo!
 }
-
 
 interface FeedEventData {
     eventTime: Time
@@ -513,10 +513,16 @@ interface FeedEventData {
 type FeedEvent implements Node {
     id: ID!
     dbid: DBID!
+
     eventData: FeedEventData @goField(forceResolver: true)
     admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection @goField(forceResolver: true)
     comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection @goField(forceResolver: true)
-    interactions(before: String, after: String, first: Int, last: Int): FeedEventInteractionsConnection @goField(forceResolver: true)
+
+    # If supplied, typeFilter will only query for the requested interaction types.
+    # If typeFilter is omitted, all interaction types will be queried.
+    interactions(before: String, after: String, first: Int, last: Int, typeFilter:[InteractionType!]): FeedEventInteractionsConnection @goField(forceResolver: true)
+
+    hasViewerAdmiredEvent: Boolean @goField(forceResolver: true)
 }
 
 type UserCreatedFeedEventData implements FeedEventData {
@@ -594,12 +600,12 @@ type PageInfo {
 
 type FeedEdge {
     node: FeedEventOrError
-    cursor: String!
+    cursor: String
 }
 
-type FeedConnection @goEmbedHelper {
+type FeedConnection {
     edges: [FeedEdge]
-    pageInfo: PageInfo! @goField(forceResolver: true)
+    pageInfo: PageInfo!
 }
 
 type Query {
