@@ -70,7 +70,11 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         tokenSettings: collectionMetadata.tokenSettings,
       });
 
-      handlePrevious();
+      if (canGoBack) {
+        back();
+      } else {
+        replace(editGalleryUrl);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         pushToast({
