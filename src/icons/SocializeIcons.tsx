@@ -1,14 +1,16 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
 import { forwardRef } from 'react';
 
 type Props = {
+  active?: boolean;
   onClick: () => void;
 };
 
-export const CommentIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
+export const CommentIcon = forwardRef<HTMLDivElement, Props>(({ onClick, active }, ref) => {
   return (
     <IconWrapper
+      active={active ?? false}
       role="button"
       onClick={(e) => {
         e.stopPropagation();
@@ -30,9 +32,10 @@ export const CommentIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) 
 
 CommentIcon.displayName = 'CommentIcon';
 
-export const AdmireIcon = forwardRef<HTMLDivElement, Props>(({ onClick }, ref) => {
+export const AdmireIcon = forwardRef<HTMLDivElement, Props>(({ onClick, active }, ref) => {
   return (
     <IconWrapper
+      active={active ?? false}
       ref={ref}
       role="button"
       onClick={(e) => {
@@ -74,7 +77,7 @@ const StyledSvg = styled.svg`
   transition: transform 150ms ease-in-out, color 150ms ease-in-out;
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ active: boolean }>`
   width: 32px;
   height: 32px;
   cursor: pointer;
@@ -86,8 +89,15 @@ const IconWrapper = styled.div`
   :active ${StyledSvg} {
     // Spec says 21.6 px which is 24 * .9
     transform: scale(0.9);
-    color: ${colors.activeBlue} !important;
+    color: ${colors.activeBlue};
   }
 
-  color: ${colors.offBlack};
+  ${({ active }) =>
+    active
+      ? css`
+          color: ${colors.activeBlue};
+        `
+      : css`
+          color: ${colors.offBlack};
+        `}
 `;

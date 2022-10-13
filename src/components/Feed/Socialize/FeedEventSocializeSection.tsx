@@ -37,6 +37,7 @@ export function FeedEventSocializeSection({
       fragment FeedEventSocializeSectionFragment on FeedEvent {
         id
         dbid
+        hasViewerAdmiredEvent
 
         ...CommentBoxFragment
         ...InteractionsFragment
@@ -143,6 +144,8 @@ export function FeedEventSocializeSection({
             const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+            store.get(event.id)?.setValue(true, 'hasViewerAdmiredEvent');
           }
         },
         optimisticResponse: {
@@ -217,7 +220,7 @@ export function FeedEventSocializeSection({
 
           <HStack align="center">
             <IconWrapper>
-              <AdmireIcon onClick={handleAdmire} />
+              <AdmireIcon onClick={handleAdmire} active={event.hasViewerAdmiredEvent ?? false} />
             </IconWrapper>
 
             <IconWrapper>
