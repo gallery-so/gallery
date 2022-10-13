@@ -42,16 +42,10 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     ? formatDistanceToNowStrict(new Date(comment.creationTime))
     : null;
 
-  const lines = comment.comment.split('\n');
-  const firstFourLines = lines.slice(0, 4).join('\n');
-
   return (
     <HStack key={comment.dbid} gap={4} align="flex-start">
       <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-      <CommentText>
-        {firstFourLines}
-        {lines.length > 4 ? '...' : ''}
-      </CommentText>
+      <CommentText>{comment.comment}</CommentText>
       {timeAgo && <TimeAgoText>{timeAgo} ago</TimeAgoText>}
     </HStack>
   );
