@@ -7,6 +7,7 @@ import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useEffect, useState } from 'react';
 import { getTimeSince } from 'utils/time';
+import Link from 'next/link';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -40,9 +41,14 @@ export function CommentLine({ commentRef }: CommentLineProps) {
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
+  const usernameLink = comment.commenter?.username ? `/${comment.commenter.username}` : '';
   return (
     <HStack key={comment.dbid} gap={4} align="flex-start">
-      <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+      <Link href={usernameLink}>
+        <CommenterName href={usernameLink}>
+          {comment.commenter?.username ?? '<unknown>'}
+        </CommenterName>
+      </Link>
       <CommentText>{comment.comment}</CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
@@ -57,11 +63,14 @@ const TimeAgoText = styled.div`
   color: ${colors.metal};
 `;
 
-const CommenterName = styled.div`
+const CommenterName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
   line-height: 1;
   font-weight: 700;
+
+  text-decoration: none;
+  color: ${colors.offBlack};
 `;
 
 const CommentText = styled.div`

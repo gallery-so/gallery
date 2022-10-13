@@ -15,6 +15,7 @@ import {
 } from 'react-virtualized';
 import { useCallback, useMemo, useState } from 'react';
 import { getTimeSince } from 'utils/time';
+import Link from 'next/link';
 
 export const NOTES_PER_PAGE = 10;
 
@@ -122,7 +123,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
-                    <TitleS>{interaction.admirer?.username ?? '<unknown>'}</TitleS>
+                    <UsernameLink username={interaction.admirer?.username ?? null} />
                     <BaseM>admired this</BaseM>
                   </HStack>
 
@@ -138,7 +139,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                 // @ts-expect-error Bad types from react-virtualized
                 <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
                   <HStack gap={4}>
-                    <TitleS>{interaction.commenter?.username ?? '<unknown>'}</TitleS>
+                    <UsernameLink username={interaction.commenter?.username ?? null} />
                     <BaseM>{interaction.comment}</BaseM>
                   </HStack>
 
@@ -178,6 +179,24 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     </ModalContent>
   );
 }
+
+type UsernameLinkProps = { username: string | null };
+
+function UsernameLink({ username }: UsernameLinkProps) {
+  const link = username ? `/${username}` : '';
+  return (
+    <Link href={link}>
+      <UsernameLinkWrapper href={link}>
+        <TitleS>{username ?? '<unknown>'}</TitleS>
+      </UsernameLinkWrapper>
+    </Link>
+  );
+}
+
+const UsernameLinkWrapper = styled.a`
+  color: ${colors.offBlack};
+  text-decoration: none;
+`;
 
 const SeeMoreContainer = styled.div`
   cursor: pointer;

@@ -6,6 +6,8 @@ import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { AdmireLineFragment$key } from '../../../../__generated__/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '../../../../__generated__/AdmireLineQueryFragment.graphql';
 import { useMemo } from 'react';
+import colors from 'components/core/colors';
+import Link from 'next/link';
 
 type CommentLineProps = {
   admireRef: AdmireLineFragment$key;
@@ -54,19 +56,25 @@ export function AdmireLine({ admireRef, queryRef }: CommentLineProps) {
     }
   }, [admire.admirer?.dbid, admire.admirer?.username, query.viewer?.user?.dbid]);
 
+  const admirerLink = admire.admirer?.username ? `/${admire.admirer.username}` : '';
   return (
     <HStack gap={4} align="flex-end">
-      <AdmirerName>{admirerName}</AdmirerName>
+      <Link href={admirerLink}>
+        <AdmirerName href={admirerLink}>{admirerName}</AdmirerName>
+      </Link>
       <AdmirerText>admired this</AdmirerText>
     </HStack>
   );
 }
 
-const AdmirerName = styled.div`
+const AdmirerName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 12px;
   line-height: 1;
   font-weight: 700;
+
+  text-decoration: none;
+  color: ${colors.offBlack};
 `;
 
 const AdmirerText = styled.div`

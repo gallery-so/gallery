@@ -210,7 +210,7 @@ export function FeedEventSocializeSection({
   return (
     <SocializedSectionPadding>
       <SocializeSectionWrapper>
-        <HStack justify="space-between" align="flex-start" gap={24}>
+        <HStack justify="space-between" align="flex-end" gap={24}>
           <VStack shrink>
             <Interactions eventRef={event} queryRef={query} />
           </VStack>
