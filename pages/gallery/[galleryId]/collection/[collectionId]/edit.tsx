@@ -86,10 +86,13 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       }
     }
   }, [
+    back,
+    canGoBack,
     collectionId,
     collectionMetadata.tokenSettings,
-    handlePrevious,
+    editGalleryUrl,
     pushToast,
+    replace,
     stagedCollectionState,
     updateCollection,
   ]);
