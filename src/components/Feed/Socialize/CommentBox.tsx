@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
 import {
+  FormEventHandler,
   KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
@@ -71,6 +72,13 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     }
   `);
 
+  // WARNING: calling `setValue` will not cause the textarea's content to actually change
+  // It's simply there as a state value that we can reference to peek into the current state
+  // of the textarea.
+  //
+  // We don't flush the state of `value` back out to the textarea to avoid constantly having
+  // to move the user's cursor around while their typing. This would cause a pretty jarring
+  // typing experience.
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
@@ -182,6 +190,44 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     [handleSubmit]
   );
 
+  const handleInput = useCallback<FormEventHandler<HTMLParagraphElement>>((event) => {
+    const nextValue = event.currentTarget.innerText ?? '';
+
+    // If the user tried typing / pasting something over 100 characters of length
+    // we need to trim the content down, override the text content in the element
+    // and then put their cursor back at the end of the element
+    if (nextValue.length > MAX_TEXT_LENGTH) {
+      const nextValueSliced = nextValue.slice(0, 100);
+      event.currentTarget.textContent = nextValueSliced;
+
+      const range = document.createRange();
+      const selection = window.getSelection();
+
+      // Not really sure why `selection` is nullable
+      // Maybe because other browsers don't support this API
+      if (!selection) {
+        return;
+      }
+
+      const childNode = event.currentTarget.childNodes[0];
+
+      // There should only ever be a single child node
+      if (!childNode) {
+        return;
+      }
+
+      range.setStart(childNode, MAX_TEXT_LENGTH);
+      range.setEnd(childNode, MAX_TEXT_LENGTH);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      setValue(nextValueSliced);
+    } else {
+      setValue(nextValue);
+    }
+  }, []);
+
   return (
     <>
       {active && <ClickPreventingOverlay onClick={onClose} />}
@@ -189,34 +235,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
         <Wrapper onClick={handleClick}>
           <InputWrapper gap={12}>
             {/* Purposely not using a controlled input here to avoid cursor jitter */}
-            <Textarea
-              onKeyDown={handleInputKeyDown}
-              ref={textareaRef}
-              onInput={(event) => {
-                const nextValue = event.currentTarget.innerText ?? '';
-
-                if (nextValue.length > MAX_TEXT_LENGTH) {
-                  event.currentTarget.textContent = nextValue.slice(0, 100);
-
-                  // Set the cursor to the end of the editable content
-                  const range = document.createRange();
-                  const selection = window.getSelection();
-
-                  if (!selection) {
-                    return;
-                  }
-
-                  range.setStart(event.currentTarget.childNodes[0], MAX_TEXT_LENGTH);
-                  range.setEnd(event.currentTarget.childNodes[0], MAX_TEXT_LENGTH);
-                  range.collapse(true);
-                  selection.removeAllRanges();
-                  selection.addRange(range);
-                  // End range garbage
-                } else {
-                  setValue(nextValue);
-                }
-              }}
-            />
+            <Textarea onKeyDown={handleInputKeyDown} ref={textareaRef} onInput={handleInput} />
 
             <ControlsContainer gap={12} align="center">
               <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
