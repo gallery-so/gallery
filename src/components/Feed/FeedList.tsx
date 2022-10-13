@@ -148,7 +148,12 @@ export default function FeedList({
                 rowCount={rowCount}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
-                // Need this to ensure we can use position: fixed beneath the element
+                // By default, react-virtualized's list has the css property `will-change` set to `transform`
+                // An element with `position: fixed` beneath an element with `will-change: transform` will
+                // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)
+                //
+                // Simply setting this back to it's original `auto` seems to do the trick and shouldn't have
+                // any serious performance implications from some trivial testing that was done.
                 style={{ willChange: 'auto' }}
               />
               {hasNext && (
