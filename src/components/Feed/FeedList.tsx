@@ -93,6 +93,11 @@ export default function FeedList({
       // graphql returns the oldest event at the top of the list, so display in opposite order
       const content = feedData[feedData.length - index - 1];
 
+      // Better safe than sorry :)
+      if (!content) {
+        return;
+      }
+
       return (
         <CellMeasurer
           cache={measurerCache}
