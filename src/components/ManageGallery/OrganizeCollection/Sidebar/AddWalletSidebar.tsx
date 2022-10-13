@@ -61,7 +61,6 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
       <EmptyState
         title="It's looking empty"
         description={`You do not have any ${selectedChain} NFTs`}
-        isEditor
       >
         <StyledButtonContainer>
           <Button variant="secondary" onClick={handleManageWalletsClick}>

@@ -1,5 +1,5 @@
 import { Button } from 'components/core/Button/Button';
-import { BaseM, BaseXL, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
 import colors from 'components/core/colors';
 import styled, { keyframes } from 'styled-components';
@@ -37,17 +37,18 @@ function GnosisSafeListeningOnChainScreen({
   }, [manuallyValidateSignature]);
 
   return (
-    <VStack gap={24}>
-      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <VStack gap={8}>
-        <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-        <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
+    <EmptyState title={`Connect with ${userFriendlyWalletName}`}>
+      <VStack gap={24}>
+        <VStack>
+          <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+          <BaseM>Awaiting confirmation and execution by remaining Gnosis Safe owners.</BaseM>
+        </VStack>
+        <StyledLoaderWrapper>
+          <StyledLoader />
+        </StyledLoaderWrapper>
+        <BaseM>Do not close this window.</BaseM>
       </VStack>
-      <StyledLoaderWrapper>
-        <StyledLoader />
-      </StyledLoaderWrapper>
-      <BaseM>Do not close this window.</BaseM>
-    </VStack>
+    </EmptyState>
   );
 }
 
@@ -61,16 +62,19 @@ function GnosisSafePendingMessage({
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
 
+  const title = `Connect with ${userFriendlyWalletName}`;
+
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <VStack gap={24}>
-        <StyledTitle>Connect with {userFriendlyWalletName}</StyledTitle>
-        <VStack gap={8}>
-          <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
-          <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
+      <EmptyState title={title}>
+        <VStack gap={24}>
+          <VStack>
+            <BaseM>Connecting with Gnosis requires an on-chain transaction.</BaseM>
+            <BaseM>Follow the prompts in the Gnosis app to sign the message.</BaseM>
+          </VStack>
+          <BaseM>Do not close this window.</BaseM>
         </VStack>
-        <BaseM>Do not close this window.</BaseM>
-      </VStack>
+      </EmptyState>
     );
   }
 
@@ -85,7 +89,7 @@ function GnosisSafePendingMessage({
 
   return previousAttemptNonce && account ? (
     <EmptyState
-      title={`Connect with ${userFriendlyWalletName}`}
+      title={title}
       description="We detected that you previously tried signing a message. Would you like to try authenticating again using the same transaction?"
     >
       <StyledButtonWrapper gap={8} align="center" justify="space-around">
@@ -94,15 +98,9 @@ function GnosisSafePendingMessage({
       </StyledButtonWrapper>
     </EmptyState>
   ) : (
-    <EmptyState
-      title={`Connect with ${userFriendlyWalletName}`}
-      description="Approve your wallet to connect to Gallery."
-    />
+    <EmptyState title={title} description="Approve your wallet to connect to Gallery." />
   );
 }
-const StyledTitle = styled(BaseXL)`
-  font-weight: 700;
-`;
 
 const StyledButtonWrapper = styled(VStack)`
   padding-top: 24px;

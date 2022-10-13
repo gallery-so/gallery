@@ -1,6 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
@@ -192,39 +192,43 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with Ethereum</TitleS>
-        <BaseM>The following address is already connected to this account:</BaseM>
-        <BaseM color={colors.offBlack}>{account}</BaseM>
-        {isMetamask && (
-          <BaseM>
-            If you want to connect a different address via Metamask, please switch accounts in the
-            extension and try again.
-          </BaseM>
-        )}
-      </VStack>
+      <EmptyState title="Connect with Ethereum">
+        <VStack gap={8}>
+          <VStack>
+            <BaseM>The following address is already connected to this account:</BaseM>
+            <BaseM color={colors.offBlack}>{account}</BaseM>
+          </VStack>
+          {isMetamask && (
+            <BaseM>
+              If you want to connect a different address via Metamask, please switch accounts in the
+              extension and try again.
+            </BaseM>
+          )}
+        </VStack>
+      </EmptyState>
     );
   }
 
   // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account) {
     return (
-      <VStack gap={24}>
-        <VStack gap={16}>
-          <VStack gap={8}>
-            <TitleS>Connect with Ethereum</TitleS>
-            <BaseM>Confirm the following wallet address:</BaseM>
-            <BaseM color={colors.offBlack}>{account}</BaseM>
+      <EmptyState title="Connect with Ethereum">
+        <VStack gap={24}>
+          <VStack gap={16}>
+            <VStack>
+              <BaseM>Confirm the following wallet address:</BaseM>
+              <BaseM color={colors.offBlack}>{account}</BaseM>
+            </VStack>
+            <BaseM>
+              If you want to connect a different address via Metamask, please switch accounts in the
+              extension and try again.
+            </BaseM>
           </VStack>
-          <BaseM>
-            If you want to connect a different address via Metamask, please switch accounts in the
-            extension and try again.
-          </BaseM>
+          <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
+            {isConnecting ? 'Connecting...' : 'Confirm'}
+          </StyledButton>
         </VStack>
-        <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
-          {isConnecting ? 'Connecting...' : 'Confirm'}
-        </StyledButton>
-      </VStack>
+      </EmptyState>
     );
   }
 

@@ -11,7 +11,6 @@ function Directions() {
         <EmptyState
           title="Add NFTs to your collection"
           description="Select NFTs to include in your collection. Drag and drop to rearrange."
-          isEditor
         />
       </StyledDirections>
     </DirectionsContainer>

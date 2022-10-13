@@ -5,18 +5,19 @@ import styled from 'styled-components';
 
 type Props = {
   title: string;
-  description: string;
+  description?: string;
   children?: React.ReactNode;
-  isEditor?: boolean;
 };
 
-export function EmptyState({ title, description, children, isEditor }: Props) {
+export function EmptyState({ title, description, children }: Props) {
   return (
-    <VStack align={isEditor ? 'center' : 'baseline'}>
+    <VStack align="center">
       <StyledTitle>{title}</StyledTitle>
-      <StyledBody isEditor={isEditor}>
-        <Markdown text={description} />
-      </StyledBody>
+      {description && (
+        <StyledBody>
+          <Markdown text={description} />
+        </StyledBody>
+      )}
       {children}
     </VStack>
   );
@@ -26,7 +27,7 @@ const StyledTitle = styled(BaseXL)`
   font-weight: 700;
 `;
 
-const StyledBody = styled(BaseM)<{ isEditor?: boolean }>`
+const StyledBody = styled(BaseM)`
   white-space: pre-wrap;
-  ${({ isEditor }) => isEditor && 'text-align: center;'}
+  text-align: center;
 `;
