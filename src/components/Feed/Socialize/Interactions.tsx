@@ -18,7 +18,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
-        admires(first: 1) @connection(key: "Interactions_admires") {
+        admires(last: 1) @connection(key: "Interactions_admires") {
           pageInfo {
             total
           }
@@ -31,7 +31,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
           }
         }
 
-        comments(first: 2) @connection(key: "Interactions_comments") {
+        comments(last: 2) @connection(key: "Interactions_comments") {
           pageInfo {
             total
           }
@@ -69,19 +69,23 @@ export function Interactions({ eventRef, queryRef }: Props) {
       }
     }
 
+    comments.reverse();
+
     return comments;
   }, [event.comments?.edges]);
 
   const nonNullAdmires = useMemo(() => {
-    const comments = [];
+    const admires = [];
 
     for (const edge of event.admires?.edges ?? []) {
       if (edge?.node) {
-        comments.push(edge.node);
+        admires.push(edge.node);
       }
     }
 
-    return comments;
+    admires.reverse();
+
+    return admires;
   }, [event.admires?.edges]);
 
   const totalInteractions =

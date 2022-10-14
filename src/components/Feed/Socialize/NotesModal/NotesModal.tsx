@@ -28,24 +28,26 @@ type NotesModalProps = {
 export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
   const {
     data: feedEvent,
-    loadNext,
-    hasNext,
+    loadPrevious,
+    hasPrevious,
   } = usePaginationFragment(
     graphql`
       fragment NotesModalFragment on FeedEvent
       @refetchable(queryName: "NotesModalRefetchableFragment") {
         dbid
 
-        interactions(first: $interactionsFirst, after: $interactionsAfter)
+        interactions(last: $interactionsFirst, before: $interactionsAfter)
           @connection(key: "NotesModal_interactions") {
           edges {
             node {
               __typename
 
               ... on Admire {
+                creationTime
                 ...AdmireNoteFragment
               }
               ... on Comment {
+                creationTime
                 ...CommentNoteFragment
               }
             }
@@ -65,12 +67,12 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
       }
     }
 
-    if (hasNext) {
-      interactions.push({ kind: 'see-more' });
+    if (hasPrevious) {
+      interactions.unshift({ kind: 'see-more' });
     }
 
     return interactions;
-  }, [feedEvent.interactions?.edges, hasNext]);
+  }, [feedEvent.interactions?.edges, hasPrevious]);
 
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({
@@ -80,12 +82,13 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
   });
 
   const handleSeeMore = useCallback(() => {
-    loadNext(NOTES_PER_PAGE);
-  }, [loadNext]);
+    loadPrevious(NOTES_PER_PAGE);
+  }, [loadPrevious]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const interaction = nonNullInteractionsAndSeeMore[index];
+      const interaction =
+        nonNullInteractionsAndSeeMore[nonNullInteractionsAndSeeMore.length - index - 1];
 
       return (
         <CellMeasurer

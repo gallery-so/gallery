@@ -56,7 +56,7 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
       admireFeedEvent(feedEventId: $eventId) {
         ... on AdmireFeedEventPayload {
           __typename
-          admire @prependNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
+          admire @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
             dbid
             ...AdmireLineFragment
             ...AdmireNoteFragment

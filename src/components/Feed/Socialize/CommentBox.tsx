@@ -65,7 +65,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
         ... on CommentOnFeedEventPayload {
           __typename
 
-          comment @prependNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
+          comment @appendNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
             dbid
             ...CommentLineFragment
             ...CommentNoteFragment
