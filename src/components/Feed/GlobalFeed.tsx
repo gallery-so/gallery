@@ -25,9 +25,8 @@ export default function GlobalFeed({ queryRef }: Props) {
             node {
               ... on FeedEvent {
                 __typename
-                eventData {
-                  ...FeedListEventDataFragment
-                }
+
+                ...FeedListEventDataFragment
               }
             }
           }
@@ -43,8 +42,8 @@ export default function GlobalFeed({ queryRef }: Props) {
     const events = [];
 
     for (const edge of query?.globalFeed?.edges ?? []) {
-      if (edge?.node?.__typename === 'FeedEvent' && edge.node.eventData) {
-        events.push(edge.node.eventData);
+      if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+        events.push(edge.node);
       }
     }
 

@@ -19,13 +19,13 @@ import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: TokensAddedToCollectionFeedEventFragment$key;
+  eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -53,7 +53,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
         isPreFeed
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -82,7 +82,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length) {
-    return null;
+    throw new Error('Tried to render TokensAddedToCollectionFeedEvent without any tokens');
   }
 
   return (

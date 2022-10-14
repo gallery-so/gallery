@@ -3,11 +3,14 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { homeQuery } from '__generated__/homeQuery.graphql';
+import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
     graphql`
       query homeQuery(
+        $interactionsFirst: Int!
+        $interactionsAfter: String
         $globalLast: Int!
         $globalBefore: String
         $viewerLast: Int!
@@ -17,6 +20,7 @@ export default function Home() {
       }
     `,
     {
+      interactionsFirst: NOTES_PER_PAGE,
       globalLast: ITEMS_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
     }

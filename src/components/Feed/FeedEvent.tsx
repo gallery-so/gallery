@@ -8,58 +8,45 @@ import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFe
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
 import FeedEventErrorBoundary from './FeedEventErrorBoundary';
+import { FeedEventSocializeSection } from 'components/Feed/Socialize/FeedEventSocializeSection';
+import { ErrorBoundary } from '@sentry/nextjs';
+import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
+import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import { VStack } from 'components/core/Spacer/Stack';
+import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 
-type Props = {
+type FeedEventProps = {
   eventRef: FeedEventFragment$key;
   queryRef: FeedEventQueryFragment$key;
   feedMode: FeedMode;
 };
 
-function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
+function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on FeedEventData {
-        ... on CollectionCreatedFeedEventData {
-          ...CollectionCreatedFeedEventFragment
-          collection {
-            dbid
-          }
-        }
-        ... on CollectorsNoteAddedToTokenFeedEventData {
-          ...CollectorsNoteAddedToTokenFeedEventFragment
-          token {
-            id
-          }
-        }
-        ... on TokensAddedToCollectionFeedEventData {
-          ...TokensAddedToCollectionFeedEventFragment
-          collection {
-            dbid
-          }
-        }
-        ... on UserFollowedUsersFeedEventData {
-          ...UserFollowedUsersFeedEventFragment
-          owner {
-            username
-          }
-          followed {
-            user {
-              dbid
-              ...HoverCardOnUsernameFragment
-            }
-          }
-        }
-        ... on CollectorsNoteAddedToCollectionFeedEventData {
-          ...CollectorsNoteAddedToCollectionFeedEventFragment
-          newCollectorsNote
-          collection {
-            dbid
-          }
-        }
-        __typename
-        eventTime
+      fragment FeedEventFragment on FeedEvent {
+        eventData {
+          __typename
 
-        action
+          action
+          eventTime
+
+          ... on CollectionCreatedFeedEventData {
+            ...CollectionCreatedFeedEventFragment
+          }
+          ... on CollectorsNoteAddedToTokenFeedEventData {
+            ...CollectorsNoteAddedToTokenFeedEventFragment
+          }
+          ... on TokensAddedToCollectionFeedEventData {
+            ...TokensAddedToCollectionFeedEventFragment
+          }
+          ... on UserFollowedUsersFeedEventData {
+            ...UserFollowedUsersFeedEventFragment
+          }
+          ... on CollectorsNoteAddedToCollectionFeedEventData {
+            ...CollectorsNoteAddedToCollectionFeedEventFragment
+          }
+        }
       }
     `,
     eventRef
@@ -78,48 +65,88 @@ function FeedEvent({ eventRef, queryRef, feedMode }: Props) {
     queryRef
   );
 
-  switch (event.__typename) {
+  switch (event.eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
-      return <CollectionCreatedFeedEvent eventRef={event} queryRef={query} />;
+      return <CollectionCreatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
-      if (!event.token) {
-        return null;
-      }
-      return <CollectorsNoteAddedToTokenFeedEvent eventRef={event} queryRef={query} />;
+      return (
+        <CollectorsNoteAddedToTokenFeedEvent eventDataRef={event.eventData} queryRef={query} />
+      );
     case 'TokensAddedToCollectionFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
-      return <TokensAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
+      return <TokensAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToCollectionFeedEventData':
-      if (!event.collection) {
-        return null;
-      }
-      if (!event.newCollectorsNote?.trim()) {
-        return null;
-      }
-      return <CollectorsNoteAddedToCollectionFeedEvent eventRef={event} queryRef={query} />;
+      return (
+        <CollectorsNoteAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />
+      );
     case 'UserFollowedUsersFeedEventData':
-      if (!event.followed || !event.owner?.username) {
-        return null;
-      }
-      return <UserFollowedUsersFeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />;
+      return (
+        <UserFollowedUsersFeedEvent
+          eventDataRef={event.eventData}
+          queryRef={query}
+          feedMode={feedMode}
+        />
+      );
 
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':
 
     default:
-      return null;
+      throw new Error('Tried to render unsupported feed event');
   }
 }
 
-export default function FeedEventWithBoundary(props: Props) {
+type FeedEventWithBoundaryProps = {
+  feedMode: FeedMode;
+  onPotentialLayoutShift: () => void;
+  eventRef: FeedEventWithErrorBoundaryFragment$key;
+  queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
+};
+
+export default function FeedEventWithBoundary({
+  feedMode,
+  eventRef,
+  queryRef,
+  onPotentialLayoutShift,
+}: FeedEventWithBoundaryProps) {
+  const event = useFragment(
+    graphql`
+      fragment FeedEventWithErrorBoundaryFragment on FeedEvent {
+        ...FeedEventFragment
+        ...FeedEventSocializeSectionFragment
+      }
+    `,
+    eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FeedEventWithErrorBoundaryQueryFragment on Query {
+        ...FeedEventQueryFragment
+        ...FeedEventSocializeSectionQueryFragment
+
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.ADMIRE_COMMENT, query);
+
   return (
     <FeedEventErrorBoundary>
-      <FeedEvent {...props} />
+      <VStack gap={16}>
+        <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
+
+        {isAdmireCommentEnabled && (
+          <ErrorBoundary fallback={<></>}>
+            <FeedEventSocializeSection
+              eventRef={event}
+              queryRef={query}
+              onPotentialLayoutShift={onPotentialLayoutShift}
+            />
+          </ErrorBoundary>
+        )}
+      </VStack>
     </FeedEventErrorBoundary>
   );
 }

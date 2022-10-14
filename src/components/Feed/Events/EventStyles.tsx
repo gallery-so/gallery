@@ -19,7 +19,7 @@ export const StyledEvent = ({ children, className, onClick }: StyledEventProps) 
   );
 };
 
-const StyledInnerEvent = styled.div`
+export const StyledInnerEvent = styled.div`
   max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
@@ -31,6 +31,8 @@ const StyledInnerEvent = styled.div`
 
 // base styles for feed events
 export const StyledEventWrapper = styled.div`
+  width: 100%;
+
   display: flex;
   justify-content: center;
 
@@ -41,9 +43,6 @@ export const StyledEventWrapper = styled.div`
   }
 
   cursor: pointer;
-  &:hover {
-    background: ${colors.faint};
-  }
 `;
 
 export const StyledEventHeader = styled.div`

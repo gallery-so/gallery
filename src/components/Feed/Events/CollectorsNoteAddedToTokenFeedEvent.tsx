@@ -19,7 +19,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
+  eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
@@ -28,7 +28,7 @@ const MIDDLE_GAP = 24;
 // images will be rendered within a square of this size
 const IMAGE_SPACE_SIZE = 269;
 
-export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
@@ -51,7 +51,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
         }
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
