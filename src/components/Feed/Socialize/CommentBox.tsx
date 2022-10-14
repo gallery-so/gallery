@@ -18,6 +18,8 @@ import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFrag
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 const MAX_TEXT_LENGTH = 100;
 
@@ -82,6 +84,9 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
+  const { pushToast } = useToastActions();
+  const reportError = useReportError();
+
   const resetInputState = useCallback(() => {
     setValue('');
 
@@ -94,6 +99,13 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
   const handleSubmit = useCallback(async () => {
     if (isSubmittingComment || value.length === 0) {
       return;
+    }
+
+    function pushErrorToast() {
+      pushToast({
+        autoClose: true,
+        message: "Something went wrong while posting your comment. We're looking into it.",
+      });
     }
 
     try {
@@ -153,10 +165,20 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
 
         onClose();
       } else {
-        // error handle
+        pushErrorToast();
+
+        reportError(
+          `Error while commenting on feed event, typename was ${response.commentOnFeedEvent?.__typename}`
+        );
       }
-    } catch (e) {
-      // error handle
+    } catch (error) {
+      pushErrorToast();
+
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError('An unexpected error occurred while posting a comment.');
+      }
     }
   }, [
     event.dbid,
