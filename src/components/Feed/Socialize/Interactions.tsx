@@ -87,6 +87,20 @@ export function Interactions({ eventRef, queryRef }: Props) {
   const totalInteractions =
     (event.admires?.pageInfo.total ?? 0) + (event.comments?.pageInfo.total ?? 0);
 
+  /**
+   * The below logic is a bit annoying to read so I'll try to explain it here
+   *
+   * If there are any comments, we'll show the following
+   * - Comment 1
+   * - Comment 2
+   * - X Others => Link to NotesModal
+   *
+   * If there are no comments, but there are any admires, we'll show the following
+   *    If there's only 1 admires
+   *      Show "Person admired this"
+   *    If there's > 1 admire
+   *      Show "X admired this" => Link to NotesModal
+   */
   if (nonNullComments.length) {
     const lastTwoComments = nonNullComments.slice(0, 2);
 
@@ -104,30 +118,15 @@ export function Interactions({ eventRef, queryRef }: Props) {
       </VStack>
     );
   } else if (nonNullAdmires.length) {
-    const remainingInteractions = Math.max(totalInteractions - nonNullAdmires.length, 0);
-
     if (nonNullAdmires.length === 1) {
-      // show just the admire line "robin admired this"
-      // if it was the logged in user "you admired this"
       const [admire] = nonNullAdmires;
 
-      return (
-        <VStack gap={8}>
-          <AdmireLine admireRef={admire} queryRef={query} />
-
-          <RemainingAdmireCount remainingCount={remainingInteractions} eventRef={event} />
-        </VStack>
-      );
+      return <AdmireLine admireRef={admire} queryRef={query} />;
     } else {
-      // link x admired this
       return (
-        <VStack gap={8}>
-          <NoteModalOpenerText eventRef={event}>
-            {event.admires?.pageInfo.total} admired this
-          </NoteModalOpenerText>
-
-          <RemainingAdmireCount remainingCount={remainingInteractions} eventRef={event} />
-        </VStack>
+        <NoteModalOpenerText eventRef={event}>
+          {event.admires?.pageInfo.total} admired this
+        </NoteModalOpenerText>
       );
     }
   }
