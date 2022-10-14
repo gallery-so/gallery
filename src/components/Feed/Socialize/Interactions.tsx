@@ -18,7 +18,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
-        admires(last: 1) @connection(key: "Interactions_admires") {
+        admires(last: 2) @connection(key: "Interactions_admires") {
           pageInfo {
             total
           }
