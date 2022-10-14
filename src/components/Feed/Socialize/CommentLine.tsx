@@ -49,7 +49,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
           {comment.commenter?.username ?? '<unknown>'}
         </CommenterName>
       </Link>
-      <CommentText>{comment.comment}</CommentText>
+      <CommentText dangerouslySetInnerHTML={{ __html: comment.comment }} />
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
   );

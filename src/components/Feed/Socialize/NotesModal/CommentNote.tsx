@@ -36,7 +36,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
     <ListItem justify="space-between" gap={4}>
       <HStack gap={4}>
         <UsernameLink username={comment.commenter?.username ?? null} />
-        <BaseM>{comment.comment}</BaseM>
+        <BaseM dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
       </HStack>
 
       <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
