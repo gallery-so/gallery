@@ -77,6 +77,7 @@ export function FeedEventSocializeSection({
           admire @prependNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
             dbid
             ...AdmireLineFragment
+            ...AdmireNoteFragment
           }
         }
       }

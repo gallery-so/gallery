@@ -3,9 +3,9 @@ import { graphql } from 'relay-runtime';
 import { NotesModalFragment$key } from '__generated__/NotesModalFragment.graphql';
 import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import styled from 'styled-components';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { VStack } from 'components/core/Spacer/Stack';
 import colors from 'components/core/colors';
-import { BaseM, BaseS, TitleS, TitleXS } from 'components/core/Text/Text';
+import { TitleXS } from 'components/core/Text/Text';
 import {
   AutoSizer,
   CellMeasurer,
@@ -14,8 +14,9 @@ import {
   ListRowRenderer,
 } from 'react-virtualized';
 import { useCallback, useMemo, useState } from 'react';
-import { getTimeSince } from 'utils/time';
-import Link from 'next/link';
+import { AdmireNote } from 'components/Feed/Socialize/NotesModal/AdmireNote';
+import { CommentNote } from 'components/Feed/Socialize/NotesModal/CommentNote';
+import { ListItem } from 'components/Feed/Socialize/NotesModal/ListItem';
 
 export const NOTES_PER_PAGE = 10;
 
@@ -39,23 +40,13 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
           @connection(key: "NotesModal_interactions") {
           edges {
             node {
-              ... on Admire {
-                __typename
+              __typename
 
-                creationTime
-                admirer {
-                  username
-                }
+              ... on Admire {
+                ...AdmireNoteFragment
               }
               ... on Comment {
-                __typename
-
-                comment
-                creationTime
-
-                commenter {
-                  username
-                }
+                ...CommentNoteFragment
               }
             }
           }
@@ -108,43 +99,27 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
             if ('kind' in interaction) {
               return (
                 // @ts-expect-error Bad types from react-virtualized
-                <ListItem ref={registerChild} style={style}>
-                  <SeeMoreContainer role="button" onClick={handleSeeMore}>
-                    <TitleXS color={colors.shadow}>See More</TitleXS>
-                  </SeeMoreContainer>
-                </ListItem>
+                <div style={style} ref={registerChild}>
+                  <ListItem>
+                    <SeeMoreContainer role="button" onClick={handleSeeMore}>
+                      <TitleXS color={colors.shadow}>See More</TitleXS>
+                    </SeeMoreContainer>
+                  </ListItem>
+                </div>
               );
             } else if (interaction.__typename === 'Admire') {
-              const timeAgo = interaction.creationTime
-                ? getTimeSince(interaction.creationTime)
-                : null;
-
               return (
                 // @ts-expect-error Bad types from react-virtualized
-                <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
-                  <HStack gap={4}>
-                    <UsernameLink username={interaction.admirer?.username ?? null} />
-                    <BaseM>admired this</BaseM>
-                  </HStack>
-
-                  <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-                </ListItem>
+                <div style={style} ref={registerChild}>
+                  <AdmireNote admireRef={interaction} />
+                </div>
               );
             } else if (interaction.__typename === 'Comment') {
-              const timeAgo = interaction.creationTime
-                ? getTimeSince(interaction.creationTime)
-                : null;
-
               return (
                 // @ts-expect-error Bad types from react-virtualized
-                <ListItem ref={registerChild} justify="space-between" style={style} gap={4}>
-                  <HStack gap={4}>
-                    <UsernameLink username={interaction.commenter?.username ?? null} />
-                    <BaseM>{interaction.comment}</BaseM>
-                  </HStack>
-
-                  <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-                </ListItem>
+                <div style={style} ref={registerChild}>
+                  <CommentNote commentRef={interaction} />
+                </div>
               );
             } else {
               return null;
@@ -180,31 +155,8 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
   );
 }
 
-type UsernameLinkProps = { username: string | null };
-
-function UsernameLink({ username }: UsernameLinkProps) {
-  const link = username ? `/${username}` : '';
-  return (
-    <Link href={link}>
-      <UsernameLinkWrapper href={link}>
-        <TitleS>{username ?? '<unknown>'}</TitleS>
-      </UsernameLinkWrapper>
-    </Link>
-  );
-}
-
-const UsernameLinkWrapper = styled.a`
-  color: ${colors.offBlack};
-  text-decoration: none;
-`;
-
 const SeeMoreContainer = styled.div`
   cursor: pointer;
-`;
-
-const TimeAgoText = styled(BaseS)`
-  white-space: nowrap;
-  flex-shrink: 0;
 `;
 
 const WrappingVStack = styled(VStack)`
@@ -214,10 +166,6 @@ const WrappingVStack = styled(VStack)`
 const StyledHeader = styled.div`
   padding-bottom: ${MODAL_PADDING_THICC_PX}px;
   padding-left: 12px;
-`;
-
-const ListItem = styled(HStack)`
-  padding: 8px 12px;
 `;
 
 const ModalContent = styled.div<{ fullscreen: boolean }>`

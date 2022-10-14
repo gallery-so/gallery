@@ -68,6 +68,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
           comment @prependNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
             dbid
             ...CommentLineFragment
+            ...CommentNoteFragment
           }
         }
       }

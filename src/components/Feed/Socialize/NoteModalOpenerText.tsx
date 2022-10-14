@@ -4,10 +4,10 @@ import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { NotesModal } from 'components/Feed/Socialize/NotesModal';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { NoteModalOpenerTextFragment$key } from '../../../../__generated__/NoteModalOpenerTextFragment.graphql';
+import { NotesModal } from 'components/Feed/Socialize/NotesModal/NotesModal';
 
 type Props = {
   children: ReactNode;
