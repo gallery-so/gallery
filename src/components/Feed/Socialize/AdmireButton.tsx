@@ -113,12 +113,16 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
 
         store.get(event.id)?.setValue(false, 'hasViewerAdmiredEvent');
+
+        if (response.removeAdmire.admireID) {
+          store.delete(`Admire:${response.removeAdmire.admireID}`);
+        }
       }
     };
 
     try {
       const response = await removeAdmire({
-        updater: updater,
+        updater,
         optimisticUpdater: updater,
         optimisticResponse: {
           removeAdmire: {
@@ -209,8 +213,8 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     try {
       const optimisticAdmireId = Math.random().toString();
       const response = await admire({
+        updater,
         optimisticUpdater: updater,
-        updater: updater,
         optimisticResponse: {
           admireFeedEvent: {
             __typename: 'AdmireFeedEventPayload',
