@@ -3,7 +3,7 @@ import { ConnectionHandler, graphql } from 'relay-runtime';
 import { AdmireButtonFragment$key } from '__generated__/AdmireButtonFragment.graphql';
 import { AuthModal } from 'hooks/useAuthModal';
 import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { AdmireButtonQueryFragment$key } from '../../../../__generated__/AdmireButtonQueryFragment.graphql';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
