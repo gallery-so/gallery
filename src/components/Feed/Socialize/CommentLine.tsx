@@ -34,7 +34,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   useEffect(function rerenderEveryFewSecondsToUpdateTimeAgo() {
     const intervalId = setInterval(() => {
       setCount((previous) => previous + 1);
-    }, 5000);
+    }, 60 * 1000);
 
     return () => clearInterval(intervalId);
   }, []);
