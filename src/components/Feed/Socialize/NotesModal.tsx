@@ -89,7 +89,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
   });
 
   const handleSeeMore = useCallback(() => {
-    loadNext(10);
+    loadNext(NOTES_PER_PAGE);
   }, [loadNext]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
