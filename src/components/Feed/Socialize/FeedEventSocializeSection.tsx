@@ -152,8 +152,10 @@ export function FeedEventSocializeSection({
           admireFeedEvent: {
             __typename: 'AdmireFeedEventPayload',
             admire: {
+              __typename: 'Admire',
               id: `Admire:${optimisticAdmireId}`,
               dbid: optimisticAdmireId,
+              creationTime: new Date().toISOString(),
               admirer: {
                 id: query.viewer?.user?.id ?? 'unknown',
                 dbid: query.viewer?.user?.dbid ?? 'unknown',

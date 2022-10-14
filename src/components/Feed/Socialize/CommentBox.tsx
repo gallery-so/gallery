@@ -132,6 +132,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
           commentOnFeedEvent: {
             __typename: 'CommentOnFeedEventPayload',
             comment: {
+              __typename: 'Comment',
               comment: value,
               commenter: {
                 id: query.viewer?.user?.id ?? 'unknown',
