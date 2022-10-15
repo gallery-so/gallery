@@ -19,6 +19,7 @@ import {
   WindowScroller,
 } from 'react-virtualized';
 import breakpoints from 'components/core/breakpoints';
+import useWindowSize from 'hooks/useWindowSize';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
@@ -75,12 +76,13 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     })
   );
   const listRef = useRef<List>(null);
+  const windowSize = useWindowSize();
 
   // If the mobileLayout is changed, we need to recalculate the cache height.
   useEffect(() => {
     cache.current.clearAll();
     listRef.current?.recomputeRowHeights();
-  }, [mobileLayout]);
+  }, [mobileLayout, windowSize]);
 
   const collectionsToDisplay = useMemo(
     () =>
