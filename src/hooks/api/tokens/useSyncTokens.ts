@@ -4,14 +4,15 @@ import { graphql } from 'relay-runtime';
 import { useSyncTokensMutation } from '__generated__/useSyncTokensMutation.graphql';
 import { useSyncTokensContext } from 'contexts/SyncTokensLockContext';
 import { useToastActions } from 'contexts/toast/ToastContext';
+import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
 
 export default function useSyncTokens() {
   const { isLocked, lock } = useSyncTokensContext();
 
   const [syncTokens] = usePromisifiedMutation<useSyncTokensMutation>(
     graphql`
-      mutation useSyncTokensMutation {
-        syncTokens {
+      mutation useSyncTokensMutation($chain: Chain!) {
+        syncTokens(chains: [$chain]) {
           __typename
           ... on SyncTokensPayload {
             viewer {
@@ -32,35 +33,40 @@ export default function useSyncTokens() {
   );
 
   const { pushToast } = useToastActions();
-  const sync = useCallback(async () => {
-    if (isLocked) {
-      return false;
-    }
-
-    const unlock = lock();
-
-    function showFailure() {
-      pushToast({
-        autoClose: true,
-        message:
-          "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
-      });
-    }
-
-    try {
-      const response = await syncTokens({
-        variables: {},
-      });
-
-      if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
-        showFailure();
+  const sync = useCallback(
+    async (chain: Chain) => {
+      if (isLocked) {
+        return false;
       }
-    } catch (error) {
-      showFailure();
-    } finally {
-      unlock();
-    }
-  }, [isLocked, lock, pushToast, syncTokens]);
+
+      const unlock = lock();
+
+      function showFailure() {
+        pushToast({
+          autoClose: true,
+          message:
+            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+        });
+      }
+
+      try {
+        const response = await syncTokens({
+          variables: {
+            chain,
+          },
+        });
+
+        if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+          showFailure();
+        }
+      } catch (error) {
+        showFailure();
+      } finally {
+        unlock();
+      }
+    },
+    [isLocked, lock, pushToast, syncTokens]
+  );
 
   return useMemo(() => {
     return { isLocked, syncTokens: sync };
