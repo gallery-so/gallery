@@ -14,6 +14,8 @@ import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { addUserInfoQuery } from '../../__generated__/addUserInfoQuery.graphql';
+import noop from 'utils/noop';
+import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
 
 function AddUserInfo() {
   const query = useLazyLoadQuery<addUserInfoQuery>(
@@ -60,7 +62,7 @@ function AddUserInfo() {
     isUsernameValid,
     onUsernameChange,
   } = useUserInfoForm({
-    onSuccess: handleFormSuccess,
+    onSuccess: noop,
     userId: query.viewer?.user?.dbid,
     existingBio: query.viewer?.user?.bio ?? '',
     existingUsername: query.viewer?.user?.username ?? '',
@@ -81,9 +83,11 @@ function AddUserInfo() {
     if (!isLocked) {
       // Start the sync tokens mutation so the user
       // sees their NFTs loaded ASAP.
-      syncTokens();
+      syncTokens(urlQuery.chain as Chain);
     }
-  }, [bio.length, isLocked, onEditUser, syncTokens, track]);
+
+    handleFormSuccess();
+  }, [bio.length, handleFormSuccess, isLocked, onEditUser, syncTokens, track, urlQuery.chain]);
 
   return (
     <VStack>
