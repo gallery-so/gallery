@@ -30,7 +30,7 @@ function GlobalFooter() {
           </Link>
           <BaseS>BETA</BaseS>
         </HStack>
-        <HStack gap={8}>
+        <HStack gap={8} wrap="wrap">
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
           <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
           <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
