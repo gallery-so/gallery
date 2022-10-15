@@ -161,7 +161,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     });
 
     try {
-      await syncTokens();
+      await syncTokens(selectedChain);
     } catch (e) {
       if (e instanceof Error) {
         reportError(e);
