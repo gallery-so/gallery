@@ -50,7 +50,7 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
         onLoad={onLoad}
         // Lets the resource run scripts (but not create popup windows): https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
         // More specifically, this prevents the rendered iframe from displaying Alerts
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-same-origin"
       />
     </StyledNftDetailAnimation>
   );
