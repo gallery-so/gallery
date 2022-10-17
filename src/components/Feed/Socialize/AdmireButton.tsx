@@ -1,5 +1,5 @@
 import { useFragment } from 'react-relay';
-import { ConnectionHandler, graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import { AdmireButtonFragment$key } from '__generated__/AdmireButtonFragment.graphql';
 import { AuthModal } from 'hooks/useAuthModal';
 import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
@@ -10,6 +10,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { AdmireButtonMutation } from '../../../../__generated__/AdmireButtonMutation.graphql';
 import { AdmireIcon } from 'icons/SocializeIcons';
+import { AdmireButtonRemoveMutation } from '../../../../__generated__/AdmireButtonRemoveMutation.graphql';
 
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;
@@ -24,7 +25,10 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         id
         dbid
 
-        hasViewerAdmiredEvent
+        viewerAdmire {
+          id
+          dbid
+        }
       }
     `,
     eventRef
@@ -56,11 +60,32 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
       admireFeedEvent(feedEventId: $eventId) {
         ... on AdmireFeedEventPayload {
           __typename
-          admire @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
-            dbid
-            ...AdmireLineFragment
-            ...AdmireNoteFragment
+          feedEvent {
+            viewerAdmire
+              @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
+              dbid
+              ...AdmireLineFragment
+              ...AdmireNoteFragment
+            }
           }
+        }
+        ... on ErrAdmireAlreadyExists {
+          __typename
+        }
+      }
+    }
+  `);
+
+  const [removeAdmire] = usePromisifiedMutation<AdmireButtonRemoveMutation>(graphql`
+    mutation AdmireButtonRemoveMutation($admireId: DBID!) @raw_response_type {
+      removeAdmire(admireId: $admireId) {
+        ... on RemoveAdmirePayload {
+          __typename
+          admireID
+        }
+
+        ... on ErrAdmireNotFound {
+          __typename
         }
       }
     }
@@ -78,6 +103,98 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     event.id,
     'NotesModal_interactions'
   );
+
+  const handleRemoveAdmire = useCallback(async () => {
+    if (!event.viewerAdmire?.dbid) {
+      return;
+    }
+
+    const errorMetadata: AdditionalContext['tags'] = {
+      eventId: event.dbid,
+    };
+
+    function pushErrorToast() {
+      pushToast({
+        autoClose: true,
+        message: `Something went wrong while unadmiring this post. We're actively looking into it.`,
+      });
+    }
+
+    const updater: SelectorStoreUpdater<AdmireButtonRemoveMutation['response']> = (
+      store,
+      response
+    ) => {
+      if (response?.removeAdmire?.__typename === 'RemoveAdmirePayload') {
+        const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
+
+        pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
+
+        if (response.removeAdmire.admireID) {
+          const relayId = `Admire:${response.removeAdmire.admireID}`;
+
+          store.delete(relayId);
+        }
+      }
+    };
+
+    try {
+      const response = await removeAdmire({
+        updater,
+        optimisticUpdater: updater,
+        optimisticResponse: {
+          removeAdmire: {
+            __typename: 'RemoveAdmirePayload',
+            admireID: event.viewerAdmire.dbid,
+          },
+        },
+        variables: {
+          admireId: event.viewerAdmire.dbid,
+        },
+      });
+
+      if (response.removeAdmire?.__typename === 'RemoveAdmirePayload') {
+        // Tell the virtualized list that some data has changed
+        // therefore this cell's height might change.
+        //
+        // Ideally, this lives in a useEffect inside of the
+        // changing data's component, but right now the virtualized
+        // list is remounting the component every update, causing
+        // an infinite useEffect to occur
+        setTimeout(() => {
+          onPotentialLayoutShift();
+        }, 100);
+      } else if (response.removeAdmire?.__typename === 'ErrAdmireNotFound') {
+      } else {
+        pushErrorToast();
+
+        reportError(
+          `Could not unadmire feed event, typename was ${response.removeAdmire?.__typename}`,
+          {
+            tags: errorMetadata,
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      pushErrorToast();
+
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError(`Could not remove admire on feed event for an unknown reason`, {
+          tags: errorMetadata,
+        });
+      }
+    }
+  }, [
+    event.dbid,
+    event.viewerAdmire?.dbid,
+    interactionsConnection,
+    onPotentialLayoutShift,
+    pushToast,
+    removeAdmire,
+    reportError,
+  ]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -99,30 +216,34 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
       });
     }
 
+    const updater: SelectorStoreUpdater<AdmireButtonMutation['response']> = (store, response) => {
+      if (response?.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
+        const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
+
+        pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+      }
+    };
+
     try {
       const optimisticAdmireId = Math.random().toString();
       const response = await admire({
-        updater: (store, response) => {
-          if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
-            const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-
-            store.get(event.id)?.setValue(true, 'hasViewerAdmiredEvent');
-          }
-        },
+        updater,
+        optimisticUpdater: updater,
         optimisticResponse: {
           admireFeedEvent: {
             __typename: 'AdmireFeedEventPayload',
-            admire: {
-              __typename: 'Admire',
-              id: `Admire:${optimisticAdmireId}`,
-              dbid: optimisticAdmireId,
-              creationTime: new Date().toISOString(),
-              admirer: {
-                id: query.viewer?.user?.id ?? 'unknown',
-                dbid: query.viewer?.user?.dbid ?? 'unknown',
-                username: query.viewer?.user?.username ?? null,
+            feedEvent: {
+              id: event.id,
+              viewerAdmire: {
+                __typename: 'Admire',
+                id: `Admire:${optimisticAdmireId}`,
+                dbid: optimisticAdmireId,
+                creationTime: new Date().toISOString(),
+                admirer: {
+                  id: query.viewer?.user?.id ?? 'unknown',
+                  dbid: query.viewer?.user?.dbid ?? 'unknown',
+                  username: query.viewer?.user?.username ?? null,
+                },
               },
             },
           },
@@ -144,6 +265,9 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         setTimeout(() => {
           onPotentialLayoutShift();
         }, 100);
+      } else if (response.admireFeedEvent?.__typename === 'ErrAdmireAlreadyExists') {
+        // Silently fail
+        return;
       } else {
         pushErrorToast();
         reportError(
@@ -177,5 +301,12 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     showModal,
   ]);
 
-  return <AdmireIcon onClick={handleAdmire} active={event.hasViewerAdmiredEvent ?? false} />;
+  const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
+
+  return (
+    <AdmireIcon
+      onClick={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
+      active={hasViewerAdmiredEvent}
+    />
+  );
 }
