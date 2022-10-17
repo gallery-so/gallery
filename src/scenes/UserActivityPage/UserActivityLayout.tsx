@@ -35,13 +35,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
     graphql`
       fragment UserActivityLayoutFragment on GalleryUser {
         username
-        galleries {
-          collections {
-            __typename
-          }
-
-          ...UserGalleryCollectionsFragment
-        }
 
         ...NavActionFollowUserFragment
 
@@ -54,7 +47,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   );
 
   const isMobile = useIsMobileWindowWidth();
-  const showMobileLayoutToggle = Boolean(isMobile && user.galleries?.[0]?.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
   const { setCustomNavLeftContent } = useGlobalLayoutActions();
@@ -79,7 +71,7 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
       <UserGalleryHeader
         userRef={user}
         queryRef={query}
-        showMobileLayoutToggle={showMobileLayoutToggle}
+        showMobileLayoutToggle={false}
         isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
