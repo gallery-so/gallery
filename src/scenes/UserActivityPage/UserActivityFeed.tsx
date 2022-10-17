@@ -74,7 +74,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
       loadNextPage={loadNextPage}
       hasNext={hasPrevious}
       queryRef={query}
-      feedMode={'FOLLOWING'}
+      feedMode={'USER'}
     />
   );
 }
