@@ -26,7 +26,8 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         dbid
 
         viewerAdmire {
-          __typename
+          id
+          dbid
         }
       }
     `,
@@ -76,11 +77,15 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
   `);
 
   const [removeAdmire] = usePromisifiedMutation<AdmireButtonRemoveMutation>(graphql`
-    mutation AdmireButtonRemoveMutation($eventId: DBID!) @raw_response_type {
-      removeAdmire(feedEventId: $eventId) {
+    mutation AdmireButtonRemoveMutation($admireId: DBID!) @raw_response_type {
+      removeAdmire(admireId: $admireId) {
         ... on RemoveAdmirePayload {
           __typename
           admireID
+        }
+
+        ... on ErrAdmireNotFound {
+          __typename
         }
       }
     }
@@ -100,6 +105,10 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
   );
 
   const handleRemoveAdmire = useCallback(async () => {
+    if (!event.viewerAdmire?.dbid) {
+      return;
+    }
+
     const errorMetadata: AdditionalContext['tags'] = {
       eventId: event.dbid,
     };
@@ -120,10 +129,10 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
 
         pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
 
-        store.get(event.id)?.setValue(false, 'hasViewerAdmiredEvent');
-
         if (response.removeAdmire.admireID) {
-          store.delete(`Admire:${response.removeAdmire.admireID}`);
+          const relayId = `Admire:${response.removeAdmire.admireID}`;
+
+          store.delete(relayId);
         }
       }
     };
@@ -135,10 +144,11 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         optimisticResponse: {
           removeAdmire: {
             __typename: 'RemoveAdmirePayload',
+            admireID: event.viewerAdmire.dbid,
           },
         },
         variables: {
-          eventId: event.dbid,
+          admireId: event.viewerAdmire.dbid,
         },
       });
 
@@ -153,6 +163,7 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         setTimeout(() => {
           onPotentialLayoutShift();
         }, 100);
+      } else if (response.removeAdmire?.__typename === 'ErrAdmireNotFound') {
       } else {
         pushErrorToast();
 
@@ -176,16 +187,13 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
       }
     }
   }, [
-    admire,
     event.dbid,
-    event.id,
+    event.viewerAdmire?.dbid,
     interactionsConnection,
-    notesModalConnection,
     onPotentialLayoutShift,
     pushToast,
-    query,
+    removeAdmire,
     reportError,
-    showModal,
   ]);
 
   const handleAdmire = useCallback(async () => {
@@ -297,7 +305,7 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
 
   return (
     <AdmireIcon
-      onClick={event.hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
+      onClick={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
       active={hasViewerAdmiredEvent}
     />
   );
