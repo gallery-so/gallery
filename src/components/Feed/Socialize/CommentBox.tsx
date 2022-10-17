@@ -13,7 +13,7 @@ import { SendButton } from 'components/Feed/Socialize/SendButton';
 import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
-import { ConnectionHandler, graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
@@ -119,15 +119,27 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
         'NotesModal_interactions'
       );
 
+      const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
+        if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
+          // Tell the virtualized list that some data has changed
+          // therefore this cell's height might change.
+          //
+          // Ideally, this lives in a useEffect inside of the
+          // changing data's component, but right now the virtualized
+          // list is remounting the component every update, causing
+          // an infinite useEffect to occur
+          onPotentialLayoutShift();
+
+          const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
+
+          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+        }
+      };
+
       const optimisticId = Math.random().toString();
       const response = await submitComment({
-        updater: (store, response) => {
-          if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-            const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-          }
-        },
+        updater,
+        optimisticUpdater: updater,
         optimisticResponse: {
           commentOnFeedEvent: {
             __typename: 'CommentOnFeedEventPayload',
@@ -150,17 +162,6 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
           connections: [interactionsConnection, notesModalConnection],
         },
       });
-
-      // Tell the virtualized list that some data has changed
-      // therefore this cell's height might change.
-      //
-      // Ideally, this lives in a useEffect inside of the
-      // changing data's component, but right now the virtualized
-      // list is remounting the component every update, causing
-      // an infinite useEffect to occur
-      setTimeout(() => {
-        onPotentialLayoutShift();
-      }, 100);
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetInputState();
