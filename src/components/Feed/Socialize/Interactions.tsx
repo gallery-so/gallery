@@ -5,16 +5,17 @@ import { CommentLine } from 'components/Feed/Socialize/CommentLine';
 import { AdmireLine } from 'components/Feed/Socialize/AdmireLine';
 import { RemainingAdmireCount } from 'components/Feed/Socialize/RemainingAdmireCount';
 import { NoteModalOpenerText } from 'components/Feed/Socialize/NoteModalOpenerText';
-import { useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { InteractionsQueryFragment$key } from '../../../../__generated__/InteractionsQueryFragment.graphql';
 import { InteractionsFragment$key } from '../../../../__generated__/InteractionsFragment.graphql';
 
 type Props = {
+  onPotentialLayoutShift: () => void;
   eventRef: InteractionsFragment$key;
   queryRef: InteractionsQueryFragment$key;
 };
 
-export function Interactions({ eventRef, queryRef }: Props) {
+export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
@@ -95,6 +96,17 @@ export function Interactions({ eventRef, queryRef }: Props) {
   const totalComments = event.comments?.pageInfo.total ?? 0;
   const totalAdmires = event.admires?.pageInfo.total ?? 0;
   const totalInteractions = totalComments + totalAdmires;
+
+  const isFirstMount = useRef(true);
+  useLayoutEffect(() => {
+    if (!isFirstMount.current) {
+      onPotentialLayoutShift();
+    }
+
+    isFirstMount.current = false;
+
+    // These are all the things that might cause the layout to shift
+  }, [onPotentialLayoutShift, nonNullAdmires, nonNullComments, totalComments, totalAdmires]);
 
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here

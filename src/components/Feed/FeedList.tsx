@@ -74,6 +74,14 @@ export default function FeedList({
 
   const virtualizedListRef = useRef<List | null>(null);
 
+  const handlePotentialLayoutShift = useCallback(
+    (index: number) => {
+      measurerCache.clear(index, 0);
+      virtualizedListRef.current?.recomputeRowHeights(index);
+    },
+    [measurerCache]
+  );
+
   //Render a list item or a loading indicator.
   const rowRenderer = useCallback(
     ({
@@ -116,10 +124,8 @@ export default function FeedList({
                 //
                 // Whenever the height changes, we need to ask react-virtualized
                 // to re-evaluate the height of the item to keep the virtualization good.
-                onPotentialLayoutShift={() => {
-                  measurerCache.clear(index, 0);
-                  virtualizedListRef.current?.recomputeRowHeights(index);
-                }}
+                onPotentialLayoutShift={handlePotentialLayoutShift}
+                index={index}
                 eventRef={content}
                 key={content.dbid}
                 queryRef={query}

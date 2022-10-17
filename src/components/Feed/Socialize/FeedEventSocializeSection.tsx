@@ -89,7 +89,11 @@ export function FeedEventSocializeSection({
       <SocializeSectionWrapper>
         <HStack justify="space-between" align="flex-end" gap={24}>
           <VStack shrink>
-            <Interactions eventRef={event} queryRef={query} />
+            <Interactions
+              onPotentialLayoutShift={onPotentialLayoutShift}
+              eventRef={event}
+              queryRef={query}
+            />
           </VStack>
 
           <HStack align="center">

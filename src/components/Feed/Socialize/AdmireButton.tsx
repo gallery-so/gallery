@@ -134,15 +134,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
 
           store.delete(relayId);
         }
-
-        // Tell the virtualized list that some data has changed
-        // therefore this cell's height might change.
-        //
-        // Ideally, this lives in a useEffect inside of the
-        // changing data's component, but right now the virtualized
-        // list is remounting the component every update, causing
-        // an infinite useEffect to occur
-        onPotentialLayoutShift();
       }
     };
 
@@ -221,15 +212,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
         pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-
-        // Tell the virtualized list that some data has changed
-        // therefore this cell's height might change.
-        //
-        // Ideally, this lives in a useEffect inside of the
-        // changing data's component, but right now the virtualized
-        // list is remounting the component every update, causing
-        // an infinite useEffect to occur
-        onPotentialLayoutShift();
       }
     };
 

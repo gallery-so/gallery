@@ -122,15 +122,6 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
         if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-          // Tell the virtualized list that some data has changed
-          // therefore this cell's height might change.
-          //
-          // Ideally, this lives in a useEffect inside of the
-          // changing data's component, but right now the virtualized
-          // list is remounting the component every update, causing
-          // an infinite useEffect to occur
-          onPotentialLayoutShift();
-
           const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
@@ -218,15 +209,20 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     [handleSubmit]
   );
 
-  const handleInput = useCallback<FormEventHandler<HTMLParagraphElement>>((event) => {
-    const nextValue = event.currentTarget.innerText ?? '';
+  const handleInput = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      return;
+    }
+
+    const nextValue = textarea.innerText ?? '';
 
     // If the user tried typing / pasting something over 100 characters of length
     // we need to trim the content down, override the text content in the element
     // and then put their cursor back at the end of the element
     if (nextValue.length > MAX_TEXT_LENGTH) {
       const nextValueSliced = nextValue.slice(0, 100);
-      event.currentTarget.textContent = nextValueSliced;
+      textarea.textContent = nextValueSliced;
 
       const range = document.createRange();
       const selection = window.getSelection();
@@ -237,7 +233,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
         return;
       }
 
-      const childNode = event.currentTarget.childNodes[0];
+      const childNode = textarea.childNodes[0];
 
       // There should only ever be a single child node
       if (!childNode) {
@@ -257,15 +253,18 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
   }, []);
 
   // This prevents someone from pasting a styled element into the textbox
-  const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>((event) => {
-    event.preventDefault();
-    const text = event.clipboardData.getData('text/plain');
+  const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
+    (event) => {
+      event.preventDefault();
+      const text = event.clipboardData.getData('text/plain');
 
-    setValue(text);
-    if (textareaRef.current) {
-      textareaRef.current.innerText = text;
-    }
-  }, []);
+      // This is deprecated but will work forever because browsers
+      document.execCommand('insertHTML', false, text);
+
+      handleInput();
+    },
+    [handleInput]
+  );
 
   return (
     <>
