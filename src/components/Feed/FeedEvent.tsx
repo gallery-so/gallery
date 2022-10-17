@@ -14,7 +14,7 @@ import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/F
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { useCallback } from 'react';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;

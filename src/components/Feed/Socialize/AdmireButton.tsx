@@ -18,7 +18,7 @@ type AdmireButtonProps = {
   onPotentialLayoutShift: () => void;
 };
 
-export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: AdmireButtonProps) {
+export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
   const event = useFragment(
     graphql`
       fragment AdmireButtonFragment on FeedEvent {
@@ -181,7 +181,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     event.dbid,
     event.viewerAdmire?.dbid,
     interactionsConnection,
-    onPotentialLayoutShift,
     pushToast,
     removeAdmire,
     reportError,
@@ -276,7 +275,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     event.id,
     interactionsConnection,
     notesModalConnection,
-    onPotentialLayoutShift,
     pushToast,
     query,
     reportError,

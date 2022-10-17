@@ -5,7 +5,7 @@ import { CommentLine } from 'components/Feed/Socialize/CommentLine';
 import { AdmireLine } from 'components/Feed/Socialize/AdmireLine';
 import { RemainingAdmireCount } from 'components/Feed/Socialize/RemainingAdmireCount';
 import { NoteModalOpenerText } from 'components/Feed/Socialize/NoteModalOpenerText';
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { InteractionsQueryFragment$key } from '../../../../__generated__/InteractionsQueryFragment.graphql';
 import { InteractionsFragment$key } from '../../../../__generated__/InteractionsFragment.graphql';
 

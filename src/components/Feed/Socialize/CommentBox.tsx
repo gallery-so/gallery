@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
 import {
   ClipboardEventHandler,
-  FormEventHandler,
   KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
@@ -32,7 +31,7 @@ type Props = {
   onPotentialLayoutShift: () => void;
 };
 
-export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLayoutShift }: Props) {
+export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -180,7 +179,6 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     event.id,
     isSubmittingComment,
     onClose,
-    onPotentialLayoutShift,
     pushToast,
     query.viewer?.user?.id,
     query.viewer?.user?.username,
