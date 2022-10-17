@@ -84,9 +84,9 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
-      <VStack gap={32}>
+      <StyledUserActivityLayout gap={32}>
         <UserActivityFeed userRef={user} queryRef={query} />
-      </VStack>
+      </StyledUserActivityLayout>
     </StyledUserGalleryLayout>
   );
 };
@@ -99,4 +99,9 @@ const StyledUserGalleryLayout = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     padding: 80px 0 32px;
   }
+`;
+
+const StyledUserActivityLayout = styled(VStack)`
+  margin: 0 -16px;
+  padding-top: 24px;
 `;
