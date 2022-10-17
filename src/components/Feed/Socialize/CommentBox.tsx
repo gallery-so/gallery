@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import colors from 'components/core/colors';
 import {
+  ClipboardEventHandler,
   FormEventHandler,
   KeyboardEventHandler,
   MouseEventHandler,
@@ -255,6 +256,17 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
     }
   }, []);
 
+  // This prevents someone from pasting a styled element into the textbox
+  const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>((event) => {
+    event.preventDefault();
+    const text = event.clipboardData.getData('text/plain');
+
+    setValue(text);
+    if (textareaRef.current) {
+      textareaRef.current.innerText = text;
+    }
+  }, []);
+
   return (
     <>
       {active && <ClickPreventingOverlay onClick={onClose} />}
@@ -262,7 +274,12 @@ export function CommentBox({ active, onClose, eventRef, queryRef, onPotentialLay
         <Wrapper onClick={handleClick}>
           <InputWrapper gap={12}>
             {/* Purposely not using a controlled input here to avoid cursor jitter */}
-            <Textarea onKeyDown={handleInputKeyDown} ref={textareaRef} onInput={handleInput} />
+            <Textarea
+              onPaste={handlePaste}
+              onKeyDown={handleInputKeyDown}
+              ref={textareaRef}
+              onInput={handleInput}
+            />
 
             <ControlsContainer gap={12} align="center">
               <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
