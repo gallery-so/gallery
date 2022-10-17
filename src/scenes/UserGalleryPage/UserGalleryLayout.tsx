@@ -97,7 +97,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   );
 };
 
-const StyledUserGalleryLayout = styled(VStack)`
+export const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
   padding: 48px 0 32px;

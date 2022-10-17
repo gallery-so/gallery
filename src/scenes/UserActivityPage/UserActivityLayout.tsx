@@ -8,10 +8,10 @@ import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContex
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { VStack } from 'components/core/Spacer/Stack';
-import breakpoints from 'components/core/breakpoints';
 import UserActivityFeed from './UserActivityFeed';
 import { UserActivityLayoutQueryFragment$key } from '__generated__/UserActivityLayoutQueryFragment.graphql';
 import { UserActivityLayoutFragment$key } from '__generated__/UserActivityLayoutFragment.graphql';
+import { StyledUserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
 
 type Props = {
   userRef: UserActivityLayoutFragment$key;
@@ -82,16 +82,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
     </StyledUserGalleryLayout>
   );
 };
-
-const StyledUserGalleryLayout = styled(VStack)`
-  width: 100%;
-  max-width: 1200px;
-  padding: 48px 0 32px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 80px 0 32px;
-  }
-`;
 
 const StyledUserActivityLayout = styled(VStack)`
   margin: 0 -16px;
