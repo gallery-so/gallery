@@ -25,7 +25,9 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         id
         dbid
 
-        hasViewerAdmiredEvent
+        viewerAdmire {
+          __typename
+        }
       }
     `,
     eventRef
@@ -57,11 +59,17 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
       admireFeedEvent(feedEventId: $eventId) {
         ... on AdmireFeedEventPayload {
           __typename
-          admire @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
-            dbid
-            ...AdmireLineFragment
-            ...AdmireNoteFragment
+          feedEvent {
+            viewerAdmire
+              @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
+              dbid
+              ...AdmireLineFragment
+              ...AdmireNoteFragment
+            }
           }
+        }
+        ... on ErrAdmireAlreadyExists {
+          __typename
         }
       }
     }
@@ -205,8 +213,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
         pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-
-        store.get(event.id)?.setValue(true, 'hasViewerAdmiredEvent');
       }
     };
 
@@ -218,15 +224,18 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         optimisticResponse: {
           admireFeedEvent: {
             __typename: 'AdmireFeedEventPayload',
-            admire: {
-              __typename: 'Admire',
-              id: `Admire:${optimisticAdmireId}`,
-              dbid: optimisticAdmireId,
-              creationTime: new Date().toISOString(),
-              admirer: {
-                id: query.viewer?.user?.id ?? 'unknown',
-                dbid: query.viewer?.user?.dbid ?? 'unknown',
-                username: query.viewer?.user?.username ?? null,
+            feedEvent: {
+              id: event.id,
+              viewerAdmire: {
+                __typename: 'Admire',
+                id: `Admire:${optimisticAdmireId}`,
+                dbid: optimisticAdmireId,
+                creationTime: new Date().toISOString(),
+                admirer: {
+                  id: query.viewer?.user?.id ?? 'unknown',
+                  dbid: query.viewer?.user?.dbid ?? 'unknown',
+                  username: query.viewer?.user?.username ?? null,
+                },
               },
             },
           },
@@ -248,6 +257,9 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         setTimeout(() => {
           onPotentialLayoutShift();
         }, 100);
+      } else if (response.admireFeedEvent?.__typename === 'ErrAdmireAlreadyExists') {
+        // Silently fail
+        return;
       } else {
         pushErrorToast();
         reportError(
@@ -281,10 +293,12 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     showModal,
   ]);
 
+  const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
+
   return (
     <AdmireIcon
       onClick={event.hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
-      active={event.hasViewerAdmiredEvent ?? false}
+      active={hasViewerAdmiredEvent}
     />
   );
 }
