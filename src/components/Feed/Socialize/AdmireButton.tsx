@@ -15,10 +15,9 @@ import { AdmireButtonRemoveMutation } from '../../../../__generated__/AdmireButt
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;
   queryRef: AdmireButtonQueryFragment$key;
-  onPotentialLayoutShift: () => void;
 };
 
-export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: AdmireButtonProps) {
+export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
   const event = useFragment(
     graphql`
       fragment AdmireButtonFragment on FeedEvent {
@@ -152,19 +151,11 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         },
       });
 
-      if (response.removeAdmire?.__typename === 'RemoveAdmirePayload') {
-        // Tell the virtualized list that some data has changed
-        // therefore this cell's height might change.
-        //
-        // Ideally, this lives in a useEffect inside of the
-        // changing data's component, but right now the virtualized
-        // list is remounting the component every update, causing
-        // an infinite useEffect to occur
-        setTimeout(() => {
-          onPotentialLayoutShift();
-        }, 100);
-      } else if (response.removeAdmire?.__typename === 'ErrAdmireNotFound') {
-      } else {
+      if (
+        response.removeAdmire?.__typename !== 'RemoveAdmirePayload' &&
+        // We can silently fail if the post was already not admired
+        response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
+      ) {
         pushErrorToast();
 
         reportError(
@@ -175,7 +166,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         );
       }
     } catch (error) {
-      console.log(error);
       pushErrorToast();
 
       if (error instanceof Error) {
@@ -190,7 +180,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     event.dbid,
     event.viewerAdmire?.dbid,
     interactionsConnection,
-    onPotentialLayoutShift,
     pushToast,
     removeAdmire,
     reportError,
@@ -254,22 +243,13 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
         },
       });
 
-      if (response.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
-        // Tell the virtualized list that some data has changed
-        // therefore this cell's height might change.
-        //
-        // Ideally, this lives in a useEffect inside of the
-        // changing data's component, but right now the virtualized
-        // list is remounting the component every update, causing
-        // an infinite useEffect to occur
-        setTimeout(() => {
-          onPotentialLayoutShift();
-        }, 100);
-      } else if (response.admireFeedEvent?.__typename === 'ErrAdmireAlreadyExists') {
-        // Silently fail
-        return;
-      } else {
+      if (
+        response.admireFeedEvent?.__typename !== 'AdmireFeedEventPayload' &&
+        // We can silently fail if the post was already admired
+        response.admireFeedEvent?.__typename !== 'ErrAdmireAlreadyExists'
+      ) {
         pushErrorToast();
+
         reportError(
           `Could not admire feed event, typename was ${response.admireFeedEvent?.__typename}`,
           {
@@ -294,7 +274,6 @@ export function AdmireButton({ eventRef, queryRef, onPotentialLayoutShift }: Adm
     event.id,
     interactionsConnection,
     notesModalConnection,
-    onPotentialLayoutShift,
     pushToast,
     query,
     reportError,
