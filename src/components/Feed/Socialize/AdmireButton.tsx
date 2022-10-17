@@ -15,7 +15,6 @@ import { AdmireButtonRemoveMutation } from '../../../../__generated__/AdmireButt
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;
   queryRef: AdmireButtonQueryFragment$key;
-  onPotentialLayoutShift: () => void;
 };
 
 export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {

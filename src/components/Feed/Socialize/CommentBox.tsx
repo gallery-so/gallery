@@ -28,7 +28,6 @@ type Props = {
   onClose: () => void;
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
-  onPotentialLayoutShift: () => void;
 };
 
 export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {

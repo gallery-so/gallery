@@ -98,18 +98,13 @@ export function FeedEventSocializeSection({
 
           <HStack align="center">
             <IconWrapper>
-              <AdmireButton
-                eventRef={event}
-                queryRef={query}
-                onPotentialLayoutShift={onPotentialLayoutShift}
-              />
+              <AdmireButton eventRef={event} queryRef={query} />
             </IconWrapper>
 
             <IconWrapper>
               <CommentIcon onClick={handleToggle} ref={commentIconRef} />
 
               <CommentBox
-                onPotentialLayoutShift={onPotentialLayoutShift}
                 onClose={handleClose}
                 eventRef={event}
                 queryRef={query}
