@@ -117,10 +117,8 @@ export default function FeedList({
                 // Whenever the height changes, we need to ask react-virtualized
                 // to re-evaluate the height of the item to keep the virtualization good.
                 onPotentialLayoutShift={() => {
-                  setTimeout(() => {
-                    measurerCache.clear(index, 0);
-                    virtualizedListRef.current?.recomputeRowHeights(index);
-                  }, 0);
+                  measurerCache.clear(index, 0);
+                  virtualizedListRef.current?.recomputeRowHeights(index);
                 }}
                 eventRef={content}
                 key={content.dbid}
