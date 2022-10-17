@@ -6,6 +6,8 @@ import { useLazyLoadQuery } from 'react-relay';
 import { activityQuery } from '__generated__/activityQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import UserActivityPage from 'scenes/UserActivityPage/UserActivityPage';
+import { ITEMS_PER_PAGE } from 'components/Feed/constants';
+import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
 
 type UserActivityProps = MetaTagProps & {
   username: string;
@@ -14,11 +16,21 @@ type UserActivityProps = MetaTagProps & {
 export default function UserFeed({ username }: UserActivityProps) {
   const query = useLazyLoadQuery<activityQuery>(
     graphql`
-      query activityQuery($username: String!) {
+      query activityQuery(
+        $username: String!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+        $viewerLast: Int!
+        $viewerBefore: String
+      ) {
         ...UserActivityPageFragment
       }
     `,
-    { username }
+    {
+      username: username,
+      interactionsFirst: NOTES_PER_PAGE,
+      viewerLast: ITEMS_PER_PAGE,
+    }
   );
 
   return <GalleryRoute element={<UserActivityPage username={username} queryRef={query} />} />;

@@ -21,9 +21,11 @@ type Props = {
 export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   const query = useFragment(
     graphql`
-      fragment UserActivityLayoutQueryFragment on Query {
+      fragment UserActivityLayoutQueryFragment on Query
+        @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
         ...NavActionFollowQueryFragment
         ...UserGalleryHeaderQueryFragment
+        ...UserActivityFeedQueryFragment
       }
     `,
     queryRef
@@ -44,6 +46,8 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
         ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
+
+        ...UserActivityFeedFragment
       }
     `,
     userRef
@@ -80,8 +84,8 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
-      <VStack gap={32} align="center" justify="center" grow>
-        <UserActivityFeed />
+      <VStack gap={32}>
+        <UserActivityFeed userRef={user} queryRef={query} />
       </VStack>
     </StyledUserGalleryLayout>
   );
