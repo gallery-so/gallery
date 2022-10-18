@@ -19,6 +19,10 @@ export default function useCreateCollection() {
   const [createCollection] = usePromisifiedMutation<useCreateCollectionMutation>(graphql`
     mutation useCreateCollectionMutation($input: CreateCollectionInput!) {
       createCollection(input: $input) {
+        ... on ErrInvalidInput {
+          __typename
+          message
+        }
         ... on CreateCollectionPayload {
           __typename
 
@@ -77,9 +81,12 @@ export default function useCreateCollection() {
         },
       });
 
-      if (response.createCollection?.__typename !== 'CreateCollectionPayload') {
-        // TODO(Terence): How do we really want to handle this.
-        throw new Error('something went wrong while creating your collection');
+      if (response.createCollection?.__typename === 'ErrInvalidInput') {
+        throw new Error('The description you entered is too long.');
+      } else if (response.createCollection?.__typename !== 'CreateCollectionPayload') {
+        throw new Error(
+          `Something went wrong while creating your collection, we're looking into it.`
+        );
       }
 
       return response;
