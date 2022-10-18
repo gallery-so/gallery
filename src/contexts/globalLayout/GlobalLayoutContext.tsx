@@ -56,6 +56,7 @@ type GlobalLayoutActions = {
   setCustomNavLeftContent: (e: ReactElement | null) => void;
   setCustomNavCenterContent: (e: ReactElement | null) => void;
   setCustomNavRightContent: (e: ReactElement | null) => void;
+  clearNavContent: () => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -224,8 +225,16 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const [customNavCenterContent, setCustomNavCenterContent] = useState<ReactElement | null>(null);
   const [customNavRightContent, setCustomNavRightContent] = useState<ReactElement | null>(null);
 
+  const clearNavContent = useCallback(() => {
+    console.log('Clearing');
+    setCustomNavLeftContent(null);
+    setCustomNavCenterContent(null);
+    setCustomNavRightContent(null);
+  }, []);
+
   const actions: GlobalLayoutActions = useMemo(
     () => ({
+      clearNavContent,
       setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
       setIsPageInSuspenseState,
@@ -233,7 +242,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       setCustomNavCenterContent,
       setCustomNavRightContent,
     }),
-    [handleFadeNavbarFromGalleryRoute]
+    [clearNavContent, handleFadeNavbarFromGalleryRoute]
   );
 
   // Keeping this around for the next time we want to use it
@@ -293,6 +302,7 @@ function GlobalNavbarWithFadeEnabled({
   const query = useFragment(
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
+        ...GlobalNavbarFragment
         ...GlobalBannerFragment
         ...isFeatureEnabledFragment
       }
@@ -372,6 +382,7 @@ function GlobalNavbarWithFadeEnabled({
         />
       )}
       <GlobalNavbar
+        queryRef={query}
         customLeftContent={customLeftContent}
         customCenterContent={customCenterContent}
         customRightContent={customRightContent}

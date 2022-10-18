@@ -1,5 +1,5 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Feed from 'components/Feed/Feed';
+import Feed, { FeedMode } from 'components/Feed/Feed';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import Head from 'next/head';
 import { graphql, useFragment } from 'react-relay';
@@ -8,9 +8,11 @@ import { HomeFragment$key } from '__generated__/HomeFragment.graphql';
 
 type Props = {
   queryRef: HomeFragment$key;
+  feedMode: FeedMode;
+  setFeedMode: (mode: FeedMode) => void;
 };
 
-export default function Home({ queryRef }: Props) {
+export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
   const query = useFragment(
     graphql`
       fragment HomeFragment on Query {
@@ -26,7 +28,7 @@ export default function Home({ queryRef }: Props) {
         <title>Gallery - Home</title>
       </Head>
       <StyledPage>
-        <Feed queryRef={query} />
+        <Feed feedMode={feedMode} setFeedMode={setFeedMode} queryRef={query} />
       </StyledPage>
     </>
   );

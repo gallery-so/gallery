@@ -4,13 +4,14 @@ import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import Link from 'next/link';
 import colors from 'components/core/colors';
 import { useRouter } from 'next/router';
+import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
 
 export default function GalleryCenterContent() {
   const { pathname } = useRouter();
 
   return (
     <HStack gap={8}>
-      <Link href="/Users/terence/Code/gallery/pages/galleries">
+      <Link href="/galleries">
         <NavbarLink href="/galleries" active={pathname === '/galleries'}>
           Galleries
         </NavbarLink>
@@ -24,15 +25,3 @@ export default function GalleryCenterContent() {
     </HStack>
   );
 }
-
-const NavbarLink = styled.a<{ active: boolean }>`
-  font-family: ${BODY_FONT_FAMILY};
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 21px;
-  margin: 0;
-
-  color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
-
-  text-decoration: none;
-`;
