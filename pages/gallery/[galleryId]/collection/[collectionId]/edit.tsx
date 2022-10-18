@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
@@ -17,6 +17,7 @@ import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
+import useConfirmationMessageBeforeClose from '../useConfirmationMessageBeforeClose';
 
 type Props = {
   galleryId: string;
@@ -99,23 +100,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
-  useEffect(() => {
-    const message =
-      'Are you sure you want to quit editing the collection? You will lose all of your changes.';
-    const savedOnBeforeUnload = window.onbeforeunload;
-
-    window.onbeforeunload = (e) => {
-      // Doing both `returnValue` and `return` here as a recommendation from this StackOverflow post
-      // https://stackoverflow.com/questions/10311341/confirmation-before-closing-of-tab-browser
-      e.returnValue = message;
-
-      return message;
-    };
-
-    return () => {
-      window.onbeforeunload = savedOnBeforeUnload;
-    };
-  }, []);
+  useConfirmationMessageBeforeClose();
 
   return (
     <VStack>
