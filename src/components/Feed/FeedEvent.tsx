@@ -14,6 +14,7 @@ import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/F
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
+import { useCallback } from 'react';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
@@ -96,13 +97,15 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 }
 
 type FeedEventWithBoundaryProps = {
+  index: number;
   feedMode: FeedMode;
-  onPotentialLayoutShift: () => void;
+  onPotentialLayoutShift: (index: number) => void;
   eventRef: FeedEventWithErrorBoundaryFragment$key;
   queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
 };
 
 export default function FeedEventWithBoundary({
+  index,
   feedMode,
   eventRef,
   queryRef,
@@ -111,6 +114,12 @@ export default function FeedEventWithBoundary({
   const event = useFragment(
     graphql`
       fragment FeedEventWithErrorBoundaryFragment on FeedEvent {
+        eventData {
+          ... on UserFollowedUsersFeedEventData {
+            __typename
+          }
+        }
+
         ...FeedEventFragment
         ...FeedEventSocializeSectionFragment
       }
@@ -131,18 +140,26 @@ export default function FeedEventWithBoundary({
   );
 
   const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.ADMIRE_COMMENT, query);
+  const eventSupportsAdmireComment =
+    event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
+
+  const shouldShowAdmireComment = isAdmireCommentEnabled && eventSupportsAdmireComment;
+
+  const handlePotentialLayoutShift = useCallback(() => {
+    onPotentialLayoutShift(index);
+  }, [index, onPotentialLayoutShift]);
 
   return (
     <FeedEventErrorBoundary>
       <VStack gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
-        {isAdmireCommentEnabled && (
+        {shouldShowAdmireComment && (
           <ErrorBoundary fallback={<></>}>
             <FeedEventSocializeSection
               eventRef={event}
               queryRef={query}
-              onPotentialLayoutShift={onPotentialLayoutShift}
+              onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ErrorBoundary>
         )}

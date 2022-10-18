@@ -374,7 +374,7 @@ function GlobalNavbarWithFadeEnabled({
       {isBannerVisible && (
         <Banner
           localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
-          text="You can now showcase POAPs on your gallery ✨"
+          text=""
           queryRef={query}
           actionComponent={<NavLink to="/edit">Add Poaps</NavLink>}
           dismissOnActionComponentClick
