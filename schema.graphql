@@ -55,6 +55,7 @@ type GalleryUser implements Node {
     username: String
     bio: String
     traits: String
+    universal: Boolean
 
     # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
     # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -87,8 +88,8 @@ type ChainAddress {
 
 
 type ChainPubKey {
-    pubKey: PubKey
-    chain: Chain
+  pubKey: PubKey
+  chain: Chain
 }
 
 type ChainTokens {
@@ -225,11 +226,11 @@ type UnknownMedia implements Media {
 }
 
 type SyncingMedia implements Media {
-    previewURLs: PreviewURLSet
-    mediaURL: String
-    mediaType: String
+  previewURLs: PreviewURLSet
+  mediaURL: String
+  mediaType: String
 
-    contentRenderURL: String
+  contentRenderURL: String
 }
 
 type InvalidMedia implements Media {
@@ -361,25 +362,47 @@ type MembershipTier implements Node {
     owners: [TokenHolder]
 }
 
+type TokenEdge {
+  node: Token
+  cursor: String
+}
+
+type TokensConnection {
+  edges: [TokenEdge]
+  pageInfo: PageInfo!
+}
+
+type TokenHolderEdge {
+  node: TokenHolder
+  cursor: String
+}
+
+type TokenHoldersConnection {
+  edges: [TokenHolderEdge]
+  pageInfo: PageInfo!
+}
+
 type Community implements Node
-@goGqlId(fields: ["contractAddress", "chain"])
-@goEmbedHelper {
-    dbid: DBID!
-    id: ID!
+  @goGqlId(fields: ["contractAddress", "chain"])
+  @goEmbedHelper {
+  dbid: DBID!
+  id: ID!
 
-    lastUpdated: Time
+  lastUpdated: Time
 
-    contractAddress: ChainAddress
-    creatorAddress: ChainAddress
-    chain: Chain
-    name: String
-    description: String
-    previewImage: String
-    profileImageURL: String
-    profileBannerURL: String
-    badgeURL: String
+  contractAddress: ChainAddress
+  creatorAddress: ChainAddress
+  chain: Chain
+  name: String
+  description: String
+  previewImage: String
+  profileImageURL: String
+  profileBannerURL: String
+  badgeURL: String
 
-    owners: [TokenHolder] @goField(forceResolver: true)
+  tokensInCommunity(before: String, after: String, first: Int, last: Int): TokensConnection @goField(forceResolver: true)
+
+  owners(before: String, after: String, first: Int, last: Int): TokenHoldersConnection @goField(forceResolver: true)
 }
 
 type Contract implements Node {
@@ -623,7 +646,7 @@ type Query {
     collectionsByIds(ids: [DBID!]!): [CollectionByIdOrError]
     tokenById(id: DBID!): TokenByIdOrError
     collectionTokenById(tokenId: DBID!, collectionId: DBID!): CollectionTokenByIdOrError
-    communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean, onlyGalleryUsers: Boolean): CommunityByAddressOrError
+    communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
@@ -809,8 +832,8 @@ type SyncTokensPayload {
 
 union RefreshTokenPayloadOrError =
     RefreshTokenPayload
-    | ErrInvalidInput
-    | ErrSyncFailed
+  | ErrInvalidInput
+  | ErrSyncFailed
 
 type RefreshTokenPayload {
     token: Token
@@ -818,8 +841,8 @@ type RefreshTokenPayload {
 
 union RefreshCollectionPayloadOrError =
     RefreshCollectionPayload
-    | ErrInvalidInput
-    | ErrSyncFailed
+  | ErrInvalidInput
+  | ErrSyncFailed
 
 type RefreshCollectionPayload {
     collection: Collection
@@ -827,8 +850,8 @@ type RefreshCollectionPayload {
 
 union RefreshContractPayloadOrError =
     RefreshContractPayload
-    | ErrInvalidInput
-    | ErrSyncFailed
+  | ErrInvalidInput
+  | ErrSyncFailed
 
 type RefreshContractPayload {
     contract: Contract
@@ -1013,30 +1036,30 @@ type UnfollowUserPayload {
 
 union AdmireFeedEventPayloadOrError =
     AdmireFeedEventPayload
-    | ErrAuthenticationFailed
-    | ErrFeedEventNotFound
-    | ErrInvalidInput
-    | ErrAdmireAlreadyExists
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrAdmireAlreadyExists
 
 union RemoveAdmirePayloadOrError =
     RemoveAdmirePayload
-    | ErrAuthenticationFailed
-    | ErrFeedEventNotFound
-    | ErrInvalidInput
-    | ErrAdmireNotFound
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrAdmireNotFound
 
 union CommentOnFeedEventPayloadOrError =
     CommentOnFeedEventPayload
-    | ErrAuthenticationFailed
-    | ErrFeedEventNotFound
-    | ErrInvalidInput
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
 
 union RemoveCommentPayloadOrError =
     RemoveCommentPayload
-    | ErrAuthenticationFailed
-    | ErrFeedEventNotFound
-    | ErrInvalidInput
-    | ErrCommentNotFound
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrCommentNotFound
 
 type AdmireFeedEventPayload {
     viewer: Viewer
@@ -1051,15 +1074,15 @@ type RemoveAdmirePayload {
 }
 
 type CommentOnFeedEventPayload {
-    viewer: Viewer
-    comment: Comment @goField(forceResolver: true)
-    replyToComment: Comment @goField(forceResolver: true)
-    feedEvent: FeedEvent @goField(forceResolver: true)
+  viewer: Viewer
+  comment: Comment @goField(forceResolver: true)
+  replyToComment: Comment @goField(forceResolver: true)
+  feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type RemoveCommentPayload {
-    viewer: Viewer
-    feedEvent: FeedEvent @goField(forceResolver: true)
+  viewer: Viewer
+  feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type Mutation {

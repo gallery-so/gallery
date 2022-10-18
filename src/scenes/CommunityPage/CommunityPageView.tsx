@@ -24,17 +24,24 @@ export default function CommunityPageView({ communityRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
-        owners {
-          user @required(action: THROW) {
-            dbid
-            username @required(action: THROW)
+        owners(first: 10000) @connection(key: "CommunityPageView_owners") {
+          edges {
+            node {
+              user {
+                dbid
+                username
+              }
+              ...TokenHolderListItemFragment
+            }
           }
-          ...TokenHolderListItemFragment
         }
       }
     `,
     communityRef
   );
+
+  console.log(community);
+
   const { name, description } = community;
   const isMobile = useIsMobileWindowWidth();
 
