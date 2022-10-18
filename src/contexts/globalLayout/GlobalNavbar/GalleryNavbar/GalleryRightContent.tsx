@@ -17,6 +17,12 @@ export function GalleryRightContent({ queryRef }: GalleryRightContentProps) {
         viewer {
           ... on Viewer {
             __typename
+
+            viewerGalleries {
+              gallery {
+                dbid
+              }
+            }
           }
         }
       }
@@ -29,9 +35,17 @@ export function GalleryRightContent({ queryRef }: GalleryRightContentProps) {
     return null;
   }
 
+  const editGalleryUrl = query.viewer.viewerGalleries?.[0]?.gallery
+    ? `/gallery/${query.viewer.viewerGalleries[0].gallery.dbid}/edit`
+    : null;
+
+  if (!editGalleryUrl) {
+    return null;
+  }
+
   return (
-    <Link href="/edit">
-      <EditButtonContainer href="/edit">
+    <Link href={editGalleryUrl}>
+      <EditButtonContainer href={editGalleryUrl}>
         <TitleXS>EDIT</TitleXS>
       </EditButtonContainer>
     </Link>

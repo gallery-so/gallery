@@ -2,41 +2,19 @@ import { memo, ReactElement } from 'react';
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import CenterContent from './CenterContent';
-import GalleryCenterContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryCenterContent';
-import GalleryLeftContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { GlobalNavbarFragment$key } from '../../../../__generated__/GlobalNavbarFragment.graphql';
 
 export type Props = {
   customLeftContent: ReactElement | null;
   customCenterContent: ReactElement | null;
   customRightContent: ReactElement | null;
-  queryRef: GlobalNavbarFragment$key;
 };
 
-function GlobalNavbar({
-  customLeftContent,
-  customCenterContent,
-  customRightContent,
-  queryRef,
-}: Props) {
-  const query = useFragment(
-    graphql`
-      fragment GlobalNavbarFragment on Query {
-        ...GalleryLeftContentFragment
-      }
-    `,
-    queryRef
-  );
-
+function GlobalNavbar({ customLeftContent, customCenterContent, customRightContent }: Props) {
   return (
     <StyledGlobalNavbar data-testid="navbar">
-      <StyledContentWrapperLeft>
-        {customLeftContent || <GalleryLeftContent queryRef={query} />}
-      </StyledContentWrapperLeft>
+      <StyledContentWrapperLeft>{customLeftContent}</StyledContentWrapperLeft>
       <StyledContentWrapper>
-        <CenterContent content={customCenterContent || <GalleryCenterContent />} />
+        <CenterContent content={customCenterContent} />
       </StyledContentWrapper>
       <StyledContentWrapperRight>{customRightContent}</StyledContentWrapperRight>
     </StyledGlobalNavbar>

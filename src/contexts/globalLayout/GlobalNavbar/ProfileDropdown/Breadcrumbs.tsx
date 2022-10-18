@@ -1,11 +1,20 @@
 import styled from 'styled-components';
-import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
+import { BODY_FONT_FAMILY, Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
 import { HStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { BreadcrumbsUsernameBreadcrumb$key } from '../../../../../__generated__/BreadcrumbsUsernameBreadcrumb.graphql';
 
-export const UsernameText = styled(Paragraph)`
+export const HomeText = styled(Paragraph)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+
+  letter-spacing: -0.04em;
+`;
+
+export const BreadcrumbText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
   font-size: 18px;
   font-weight: 400;
@@ -38,7 +47,7 @@ export function UsernameBreadcrumb({ queryRef }: UsernameBreadcrumbProps) {
 
   return (
     <HStack gap={8}>
-      <UsernameText>{query.viewer.user.username}</UsernameText>
+      <BreadcrumbText>{query.viewer.user.username}</BreadcrumbText>
     </HStack>
   );
 }

@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
-import FollowerListButton from './FollowerListButton';
+import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;
@@ -15,6 +15,8 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment NavActionFollowUserFragment on GalleryUser {
+        username
+
         ...FollowButtonUserFragment
         ...FollowerListButtonFragment
       }
@@ -36,9 +38,9 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const isLoggedIn = !!loggedInUserId;
 
   return (
-    <HStack gap={4} align="center">
+    <HStack gap={8} align="center">
+      <BreadcrumbText>{user.username}</BreadcrumbText>
       {isLoggedIn ? <FollowButton queryRef={loggedInUserQuery} userRef={user} /> : null}
-      <FollowerListButton userRef={user} />
     </HStack>
   );
 }

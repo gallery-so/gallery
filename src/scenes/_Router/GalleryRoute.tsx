@@ -5,11 +5,16 @@ import { useEffect, useState } from 'react';
 export type Props = {
   element: JSX.Element;
   banner?: boolean;
-  navbar?: JSX.Element | false;
+  navbar: JSX.Element | false;
   footer?: boolean;
 };
 
-export default function GalleryRoute({ element, navbar, footer = true, banner = true }: Props) {
+export default function GalleryRoute({
+  element,
+  navbar = false,
+  footer = true,
+  banner = true,
+}: Props) {
   const [mounted, setMounted] = useState(false);
   const { setBannerVisible, setNavbarVisible } = useGlobalLayoutActions();
 

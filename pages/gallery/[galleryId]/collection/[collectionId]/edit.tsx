@@ -117,6 +117,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
 }
 
 export default function OrganizeCollectionWithProvider({ galleryId, collectionId }: Props) {
+  return null;
   return (
     <CollectionWizardContext initialCollectionId={collectionId}>
       <CollectionEditorProvider>

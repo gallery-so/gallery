@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 
 type Props = {
-  content: ReactElement;
+  content: ReactElement | null;
 };
 
 export default function CenterContent({ content }: Props) {

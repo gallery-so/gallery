@@ -7,6 +7,8 @@ import { FeedNavbarFragment$key } from '__generated__/FeedNavbarFragment.graphql
 import { FeedCenterContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedCenterContent';
 import { useRouter } from 'next/router';
 import { FeedMode } from 'components/Feed/Feed';
+import { FeedLeftContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
+import useAuthModal from 'hooks/useAuthModal';
 
 type FeedNavbarProps = {
   queryRef: FeedNavbarFragment$key;
@@ -23,6 +25,8 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
             __typename
           }
         }
+
+        ...FeedLeftContentFragment
       }
     `,
     queryRef
@@ -34,10 +38,13 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     setCustomNavRightContent,
   } = useGlobalLayoutActions();
 
+  const showAuthModal = useAuthModal();
   const { pathname } = useRouter();
   // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
   useLayoutEffect(() => {
-    console.log('Feed');
+    setCustomNavLeftContent(<FeedLeftContent queryRef={query} />);
+    setCustomNavRightContent(<div onClick={showAuthModal}>Sign in</div>);
+
     if (!query.viewer?.__typename) {
       setCustomNavCenterContent(null);
     } else {
@@ -45,7 +52,6 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     }
 
     return () => {
-      console.log('Clearing from feed');
       clearNavContent();
     };
   }, [
@@ -53,8 +59,12 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     feedMode,
     onChange,
     pathname,
+    query,
     query.viewer?.__typename,
     setCustomNavCenterContent,
+    setCustomNavLeftContent,
+    setCustomNavRightContent,
+    showAuthModal,
   ]);
 
   return null;
