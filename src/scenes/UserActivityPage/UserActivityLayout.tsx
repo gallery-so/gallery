@@ -12,6 +12,8 @@ import UserActivityFeed from './UserActivityFeed';
 import { UserActivityLayoutQueryFragment$key } from '__generated__/UserActivityLayoutQueryFragment.graphql';
 import { UserActivityLayoutFragment$key } from '__generated__/UserActivityLayoutFragment.graphql';
 import { StyledUserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
+import { FEED_MAX_WIDTH } from 'components/Feed/dimensions';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   userRef: UserActivityLayoutFragment$key;
@@ -67,7 +69,7 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   }, [query, setCustomNavLeftContent, user]);
 
   return (
-    <StyledUserGalleryLayout>
+    <StyledUserGalleryLayout align="center">
       <UserGalleryHeader
         userRef={user}
         queryRef={query}
@@ -86,4 +88,8 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
 const StyledUserActivityLayout = styled(VStack)`
   margin: 0 -16px;
   padding-top: 24px;
+
+  @media only screen and ${breakpoints.desktop} {
+    width: ${FEED_MAX_WIDTH}px;
+  }
 `;
