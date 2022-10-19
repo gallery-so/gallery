@@ -11,7 +11,7 @@ export type Props = {
 
 function GlobalNavbar({ customLeftContent, customCenterContent, customRightContent }: Props) {
   return (
-    <StyledGlobalNavbar data-testid="navbar">
+    <StyledGlobalNavbar className="GlobalNavbar" data-testid="navbar">
       <StyledContentWrapperLeft>{customLeftContent}</StyledContentWrapperLeft>
       <StyledContentWrapper>
         <CenterContent content={customCenterContent} />
@@ -21,11 +21,8 @@ function GlobalNavbar({ customLeftContent, customCenterContent, customRightConte
   );
 }
 
-export const GLOBAL_NAVBAR_HEIGHT = 64;
-
 const StyledGlobalNavbar = styled.div`
   width: 100%;
-  height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,10 +34,10 @@ const StyledGlobalNavbar = styled.div`
   position: fixed;
   z-index: 3;
 
-  padding: 0 ${pageGutter.mobile}px;
+  padding: 12px ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px;
+    padding: 12px ${pageGutter.tablet}px;
   }
 `;
 

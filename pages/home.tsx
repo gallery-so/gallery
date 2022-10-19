@@ -47,15 +47,15 @@ export default function Home() {
   const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
 
   // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
-  // useEffect(() => {
-  //   if (!viewerUserId) {
-  //     setFeedMode('WORLDWIDE');
-  //   }
-  // }, [viewerUserId, feedMode, setFeedMode]);
+  useEffect(() => {
+    if (!viewerUserId) {
+      setFeedMode('WORLDWIDE');
+    }
+  }, [viewerUserId, feedMode, setFeedMode]);
 
   return (
     <GalleryRoute
-      navbar={false}
+      navbar={<FeedNavbar feedMode={feedMode} onChange={setFeedMode} queryRef={query} />}
       element={<HomeScene setFeedMode={setFeedMode} feedMode={feedMode} queryRef={query} />}
     />
   );

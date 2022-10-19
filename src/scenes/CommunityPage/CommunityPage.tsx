@@ -1,6 +1,5 @@
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
@@ -9,6 +8,7 @@ import NotFound from 'scenes/NotFound/NotFound';
 import styled from 'styled-components';
 import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.graphql';
 import CommunityPageView from './CommunityPageView';
+import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   queryRef: CommunityPageFragment$key;
@@ -37,6 +37,7 @@ export default function CommunityPage({ queryRef }: Props) {
   );
 
   const track = useTrack();
+  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     if (community && community.__typename === 'Community') {
@@ -59,18 +60,18 @@ export default function CommunityPage({ queryRef }: Props) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledPage>
+      <StyledPage navbarHeight={navbarHeight}>
         <CommunityPageView communityRef={community} />
       </StyledPage>
     </>
   );
 }
 
-const StyledPage = styled.div`
+const StyledPage = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
 
-  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+  padding-top: ${({ navbarHeight }) => navbarHeight}px;
   min-height: 100vh;
 
   margin-left: ${pageGutter.mobile}px;
@@ -86,7 +87,7 @@ const StyledPage = styled.div`
   @media only screen and ${breakpoints.desktop} {
     max-width: 1200px;
     margin: 0 auto;
-    padding: ${GLOBAL_NAVBAR_HEIGHT}px 32px 0;
+    padding: ${({ navbarHeight }) => navbarHeight}px 32px 0;
   }
 `;
 

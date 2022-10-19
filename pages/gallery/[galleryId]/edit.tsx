@@ -8,6 +8,8 @@ import { WizardFooter } from 'components/WizardFooter';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
+import { GalleryEditNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+import styled from 'styled-components';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
@@ -59,16 +61,18 @@ export default function EditGalleryPage() {
   }, [back, canGoBack, push, query.viewer?.user?.username]);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
+    <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
+      <Wrapper>
         <OrganizeGallery
           onAddCollection={handleAddCollection}
           onEditCollection={handleEditCollection}
           queryRef={query}
         />
-      </FullPageStep>
-
-      <WizardFooter isNextEnabled nextText="Done" onNext={handleDone} />
-    </VStack>
+      </Wrapper>
+    </FullPageStep>
   );
 }
+
+const Wrapper = styled.div`
+  margin-top: 32px;
+`;

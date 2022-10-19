@@ -17,6 +17,11 @@ import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
+import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
+import { GalleryEditNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+import { CollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorNavbar';
+import colors from 'components/core/colors';
+import styled from 'styled-components';
 
 type Props = {
   galleryId: string;
@@ -26,11 +31,13 @@ type Props = {
 function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const query = useLazyLoadQuery<editCollectionQuery>(
     graphql`
-      query editCollectionQuery {
+      query editCollectionQuery($collectionId: DBID!) {
         ...CollectionEditorFragment
+        ...CollectionEditorNavbarFragment
+        ...GalleryAuthenticatedRouteFragment
       }
     `,
-    {}
+    { collectionId }
   );
 
   const { showModal } = useModalActions();
@@ -100,24 +107,23 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
-        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-      </FullPageStep>
-
-      <WizardFooter
-        isNextEnabled={isCollectionValid}
-        nextText={'Save'}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        previousText="Cancel"
-      />
-    </VStack>
+    <FullPageStep
+      navbar={
+        <CollectionEditorNavbar
+          isCollectionValid={isCollectionValid}
+          onDone={handleNext}
+          onCancel={handlePrevious}
+          queryRef={query}
+        />
+      }
+      withBorder
+    >
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    </FullPageStep>
   );
 }
 
 export default function OrganizeCollectionWithProvider({ galleryId, collectionId }: Props) {
-  return null;
   return (
     <CollectionWizardContext initialCollectionId={collectionId}>
       <CollectionEditorProvider>

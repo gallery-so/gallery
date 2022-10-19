@@ -22,23 +22,14 @@ export function GalleryNavbar({ queryRef }: Props) {
     queryRef
   );
 
-  const {
-    setCustomNavLeftContent,
-    setCustomNavCenterContent,
-    setCustomNavRightContent,
-    clearNavContent,
-  } = useGlobalLayoutActions();
+  const { setCustomNavLeftContent, setCustomNavCenterContent, setCustomNavRightContent } =
+    useGlobalLayoutActions();
 
   useLayoutEffect(() => {
     setCustomNavLeftContent(<GalleryLeftContent queryRef={query} />);
     setCustomNavCenterContent(<GalleryCenterContent />);
     setCustomNavRightContent(<GalleryRightContent queryRef={query} />);
-
-    return () => {
-      console.log('Clearing from gallery');
-      clearNavContent();
-    };
-  });
+  }, []);
 
   return null;
 }

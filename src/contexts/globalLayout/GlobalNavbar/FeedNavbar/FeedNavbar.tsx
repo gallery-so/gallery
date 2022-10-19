@@ -31,12 +31,8 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     `,
     queryRef
   );
-  const {
-    clearNavContent,
-    setCustomNavLeftContent,
-    setCustomNavCenterContent,
-    setCustomNavRightContent,
-  } = useGlobalLayoutActions();
+  const { setCustomNavLeftContent, setCustomNavCenterContent, setCustomNavRightContent } =
+    useGlobalLayoutActions();
 
   const showAuthModal = useAuthModal();
   const { pathname } = useRouter();
@@ -50,12 +46,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     } else {
       setCustomNavCenterContent(<FeedCenterContent feedMode={feedMode} onChange={onChange} />);
     }
-
-    return () => {
-      clearNavContent();
-    };
   }, [
-    clearNavContent,
     feedMode,
     onChange,
     pathname,
