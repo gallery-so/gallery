@@ -17,7 +17,6 @@ import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
-import useConfirmationMessageBeforeClose from '../useConfirmationMessageBeforeClose';
 
 type Props = {
   galleryId: string;
@@ -99,8 +98,6 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   ]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
-
-  useConfirmationMessageBeforeClose();
 
   return (
     <VStack>

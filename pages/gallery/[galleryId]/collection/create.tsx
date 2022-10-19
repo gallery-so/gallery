@@ -16,7 +16,6 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
-import useConfirmationMessageBeforeClose from './useConfirmationMessageBeforeClose';
 
 type Props = {
   galleryId: string;
@@ -36,8 +35,6 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
-
-  useConfirmationMessageBeforeClose();
 
   const { push, back, replace } = useRouter();
 
