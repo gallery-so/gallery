@@ -18,6 +18,7 @@ import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
 import { NftDetailAssetTokenFragment$key } from '../../../__generated__/NftDetailAssetTokenFragment.graphql';
+import NftDetailGif from './NftDetailGif';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -34,6 +35,10 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
             ...NftDetailVideoFragment
           }
           ... on ImageMedia {
+            __typename
+            contentRenderURL
+          }
+          ... on GIFMedia {
             __typename
             contentRenderURL
           }
@@ -54,6 +59,7 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
         ...NftDetailAnimationFragment
         ...NftDetailAudioFragment
         ...NftDetailImageFragment
+        ...NftDetailGifFragment
       }
     `,
     tokenRef
@@ -80,6 +86,16 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
           tokenRef={token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
+          onClick={() => window.open(media.contentRenderURL)}
+        />
+      );
+    case 'GIFMedia':
+      return (
+        <NftDetailGif
+          onLoad={onLoad}
+          tokenRef={token}
+          // @ts-expect-error: we know contentRenderURL is present within the media field
+          // if token type is `GifMedia`
           onClick={() => window.open(media.contentRenderURL)}
         />
       );

@@ -20,6 +20,7 @@ import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFall
 import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
 import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
 import { isFirefox } from 'utils/browser';
+import NftDetailGif from 'scenes/NftDetailPage/NftDetailGif';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
@@ -47,6 +48,9 @@ const nftPreviewTokenFragment = graphql`
         __typename
         ...NftDetailVideoFragment
       }
+      ... on GIFMedia {
+        __typename
+      }
       ... on HtmlMedia {
         __typename
       }
@@ -56,6 +60,7 @@ const nftPreviewTokenFragment = graphql`
     ...NftPreviewAssetFragment
     ...NftDetailAnimationFragment
     ...getVideoOrImageUrlForNftPreviewFragment
+    ...NftDetailGifFragment
   }
 `;
 
@@ -147,6 +152,9 @@ function NftPreview({
     }
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
+    }
+    if (shouldLiverender && token.media?.__typename === 'GIFMedia') {
+      return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;

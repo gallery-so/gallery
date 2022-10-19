@@ -7,7 +7,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { graphql } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
@@ -24,18 +24,19 @@ export default function CommunityPageView({ communityRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
-        owners {
-          user @required(action: THROW) {
-            dbid
-            username @required(action: THROW)
+        owners(first: 10000) @connection(key: "CommunityPageView_owners") {
+          edges {
+            node {
+              ...TokenHolderListFragment
+            }
           }
-          ...TokenHolderListItemFragment
         }
       }
     `,
     communityRef
   );
-  const { name, description } = community;
+
+  const { name, description, owners } = community;
   const isMobile = useIsMobileWindowWidth();
 
   // whether "Show More" has been clicked or not
@@ -43,11 +44,23 @@ export default function CommunityPageView({ communityRef }: Props) {
   // whether or not the description appears truncated
   const [isLineClampEnabled, setIsLineClampEnabled] = useState(false);
 
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  const nonNullTokenHolders = useMemo(() => {
+    const holders = [];
+
+    for (const owner of owners?.edges ?? []) {
+      if (owner?.node) {
+        holders.push(owner.node);
+      }
+    }
+
+    return holders;
+  }, [owners?.edges]);
+
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
   }, []);
-
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     // when the descriptionRef is first set, determine if the text exceeds the line clamp threshold of 4 lines by comparing the scrollHeight to the clientHeight
@@ -85,7 +98,10 @@ export default function CommunityPageView({ communityRef }: Props) {
         </StyledMemberListFilterContainer>
 
         <StyledListWrapper>
-          <TokenHolderList title="Members in this community" tokenHoldersRef={community.owners} />
+          <TokenHolderList
+            title="Members in this community"
+            tokenHoldersRef={nonNullTokenHolders}
+          />
         </StyledListWrapper>
       </StyledCommunityPageContainer>
     </MemberListPageProvider>
