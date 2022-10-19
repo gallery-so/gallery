@@ -40,8 +40,6 @@ function NftDetailGif({ tokenRef, onClick = noop, onLoad }: Props) {
     return '';
   }, [token.media]);
 
-  console.log(token, contentRenderURL);
-
   const resizedImage = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
 
   if (!resizedImage) {
