@@ -1,6 +1,7 @@
 import GlobalFooter from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect, useState } from 'react';
+import { useNavbarEffect } from 'contexts/globalLayout/useNavbarEffect';
 
 export type Props = {
   element: JSX.Element;
@@ -16,26 +17,25 @@ export default function GalleryRoute({
   banner = true,
 }: Props) {
   const [mounted, setMounted] = useState(false);
+  const { setContent } = useGlobalLayoutActions();
   const { setBannerVisible, setNavbarVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
     setBannerVisible(banner);
     setMounted(true);
+  }, [banner, navbar, setBannerVisible, setContent, setNavbarVisible]);
 
+  useNavbarEffect(() => {
     if (navbar === false) {
       setNavbarVisible(false);
     } else {
+      setContent(navbar);
       setNavbarVisible(true);
     }
-    // we only want these properties to be set on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  console.log({ navbar });
+  });
 
   return mounted ? (
     <>
-      {navbar ? navbar : null}
       {element}
       {
         // we render the footer here, instead of `GalleryLayoutContext`, because we

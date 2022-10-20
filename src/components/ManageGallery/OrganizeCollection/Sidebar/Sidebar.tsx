@@ -23,7 +23,6 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
 import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 

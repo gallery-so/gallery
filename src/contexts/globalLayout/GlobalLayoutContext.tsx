@@ -51,9 +51,7 @@ type GlobalLayoutActions = {
   setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
-  setCustomNavLeftContent: (e: ReactElement | null) => void;
-  setCustomNavCenterContent: (e: ReactElement | null) => void;
-  setCustomNavRightContent: (e: ReactElement | null) => void;
+  setContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -131,7 +129,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const debounced = useDebounce(isNavbarEnabled, FADE_TRANSITION_TIME_MS);
   const throttled = useThrottle(isNavbarEnabled, FADE_TRANSITION_TIME_MS);
 
-  console.log({ isNavbarEnabled, isPageInSuspenseState });
   const isNavbarVisible = useMemo(() => {
     if (isPageInSuspenseState && isNavbarEnabled) {
       return debounced;
@@ -225,24 +222,22 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [isNavbarVisible, wasNavbarVisible]
   );
 
-  const [customNavLeftContent, setCustomNavLeftContent] = useState<ReactElement | null>(null);
-  const [customNavCenterContent, setCustomNavCenterContent] = useState<ReactElement | null>(null);
-  const [customNavRightContent, setCustomNavRightContent] = useState<ReactElement | null>(null);
+  const [content, setContent] = useState<ReactElement | null>(null);
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
       setIsPageInSuspenseState,
-      setCustomNavLeftContent,
-      setCustomNavCenterContent,
-      setCustomNavRightContent,
+      setContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
 
   // Keeping this around for the next time we want to use it
   // useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
+
+  console.log({ fadeType, isPageInSuspenseState, isNavbarVisible });
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -256,9 +251,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         wasVisible={wasNavbarVisible}
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
-        customLeftContent={customNavLeftContent}
-        customCenterContent={customNavCenterContent}
-        customRightContent={customNavRightContent}
+        content={content}
       />
 
       <GlobalLayoutStateContext.Provider value={state}>
@@ -279,9 +272,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   handleFadeNavbarOnHover: (visible: boolean) => void;
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
-  customLeftContent: GlobalNavbarProps['customLeftContent'];
-  customCenterContent: GlobalNavbarProps['customCenterContent'];
-  customRightContent: GlobalNavbarProps['customRightContent'];
+  content: GlobalNavbarProps['content'];
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -291,9 +282,7 @@ function GlobalNavbarWithFadeEnabled({
   handleFadeNavbarOnHover,
   fadeType,
   isBannerVisible,
-  customLeftContent,
-  customCenterContent,
-  customRightContent,
+  content,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
@@ -304,12 +293,6 @@ function GlobalNavbarWithFadeEnabled({
     `,
     queryRef
   );
-
-  const [isFirstRender, setIsFirstRender] = useState(true);
-
-  useEffect(() => {
-    setIsFirstRender(false);
-  }, []);
 
   // transition styles on the navbar are in accordance with our route transitions
   const transitionStyles = useMemo(() => {
@@ -327,12 +310,11 @@ function GlobalNavbarWithFadeEnabled({
       }
       // if moving between routes, fade-in navbar with delay
       if (fadeType === 'route') {
-        const delayTime = isFirstRender ? 0 : NAVIGATION_TRANSITION_TIME_MS;
-
-        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${delayTime}ms`;
+        // @robin Why do we want delay when loading the page for example?
+        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${NAVIGATION_TRANSITION_TIME_MS}ms`;
       }
     }
-  }, [wasVisible, fadeType, isFirstRender]);
+  }, [wasVisible, fadeType]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
@@ -383,11 +365,7 @@ function GlobalNavbarWithFadeEnabled({
           requireAuth
         />
       )}
-      <GlobalNavbar
-        customLeftContent={customLeftContent}
-        customCenterContent={customCenterContent}
-        customRightContent={customRightContent}
-      />
+      <GlobalNavbar content={content} />
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }

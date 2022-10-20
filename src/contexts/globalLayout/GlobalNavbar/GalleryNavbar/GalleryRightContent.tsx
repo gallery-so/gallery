@@ -18,11 +18,21 @@ export function GalleryRightContent({ queryRef }: GalleryRightContentProps) {
           ... on Viewer {
             __typename
 
+            user {
+              dbid
+            }
+
             viewerGalleries {
               gallery {
                 dbid
               }
             }
+          }
+        }
+
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            dbid
           }
         }
       }
@@ -32,6 +42,12 @@ export function GalleryRightContent({ queryRef }: GalleryRightContentProps) {
 
   // If the user isn't logged in, we shouldn't show an edit button
   if (query.viewer?.__typename !== 'Viewer') {
+    return null;
+  }
+
+  // If the current gallery's user is not the logged in user
+  // we should not show the edit button either
+  if (query.viewer.user?.dbid !== query.userByUsername?.dbid) {
     return null;
   }
 

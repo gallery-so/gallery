@@ -30,3 +30,36 @@
   /* NOTE: if you change this, update `FadeTransitioner.tsx` */
   transition: opacity 300ms ease-in-out;
 }
+
+/* Required for initial blank pause */
+.navbar-fade-appear {
+  opacity: 0;
+}
+
+.navbar-fade-appear.navbar-fade-appear-active {
+  opacity: 0;
+}
+
+/* Fade-in */
+.navbar-fade-enter {
+  opacity: 0;
+}
+
+.navbar-fade-enter.navbar-fade-enter-active {
+  opacity: 1;
+  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  transition: opacity 300ms ease-in-out 300ms;
+}
+
+/* Fade-out */
+.navbar-fade-exit {
+  opacity: 1;
+  position: fixed;
+  top: 0;
+}
+
+.navbar-fade-exit.navbar-fade-exit-active {
+  opacity: 0;
+  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  transition: opacity 300ms ease-in-out;
+}

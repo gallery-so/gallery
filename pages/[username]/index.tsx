@@ -25,7 +25,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
   return (
     <GalleryRoute
-      navbar={<GalleryNavbar queryRef={query} />}
+      navbar={<GalleryNavbar username={username} queryRef={query} />}
       element={<UserGalleryPage username={username} queryRef={query} />}
     />
   );

@@ -7,13 +7,14 @@ export function GalleryEditCenterContent() {
     <HStack gap={8} align="baseline">
       <MainGalleryText>My main gallery</MainGalleryText>
 
-      <EditingText>EDITING</EditingText>
+      <EditingText>Editing</EditingText>
     </HStack>
   );
 }
 
 export const EditingText = styled(TitleXS)`
   font-weight: 500;
+  text-transform: uppercase;
 `;
 
 export const MainGalleryText = styled(Paragraph)`

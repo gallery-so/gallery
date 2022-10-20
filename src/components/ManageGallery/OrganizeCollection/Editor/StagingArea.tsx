@@ -346,7 +346,7 @@ function StagingArea({ tokensRef }: Props) {
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
-    <StyledStagingArea>
+    <StyledStagingArea navbarHeight={navbarHeight}>
       <DndContext
         sensors={sensors}
         onDragEnd={handleDragEnd}

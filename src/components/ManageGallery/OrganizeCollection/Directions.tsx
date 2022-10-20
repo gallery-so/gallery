@@ -19,7 +19,7 @@ function Directions() {
 
 const DirectionsContainer = styled(VStack)`
   width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  height: 100%;
 `;
 
 const StyledDirections = styled.div`

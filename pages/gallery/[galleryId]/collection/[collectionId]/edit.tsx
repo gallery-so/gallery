@@ -8,20 +8,14 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { editCollectionQuery } from '../../../../../__generated__/editCollectionQuery.graphql';
 import FullPageStep from 'components/Onboarding/FullPageStep';
-import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
-import GalleryAuthenticatedRoute from 'scenes/_Router/GalleryAuthenticatedRoute';
-import { GalleryEditNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 import { CollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorNavbar';
-import colors from 'components/core/colors';
-import styled from 'styled-components';
 
 type Props = {
   galleryId: string;

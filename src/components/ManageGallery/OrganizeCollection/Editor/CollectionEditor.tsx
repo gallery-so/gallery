@@ -265,6 +265,7 @@ const SIDEBAR_WIDTH = 250;
 
 const StyledOrganizeCollection = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const StyledSidebarContainer = styled.div`

@@ -1,17 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
-import { GlobalLayoutStateContext } from 'contexts/globalLayout/GlobalLayoutContext';
+import { useEffect, useState } from 'react';
 
 const INITIAL_HEIGHT = 64;
 
 export function useGlobalNavbarHeight() {
   const [height, setHeight] = useState(INITIAL_HEIGHT);
 
-  const context = useContext(GlobalLayoutStateContext);
-
   useEffect(() => {
+    if (!global.ResizeObserver) {
+      return;
+    }
+
     const observer = new ResizeObserver((entries) => {
       const [entry] = entries;
-      console.log('Observed', entries);
 
       if (!entry) {
         return;
@@ -27,14 +27,5 @@ export function useGlobalNavbarHeight() {
     }
   }, []);
 
-  if (context) {
-    if (!context.isNavbarVisible) {
-      return 0;
-    }
-
-    return height;
-  }
-
-  console.log('Non Context path');
   return height;
 }

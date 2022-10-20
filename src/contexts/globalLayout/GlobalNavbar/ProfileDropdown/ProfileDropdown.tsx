@@ -1,18 +1,12 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { ProfileDropdownFragment$key } from '__generated__/ProfileDropdownFragment.graphql';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/NavDownArrow';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
-import {
-  BaseS,
-  BODY_FONT_FAMILY,
-  Paragraph,
-  TITLE_FONT_FAMILY,
-  TitleM,
-} from 'components/core/Text/Text';
+import { BaseS, Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Link from 'next/link';
@@ -32,6 +26,12 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
             user {
               username
             }
+
+            viewerGalleries {
+              gallery {
+                dbid
+              }
+            }
           }
         }
       }
@@ -50,6 +50,9 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   const handleBackdropClick = useCallback(() => {
     setShowDropdown(false);
   }, []);
+
+  const firstGalleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
+  const editGalleryUrl = firstGalleryId ? `/gallery/${firstGalleryId}/edit` : null;
 
   return (
     <Wrapper gap={8} align="center">
@@ -75,27 +78,23 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
             <BaseS>•</BaseS>
             <BaseS>Profile</BaseS>
           </HStack>
-          <StyledInteractiveLink to={'/edit'}>Edit Gallery</StyledInteractiveLink>
+          {editGalleryUrl && (
+            <StyledInteractiveLink to={editGalleryUrl}>Edit Gallery</StyledInteractiveLink>
+          )}
         </DropdownProfileSection>
 
         <VStack gap={4}>
-          <DropdownItem>
-            <DropdownLink href={'/home'}>HOME</DropdownLink>
-          </DropdownItem>
+          <DropdownLink href={'/home'}>HOME</DropdownLink>
         </VStack>
 
         <VStack gap={4}>
-          <DropdownItem>
-            <DropdownLink href={'/accounts'}>ACCOUNTS</DropdownLink>
-          </DropdownItem>
-          <DropdownItem>
-            <DropdownLink href={'/shop'}>
-              <HStack gap={8}>
-                <span>SHOP</span>
-                <StyledObjectsText>(OBJECTS)</StyledObjectsText>
-              </HStack>
-            </DropdownLink>
-          </DropdownItem>
+          <DropdownLink href={'/accounts'}>ACCOUNTS</DropdownLink>
+          <DropdownLink href={'/shop'}>
+            <HStack gap={8}>
+              <span>SHOP</span>
+              <StyledObjectsText>(OBJECTS)</StyledObjectsText>
+            </HStack>
+          </DropdownLink>
         </VStack>
 
         <VStack gap={4}>
@@ -125,7 +124,16 @@ function DropdownLink({ href, children }: DropdownLinkProps) {
 }
 
 const StyledDropdownLink = styled.a`
+  padding: 8px;
+
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+
   color: #808080;
+  cursor: pointer;
   text-decoration: none;
 `;
 
@@ -183,6 +191,8 @@ const DropdownContainer = styled(VStack)<{ active: boolean }>`
   position: absolute;
   z-index: 10;
   top: 100%;
+
+  background-color: ${colors.white};
 
   border: 1px solid ${colors.offBlack};
   padding: 4px;

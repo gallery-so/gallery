@@ -47,7 +47,7 @@ export default function CommunityPage({ queryRef }: Props) {
 
   if (!community || community.__typename !== 'Community') {
     return (
-      <StyledNotFoundPage>
+      <StyledNotFoundPage navbarHeight={navbarHeight}>
         <NotFound resource="community" />
       </StyledNotFoundPage>
     );

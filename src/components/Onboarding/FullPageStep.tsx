@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import colors from 'components/core/colors';
 import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
@@ -19,8 +18,6 @@ type Props = {
  */
 export default function FullPageStep({ children, withFooter, withBorder, navbar }: Props) {
   const globalNavbarHeight = useGlobalNavbarHeight();
-
-  console.log({ globalNavbarHeight });
 
   return (
     <GalleryRoute
@@ -51,7 +48,6 @@ const StyledPage = styled.div<{
   height: calc(
     100vh -
       ${({ withFooter, withHeader, navbarHeight, withBorder }) => {
-        console.log({ withHeader, navbarHeight });
         let heightToRemove = 0;
 
         if (withFooter) {

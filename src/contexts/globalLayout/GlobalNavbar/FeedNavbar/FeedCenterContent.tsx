@@ -1,7 +1,5 @@
 import { HStack } from 'components/core/Spacer/Stack';
-import Link from 'next/link';
 import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
-import { useRouter } from 'next/router';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
 import { FeedMode } from 'components/Feed/Feed';

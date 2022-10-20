@@ -6,6 +6,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionEditorNavbarFragment$key } from '../../../../../__generated__/CollectionEditorNavbarFragment.graphql';
 import { CollectionEditorLeftContent } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorLeftContent';
+import {
+  NavbarCenterContent,
+  NavbarLeftContent,
+  NavbarRightContent,
+  StandardNavbarContainer,
+} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 
 type Props = {
   onDone: () => void;
@@ -24,30 +30,22 @@ export function CollectionEditorNavbar({ queryRef, isCollectionValid, onDone, on
     queryRef
   );
 
-  const { setCustomNavLeftContent, setCustomNavCenterContent, setCustomNavRightContent } =
-    useGlobalLayoutActions();
+  return (
+    <StandardNavbarContainer>
+      <NavbarLeftContent>
+        <CollectionEditorLeftContent onCancel={onCancel} />
+      </NavbarLeftContent>
 
-  useLayoutEffect(() => {
-    setCustomNavLeftContent(<CollectionEditorLeftContent onCancel={onCancel} />);
-    setCustomNavCenterContent(
-      // Need a fallback here to stop the entire navbar from suspending
-      <Suspense fallback={null}>
-        <CollectionEditorCenterContent queryRef={query} />
-      </Suspense>
-    );
+      <NavbarCenterContent>
+        {/* Need a fallback here to stop the entire navbar from suspending */}
+        <Suspense fallback={null}>
+          <CollectionEditorCenterContent queryRef={query} />
+        </Suspense>
+      </NavbarCenterContent>
 
-    setCustomNavRightContent(
-      <CollectionEditorRightContent isCollectionValid={isCollectionValid} onDone={onDone} />
-    );
-  }, [
-    isCollectionValid,
-    onCancel,
-    onDone,
-    query,
-    setCustomNavCenterContent,
-    setCustomNavLeftContent,
-    setCustomNavRightContent,
-  ]);
-
-  return null;
+      <NavbarRightContent>
+        <CollectionEditorRightContent isCollectionValid={isCollectionValid} onDone={onDone} />
+      </NavbarRightContent>
+    </StandardNavbarContainer>
+  );
 }

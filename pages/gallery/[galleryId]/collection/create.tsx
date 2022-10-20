@@ -16,6 +16,7 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
+import { CollectionCreateNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
 
 type Props = {
   galleryId: string;
@@ -80,19 +81,18 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
-        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-      </FullPageStep>
-
-      <WizardFooter
-        isNextEnabled={isCollectionValid}
-        nextText={'Save'}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        previousText="Cancel"
-      />
-    </VStack>
+    <FullPageStep
+      withBorder
+      navbar={
+        <CollectionCreateNavbar
+          onBack={handlePrevious}
+          onNext={handleNext}
+          isCollectionValid={isCollectionValid}
+        />
+      }
+    >
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    </FullPageStep>
   );
 }
 

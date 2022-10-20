@@ -12,7 +12,7 @@ export const STEPS = [
 
 export type StepName = typeof STEPS[number];
 
-export const FOOTER_BUTTON_TEXT_MAP: { [key in StepName]: string } = {
+export const ONBOARDING_NEXT_BUTTON_TEXT_MAP: { [key in StepName]: string } = {
   welcome: 'Next',
   'add-user-info': 'Next',
   create: 'New Collection',

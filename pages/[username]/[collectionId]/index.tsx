@@ -30,7 +30,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
 
   return (
     <GalleryRoute
-      navbar={<GalleryNavbar queryRef={query} />}
+      navbar={<GalleryNavbar username={username} queryRef={query} />}
       element={<CollectionGalleryPage queryRef={query} username={username} />}
     />
   );
