@@ -59,3 +59,7 @@ jobs:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
           PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
           NETWORK_NAME: main
+      - uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: cypress/screenshots
