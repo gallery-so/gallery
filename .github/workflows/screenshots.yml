@@ -1,0 +1,54 @@
+name: screenshots
+on: [deployment_status]
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install puppeteer-headful
+        uses: mujo-code/puppeteer-headful@master
+        env:
+          CI: 'true'
+
+      - name: user-gallery
+        uses: flameddd/screenshots-ci-action@master
+        with:
+          url: ${{ github.event.deployment_status.target_url }}/percyio
+          devices: iPhone 13,iPad
+      - uses: actions/upload-artifact@v2
+        with:
+          path: screenshots
+          name: user-gallery
+      - run: rm ./screenshots/*
+
+      - name: image-detail
+        uses: flameddd/screenshots-ci-action@master
+        with:
+          url: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
+          devices: iPhone 13,iPad
+      - uses: actions/upload-artifact@v2
+        with:
+          path: screenshots
+          name: image-detail
+      - run: rm ./screenshots/*
+
+      - name: iframe-detail
+        uses: flameddd/screenshots-ci-action@master
+        with:
+          url: ${{ github.event.deployment_status.target_url }}/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle/2AdjUmAlhc9nJxpmFcRR7YAvPX1-test
+          devices: iPhone 13,iPad
+      - uses: actions/upload-artifact@v2
+        with:
+          path: screenshots
+          name: iframe-detail
+      - run: rm ./screenshots/*
+
+      - name: music-detail
+        uses: flameddd/screenshots-ci-action@master
+        with:
+          url: ${{ github.event.deployment_status.target_url }}/robin/24FOgnMEzBhLvPyVS0ldLfMJz7j/24FO0tBeQGX8jqZHDeftrSlslls
+          devices: iPhone 13,iPad
+      - uses: actions/upload-artifact@v2
+        with:
+          path: screenshots
+          name: music-detail
