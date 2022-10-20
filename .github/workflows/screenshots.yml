@@ -24,13 +24,6 @@ jobs:
           devices: iPhone 13,iPad
           fullPage: 'true'
 
-      - name: iframe-detail
-        uses: flameddd/screenshots-ci-action@master
-        with:
-          url: ${{ github.event.deployment_status.target_url }}/percyio/2EmOcXKDs660QTUSTPHuo7JOHaT/27zUo7lBBdXfvUyR41kEM8mgitE-test
-          devices: iPhone 13,iPad
-          fullPage: 'true'
-
       - name: music-detail
         uses: flameddd/screenshots-ci-action@master
         with:
