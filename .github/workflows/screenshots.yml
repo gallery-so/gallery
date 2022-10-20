@@ -1,54 +1,52 @@
-name: screenshots
+name: ci
 on: [deployment_status]
 jobs:
   screenshots:
+    strategy:
+      matrix:
+        width: [1200, 992, 768, 600]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: install puppeteer-headful
-        uses: mujo-code/puppeteer-headful@master
-        env:
-          CI: 'true'
-
       - name: user-gallery
-        uses: flameddd/screenshots-ci-action@master
+        uses: swinton/screenshot-website@v1.x
         with:
-          url: ${{ github.event.deployment_status.target_url }}/percyio
-          devices: iPhone 13,iPad
+          source: ${{ github.event.deployment_status.target_url }}/percyio
+          destination: screenshots/user-gallery/${{ matrix.width }}.png
+          full-page: true
       - uses: actions/upload-artifact@v2
         with:
-          path: screenshots
-          name: user-gallery
-      - run: rm ./screenshots/*
+        path: screenshots/user-gallery
+        name: user-gallery
 
       - name: image-detail
-        uses: flameddd/screenshots-ci-action@master
+        uses: swinton/screenshot-website@v1.x
         with:
-          url: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
-          devices: iPhone 13,iPad
+          source: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
+          destination: screenshots/image-detail/${{ matrix.width }}.png
+          full-page: true
       - uses: actions/upload-artifact@v2
         with:
-          path: screenshots
+          path: screenshots/image-detail
           name: image-detail
-      - run: rm ./screenshots/*
 
       - name: iframe-detail
-        uses: flameddd/screenshots-ci-action@master
+        uses: swinton/screenshot-website@v1.x
         with:
-          url: ${{ github.event.deployment_status.target_url }}/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle/2AdjUmAlhc9nJxpmFcRR7YAvPX1-test
-          devices: iPhone 13,iPad
+          source: ${{ github.event.deployment_status.target_url }}/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle/2AdjUmAlhc9nJxpmFcRR7YAvPX1-test
+          destination: screenshots/iframe-detail/${{ matrix.width }}.png
+          full-page: true
       - uses: actions/upload-artifact@v2
         with:
-          path: screenshots
+          path: screenshots/iframe-detail
           name: iframe-detail
-      - run: rm ./screenshots/*
 
       - name: music-detail
-        uses: flameddd/screenshots-ci-action@master
+        uses: swinton/screenshot-website@v1.x
         with:
-          url: ${{ github.event.deployment_status.target_url }}/robin/24FOgnMEzBhLvPyVS0ldLfMJz7j/24FO0tBeQGX8jqZHDeftrSlslls
-          devices: iPhone 13,iPad
+          source: ${{ github.event.deployment_status.target_url }}/robin/24FOgnMEzBhLvPyVS0ldLfMJz7j/24FO0tBeQGX8jqZHDeftrSlslls
+          destination: screenshots/music-detail/${{ matrix.width }}.png
+          full-page: true
       - uses: actions/upload-artifact@v2
         with:
-          path: screenshots
+          path: screenshots/music-detail
           name: music-detail
