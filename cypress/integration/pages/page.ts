@@ -9,7 +9,7 @@ export default class Page {
 
   screenshotPageAcrossDevices(path: string) {
     cy.visit(path);
-    cy.wait(3000);
+    cy.wait(5000);
     cy.screenshot(); // desktop
     cy.viewport('ipad-2');
     cy.screenshot(); // tablet
