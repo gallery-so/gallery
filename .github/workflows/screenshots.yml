@@ -6,6 +6,7 @@ jobs:
       matrix:
         width: [1200, 992, 768, 600]
     runs-on: ubuntu-latest
+
     steps:
       - name: user-gallery
         uses: swinton/screenshot-website@v1.x
@@ -13,6 +14,7 @@ jobs:
           source: ${{ github.event.deployment_status.target_url }}/percyio
           destination: screenshots/user-gallery/${{ matrix.width }}.png
           full-page: true
+          width: ${{ matrix.width }}
       - uses: actions/upload-artifact@v2
         with:
         path: screenshots/user-gallery
@@ -24,6 +26,7 @@ jobs:
           source: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
           destination: screenshots/image-detail/${{ matrix.width }}.png
           full-page: true
+          width: ${{ matrix.width }}
       - uses: actions/upload-artifact@v2
         with:
           path: screenshots/image-detail
@@ -35,6 +38,7 @@ jobs:
           source: ${{ github.event.deployment_status.target_url }}/percyio/2EmOPrTDsAibEvPP8Hn3wCkIrle/2AdjUmAlhc9nJxpmFcRR7YAvPX1-test
           destination: screenshots/iframe-detail/${{ matrix.width }}.png
           full-page: true
+          width: ${{ matrix.width }}
       - uses: actions/upload-artifact@v2
         with:
           path: screenshots/iframe-detail
@@ -46,6 +50,7 @@ jobs:
           source: ${{ github.event.deployment_status.target_url }}/robin/24FOgnMEzBhLvPyVS0ldLfMJz7j/24FO0tBeQGX8jqZHDeftrSlslls
           destination: screenshots/music-detail/${{ matrix.width }}.png
           full-page: true
+          width: ${{ matrix.width }}
       - uses: actions/upload-artifact@v2
         with:
           path: screenshots/music-detail
