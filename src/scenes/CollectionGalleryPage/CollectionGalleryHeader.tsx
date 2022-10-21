@@ -95,7 +95,7 @@ function CollectionGalleryHeader({
   } = collection;
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: ROUTES.USER.COLLECTION(username as string, collectionId) });
+    track('Share Collection', { path: ROUTES.USER.COLLECTION(username, collectionId) });
   }, [collectionId, username, track]);
 
   const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
