@@ -16,7 +16,7 @@ jobs:
           url: ${{ github.event.deployment_status.target_url }}/percyio
           devices: iPhone 13,iPad
           fullPage: 'true'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: screenshots
           name: user-gallery
@@ -27,7 +27,15 @@ jobs:
           url: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
           devices: iPhone 13,iPad
           fullPage: 'true'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: screenshots
           name: image-detail
+
+      - name: add pr comment
+        uses: mshick/add-pr-comment@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          message: |
+            **Hello MASTER**

@@ -1,0 +1,19 @@
+name: ci
+
+on:
+  workflow_run:
+    workflows: [screenshots]
+    types: [completed]
+
+jobs:
+  link-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: add artifact links to pull request
+        uses: tonyhallett/artifacts-url-comments@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          prefix: 'Screenshots from current build: '
+          format: 'name'
+          addTo: 'pull'
