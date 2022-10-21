@@ -5,7 +5,6 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { CommunityHolderGridFragment$key } from '__generated__/CommunityHolderGridFragment.graphql';
 import CommunityHolderGridItem from './CommunityHolderGridItem';
-import { useMemo } from 'react';
 
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
@@ -42,6 +41,6 @@ const StyledCommunityHolderGrid = styled.div`
   grid-gap: 24px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
