@@ -14,23 +14,52 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
   const tokenHolders = useFragment(
     graphql`
       fragment CommunityHolderGridFragment on Token @relay(plural: true) {
+        media {
+          __typename
+        }
+        owner {
+          username
+        }
         ...CommunityHolderGridItemFragment
       }
     `,
     communityRef
   );
 
-  const totalHolders = tokenHolders.length;
+  const filteredTokens = tokenHolders.filter((token) => {
+    return token?.media?.__typename !== 'InvalidMedia';
+  });
+
+  const nonGalleryMemberTokens = filteredTokens.filter((token) => {
+    return !token?.owner;
+  });
+
+  const galleryMemberTokens = filteredTokens.filter((token) => {
+    return token?.owner;
+  });
 
   return (
-    <VStack gap={16}>
-      <TitleS>Gallery members ({totalHolders})</TitleS>
+    <VStack gap={48}>
+      <VStack gap={16}>
+        <TitleS>Gallery members</TitleS>
 
-      <StyledCommunityHolderGrid>
-        {tokenHolders.map((holder) =>
-          holder ? <CommunityHolderGridItem holderRef={holder} /> : null
-        )}
-      </StyledCommunityHolderGrid>
+        <StyledCommunityHolderGrid>
+          {galleryMemberTokens.map((holder) =>
+            holder ? <CommunityHolderGridItem holderRef={holder} /> : null
+          )}
+        </StyledCommunityHolderGrid>
+      </VStack>
+      {nonGalleryMemberTokens.length > 0 && (
+        <VStack gap={16}>
+          <TitleS>Other members</TitleS>
+
+          <StyledCommunityHolderGrid>
+            {nonGalleryMemberTokens.map((holder) =>
+              holder ? <CommunityHolderGridItem holderRef={holder} /> : null
+            )}
+          </StyledCommunityHolderGrid>
+        </VStack>
+      )}
     </VStack>
   );
 }
