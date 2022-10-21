@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { CommunityHolderGridFragment$key } from '__generated__/CommunityHolderGridFragment.graphql';
 import CommunityHolderGridItem from './CommunityHolderGridItem';
+import { useMemo } from 'react';
 
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
