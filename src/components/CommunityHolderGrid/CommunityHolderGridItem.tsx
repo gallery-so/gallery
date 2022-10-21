@@ -2,8 +2,11 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import Link from 'next/link';
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 
@@ -18,6 +21,12 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
       fragment CommunityHolderGridItemFragment on Token {
         dbid
         name
+        tokenId
+        contract {
+          contractAddress {
+            address
+          }
+        }
         media {
           __typename
 
@@ -40,8 +49,9 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     `,
     holderRef
   );
+  const { tokenId, contract, owner } = token;
 
-  const galleryLink = `/${token?.owner?.username}`;
+  const galleryLink = `/${owner?.username}`;
 
   const resizedNft =
     token.media && 'previewURLs' in token.media
@@ -56,12 +66,25 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   }
 
   const { url: src } = resizedNft;
+  const openSeaExternalUrl = useMemo(() => {
+    if (contract?.contractAddress?.address && tokenId) {
+      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    }
+
+    return null;
+  }, [contract?.contractAddress?.address, tokenId]);
 
   return (
     <VStack gap={8}>
-      <StyledNftImage src={src} />
+      <Link href={openSeaExternalUrl || ''} passHref>
+        <a target="_blank">
+          <StyledNftImage src={src} />
+        </a>
+      </Link>
       <VStack>
-        <BaseM>{token?.name}</BaseM>
+        <BaseM>
+          {token?.name} {token.tokenId}
+        </BaseM>
         <InteractiveLink to={galleryLink}>{token?.owner?.username}</InteractiveLink>
       </VStack>
     </VStack>
@@ -72,4 +95,5 @@ const StyledNftImage = styled.img`
   min-height: 240px;
   width: auto;
   max-width: 100%;
+  cursor: pointer;
 `;
