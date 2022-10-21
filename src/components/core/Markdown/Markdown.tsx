@@ -1,3 +1,4 @@
+import { ROUTES } from 'constants/routes';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import InteractiveLink, {
@@ -41,7 +42,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === '/';
+            const isInternalLink = href[0] === ROUTES.ROOT;
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>

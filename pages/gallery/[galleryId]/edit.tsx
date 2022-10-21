@@ -8,6 +8,7 @@ import { WizardFooter } from 'components/WizardFooter';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
+import { ROUTES } from 'constants/routes';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
@@ -52,9 +53,9 @@ export default function EditGalleryPage() {
     if (canGoBack) {
       back();
     } else if (query.viewer?.user?.username) {
-      push(`/${query.viewer.user.username}`);
+      push(ROUTES.USER.ROOT(`${query.viewer.user.username}`));
     } else {
-      push(`/home`);
+      push(ROUTES.HOME);
     }
   }, [back, canGoBack, push, query.viewer?.user?.username]);
 

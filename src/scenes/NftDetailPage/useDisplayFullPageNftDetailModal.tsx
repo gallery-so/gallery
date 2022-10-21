@@ -1,4 +1,5 @@
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import { ROUTES } from 'constants/routes';
 import { useModalActions, useModalState } from 'contexts/modal/ModalContext';
 import { useRouter } from 'next/router';
 import { useEffect, Suspense } from 'react';
@@ -15,7 +16,10 @@ export default function useDisplayFullPageNftDetailModal() {
     push,
   } = useRouter();
 
-  const returnTo = originPage === 'gallery' ? `/${username}` : `/${username}/${collectionId}`;
+  const returnTo =
+    originPage === 'gallery'
+      ? ROUTES.USER.ROOT(username as string)
+      : ROUTES.USER.COLLECTION(username as string, collectionId as string);
 
   useEffect(() => {
     if (username && tokenId && collectionId && !isModalOpenRef.current) {

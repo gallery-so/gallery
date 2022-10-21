@@ -6,6 +6,7 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { graphql } from 'relay-runtime';
 import { congratulationsQuery } from '../../__generated__/congratulationsQuery.graphql';
 import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
+import { ROUTES } from 'constants/routes';
 
 export default function Congratulations() {
   const query = useLazyLoadQuery<congratulationsQuery>(
@@ -40,7 +41,7 @@ export default function Congratulations() {
           <TitleL>Welcome to your Gallery</TitleL>
           <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
         </VStack>
-        <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
+        <FixedWidthButtonLink href={ROUTES.USER.ROOT(username)}>Enter</FixedWidthButtonLink>
       </VStack>
     </FullPageCenteredStep>
   );

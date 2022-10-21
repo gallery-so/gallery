@@ -16,6 +16,7 @@ import { TitleM } from 'components/core/Text/Text';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
 import { HStack } from 'components/core/Spacer/Stack';
+import { ROUTES } from 'constants/routes';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -106,11 +107,11 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={`/${username}`}>
+            <UnstyledLink href={ROUTES.USER.ROOT(username)}>
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <UnstyledLink href="/shop">
+            <UnstyledLink href={ROUTES.SHOP}>
               <ShopOptionContainer>
                 <StyledShopTextButton text="shop" />
                 <StyledObjectsContainer>

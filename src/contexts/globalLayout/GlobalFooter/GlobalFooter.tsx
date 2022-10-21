@@ -10,6 +10,7 @@ import {
   GALLERY_TWITTER,
   GALLERY_BLOG,
 } from 'constants/urls';
+import { ROUTES } from 'constants/routes';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
@@ -25,7 +26,7 @@ function GlobalFooter() {
       {isMobile && <StyledHr />}
       <VStack gap={4}>
         <HStack gap={4}>
-          <Link href="/">
+          <Link href={ROUTES.ROOT}>
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
           <BaseS>BETA</BaseS>
@@ -37,7 +38,7 @@ function GlobalFooter() {
           <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
           <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
           <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-          <StyledFooterLink href="/shop">
+          <StyledFooterLink href={ROUTES.SHOP}>
             <HStack gap={4}>
               Shop
               <StyledObjectsContainer>
@@ -55,8 +56,8 @@ function GlobalFooter() {
         <HStack gap={8}>
           <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
           <BaseS color={colors.metal}>·</BaseS>
-          <StyledFooterLink href="/privacy">Privacy</StyledFooterLink>
-          <StyledFooterLink href="/terms">Terms</StyledFooterLink>
+          <StyledFooterLink href={ROUTES.PRIVACY}>Privacy</StyledFooterLink>
+          <StyledFooterLink href={ROUTES.TERMS}>Terms</StyledFooterLink>
         </HStack>
       </StyledFooterLinkContainer>
     </StyledGlobalFooter>

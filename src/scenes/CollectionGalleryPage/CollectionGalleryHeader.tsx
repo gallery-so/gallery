@@ -23,6 +23,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/Collecti
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { ROUTES } from 'constants/routes';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -94,7 +95,7 @@ function CollectionGalleryHeader({
   } = collection;
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collectionId}` });
+    track('Share Collection', { path: ROUTES.USER.COLLECTION(username as string, collectionId) });
   }, [collectionId, username, track]);
 
   const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
@@ -128,7 +129,7 @@ function CollectionGalleryHeader({
             <HStack align="flex-start" justify="space-between">
               <HStack>
                 {username ? (
-                  <UnstyledLink href={`/${username}`}>
+                  <UnstyledLink href={ROUTES.USER.ROOT(username)}>
                     <StyledUsernameMobile>{username}</StyledUsernameMobile>
                   </UnstyledLink>
                 ) : null}
@@ -144,7 +145,7 @@ function CollectionGalleryHeader({
             <HStack align="flex-start" justify="space-between">
               <HStack>
                 {username ? (
-                  <UnstyledLink href={`/${username}`}>
+                  <UnstyledLink href={ROUTES.USER.ROOT(username)}>
                     <StyledUsername>{username}</StyledUsername>
                   </UnstyledLink>
                 ) : null}

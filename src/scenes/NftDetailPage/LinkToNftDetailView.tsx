@@ -1,3 +1,4 @@
+import { ROUTES } from 'constants/routes';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -27,7 +28,7 @@ export default function LinkToNftDetailView({
   return (
     <Link
       // path that will be shown in the browser URL bar
-      as={`/${username}/${collectionId}/${tokenId}`}
+      as={ROUTES.USER.COLLECTION_TOKEN(username, collectionId, tokenId)}
       // query params purely for internal tracking. this will NOT be displayed in URL bar.
       // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
       // appropriate query params attached. this allows the app to stay on the current page,

@@ -6,6 +6,7 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import { ROUTES } from 'constants/routes';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -37,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
 
   if (!username || !collectionId) {
     // How could they have possibly gotten to this route without those params
-    return { redirect: { permanent: false, destination: '/' } };
+    return { redirect: { permanent: false, destination: ROUTES.ROOT } };
   }
 
   return {
