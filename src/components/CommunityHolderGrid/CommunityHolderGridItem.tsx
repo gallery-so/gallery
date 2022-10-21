@@ -17,7 +17,6 @@ type Props = {
 export default function CommunityHolderGridItem({ holderRef }: Props) {
   const token = useFragment(
     graphql`
-      # TODO: @inline?
       fragment CommunityHolderGridItemFragment on Token {
         dbid
         name
@@ -82,9 +81,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         </a>
       </Link>
       <VStack>
-        <BaseM>
-          {token?.name} {token.tokenId}
-        </BaseM>
+        <BaseM>{token?.name}</BaseM>
         <InteractiveLink to={galleryLink}>{token?.owner?.username}</InteractiveLink>
       </VStack>
     </VStack>
