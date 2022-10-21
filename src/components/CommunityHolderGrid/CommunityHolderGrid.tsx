@@ -1,6 +1,7 @@
 import breakpoints from 'components/core/breakpoints';
 import { VStack } from 'components/core/Spacer/Stack';
 import { TitleS } from 'components/core/Text/Text';
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { CommunityHolderGridFragment$key } from '__generated__/CommunityHolderGridFragment.graphql';
@@ -26,17 +27,17 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
     communityRef
   );
 
-  const filteredTokens = tokenHolders.filter((token) => {
-    return token?.media?.__typename !== 'InvalidMedia';
-  });
+  const filteredTokens = useMemo(() => {
+    return tokenHolders.filter((token) => token?.media?.__typename !== 'InvalidMedia');
+  }, [tokenHolders]);
 
-  const nonGalleryMemberTokens = filteredTokens.filter((token) => {
-    return !token?.owner;
-  });
+  const nonGalleryMemberTokens = useMemo(() => {
+    return filteredTokens.filter((token) => !token?.owner);
+  }, [filteredTokens]);
 
-  const galleryMemberTokens = filteredTokens.filter((token) => {
-    return token?.owner;
-  });
+  const galleryMemberTokens = useMemo(() => {
+    return filteredTokens.filter((token) => token?.owner);
+  }, [filteredTokens]);
 
   return (
     <VStack gap={48}>
