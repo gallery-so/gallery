@@ -1,7 +1,7 @@
-name: ci
+name: screenshots
 on: [deployment_status]
 jobs:
-  screenshots:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,11 +31,3 @@ jobs:
         with:
           path: screenshots
           name: image-detail
-
-      - name: add pr comment
-        uses: mshick/add-pr-comment@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          message: |
-            **Hello MASTER**
