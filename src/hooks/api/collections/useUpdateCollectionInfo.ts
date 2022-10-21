@@ -11,6 +11,9 @@ export default function useUpdateCollectionInfo() {
     mutation useUpdateCollectionInfoMutation($input: UpdateCollectionInfoInput!) {
       updateCollectionInfo(input: $input) {
         __typename
+        ... on ErrInvalidInput {
+          message
+        }
         ... on UpdateCollectionInfoPayload {
           collection {
             id
@@ -35,10 +38,14 @@ export default function useUpdateCollectionInfo() {
         },
       };
 
-      await updateCollection({
+      const response = await updateCollection({
         optimisticResponse,
         variables: { input: { name, collectorsNote, collectionId: collectionDbid } },
       });
+
+      if (response.updateCollectionInfo?.__typename === 'ErrInvalidInput') {
+        throw new Error('The description you entered is too long.');
+      }
     },
     [updateCollection]
   );

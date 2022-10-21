@@ -55,6 +55,7 @@ type GalleryUser implements Node {
     username: String
     bio: String
     traits: String
+    universal: Boolean
 
     # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
     # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -68,6 +69,7 @@ type GalleryUser implements Node {
     isAuthenticatedUser: Boolean
     followers: [GalleryUser] @goField(forceResolver: true)
     following: [GalleryUser] @goField(forceResolver: true)
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection @goField(forceResolver: true)
 }
 
 type Wallet implements Node {
@@ -118,15 +120,16 @@ union GalleryUserOrAddress = GalleryUser | ChainAddress
 
 union MediaSubtype =
     ImageMedia
-    | VideoMedia
-    | AudioMedia
-    | TextMedia
-    | HtmlMedia
-    | JsonMedia
-    | GltfMedia
-    | UnknownMedia
-    | SyncingMedia
-    | InvalidMedia
+  | GIFMedia
+  | VideoMedia
+  | AudioMedia
+  | TextMedia
+  | HtmlMedia
+  | JsonMedia
+  | GltfMedia
+  | UnknownMedia
+  | SyncingMedia
+  | InvalidMedia
 
 type PreviewURLSet {
     raw: String
@@ -165,6 +168,14 @@ type ImageMedia implements Media {
     mediaType: String
 
     contentRenderURL: String
+}
+
+type GIFMedia implements Media {
+  previewURLs: PreviewURLSet
+  mediaURL: String
+  mediaType: String
+
+  contentRenderURL: String
 }
 
 type VideoMedia implements Media {
@@ -253,9 +264,15 @@ enum Chain {
     Tezos
     POAP
 }
+
 enum WalletType {
     EOA
     GnosisSafe
+}
+
+enum InteractionType {
+    Admire
+    Comment
 }
 
 type Token implements Node {
@@ -354,6 +371,26 @@ type MembershipTier implements Node {
     owners: [TokenHolder]
 }
 
+type TokenEdge {
+  node: Token
+  cursor: String
+}
+
+type TokensConnection {
+  edges: [TokenEdge]
+  pageInfo: PageInfo!
+}
+
+type TokenHolderEdge {
+  node: TokenHolder
+  cursor: String
+}
+
+type TokenHoldersConnection {
+  edges: [TokenHolderEdge]
+  pageInfo: PageInfo!
+}
+
 type Community implements Node
   @goGqlId(fields: ["contractAddress", "chain"])
   @goEmbedHelper {
@@ -372,7 +409,9 @@ type Community implements Node
   profileBannerURL: String
   badgeURL: String
 
-  owners: [TokenHolder] @goField(forceResolver: true)
+  tokensInCommunity(before: String, after: String, first: Int, last: Int): TokensConnection @goField(forceResolver: true)
+
+  owners(before: String, after: String, first: Int, last: Int): TokenHoldersConnection @goField(forceResolver: true)
 }
 
 type Contract implements Node {
@@ -461,6 +500,42 @@ type FollowInfo {
     followedBack: Boolean
 }
 
+type FeedEventAdmireEdge {
+    node: Admire
+    event: FeedEvent
+    cursor: String
+}
+
+type FeedEventAdmiresConnection {
+    edges: [FeedEventAdmireEdge]
+    pageInfo: PageInfo!
+
+}
+
+type FeedEventCommentEdge {
+    node: Comment
+    event: FeedEvent
+    cursor: String
+}
+
+type FeedEventCommentsConnection {
+    edges: [FeedEventCommentEdge]
+    pageInfo: PageInfo!
+}
+
+union Interaction = Admire | Comment
+
+type FeedEventInteractionsEdge {
+    node: Interaction
+    event: FeedEvent
+    cursor: String
+}
+
+type FeedEventInteractionsConnection {
+    edges: [FeedEventInteractionsEdge]
+    pageInfo: PageInfo!
+}
+
 interface FeedEventData {
     eventTime: Time
     owner: GalleryUser
@@ -470,9 +545,20 @@ interface FeedEventData {
 type FeedEvent implements Node {
     id: ID!
     dbid: DBID!
+
     eventData: FeedEventData @goField(forceResolver: true)
-    admires: [Admire!] @goField(forceResolver: true)
-    comments: [Comment!] @goField(forceResolver: true)
+    admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection @goField(forceResolver: true)
+    comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection @goField(forceResolver: true)
+
+    # If supplied, typeFilter will only query for the requested interaction types.
+    # If typeFilter is omitted, all interaction types will be queried.
+    interactions(before: String, after: String, first: Int, last: Int, typeFilter:[InteractionType!]): FeedEventInteractionsConnection @goField(forceResolver: true)
+
+    viewerAdmire: Admire @goField(forceResolver: true)
+
+    # TODO: This is just here while we migrate the frontend over to viewerAdmire.
+    # Remove this in the near future.
+    hasViewerAdmiredEvent: Boolean @goField(forceResolver: true)
 }
 
 type UserCreatedFeedEventData implements FeedEventData {
@@ -540,6 +626,7 @@ union FeedEventByIdOrError =
     | ErrUnknownAction
 
 type PageInfo {
+    total: Int
     size: Int!
     hasPreviousPage: Boolean!
     hasNextPage: Boolean!
@@ -549,12 +636,12 @@ type PageInfo {
 
 type FeedEdge {
     node: FeedEventOrError
-    cursor: String!
+    cursor: String
 }
 
-type FeedConnection @goEmbedHelper {
+type FeedConnection {
     edges: [FeedEdge]
-    pageInfo: PageInfo! @goField(forceResolver: true)
+    pageInfo: PageInfo!
 }
 
 type Query {
@@ -568,7 +655,7 @@ type Query {
     collectionsByIds(ids: [DBID!]!): [CollectionByIdOrError]
     tokenById(id: DBID!): TokenByIdOrError
     collectionTokenById(tokenId: DBID!, collectionId: DBID!): CollectionTokenByIdOrError
-    communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean, onlyGalleryUsers: Boolean): CommunityByAddressOrError
+    communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
     generalAllowlist: [ChainAddress!]
     galleryOfTheWeekWinners: [GalleryUser!]
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
@@ -842,6 +929,18 @@ type ErrSyncFailed implements Error {
     message: String!
 }
 
+type ErrAdmireNotFound implements Error {
+    message: String!
+}
+
+type ErrAdmireAlreadyExists implements Error {
+    message: String!
+}
+
+type ErrCommentNotFound implements Error {
+    message: String!
+}
+
 input AuthMechanism {
     eoa: EoaAuth
     gnosisSafe: GnosisSafeAuth
@@ -877,6 +976,19 @@ input GnosisSafeAuth {
     address: Address!
     nonce: String!
 }
+
+input DeepRefreshInput {
+    chain: Chain!
+}
+
+type DeepRefreshPayload {
+    chain: Chain
+    submitted: Boolean
+}
+
+union DeepRefreshPayloadOrError =
+    DeepRefreshPayload
+    | ErrNotAuthorized
 
 union LoginPayloadOrError =
     LoginPayload
@@ -936,12 +1048,14 @@ union AdmireFeedEventPayloadOrError =
   | ErrAuthenticationFailed
   | ErrFeedEventNotFound
   | ErrInvalidInput
+  | ErrAdmireAlreadyExists
 
 union RemoveAdmirePayloadOrError =
     RemoveAdmirePayload
   | ErrAuthenticationFailed
   | ErrFeedEventNotFound
   | ErrInvalidInput
+  | ErrAdmireNotFound
 
 union CommentOnFeedEventPayloadOrError =
     CommentOnFeedEventPayload
@@ -954,6 +1068,7 @@ union RemoveCommentPayloadOrError =
   | ErrAuthenticationFailed
   | ErrFeedEventNotFound
   | ErrInvalidInput
+  | ErrCommentNotFound
 
 type AdmireFeedEventPayload {
     viewer: Viewer
@@ -962,8 +1077,9 @@ type AdmireFeedEventPayload {
 }
 
 type RemoveAdmirePayload {
-  viewer: Viewer
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    admireID: DBID
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type CommentOnFeedEventPayload {
@@ -1002,6 +1118,7 @@ type Mutation {
     refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
     refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
     refreshContract(contractId: DBID!): RefreshContractPayloadOrError
+    deepRefresh(input: DeepRefreshInput!): DeepRefreshPayloadOrError @authRequired
 
     getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
 

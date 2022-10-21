@@ -34,12 +34,12 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         contractAddress {
           address
         }
-        owners {
-          user @required(action: THROW) {
-            dbid
-            username @required(action: THROW)
+        owners(first: 10000) @connection(key: "CommunityPageView_owners") {
+          edges {
+            node {
+              ...TokenHolderListFragment
+            }
           }
-          ...TokenHolderListItemFragment
         }
         ...CommunityHolderGridFragment
       }
@@ -56,7 +56,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const { name, description, contractAddress } = community;
+  const { name, description, contractAddress, owners } = community;
   const isMobile = useIsMobileWindowWidth();
 
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
@@ -77,11 +77,23 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   // whether or not the description appears truncated
   const [isLineClampEnabled, setIsLineClampEnabled] = useState(false);
 
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  const nonNullTokenHolders = useMemo(() => {
+    const holders = [];
+
+    for (const owner of owners?.edges ?? []) {
+      if (owner?.node) {
+        holders.push(owner.node);
+      }
+    }
+
+    return holders;
+  }, [owners?.edges]);
+
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
   }, []);
-
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     // when the descriptionRef is first set, determine if the text exceeds the line clamp threshold of 4 lines by comparing the scrollHeight to the clientHeight

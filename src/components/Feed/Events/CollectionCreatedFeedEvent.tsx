@@ -18,13 +18,13 @@ import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: CollectionCreatedFeedEventFragment$key;
+  eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -45,7 +45,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
         }
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -72,7 +72,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length || !event.owner) {
-    return null;
+    throw new Error('Tried to render CollectionCreatedFeedEvent without an owner / tokens');
   }
 
   return (

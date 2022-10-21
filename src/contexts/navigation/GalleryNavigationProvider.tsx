@@ -8,7 +8,6 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 
 type HistoryStackElement = Pick<NextRouter, 'asPath' | 'route' | 'pathname' | 'query'>;
 type GalleryNavigationContextType = {
-  historyStackLength: number;
   historyStack: HistoryStackElement[];
 };
 
@@ -37,7 +36,6 @@ const SCROLL_TRIGGER_TIME_MS =
   SCROLL_DELAY_TIME_MS;
 
 export function GalleryNavigationProvider({ children }: Props) {
-  const [historyStackLength, setHistoryStackLength] = useState(0);
   // This is a flattened list of all the paths the user has visited. Nothing gets popped off, unlike the browser history.
   const [historyStack, setHistoryStack] = useState<HistoryStackElement[]>([]);
   const { asPath, route, pathname, query } = useRouter();
@@ -156,7 +154,6 @@ export function GalleryNavigationProvider({ children }: Props) {
 
       setupScrollJankFix();
       originalPushState.bind(window.history)(...args);
-      setHistoryStackLength(window.history.state.idx ?? 0);
     };
 
     function handlePopState() {
@@ -181,8 +178,6 @@ export function GalleryNavigationProvider({ children }: Props) {
 
         window.scrollTo = originalScrollTo;
       };
-
-      setHistoryStackLength(window.history.state.idx ?? 0);
     }
 
     window.addEventListener('popstate', handlePopState);
@@ -193,27 +188,30 @@ export function GalleryNavigationProvider({ children }: Props) {
     };
   }, []);
 
-  const value = useMemo<GalleryNavigationContextType>(
-    () => ({
-      historyStackLength,
-      historyStack,
-    }),
-    [historyStackLength, historyStack]
-  );
+  const value = useMemo<GalleryNavigationContextType>(() => ({ historyStack }), [historyStack]);
 
   return (
     <GalleryNavigationContext.Provider value={value}>{children}</GalleryNavigationContext.Provider>
   );
 }
 
-export function useCanGoBack() {
-  const { historyStackLength } = useGalleryNavigationContext();
-
-  return historyStackLength > 0;
-}
-
 export function useHistoryStack() {
   const { historyStack } = useGalleryNavigationContext();
 
   return historyStack;
+}
+
+/**
+ * This uses manually tracked state to determine whether the user has visited any pages on gallery,
+ * since this information is not available out of the box via `window.history` nor `next/router`: https://stackoverflow.com/a/3588420
+ *
+ * We use this to conditionally redirect the user when they click an element that suggests "back" behavior.
+ * For example: if the user enters the editor from their main gallery, then cancels, they should be returned
+ * to their gallery. But if they arrive at the editor through a direct link, with no previous history, then
+ * the cancel button should push them to their profile (instead of a blank tab, which is there the default
+ * browser's back behavior would send them).
+ */
+export function useCanGoBack() {
+  const stack = useHistoryStack();
+  return stack.length > 1;
 }

@@ -3,7 +3,7 @@ import colors from 'components/core/colors';
 import Loader from 'components/core/Loader/Loader';
 import { TitleM } from 'components/core/Text/Text';
 import transitions from 'components/core/transitions';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -38,7 +38,7 @@ export default function FeedList({
   const query = useFragment(
     graphql`
       fragment FeedListFragment on Query {
-        ...FeedEventQueryFragment
+        ...FeedEventWithErrorBoundaryQueryFragment
       }
     `,
     queryRef
@@ -46,9 +46,14 @@ export default function FeedList({
 
   const feedData = useFragment(
     graphql`
-      fragment FeedListEventDataFragment on FeedEventData @relay(plural: true) {
-        eventTime
-        ...FeedEventFragment
+      fragment FeedListEventDataFragment on FeedEvent @relay(plural: true) {
+        dbid
+
+        eventData {
+          eventTime
+        }
+
+        ...FeedEventWithErrorBoundaryFragment
       }
     `,
     feedEventRefs
@@ -56,54 +61,84 @@ export default function FeedList({
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
+      defaultHeight: 400,
       fixedWidth: true,
       minHeight: 0,
     });
   }, []);
 
   // Function responsible for tracking the loaded state of each row.
-  const isRowLoaded = ({ index }: { index: number }) => !hasNext || !!feedData[index];
+  const isRowLoaded = useCallback(
+    ({ index }: { index: number }) => !hasNext || !!feedData[index],
+    [feedData, hasNext]
+  );
+
+  const virtualizedListRef = useRef<List | null>(null);
+
+  const handlePotentialLayoutShift = useCallback(
+    (index: number) => {
+      measurerCache.clear(index, 0);
+      virtualizedListRef.current?.recomputeRowHeights(index);
+    },
+    [measurerCache]
+  );
 
   //Render a list item or a loading indicator.
-  const rowRenderer = ({
-    index,
-    key,
-    parent,
-    style,
-  }: {
-    index: number;
-    key: string;
-    style: React.CSSProperties;
-    parent: MeasuredCellParent;
-  }) => {
-    if (!isRowLoaded({ index })) {
-      return <div />;
-    }
-    // graphql returns the oldest event at the top of the list, so display in opposite order
-    const content = feedData[feedData.length - index - 1];
+  const rowRenderer = useCallback(
+    ({
+      index,
+      key,
+      parent,
+      style,
+    }: {
+      index: number;
+      key: string;
+      style: React.CSSProperties;
+      parent: MeasuredCellParent;
+    }) => {
+      if (!isRowLoaded({ index })) {
+        return <div />;
+      }
+      // graphql returns the oldest event at the top of the list, so display in opposite order
+      const content = feedData[feedData.length - index - 1];
 
-    return (
-      <CellMeasurer
-        cache={measurerCache}
-        columnIndex={0}
-        rowIndex={index}
-        key={key}
-        parent={parent}
-      >
-        {({ registerChild }) => (
-          // @ts-expect-error: this is the suggested usage of registerChild
-          <div ref={registerChild} style={style}>
-            <FeedEvent
-              eventRef={content}
-              key={content.eventTime}
-              queryRef={query}
-              feedMode={feedMode}
-            />
-          </div>
-        )}
-      </CellMeasurer>
-    );
-  };
+      // Better safe than sorry :)
+      if (!content) {
+        return;
+      }
+
+      return (
+        <CellMeasurer
+          cache={measurerCache}
+          columnIndex={0}
+          rowIndex={index}
+          key={key}
+          parent={parent}
+        >
+          {({ registerChild }) => (
+            // @ts-expect-error: this is the suggested usage of registerChild
+            <div ref={registerChild} style={style}>
+              <FeedEvent
+                // Here, we're listening to our children for anything that might cause
+                // the height of this list item to change height.
+                // Right now, this consists of "admiring", and "commenting"
+                //
+                // Whenever the height changes, we need to ask react-virtualized
+                // to re-evaluate the height of the item to keep the virtualization good.
+                onPotentialLayoutShift={handlePotentialLayoutShift}
+                index={index}
+                eventRef={content}
+                key={content.dbid}
+                queryRef={query}
+                feedMode={feedMode}
+              />
+            </div>
+          )}
+        </CellMeasurer>
+      );
+    },
+    [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
+  );
 
   // If there are more items to be loaded then add extra rows
   const rowCount = hasNext ? feedData.length + 1 : feedData.length;
@@ -123,6 +158,7 @@ export default function FeedList({
           {({ width }) => (
             <div ref={registerChild}>
               <List
+                ref={virtualizedListRef}
                 autoHeight
                 width={width}
                 height={height}
@@ -130,6 +166,14 @@ export default function FeedList({
                 rowCount={rowCount}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
+                overscanRowCount={10}
+                // By default, react-virtualized's list has the css property `will-change` set to `transform`
+                // An element with `position: fixed` beneath an element with `will-change: transform` will
+                // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)
+                //
+                // Simply setting this back to it's original `auto` seems to do the trick and shouldn't have
+                // any serious performance implications from some trivial testing that was done.
+                style={{ willChange: 'auto' }}
               />
               {hasNext && (
                 <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
