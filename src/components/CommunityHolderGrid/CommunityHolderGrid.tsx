@@ -11,32 +11,23 @@ type Props = {
 };
 
 export default function CommunityHolderGrid({ communityRef }: Props) {
-  const community = useFragment(
+  const tokenHolders = useFragment(
     graphql`
-      fragment CommunityHolderGridFragment on Community {
-        owners {
-          displayName
-          previewTokens
-          ...CommunityHolderGridItemFragment
-        }
+      fragment CommunityHolderGridFragment on Token @relay(plural: true) {
+        ...CommunityHolderGridItemFragment
       }
     `,
     communityRef
   );
 
-  const totalHolders = community?.owners?.length;
-
-  const filteredHolders =
-    community?.owners?.filter(
-      (holder) => holder?.previewTokens && holder?.previewTokens?.length > 0
-    ) || [];
+  const totalHolders = tokenHolders.length;
 
   return (
     <VStack gap={16}>
       <TitleS>Gallery members ({totalHolders})</TitleS>
 
       <StyledCommunityHolderGrid>
-        {filteredHolders.map((holder) =>
+        {tokenHolders.map((holder) =>
           holder ? <CommunityHolderGridItem holderRef={holder} /> : null
         )}
       </StyledCommunityHolderGrid>

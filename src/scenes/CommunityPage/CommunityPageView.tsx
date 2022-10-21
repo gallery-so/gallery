@@ -41,7 +41,14 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             }
           }
         }
-        ...CommunityHolderGridFragment
+
+        tokensInCommunity(first: 10000) @connection(key: "CommunityPageView_tokensInCommunity") {
+          edges {
+            node {
+              ...CommunityHolderGridFragment
+            }
+          }
+        }
       }
     `,
     communityRef
@@ -67,7 +74,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   // TODO: Replace with the art gobbler contract address
   const isArtGobbler = useMemo(
     () =>
-      contractAddress?.address === '0x23581767a106ae21c074b2276d25e5c3e136a68b' &&
+      contractAddress?.address === '0x5180db8f5c931aae63c74266b211f580155ecac8' &&
       isArtGobblersEnabled,
     [contractAddress, isArtGobblersEnabled]
   );
@@ -90,6 +97,18 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
     return holders;
   }, [owners?.edges]);
+
+  const nonNullTokensInCommunity = useMemo(() => {
+    const tokens = [];
+
+    for (const token of community.tokensInCommunity?.edges ?? []) {
+      if (token?.node) {
+        tokens.push(token.node);
+      }
+    }
+
+    return tokens;
+  }, [community.tokensInCommunity?.edges]);
 
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
@@ -138,7 +157,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
           <StyledGridViewContainer gap={24}>
             <StyledBreakLine />
             <StyledListWrapper>
-              <CommunityHolderGrid communityRef={community} />
+              <CommunityHolderGrid communityRef={nonNullTokensInCommunity} />
             </StyledListWrapper>
           </StyledGridViewContainer>
         ) : (
@@ -150,7 +169,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             <StyledListWrapper>
               <TokenHolderList
                 title="Members in this community"
-                tokenHoldersRef={community.owners}
+                tokenHoldersRef={nonNullTokenHolders}
               />
             </StyledListWrapper>
           </>

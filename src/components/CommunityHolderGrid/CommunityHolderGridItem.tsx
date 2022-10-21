@@ -1,8 +1,10 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
+import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 
 type Props = {
@@ -10,30 +12,57 @@ type Props = {
 };
 
 export default function CommunityHolderGridItem({ holderRef }: Props) {
-  const holder = useFragment(
+  const token = useFragment(
     graphql`
-      fragment CommunityHolderGridItemFragment on TokenHolder {
-        displayName
-        user @required(action: THROW) {
-          dbid
-          username @required(action: THROW)
+      # TODO: @inline?
+      fragment CommunityHolderGridItemFragment on Token {
+        dbid
+        name
+        media {
+          __typename
+
+          ... on ImageMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+
+          ... on UnknownMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
         }
-        previewTokens
+        owner {
+          username
+        }
       }
     `,
     holderRef
   );
 
-  const firstImage = holder?.previewTokens ? holder?.previewTokens[0] : null;
+  const galleryLink = `/${token?.owner?.username}`;
 
-  const galleryLink = `/${holder?.user?.username}`;
+  const resizedNft =
+    token.media && 'previewURLs' in token.media
+      ? graphqlGetResizedNftImageUrlWithFallback(token.media.previewURLs.large, 480)
+      : null;
+
+  if (!resizedNft) {
+    throw new CouldNotRenderNftError(
+      'NftPreviewAsset',
+      'could not compute graphqlGetResizedNftImageUrlWithFallback'
+    );
+  }
+
+  const { url: src } = resizedNft;
 
   return (
     <VStack gap={8}>
-      {firstImage && <StyledNftImage src={firstImage} />}
+      <StyledNftImage src={src} />
       <VStack>
-        <BaseM>Untitled</BaseM>
-        <InteractiveLink to={galleryLink}>{holder?.displayName}</InteractiveLink>
+        <BaseM>{token?.name}</BaseM>
+        <InteractiveLink to={galleryLink}>{token?.owner?.username}</InteractiveLink>
       </VStack>
     </VStack>
   );
