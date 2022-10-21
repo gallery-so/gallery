@@ -107,7 +107,7 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={ROUTES.USER.ROOT(username)}>
+            <UnstyledLink href={ROUTES.USER.ROOT(username as string)}>
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />

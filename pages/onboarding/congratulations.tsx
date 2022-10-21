@@ -41,7 +41,9 @@ export default function Congratulations() {
           <TitleL>Welcome to your Gallery</TitleL>
           <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
         </VStack>
-        <FixedWidthButtonLink href={ROUTES.USER.ROOT(username)}>Enter</FixedWidthButtonLink>
+        <FixedWidthButtonLink href={ROUTES.USER.ROOT(username as string)}>
+          Enter
+        </FixedWidthButtonLink>
       </VStack>
     </FullPageCenteredStep>
   );
