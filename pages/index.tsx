@@ -45,6 +45,8 @@ export default function Index() {
   return (
     <GalleryRoute
       element={
+        // The idea here is to show the LandingPageScene when the  LandingPageSceneWithRedirect is loading
+        // Basically just show them something while we're determining whether or not they should be redirected
         <Suspense fallback={<LandingPageScene />}>
           <LandingPageSceneWithRedirect queryRef={query} />
         </Suspense>
