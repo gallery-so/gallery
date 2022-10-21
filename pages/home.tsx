@@ -4,7 +4,6 @@ import HomeScene from 'scenes/Home/Home';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { homeQuery } from '__generated__/homeQuery.graphql';
 import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
