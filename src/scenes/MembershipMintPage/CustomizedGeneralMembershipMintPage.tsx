@@ -21,10 +21,10 @@ import { MembershipNft } from './cardProperties';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { GALLERY_FAQ } from 'constants/urls';
-import { ROUTES } from 'constants/routes';
 import colors from 'components/core/colors';
 import { TransactionStatus } from 'constants/transaction';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { route } from 'nextjs-routes';
 
 type Props = {
   membershipNft: MembershipNft;
@@ -160,7 +160,7 @@ export function CustomizedGeneralMembershipMintPage({
               <InfoCircleIcon />
             </InteractiveLink>
           </HStack>
-          <StyledSecondaryLink href={ROUTES.AUTH}>
+          <StyledSecondaryLink href={route({ pathname: '/auth' })}>
             <Button>Create Account</Button>
           </StyledSecondaryLink>
         </VStack>
@@ -245,7 +245,7 @@ export function CustomizedGeneralMembershipMintPage({
             {transactionStatus === TransactionStatus.SUCCESS && (
               <VStack>
                 <BaseM>You can now sign up for Gallery.</BaseM>
-                <GalleryLink href={ROUTES.AUTH}>
+                <GalleryLink href={route({ pathname: '/auth' })}>
                   <BaseM>Proceed to Onboarding</BaseM>
                 </GalleryLink>
               </VStack>

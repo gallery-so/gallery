@@ -23,7 +23,7 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
-import { ROUTES } from 'constants/routes';
+import { Route, route } from 'nextjs-routes';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -86,7 +86,11 @@ function UserGalleryCollection({
   );
 
   const username = router.query.username as string;
-  const collectionUrl = ROUTES.USER.COLLECTION(username, collectionId);
+  const collectionUrlPath: Route = {
+    pathname: '/[username]/[collectionId]',
+    query: { username, collectionId },
+  };
+  const collectionUrl = route(collectionUrlPath);
 
   const track = useTrack();
 
@@ -125,7 +129,7 @@ function UserGalleryCollection({
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <UnstyledLink href={collectionUrl}>
+          <UnstyledLink href={collectionUrlPath}>
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
@@ -150,7 +154,7 @@ function UserGalleryCollection({
                       </UnstyledLink>
                     </>
                   )}
-                  <UnstyledLink href={collectionUrl}>
+                  <UnstyledLink href={collectionUrlPath}>
                     <TextButton text="View Collection" underlineOnHover />
                   </UnstyledLink>
                 </VStack>

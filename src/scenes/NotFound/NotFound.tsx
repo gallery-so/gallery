@@ -3,7 +3,6 @@ import { TitleL, BaseM } from 'components/core/Text/Text';
 import { ButtonLink } from 'components/core/Button/Button';
 import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
-import { ROUTES } from 'constants/routes';
 
 import { VStack } from 'components/core/Spacer/Stack';
 
@@ -22,7 +21,7 @@ function NotFound({ resource = 'user' }: Props) {
           <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
         </StyledBody>
       </VStack>
-      <ButtonLink href={ROUTES.ROOT}>Take me back</ButtonLink>
+      <ButtonLink href={{ pathname: '/' }}>Take me back</ButtonLink>
     </StyledNotFound>
   );
 }

@@ -5,6 +5,7 @@ import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import Link from 'next/link';
 import { Spinner } from '../Spinner/Spinner';
+import { Route } from 'nextjs-routes';
 
 // A Chrome bug seems to double apply opacity when used with animate, so we add
 // an alpha value on hex colors for things like disabled states. This assumes
@@ -152,7 +153,7 @@ export const Button = ({
 type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
   StyledButtonProps & {
     pending?: boolean;
-    href: string;
+    href: Route;
   };
 
 export const ButtonLink = ({

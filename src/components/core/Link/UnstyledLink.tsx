@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Route } from 'nextjs-routes';
 import { AnchorHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
@@ -6,7 +7,7 @@ import styled from 'styled-components';
 // - handle rel="noopener noreferrer" for target="_blank" links
 
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  href: string;
+  href: Route;
 };
 
 export const UnstyledLink = ({ href, ...props }: Props) => (

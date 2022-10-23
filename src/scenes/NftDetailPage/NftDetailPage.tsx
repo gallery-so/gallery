@@ -17,7 +17,7 @@ import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
 import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { ROUTES } from 'constants/routes';
+import { route } from 'nextjs-routes';
 
 type Props = {
   username: string;
@@ -166,7 +166,10 @@ function NftDetailPage({
         // and not navigating between pages (even while the URL is changing).
         currentLocation,
         // This `as` param is purely cosmetic and determines what users will see in the address bar.
-        ROUTES.USER.COLLECTION_TOKEN(username, initialCollectionId, tokenId),
+        route({
+          pathname: '/[username]/[collectionId]/[tokenId]',
+          query: { username, collectionId: initialCollectionId, tokenId },
+        }),
         // Prevent scroll-to-top when navigating
         { scroll: false }
       );

@@ -1,8 +1,8 @@
 import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import { ROUTES } from 'constants/routes';
 import { useModalActions, useModalState } from 'contexts/modal/ModalContext';
 import { useRouter } from 'next/router';
-import { useEffect, Suspense } from 'react';
+import { Route } from 'nextjs-routes';
+import { useEffect, Suspense, useMemo } from 'react';
 import NftDetailPage from './NftDetailPage';
 
 // displays a full-screen NFT Detail Modal if the route is detected to follow /username/collectionId/tokenId.
@@ -16,10 +16,14 @@ export default function useDisplayFullPageNftDetailModal() {
     push,
   } = useRouter();
 
-  const returnTo =
-    originPage === 'gallery'
-      ? ROUTES.USER.ROOT(username as string)
-      : ROUTES.USER.COLLECTION(username as string, collectionId as string);
+  const returnTo = useMemo<Route>(() => {
+    return originPage === 'gallery'
+      ? { pathname: '/[username]', query: { username: username as string } }
+      : {
+          pathname: '/[username]/[collectionId]',
+          query: { username: username as string, collectionId: collectionId as string },
+        };
+  }, [originPage, username, collectionId]);
 
   useEffect(() => {
     if (username && tokenId && collectionId && !isModalOpenRef.current) {

@@ -11,7 +11,6 @@ import useWindowSize from 'src/hooks/useWindowSize';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'components/Onboarding/constants';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.
@@ -83,7 +82,7 @@ export default function WelcomeAnimation() {
     setShouldFadeOut(true);
     setTimeout(() => {
       push({
-        pathname: getStepUrl('add-user-info'),
+        pathname: '/onboarding/add-user-info',
         query: {
           ...query,
         },

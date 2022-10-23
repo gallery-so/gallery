@@ -36,5 +36,5 @@ export default function Edit() {
     return <NotFound />;
   }
 
-  return <GalleryRedirect to={`/gallery/${galleryId}/edit`} />;
+  return <GalleryRedirect to={{ pathname: '/gallery/[galleryId]/edit', query: { galleryId } }} />;
 }

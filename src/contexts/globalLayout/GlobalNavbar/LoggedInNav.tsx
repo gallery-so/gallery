@@ -16,7 +16,6 @@ import { TitleM } from 'components/core/Text/Text';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
 import { HStack } from 'components/core/Spacer/Stack';
-import { ROUTES } from 'constants/routes';
 
 type Props = {
   queryRef: LoggedInNavFragment$key;
@@ -94,8 +93,11 @@ function LoggedInNav({ queryRef }: Props) {
             <UnstyledLink
               href={
                 collectionId
-                  ? `/gallery/${galleryId}/collection/${collectionId}/edit`
-                  : `/gallery/${galleryId}/edit`
+                  ? {
+                      pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                      query: { galleryId, collectionId },
+                    }
+                  : { pathname: '/gallery/[galleryId]/edit', query: { galleryId } }
               }
             >
               <TextButton text={collectionId ? 'Edit Collection' : 'Edit Gallery'} />
@@ -107,11 +109,11 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={ROUTES.USER.ROOT(username as string)}>
+            <UnstyledLink href={{ pathname: '/members' }}>
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <UnstyledLink href={ROUTES.SHOP}>
+            <UnstyledLink href={{ pathname: '/shop' }}>
               <ShopOptionContainer>
                 <StyledShopTextButton text="shop" />
                 <StyledObjectsContainer>

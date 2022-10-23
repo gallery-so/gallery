@@ -8,7 +8,6 @@ import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
 import colors from 'components/core/colors';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { ROUTES } from 'constants/routes';
 
 const GALLERY_OF_THE_WEEK_USER = 'qaulv';
 
@@ -21,14 +20,14 @@ export default function LandingPage() {
         <GalleryIntro />
         <HStack gap={12}>
           <ButtonLink
-            href={ROUTES.AUTH}
+            href={{ pathname: '/auth' }}
             onClick={() => track('Landing page Sign In button click')}
             data-testid="sign-in-button"
           >
             Sign In
           </ButtonLink>
           <ButtonLink
-            href={ROUTES.HOME}
+            href={{ pathname: '/home' }}
             onClick={() => track('Landing page Explore button click')}
             data-testid="explore-button"
             variant="secondary"
@@ -39,11 +38,13 @@ export default function LandingPage() {
       </VStack>
       <StyledBottomContainer gap={12}>
         <HStack gap={8}>
-          <NavLink to={ROUTES.MEMBERS}>Members</NavLink>
+          <NavLink to={{ pathname: '/members' }}>Members</NavLink>
           <BaseS>·</BaseS>
-          <NavLink to={ROUTES.USER.ROOT(GALLERY_OF_THE_WEEK_USER)}>Gallery of the Week</NavLink>
+          <NavLink to={{ pathname: '/[username]', query: { username: GALLERY_OF_THE_WEEK_USER } }}>
+            Gallery of the Week
+          </NavLink>
         </HStack>
-        <NavLink to={ROUTES.SHOP}>
+        <NavLink to={{ pathname: '/shop' }}>
           <HStack gap={6}>
             Shop
             <StyledObjectsContainer>

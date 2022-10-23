@@ -10,13 +10,13 @@ import {
   GALLERY_TWITTER,
   GALLERY_BLOG,
 } from 'constants/urls';
-import { ROUTES } from 'constants/routes';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import NavLink from 'components/core/NavLink/NavLink';
 import LogoBracketLeft from 'icons/LogoBracketLeft';
 import LogoBracketRight from 'icons/LogoBracketRight';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { route } from 'nextjs-routes';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -26,7 +26,7 @@ function GlobalFooter() {
       {isMobile && <StyledHr />}
       <VStack gap={4}>
         <HStack gap={4}>
-          <Link href={ROUTES.ROOT}>
+          <Link href={{ pathname: '/' }}>
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
           <BaseS>BETA</BaseS>
@@ -38,7 +38,7 @@ function GlobalFooter() {
           <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
           <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
           <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-          <StyledFooterLink href={ROUTES.SHOP}>
+          <StyledFooterLink href={route({ pathname: '/shop' })}>
             <HStack gap={4}>
               Shop
               <StyledObjectsContainer>
@@ -56,8 +56,8 @@ function GlobalFooter() {
         <HStack gap={8}>
           <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
           <BaseS color={colors.metal}>·</BaseS>
-          <StyledFooterLink href={ROUTES.PRIVACY}>Privacy</StyledFooterLink>
-          <StyledFooterLink href={ROUTES.TERMS}>Terms</StyledFooterLink>
+          <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
+          <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
         </HStack>
       </StyledFooterLinkContainer>
     </StyledGlobalFooter>

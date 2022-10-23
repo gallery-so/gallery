@@ -62,7 +62,7 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <Link href={`/${user.username}`} passHref>
+    <Link href={{ pathname: '/[username]', query: { username: user.username as string } }} passHref>
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>

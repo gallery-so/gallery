@@ -77,7 +77,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const handleClick = useCallback(
     (e) => {
       e.preventDefault();
-      router.push(`${user.username}`);
+      router.push({ pathname: '/[username]', query: { username: user.username as string } });
     },
     [user, router]
   );
@@ -89,7 +89,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <Link href={`/${user.username}`}>
+        <Link href={{ pathname: '/[username]', query: { username: user.username as string } }}>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
         </Link>
       </StyledLinkContainer>

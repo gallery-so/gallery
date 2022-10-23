@@ -1,4 +1,4 @@
-import { ROUTES } from 'constants/routes';
+import { route } from 'nextjs-routes';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import InteractiveLink, {
@@ -42,7 +42,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === ROUTES.ROOT;
+            const isInternalLink = href[0] === route({ pathname: '/' });
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>

@@ -6,7 +6,7 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { ROUTES } from 'constants/routes';
+import { route } from 'nextjs-routes';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -24,7 +24,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
   );
 
   if (!username || !collectionId) {
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return <GalleryRoute element={<CollectionGalleryPage queryRef={query} username={username} />} />;
@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
 
   if (!username || !collectionId) {
     // How could they have possibly gotten to this route without those params
-    return { redirect: { permanent: false, destination: ROUTES.ROOT } };
+    return { redirect: { permanent: false, destination: route({ pathname: '/' }) } };
   }
 
   return {

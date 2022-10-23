@@ -8,7 +8,6 @@ import { WizardFooter } from 'components/WizardFooter';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
-import { ROUTES } from 'constants/routes';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
@@ -34,7 +33,10 @@ export default function EditGalleryPage() {
       return;
     }
 
-    push(`/gallery/${urlQuery.galleryId}/collection/create`);
+    push({
+      pathname: '/gallery/[galleryId]/collection/create',
+      query: { galleryId: urlQuery.galleryId as string },
+    });
   }, [push, urlQuery.galleryId]);
 
   const handleEditCollection = useCallback(
@@ -43,7 +45,10 @@ export default function EditGalleryPage() {
         return;
       }
 
-      push(`/gallery/${urlQuery.galleryId}/collection/${collectionId}/edit`);
+      push({
+        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        query: { galleryId: urlQuery.galleryId as string, collectionId },
+      });
     },
     [push, urlQuery.galleryId]
   );
@@ -53,9 +58,9 @@ export default function EditGalleryPage() {
     if (canGoBack) {
       back();
     } else if (query.viewer?.user?.username) {
-      push(ROUTES.USER.ROOT(`${query.viewer.user.username}`));
+      push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
-      push(ROUTES.HOME);
+      push({ pathname: '/home' });
     }
   }, [back, canGoBack, push, query.viewer?.user?.username]);
 
