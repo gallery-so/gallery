@@ -6,7 +6,7 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { CollectionNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionNavbar';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -17,7 +17,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
       query CollectionIdQuery($collectionId: DBID!, $username: String!) {
-        ...GalleryNavbarFragment
+        ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
       }
     `,
@@ -30,7 +30,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
 
   return (
     <GalleryRoute
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
+      navbar={<CollectionNavbar username={username} queryRef={query} />}
       element={<CollectionGalleryPage queryRef={query} username={username} />}
     />
   );

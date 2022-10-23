@@ -6,12 +6,9 @@ import { GetServerSideProps } from 'next';
 import { galleriesQuery } from '../../__generated__/galleriesQuery.graphql';
 import styled from 'styled-components';
 import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 
 function GalleryPage() {
   const navbarHeight = useGlobalNavbarHeight();
-
-  console.log(navbarHeight, GLOBAL_FOOTER_HEIGHT);
 
   return (
     <GalleryPageWrapper navbarHeight={navbarHeight}>
@@ -23,7 +20,7 @@ function GalleryPage() {
 const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
   padding-top: ${({ navbarHeight }) => navbarHeight}px;
 
-  height: calc(100vh - ${({ navbarHeight }) => navbarHeight + GLOBAL_FOOTER_HEIGHT}px);
+  height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
 
   display: flex;
   justify-content: center;
@@ -47,6 +44,7 @@ export default function Galleries({ username }: GalleriesProps) {
   return (
     <GalleryRoute
       element={<GalleryPage />}
+      footer={false}
       navbar={<GalleryNavbar username={username} queryRef={query} />}
     />
   );

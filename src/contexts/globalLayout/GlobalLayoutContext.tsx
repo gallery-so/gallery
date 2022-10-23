@@ -311,7 +311,7 @@ function GlobalNavbarWithFadeEnabled({
       // if moving between routes, fade-in navbar with delay
       if (fadeType === 'route') {
         // @robin Why do we want delay when loading the page for example?
-        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${NAVIGATION_TRANSITION_TIME_MS}ms`;
+        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${0}ms`;
       }
     }
   }, [wasVisible, fadeType]);

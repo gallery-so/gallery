@@ -1,20 +1,19 @@
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useLayoutEffect } from 'react';
+import { useCallback } from 'react';
 
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { FeedNavbarFragment$key } from '__generated__/FeedNavbarFragment.graphql';
-import { FeedCenterContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedCenterContent';
-import { useRouter } from 'next/router';
 import { FeedMode } from 'components/Feed/Feed';
-import { FeedLeftContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
-import useAuthModal from 'hooks/useAuthModal';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { HStack } from 'components/core/Spacer/Stack';
+import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
+import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { FeedLeftContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
 
 type FeedNavbarProps = {
   queryRef: FeedNavbarFragment$key;
@@ -38,6 +37,27 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     queryRef
   );
 
+  const track = useTrack();
+  const handleFollowingModeClick = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      track('Feed: Clicked toggle to Following feed');
+      onChange('FOLLOWING');
+    },
+    [onChange, track]
+  );
+
+  const handleWorldwideModeClick = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      track('Feed: Clicked toggle to Worldwide feed');
+      onChange('WORLDWIDE');
+    },
+    [onChange, track]
+  );
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -46,7 +66,15 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
 
       <NavbarCenterContent>
         {query.viewer?.__typename ? (
-          <FeedCenterContent feedMode={feedMode} onChange={onChange} />
+          <HStack gap={8}>
+            <NavbarLink active={feedMode === 'FOLLOWING'} onClick={handleFollowingModeClick}>
+              Following
+            </NavbarLink>
+
+            <NavbarLink active={feedMode === 'WORLDWIDE'} onClick={handleWorldwideModeClick}>
+              Explore
+            </NavbarLink>
+          </HStack>
         ) : null}
       </NavbarCenterContent>
 

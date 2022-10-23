@@ -1,47 +1,43 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { GalleryRightContentFragment$key } from '__generated__/GalleryRightContentFragment.graphql';
-import styled from 'styled-components';
-import { TitleXS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import Link from 'next/link';
-import { useMemo } from 'react';
+import { CollectionRightContentFragment$key } from '__generated__/CollectionRightContentFragment.graphql';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { size } from 'components/core/breakpoints';
+import { useMemo } from 'react';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
+import styled from 'styled-components';
 import LinkButton from 'scenes/UserGalleryPage/LinkButton';
-import { useQrCode } from 'scenes/Modals/QRCodePopover';
-import QRCodeButton from './QRCodeButton';
+import Link from 'next/link';
+import { TitleXS } from 'components/core/Text/Text';
+import colors from 'components/core/colors';
 
-type GalleryRightContentProps = {
+type CollectionRightContentProps = {
   username: string;
-  queryRef: GalleryRightContentFragment$key;
+  queryRef: CollectionRightContentFragment$key;
 };
 
-export function GalleryRightContent({ queryRef, username }: GalleryRightContentProps) {
+export function CollectionRightContent({ queryRef, username }: CollectionRightContentProps) {
   const query = useFragment(
     graphql`
-      fragment GalleryRightContentFragment on Query {
+      fragment CollectionRightContentFragment on Query {
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            dbid
+          }
+        }
+
         viewer {
           ... on Viewer {
             __typename
-
-            user {
-              dbid
-            }
-
             viewerGalleries {
               gallery {
                 dbid
               }
             }
-          }
-        }
-
-        userByUsername(username: $username) {
-          ... on GalleryUser {
-            dbid
+            user {
+              dbid
+            }
           }
         }
       }
@@ -50,8 +46,6 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   );
 
   const breakpoint = useBreakpoint();
-  const styledQrCode = useQrCode();
-
   const editGalleryUrl = useMemo(() => {
     // If the user isn't logged in, we shouldn't show an edit button
     if (query.viewer?.__typename !== 'Viewer') {
@@ -72,7 +66,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   if (breakpoint === size.mobile) {
     return (
       <HStack gap={8} align="center">
-        <QRCodeButton username={username} styledQrCode={styledQrCode} />
+        {/*<QRCodeButton username={username} styledQrCode={styledQrCode} />*/}
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
         {editGalleryUrl && (
           <Link href={editGalleryUrl}>

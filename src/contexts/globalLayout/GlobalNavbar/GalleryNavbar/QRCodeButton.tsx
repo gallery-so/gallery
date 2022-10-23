@@ -1,7 +1,7 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
 import { useCallback } from 'react';
-import QRIcon from 'src/icons/QRIcon';
+import QRIcon from 'icons/QRIcon';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import QRCodePopover from 'scenes/Modals/QRCodePopover';

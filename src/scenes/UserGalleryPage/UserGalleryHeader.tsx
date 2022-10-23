@@ -4,7 +4,7 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
-import QRCodeButton from './QRCodeButton';
+import QRCodeButton from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/QRCodeButton';
 import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
@@ -71,8 +71,6 @@ function UserGalleryHeader({
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
-  const styledQrCode = useQrCode();
-
   const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
 
   const userBadges = useMemo(() => {
@@ -85,35 +83,26 @@ function UserGalleryHeader({
     <StyledUserGalleryHeader gap={2}>
       <HStack align="flex-start" justify="space-between">
         <HStack align="center" gap={8}>
-          {isMobile ? (
-            <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
-          ) : (
-            <StyledUsername>{displayName}</StyledUsername>
-          )}
+          <StyledUserDetails>
+            {is3ac ? (
+              <ExpandableBio text={unescapedBio} />
+            ) : (
+              <BaseM>
+                <Markdown text={unescapedBio} />
+              </BaseM>
+            )}
+          </StyledUserDetails>
+
+          {/* TODO(Terence): Test how this looks w/ badges */}
           {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
         </HStack>
 
         <StyledButtonsWrapper gap={8} align="center" justify="space-between">
-          {isMobile && (
-            <>
-              <LinkButton textToCopy={`https://gallery.so/${username}`} />
-              <QRCodeButton username={username} styledQrCode={styledQrCode} />
-            </>
-          )}
           {showMobileLayoutToggle && (
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           )}
         </StyledButtonsWrapper>
       </HStack>
-      <StyledUserDetails>
-        {is3ac ? (
-          <ExpandableBio text={unescapedBio} />
-        ) : (
-          <BaseM>
-            <Markdown text={unescapedBio} />
-          </BaseM>
-        )}
-      </StyledUserDetails>
     </StyledUserGalleryHeader>
   );
 }

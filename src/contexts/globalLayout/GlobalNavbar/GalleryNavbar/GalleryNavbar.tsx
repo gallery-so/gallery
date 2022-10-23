@@ -2,7 +2,6 @@ import GalleryLeftContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { GalleryNavbarFragment$key } from '../../../../../__generated__/GalleryNavbarFragment.graphql';
-import GalleryCenterContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryCenterContent';
 import { GalleryRightContent } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryRightContent';
 import {
   NavbarCenterContent,
@@ -10,6 +9,13 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { useBreakpoint } from 'hooks/useWindowSize';
+import { size } from 'components/core/breakpoints';
+import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
+import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import styled from 'styled-components';
+import colors from 'components/core/colors';
 
 type Props = {
   username: string;
@@ -27,18 +33,38 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     queryRef
   );
 
+  const breakpoint = useBreakpoint();
+
   return (
-    <StandardNavbarContainer>
-      <NavbarLeftContent>
-        <GalleryLeftContent queryRef={query} />
-      </NavbarLeftContent>
-      <NavbarCenterContent>
-        {/* Disabled until we launch the galleries / followers page */}
-        <GalleryCenterContent username={username} />
-      </NavbarCenterContent>
-      <NavbarRightContent>
-        <GalleryRightContent queryRef={query} />
-      </NavbarRightContent>
-    </StandardNavbarContainer>
+    <VStack>
+      <StandardNavbarContainer>
+        <NavbarLeftContent>
+          <GalleryLeftContent queryRef={query} />
+        </NavbarLeftContent>
+        <NavbarCenterContent>
+          {breakpoint === size.mobile ? (
+            <BreadcrumbText>{username}</BreadcrumbText>
+          ) : (
+            <GalleryNavLinks username={username} />
+          )}
+        </NavbarCenterContent>
+        <NavbarRightContent>
+          <GalleryRightContent username={username} queryRef={query} />
+        </NavbarRightContent>
+      </StandardNavbarContainer>
+
+      {breakpoint === size.mobile && (
+        <StandardNavbarContainer>
+          <MobileNavLinks justify="center">
+            <GalleryNavLinks username={username} />
+          </MobileNavLinks>
+        </StandardNavbarContainer>
+      )}
+    </VStack>
   );
 }
+
+const MobileNavLinks = styled(HStack)`
+  padding: 4px 0 16px 0;
+  border-bottom: 1px solid #e7e7e7;
+`;

@@ -181,7 +181,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
 const StyledUserGalleryCollections = styled.div`
   width: 100%;
-  padding-top: 48px;
+  padding-top: 16px;
 
   @media only screen and ${breakpoints.tablet} {
     padding-top: 80px;

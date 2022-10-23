@@ -1,11 +1,11 @@
-import {
-  EditingText,
-  MainGalleryText,
-} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditCenterContent';
 import { HStack } from 'components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
+import {
+  EditingText,
+  MainGalleryText,
+} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 
 type Props = {
   galleryName: string;

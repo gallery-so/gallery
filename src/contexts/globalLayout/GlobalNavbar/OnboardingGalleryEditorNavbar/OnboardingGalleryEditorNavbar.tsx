@@ -1,5 +1,3 @@
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useLayoutEffect } from 'react';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -13,7 +11,7 @@ import { HStack } from 'components/core/Spacer/Stack';
 import {
   EditingText,
   MainGalleryText,
-} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditCenterContent';
+} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 
 type OnboardingGalleryEditorNavbarProps = {
   onBack: () => void;

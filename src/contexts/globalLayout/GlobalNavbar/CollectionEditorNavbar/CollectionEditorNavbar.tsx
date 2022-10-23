@@ -1,17 +1,16 @@
 import { CollectionEditorCenterContent } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorCenterContent';
-import { CollectionEditorRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorRightContent';
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { Suspense, useLayoutEffect } from 'react';
+import { Suspense } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionEditorNavbarFragment$key } from '../../../../../__generated__/CollectionEditorNavbarFragment.graphql';
-import { CollectionEditorLeftContent } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorLeftContent';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
+import { Button } from 'components/core/Button/Button';
 
 type Props = {
   onDone: () => void;
@@ -33,7 +32,7 @@ export function CollectionEditorNavbar({ queryRef, isCollectionValid, onDone, on
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <CollectionEditorLeftContent onCancel={onCancel} />
+        <BackButton onClick={onCancel} />
       </NavbarLeftContent>
 
       <NavbarCenterContent>
@@ -44,7 +43,9 @@ export function CollectionEditorNavbar({ queryRef, isCollectionValid, onDone, on
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <CollectionEditorRightContent isCollectionValid={isCollectionValid} onDone={onDone} />
+        <Button disabled={!isCollectionValid} onClick={onDone}>
+          Done
+        </Button>
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

@@ -50,7 +50,7 @@ function CollectionGallery({ queryRef }: Props) {
   if (collection?.__typename === 'Collection') {
     return (
       <StyledCollectionGallery isMobile={isMobile} align="center">
-        <NftGalleryWrapper gap={isMobile ? 48 : 80}>
+        <NftGalleryWrapper gap={isMobile ? 12 : 80}>
           <CollectionGalleryHeader
             queryRef={query}
             collectionRef={collection}
@@ -72,7 +72,7 @@ function CollectionGallery({ queryRef }: Props) {
 const StyledCollectionGallery = styled(VStack)<{ isMobile: boolean }>`
   width: 100%;
   max-width: 1200px;
-  padding: ${({ isMobile }) => (isMobile ? '48px 0 16px 0' : '80px 0 64px 0')};
+  padding: ${({ isMobile }) => (isMobile ? '8px 0 16px 0' : '80px 0 64px 0')};
 `;
 
 const NftGalleryWrapper = styled(VStack)`

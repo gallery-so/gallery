@@ -4,6 +4,7 @@ import { HStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { BreadcrumbsUsernameBreadcrumb$key } from '../../../../../__generated__/BreadcrumbsUsernameBreadcrumb.graphql';
+import colors from 'components/core/colors';
 
 export const HomeText = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
@@ -19,6 +20,8 @@ export const BreadcrumbText = styled(Paragraph)`
   font-size: 18px;
   font-weight: 400;
   line-height: 21px;
+
+  color: ${colors.offBlack};
 `;
 
 type UsernameBreadcrumbProps = {

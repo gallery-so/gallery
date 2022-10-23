@@ -120,25 +120,37 @@ function CollectionGalleryHeader({
     });
   }, [collection.collectorsNote, collectionId, galleryId, collection.name, showModal]);
 
+  if (isMobile) {
+    return (
+      <StyledCollectionGalleryHeaderWrapper>
+        <HStack align="flex-start" justify="space-between">
+          {unescapedCollectorsNote && (
+            <StyledCollectionNote clamp={2}>
+              <Markdown text={unescapedCollectorsNote} />
+            </StyledCollectionNote>
+          )}
+
+          {shouldDisplayMobileLayoutToggle && (
+            <StyledMobileLayoutToggleContainer>
+              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
+            </StyledMobileLayoutToggleContainer>
+          )}
+        </HStack>
+      </StyledCollectionGalleryHeaderWrapper>
+    );
+  }
+
   return (
     <StyledCollectionGalleryHeaderWrapper>
       <HStack align="flex-start" justify="space-between" wrap="wrap">
         {isMobile ? (
-          <StyledBreadcrumbsWrapper>
-            <HStack align="flex-start" justify="space-between">
-              <HStack>
-                {username ? (
-                  <UnstyledLink href={`/${username}`}>
-                    <StyledUsernameMobile>{username}</StyledUsernameMobile>
-                  </UnstyledLink>
-                ) : null}
-                {username && collection.name ? (
-                  <StyledSeparatorMobile>/</StyledSeparatorMobile>
-                ) : null}
-              </HStack>
-            </HStack>
-            <StyledCollectionNameMobile>{unescapedCollectionName}</StyledCollectionNameMobile>
-          </StyledBreadcrumbsWrapper>
+          <>
+            {unescapedCollectorsNote && (
+              <StyledCollectionNote>
+                <Markdown text={unescapedCollectorsNote} />
+              </StyledCollectionNote>
+            )}
+          </>
         ) : (
           <StyledBreadcrumbsWrapper>
             <HStack align="flex-start" justify="space-between">
@@ -158,9 +170,7 @@ function CollectionGalleryHeader({
         <StyledCollectionActions align="center" justify="flex-end">
           {showEditActions ? (
             <>
-              {isMobile ? (
-                <LinkButton textToCopy={collectionUrl} />
-              ) : (
+              {!isMobile && (
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
@@ -186,15 +196,14 @@ function CollectionGalleryHeader({
             </>
           ) : (
             <>
-              {isMobile ? (
-                <LinkButton textToCopy={collectionUrl} />
-              ) : (
+              {!isMobile && (
                 <CopyToClipboard textToCopy={collectionUrl}>
                   <TextButton text="Share" onClick={handleShareClick} />
                 </CopyToClipboard>
               )}
             </>
           )}
+
           {shouldDisplayMobileLayoutToggle && (
             <StyledMobileLayoutToggleContainer>
               <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
@@ -202,12 +211,6 @@ function CollectionGalleryHeader({
           )}
         </StyledCollectionActions>
       </HStack>
-
-      {unescapedCollectorsNote && (
-        <StyledCollectionNote>
-          <Markdown text={unescapedCollectorsNote} />
-        </StyledCollectionNote>
-      )}
     </StyledCollectionGalleryHeaderWrapper>
   );
 }
@@ -266,15 +269,16 @@ const StyledUsernameMobile = styled(TitleM)`
   }
 `;
 
-const StyledCollectionNote = styled(BaseM)`
+const StyledCollectionNote = styled(BaseM)<{ clamp?: number }>`
   width: 100%;
   word-break: break-word;
-  padding-top: 4px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
     padding-top: 16px;
   }
+
+  line-clamp: 2;
 `;
 
 const StyledCollectionActions = styled(HStack)`
