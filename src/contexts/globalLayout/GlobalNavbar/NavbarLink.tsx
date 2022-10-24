@@ -7,6 +7,8 @@ export const NavbarLink = styled.a<{ active: boolean }>`
   font-weight: 500;
   font-size: 18px;
   line-height: 21px;
+  letter-spacing: -0.04em;
+
   margin: 0;
 
   color: ${({ active }) => (active ? colors.offBlack : colors.metal)};

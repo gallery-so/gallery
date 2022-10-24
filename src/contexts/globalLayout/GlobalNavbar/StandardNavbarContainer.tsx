@@ -3,6 +3,7 @@ import breakpoints, { pageGutter } from 'components/core/breakpoints';
 
 export const StandardNavbarContainer = styled.div`
   width: 100%;
+  height: 56px;
 
   display: flex;
   flex-direction: row;
@@ -13,9 +14,8 @@ export const StandardNavbarContainer = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0 ${pageGutter.tablet}px;
+    height: 64px;
   }
-
-  height: 64px;
 
   & > * {
     flex: 1;

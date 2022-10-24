@@ -130,8 +130,6 @@ export default function FollowButton({ queryRef, userRef }: Props) {
 }
 
 const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean }>`
-  text-transform: uppercase;
-
   padding: 2px 4px;
   cursor: pointer;
 

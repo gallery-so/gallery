@@ -19,5 +19,7 @@ export const BreadcrumbText = styled(Paragraph)`
 
   text-align: center;
 
+  letter-spacing: -0.04em;
+
   color: ${colors.offBlack};
 `;
