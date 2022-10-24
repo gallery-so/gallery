@@ -1,29 +1,41 @@
-import { useLazyLoadQuery } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import styled from 'styled-components';
 import { GetServerSideProps } from 'next';
 import { followersQuery } from '../../__generated__/followersQuery.graphql';
+import FollowList from 'components/Follow/FollowList';
+import { followersFollowersPageFragment$key } from '../../__generated__/followersFollowersPageFragment.graphql';
 
-function FollowersPage() {
+type FollowersPageProps = {
+  queryRef: followersFollowersPageFragment$key;
+};
+
+function FollowersPage({ queryRef }: FollowersPageProps) {
+  const query = useFragment(
+    graphql`
+      fragment followersFollowersPageFragment on Query {
+        userByUsername(username: $username) @required(action: THROW) {
+          ...FollowListFragment
+        }
+      }
+    `,
+    queryRef
+  );
+
   const navbarHeight = useGlobalNavbarHeight();
-
-  console.log(navbarHeight, GLOBAL_FOOTER_HEIGHT);
 
   return (
     <FollowersPageWrapper navbarHeight={navbarHeight}>
-      <div>Hello, World</div>
+      <FollowList userRef={query.userByUsername} />
     </FollowersPageWrapper>
   );
 }
 
 const FollowersPageWrapper = styled.div<{ navbarHeight: number }>`
   padding-top: ${({ navbarHeight }) => navbarHeight}px;
-
-  height: calc(100vh - ${({ navbarHeight }) => navbarHeight + GLOBAL_FOOTER_HEIGHT}px);
 
   display: flex;
   justify-content: center;
@@ -39,6 +51,7 @@ export default function Followers({ username }: FollowersProps) {
     graphql`
       query followersQuery($username: String!) {
         ...GalleryNavbarFragment
+        ...followersFollowersPageFragment
       }
     `,
     { username }
@@ -46,7 +59,8 @@ export default function Followers({ username }: FollowersProps) {
 
   return (
     <GalleryRoute
-      element={<FollowersPage />}
+      element={<FollowersPage queryRef={query} />}
+      footer={false}
       navbar={<GalleryNavbar username={username} queryRef={query} />}
     />
   );

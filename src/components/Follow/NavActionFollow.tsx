@@ -18,7 +18,6 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
         username
 
         ...FollowButtonUserFragment
-        ...FollowerListButtonFragment
       }
     `,
     userRef

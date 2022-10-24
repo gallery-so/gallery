@@ -56,7 +56,6 @@ export default function FollowListUsers({
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   height: 100%;
 `;
 const StyledListItem = styled.a`
