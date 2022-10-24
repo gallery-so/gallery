@@ -80,14 +80,14 @@ function UserGalleryCollections(
       })
   );
 
-  const listRef = useRef<List>();
-  const windowSize = useWindowSize();
+  const listRef = useRef<List>(null);
+  const { width } = useWindowSize();
 
   // If the mobileLayout is changed, we need to recalculate the cache height.
   useEffect(() => {
     cache.clearAll();
     listRef.current?.recomputeRowHeights();
-  }, [cache, mobileLayout, windowSize]);
+  }, [cache, mobileLayout, width]);
 
   const collectionsToDisplay = useMemo(
     () =>

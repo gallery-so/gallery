@@ -16,6 +16,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import breakpoints from 'components/core/breakpoints';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
   onNext: (collectionId: string) => void;
@@ -88,6 +89,7 @@ function CollectionCreateOrEditForm({
   const createCollection = useCreateCollection();
 
   const track = useTrack();
+  const reportError = useReportError();
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -134,8 +136,17 @@ function CollectionCreateOrEditForm({
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
+        reportError(error);
         setGeneralError(formatError(error));
       }
+
+      reportError('Something unexpected occurred while trying to update a collection', {
+        tags: {
+          title,
+          galleryId,
+          description,
+        },
+      });
     }
 
     setIsLoading(false);
@@ -143,13 +154,14 @@ function CollectionCreateOrEditForm({
     description,
     collectionId,
     stagedCollection,
-    goToNextStep,
     track,
     title,
     updateCollection,
+    goToNextStep,
     createCollection,
     galleryId,
     tokenSettings,
+    reportError,
   ]);
 
   return (

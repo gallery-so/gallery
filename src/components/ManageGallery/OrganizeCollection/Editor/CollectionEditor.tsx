@@ -20,6 +20,8 @@ import { graphql, useFragment } from 'react-relay';
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import { removeNullValues } from 'utils/removeNullValues';
 import { CollectionEditorViewerFragment$key } from '../../../../../__generated__/CollectionEditorViewerFragment.graphql';
+import useNotOptimizedForMobileWarning from '../../useNotOptimizedForMobileWarning';
+import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
 
 function convertNftsToEditModeTokens(
   tokens: EditModeTokenChild[],
@@ -100,6 +102,9 @@ function CollectionEditor({ queryRef, onValidChange }: Props) {
   if (!viewer) {
     throw new Error('CollectionEditor rendered without a Viewer');
   }
+
+  useNotOptimizedForMobileWarning();
+  useConfirmationMessageBeforeClose();
 
   const stagedCollectionState = useStagedCollectionState();
   const sidebarTokens = useSidebarTokensState();

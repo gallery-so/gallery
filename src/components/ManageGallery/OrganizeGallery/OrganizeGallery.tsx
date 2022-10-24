@@ -1,28 +1,13 @@
-import detectMobileDevice from 'utils/detectMobileDevice';
 import { BaseM, BaseXL } from 'components/core/Text/Text';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import Header from 'components/ManageGallery/OrganizeGallery/Header';
 import { useFragment } from 'react-relay';
 import CollectionDnd from 'components/ManageGallery/OrganizeGallery/CollectionDnd';
-import { useToastActions } from 'contexts/toast/ToastContext';
 import { OrganizeGalleryFragment$key } from '../../../../__generated__/OrganizeGalleryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-
-function useNotOptimizedForMobileWarning() {
-  const { pushToast } = useToastActions();
-
-  useEffect(() => {
-    if (detectMobileDevice()) {
-      pushToast({
-        message:
-          "This page isn't optimized for mobile yet. Please use a computer to organize your Gallery.",
-      });
-    }
-  }, [pushToast]);
-}
+import useNotOptimizedForMobileWarning from '../useNotOptimizedForMobileWarning';
 
 type Props = {
   onAddCollection: () => void;
