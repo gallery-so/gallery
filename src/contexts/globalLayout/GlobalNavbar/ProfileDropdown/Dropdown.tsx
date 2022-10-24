@@ -9,6 +9,7 @@ import { graphql } from 'relay-runtime';
 import { useAuthActions } from 'contexts/auth/AuthContext';
 import { DropdownFragment$key } from '../../../../../__generated__/DropdownFragment.graphql';
 import { MouseEventHandler, ReactNode, useCallback } from 'react';
+import useWalletModal from 'hooks/useWalletModal';
 
 type Props = {
   showDropdown: boolean;
@@ -38,6 +39,7 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
     queryRef
   );
 
+  const showWalletModal = useWalletModal();
   const { handleLogout } = useAuthActions();
 
   const handleClose = useCallback<MouseEventHandler>(
@@ -75,7 +77,7 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
         </VStack>
 
         <VStack gap={4}>
-          <DropdownLink href={'/accounts'}>ACCOUNTS</DropdownLink>
+          <DropdownItem onClick={showWalletModal}>ACCOUNTS</DropdownItem>
           <DropdownLink href={'/shop'}>
             <HStack gap={8}>
               <span>SHOP</span>
