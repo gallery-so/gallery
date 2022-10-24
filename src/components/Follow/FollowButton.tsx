@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 import useFollowUser from './mutations/useFollowUser';
@@ -121,8 +121,15 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     }
   }, [handleFollowClick, handleUnfollowClick, isAuthenticatedUsersPage, isFollowing]);
 
+  const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
+    // We want to make sure clicking these buttons doesn't bubble up to
+    // to prevent any surrounding links from triggering
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
+
   return (
-    <HStack gap={4}>
+    <HStack gap={4} onClick={handleWrapperClick}>
       {followChip}
       {isUserFollowingLoggedInuser ? <FollowsYouChip disabled>Follows You</FollowsYouChip> : null}
     </HStack>
