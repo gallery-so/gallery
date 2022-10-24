@@ -17,6 +17,7 @@ import { createCollectionQuery } from '../../../../__generated__/createCollectio
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { CollectionCreateNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
+import GenericActionModal from 'scenes/Modals/GenericActionModal';
 
 type Props = {
   galleryId: string;
@@ -71,12 +72,22 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      replace(editGalleryUrl);
-    }
-  }, [back, canGoBack, editGalleryUrl, replace]);
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            if (canGoBack) {
+              back();
+            } else {
+              replace(editGalleryUrl);
+            }
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
