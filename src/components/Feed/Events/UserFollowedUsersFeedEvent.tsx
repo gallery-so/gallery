@@ -197,6 +197,12 @@ const StyledEventContent = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+
+  // These styles are here since this is the only
+  // event that doesn't have the socialize section
+  // The padding / border are typically on the FeedEventSocializeSection component
+  padding-bottom: 16px;
+  border-bottom: 1px solid ${colors.faint};
 `;
 
 const StyledEventHeaderContainer = styled(VStack)`

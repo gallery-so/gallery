@@ -61,6 +61,7 @@ export default function FeedList({
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
+      defaultHeight: 400,
       fixedWidth: true,
       minHeight: 0,
     });
@@ -73,6 +74,14 @@ export default function FeedList({
   );
 
   const virtualizedListRef = useRef<List | null>(null);
+
+  const handlePotentialLayoutShift = useCallback(
+    (index: number) => {
+      measurerCache.clear(index, 0);
+      virtualizedListRef.current?.recomputeRowHeights(index);
+    },
+    [measurerCache]
+  );
 
   //Render a list item or a loading indicator.
   const rowRenderer = useCallback(
@@ -116,10 +125,8 @@ export default function FeedList({
                 //
                 // Whenever the height changes, we need to ask react-virtualized
                 // to re-evaluate the height of the item to keep the virtualization good.
-                onPotentialLayoutShift={() => {
-                  measurerCache.clear(index, 0);
-                  virtualizedListRef.current?.recomputeRowHeights();
-                }}
+                onPotentialLayoutShift={handlePotentialLayoutShift}
+                index={index}
                 eventRef={content}
                 key={content.dbid}
                 queryRef={query}
@@ -130,7 +137,7 @@ export default function FeedList({
         </CellMeasurer>
       );
     },
-    [feedData, feedMode, isRowLoaded, measurerCache, query]
+    [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );
 
   // If there are more items to be loaded then add extra rows
@@ -159,6 +166,7 @@ export default function FeedList({
                 rowCount={rowCount}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
+                overscanRowCount={10}
                 // By default, react-virtualized's list has the css property `will-change` set to `transform`
                 // An element with `position: fixed` beneath an element with `will-change: transform` will
                 // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)
