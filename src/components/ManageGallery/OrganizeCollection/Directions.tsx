@@ -9,8 +9,8 @@ function Directions() {
     <DirectionsContainer align="center" justify="center">
       <StyledDirections>
         <EmptyState
-          title="Add NFTs to your collection"
-          description="Select NFTs to include in your collection. Drag and drop to rearrange."
+          title="Add pieces to your collection"
+          description="Select pieces to include in your collection. Drag and drop to rearrange."
         />
       </StyledDirections>
     </DirectionsContainer>
