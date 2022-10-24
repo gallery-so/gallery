@@ -88,6 +88,7 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
 const StyledUserActivityLayout = styled(VStack)`
   margin: 0 -16px;
   padding-top: 24px;
+  width: 100vw;
 
   @media only screen and ${breakpoints.desktop} {
     width: ${FEED_MAX_WIDTH}px;
