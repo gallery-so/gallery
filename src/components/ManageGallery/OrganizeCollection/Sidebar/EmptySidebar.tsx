@@ -15,9 +15,9 @@ export function EmptySidebar({ chain, reason }: Props) {
   // and then forget to handle that new case here
   const subtext: ReactNode = useMemo(() => {
     if (reason === 'no-nfts') {
-      return <BaseM>You do not have any {chain} NFTs</BaseM>;
+      return <BaseM>You do not have any {chain} pieces</BaseM>;
     } else if (reason === 'no-search-results') {
-      return <BaseM>No NFTs matching your search query</BaseM>;
+      return <BaseM>No pieces matching your search query</BaseM>;
     }
   }, [chain, reason]);
 

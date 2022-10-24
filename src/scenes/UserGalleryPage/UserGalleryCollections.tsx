@@ -133,7 +133,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
-      ? 'Your gallery is empty. Display your NFTs by creating a collection.'
+      ? 'Your gallery is empty. Display your pieces by creating a collection.'
       : 'Curation in progress.';
 
     return <EmptyGallery message={emptyGalleryMessage} />;
