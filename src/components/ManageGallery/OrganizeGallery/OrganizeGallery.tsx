@@ -66,7 +66,7 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
           <StyledEmptyGalleryMessage gap={8}>
             <BaseXL>Create your first collection</BaseXL>
             <BaseM>
-              Organize your gallery with collections. Use them to group NFTs by creator, theme, or
+              Organize your gallery with collections. Use them to group pieces by creator, theme, or
               anything that feels right.
             </BaseM>
           </StyledEmptyGalleryMessage>

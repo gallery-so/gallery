@@ -8,7 +8,7 @@ import ViewerFeed from './ViewerFeed';
 import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 
-export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
+export type FeedMode = 'FOLLOWING' | 'WORLDWIDE' | 'USER';
 
 type Props = {
   queryRef: FeedViewerFragment$key;

@@ -55,6 +55,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         </NavbarRightContent>
       </StandardNavbarContainer>
 
+      {/* This is the next row for mobile content */}
       {breakpoint === size.mobile && (
         <StandardNavbarContainer>
           <MobileNavLinks justify="center">

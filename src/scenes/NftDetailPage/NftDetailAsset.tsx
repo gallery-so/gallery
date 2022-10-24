@@ -80,23 +80,31 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
     case 'AudioMedia':
       return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
+      const imageMedia = token.media;
+
       return (
         <NftDetailImage
           onLoad={onLoad}
           tokenRef={token}
-          // @ts-expect-error: we know contentRenderURL is present within the media field
-          // if token type is `ImageMedia`
-          onClick={() => window.open(media.contentRenderURL)}
+          onClick={() => {
+            if (imageMedia.contentRenderURL) {
+              window.open(imageMedia.contentRenderURL);
+            }
+          }}
         />
       );
     case 'GIFMedia':
+      const gifMedia = token.media;
+
       return (
         <NftDetailGif
           onLoad={onLoad}
           tokenRef={token}
-          // @ts-expect-error: we know contentRenderURL is present within the media field
-          // if token type is `GifMedia`
-          onClick={() => window.open(media.contentRenderURL)}
+          onClick={() => {
+            if (gifMedia.contentRenderURL) {
+              window.open(gifMedia.contentRenderURL);
+            }
+          }}
         />
       );
     case 'GltfMedia':
