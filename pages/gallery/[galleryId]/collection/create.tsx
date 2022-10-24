@@ -11,10 +11,8 @@ import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { CollectionCreateNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';

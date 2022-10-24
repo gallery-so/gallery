@@ -1,5 +1,3 @@
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useLayoutEffect } from 'react';
 import {
   NavbarCenterContent,
   NavbarLeftContent,

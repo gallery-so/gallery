@@ -1,8 +1,6 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CommunityNavbarFragment$key } from '__generated__/CommunityNavbarFragment.graphql';
-import { useLayoutEffect } from 'react';
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import {
   NavbarCenterContent,
   NavbarLeftContent,

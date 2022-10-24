@@ -12,8 +12,6 @@ import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeC
 import { useRouter } from 'next/router';
 import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
 import { getStepUrl } from 'components/Onboarding/constants';
-import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
-import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { OnboardingCollectionCreateNavbar } from '../../src/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
 

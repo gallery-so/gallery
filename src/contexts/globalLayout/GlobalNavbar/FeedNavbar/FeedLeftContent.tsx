@@ -3,16 +3,17 @@ import { graphql } from 'relay-runtime';
 import { FeedLeftContentFragment$key } from '__generated__/FeedLeftContentFragment.graphql';
 import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
 import { HomeText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import styled from 'styled-components';
-import breakpoints, { size } from 'components/core/breakpoints';
+import { size } from 'components/core/breakpoints';
 import { HStack } from 'components/core/Spacer/Stack';
 import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { useState } from 'react';
 import { Dropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Dropdown';
 import { useBreakpoint } from 'hooks/useWindowSize';
+import { FeedLeftContentDesktop$key } from '../../../../../__generated__/FeedLeftContentDesktop.graphql';
+import { FeedLeftContentMobile$key } from '../../../../../__generated__/FeedLeftContentMobile.graphql';
 
 type DesktopLeftContentProps = {
-  queryRef: any;
+  queryRef: FeedLeftContentDesktop$key;
 };
 
 function DesktopLeftContent({ queryRef }: DesktopLeftContentProps) {
@@ -34,7 +35,7 @@ function DesktopLeftContent({ queryRef }: DesktopLeftContentProps) {
 }
 
 type MobileLeftContentProps = {
-  queryRef: any;
+  queryRef: FeedLeftContentMobile$key;
 };
 
 function MobileLeftContent({ queryRef }: MobileLeftContentProps) {

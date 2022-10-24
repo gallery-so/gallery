@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 import { EmptyState } from 'components/EmptyState/EmptyState';
 import { VStack } from 'components/core/Spacer/Stack';
 

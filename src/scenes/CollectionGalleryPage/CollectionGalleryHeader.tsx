@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleL } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
@@ -16,7 +16,6 @@ import { DisplayLayout } from 'components/core/enums';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
-import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
@@ -232,35 +231,13 @@ const StyledCollectionName = styled(TitleL)`
   word-break: break-word;
 `;
 
-const StyledCollectionNameMobile = styled(TitleM)`
-  font-style: normal;
-  word-break: break-word;
-`;
-
 const StyledSeparator = styled(TitleL)`
   margin: 0 10px;
   display: block;
   color: ${colors.offBlack};
 `;
 
-const StyledSeparatorMobile = styled(TitleM)`
-  font-style: normal;
-  margin: 0 4px;
-  display: block;
-  color: ${colors.offBlack};
-`;
-
 const StyledUsername = styled(TitleL)`
-  cursor: pointer;
-  color: ${colors.metal};
-  display: flex;
-  &:hover {
-    color: ${colors.shadow};
-  }
-`;
-
-const StyledUsernameMobile = styled(TitleM)`
-  font-style: normal;
   cursor: pointer;
   color: ${colors.metal};
   display: flex;

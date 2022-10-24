@@ -15,7 +15,6 @@ import { size } from 'components/core/breakpoints';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import styled from 'styled-components';
-import colors from 'components/core/colors';
 import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
 
 type Props = {

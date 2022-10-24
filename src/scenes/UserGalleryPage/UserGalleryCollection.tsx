@@ -129,7 +129,7 @@ function UserGalleryCollection({
 
   useLayoutEffect(() => {
     onLayoutShift();
-  }, [showMore]);
+  }, [onLayoutShift, showMore]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>

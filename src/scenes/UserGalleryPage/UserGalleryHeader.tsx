@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM } from 'components/core/Text/Text';
