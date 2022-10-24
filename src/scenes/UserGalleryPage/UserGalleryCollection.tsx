@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
@@ -30,6 +30,7 @@ type Props = {
   mobileLayout: DisplayLayout;
   cacheHeight: number;
   onLoad: () => void;
+  onLayoutShift: () => void;
 };
 
 function UserGalleryCollection({
@@ -38,6 +39,7 @@ function UserGalleryCollection({
   mobileLayout,
   onLoad,
   cacheHeight,
+  onLayoutShift,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -120,6 +122,15 @@ function UserGalleryCollection({
     });
   }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
 
+  const [showMore, setShowMore] = useState(false);
+  const handleCollectorsNoteClick = useCallback(() => {
+    setShowMore((previous) => !previous);
+  }, []);
+
+  useLayoutEffect(() => {
+    onLayoutShift();
+  }, [showMore]);
+
   return (
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
@@ -159,7 +170,7 @@ function UserGalleryCollection({
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
-            <StyledCollectorsNote>
+            <StyledCollectorsNote showMore={showMore} onClick={handleCollectorsNoteClick}>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
@@ -236,7 +247,7 @@ const StyledCollectorsTitle = styled(TitleS)`
   }
 `;
 
-const StyledCollectorsNote = styled(BaseM)`
+const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   width: 100%;
 
   @media only screen and ${breakpoints.mobileLarge} {
@@ -246,6 +257,28 @@ const StyledCollectorsNote = styled(BaseM)`
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  ${({ showMore }) =>
+    showMore
+      ? css`
+          -webkit-line-clamp: unset;
+        `
+      : css`
+          // We only care about line clamping on mobile
+          @media only screen and ${breakpoints.mobileLarge} {
+            -webkit-line-clamp: unset;
+          }
+
+          -webkit-line-clamp: 2;
+
+          p {
+            padding-bottom: 0 !important;
+          }
+        `}
 `;
 
 const StyledOptionsContainer = styled(HStack)`

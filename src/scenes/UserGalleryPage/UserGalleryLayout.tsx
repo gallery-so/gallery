@@ -10,6 +10,8 @@ import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLay
 import styled from 'styled-components';
 import { VStack } from 'components/core/Spacer/Stack';
 import breakpoints from 'components/core/breakpoints';
+import { useRef } from 'react';
+import { List } from 'react-virtualized';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;
@@ -54,8 +56,15 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   const [gallery] = user.galleries ?? [];
 
+  const virtualizedListRef = useRef<List>(null);
+
   const collectionsView = gallery?.collections ? (
-    <UserGalleryCollections queryRef={query} galleryRef={gallery} mobileLayout={mobileLayout} />
+    <UserGalleryCollections
+      ref={virtualizedListRef}
+      queryRef={query}
+      galleryRef={gallery}
+      mobileLayout={mobileLayout}
+    />
   ) : (
     <EmptyGallery message="This user has not set up their gallery yet." />
   );
@@ -66,7 +75,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
         userRef={user}
         queryRef={query}
         showMobileLayoutToggle={showMobileLayoutToggle}
-        isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />

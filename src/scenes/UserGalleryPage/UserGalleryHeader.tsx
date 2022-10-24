@@ -1,17 +1,14 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
-import QRCodeButton from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/QRCodeButton';
-import LinkButton from './LinkButton';
 import { DisplayLayout } from 'components/core/enums';
 import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
-import { useQrCode } from 'scenes/Modals/QRCodePopover';
 import TextButton from 'components/core/Button/TextButton';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
@@ -28,7 +25,6 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-  isMobile: boolean;
 };
 
 function UserGalleryHeader({
@@ -37,7 +33,6 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
-  isMobile,
 }: Props) {
   const user = useFragment(
     graphql`
@@ -67,6 +62,7 @@ function UserGalleryHeader({
   const { username, bio, badges } = user;
 
   const is3ac = useIs3acProfilePage();
+  // TODO(Terence): Bring this into he header;
   const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
@@ -79,6 +75,11 @@ function UserGalleryHeader({
     return badges.filter((badge) => badge && badge?.imageURL);
   }, [badges, isArtGobblersEnabled]);
 
+  const [showMore, setShowMore] = useState(false);
+  const handleBioClick = useCallback(() => {
+    setShowMore((previous) => !previous);
+  }, []);
+
   return (
     <StyledUserGalleryHeader gap={2}>
       <HStack align="flex-start" justify="space-between">
@@ -87,9 +88,9 @@ function UserGalleryHeader({
             {is3ac ? (
               <ExpandableBio text={unescapedBio} />
             ) : (
-              <BaseM>
+              <StyledBioWrapper showMore={showMore} onClick={handleBioClick}>
                 <Markdown text={unescapedBio} />
-              </BaseM>
+              </StyledBioWrapper>
             )}
           </StyledUserDetails>
 
@@ -153,21 +154,28 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
+const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  ${({ showMore }) =>
+    showMore
+      ? css`
+          -webkit-line-clamp: unset;
+        `
+      : css`
+          // We only care about line clamping on mobile
+          @media only screen and ${breakpoints.mobileLarge} {
+            -webkit-line-clamp: unset;
+          }
+
+          -webkit-line-clamp: 2;
+        `}
+`;
+
 const StyledUserGalleryHeader = styled(VStack)`
   width: 100%;
-`;
-
-const StyledUsername = styled(TitleL)`
-  overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
-`;
-
-const StyledUsernameMobile = styled(TitleM)`
-  font-style: normal;
-  overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
 `;
 
 const StyledButtonsWrapper = styled(HStack)`
