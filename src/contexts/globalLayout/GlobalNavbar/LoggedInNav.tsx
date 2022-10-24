@@ -95,9 +95,15 @@ function LoggedInNav({ queryRef }: Props) {
                 collectionId
                   ? {
                       pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
-                      query: { galleryId, collectionId },
+                      query: {
+                        galleryId: galleryId as string,
+                        collectionId: collectionId as string,
+                      },
                     }
-                  : { pathname: '/gallery/[galleryId]/edit', query: { galleryId } }
+                  : {
+                      pathname: '/gallery/[galleryId]/edit',
+                      query: { galleryId: galleryId as string },
+                    }
               }
             >
               <TextButton text={collectionId ? 'Edit Collection' : 'Edit Gallery'} />

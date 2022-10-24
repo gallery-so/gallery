@@ -147,7 +147,10 @@ function UserGalleryCollection({
                         underlineOnHover
                       />
                       <UnstyledLink
-                        href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
+                        href={{
+                          pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                          query: { galleryId, collectionId },
+                        }}
                         onClick={() => track('Update existing collection button clicked')}
                       >
                         <TextButton text="Edit Collection" underlineOnHover />

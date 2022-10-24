@@ -6,7 +6,7 @@ import styled from 'styled-components';
 // TODO:
 // - handle rel="noopener noreferrer" for target="_blank" links
 
-type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
+type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   href: Route;
 };
 

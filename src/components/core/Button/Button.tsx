@@ -150,7 +150,7 @@ export const Button = ({
   </StyledButton>
 );
 
-type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
+type ButtonLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> &
   StyledButtonProps & {
     pending?: boolean;
     href: Route;

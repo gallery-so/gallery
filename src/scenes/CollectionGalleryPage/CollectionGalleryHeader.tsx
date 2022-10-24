@@ -179,7 +179,10 @@ function CollectionGalleryHeader({
                     <>
                       <NavElement>
                         <UnstyledLink
-                          href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
+                          href={{
+                            pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                            query: { galleryId, collectionId },
+                          }}
                           onClick={() => track('Update existing collection')}
                         >
                           <TextButton text="Edit Collection" />
