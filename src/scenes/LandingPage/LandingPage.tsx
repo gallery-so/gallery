@@ -9,7 +9,7 @@ import LogoBracketRight from 'icons/LogoBracketRight';
 import colors from 'components/core/colors';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
-const GALLERY_OF_THE_WEEK_USER = 'qaulv';
+const GALLERY_OF_THE_WEEK_USER = 'pk';
 
 export default function LandingPage() {
   const track = useTrack();
