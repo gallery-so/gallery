@@ -36,6 +36,7 @@ export default function LinkToNftDetailView({
       // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
       // appropriate query params attached. this allows the app to stay on the current page,
       // while also feeding the modal the necessary data to display an NFT in detail.
+      // @ts-expect-error href is guaranteed to be be a valid path
       href={`${pathname}?username=${username}&collectionId=${collectionId}&tokenId=${tokenId}&originPage=${originPage}&modal=true`}
       // disable scroll-to-top when the modal opens
       scroll={false}

@@ -164,6 +164,7 @@ function NftDetailPage({
       push(
         // This `href` param will remain the same, so that it feels like the user is rooted in a modal
         // and not navigating between pages (even while the URL is changing).
+        // @ts-expect-error href is guaranteed to be be a valid path
         currentLocation,
         // This `as` param is purely cosmetic and determines what users will see in the address bar.
         route({
