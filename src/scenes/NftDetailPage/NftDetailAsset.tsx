@@ -86,7 +86,7 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
           tokenRef={token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `ImageMedia`
-          onClick={() => window.open(media.contentRenderURL)}
+          onClick={() => window.open(token.media.contentRenderURL)}
         />
       );
     case 'GIFMedia':
@@ -96,7 +96,7 @@ function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentPr
           tokenRef={token}
           // @ts-expect-error: we know contentRenderURL is present within the media field
           // if token type is `GifMedia`
-          onClick={() => window.open(media.contentRenderURL)}
+          onClick={() => window.open(token.media.contentRenderURL)}
         />
       );
     case 'GltfMedia':
