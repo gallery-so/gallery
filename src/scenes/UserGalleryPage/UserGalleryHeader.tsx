@@ -37,7 +37,6 @@ function UserGalleryHeader({
   const user = useFragment(
     graphql`
       fragment UserGalleryHeaderFragment on GalleryUser {
-        username @required(action: THROW)
         dbid
         bio
         badges {
@@ -59,11 +58,9 @@ function UserGalleryHeader({
     queryRef
   );
 
-  const { username, bio, badges } = user;
+  const { bio, badges } = user;
 
   const is3ac = useIs3acProfilePage();
-  // TODO(Terence): Bring this into he header;
-  const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 

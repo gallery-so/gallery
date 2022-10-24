@@ -16,6 +16,7 @@ import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavba
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
+import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
 
 type Props = {
   username: string;
@@ -35,6 +36,8 @@ export function GalleryNavbar({ queryRef, username }: Props) {
 
   const breakpoint = useBreakpoint();
 
+  const is3ac = isUsername3ac(username);
+
   return (
     <VStack>
       <StandardNavbarContainer>
@@ -43,7 +46,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         </NavbarLeftContent>
         <NavbarCenterContent>
           {breakpoint === size.mobile ? (
-            <BreadcrumbText>{username}</BreadcrumbText>
+            <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
           ) : (
             <GalleryNavLinks username={username} />
           )}
