@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ForwardedRef, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -27,10 +27,7 @@ type Props = {
   mobileLayout: DisplayLayout;
 };
 
-function UserGalleryCollections(
-  { galleryRef, queryRef, mobileLayout }: Props,
-  ref: ForwardedRef<List>
-) {
+function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryCollectionsQueryFragment on Query {
@@ -155,17 +152,7 @@ function UserGalleryCollections(
             {({ width }) => (
               <div ref={registerChild}>
                 <List
-                  ref={(list) => {
-                    if (list) {
-                      listRef.current = list;
-
-                      if (typeof ref === 'function') {
-                        ref(list);
-                      } else if (ref) {
-                        ref.current = list;
-                      }
-                    }
-                  }}
+                  ref={listRef}
                   autoHeight
                   width={width}
                   height={height}
@@ -210,4 +197,4 @@ const StyledUserGalleryCollectionContainer = styled.div`
   padding-bottom: 48px;
 `;
 
-export default forwardRef<List, Props>(UserGalleryCollections);
+export default UserGalleryCollections;

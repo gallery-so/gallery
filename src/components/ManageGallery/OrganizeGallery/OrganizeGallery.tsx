@@ -8,6 +8,7 @@ import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
 import useNotOptimizedForMobileWarning from '../useNotOptimizedForMobileWarning';
+import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   onAddCollection: () => void;
