@@ -125,11 +125,9 @@ function UserGalleryCollection({
   const [showMore, setShowMore] = useState(false);
   const handleCollectorsNoteClick = useCallback(() => {
     setShowMore((previous) => !previous);
-  }, []);
 
-  useLayoutEffect(() => {
     onLayoutShift();
-  }, [onLayoutShift, showMore]);
+  }, [onLayoutShift]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
