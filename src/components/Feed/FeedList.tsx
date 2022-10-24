@@ -140,9 +140,6 @@ export default function FeedList({
     [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );
 
-  // If there are more items to be loaded then add extra rows
-  const rowCount = hasNext ? feedData.length + 1 : feedData.length;
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLoadMoreClick = useCallback(async () => {
@@ -163,7 +160,7 @@ export default function FeedList({
                 width={width}
                 height={height}
                 rowRenderer={rowRenderer}
-                rowCount={rowCount}
+                rowCount={feedData.length}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
                 overscanRowCount={10}
