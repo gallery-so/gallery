@@ -60,23 +60,30 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
 
       {showDropdown && <Backdrop onClick={handleClose} />}
 
-      <DropdownContainer gap={8} active={showDropdown}>
-        <DropdownProfileSection gap={4}>
-          <HStack gap={4} align="center">
-            <UsernameText>{query.viewer?.user?.username}</UsernameText>
-            <BaseS>•</BaseS>
-            <BaseS>Profile</BaseS>
-          </HStack>
-          {editGalleryUrl && (
-            <StyledInteractiveLink to={editGalleryUrl}>Edit Gallery</StyledInteractiveLink>
-          )}
-        </DropdownProfileSection>
+      <DropdownContainer active={showDropdown}>
+        <NavSection>
+          <Link href={`/${query.viewer?.user?.username}`}>
+            <DropdownProfileSection href={`/${query.viewer?.user?.username}`}>
+              <HStack gap={4} align="center">
+                <UsernameText>{query.viewer?.user?.username}</UsernameText>
+                <BaseS>•</BaseS>
+                <BaseS>Profile</BaseS>
+              </HStack>
+              {editGalleryUrl && (
+                // Need this to ensure the interactive link doens't take the full width
+                <VStack align="flex-start">
+                  <StyledInteractiveLink to={editGalleryUrl}>Edit Gallery</StyledInteractiveLink>
+                </VStack>
+              )}
+            </DropdownProfileSection>
+          </Link>
+        </NavSection>
 
-        <VStack gap={4}>
+        <NavSection gap={4}>
           <DropdownLink href={'/home'}>HOME</DropdownLink>
-        </VStack>
+        </NavSection>
 
-        <VStack gap={4}>
+        <NavSection gap={4}>
           <DropdownItem onClick={showWalletModal}>ACCOUNTS</DropdownItem>
           <DropdownLink href={'/shop'}>
             <HStack gap={8}>
@@ -84,15 +91,19 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
               <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
           </DropdownLink>
-        </VStack>
+        </NavSection>
 
-        <VStack gap={4}>
+        <NavSection gap={4}>
           <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
-        </VStack>
+        </NavSection>
       </DropdownContainer>
     </>
   );
 }
+
+const NavSection = styled(VStack)`
+  padding: 4px 0;
+`;
 
 const Backdrop = styled.div`
   position: fixed;
@@ -124,6 +135,10 @@ const StyledDropdownLink = styled.a`
   color: #808080;
   cursor: pointer;
   text-decoration: none;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const StyledObjectsText = styled(TitleM)`
@@ -162,10 +177,24 @@ const DropdownItem = styled.div`
   cursor: pointer;
 
   white-space: nowrap;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
 `;
 
-const DropdownProfileSection = styled(VStack)`
-  padding: 8px;
+const DropdownProfileSection = styled.a`
+  display: flex;
+  flex-direction: column;
+  gap: 4px 0;
+
+  text-decoration: none;
+
+  padding: 4px;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const DropdownContainer = styled(VStack)<{ active: boolean }>`

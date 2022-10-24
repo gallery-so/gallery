@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
-import { BaseM } from 'components/core/Text/Text';
+import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
 import Markdown from 'components/core/Markdown/Markdown';
 import MobileLayoutToggle from './MobileLayoutToggle';
 import { DisplayLayout } from 'components/core/enums';
@@ -18,6 +18,7 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 import Badge from 'components/Badge/Badge';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 import { UserGalleryHeaderQueryFragment$key } from '__generated__/UserGalleryHeaderQueryFragment.graphql';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
@@ -37,6 +38,7 @@ function UserGalleryHeader({
   const user = useFragment(
     graphql`
       fragment UserGalleryHeaderFragment on GalleryUser {
+        username
         dbid
         bio
         badges {
@@ -58,8 +60,9 @@ function UserGalleryHeader({
     queryRef
   );
 
-  const { bio, badges } = user;
+  const { bio, badges, username } = user;
 
+  const isMobile = useIsMobileWindowWidth();
   const is3ac = useIs3acProfilePage();
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
@@ -79,8 +82,14 @@ function UserGalleryHeader({
 
   return (
     <StyledUserGalleryHeader gap={2}>
+      {isMobile ? (
+        <StyledUsernameMobile>{username}</StyledUsernameMobile>
+      ) : (
+        <StyledUsername>{username}</StyledUsername>
+      )}
+
       <HStack align="flex-start" justify="space-between">
-        <HStack align="center" gap={8}>
+        <HStack align="center" gap={8} grow>
           <StyledUserDetails>
             {is3ac ? (
               <ExpandableBio text={unescapedBio} />
@@ -95,11 +104,11 @@ function UserGalleryHeader({
           {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
         </HStack>
 
-        <StyledButtonsWrapper gap={8} align="center" justify="space-between">
-          {showMobileLayoutToggle && (
+        {showMobileLayoutToggle && (
+          <StyledButtonsWrapper gap={8} align="center" justify="space-between">
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-          )}
-        </StyledButtonsWrapper>
+          </StyledButtonsWrapper>
+        )}
       </HStack>
     </StyledUserGalleryHeader>
   );
@@ -169,6 +178,19 @@ const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
 
           -webkit-line-clamp: 2;
         `}
+`;
+
+const StyledUsername = styled(TitleL)`
+  overflow-wrap: break-word;
+  width: calc(100% - 48px);
+  flex: 1;
+`;
+
+const StyledUsernameMobile = styled(TitleM)`
+  font-style: normal;
+  overflow-wrap: break-word;
+  width: calc(100% - 48px);
+  flex: 1;
 `;
 
 const StyledUserGalleryHeader = styled(VStack)`
