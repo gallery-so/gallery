@@ -5776,6 +5776,11 @@
   resolved "https://registry.yarnpkg.com/@vanilla-extract/sprinkles/-/sprinkles-1.4.1.tgz#8c8703ddedaac355c1187db909119816c0fc771c"
   integrity sha512-aW6CfMMToX4a+baLuVxwcT0FSACjX3xrNt8wdi/3LLRlLAfhyue8OK7kJxhcYNZfydBeWTP59aRy8p5FUTIeew==
 
+"@vercel/analytics@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-0.1.1.tgz#ce036282d76f03417141b54830930f915f40504b"
+  integrity sha512-34on7YtVt/yT8+QX7c5K2bcKYXnax06sQiK2PUdlQ1ABg5699mPdLGOSpS1gF//kR1s9oig4MCJ+N9nOjpaS6g==
+
 "@wagmi/core@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.5.2.tgz#38ce1c23907fafe8311185b2f0ea0a915661908d"
