@@ -5,21 +5,25 @@ import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFrag
 export enum FeatureFlag {
   ART_GOBBLERS = 'ART_GOBBLERS',
   ADMIRE_COMMENT = 'ADMIRE_COMMENT',
+  WHITE_RINO = 'WHITE_RINO',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: false,
   ADMIRE_COMMENT: false,
+  WHITE_RINO: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: true,
   ADMIRE_COMMENT: true,
+  WHITE_RINO: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: false,
   ADMIRE_COMMENT: true,
+  WHITE_RINO: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(

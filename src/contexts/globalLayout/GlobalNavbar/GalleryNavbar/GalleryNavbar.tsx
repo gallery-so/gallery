@@ -28,6 +28,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       fragment GalleryNavbarFragment on Query {
         ...GalleryLeftContentFragment
         ...GalleryRightContentFragment
+        ...GalleryNavLinksFragment
       }
     `,
     queryRef
@@ -47,7 +48,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           {breakpoint === size.mobile ? (
             <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
           ) : (
-            <GalleryNavLinks username={username} />
+            <GalleryNavLinks username={username} queryRef={query} />
           )}
         </NavbarCenterContent>
         <NavbarRightContent>
@@ -59,7 +60,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       {breakpoint === size.mobile && (
         <StandardNavbarContainer>
           <MobileNavLinks justify="center">
-            <GalleryNavLinks username={username} />
+            <GalleryNavLinks username={username} queryRef={query} />
           </MobileNavLinks>
         </StandardNavbarContainer>
       )}
