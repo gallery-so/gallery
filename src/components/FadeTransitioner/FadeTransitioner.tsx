@@ -23,6 +23,8 @@ const childNodeStyles = {
   height: '100%',
 };
 
+// This context exists to ensure children that are unmounting know they're unmounting and
+// don't try to do any B.S. while they're unmounting
 export const TransitionStateContext = createContext<TransitionStatus | undefined>(undefined);
 
 /**
