@@ -32,6 +32,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
+        badgeURL
         contractAddress {
           address
         }
@@ -52,7 +53,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const { name, description, contractAddress } = community;
+  const { name, description, contractAddress, badgeURL } = community;
   const isMobile = useIsMobileWindowWidth();
 
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
@@ -92,7 +93,11 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       <StyledCommunityPageContainer>
         <HStack>
           <StyledHeader>
-            <TitleL>{name}</TitleL>
+            <HStack gap={4} align="center">
+              <TitleL>{name}</TitleL>
+              {badgeURL && <StyledBadge src={badgeURL} />}
+            </HStack>
+
             {description && (
               <StyledDescriptionWrapper gap={8}>
                 <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
@@ -191,4 +196,9 @@ const StyledBreakLine = styled.hr`
 
 const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
   padding: ${({ isMobile }) => (isMobile ? '32px 0' : '80px 0 64px')};
+`;
+
+const StyledBadge = styled.img`
+  height: 24px;
+  width: 24px;
 `;
