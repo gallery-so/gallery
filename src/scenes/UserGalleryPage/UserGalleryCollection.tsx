@@ -256,6 +256,10 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   -webkit-box-orient: vertical;
   overflow: hidden;
 
+  p {
+    display: inline;
+  }
+
   ${({ showMore }) =>
     showMore
       ? css`
@@ -263,7 +267,7 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
         `
       : css`
           // We only care about line clamping on mobile
-          @media only screen and ${breakpoints.mobileLarge} {
+          @media only screen and ${breakpoints.tablet} {
             -webkit-line-clamp: unset;
           }
 
