@@ -2,6 +2,7 @@ import breakpoints from 'components/core/breakpoints';
 import Loader from 'components/core/Loader/Loader';
 import { VStack } from 'components/core/Spacer/Stack';
 import { TitleS } from 'components/core/Text/Text';
+import { GRID_ITEM_PER_PAGE } from 'constants/community';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -11,8 +12,6 @@ import CommunityHolderGridItem from './CommunityHolderGridItem';
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
 };
-
-const ITEMS_PER_PAGE = 40;
 
 export default function CommunityHolderGrid({ communityRef }: Props) {
   const { data: community, loadNext, hasNext } = usePaginationFragment(
@@ -70,7 +69,7 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
 
   const handleSeeMore = useCallback(() => {
     setIsFetching(true);
-    loadNext(ITEMS_PER_PAGE, {
+    loadNext(GRID_ITEM_PER_PAGE, {
       onComplete: () => {
         setIsFetching(false);
       },

@@ -7,7 +7,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { DISABLED_CONTRACTS } from 'utils/getCommunityUrlForToken';
-import { GRID_ITEM_PER_PAGE } from 'constants/community';
+import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -21,6 +21,8 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         $forceRefresh: Boolean
         $tokenCommunityFirst: Int!
         $tokenCommunityAfter: String
+        $listOwnersFirst: Int!
+        $listOwnersAfter: String
       ) {
         ...CommunityPageFragment
       }
@@ -32,6 +34,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       },
       forceRefresh: false,
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
+      listOwnersFirst: LIST_ITEM_PER_PAGE,
     }
   );
 

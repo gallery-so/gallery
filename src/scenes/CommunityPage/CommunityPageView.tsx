@@ -10,7 +10,6 @@ import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFr
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
-import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import formatUrl from 'utils/formatUrl';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import colors from 'components/core/colors';
@@ -20,6 +19,7 @@ import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderG
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 import { CommunityPageViewQueryFragment$key } from '__generated__/CommunityPageViewQueryFragment.graphql';
 import { ART_GOBBLER_ADDRESS } from 'constants/community';
+import CommunityHolderList from 'components/Community/CommunityHolderList';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -35,15 +35,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         contractAddress {
           address
         }
-        owners(first: 200) @connection(key: "CommunityPageView_owners") {
-          edges {
-            node {
-              ...TokenHolderListFragment
-            }
-          }
-        }
 
         ...CommunityHolderGridFragment
+        ...CommunityHolderListFragment
       }
     `,
     communityRef
@@ -58,7 +52,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const { name, description, contractAddress, owners } = community;
+  const { name, description, contractAddress } = community;
   const isMobile = useIsMobileWindowWidth();
 
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
@@ -77,18 +71,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const [isLineClampEnabled, setIsLineClampEnabled] = useState(false);
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
-
-  const nonNullTokenHolders = useMemo(() => {
-    const holders = [];
-
-    for (const owner of owners?.edges ?? []) {
-      if (owner?.node) {
-        holders.push(owner.node);
-      }
-    }
-
-    return holders;
-  }, [owners?.edges]);
 
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
@@ -145,12 +127,8 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             <StyledMemberListFilterContainer isMobile={isMobile}>
               <MemberListFilter />
             </StyledMemberListFilterContainer>
-
             <StyledListWrapper>
-              <TokenHolderList
-                title="Members in this community"
-                tokenHoldersRef={nonNullTokenHolders}
-              />
+              <CommunityHolderList communityRef={community} />
             </StyledListWrapper>
           </>
         )}

@@ -14,6 +14,7 @@ import { graphql } from 'relay-runtime';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '__generated__/TokenHolderListItemFragment.graphql';
+import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 
 type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
@@ -29,12 +30,17 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
       fragment TokenHolderListItemFragment on TokenHolder {
         user @required(action: THROW) {
           username @required(action: THROW)
+          universal
+
+          ...walletTruncateUniversalUsernameFragment
         }
         previewTokens
       }
     `,
     tokenHolderRef
   );
+
+  const username = graphqlTruncateUniversalUsername(owner.user);
 
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
   // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
@@ -93,7 +99,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
           underlined={false}
           fadeUsernames={fadeUsernames}
         >
-          <StyledUsername>{owner.user.username}</StyledUsername>
+          <StyledUsername>{username}</StyledUsername>
         </StyledGalleryLink>
       </StyledUsernameWrapper>
       {isDesktop && showPreview && previewTokens && (
