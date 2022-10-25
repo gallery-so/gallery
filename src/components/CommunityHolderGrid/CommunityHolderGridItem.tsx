@@ -1,13 +1,14 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
+import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
+import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 
@@ -48,6 +49,8 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 
           ...walletTruncateUniversalUsernameFragment
         }
+
+        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     holderRef
@@ -60,19 +63,13 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     ? `https://opensea.io/${owner?.username}`
     : `/${owner?.username}`;
 
-  const resizedNft =
-    token.media && 'previewURLs' in token.media
-      ? graphqlGetResizedNftImageUrlWithFallback(token.media.previewURLs.large, 480)
-      : null;
+  const reportError = useReportError();
+  const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
 
-  if (!resizedNft) {
-    throw new CouldNotRenderNftError(
-      'NftPreviewAsset',
-      'could not compute graphqlGetResizedNftImageUrlWithFallback'
-    );
+  if (!previewUrlSet?.urls.large) {
+    throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');
   }
 
-  const { url: src } = resizedNft;
   const openSeaExternalUrl = useMemo(() => {
     if (contract?.contractAddress?.address && tokenId) {
       return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
@@ -85,7 +82,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     <VStack gap={8}>
       <Link href={openSeaExternalUrl || ''} passHref>
         <a target="_blank">
-          <StyledNftImage src={src} />
+          {previewUrlSet?.type === 'video' ? (
+            <StyledNftVideo src={previewUrlSet.urls.large} />
+          ) : (
+            <StyledNftImage src={previewUrlSet.urls.large} />
+          )}
         </a>
       </Link>
       <VStack>
@@ -101,6 +102,13 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 }
 
 const StyledNftImage = styled.img`
+  min-height: 240px;
+  width: auto;
+  max-width: 100%;
+  cursor: pointer;
+`;
+
+const StyledNftVideo = styled.video`
   min-height: 240px;
   width: auto;
   max-width: 100%;
