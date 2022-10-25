@@ -237,8 +237,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   // Keeping this around for the next time we want to use it
   // useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
-  console.log({ fadeType, isPageInSuspenseState, isNavbarVisible });
-
   return (
     // note: we render the navbar here, above the main contents of the app,
     // so that it can remain fixed across page transitions. the footer, on
