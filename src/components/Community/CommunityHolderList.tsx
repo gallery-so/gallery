@@ -88,8 +88,9 @@ export default function CommunityHolderList({ communityRef }: Props) {
   return (
     <div>
       <StyledListWrapper>
-        <TokenHolderList title="Gallery Members" tokenHoldersRef={galleryMembers} />
-
+        {galleryMembers.length > 0 && (
+          <TokenHolderList title="Gallery Members" tokenHoldersRef={galleryMembers} />
+        )}
         {nonGalleryMembers.length > 0 && (
           <TokenHolderList title="Other owners" tokenHoldersRef={nonGalleryMembers} />
         )}

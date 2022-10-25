@@ -8,6 +8,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
+import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 
 type Props = {
@@ -44,6 +45,8 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         owner {
           username
           universal
+
+          ...walletTruncateUniversalUsernameFragment
         }
       }
     `,
@@ -51,7 +54,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   );
   const { tokenId, contract, owner } = token;
 
-  const galleryLink = `/${owner?.username}`;
+  const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
+
+  const profileLink = owner?.universal
+    ? `https://opensea.io/${owner?.username}`
+    : `/${owner?.username}`;
 
   const resizedNft =
     token.media && 'previewURLs' in token.media
@@ -83,7 +90,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
       </Link>
       <VStack>
         <BaseM>{token?.name}</BaseM>
-        <InteractiveLink to={galleryLink}>{token?.owner?.username}</InteractiveLink>
+        {owner?.universal ? (
+          <InteractiveLink href={profileLink}>{usernameWithFallback}</InteractiveLink>
+        ) : (
+          <InteractiveLink to={profileLink}>{usernameWithFallback}</InteractiveLink>
+        )}
       </VStack>
     </VStack>
   );

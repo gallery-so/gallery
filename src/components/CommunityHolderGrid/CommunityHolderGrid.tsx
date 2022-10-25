@@ -31,6 +31,7 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
               }
               owner {
                 username
+                universal
               }
               ...CommunityHolderGridItemFragment
             }
@@ -60,11 +61,11 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
   }, [tokenHolders]);
 
   const nonGalleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => !token?.owner);
+    return filteredTokens.filter((token) => token?.owner?.universal);
   }, [filteredTokens]);
 
   const galleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => token?.owner);
+    return filteredTokens.filter((token) => !token?.owner?.universal);
   }, [filteredTokens]);
 
   const handleSeeMore = useCallback(() => {
@@ -92,14 +93,16 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
 
   return (
     <VStack gap={48}>
-      <VStack gap={16}>
-        <TitleS>Gallery members</TitleS>
-        <StyledCommunityHolderGrid>
-          {galleryMemberTokens.map((holder) =>
-            holder ? <CommunityHolderGridItem holderRef={holder} /> : null
-          )}
-        </StyledCommunityHolderGrid>
-      </VStack>
+      {galleryMemberTokens.length > 0 && (
+        <VStack gap={16}>
+          <TitleS>Gallery members</TitleS>
+          <StyledCommunityHolderGrid>
+            {galleryMemberTokens.map((holder) =>
+              holder ? <CommunityHolderGridItem holderRef={holder} /> : null
+            )}
+          </StyledCommunityHolderGrid>
+        </VStack>
+      )}
       {nonGalleryMemberTokens.length > 0 && (
         <VStack gap={16}>
           <TitleS>Other members</TitleS>

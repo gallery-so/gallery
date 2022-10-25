@@ -81,28 +81,33 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
 
   const breakpoint = useBreakpoint();
 
-  const isDesktop = useMemo(
-    () => breakpoint === size.desktop && !detectMobileDevice(),
-    [breakpoint]
-  );
+  const isDesktop = useMemo(() => breakpoint === size.desktop && !detectMobileDevice(), [
+    breakpoint,
+  ]);
 
   const previewTokens = useMemo(
     () => (owner.previewTokens ? removeNullValues(owner.previewTokens) : null),
     [owner.previewTokens]
   );
 
+  const profileLink = owner.user.universal
+    ? `https://opensea.io/${owner.user.username}`
+    : `/${owner.user.username}`;
+
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <StyledGalleryLink
-          to={`/${owner.user.username}`}
-          underlined={false}
-          fadeUsernames={fadeUsernames}
-        >
-          <StyledUsername>{username}</StyledUsername>
-        </StyledGalleryLink>
+        {owner.user.universal ? (
+          <StyledGalleryLink href={profileLink} underlined={false} fadeUsernames={fadeUsernames}>
+            <StyledUsername>{username}</StyledUsername>
+          </StyledGalleryLink>
+        ) : (
+          <StyledGalleryLink to={profileLink} underlined={false} fadeUsernames={fadeUsernames}>
+            <StyledUsername>{username}</StyledUsername>
+          </StyledGalleryLink>
+        )}
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && previewTokens && (
+      {isDesktop && showPreview && previewTokens && !owner.user.universal && (
         <MemberListGalleryPreview
           direction={direction}
           tokenUrls={previewTokens}
