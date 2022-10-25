@@ -10,6 +10,7 @@ import { useAuthActions } from 'contexts/auth/AuthContext';
 import { DropdownFragment$key } from '../../../../../__generated__/DropdownFragment.graphql';
 import { MouseEventHandler, ReactNode, useCallback } from 'react';
 import useWalletModal from 'hooks/useWalletModal';
+import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 
 type Props = {
   showDropdown: boolean;
@@ -26,14 +27,10 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
             user {
               username
             }
-
-            viewerGalleries {
-              gallery {
-                dbid
-              }
-            }
           }
         }
+
+        ...getEditGalleryUrlFragment
       }
     `,
     queryRef
@@ -51,8 +48,7 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
     [onClose]
   );
 
-  const firstGalleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
-  const editGalleryUrl = firstGalleryId ? `/gallery/${firstGalleryId}/edit` : null;
+  const editGalleryUrl = getEditGalleryUrl(query);
 
   return (
     <>
@@ -158,6 +154,10 @@ const UsernameText = styled(Paragraph)`
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
+
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledInteractiveLink = styled(InteractiveLink)`
@@ -190,7 +190,7 @@ const DropdownProfileSection = styled.a`
 
   text-decoration: none;
 
-  padding: 4px;
+  padding: 8px 4px 8px 4px;
 
   :hover {
     background-color: ${colors.faint};

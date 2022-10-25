@@ -11,6 +11,7 @@ import LinkButton from 'scenes/UserGalleryPage/LinkButton';
 import Link from 'next/link';
 import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
+import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 
 type CollectionRightContentProps = {
   username: string;
@@ -30,16 +31,13 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
         viewer {
           ... on Viewer {
             __typename
-            viewerGalleries {
-              gallery {
-                dbid
-              }
-            }
             user {
               dbid
             }
           }
         }
+
+        ...getEditGalleryUrlFragment
       }
     `,
     queryRef
@@ -58,10 +56,8 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
       return null;
     }
 
-    return query.viewer.viewerGalleries?.[0]?.gallery
-      ? `/gallery/${query.viewer.viewerGalleries[0].gallery.dbid}/edit`
-      : null;
-  }, [query.userByUsername?.dbid, query.viewer]);
+    return getEditGalleryUrl(query);
+  }, [query]);
 
   if (breakpoint === size.mobile) {
     return (
