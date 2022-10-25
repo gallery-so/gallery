@@ -1,4 +1,4 @@
-import React, { FC, ComponentType, useEffect } from 'react';
+import { FC, ComponentType, useEffect } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -29,18 +29,6 @@ const SafeHydrate: FC = ({ children }) => (
   <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 );
 
-const DISABLE_ERROR_OVERLAY = true;
-const noOverlayWorkaroundScript = `
-  window.addEventListener('error', event => {
-    event.stopImmediatePropagation()
-  })
-
-  window.addEventListener('unhandledrejection', event => {
-    event.stopImmediatePropagation()
-  })
-`;
-
-
 const App: FC<{
   Component: ComponentType<MetaTagProps>;
   pageProps: MetaTagProps & Record<string, unknown>;
@@ -58,16 +46,9 @@ const App: FC<{
       <Head>
         <title>Gallery</title>
 
-        {DISABLE_ERROR_OVERLAY && (
-          <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
-        )}
-
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
-        <meta
-          name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
-        />
 
         {pageProps.metaTags?.length ? (
           pageProps.metaTags.map((metaTag) => (
