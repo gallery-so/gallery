@@ -43,6 +43,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         }
         owner {
           username
+          universal
         }
       }
     `,

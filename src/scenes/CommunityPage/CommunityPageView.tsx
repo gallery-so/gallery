@@ -19,6 +19,7 @@ import { DisplayLayout } from 'components/core/enums';
 import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 import { CommunityPageViewQueryFragment$key } from '__generated__/CommunityPageViewQueryFragment.graphql';
+import { ART_GOBBLER_ADDRESS } from 'constants/community';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -34,7 +35,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         contractAddress {
           address
         }
-        owners(first: 10000) @connection(key: "CommunityPageView_owners") {
+        owners(first: 200) @connection(key: "CommunityPageView_owners") {
           edges {
             node {
               ...TokenHolderListFragment
@@ -42,13 +43,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
           }
         }
 
-        tokensInCommunity(first: 10000) @connection(key: "CommunityPageView_tokensInCommunity") {
-          edges {
-            node {
-              ...CommunityHolderGridFragment
-            }
-          }
-        }
+        ...CommunityHolderGridFragment
       }
     `,
     communityRef
@@ -71,11 +66,8 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
   const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
 
-  // TODO: Replace with the art gobbler contract address
   const isArtGobbler = useMemo(
-    () =>
-      contractAddress?.address === '0x5180db8f5c931aae63c74266b211f580155ecac8' &&
-      isArtGobblersEnabled,
+    () => contractAddress?.address === ART_GOBBLER_ADDRESS && isArtGobblersEnabled,
     [contractAddress, isArtGobblersEnabled]
   );
 
@@ -97,18 +89,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
     return holders;
   }, [owners?.edges]);
-
-  const nonNullTokensInCommunity = useMemo(() => {
-    const tokens = [];
-
-    for (const token of community.tokensInCommunity?.edges ?? []) {
-      if (token?.node) {
-        tokens.push(token.node);
-      }
-    }
-
-    return tokens;
-  }, [community.tokensInCommunity?.edges]);
 
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
@@ -157,7 +137,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
           <StyledGridViewContainer gap={24}>
             <StyledBreakLine />
             <StyledListWrapper>
-              <CommunityHolderGrid communityRef={nonNullTokensInCommunity} />
+              <CommunityHolderGrid communityRef={community} />
             </StyledListWrapper>
           </StyledGridViewContainer>
         ) : (

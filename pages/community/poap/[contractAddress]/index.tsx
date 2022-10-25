@@ -6,6 +6,7 @@ import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { ContractAddressPoapQuery } from '../../../../__generated__/ContractAddressPoapQuery.graphql';
+import { GRID_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -17,6 +18,8 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       query ContractAddressPoapQuery(
         $communityAddress: ChainAddressInput!
         $forceRefresh: Boolean
+        $tokenCommunityFirst: Int!
+        $tokenCommunityAfter: String
       ) {
         ...CommunityPageFragment
       }
@@ -27,6 +30,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         chain: 'POAP',
       },
       forceRefresh: false,
+      tokenCommunityFirst: GRID_ITEM_PER_PAGE,
     }
   );
 

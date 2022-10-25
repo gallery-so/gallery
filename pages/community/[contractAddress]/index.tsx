@@ -7,6 +7,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { DISABLED_CONTRACTS } from 'utils/getCommunityUrlForToken';
+import { GRID_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -15,7 +16,12 @@ type CommunityPageProps = MetaTagProps & {
 export default function CommunityPage({ contractAddress }: CommunityPageProps) {
   const query = useLazyLoadQuery<ContractAddressQuery>(
     graphql`
-      query ContractAddressQuery($communityAddress: ChainAddressInput!, $forceRefresh: Boolean) {
+      query ContractAddressQuery(
+        $communityAddress: ChainAddressInput!
+        $forceRefresh: Boolean
+        $tokenCommunityFirst: Int!
+        $tokenCommunityAfter: String
+      ) {
         ...CommunityPageFragment
       }
     `,
@@ -25,6 +31,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         chain: 'Ethereum',
       },
       forceRefresh: false,
+      tokenCommunityFirst: GRID_ITEM_PER_PAGE,
     }
   );
 
