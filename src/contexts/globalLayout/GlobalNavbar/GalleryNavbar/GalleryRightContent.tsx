@@ -25,14 +25,28 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
+
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            dbid
+          }
+        }
       }
     `,
     queryRef
   );
 
+  const styledQrCode = useQrCode();
   const breakpoint = useBreakpoint();
   const { showModal } = useModalActions();
-  const styledQrCode = useQrCode();
 
   const handleEditClick = useCallback(() => {
     showModal({
@@ -41,21 +55,29 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     });
   }, [query, showModal]);
 
+  const shouldShowEditButton = Boolean(
+    query.viewer?.user?.dbid && query.viewer?.user?.dbid === query.userByUsername?.dbid
+  );
+
   if (breakpoint === size.mobile) {
     return (
       <HStack gap={8} align="center">
         <QRCodeButton username={username} styledQrCode={styledQrCode} />
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
-        <EditLink role="button" onClick={handleEditClick} />
+        {shouldShowEditButton && <EditLink role="button" onClick={handleEditClick} />}
       </HStack>
     );
   }
 
-  return (
-    <EditButtonContainer onClick={handleEditClick}>
-      <TitleXS>EDIT</TitleXS>
-    </EditButtonContainer>
-  );
+  if (shouldShowEditButton) {
+    return (
+      <EditButtonContainer onClick={handleEditClick}>
+        <TitleXS>EDIT</TitleXS>
+      </EditButtonContainer>
+    );
+  }
+
+  return null;
 }
 
 const EditButtonContainer = styled.div.attrs({ role: 'button' })`
