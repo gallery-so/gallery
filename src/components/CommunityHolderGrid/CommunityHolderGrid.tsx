@@ -26,6 +26,8 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
             node {
               __typename
 
+              id
+
               media {
                 __typename
               }
@@ -98,7 +100,7 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
           <TitleS>Gallery members</TitleS>
           <StyledCommunityHolderGrid>
             {galleryMemberTokens.map((holder) =>
-              holder ? <CommunityHolderGridItem holderRef={holder} /> : null
+              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>
@@ -109,7 +111,7 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
 
           <StyledCommunityHolderGrid>
             {nonGalleryMemberTokens.map((holder) =>
-              holder ? <CommunityHolderGridItem holderRef={holder} /> : null
+              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>

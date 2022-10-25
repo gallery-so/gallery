@@ -37,6 +37,12 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
             }
           }
 
+          ... on VideoMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
+
           ... on UnknownMedia {
             previewURLs @required(action: NONE) {
               large @required(action: NONE)
