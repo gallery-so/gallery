@@ -11,6 +11,7 @@ import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFr
 import { TitleXSBold } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { HStack } from 'components/core/Spacer/Stack';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -196,4 +197,9 @@ const UnfollowChip = styled(Chip)`
 const FollowsYouChip = styled(Chip)`
   background-color: ${colors.faint};
   color: ${colors.metal};
+
+  display: none;
+  @media only screen and ${breakpoints.tablet} {
+    display: flex;
+  }
 `;

@@ -10,8 +10,7 @@ import {
 import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { size } from 'components/core/breakpoints';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { VStack } from 'components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -39,7 +38,7 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
     queryRef
   );
 
-  const breakpoint = useBreakpoint();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
     <StandardNavbarContainer>
@@ -48,7 +47,7 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
       </NavbarLeftContent>
 
       <NavbarCenterContent>
-        {breakpoint === size.mobile ? (
+        {isMobile ? (
           <>
             <VStack align="center">
               <MobileUsernameText>{username}</MobileUsernameText>

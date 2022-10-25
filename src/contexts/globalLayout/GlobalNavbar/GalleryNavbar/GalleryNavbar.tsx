@@ -10,8 +10,7 @@ import {
   StandardNavbarContainer,
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { size } from 'components/core/breakpoints';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import styled from 'styled-components';
@@ -34,7 +33,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     queryRef
   );
 
-  const breakpoint = useBreakpoint();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const is3ac = isUsername3ac(username);
 
@@ -45,7 +44,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           <GalleryLeftContent queryRef={query} />
         </NavbarLeftContent>
         <NavbarCenterContent>
-          {breakpoint === size.mobile ? (
+          {isMobile ? (
             <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
           ) : (
             <GalleryNavLinks username={username} queryRef={query} />
@@ -57,7 +56,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       </StandardNavbarContainer>
 
       {/* This is the next row for mobile content */}
-      {breakpoint === size.mobile && (
+      {isMobile && (
         <StandardNavbarContainer>
           <MobileNavLinks justify="center">
             <GalleryNavLinks username={username} queryRef={query} />

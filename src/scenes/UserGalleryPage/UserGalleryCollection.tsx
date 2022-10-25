@@ -248,10 +248,6 @@ const StyledCollectorsTitle = styled(TitleS)`
 const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   width: 100%;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 70%;
-  }
-
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }

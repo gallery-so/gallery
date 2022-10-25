@@ -11,7 +11,7 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import noop from 'utils/noop';
 import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { DisplayLayout } from 'components/core/enums';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -100,8 +100,8 @@ function CollectionGalleryHeader({
 
   const collectionUrl = window.location.href;
 
-  const isMobile = useIsMobileWindowWidth();
-  const shouldDisplayMobileLayoutToggle = isMobile && collection?.tokens?.length;
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const shouldDisplayMobileLayoutToggle = isMobile && (collection?.tokens?.length ?? 0) > 1;
 
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -123,10 +123,12 @@ function CollectionGalleryHeader({
     return (
       <StyledCollectionGalleryHeaderWrapper>
         <HStack align="flex-start" justify="space-between">
-          {unescapedCollectorsNote && (
-            <StyledCollectionNote clamp={2}>
+          {unescapedCollectorsNote ? (
+            <StyledCollectionNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectionNote>
+          ) : (
+            <div />
           )}
 
           {shouldDisplayMobileLayoutToggle && (
@@ -141,16 +143,8 @@ function CollectionGalleryHeader({
 
   return (
     <StyledCollectionGalleryHeaderWrapper>
-      <HStack align="flex-start" justify="space-between" wrap="wrap">
-        {isMobile ? (
-          <>
-            {unescapedCollectorsNote && (
-              <StyledCollectionNote>
-                <Markdown text={unescapedCollectorsNote} />
-              </StyledCollectionNote>
-            )}
-          </>
-        ) : (
+      <HStack align="flex-start" justify="space-between">
+        <VStack grow>
           <StyledBreadcrumbsWrapper>
             <HStack align="flex-start" justify="space-between">
               <HStack>
@@ -164,49 +158,41 @@ function CollectionGalleryHeader({
             </HStack>
             <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
           </StyledBreadcrumbsWrapper>
-        )}
+          {unescapedCollectorsNote && (
+            <StyledCollectionNote clamp={2}>
+              <Markdown text={unescapedCollectorsNote} />
+            </StyledCollectionNote>
+          )}
+        </VStack>
 
         <StyledCollectionActions align="center" justify="flex-end">
           {showEditActions ? (
             <>
-              {!isMobile && (
-                <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" onClick={handleShareClick} />
-                </CopyToClipboard>
-              )}
+              <CopyToClipboard textToCopy={collectionUrl}>
+                <TextButton text="Share" onClick={handleShareClick} />
+              </CopyToClipboard>
+
               {/* On mobile, we show these options in the navbar, not in header */}
-              {!isMobile && (
-                <SettingsDropdown>
-                  <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-                  {!shouldDisplayMobileLayoutToggle && (
-                    <>
-                      <NavElement>
-                        <UnstyledLink
-                          href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
-                          onClick={() => track('Update existing collection')}
-                        >
-                          <TextButton text="Edit Collection" />
-                        </UnstyledLink>
-                      </NavElement>
-                    </>
-                  )}
-                </SettingsDropdown>
-              )}
+              <SettingsDropdown>
+                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
+                {!shouldDisplayMobileLayoutToggle && (
+                  <>
+                    <NavElement>
+                      <UnstyledLink
+                        href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
+                        onClick={() => track('Update existing collection')}
+                      >
+                        <TextButton text="Edit Collection" />
+                      </UnstyledLink>
+                    </NavElement>
+                  </>
+                )}
+              </SettingsDropdown>
             </>
           ) : (
-            <>
-              {!isMobile && (
-                <CopyToClipboard textToCopy={collectionUrl}>
-                  <TextButton text="Share" onClick={handleShareClick} />
-                </CopyToClipboard>
-              )}
-            </>
-          )}
-
-          {shouldDisplayMobileLayoutToggle && (
-            <StyledMobileLayoutToggleContainer>
-              <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-            </StyledMobileLayoutToggleContainer>
+            <CopyToClipboard textToCopy={collectionUrl}>
+              <TextButton text="Share" onClick={handleShareClick} />
+            </CopyToClipboard>
           )}
         </StyledCollectionActions>
       </HStack>
@@ -254,8 +240,6 @@ const StyledCollectionNote = styled(BaseM)<{ clamp?: number }>`
     width: 70%;
     padding-top: 16px;
   }
-
-  line-clamp: 2;
 `;
 
 const StyledCollectionActions = styled(HStack)`

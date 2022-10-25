@@ -5,7 +5,7 @@ import NftGallery from 'components/NftGallery/NftGallery';
 import useMobileLayout from 'hooks/useMobileLayout';
 import { graphql, useFragment } from 'react-relay';
 import { CollectionGalleryFragment$key } from '__generated__/CollectionGalleryFragment.graphql';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
@@ -45,7 +45,7 @@ function CollectionGallery({ queryRef }: Props) {
   );
 
   const { collection } = query;
-  const isMobile = useIsMobileWindowWidth();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   if (collection?.__typename === 'Collection') {
     return (
