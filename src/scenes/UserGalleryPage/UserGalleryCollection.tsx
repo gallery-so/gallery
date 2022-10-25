@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
