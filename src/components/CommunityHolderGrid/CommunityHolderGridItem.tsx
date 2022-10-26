@@ -2,15 +2,14 @@ import breakpoints from 'components/core/breakpoints';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import NftPreviewAsset from 'components/NftPreview/NftPreviewAsset';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { useMemo, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import TokenDetailView from 'scenes/TokenDetailPage/TokenDetailView';
 import styled from 'styled-components';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
+import noop from 'utils/noop';
 import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 
@@ -30,28 +29,6 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
             address
           }
         }
-        collectorsNote
-        media {
-          __typename
-
-          ... on ImageMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-
-          ... on VideoMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-
-          ... on UnknownMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-        }
         owner {
           username
           universal
@@ -61,6 +38,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 
         ...getVideoOrImageUrlForNftPreviewFragment
         ...TokenDetailViewFragment
+        ...NftPreviewAssetFragment
       }
     `,
     holderRef
@@ -75,13 +53,6 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   const profileLink = owner?.universal
     ? `https://opensea.io/${owner?.username}`
     : `/${owner?.username}`;
-
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
-
-  if (!previewUrlSet?.urls.large) {
-    throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');
-  }
 
   const openSeaExternalUrl = useMemo(() => {
     if (contract?.contractAddress?.address && tokenId) {
@@ -110,11 +81,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   return (
     <VStack gap={8}>
       <InteractiveLink onClick={handleClick}>
-        {previewUrlSet?.type === 'video' ? (
-          <StyledNftVideo src={previewUrlSet.urls.large} />
-        ) : (
-          <StyledNftImage src={previewUrlSet.urls.large} />
-        )}
+        <NftPreviewAsset tokenRef={token} size={240} onLoad={noop} />
       </InteractiveLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
@@ -127,20 +94,6 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     </VStack>
   );
 }
-
-const StyledNftImage = styled.img`
-  min-height: 240px;
-  width: auto;
-  max-width: 100%;
-  cursor: pointer;
-`;
-
-const StyledNftVideo = styled.video`
-  min-height: 240px;
-  width: auto;
-  max-width: 100%;
-  cursor: pointer;
-`;
 
 const StyledNftDetailViewPopover = styled(VStack)`
   height: 100%;
