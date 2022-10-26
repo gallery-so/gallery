@@ -69,7 +69,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       {/* This is the next row for mobile content */}
       {isMobile && (
         <StandardNavbarContainer>
-          <MobileNavLinks justify="center">
+          <MobileNavLinks justify="center" grow>
             <GalleryNavLinks username={username} queryRef={query} />
           </MobileNavLinks>
         </StandardNavbarContainer>

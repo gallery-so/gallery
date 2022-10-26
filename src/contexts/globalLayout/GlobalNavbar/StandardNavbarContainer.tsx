@@ -16,23 +16,25 @@ export const StandardNavbarContainer = styled.div`
     padding: 0 ${pageGutter.tablet}px;
     height: 64px;
   }
-
-  & > * {
-    flex: 1;
-  }
 `;
 
 export const NavbarLeftContent = styled.div`
   display: flex;
   justify-content: flex-start;
+
+  flex: 1 0 0px;
 `;
 
 export const NavbarCenterContent = styled.div`
   display: flex;
   justify-content: center;
+
+  flex: 1 1 content;
 `;
 
 export const NavbarRightContent = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  flex: 1 0 0px;
 `;

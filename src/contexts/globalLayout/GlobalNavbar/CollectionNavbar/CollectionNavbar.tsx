@@ -7,7 +7,10 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '../StandardNavbarContainer';
-import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import {
+  BreadcrumbLink,
+  BreadcrumbText,
+} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { VStack } from 'components/core/Spacer/Stack';
@@ -15,6 +18,8 @@ import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+import Link from 'next/link';
+import { route, Route } from 'nextjs-routes';
 
 type CollectionNavbarProps = {
   username: string;
@@ -40,6 +45,8 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const usernameRoute: Route = { pathname: '/[username]', query: { username } };
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -50,12 +57,16 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
         {isMobile ? (
           <>
             <VStack align="center">
-              <MobileUsernameText>{username}</MobileUsernameText>
+              <Link href={usernameRoute}>
+                <MobileUsernameText>{username}</MobileUsernameText>
+              </Link>
               <BreadcrumbText>{query.collectionById?.name}</BreadcrumbText>
             </VStack>
           </>
         ) : (
-          <BreadcrumbText>{username}</BreadcrumbText>
+          <Link href={usernameRoute}>
+            <BreadcrumbLink href={route(usernameRoute)}>{username}</BreadcrumbLink>
+          </Link>
         )}
       </NavbarCenterContent>
 

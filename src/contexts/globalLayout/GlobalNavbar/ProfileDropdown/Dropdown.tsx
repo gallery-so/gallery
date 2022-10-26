@@ -68,7 +68,7 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
         <NavSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
-              <UsernameText>{query.viewer?.user?.username}</UsernameText>
+              <UsernameText>{username}</UsernameText>
               {editGalleryUrl && (
                 // Need this to ensure the interactive link doesn't take the full width
                 <VStack align="flex-start">

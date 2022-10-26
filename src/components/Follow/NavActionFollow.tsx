@@ -4,7 +4,12 @@ import { graphql, useFragment } from 'react-relay';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
-import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import {
+  BreadcrumbLink,
+  BreadcrumbText,
+} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { route, Route } from 'nextjs-routes';
+import Link from 'next/link';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;
@@ -36,9 +41,17 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
   const isLoggedIn = !!loggedInUserId;
 
+  if (!user.username) {
+    return null;
+  }
+
+  const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
+
   return (
     <HStack gap={8} align="center">
-      <BreadcrumbText>{user.username}</BreadcrumbText>
+      <Link href={usernameRoute}>
+        <BreadcrumbLink href={route(usernameRoute)}>{user.username}</BreadcrumbLink>
+      </Link>
       {isLoggedIn ? <FollowButton queryRef={loggedInUserQuery} userRef={user} /> : null}
     </HStack>
   );
