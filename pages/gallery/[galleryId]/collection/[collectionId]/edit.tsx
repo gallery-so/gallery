@@ -108,6 +108,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
     <FullPageStep
       navbar={
         <CollectionEditorNavbar
+          galleryId={galleryId}
           isCollectionValid={isCollectionValid}
           onDone={handleNext}
           onCancel={handlePrevious}

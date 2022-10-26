@@ -6,17 +6,29 @@ import {
   EditingText,
   MainGalleryText,
 } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+import Link from 'next/link';
+import { route, Route } from 'nextjs-routes';
 
 type Props = {
+  editGalleryRoute: Route;
   galleryName: string;
   collectionName: string;
   rightText: string;
 };
 
-export function GalleryNameAndCollectionName({ galleryName, collectionName, rightText }: Props) {
+export function GalleryNameAndCollectionName({
+  galleryName,
+  collectionName,
+  rightText,
+  editGalleryRoute,
+}: Props) {
   return (
     <HStack gap={8} align="baseline">
-      <StyledMainGalleryText>{galleryName}</StyledMainGalleryText>
+      <Link href={editGalleryRoute}>
+        <LinkWrapper href={route(editGalleryRoute)}>
+          <StyledMainGalleryText>{galleryName}</StyledMainGalleryText>
+        </LinkWrapper>
+      </Link>
 
       <CollectionName>/</CollectionName>
 
@@ -26,6 +38,10 @@ export function GalleryNameAndCollectionName({ galleryName, collectionName, righ
     </HStack>
   );
 }
+
+const LinkWrapper = styled.a`
+  text-decoration: none;
+`;
 
 const StyledMainGalleryText = styled(MainGalleryText)`
   color: ${colors.metal};

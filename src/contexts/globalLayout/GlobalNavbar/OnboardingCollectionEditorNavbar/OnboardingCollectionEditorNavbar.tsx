@@ -11,6 +11,7 @@ import { GalleryNameAndCollectionName } from 'contexts/globalLayout/GlobalNavbar
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { OnboardingCollectionEditorNavbarFragment$key } from '../../../../../__generated__/OnboardingCollectionEditorNavbarFragment.graphql';
+import { Route } from 'nextjs-routes';
 
 type OnboardingCollectionEditorNavbarProps = {
   queryRef: OnboardingCollectionEditorNavbarFragment$key;
@@ -38,6 +39,8 @@ export function OnboardingCollectionEditorNavbar({
     queryRef
   );
 
+  const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -46,6 +49,7 @@ export function OnboardingCollectionEditorNavbar({
 
       <NavbarCenterContent>
         <GalleryNameAndCollectionName
+          editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
           collectionName={query.collectionById?.name ?? ''}
           rightText="Editing"

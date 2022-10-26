@@ -96,6 +96,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       withBorder
       navbar={
         <CollectionCreateNavbar
+          galleryId={galleryId}
           onBack={handlePrevious}
           onNext={handleNext}
           isCollectionValid={isCollectionValid}

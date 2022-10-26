@@ -13,13 +13,20 @@ import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
 import { Button } from 'components/core/Button/Button';
 
 type Props = {
+  galleryId: string;
   onDone: () => void;
   onCancel: () => void;
   isCollectionValid: boolean;
   queryRef: CollectionEditorNavbarFragment$key;
 };
 
-export function CollectionEditorNavbar({ queryRef, isCollectionValid, onDone, onCancel }: Props) {
+export function CollectionEditorNavbar({
+  queryRef,
+  isCollectionValid,
+  onDone,
+  onCancel,
+  galleryId,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorNavbarFragment on Query {
@@ -38,7 +45,7 @@ export function CollectionEditorNavbar({ queryRef, isCollectionValid, onDone, on
       <NavbarCenterContent>
         {/* Need a fallback here to stop the entire navbar from suspending */}
         <Suspense fallback={null}>
-          <CollectionEditorCenterContent queryRef={query} />
+          <CollectionEditorCenterContent queryRef={query} galleryId={galleryId} />
         </Suspense>
       </NavbarCenterContent>
 

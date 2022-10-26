@@ -8,6 +8,7 @@ import { Button } from 'components/core/Button/Button';
 import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from 'components/Onboarding/constants';
 import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryNameAndCollectionName } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
+import { Route } from 'nextjs-routes';
 
 type OnboardingCollectionCreateNavbarProps = {
   onBack: () => void;
@@ -20,6 +21,8 @@ export function OnboardingCollectionCreateNavbar({
   onNext,
   isCollectionValid,
 }: OnboardingCollectionCreateNavbarProps) {
+  const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -28,6 +31,7 @@ export function OnboardingCollectionCreateNavbar({
 
       <NavbarCenterContent>
         <GalleryNameAndCollectionName
+          editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
           collectionName={'New Collection'}
           rightText="Creating"
