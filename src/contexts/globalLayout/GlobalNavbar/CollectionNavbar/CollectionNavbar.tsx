@@ -7,7 +7,6 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '../StandardNavbarContainer';
-import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
@@ -15,6 +14,7 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
+import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 
 type CollectionNavbarProps = {
   username: string;
@@ -26,7 +26,7 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
     graphql`
       fragment CollectionNavbarFragment on Query {
         ...CollectionRightContentFragment
-        ...ProfileDropdownOrSignInButtonFragment
+        ...ProfileDropdownFragment
 
         collectionById(id: $collectionId) {
           ... on Collection {
@@ -43,7 +43,7 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <ProfileDropdownOrSignInButton queryRef={query} />
+        <ProfileDropdown queryRef={query} />
       </NavbarLeftContent>
 
       <NavbarCenterContent>

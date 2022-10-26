@@ -14,6 +14,7 @@ import { useQrCode } from 'scenes/Modals/QRCodePopover';
 import QRCodeButton from './QRCodeButton';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
+import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
 
 type GalleryRightContentProps = {
   username: string;
@@ -28,6 +29,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
         viewer {
           ... on Viewer {
+            __typename
             user {
               dbid
             }
@@ -56,7 +58,10 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   }, [query, showModal]);
 
   const shouldShowEditButton = Boolean(
-    query.viewer?.user?.dbid && query.viewer?.user?.dbid === query.userByUsername?.dbid
+    query.viewer &&
+      'user' in query.viewer &&
+      query.viewer?.user?.dbid &&
+      query.viewer?.user?.dbid === query.userByUsername?.dbid
   );
 
   if (breakpoint === size.mobile) {
@@ -75,6 +80,8 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
         <TitleXS>EDIT</TitleXS>
       </EditButtonContainer>
     );
+  } else if (query.viewer?.__typename !== 'Viewer') {
+    return <SignInButton />;
   }
 
   return null;

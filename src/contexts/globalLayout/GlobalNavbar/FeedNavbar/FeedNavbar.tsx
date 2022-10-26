@@ -14,6 +14,7 @@ import { HStack } from 'components/core/Spacer/Stack';
 import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { FeedLeftContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
+import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
 
 type FeedNavbarProps = {
   queryRef: FeedNavbarFragment$key;
@@ -58,6 +59,8 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     [onChange, track]
   );
 
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -79,7 +82,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
       </NavbarCenterContent>
 
       {/* Strictly here to keep spacing consistent */}
-      <NavbarRightContent />
+      <NavbarRightContent>{isLoggedIn ? null : <SignInButton />}</NavbarRightContent>
     </StandardNavbarContainer>
   );
 }

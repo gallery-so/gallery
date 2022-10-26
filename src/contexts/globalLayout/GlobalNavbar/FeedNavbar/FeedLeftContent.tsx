@@ -1,7 +1,6 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { FeedLeftContentFragment$key } from '__generated__/FeedLeftContentFragment.graphql';
-import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
 import { HomeText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { size } from 'components/core/breakpoints';
 import { HStack } from 'components/core/Spacer/Stack';
@@ -11,6 +10,7 @@ import { Dropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Dro
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { FeedLeftContentDesktop$key } from '../../../../../__generated__/FeedLeftContentDesktop.graphql';
 import { FeedLeftContentMobile$key } from '../../../../../__generated__/FeedLeftContentMobile.graphql';
+import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 
 type DesktopLeftContentProps = {
   queryRef: FeedLeftContentDesktop$key;
@@ -20,18 +20,13 @@ function DesktopLeftContent({ queryRef }: DesktopLeftContentProps) {
   const query = useFragment(
     graphql`
       fragment FeedLeftContentDesktop on Query {
-        ...ProfileDropdownOrSignInButtonFragment
+        ...ProfileDropdownFragment
       }
     `,
     queryRef
   );
 
-  return (
-    <ProfileDropdownOrSignInButton
-      queryRef={query}
-      profileRightContent={<HomeText>Home</HomeText>}
-    />
-  );
+  return <ProfileDropdown queryRef={query} rightContent={<HomeText>Home</HomeText>} />;
 }
 
 type MobileLeftContentProps = {
@@ -78,7 +73,6 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
   const query = useFragment(
     graphql`
       fragment FeedLeftContentFragment on Query {
-        ...ProfileDropdownOrSignInButtonFragment
         ...FeedLeftContentMobile
         ...FeedLeftContentDesktop
       }

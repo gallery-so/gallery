@@ -7,18 +7,24 @@ import { HStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
 import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
 import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import { Dropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Dropdown';
+import { useRouter } from 'next/router';
 
 type ProfileDropdownProps = {
   queryRef: ProfileDropdownFragment$key;
-  rightContent: ReactNode;
+  rightContent?: ReactNode;
 };
 
 export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps) {
   const query = useFragment(
     graphql`
       fragment ProfileDropdownFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
+
         ...DropdownFragment
       }
     `,
@@ -27,40 +33,57 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleLogoClick = useCallback(() => {
+  const { push } = useRouter();
+
+  const handleLoggedInLogoClick = useCallback(() => {
     setShowDropdown((previous) => !previous);
   }, []);
+
+  const handleLoggedOutLogoClick = useCallback(() => {
+    push({ pathname: '/home' });
+  }, [push]);
 
   const handleClose = useCallback(() => {
     setShowDropdown(false);
   }, []);
 
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
   return (
     <Wrapper gap={8} align="center">
-      <LogoContainer gap={4} role="button" onClick={handleLogoClick}>
-        <NotificationsCircle />
+      {isLoggedIn ? (
+        <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
+          {/* Here for when we implement notifications */}
+          {/*<NotificationsCircle />*/}
 
-        <HStack gap={2}>
+          <HStack gap={2}>
+            <GLogo />
+
+            <NavDownArrow />
+          </HStack>
+        </LogoContainer>
+      ) : (
+        <LogoContainer gap={4} role="button" onClick={handleLoggedOutLogoClick}>
           <GLogo />
-
-          <NavDownArrow />
-        </HStack>
-      </LogoContainer>
+        </LogoContainer>
+      )}
 
       {rightContent && <SlashText>/</SlashText>}
       {rightContent}
 
-      <Dropdown showDropdown={showDropdown} onClose={handleClose} queryRef={query} />
+      {isLoggedIn && (
+        <Dropdown showDropdown={showDropdown} onClose={handleClose} queryRef={query} />
+      )}
     </Wrapper>
   );
 }
 
-const NotificationsCircle = styled.div`
-  width: 4px;
-  height: 4px;
-  background-color: ${colors.hyperBlue};
-  border-radius: 99999px;
-`;
+// const NotificationsCircle = styled.div`
+//   width: 4px;
+//   height: 4px;
+//   background-color: ${colors.hyperBlue};
+//   border-radius: 99999px;
+// `;
 
 const LogoContainer = styled(HStack)`
   cursor: pointer;

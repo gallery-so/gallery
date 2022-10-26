@@ -13,6 +13,7 @@ import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 import { route } from 'nextjs-routes';
+import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
 
 type CollectionRightContentProps = {
   username: string;
@@ -83,6 +84,8 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
           </EditButtonContainer>
         </Link>
       );
+    } else if (query.viewer?.__typename !== 'Viewer') {
+      return <SignInButton />;
     }
   }
 

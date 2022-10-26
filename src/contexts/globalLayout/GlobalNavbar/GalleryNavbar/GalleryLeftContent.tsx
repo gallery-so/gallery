@@ -2,10 +2,10 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { GalleryLeftContentFragment$key } from '../../../../../__generated__/GalleryLeftContentFragment.graphql';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { size } from 'components/core/breakpoints';
+import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 
 type Props = {
   queryRef: GalleryLeftContentFragment$key;
@@ -16,7 +16,7 @@ export default function GalleryLeftContent({ queryRef }: Props) {
     graphql`
       fragment GalleryLeftContentFragment on Query {
         ...NavActionFollowQueryFragment
-        ...ProfileDropdownOrSignInButtonFragment
+        ...ProfileDropdownFragment
 
         userByUsername(username: $username) {
           ...NavActionFollowUserFragment
@@ -40,5 +40,5 @@ export default function GalleryLeftContent({ queryRef }: Props) {
     }
   }, [breakpoint, query, user]);
 
-  return <ProfileDropdownOrSignInButton queryRef={query} profileRightContent={rightContent} />;
+  return <ProfileDropdown queryRef={query} rightContent={rightContent} />;
 }

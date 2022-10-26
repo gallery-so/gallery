@@ -7,7 +7,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { ProfileDropdownOrSignInButton } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdownOrSignInButton';
+import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 
 type CommunityNavbarProps = {
   queryRef: CommunityNavbarFragment$key;
@@ -17,7 +17,7 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
   const query = useFragment(
     graphql`
       fragment CommunityNavbarFragment on Query {
-        ...ProfileDropdownOrSignInButtonFragment
+        ...ProfileDropdownFragment
       }
     `,
     queryRef
@@ -26,7 +26,7 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <ProfileDropdownOrSignInButton queryRef={query} />
+        <ProfileDropdown queryRef={query} />
       </NavbarLeftContent>
 
       <NavbarCenterContent />
