@@ -1,4 +1,4 @@
-import { FC, ComponentType, useEffect, useState } from 'react';
+import { FC, ComponentType, useEffect, useState, PropsWithChildren } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -25,7 +25,7 @@ export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
 };
 
-const SafeHydrate: FC = ({ children }) => {
+function SafeHydrate({ children }: PropsWithChildren) {
   const [render, setRender] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const SafeHydrate: FC = ({ children }) => {
   }, []);
 
   return <div suppressHydrationWarning>{render ? children : null}</div>;
-};
+}
 
 const App: FC<{
   Component: ComponentType<MetaTagProps>;

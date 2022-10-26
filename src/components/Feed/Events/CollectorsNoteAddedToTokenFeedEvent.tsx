@@ -3,7 +3,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
@@ -70,7 +70,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
   const track = useTrack();
 
-  const handleEventClick = useCallback(
+  const handleEventClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked collectors note added to token event');

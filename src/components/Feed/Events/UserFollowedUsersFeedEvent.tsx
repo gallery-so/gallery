@@ -9,7 +9,7 @@ import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
@@ -82,7 +82,7 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
   const firstFolloweeUsername = event.followed[0]?.user?.username;
   const track = useTrack();
 
-  const handleSeeFollowedUserClick = useCallback(
+  const handleSeeFollowedUserClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked see single followed user event');
@@ -117,7 +117,7 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const handleSeeMoreClick = useCallback(
+  const handleSeeMoreClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked See more followed users event');

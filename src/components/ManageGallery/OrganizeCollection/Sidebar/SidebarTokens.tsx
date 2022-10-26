@@ -47,7 +47,7 @@ export const SidebarTokens = ({
   const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
 
-  const handleMarkErroredTokenId = useCallback((id) => {
+  const handleMarkErroredTokenId = useCallback((id: string) => {
     setErroredTokenIds((prev) => {
       const next = new Set(prev);
       next.add(id);
@@ -55,7 +55,7 @@ export const SidebarTokens = ({
     });
   }, []);
 
-  const handleMarkSuccessTokenId = useCallback((id) => {
+  const handleMarkSuccessTokenId = useCallback((id: string) => {
     setErroredTokenIds((prev) => {
       const next = new Set(prev);
       next.delete(id);

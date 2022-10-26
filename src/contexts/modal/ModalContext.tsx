@@ -150,7 +150,7 @@ function ModalProvider({ children }: Props) {
     });
   }, []);
 
-  const dismountModal = useCallback((modalId) => {
+  const dismountModal = useCallback((modalId: string) => {
     setModals((prev) => prev.filter(({ id }) => id !== modalId));
   }, []);
 

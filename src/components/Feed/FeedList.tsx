@@ -153,6 +153,7 @@ export default function FeedList({
       {({ height, scrollTop, registerChild }) => (
         <AutoSizer disableHeight>
           {({ width }) => (
+            // @ts-expect-error shitty react-virtualized types
             <div ref={registerChild}>
               <List
                 ref={virtualizedListRef}
