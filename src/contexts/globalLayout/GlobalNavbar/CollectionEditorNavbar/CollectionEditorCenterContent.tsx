@@ -24,7 +24,7 @@ export function CollectionEditorCenterContent({ queryRef }: CollectionEditorCent
   return (
     <GalleryNameAndCollectionName
       rightText="Editing"
-      galleryName="My main gallery"
+      galleryName="My gallery"
       collectionName={query.collectionById?.name ?? ''}
     />
   );

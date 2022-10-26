@@ -27,7 +27,7 @@ export function CollectionCreateNavbar({
 
       <NavbarCenterContent>
         <GalleryNameAndCollectionName
-          galleryName={'My main gallery'}
+          galleryName={'My gallery'}
           collectionName={'New Collection'}
           rightText="Creating"
         />

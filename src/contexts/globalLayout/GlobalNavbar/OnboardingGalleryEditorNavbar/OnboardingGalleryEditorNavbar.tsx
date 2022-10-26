@@ -30,7 +30,7 @@ export function OnboardingGalleryEditorNavbar({
 
       <NavbarCenterContent>
         <HStack gap={8} align="baseline">
-          <MainGalleryText>My main gallery</MainGalleryText>
+          <MainGalleryText>My gallery</MainGalleryText>
 
           <EditingText>Creating</EditingText>
         </HStack>

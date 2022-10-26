@@ -46,7 +46,7 @@ export function OnboardingCollectionEditorNavbar({
 
       <NavbarCenterContent>
         <GalleryNameAndCollectionName
-          galleryName={'My main gallery'}
+          galleryName={'My gallery'}
           collectionName={query.collectionById?.name ?? ''}
           rightText="Editing"
         />

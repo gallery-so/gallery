@@ -21,7 +21,7 @@ export function GalleryEditNavbar({ onDone }: Props) {
 
       <NavbarCenterContent>
         <HStack gap={8} align="baseline">
-          <MainGalleryText>My main gallery</MainGalleryText>
+          <MainGalleryText>My gallery</MainGalleryText>
 
           <EditingText>Editing</EditingText>
         </HStack>
