@@ -168,7 +168,7 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 
 const StyledErrorWrapper = styled(VStack)`
   background-color: ${colors.offWhite};
-  height: 240px;
+  min-height: 240px;
   aspect-ratio: 1;
 `;
 
