@@ -4,7 +4,7 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from 'contexts/modal/ModalContext';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import TokenDetailView from 'scenes/TokenDetailPage/TokenDetailView';
 import styled from 'styled-components';
@@ -13,6 +13,7 @@ import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlFor
 import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
+import colors from 'components/core/colors';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
@@ -62,6 +63,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     holderRef
   );
 
+  const [isFailedToLoad, setIsFailedToLoad] = useState(false);
+  const handleFailedToLoad = useCallback(() => {
+    setIsFailedToLoad(true);
+  }, []);
+
   const { showModal } = useModalActions();
 
   const { tokenId, contract, owner } = token;
@@ -103,15 +109,25 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     });
   }, [openSeaExternalUrl, owner?.universal, showModal, token]);
 
+  const previewAsset = useMemo(() => {
+    if (isFailedToLoad || !previewUrlSet?.urls.large) {
+      return (
+        <StyledErrorWrapper justify="center" align="center">
+          <StyledErrorText>Could not load</StyledErrorText>
+        </StyledErrorWrapper>
+      );
+    }
+
+    if (previewUrlSet?.type === 'video') {
+      return <StyledNftVideo src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
+    }
+
+    return <StyledNftImage src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
+  }, [handleFailedToLoad, isFailedToLoad, previewUrlSet?.type, previewUrlSet.urls.large]);
+
   return (
     <VStack gap={8}>
-      <InteractiveLink onClick={handleClick}>
-        {previewUrlSet?.type === 'video' ? (
-          <StyledNftVideo src={previewUrlSet.urls.large} />
-        ) : (
-          <StyledNftImage src={previewUrlSet.urls.large} />
-        )}
-      </InteractiveLink>
+      <StyledInteractiveLink onClick={handleClick}>{previewAsset}</StyledInteractiveLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
@@ -144,4 +160,17 @@ const StyledNftDetailViewPopover = styled(VStack)`
   @media only screen and ${breakpoints.desktop} {
     padding: 0;
   }
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  text-decoration: none;
+`;
+
+const StyledErrorWrapper = styled(VStack)`
+  background-color: ${colors.offWhite};
+  height: 240px;
+`;
+
+const StyledErrorText = styled(BaseM)`
+  color: ${colors.metal};
 `;
