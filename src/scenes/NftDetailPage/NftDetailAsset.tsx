@@ -25,7 +25,7 @@ type NftDetailAssetComponentProps = {
   onLoad: () => void;
 };
 
-function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
+export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
@@ -161,8 +161,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
     useNftRetry({
-      tokenId: token.dbid,
-    });
+    tokenId: token.dbid,
+  });
 
   return (
     <StyledAssetContainer

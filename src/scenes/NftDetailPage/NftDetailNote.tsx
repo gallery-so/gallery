@@ -165,7 +165,7 @@ type NoteViewerProps = {
   nftCollectorsNote: string;
 };
 
-function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
+export function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <VStack gap={8}>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
@@ -204,7 +204,7 @@ function NftDetailNote({
   );
 }
 
-const StyledContainer = styled.div<{ footerHeight: number }>`
+export const StyledContainer = styled.div<{ footerHeight: number }>`
   padding-top: 12px;
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;

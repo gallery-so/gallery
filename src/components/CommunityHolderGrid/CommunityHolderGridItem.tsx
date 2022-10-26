@@ -1,11 +1,13 @@
+import breakpoints from 'components/core/breakpoints';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { VStack } from 'components/core/Spacer/Stack';
 import { BaseM } from 'components/core/Text/Text';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from 'contexts/modal/ModalContext';
 import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import TokenDetailView from 'scenes/TokenDetailPage/TokenDetailView';
 import styled from 'styled-components';
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
@@ -28,6 +30,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
             address
           }
         }
+        collectorsNote
         media {
           __typename
 
@@ -57,10 +60,14 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         }
 
         ...getVideoOrImageUrlForNftPreviewFragment
+        ...TokenDetailViewFragment
       }
     `,
     holderRef
   );
+
+  const { showModal } = useModalActions();
+
   const { tokenId, contract, owner } = token;
 
   const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
@@ -81,20 +88,34 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
       return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
     }
 
-    return null;
+    return '';
   }, [contract?.contractAddress?.address, tokenId]);
+
+  const handleClick = useCallback(() => {
+    if (owner?.universal) {
+      window.open(openSeaExternalUrl, '_blank');
+      return;
+    }
+
+    showModal({
+      content: (
+        <StyledNftDetailViewPopover justify="center">
+          <TokenDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
+        </StyledNftDetailViewPopover>
+      ),
+      isFullPage: true,
+    });
+  }, [openSeaExternalUrl, owner?.universal, showModal, token]);
 
   return (
     <VStack gap={8}>
-      <Link href={openSeaExternalUrl || ''} passHref>
-        <a target="_blank">
-          {previewUrlSet?.type === 'video' ? (
-            <StyledNftVideo src={previewUrlSet.urls.large} />
-          ) : (
-            <StyledNftImage src={previewUrlSet.urls.large} />
-          )}
-        </a>
-      </Link>
+      <InteractiveLink onClick={handleClick}>
+        {previewUrlSet?.type === 'video' ? (
+          <StyledNftVideo src={previewUrlSet.urls.large} />
+        ) : (
+          <StyledNftImage src={previewUrlSet.urls.large} />
+        )}
+      </InteractiveLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
@@ -119,4 +140,13 @@ const StyledNftVideo = styled.video`
   width: auto;
   max-width: 100%;
   cursor: pointer;
+`;
+
+const StyledNftDetailViewPopover = styled(VStack)`
+  height: 100%;
+  padding: 80px 0;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0;
+  }
 `;
