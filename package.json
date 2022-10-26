@@ -5,7 +5,7 @@
     "build": "yarn relay && yarn graphql-codegen && next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
-    "typecheck": "graphql-codegen; tsc --noEmit",
+    "typecheck": "nextjs-routes; graphql-codegen; tsc --noEmit",
     "relay": "mkdir __generated__; relay-compiler",
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open --configFile cypress.config.ts",
