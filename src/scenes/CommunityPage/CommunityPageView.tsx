@@ -62,7 +62,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
 
   const isArtGobbler = useMemo(
-    () => contractAddress?.address === ART_GOBBLER_ADDRESS && isArtGobblersEnabled,
+    () => ART_GOBBLER_ADDRESS.includes(contractAddress?.address || '') && isArtGobblersEnabled,
     [contractAddress, isArtGobblersEnabled]
   );
 
