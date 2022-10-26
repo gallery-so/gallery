@@ -90,6 +90,6 @@ const StyledEmptyGalleryMessage = styled(VStack)`
 
 const Content = styled(VStack)`
   width: 100%;
-  padding: 0 16px 120px 0;
+  padding-bottom: 120px;
   max-width: 777px;
 `;
