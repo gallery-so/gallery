@@ -6,6 +6,7 @@ import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { GalleryNavLinksFragment$key } from '../../../../../__generated__/GalleryNavLinksFragment.graphql';
+import { route, Route } from 'nextjs-routes';
 
 type Props = {
   username: string;
@@ -24,29 +25,29 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
   const { pathname } = useRouter();
 
-  const galleriesUrl = `/${username}/galleries`;
-  const followersUrl = `/${username}/followers`;
-  const activityUrl = `/${username}/activity`;
+  const galleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
+  const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
+  const activityRoute: Route = { pathname: '/[username]/activity', query: { username } };
 
   const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
 
   return (
     <HStack gap={8}>
-      <Link href={galleriesUrl}>
-        <NavbarLink href={galleriesUrl} active={pathname === '/[username]/galleries'}>
+      <Link href={galleriesRoute}>
+        <NavbarLink href={route(galleriesRoute)} active={pathname === galleriesRoute.pathname}>
           Galleries
         </NavbarLink>
       </Link>
 
-      <Link href={followersUrl}>
-        <NavbarLink href={followersUrl} active={pathname === '/[username]/followers'}>
+      <Link href={followersRoute}>
+        <NavbarLink href={route(followersRoute)} active={pathname === followersRoute.pathname}>
           Followers
         </NavbarLink>
       </Link>
 
       {isWhiteRinoEnabled && (
-        <Link href={activityUrl}>
-          <NavbarLink href={activityUrl} active={pathname === '/[username]/activity'}>
+        <Link href={activityRoute}>
+          <NavbarLink href={route(activityRoute)} active={pathname === activityRoute.pathname}>
             Activity
           </NavbarLink>
         </Link>

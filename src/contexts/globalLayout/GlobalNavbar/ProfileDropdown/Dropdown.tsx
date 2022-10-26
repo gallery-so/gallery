@@ -11,6 +11,7 @@ import { DropdownFragment$key } from '../../../../../__generated__/DropdownFragm
 import { MouseEventHandler, ReactNode, useCallback } from 'react';
 import useWalletModal from 'hooks/useWalletModal';
 import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
+import { route, Route } from 'nextjs-routes';
 
 type Props = {
   showDropdown: boolean;
@@ -48,25 +49,32 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
     [onClose]
   );
 
+  const username = query.viewer?.user?.username;
+
+  if (!username) {
+    throw new Error('Tried to render dropdown without a username');
+  }
+
   const editGalleryUrl = getEditGalleryUrl(query);
+
+  const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
   return (
     <>
       {/* Used to hijack click events on things outside of the dropdown */}
-
       {showDropdown && <Backdrop onClick={handleClose} />}
 
       <DropdownContainer active={showDropdown}>
         <NavSection>
-          <Link href={`/${query.viewer?.user?.username}`}>
-            <DropdownProfileSection href={`/${query.viewer?.user?.username}`}>
+          <Link href={userGalleryRoute}>
+            <DropdownProfileSection href={route(userGalleryRoute)}>
               <HStack gap={4} align="center">
                 <UsernameText>{query.viewer?.user?.username}</UsernameText>
                 <BaseS>•</BaseS>
                 <BaseS>Profile</BaseS>
               </HStack>
               {editGalleryUrl && (
-                // Need this to ensure the interactive link doens't take the full width
+                // Need this to ensure the interactive link doesn't take the full width
                 <VStack align="flex-start">
                   <StyledInteractiveLink to={editGalleryUrl}>Edit Gallery</StyledInteractiveLink>
                 </VStack>
@@ -76,12 +84,12 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
         </NavSection>
 
         <NavSection gap={4}>
-          <DropdownLink href={'/home'}>HOME</DropdownLink>
+          <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
         </NavSection>
 
         <NavSection gap={4}>
           <DropdownItem onClick={showWalletModal}>ACCOUNTS</DropdownItem>
-          <DropdownLink href={'/shop'}>
+          <DropdownLink href={{ pathname: '/shop' }}>
             <HStack gap={8}>
               <span>SHOP</span>
               <StyledObjectsText>(OBJECTS)</StyledObjectsText>
@@ -109,12 +117,12 @@ const Backdrop = styled.div`
   width: 100vw;
 `;
 
-type DropdownLinkProps = { href: string; children: ReactNode };
+type DropdownLinkProps = { href: Route; children: ReactNode };
 
 function DropdownLink({ href, children }: DropdownLinkProps) {
   return (
     <Link href={href}>
-      <StyledDropdownLink href={href}>{children}</StyledDropdownLink>
+      <StyledDropdownLink href={route(href)}>{children}</StyledDropdownLink>
     </Link>
   );
 }

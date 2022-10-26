@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
+import { route } from 'nextjs-routes';
 
 type CollectionRightContentProps = {
   username: string;
@@ -66,7 +67,7 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
         {editGalleryUrl && (
           <Link href={editGalleryUrl}>
-            <a href={editGalleryUrl}>
+            <a href={route(editGalleryUrl)}>
               <EditLink />
             </a>
           </Link>
@@ -77,7 +78,7 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
     if (editGalleryUrl) {
       return (
         <Link href={editGalleryUrl}>
-          <EditButtonContainer href={editGalleryUrl}>
+          <EditButtonContainer href={route(editGalleryUrl)}>
             <TitleXS>EDIT</TitleXS>
           </EditButtonContainer>
         </Link>
