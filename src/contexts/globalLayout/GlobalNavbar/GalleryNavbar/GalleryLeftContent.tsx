@@ -2,7 +2,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { GalleryLeftContentFragment$key } from '../../../../../__generated__/GalleryLeftContentFragment.graphql';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { size } from 'components/core/breakpoints';
 import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
@@ -28,17 +28,17 @@ export default function GalleryLeftContent({ queryRef }: Props) {
 
   const user = query.userByUsername;
 
-  const breakpoint = useBreakpoint();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const rightContent = useMemo(() => {
-    if (breakpoint === size.mobile) {
+    if (isMobile) {
       return null;
     } else if (user) {
       return <NavActionFollow userRef={user} queryRef={query} />;
     } else {
       return null;
     }
-  }, [breakpoint, query, user]);
+  }, [isMobile, query, user]);
 
   return <ProfileDropdown queryRef={query} rightContent={rightContent} />;
 }

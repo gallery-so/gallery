@@ -15,6 +15,7 @@ import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavba
 import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import styled from 'styled-components';
 import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
+import FollowButton from 'components/Follow/FollowButton';
 
 type Props = {
   username: string;
@@ -28,6 +29,11 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         ...GalleryLeftContentFragment
         ...GalleryRightContentFragment
         ...GalleryNavLinksFragment
+        ...FollowButtonQueryFragment
+
+        userByUsername(username: $username) {
+          ...FollowButtonUserFragment
+        }
       }
     `,
     queryRef
@@ -45,7 +51,12 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         </NavbarLeftContent>
         <NavbarCenterContent>
           {isMobile ? (
-            <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
+            <HStack gap={4}>
+              <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
+              {query.userByUsername && (
+                <FollowButton queryRef={query} userRef={query.userByUsername} />
+              )}
+            </HStack>
           ) : (
             <GalleryNavLinks username={username} queryRef={query} />
           )}
