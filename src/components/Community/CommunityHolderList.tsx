@@ -2,6 +2,7 @@ import Loader from 'components/core/Loader/Loader';
 import { VStack } from 'components/core/Spacer/Stack';
 import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import { LIST_ITEM_PER_PAGE } from 'constants/community';
+import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -51,7 +52,7 @@ export default function CommunityHolderList({ communityRef }: Props) {
     function handleScrollPosition() {
       const pixelsFromBottomOfPage =
         document.body.offsetHeight - window.pageYOffset - window.innerHeight;
-      if (pixelsFromBottomOfPage < 80 && hasNext && !isFetching) {
+      if (pixelsFromBottomOfPage < GLOBAL_FOOTER_HEIGHT && hasNext && !isFetching) {
         handleSeeMore();
       }
     }
