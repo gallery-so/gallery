@@ -6,7 +6,7 @@ import { size } from 'components/core/breakpoints';
 import { HStack } from 'components/core/Spacer/Stack';
 import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { useState } from 'react';
-import { Dropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Dropdown';
+import { ProfileDropdownContent } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { useBreakpoint } from 'hooks/useWindowSize';
 import { FeedLeftContentDesktop$key } from '../../../../../__generated__/FeedLeftContentDesktop.graphql';
 import { FeedLeftContentMobile$key } from '../../../../../__generated__/FeedLeftContentMobile.graphql';
@@ -37,7 +37,7 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
   const query = useFragment(
     graphql`
       fragment FeedLeftContentMobile on Query {
-        ...DropdownFragment
+        ...ProfileDropdownContentFragment
       }
     `,
     queryRef
@@ -56,7 +56,7 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
       <HomeText>Home</HomeText>
       <NavDownArrow />
 
-      <Dropdown
+      <ProfileDropdownContent
         showDropdown={showDrodown}
         onClose={() => setShowDropdown(false)}
         queryRef={query}

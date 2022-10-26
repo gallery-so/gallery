@@ -8,7 +8,6 @@ import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
 import { baseUrl } from 'utils/baseUrl';
@@ -21,9 +20,13 @@ import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { HStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { Route, route } from 'nextjs-routes';
+import { NavSection } from 'components/core/Dropdown/NavSection';
+import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
+import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
+import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -143,35 +146,29 @@ function UserGalleryCollection({
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
-              <StyledShareButton text="Share" onClick={handleShareClick} />
+              <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <StyledSettingsDropdown>
-              <Dropdown>
-                <VStack gap={8}>
-                  {showEditActions && (
-                    <>
-                      <TextButton
-                        onClick={handleEditNameClick}
-                        text="EDIT NAME & DESCRIPTION"
-                        underlineOnHover
-                      />
-                      <UnstyledLink
-                        href={{
-                          pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
-                          query: { galleryId, collectionId },
-                        }}
-                        onClick={() => track('Update existing collection button clicked')}
-                      >
-                        <TextButton text="Edit Collection" underlineOnHover />
-                      </UnstyledLink>
-                    </>
-                  )}
-                  <UnstyledLink href={collectionUrlPath}>
-                    <TextButton text="View Collection" underlineOnHover />
-                  </UnstyledLink>
-                </VStack>
-              </Dropdown>
-            </StyledSettingsDropdown>
+            <SettingsDropdown>
+              <NavSection>
+                {showEditActions && (
+                  <>
+                    <DropdownItem onClick={handleEditNameClick}>
+                      EDIT NAME & DESCRIPTION
+                    </DropdownItem>
+                    <DropdownLink
+                      href={{
+                        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                        query: { galleryId, collectionId },
+                      }}
+                      onClick={() => track('Update existing collection button clicked')}
+                    >
+                      EDIT COLLECTION
+                    </DropdownLink>
+                  </>
+                )}
+                <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
+              </NavSection>
+            </SettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
@@ -187,30 +184,18 @@ function UserGalleryCollection({
   );
 }
 
-const StyledSettingsDropdown = styled.div`
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-
-  background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
-  background-position: center;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ${StyledDropdownButton} {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const StyledShareButton = styled(TextButton)`
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-`;
-
 const StyledCopyToClipboard = styled(CopyToClipboard)`
   height: 24px !important;
+`;
+
+const StyledOptionsContainer = styled(HStack)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+
+  transition: opacity 200ms ease-in-out;
+  opacity: 0;
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -219,7 +204,7 @@ const StyledCollectionWrapper = styled.div`
   width: 100%;
   position: relative;
 
-  &:hover ${StyledSettingsDropdown}, &:hover ${StyledShareButton} {
+  &:hover ${StyledOptionsContainer} {
     opacity: 1;
   }
 `;
@@ -285,13 +270,6 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
             padding-bottom: 0 !important;
           }
         `}
-`;
-
-const StyledOptionsContainer = styled(HStack)`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
 `;
 
 export default UserGalleryCollection;

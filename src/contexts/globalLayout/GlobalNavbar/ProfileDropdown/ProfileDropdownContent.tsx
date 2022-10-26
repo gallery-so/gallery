@@ -2,27 +2,30 @@ import colors from 'components/core/colors';
 import { Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { useAuthActions } from 'contexts/auth/AuthContext';
-import { DropdownFragment$key } from '../../../../../__generated__/DropdownFragment.graphql';
-import { MouseEventHandler, ReactNode, useCallback } from 'react';
 import useWalletModal from 'hooks/useWalletModal';
 import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 import { route, Route } from 'nextjs-routes';
+import { Dropdown } from 'components/core/Dropdown/Dropdown';
+import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
+import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
+import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
 
 type Props = {
   showDropdown: boolean;
   onClose: () => void;
-  queryRef: DropdownFragment$key;
+  queryRef: ProfileDropdownContentFragment$key;
 };
 
-export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
+export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment DropdownFragment on Query {
+      fragment ProfileDropdownContentFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -40,15 +43,6 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
   const showWalletModal = useWalletModal();
   const { handleLogout } = useAuthActions();
 
-  const handleClose = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-
-      onClose();
-    },
-    [onClose]
-  );
-
   const username = query.viewer?.user?.username;
 
   if (!username) {
@@ -61,10 +55,7 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
 
   return (
     <>
-      {/* Used to hijack click events on things outside of the dropdown */}
-      {showDropdown && <Backdrop onClick={handleClose} />}
-
-      <DropdownContainer active={showDropdown}>
+      <Dropdown position="left" active={showDropdown} onClose={onClose}>
         <NavSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
@@ -96,51 +87,10 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
         <NavSection gap={4}>
           <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
         </NavSection>
-      </DropdownContainer>
+      </Dropdown>
     </>
   );
 }
-
-const NavSection = styled(VStack)`
-  padding: 4px 0;
-`;
-
-const Backdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-`;
-
-type DropdownLinkProps = { href: Route; children: ReactNode };
-
-function DropdownLink({ href, children }: DropdownLinkProps) {
-  return (
-    <Link href={href}>
-      <StyledDropdownLink href={route(href)}>{children}</StyledDropdownLink>
-    </Link>
-  );
-}
-
-const StyledDropdownLink = styled.a`
-  padding: 8px;
-
-  font-family: 'Helvetica Neue';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-
-  color: #808080;
-  cursor: pointer;
-  text-decoration: none;
-
-  :hover {
-    color: ${colors.offBlack};
-    background-color: ${colors.faint};
-  }
-`;
 
 const StyledObjectsText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';
@@ -170,26 +120,6 @@ const StyledInteractiveLink = styled(InteractiveLink)`
   font-size: 10px !important;
 `;
 
-const DropdownItem = styled.div`
-  padding: 8px;
-
-  font-family: 'Helvetica Neue';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-
-  color: #808080;
-  cursor: pointer;
-
-  white-space: nowrap;
-
-  :hover {
-    color: ${colors.offBlack};
-    background-color: ${colors.faint};
-  }
-`;
-
 const DropdownProfileSection = styled.a`
   display: flex;
   flex-direction: column;
@@ -202,33 +132,4 @@ const DropdownProfileSection = styled.a`
   :hover {
     background-color: ${colors.faint};
   }
-`;
-
-const DropdownContainer = styled(VStack)<{ active: boolean }>`
-  position: absolute;
-  z-index: 10;
-  top: 100%;
-
-  background-color: ${colors.white};
-
-  border: 1px solid ${colors.offBlack};
-  padding: 0 4px;
-
-  > *:not(:last-child) {
-    border-bottom: 1px solid ${colors.faint};
-  }
-
-  transition: transform 250ms ease-out, opacity 250ms linear;
-
-  ${({ active }) =>
-    active
-      ? css`
-          transform: translateY(8px);
-          opacity: 1;
-        `
-      : css`
-          transform: translateY(4px);
-          pointer-events: none;
-          opacity: 0;
-        `}
 `;

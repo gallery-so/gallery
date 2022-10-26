@@ -7,7 +7,7 @@ import { HStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
 import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
 import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
-import { Dropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Dropdown';
+import { ProfileDropdownContent } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { useRouter } from 'next/router';
 
 type ProfileDropdownProps = {
@@ -25,7 +25,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           }
         }
 
-        ...DropdownFragment
+        ...ProfileDropdownContentFragment
       }
     `,
     queryRef
@@ -72,7 +72,11 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
       {rightContent}
 
       {isLoggedIn && (
-        <Dropdown showDropdown={showDropdown} onClose={handleClose} queryRef={query} />
+        <ProfileDropdownContent
+          showDropdown={showDropdown}
+          onClose={handleClose}
+          queryRef={query}
+        />
       )}
     </Wrapper>
   );

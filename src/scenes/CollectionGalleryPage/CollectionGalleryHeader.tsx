@@ -23,6 +23,9 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { route } from 'nextjs-routes';
+import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
+import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -180,22 +183,23 @@ function CollectionGalleryHeader({
 
               {/* On mobile, we show these options in the navbar, not in header */}
               <SettingsDropdown>
-                <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-                {!shouldDisplayMobileLayoutToggle && (
-                  <>
-                    <NavElement>
-                      <UnstyledLink
-                        href={{
-                          pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
-                          query: { galleryId, collectionId },
-                        }}
-                        onClick={() => track('Update existing collection')}
-                      >
-                        <TextButton text="Edit Collection" />
-                      </UnstyledLink>
-                    </NavElement>
-                  </>
-                )}
+                <NavSection>
+                  <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
+
+                  {!shouldDisplayMobileLayoutToggle && (
+                    <DropdownLink
+                      href={{
+                        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                        query: { galleryId, collectionId },
+                      }}
+                      onClick={() => {
+                        track('Update existing collection');
+                      }}
+                    >
+                      EDIT COLLECTION
+                    </DropdownLink>
+                  )}
+                </NavSection>
               </SettingsDropdown>
             </>
           ) : (
