@@ -169,6 +169,7 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 const StyledErrorWrapper = styled(VStack)`
   background-color: ${colors.offWhite};
   height: 240px;
+  aspect-ratio: 1;
 `;
 
 const StyledErrorText = styled(BaseM)`
