@@ -45,7 +45,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   );
 }
 
-const StyledUserGalleryPage = styled.div`
+export const StyledUserGalleryPage = styled.div`
   display: flex;
   justify-content: center;
   padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;

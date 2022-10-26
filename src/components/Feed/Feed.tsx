@@ -18,7 +18,7 @@ import ViewerFeed from './ViewerFeed';
 import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
-export type FeedMode = 'FOLLOWING' | 'WORLDWIDE';
+export type FeedMode = 'FOLLOWING' | 'WORLDWIDE' | 'USER';
 
 type ControlProps = {
   setFeedMode: (mode: FeedMode) => void;

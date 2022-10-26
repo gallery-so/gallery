@@ -1,31 +1,33 @@
-import UserGalleryCollections from 'scenes/UserGalleryPage/UserGalleryCollections';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import useMobileLayout from 'hooks/useMobileLayout';
-import EmptyGallery from 'scenes/UserGalleryPage/EmptyGallery';
 import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFragment.graphql';
-import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useEffect } from 'react';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 import { VStack } from 'components/core/Spacer/Stack';
+import UserActivityFeed from './UserActivityFeed';
+import { UserActivityLayoutQueryFragment$key } from '__generated__/UserActivityLayoutQueryFragment.graphql';
+import { UserActivityLayoutFragment$key } from '__generated__/UserActivityLayoutFragment.graphql';
+import { StyledUserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
+import { FEED_MAX_WIDTH } from 'components/Feed/dimensions';
 import breakpoints from 'components/core/breakpoints';
 
 type Props = {
-  userRef: UserGalleryLayoutFragment$key;
-  queryRef: UserGalleryLayoutQueryFragment$key;
+  userRef: UserActivityLayoutFragment$key;
+  queryRef: UserActivityLayoutQueryFragment$key;
 };
 
-export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
+export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   const query = useFragment(
     graphql`
-      fragment UserGalleryLayoutQueryFragment on Query {
-        ...UserGalleryCollectionsQueryFragment
+      fragment UserActivityLayoutQueryFragment on Query
+        @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
         ...NavActionFollowQueryFragment
         ...UserGalleryHeaderQueryFragment
+        ...UserActivityFeedQueryFragment
       }
     `,
     queryRef
@@ -33,35 +35,21 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   const user = useFragment(
     graphql`
-      fragment UserGalleryLayoutFragment on GalleryUser {
+      fragment UserActivityLayoutFragment on GalleryUser {
         username
-        galleries {
-          collections {
-            __typename
-          }
-
-          ...UserGalleryCollectionsFragment
-        }
 
         ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
+
+        ...UserActivityFeedFragment
       }
     `,
     userRef
   );
 
   const isMobile = useIsMobileWindowWidth();
-  const showMobileLayoutToggle = Boolean(isMobile && user.galleries?.[0]?.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
-
-  const [gallery] = user.galleries ?? [];
-
-  const collectionsView = gallery?.collections ? (
-    <UserGalleryCollections queryRef={query} galleryRef={gallery} mobileLayout={mobileLayout} />
-  ) : (
-    <EmptyGallery message="This user has not set up their gallery yet." />
-  );
 
   const { setCustomNavLeftContent } = useGlobalLayoutActions();
 
@@ -81,28 +69,28 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   }, [query, setCustomNavLeftContent, user]);
 
   return (
-    <StyledUserGalleryLayout>
+    <StyledUserGalleryLayout align="center">
       <UserGalleryHeader
         userRef={user}
         queryRef={query}
-        showMobileLayoutToggle={showMobileLayoutToggle}
+        showMobileLayoutToggle={false}
         isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
-      <VStack gap={32} align="center" justify="center" grow>
-        {collectionsView}
-      </VStack>
+      <StyledUserActivityLayout gap={32}>
+        <UserActivityFeed userRef={user} queryRef={query} />
+      </StyledUserActivityLayout>
     </StyledUserGalleryLayout>
   );
 };
 
-export const StyledUserGalleryLayout = styled(VStack)`
-  width: 100%;
-  max-width: 1200px;
-  padding: 48px 0 32px;
+const StyledUserActivityLayout = styled(VStack)`
+  margin: 0 -16px;
+  padding-top: 24px;
+  width: 100vw;
 
-  @media only screen and ${breakpoints.tablet} {
-    padding: 80px 0 32px;
+  @media only screen and ${breakpoints.desktop} {
+    width: ${FEED_MAX_WIDTH}px;
   }
 `;
