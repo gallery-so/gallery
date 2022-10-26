@@ -47,7 +47,6 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   );
 
   const styledQrCode = useQrCode();
-  const breakpoint = useBreakpoint();
   const { showModal } = useModalActions();
 
   const handleEditClick = useCallback(() => {

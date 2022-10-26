@@ -78,9 +78,7 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
   );
 }
 
-const StyledOrganizeGallery = styled(VStack)<{ navbarHeight: number }>`
-  padding-top: ${({ navbarHeight }) => navbarHeight}px;
-`;
+const StyledOrganizeGallery = styled(VStack)<{ navbarHeight: number }>``;
 
 const StyledEmptyGalleryMessage = styled(VStack)`
   text-align: center;
@@ -90,6 +88,6 @@ const StyledEmptyGalleryMessage = styled(VStack)`
 
 const Content = styled(VStack)`
   width: 100%;
-  padding-bottom: 120px;
+  padding: 0 16px 120px 16px;
   max-width: 777px;
 `;
