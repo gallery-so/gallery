@@ -31,11 +31,13 @@ module.exports = async () => {
     testEnvironment: 'jest-environment-jsdom',
   })();
 
+  // Rainbow kit and nextjs-routes ship code which is not transpiled. We have to tell Jest to transpile it
+  // https://stackoverflow.com/questions/55794280/jest-fails-with-unexpected-token-on-import-statement
+  const modulesToTranspile = ['nextjs-routes', '@rainbow-me/rainbowkit'];
+
   return {
     ...nextJestConfig,
 
-    // Rainbow kit ships code which is not transpiled. We have to tell Jest to transpile it
-    // https://stackoverflow.com/questions/55794280/jest-fails-with-unexpected-token-on-import-statement
-    transformIgnorePatterns: ['node_modules/(?!(react-native' + '|@rainbow-me/rainbowkit' + ')/)'],
+    transformIgnorePatterns: [`node_modules/(?!(${modulesToTranspile.join('|')})/)`],
   };
 };
