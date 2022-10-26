@@ -1,8 +1,7 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionRightContentFragment$key } from '__generated__/CollectionRightContentFragment.graphql';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { size } from 'components/core/breakpoints';
+import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -17,10 +16,15 @@ import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
 
 type CollectionRightContentProps = {
   username: string;
+  collectionId: string;
   queryRef: CollectionRightContentFragment$key;
 };
 
-export function CollectionRightContent({ queryRef, username }: CollectionRightContentProps) {
+export function CollectionRightContent({
+  queryRef,
+  username,
+  collectionId,
+}: CollectionRightContentProps) {
   const query = useFragment(
     graphql`
       fragment CollectionRightContentFragment on Query {
@@ -45,7 +49,6 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
     queryRef
   );
 
-  const breakpoint = useBreakpoint();
   const editGalleryUrl = useMemo(() => {
     // If the user isn't logged in, we shouldn't show an edit button
     if (query.viewer?.__typename !== 'Viewer') {
@@ -61,11 +64,12 @@ export function CollectionRightContent({ queryRef, username }: CollectionRightCo
     return getEditGalleryUrl(query);
   }, [query]);
 
-  if (breakpoint === size.mobile) {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  if (isMobile) {
     return (
       <HStack gap={8} align="center">
-        {/*<QRCodeButton username={username} styledQrCode={styledQrCode} />*/}
-        <LinkButton textToCopy={`https://gallery.so/${username}`} />
+        <LinkButton textToCopy={`https://gallery.so/${username}/${collectionId}`} />
         {editGalleryUrl && (
           <Link href={editGalleryUrl}>
             <a href={route(editGalleryUrl)}>

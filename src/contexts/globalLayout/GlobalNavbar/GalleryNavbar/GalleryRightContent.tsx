@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { useCallback } from 'react';
-import { useBreakpoint } from 'hooks/useWindowSize';
+import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { size } from 'components/core/breakpoints';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -64,7 +64,8 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       query.viewer?.user?.dbid === query.userByUsername?.dbid
   );
 
-  if (breakpoint === size.mobile) {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  if (isMobile) {
     return (
       <HStack gap={8} align="center">
         <QRCodeButton username={username} styledQrCode={styledQrCode} />

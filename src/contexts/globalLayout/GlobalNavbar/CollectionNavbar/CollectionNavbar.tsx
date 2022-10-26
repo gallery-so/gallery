@@ -23,10 +23,11 @@ import { route, Route } from 'nextjs-routes';
 
 type CollectionNavbarProps = {
   username: string;
+  collectionId: string;
   queryRef: CollectionNavbarFragment$key;
 };
 
-export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) {
+export function CollectionNavbar({ queryRef, username, collectionId }: CollectionNavbarProps) {
   const query = useFragment(
     graphql`
       fragment CollectionNavbarFragment on Query {
@@ -71,7 +72,7 @@ export function CollectionNavbar({ queryRef, username }: CollectionNavbarProps) 
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <CollectionRightContent username={username} queryRef={query} />
+        <CollectionRightContent collectionId={collectionId} username={username} queryRef={query} />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );
