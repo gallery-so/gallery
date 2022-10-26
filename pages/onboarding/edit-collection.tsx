@@ -16,6 +16,7 @@ import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { OnboardingCollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingCollectionEditorNavbar/OnboardingCollectionEditorNavbar';
 import { Route } from 'nextjs-routes';
+import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
 
 type Props = {
   collectionId: string;
