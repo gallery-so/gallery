@@ -1,5 +1,4 @@
 import useMobileLayout from 'hooks/useMobileLayout';
-import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -44,17 +43,8 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
     userRef
   );
 
-  const { mobileLayout, setMobileLayout } = useMobileLayout();
-
   return (
     <StyledUserGalleryLayout align="center">
-      <UserGalleryHeader
-        userRef={user}
-        queryRef={query}
-        showMobileLayoutToggle={false}
-        mobileLayout={mobileLayout}
-        setMobileLayout={setMobileLayout}
-      />
       <StyledUserActivityLayout gap={32}>
         <UserActivityFeed userRef={user} queryRef={query} />
       </StyledUserActivityLayout>
