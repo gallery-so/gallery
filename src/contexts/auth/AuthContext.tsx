@@ -101,6 +101,8 @@ const useImperativelyFetchUser = () => {
               }
             }
           }
+
+          ...ProfileDropdownFragment
         }
       `,
       {}

@@ -15,6 +15,7 @@ import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOn
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -97,14 +98,15 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
         {isActive && (
           <StyledCardContainer>
             <StyledCardHeader>
-              <StyledHoverCardTitleContainer>
+              <HStack align="center" gap={4}>
+                <StyledCardUsername>{user.username}</StyledCardUsername>
+
                 {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>
                 )}
-                <StyledCardUsername>{user.username}</StyledCardUsername>
-              </StyledHoverCardTitleContainer>
+              </HStack>
 
               <BaseM>{totalCollections} collections</BaseM>
             </StyledCardHeader>
@@ -159,11 +161,6 @@ const StyledCardHeader = styled.div`
   justify-content: space-between;
   // enforce height on container since the follow button causes additional height
   height: 24px;
-`;
-
-const StyledHoverCardTitleContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const StyledFollowButtonWrapper = styled.div`

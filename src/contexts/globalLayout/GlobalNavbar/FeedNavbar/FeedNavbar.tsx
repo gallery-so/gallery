@@ -75,7 +75,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
             </NavbarLink>
 
             <NavbarLink active={feedMode === 'WORLDWIDE'} onClick={handleWorldwideModeClick}>
-              Explore
+              Worldwide
             </NavbarLink>
           </HStack>
         ) : null}

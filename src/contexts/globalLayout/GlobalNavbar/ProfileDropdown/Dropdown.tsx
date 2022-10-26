@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { BaseS, Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
+import { Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import styled, { css } from 'styled-components';
@@ -68,15 +68,11 @@ export function Dropdown({ showDropdown, onClose, queryRef }: Props) {
         <NavSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
-              <HStack gap={4} align="center">
-                <UsernameText>{query.viewer?.user?.username}</UsernameText>
-                <BaseS>•</BaseS>
-                <BaseS>Profile</BaseS>
-              </HStack>
+              <UsernameText>{query.viewer?.user?.username}</UsernameText>
               {editGalleryUrl && (
                 // Need this to ensure the interactive link doesn't take the full width
                 <VStack align="flex-start">
-                  <StyledInteractiveLink to={editGalleryUrl}>Edit Gallery</StyledInteractiveLink>
+                  <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
                 </VStack>
               )}
             </DropdownProfileSection>
@@ -141,6 +137,7 @@ const StyledDropdownLink = styled.a`
   text-decoration: none;
 
   :hover {
+    color: ${colors.offBlack};
     background-color: ${colors.faint};
   }
 `;
@@ -162,6 +159,7 @@ const UsernameText = styled(Paragraph)`
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
+  letter-spacing: -0.04em;
 
   max-width: 150px;
   overflow: hidden;
@@ -187,6 +185,7 @@ const DropdownItem = styled.div`
   white-space: nowrap;
 
   :hover {
+    color: ${colors.offBlack};
     background-color: ${colors.faint};
   }
 `;
