@@ -2,10 +2,11 @@ import { ReactNode, useCallback } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
+import { Route } from 'nextjs-routes';
 
 type Props = {
   className?: string;
-  to?: string;
+  to?: Route;
   href?: string;
   children: ReactNode;
   underlined?: boolean;

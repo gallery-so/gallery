@@ -7,9 +7,10 @@ import colors from '../colors';
 import transitions from '../transitions';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import NavigateConfirmation from './NavigateConfirmation';
+import { Route } from 'nextjs-routes';
 
 type InteractiveLinkProps = {
-  to?: string;
+  to?: Route;
   href?: string;
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'

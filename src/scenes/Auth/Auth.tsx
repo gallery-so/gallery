@@ -49,7 +49,7 @@ function Auth({ queryRef }: Props) {
   if (viewer?.__typename === 'Viewer' && viewer.user) {
     // If user exists in DB, send them to their profile
     if (viewer.user.username) {
-      return <GalleryRedirect to="/home" />;
+      return <GalleryRedirect to={{ pathname: '/home' }} />;
     }
 
     // This should never happen

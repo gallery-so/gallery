@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
-import { getStepUrl } from 'components/Onboarding/constants';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { OnboardingGalleryEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
 
@@ -20,7 +19,7 @@ export default function OrganizeGalleryPage() {
   const { push, query: urlQuery, back } = useRouter();
   const handleAddCollection = useCallback(() => {
     push({
-      pathname: getStepUrl('organize-collection'),
+      pathname: '/onboarding/organize-collection',
       query: { ...urlQuery },
     });
   }, [push, urlQuery]);
@@ -28,7 +27,7 @@ export default function OrganizeGalleryPage() {
   const handleEditCollection = useCallback(
     (dbid: string) => {
       push({
-        pathname: getStepUrl('edit-collection'),
+        pathname: '/onboarding/edit-collection',
         query: { ...urlQuery, collectionId: dbid },
       });
     },
@@ -36,7 +35,7 @@ export default function OrganizeGalleryPage() {
   );
 
   const handleNext = useCallback(() => {
-    return push({ pathname: getStepUrl('congratulations'), query: { ...urlQuery } });
+    return push({ pathname: '/onboarding/congratulations', query: { ...urlQuery } });
   }, [push, urlQuery]);
 
   return (

@@ -45,7 +45,9 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
         <StyledEventHeader>
           <HStack gap={4} inline>
             <BaseM>
-              <InteractiveLink to={`/${event.owner.username}`}>
+              <InteractiveLink
+                to={{ pathname: '/[username]', query: { username: event.owner.username } }}
+              >
                 {event.owner.username}
               </InteractiveLink>{' '}
               followed you {followInfo.followedBack && 'back'}

@@ -8,6 +8,7 @@ import { AdmireLineQueryFragment$key } from '../../../../__generated__/AdmireLin
 import { useMemo } from 'react';
 import colors from 'components/core/colors';
 import Link from 'next/link';
+import { route, Route } from 'nextjs-routes';
 
 type CommentLineProps = {
   admireRef: AdmireLineFragment$key;
@@ -56,10 +57,14 @@ export function AdmireLine({ admireRef, queryRef }: CommentLineProps) {
     }
   }, [admire.admirer?.dbid, admire.admirer?.username, query.viewer?.user?.dbid]);
 
-  const admirerLink = admire.admirer?.username ? `/${admire.admirer.username}` : '';
+  const admirerLinkRoute: Route = admire.admirer?.username
+    ? { pathname: '/[username]', query: { username: admire.admirer.username } }
+    : { pathname: '/' };
+
+  const admirerLink = route(admirerLinkRoute);
   return (
     <HStack gap={4} align="flex-end">
-      <Link href={admirerLink}>
+      <Link href={admirerLinkRoute}>
         <AdmirerName href={admirerLink}>{admirerName}</AdmirerName>
       </Link>
       <AdmirerText>admired this</AdmirerText>

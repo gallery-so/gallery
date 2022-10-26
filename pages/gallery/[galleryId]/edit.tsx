@@ -33,7 +33,10 @@ export default function EditGalleryPage() {
       return;
     }
 
-    push(`/gallery/${urlQuery.galleryId}/collection/create`);
+    push({
+      pathname: '/gallery/[galleryId]/collection/create',
+      query: { galleryId: urlQuery.galleryId as string },
+    });
   }, [push, urlQuery.galleryId]);
 
   const handleEditCollection = useCallback(
@@ -42,7 +45,10 @@ export default function EditGalleryPage() {
         return;
       }
 
-      push(`/gallery/${urlQuery.galleryId}/collection/${collectionId}/edit`);
+      push({
+        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        query: { galleryId: urlQuery.galleryId as string, collectionId },
+      });
     },
     [push, urlQuery.galleryId]
   );
@@ -52,9 +58,9 @@ export default function EditGalleryPage() {
     if (canGoBack) {
       back();
     } else if (query.viewer?.user?.username) {
-      push(`/${query.viewer.user.username}`);
+      push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
-      push(`/home`);
+      push({ pathname: '/home' });
     }
   }, [back, canGoBack, push, query.viewer?.user?.username]);
 

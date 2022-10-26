@@ -89,7 +89,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <StyledGalleryLink
-          to={`/${owner.user.username}`}
+          to={{ pathname: '/[username]', query: { username: owner.user.username } }}
           underlined={false}
           fadeUsernames={fadeUsernames}
         >

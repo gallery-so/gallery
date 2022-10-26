@@ -11,7 +11,6 @@ import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
-import { getStepUrl } from 'components/Onboarding/constants';
 import FullPageStep from 'components/Onboarding/FullPageStep';
 import { OnboardingCollectionCreateNavbar } from '../../src/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
 
@@ -68,12 +67,12 @@ function LazyLoadedCollectionEditor() {
             // so if the user hits the back button, they'll rightfully
             // be editing a collection instead of creating another one.
             await replace({
-              pathname: getStepUrl('edit-collection'),
+              pathname: '/onboarding/edit-collection',
               query: { ...urlQuery, collectionId },
             });
 
             await push({
-              pathname: getStepUrl('organize-gallery'),
+              pathname: '/onboarding/organize-gallery',
               query: { ...urlQuery },
             });
           }}

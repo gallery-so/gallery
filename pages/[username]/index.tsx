@@ -7,6 +7,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { route } from 'nextjs-routes';
 
 type UserGalleryProps = MetaTagProps & {
   username: string;
@@ -38,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({
     return {
       redirect: {
         permanent: false,
-        destination: '/',
+        destination: route({ pathname: '/' }),
       },
     };
 

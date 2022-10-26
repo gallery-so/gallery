@@ -61,7 +61,7 @@ function UserGallery({ queryRef }: Props) {
   const navigateToEdit = useCallback(() => {
     if (!isLoggedIn) return;
     if (isModalOpenRef.current) return;
-    void push(`/gallery/${galleryId}/edit`);
+    void push({ pathname: '/gallery/[galleryId]/edit', query: { galleryId: galleryId as string } });
   }, [isLoggedIn, isModalOpenRef, push, galleryId]);
 
   useKeyDown('e', navigateToEdit);

@@ -22,6 +22,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/Collecti
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { route } from 'nextjs-routes';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -93,7 +94,12 @@ function CollectionGalleryHeader({
   } = collection;
 
   const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: `/${username}/${collectionId}` });
+    track('Share Collection', {
+      path: route({
+        pathname: '/[username]/[collectionId]',
+        query: { username: username as string, collectionId },
+      }),
+    });
   }, [collectionId, username, track]);
 
   const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
@@ -149,7 +155,7 @@ function CollectionGalleryHeader({
             <HStack align="flex-start" justify="space-between">
               <HStack>
                 {username ? (
-                  <UnstyledLink href={`/${username}`}>
+                  <UnstyledLink href={{ pathname: '/[username]', query: { username } }}>
                     <StyledUsername>{username}</StyledUsername>
                   </UnstyledLink>
                 ) : null}

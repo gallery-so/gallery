@@ -9,7 +9,7 @@ export default function Welcome() {
   const authPayloadQuery = useAuthPayloadQuery();
 
   if (!authPayloadQuery) {
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return <GalleryRoute element={<WelcomeAnimation />} navbar={false} footer={false} />;

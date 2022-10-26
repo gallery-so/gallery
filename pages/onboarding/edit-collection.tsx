@@ -12,12 +12,10 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import FullPageStep from 'components/Onboarding/FullPageStep';
-import { getStepUrl } from 'components/Onboarding/constants';
-import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
-import { UrlObject } from 'url';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { OnboardingCollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingCollectionEditorNavbar/OnboardingCollectionEditorNavbar';
+import { Route } from 'nextjs-routes';
 
 type Props = {
   collectionId: string;
@@ -49,14 +47,14 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
 
   const { back, replace, query: urlQuery } = useRouter();
 
-  const returnUrl: UrlObject = useMemo(() => {
+  const returnUrl: Route = useMemo(() => {
     // We want to pull out the query params relevant to this page
     // so we can navigate back to the old page without extra params.
     const nextParams = { ...urlQuery };
     delete nextParams.collectionId;
 
     return {
-      pathname: getStepUrl('organize-gallery'),
+      pathname: '/onboarding/organize-gallery',
       query: nextParams,
     };
   }, [urlQuery]);
