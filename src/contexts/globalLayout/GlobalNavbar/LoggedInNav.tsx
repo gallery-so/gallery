@@ -115,9 +115,11 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={{ pathname: '/members' }}>
-              <TextButton text="My Gallery" />
-            </UnstyledLink>
+            {username && (
+              <UnstyledLink href={{ pathname: '/[username]', query: { username } }}>
+                <TextButton text="My Gallery" />
+              </UnstyledLink>
+            )}
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
             <UnstyledLink href={{ pathname: '/shop' }}>
               <ShopOptionContainer>
