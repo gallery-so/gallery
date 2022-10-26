@@ -63,7 +63,6 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [tokens]) as TokenToPreview[];
 
-  const collectionPagePath = `/${event.owner?.username}/${event.collection.dbid}`;
   const track = useTrack();
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
@@ -77,7 +76,10 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
 
   return (
     <UnstyledLink
-      href={collectionPagePath}
+      href={{
+        pathname: '/[username]/[collectionId]',
+        query: { username: event.owner.username as string, collectionId: event.collection.dbid },
+      }}
       onClick={() => track('Feed: Clicked collection created event')}
     >
       <StyledEvent>
@@ -90,7 +92,15 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
             </BaseM>
             <HStack gap={4} inline>
               {collectionName && (
-                <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
+                <InteractiveLink
+                  to={{
+                    pathname: '/[username]/[collectionId]',
+                    query: {
+                      username: event.owner.username as string,
+                      collectionId: event.collection.dbid,
+                    },
+                  }}
+                >
                   {unescape(event.collection.name ?? '')}
                 </InteractiveLink>
               )}

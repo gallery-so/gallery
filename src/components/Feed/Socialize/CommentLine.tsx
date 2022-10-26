@@ -8,6 +8,7 @@ import colors from 'components/core/colors';
 import { useEffect, useState } from 'react';
 import { getTimeSince } from 'utils/time';
 import Link from 'next/link';
+import { route, Route } from 'nextjs-routes';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -41,10 +42,13 @@ export function CommentLine({ commentRef }: CommentLineProps) {
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
-  const usernameLink = comment.commenter?.username ? `/${comment.commenter.username}` : '';
+  const usernameLinkRoute: Route = comment.commenter?.username
+    ? { pathname: '/[username]', query: { username: comment.commenter.username } }
+    : { pathname: '/' };
+  const usernameLink = route(usernameLinkRoute);
   return (
     <HStack key={comment.dbid} gap={4} align="flex-start">
-      <Link href={usernameLink}>
+      <Link href={usernameLinkRoute}>
         <CommenterName href={usernameLink}>
           {comment.commenter?.username ?? '<unknown>'}
         </CommenterName>

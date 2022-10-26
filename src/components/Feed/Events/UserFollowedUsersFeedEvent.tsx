@@ -86,7 +86,7 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
     (e) => {
       e.preventDefault();
       track('Feed: Clicked see single followed user event');
-      void push(`/${firstFolloweeUsername}`);
+      void push({ pathname: '/[username]', query: { username: firstFolloweeUsername as string } });
     },
     [firstFolloweeUsername, push, track]
   );

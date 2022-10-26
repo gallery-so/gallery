@@ -17,7 +17,7 @@ function Nuke() {
   return (
     <StyledNuke gap={32}>
       <BaseXL>Your local cache has been nuked</BaseXL>
-      <ButtonLink href="/">Take me home</ButtonLink>
+      <ButtonLink href={{ pathname: '/' }}>Take me home</ButtonLink>
     </StyledNuke>
   );
 }

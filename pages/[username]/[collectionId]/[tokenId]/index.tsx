@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useKeyDown from 'hooks/useKeyDown';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 
 type NftDetailPageProps = MetaTagProps & {
@@ -22,7 +22,13 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   // the default "back" behavior from the NFT Detail Page
   // is a redirect to the Collection Page
-  const collectionRoute = `/${username}/${collectionId}`;
+  const collectionRoute = useMemo(
+    () => ({
+      pathname: '/[username]/[collectionId]',
+      query: { username, collectionId },
+    }),
+    [username, collectionId]
+  );
 
   const handleReturnToCollectionPage = useCallback(() => {
     push(collectionRoute);
@@ -32,7 +38,7 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   if (!tokenId) {
     // Something went horribly wrong
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return (

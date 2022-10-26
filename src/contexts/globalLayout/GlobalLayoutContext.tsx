@@ -361,7 +361,7 @@ function GlobalNavbarWithFadeEnabled({
           localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
           text=""
           queryRef={query}
-          actionComponent={<NavLink to="/edit">Add Poaps</NavLink>}
+          actionComponent={<NavLink to={{ pathname: '/edit' }}>Add Poaps</NavLink>}
           dismissOnActionComponentClick
           requireAuth
         />

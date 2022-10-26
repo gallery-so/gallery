@@ -93,8 +93,17 @@ function LoggedInNav({ queryRef }: Props) {
             <UnstyledLink
               href={
                 collectionId
-                  ? `/gallery/${galleryId}/collection/${collectionId}/edit`
-                  : `/gallery/${galleryId}/edit`
+                  ? {
+                      pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                      query: {
+                        galleryId: galleryId as string,
+                        collectionId: collectionId as string,
+                      },
+                    }
+                  : {
+                      pathname: '/gallery/[galleryId]/edit',
+                      query: { galleryId: galleryId as string },
+                    }
               }
             >
               <TextButton text={collectionId ? 'Edit Collection' : 'Edit Gallery'} />
@@ -106,11 +115,11 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={`/${username}`}>
+            <UnstyledLink href={{ pathname: '/members' }}>
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
-            <UnstyledLink href="/shop">
+            <UnstyledLink href={{ pathname: '/shop' }}>
               <ShopOptionContainer>
                 <StyledShopTextButton text="shop" />
                 <StyledObjectsContainer>

@@ -9,7 +9,6 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
-import { getStepUrl } from 'components/Onboarding/constants';
 import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -49,7 +48,7 @@ function AddUserInfo() {
     delete nextParams.authMechanism;
     delete nextParams.userFriendlyWalletName;
 
-    push({ pathname: getStepUrl('create') });
+    push({ pathname: '/onboarding/create' });
   }, [push, urlQuery]);
 
   const {

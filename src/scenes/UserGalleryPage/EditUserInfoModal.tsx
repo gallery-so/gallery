@@ -49,7 +49,7 @@ function EditUserInfoModal({ queryRef }: Props) {
       // If the user chooses a new username, we should navigate them there
       const previousUsername = existingUser.username;
       if (newUsername !== previousUsername) {
-        void push(`/${newUsername}`);
+        void push({ pathname: '/[username]', query: { username: newUsername } });
       }
     },
     [hideModal, existingUser.username, push]
@@ -57,11 +57,11 @@ function EditUserInfoModal({ queryRef }: Props) {
 
   const { username, onUsernameChange, usernameError, bio, onBioChange, generalError, onEditUser } =
     useUserInfoForm({
-    onSuccess: closeModalAndNavigateToNewUsername,
-    existingUsername: existingUser.username ?? undefined,
-    existingBio: existingUser.bio ?? undefined,
-    userId: existingUser.dbid,
-  });
+      onSuccess: closeModalAndNavigateToNewUsername,
+      existingUsername: existingUser.username ?? undefined,
+      existingBio: existingUser.bio ?? undefined,
+      userId: existingUser.dbid,
+    });
 
   const [isLoading, setIsLoading] = useState(false);
 

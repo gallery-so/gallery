@@ -9,6 +9,8 @@ import LogoBracketRight from 'icons/LogoBracketRight';
 import colors from 'components/core/colors';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
+const GALLERY_OF_THE_WEEK_USER = 'pk';
+
 export default function LandingPage() {
   const track = useTrack();
 
@@ -18,14 +20,14 @@ export default function LandingPage() {
         <GalleryIntro />
         <HStack gap={12}>
           <ButtonLink
-            href="/auth"
+            href={{ pathname: '/auth' }}
             onClick={() => track('Landing page Sign In button click')}
             data-testid="sign-in-button"
           >
             Sign In
           </ButtonLink>
           <ButtonLink
-            href="/home"
+            href={{ pathname: '/home' }}
             onClick={() => track('Landing page Explore button click')}
             data-testid="explore-button"
             variant="secondary"
@@ -36,11 +38,13 @@ export default function LandingPage() {
       </VStack>
       <StyledBottomContainer gap={12}>
         <HStack gap={8}>
-          <NavLink to="/members">Members</NavLink>
+          <NavLink to={{ pathname: '/members' }}>Members</NavLink>
           <BaseS>·</BaseS>
-          <NavLink to="/pk">Gallery of the Week</NavLink>
+          <NavLink to={{ pathname: '/[username]', query: { username: GALLERY_OF_THE_WEEK_USER } }}>
+            Gallery of the Week
+          </NavLink>
         </HStack>
-        <NavLink to="/shop">
+        <NavLink to={{ pathname: '/shop' }}>
           <HStack gap={6}>
             Shop
             <StyledObjectsContainer>

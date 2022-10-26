@@ -40,7 +40,11 @@ export default function Congratulations() {
           <TitleL>Welcome to your Gallery</TitleL>
           <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
         </VStack>
-        <FixedWidthButtonLink href={`/${username}`}>Enter</FixedWidthButtonLink>
+        <FixedWidthButtonLink
+          href={{ pathname: '/[username]', query: { username: username as string } }}
+        >
+          Enter
+        </FixedWidthButtonLink>
       </VStack>
     </FullPageCenteredStep>
   );

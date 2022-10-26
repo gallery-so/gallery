@@ -25,7 +25,3 @@ export const FOOTER_BUTTON_TEXT_MAP: { [key in StepName]: string } = {
 export function getStepIndex(step: StepName) {
   return STEPS.indexOf(step);
 }
-
-export function getStepUrl(step: StepName) {
-  return `/onboarding/${step}`;
-}

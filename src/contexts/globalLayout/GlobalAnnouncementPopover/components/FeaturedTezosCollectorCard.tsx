@@ -69,7 +69,10 @@ export default function FeaturedTezosCollectorCard({
   }
 
   return (
-    <Link href={`/${owner.username}`} passHref>
+    <Link
+      href={{ pathname: '/[username]', query: { username: owner.username as string } }}
+      passHref
+    >
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>

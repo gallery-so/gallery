@@ -15527,6 +15527,13 @@ next@^12.3.0:
     "@next/swc-win32-ia32-msvc" "12.3.0"
     "@next/swc-win32-x64-msvc" "12.3.0"
 
+nextjs-routes@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/nextjs-routes/-/nextjs-routes-0.1.5.tgz#ba05cee7b864cba952d54f8c490e9f73b0677168"
+  integrity sha512-styKpyVM8xX4OqdYjzrjxLtcnhOonA2RxbYLbzMz2CcGSCfwunnOOBHvCqAxeCxFQcXxK6yGAM7GI5vKsbRPqg==
+  dependencies:
+    chokidar "^3.5.3"
+
 no-case@^2.2.0, no-case@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"

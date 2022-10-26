@@ -1,10 +1,11 @@
 import styled, { css } from 'styled-components';
 import colors from '../colors';
 import transitions from '../transitions';
-import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import Link from 'next/link';
 import { Spinner } from '../Spinner/Spinner';
+import { InternalAnchorElementProps } from 'types/Elements';
 
 // A Chrome bug seems to double apply opacity when used with animate, so we add
 // an alpha value on hex colors for things like disabled states. This assumes
@@ -149,10 +150,9 @@ export const Button = ({
   </StyledButton>
 );
 
-type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> &
+type ButtonLinkProps = InternalAnchorElementProps &
   StyledButtonProps & {
     pending?: boolean;
-    href: string;
   };
 
 export const ButtonLink = ({

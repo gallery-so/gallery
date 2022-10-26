@@ -1,3 +1,4 @@
+import { route } from 'nextjs-routes';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import InteractiveLink, {
@@ -41,7 +42,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === '/';
+            const isInternalLink = href[0] === route({ pathname: '/' });
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>
@@ -49,6 +50,7 @@ function BaseMarkdown({
             }
             if (isInternalLink) {
               return (
+                // @ts-expect-error href is a dynamic route and therefore needs to be passed as a string
                 <InteractiveLink inheritLinkStyling={inheritLinkStyling} to={href}>
                   {children}
                 </InteractiveLink>

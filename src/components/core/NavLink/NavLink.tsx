@@ -5,9 +5,10 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import colors from '../colors';
 import transitions from '../transitions';
+import { Route } from 'nextjs-routes';
 
 type Props = {
-  to?: string;
+  to?: Route;
   href?: string;
   children: ReactNode;
   dataTestId?: string;

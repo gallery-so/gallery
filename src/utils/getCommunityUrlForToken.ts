@@ -1,6 +1,7 @@
 import { readInlineData } from 'relay-runtime';
 import { graphql } from 'react-relay';
 import { getCommunityUrlForTokenFragment$key } from '../../__generated__/getCommunityUrlForTokenFragment.graphql';
+import { Route } from 'nextjs-routes';
 
 export const DISABLED_CONTRACTS = [
   '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Art Blocks
@@ -12,7 +13,7 @@ export const DISABLED_CONTRACTS = [
 
 export function getCommunityUrlForToken(
   tokenRef: getCommunityUrlForTokenFragment$key
-): string | null {
+): Route | null {
   const token = readInlineData(
     graphql`
       fragment getCommunityUrlForTokenFragment on Token @inline {
@@ -27,19 +28,21 @@ export function getCommunityUrlForToken(
     tokenRef
   );
 
-  if (!token.contract?.contractAddress?.address) {
+  const contractAddress = token.contract?.contractAddress?.address;
+
+  if (!contractAddress) {
     return null;
   }
 
-  if (DISABLED_CONTRACTS.includes(token.contract.contractAddress.address)) {
+  if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return null;
   }
 
   if (token.contract.chain === 'POAP') {
-    return `/community/poap/${token.contract.contractAddress.address}`;
+    return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
   } else if (token.contract.chain === 'Tezos') {
-    return `/community/tez/${token.contract.contractAddress.address}`;
+    return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
   } else {
-    return `/community/${token.contract.contractAddress.address}`;
+    return { pathname: '/community/[contractAddress]', query: { contractAddress } };
   }
 }

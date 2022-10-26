@@ -23,6 +23,7 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { Route, route } from 'nextjs-routes';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -85,7 +86,11 @@ function UserGalleryCollection({
   );
 
   const username = router.query.username as string;
-  const collectionUrl = `/${username}/${collectionId}`;
+  const collectionUrlPath: Route = {
+    pathname: '/[username]/[collectionId]',
+    query: { username, collectionId },
+  };
+  const collectionUrl = route(collectionUrlPath);
 
   const track = useTrack();
 
@@ -124,7 +129,7 @@ function UserGalleryCollection({
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <UnstyledLink href={collectionUrl}>
+          <UnstyledLink href={collectionUrlPath}>
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
@@ -142,14 +147,17 @@ function UserGalleryCollection({
                         underlineOnHover
                       />
                       <UnstyledLink
-                        href={`/gallery/${galleryId}/collection/${collectionId}/edit`}
+                        href={{
+                          pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                          query: { galleryId, collectionId },
+                        }}
                         onClick={() => track('Update existing collection button clicked')}
                       >
                         <TextButton text="Edit Collection" underlineOnHover />
                       </UnstyledLink>
                     </>
                   )}
-                  <UnstyledLink href={collectionUrl}>
+                  <UnstyledLink href={collectionUrlPath}>
                     <TextButton text="View Collection" underlineOnHover />
                   </UnstyledLink>
                 </VStack>
