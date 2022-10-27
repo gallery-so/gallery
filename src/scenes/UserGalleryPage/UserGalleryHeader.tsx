@@ -83,9 +83,11 @@ function UserGalleryHeader({
   return (
     <StyledUserGalleryHeader gap={2}>
       {isMobile ? (
-        <StyledUsernameMobile>{username}</StyledUsernameMobile>
+        <StyledUsernameMobile>
+          {is3ac ? 'The Unofficial 3AC Gallery' : username}
+        </StyledUsernameMobile>
       ) : (
-        <StyledUsername>{username}</StyledUsername>
+        <StyledUsername>{is3ac ? 'The Unofficial 3AC Gallery' : username}</StyledUsername>
       )}
 
       <HStack align="flex-start" justify="space-between">
