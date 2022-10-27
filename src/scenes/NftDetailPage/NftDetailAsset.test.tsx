@@ -127,7 +127,7 @@ describe('NftDetailAsset', () => {
     );
 
     // Ensure we see the fallback UI since we have bad media
-    expect(await findByText('Could not load')).toBeVisible();
+    expect(await findByText('Could not load', undefined, { timeout: 10000 })).toBeVisible();
 
     // Hit the refresh button
     await act(async () => {
