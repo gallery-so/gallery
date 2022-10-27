@@ -18,7 +18,7 @@ import { DisplayLayout } from 'components/core/enums';
 import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
 import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
 import { CommunityPageViewQueryFragment$key } from '__generated__/CommunityPageViewQueryFragment.graphql';
-import { ART_GOBBLER_ADDRESS } from 'constants/community';
+import { GRID_ENABLED_COMMUNITY_ADDRESSES } from 'constants/community';
 import CommunityHolderList from 'components/Community/CommunityHolderList';
 
 type Props = {
@@ -62,7 +62,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
 
   const isArtGobbler = useMemo(
-    () => ART_GOBBLER_ADDRESS.includes(contractAddress?.address || '') && isArtGobblersEnabled,
+    () =>
+      GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress?.address || '') &&
+      isArtGobblersEnabled,
     [contractAddress, isArtGobblersEnabled]
   );
 
