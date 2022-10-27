@@ -18,7 +18,7 @@ type CommunityPageProps = MetaTagProps & {
 };
 
 export default function CommunityPage({ contractAddress }: CommunityPageProps) {
-  const isFetchAllUsers = !GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress);
+  const fetchUniversalOwners = GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress);
 
   const query = useLazyLoadQuery<ContractAddressQuery>(
     graphql`
@@ -42,7 +42,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       forceRefresh: false,
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
       listOwnersFirst: LIST_ITEM_PER_PAGE,
-      onlyGalleryUsers: isFetchAllUsers,
+      onlyGalleryUsers: !fetchUniversalOwners,
     }
   );
 
