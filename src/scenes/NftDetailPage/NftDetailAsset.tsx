@@ -169,8 +169,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
     useNftRetry({
-    tokenId: token.dbid,
-  });
+      tokenId: token.dbid,
+    });
 
   return (
     <StyledAssetContainer
