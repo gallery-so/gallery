@@ -63,7 +63,7 @@ function UserActivity({ queryRef }: Props) {
     if (isModalOpenRef.current) return;
 
     if (galleryId) {
-      void push({ pathname: `/gallery/[galleryId]/edit`, query: { galleryId } });
+      void push({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } });
     }
   }, [isLoggedIn, isModalOpenRef, push, galleryId]);
 
