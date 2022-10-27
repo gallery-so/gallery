@@ -47,7 +47,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   const username = query.viewer?.user?.username;
 
   if (!username) {
-    throw new Error('Tried to render dropdown without a username');
+    return null;
   }
 
   const editGalleryUrl = getEditGalleryUrl(query);
