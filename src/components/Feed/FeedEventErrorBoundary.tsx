@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
-import { Component } from 'react';
+import { Component, PropsWithChildren } from 'react';
 
-export default class FeedEventErrorBoundary extends Component {
+export default class FeedEventErrorBoundary extends Component<PropsWithChildren> {
   static getDerivedStateFromError(error: Error) {
     return { error };
   }

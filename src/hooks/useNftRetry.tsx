@@ -190,7 +190,7 @@ export function useThrowOnMediaFailure(
 
   const shimmerContext = useContext(ShimmerActionContext);
   const handleError = useCallback(
-    (e?) => {
+    (e?: unknown) => {
       shimmerContext?.setContentIsLoaded(e);
 
       setHasFailed(true);

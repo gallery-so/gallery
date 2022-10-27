@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, PropsWithChildren, useState } from 'react';
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { NETWORK_CONTEXT_NAME } from 'connectors/index';
@@ -12,7 +12,7 @@ function getLibrary(provider: any) {
   return library;
 }
 
-const Web3WalletProvider = memo(({ children }) => (
+const Web3WalletProvider = memo(({ children }: PropsWithChildren) => (
   <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
 ));
 
@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
   web3Root = createWeb3ReactRoot(NETWORK_CONTEXT_NAME);
 }
 
-export const Web3ProviderNetwork = memo(({ children }) => {
+export const Web3ProviderNetwork = memo(({ children }: PropsWithChildren) => {
   const [Web3ReactRoot] = useState(() => web3Root);
 
   return <Web3ReactRoot getLibrary={getLibrary}>{children}</Web3ReactRoot>;

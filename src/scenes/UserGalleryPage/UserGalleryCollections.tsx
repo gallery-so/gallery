@@ -145,6 +145,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         {({ height, registerChild, scrollTop, onChildScroll }) => (
           <AutoSizer disableHeight>
             {({ width }) => (
+              // @ts-expect-error shitty react-virtualized types
               <div ref={registerChild}>
                 <List
                   ref={listRef}

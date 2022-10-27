@@ -1,4 +1,12 @@
-import { ChangeEventHandler, useRef, useEffect, useState, forwardRef, useCallback } from 'react';
+import {
+  ChangeEventHandler,
+  useRef,
+  useEffect,
+  useState,
+  forwardRef,
+  useCallback,
+  KeyboardEventHandler,
+} from 'react';
 import styled from 'styled-components';
 import noop from 'utils/noop';
 import colors from '../colors';
@@ -31,7 +39,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     ref
   ) => {
     // If the user is pasting a link, automatically place it in a Markdown link
-    const handleKeyDown = useCallback(
+    const handleKeyDown = useCallback<KeyboardEventHandler>(
       async (event) => {
         if (event.key === 'v' && event.metaKey) {
           // Wrap in a try/catch because navigator.clipboard.readText() is not supported in Firefox. If it fails, pasting behavior will be default

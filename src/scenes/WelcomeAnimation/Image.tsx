@@ -1,5 +1,5 @@
 import styled, { css, Keyframes } from 'styled-components';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, MouseEventHandler } from 'react';
 import { animated, useSpring } from 'react-spring';
 
 type Props = {
@@ -86,7 +86,7 @@ function Image({
     setXys([0, 0, 1]);
   }, []);
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback<MouseEventHandler>((e) => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
       setXys(calc(e.clientX, e.clientY, rect));

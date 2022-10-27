@@ -1,6 +1,6 @@
 import colors from 'components/core/colors';
 import styled from 'styled-components';
-import { useCallback, useMemo, useState } from 'react';
+import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import FollowIcon from 'src/icons/FollowIcon';
 import FollowingIcon from 'src/icons/FollowingIcon';
 import UnfollowIcon from 'src/icons/UnfollowIcon';
@@ -60,7 +60,7 @@ export default function IconButton({
     return isFollowing ? 'Unfollow' : 'Follow';
   }, [clickedAndStillHovering, isFollowing, isSignedIn]);
 
-  const handleClick = useCallback(
+  const handleClick = useCallback<MouseEventHandler>(
     (e) => {
       e.stopPropagation();
       e.preventDefault();
