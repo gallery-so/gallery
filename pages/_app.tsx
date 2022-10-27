@@ -25,6 +25,9 @@ export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
 };
 
+// This component ensures that we don't try to render anything on the server.
+// We have a long way to go until we're able to do this w/o compromising
+// on the user's experience.
 function SafeHydrate({ children }: PropsWithChildren) {
   const [render, setRender] = useState(false);
 
