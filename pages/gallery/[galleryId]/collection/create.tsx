@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
@@ -16,6 +16,7 @@ import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
+import { Route } from 'nextjs-routes';
 
 type Props = {
   galleryId: string;
@@ -38,7 +39,10 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const { push, back, replace } = useRouter();
 
-  const editGalleryUrl = `/gallery/${galleryId}/edit`;
+  const editGalleryUrl = useMemo<Route>(
+    () => ({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } }),
+    [galleryId]
+  );
 
   const handleNext = useCallback(() => {
     track('Save new collection button clicked');
@@ -47,9 +51,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       content: (
         <CollectionCreateOrEditForm
           onNext={() => {
-            push({
-              pathname: editGalleryUrl,
-            });
+            push(editGalleryUrl);
           }}
           galleryId={galleryId}
           stagedCollection={stagedCollectionState}

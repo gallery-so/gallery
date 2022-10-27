@@ -6,7 +6,10 @@ import { UnstyledLink } from './core/Link/UnstyledLink';
 export default function NavbarGLink() {
   const track = useTrack();
   return (
-    <StyledNavbarGLink href="/home" onClick={() => track('Feed: Clicked navbar entry point')}>
+    <StyledNavbarGLink
+      href={{ pathname: '/home' }}
+      onClick={() => track('Feed: Clicked navbar entry point')}
+    >
       <StyledSecondaryGLogoIcon />
     </StyledNavbarGLink>
   );

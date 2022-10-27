@@ -81,9 +81,12 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
     if (!isLoggedIn) return;
     if (isModalOpenRef.current) return;
     if (userOwnsCollection) {
-      void push(`/gallery/${galleryId}/collection/${collectionId}/edit`);
+      void push({
+        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        query: { galleryId, collectionId },
+      });
     } else {
-      void push(`/gallery/${galleryId}/edit`);
+      void push({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } });
     }
   }, [isLoggedIn, isModalOpenRef, userOwnsCollection, push, galleryId, collectionId]);
 

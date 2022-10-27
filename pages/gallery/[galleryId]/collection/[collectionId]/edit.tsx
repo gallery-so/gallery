@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
@@ -17,6 +17,7 @@ import FullPageStep from 'components/Onboarding/FullPageStep';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
+import { Route } from 'nextjs-routes';
 
 type Props = {
   galleryId: string;
@@ -41,7 +42,10 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
 
   const { back, replace } = useRouter();
 
-  const editGalleryUrl = `/gallery/${galleryId}/edit`;
+  const editGalleryUrl = useMemo<Route>(
+    () => ({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } }),
+    [galleryId]
+  );
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {

@@ -97,7 +97,14 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
                 <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's
                 note to{' '}
                 <InteractiveLink
-                  to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
+                  to={{
+                    pathname: '/[username]/[collectionId]/[tokenId]',
+                    query: {
+                      username: event.owner.username as string,
+                      collectionId: event.token.collection?.dbid as string,
+                      tokenId: event.token.token?.dbid,
+                    },
+                  }}
                   onClick={handleEventClick}
                 >
                   {event.token.token?.name}

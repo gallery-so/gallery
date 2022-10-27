@@ -5,7 +5,6 @@ import { useCallback } from 'react';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { getStepUrl } from 'components/Onboarding/constants';
 import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
 import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
 
@@ -17,7 +16,7 @@ export default function CreateFirstCollection() {
     track('Start new collection');
 
     push({
-      pathname: getStepUrl('organize-collection'),
+      pathname: '/onboarding/organize-collection',
       query: { ...query },
     });
   }, [push, query, track]);

@@ -26,7 +26,7 @@ export default function GalleryAuthenticatedRoute(
   const isAuthenticated = Boolean(viewer?.user?.id);
 
   if (!isAuthenticated) {
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return <GalleryRoute {...props} />;

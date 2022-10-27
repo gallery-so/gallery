@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { Route } from 'nextjs-routes';
 
 type Props = {
-  to: string;
+  to: Route;
 };
 
 // 1) enables redirect without erroring

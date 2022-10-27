@@ -1,5 +1,6 @@
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import Tooltip from 'components/Tooltip/Tooltip';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -30,13 +31,24 @@ export default function Badge({ badgeRef }: Props) {
 
   const { name, imageURL, contract } = badge;
 
-  const communityUrl = useMemo(() => {
+  const communityUrl = useMemo<Route>(() => {
+    const contractAddress = contract?.contractAddress?.address as string;
+
     if (contract?.chain === 'POAP') {
-      return `/community/poap/${contract?.contractAddress?.address}`;
+      return {
+        pathname: '/community/poap/[contractAddress]',
+        query: { contractAddress },
+      };
     } else if (contract?.chain === 'Tezos') {
-      return `/community/tez/${contract?.contractAddress?.address}`;
+      return {
+        pathname: '/community/tez/[contractAddress]',
+        query: { contractAddress },
+      };
     } else {
-      return `/community/${contract?.contractAddress?.address}`;
+      return {
+        pathname: '/community/[contractAddress]',
+        query: { contractAddress },
+      };
     }
   }, [contract]);
 

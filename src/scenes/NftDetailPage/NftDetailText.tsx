@@ -123,7 +123,9 @@ function NftDetailText({ tokenRef }: Props) {
           {token.owner?.username && (
             <div>
               <TitleXS>Owner</TitleXS>
-              <InteractiveLink to={`/${token.owner.username}`}>
+              <InteractiveLink
+                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
+              >
                 {token.owner.username}
               </InteractiveLink>
             </div>

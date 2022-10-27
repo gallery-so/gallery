@@ -55,28 +55,28 @@ export default function DesignPage() {
       <Section>
         <TitleM>ButtonLink</TitleM>
         <Examples>
-          <ButtonLink href="#">primary</ButtonLink>
-          <ButtonLink href="#" pending>
+          <ButtonLink href={{ pathname: '/' }}>primary</ButtonLink>
+          <ButtonLink href={{ pathname: '/' }} pending>
             primary
           </ButtonLink>
-          <ButtonLink disabled href="#">
+          <ButtonLink disabled href={{ pathname: '/' }}>
             primary
           </ButtonLink>
-          <ButtonLink disabled href="#" pending>
+          <ButtonLink disabled href={{ pathname: '/' }} pending>
             primary
           </ButtonLink>
         </Examples>
         <Examples>
-          <ButtonLink href="#" variant="secondary">
+          <ButtonLink href={{ pathname: '/' }} variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink href="#" variant="secondary" pending>
+          <ButtonLink href={{ pathname: '/' }} variant="secondary" pending>
             secondary
           </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary">
+          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary">
             secondary
           </ButtonLink>
-          <ButtonLink disabled href="#" variant="secondary" pending>
+          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary" pending>
             secondary
           </ButtonLink>
         </Examples>

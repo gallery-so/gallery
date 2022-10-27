@@ -1,7 +1,9 @@
 const relayConfig = require('./relay.config');
 const { withSentryConfig } = require('@sentry/nextjs');
+const withRoutes = require('nextjs-routes/config')();
 
-const moduleExports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   typescript: {
     // Save time in Vercel builds by avoiding a type check.
     // This is fine since we do a type check in Github Actions.
@@ -61,4 +63,6 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+const plugins = [withRoutes, (config) => withSentryConfig(config, sentryWebpackPluginOptions)];
+
+module.exports = () => plugins.reduce((config, plugin) => plugin(config), nextConfig);

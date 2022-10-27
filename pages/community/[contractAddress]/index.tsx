@@ -44,11 +44,11 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
 
   if (!contractAddress) {
     // Something went horribly wrong
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   if (DISABLED_CONTRACTS.includes(contractAddress)) {
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
