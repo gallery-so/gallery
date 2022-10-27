@@ -8,7 +8,6 @@ import FullPageStep from 'components/Onboarding/FullPageStep';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { GalleryEditNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 import styled from 'styled-components';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import breakpoints from 'components/core/breakpoints';
 
 export default function EditGalleryPage() {

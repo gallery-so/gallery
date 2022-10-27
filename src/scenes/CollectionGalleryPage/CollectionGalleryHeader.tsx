@@ -4,7 +4,6 @@ import unescape from 'utils/unescape';
 import { BaseM, TitleL } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
-import NavElement from 'contexts/globalLayout/GlobalNavbar/NavElement';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';

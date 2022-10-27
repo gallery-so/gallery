@@ -4,10 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
 import FollowButton from './FollowButton';
-import {
-  BreadcrumbLink,
-  BreadcrumbText,
-} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { BreadcrumbLink } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { route, Route } from 'nextjs-routes';
 import Link from 'next/link';
 

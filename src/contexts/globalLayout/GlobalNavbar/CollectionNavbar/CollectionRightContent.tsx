@@ -1,7 +1,7 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionRightContentFragment$key } from '__generated__/CollectionRightContentFragment.graphql';
-import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';

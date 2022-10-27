@@ -2,9 +2,8 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { GalleryLeftContentFragment$key } from '../../../../../__generated__/GalleryLeftContentFragment.graphql';
 import NavActionFollow from 'components/Follow/NavActionFollow';
-import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
-import { size } from 'components/core/breakpoints';
 import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 
 type Props = {

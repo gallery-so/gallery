@@ -9,7 +9,6 @@ import { BODY_FONT_FAMILY, Paragraph, TitleXS } from 'components/core/Text/Text'
 import { HStack } from 'components/core/Spacer/Stack';
 import { Button } from 'components/core/Button/Button';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import Edit from '../../../../../pages/edit';
 import colors from 'components/core/colors';
 import breakpoints from 'components/core/breakpoints';
 
