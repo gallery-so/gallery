@@ -85,6 +85,10 @@ function LoggedInNav({ queryRef }: Props) {
   const username = query.viewer.user?.username;
   const userOwnsCollectionOrGallery = routerUsername === username;
 
+  if (!username) {
+    return null;
+  }
+
   return (
     <HStack gap={24}>
       {userOwnsCollectionOrGallery && (
@@ -115,7 +119,7 @@ function LoggedInNav({ queryRef }: Props) {
       <NavElement>
         <StyledDropdownWrapper hasNotification={false}>
           <Dropdown mainText={username || 'ACCOUNT'} shouldCloseOnMenuItemClick>
-            <UnstyledLink href={{ pathname: '/members' }}>
+            <UnstyledLink href={{ pathname: '/[username]', query: { username } }}>
               <TextButton text="My Gallery" />
             </UnstyledLink>
             <TextButton text="Manage Accounts" onClick={handleManageWalletsClick} />
