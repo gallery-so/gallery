@@ -132,7 +132,7 @@ const DropdownProfileSection = styled.a`
 
   text-decoration: none;
 
-  padding: 8px 4px 8px 4px;
+  padding: 8px;
 
   :hover {
     background-color: ${colors.faint};
