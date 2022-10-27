@@ -19,12 +19,9 @@ import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import Badge from 'components/Badge/Badge';
-import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
-import { UserGalleryHeaderQueryFragment$key } from '__generated__/UserGalleryHeaderQueryFragment.graphql';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
-  queryRef: UserGalleryHeaderQueryFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
@@ -33,7 +30,6 @@ type Props = {
 
 function UserGalleryHeader({
   userRef,
-  queryRef,
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
@@ -55,15 +51,6 @@ function UserGalleryHeader({
     userRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserGalleryHeaderQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   const { username, bio, badges } = user;
 
   const is3ac = useIs3acProfilePage();
@@ -73,13 +60,11 @@ function UserGalleryHeader({
 
   const styledQrCode = useQrCode();
 
-  const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
-
   const userBadges = useMemo(() => {
-    if (!badges || !isArtGobblersEnabled) return [];
+    if (!badges) return [];
 
     return badges.filter((badge) => badge && badge?.imageURL);
-  }, [badges, isArtGobblersEnabled]);
+  }, [badges]);
 
   return (
     <StyledUserGalleryHeader gap={2}>

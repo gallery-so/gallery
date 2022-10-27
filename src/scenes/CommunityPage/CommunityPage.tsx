@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function CommunityPage({ queryRef }: Props) {
-  const { community } = useFragment(
+  const query = useFragment(
     graphql`
       fragment CommunityPageFragment on Query {
         community: communityByAddress(
@@ -35,7 +35,7 @@ export default function CommunityPage({ queryRef }: Props) {
     `,
     queryRef
   );
-
+  const { community } = query;
   const track = useTrack();
 
   useEffect(() => {

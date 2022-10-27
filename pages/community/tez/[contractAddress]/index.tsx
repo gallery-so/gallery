@@ -6,6 +6,7 @@ import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { ContractAddressTezosQuery } from '../../../../__generated__/ContractAddressTezosQuery.graphql';
+import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -17,6 +18,11 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       query ContractAddressTezosQuery(
         $communityAddress: ChainAddressInput!
         $forceRefresh: Boolean
+        $tokenCommunityFirst: Int!
+        $tokenCommunityAfter: String
+        $listOwnersFirst: Int!
+        $listOwnersAfter: String
+        $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
       }
@@ -27,6 +33,9 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         chain: 'Tezos',
       },
       forceRefresh: false,
+      tokenCommunityFirst: GRID_ITEM_PER_PAGE,
+      listOwnersFirst: LIST_ITEM_PER_PAGE,
+      onlyGalleryUsers: true,
     }
   );
 

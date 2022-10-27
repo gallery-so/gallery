@@ -14,6 +14,7 @@ import { graphql } from 'relay-runtime';
 import { removeNullValues } from 'utils/removeNullValues';
 import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '__generated__/TokenHolderListItemFragment.graphql';
+import { graphqlTruncateUniversalUsername } from 'utils/wallet';
 
 type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
@@ -29,12 +30,17 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
       fragment TokenHolderListItemFragment on TokenHolder {
         user @required(action: THROW) {
           username @required(action: THROW)
+          universal
+
+          ...walletTruncateUniversalUsernameFragment
         }
         previewTokens
       }
     `,
     tokenHolderRef
   );
+
+  const username = graphqlTruncateUniversalUsername(owner.user);
 
   // We want to debounce the isHover state to ensure we only render the preview images if the user *deliberately* hovers over the username,
   // instead of if they just momentarily hover over it when moving their cursor or scrolling down the page.
@@ -75,28 +81,39 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
 
   const breakpoint = useBreakpoint();
 
-  const isDesktop = useMemo(
-    () => breakpoint === size.desktop && !detectMobileDevice(),
-    [breakpoint]
-  );
+  const isDesktop = useMemo(() => breakpoint === size.desktop && !detectMobileDevice(), [
+    breakpoint,
+  ]);
 
   const previewTokens = useMemo(
     () => (owner.previewTokens ? removeNullValues(owner.previewTokens) : null),
     [owner.previewTokens]
   );
 
+  const openseaProfileLink = `https://opensea.io/${owner.user.username}`;
+
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <StyledGalleryLink
-          to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-          underlined={false}
-          fadeUsernames={fadeUsernames}
-        >
-          <StyledUsername>{owner.user.username}</StyledUsername>
-        </StyledGalleryLink>
+        {owner.user.universal ? (
+          <StyledGalleryLink
+            href={openseaProfileLink}
+            underlined={false}
+            fadeUsernames={fadeUsernames}
+          >
+            <StyledUsername>{username}</StyledUsername>
+          </StyledGalleryLink>
+        ) : (
+          <StyledGalleryLink
+            to={{ pathname: '/[username]', query: { username: owner.user.username } }}
+            underlined={false}
+            fadeUsernames={fadeUsernames}
+          >
+            <StyledUsername>{username}</StyledUsername>
+          </StyledGalleryLink>
+        )}
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && previewTokens && (
+      {isDesktop && showPreview && previewTokens && !owner.user.universal && (
         <MemberListGalleryPreview
           direction={direction}
           tokenUrls={previewTokens}
