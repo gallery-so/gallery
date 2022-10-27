@@ -15,6 +15,7 @@ import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
 import { NavSection } from 'components/core/Dropdown/NavSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   showDropdown: boolean;
@@ -107,13 +108,17 @@ const UsernameText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
   line-height: 21px;
   letter-spacing: -0.04em;
 
   max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  font-size: 16px;
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
 `;
 
 const StyledInteractiveLink = styled(InteractiveLink)`

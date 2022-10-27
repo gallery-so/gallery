@@ -8,6 +8,7 @@ import {
 } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 import Link from 'next/link';
 import { route, Route } from 'nextjs-routes';
+import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   editGalleryRoute: Route;
@@ -51,9 +52,13 @@ const CollectionName = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
   line-height: 21px;
   letter-spacing: -0.04em;
   
   color ${colors.offBlack}
+
+  font-size: 16px;
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
 `;

@@ -63,8 +63,13 @@ export const MainGalleryText = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
   line-height: 21px;
   letter-spacing: -0.04em;
   white-space: nowrap;
+
+  font-size: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
 `;

@@ -1,6 +1,7 @@
 import useAuthModal from 'hooks/useAuthModal';
 import { Paragraph } from 'components/core/Text/Text';
 import styled from 'styled-components';
+import breakpoints from 'components/core/breakpoints';
 
 export function SignInButton() {
   const showAuthModal = useAuthModal();
@@ -16,9 +17,13 @@ const SignInText = styled(Paragraph)`
   font-family: 'ABC Diatype';
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
   line-height: 21px;
   letter-spacing: -0.04em;
 
   cursor: pointer;
+
+  font-size: 16px;
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
 `;
