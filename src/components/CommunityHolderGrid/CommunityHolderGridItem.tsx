@@ -50,8 +50,8 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
             }
           }
         }
-        owner {
-          username
+        owner @required(action: THROW) {
+          username @required(action: THROW)
           universal
           ...walletTruncateUniversalUsernameFragment
         }
@@ -74,9 +74,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 
   const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
 
-  const profileLink = owner?.universal
-    ? `https://opensea.io/${owner?.username}`
-    : `/${owner?.username}`;
+  const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
   const reportError = useReportError();
   const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
@@ -131,9 +129,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
-          <InteractiveLink href={profileLink}>{usernameWithFallback}</InteractiveLink>
+          <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
         ) : (
-          <InteractiveLink to={profileLink}>{usernameWithFallback}</InteractiveLink>
+          <InteractiveLink to={{ pathname: '/[username]', query: { username: owner.username } }}>
+            {usernameWithFallback}
+          </InteractiveLink>
         )}
       </VStack>
     </VStack>

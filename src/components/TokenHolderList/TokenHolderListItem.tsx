@@ -90,19 +90,25 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     [owner.previewTokens]
   );
 
-  const profileLink = owner.user.universal
-    ? `https://opensea.io/${owner.user.username}`
-    : `/${owner.user.username}`;
+  const openseaProfileLink = `https://opensea.io/${owner.user.username}`;
 
   return (
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {owner.user.universal ? (
-          <StyledGalleryLink href={profileLink} underlined={false} fadeUsernames={fadeUsernames}>
+          <StyledGalleryLink
+            href={openseaProfileLink}
+            underlined={false}
+            fadeUsernames={fadeUsernames}
+          >
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
-          <StyledGalleryLink to={profileLink} underlined={false} fadeUsernames={fadeUsernames}>
+          <StyledGalleryLink
+            to={{ pathname: '/[username]', query: { username: owner.user.username } }}
+            underlined={false}
+            fadeUsernames={fadeUsernames}
+          >
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         )}
