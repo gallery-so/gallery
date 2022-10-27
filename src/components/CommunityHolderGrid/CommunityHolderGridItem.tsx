@@ -141,15 +141,15 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
 }
 
 const StyledNftImage = styled.img`
-  min-height: 240px;
-  width: auto;
+  height: auto;
+  width: 100%;
   max-width: 100%;
   cursor: pointer;
 `;
 
 const StyledNftVideo = styled.video`
-  min-height: 240px;
-  width: auto;
+  height: auto;
+  width: 100%;
   max-width: 100%;
   cursor: pointer;
 `;
@@ -168,8 +168,9 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 
 const StyledErrorWrapper = styled(VStack)`
   background-color: ${colors.offWhite};
-  min-height: 240px;
-  aspect-ratio: 1;
+  height: auto;
+  width: 100%;
+  aspect-ratio: 1 / 1;
 `;
 
 const StyledErrorText = styled(BaseM)`
