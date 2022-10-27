@@ -22,6 +22,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         $tokenCommunityAfter: String
         $listOwnersFirst: Int!
         $listOwnersAfter: String
+        $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
       }
@@ -34,6 +35,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       forceRefresh: false,
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
       listOwnersFirst: LIST_ITEM_PER_PAGE,
+      onlyGalleryUsers: true,
     }
   );
 

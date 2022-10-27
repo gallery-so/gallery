@@ -19,8 +19,11 @@ export default function CommunityHolderList({ communityRef }: Props) {
         @refetchable(queryName: "CommunityHolderListRefetchableFragment") {
         id
 
-        owners(first: $listOwnersFirst, after: $listOwnersAfter)
-          @connection(key: "CommunityPageView_owners") {
+        owners(
+          first: $listOwnersFirst
+          after: $listOwnersAfter
+          onlyGalleryUsers: $onlyGalleryUsers
+        ) @connection(key: "CommunityPageView_owners") {
           edges {
             node {
               __typename

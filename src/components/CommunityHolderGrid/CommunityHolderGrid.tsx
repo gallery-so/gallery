@@ -21,8 +21,11 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
         @refetchable(queryName: "CommunityHolderRefetchableFragment") {
         id
 
-        tokensInCommunity(first: $tokenCommunityFirst, after: $tokenCommunityAfter)
-          @connection(key: "CommunityPageView_tokensInCommunity") {
+        tokensInCommunity(
+          first: $tokenCommunityFirst
+          after: $tokenCommunityAfter
+          onlyGalleryUsers: $onlyGalleryUsers
+        ) @connection(key: "CommunityPageView_tokensInCommunity") {
           edges {
             node {
               __typename
