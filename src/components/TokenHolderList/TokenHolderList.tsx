@@ -39,38 +39,23 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
 
   const { fadeUsernames, searchQuery } = useMemberListPageState();
 
-  const sortedTokenHolders = useMemo(() => {
-    const nonNullTokenHolders = removeNullValues(tokenHolders ?? []);
-
-    nonNullTokenHolders.sort((a, b) => {
-      const usernameA = a.user.username.toLowerCase();
-      const usernameB = b.user.username.toLowerCase();
-
-      return (
-        // TODO(Terence): What is going on here
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (/^[0-9]/.test(usernameA) as any) - (/^[0-9]/.test(usernameB) as any) ||
-        usernameA.localeCompare(usernameB, undefined, { numeric: true })
-      );
-    });
-    return nonNullTokenHolders;
-  }, [tokenHolders]);
+  const nonNullTokenHolders = useMemo(() => removeNullValues(tokenHolders ?? []), [tokenHolders]);
 
   const filteredTokenHolders = useMemo(() => {
     if (!searchQuery) {
-      return sortedTokenHolders;
+      return nonNullTokenHolders;
     }
 
     if (searchQuery === '#') {
-      return sortedTokenHolders.filter(
+      return nonNullTokenHolders.filter(
         (tokenHolder) => !/^[A-Za-z]/.test(tokenHolder.user.username)
       );
     }
 
-    return sortedTokenHolders.filter((tokenHolder) =>
+    return nonNullTokenHolders.filter((tokenHolder) =>
       tokenHolder.user.username.toLowerCase().startsWith(searchQuery.toLocaleLowerCase())
     );
-  }, [searchQuery, sortedTokenHolders]);
+  }, [searchQuery, nonNullTokenHolders]);
 
   const isMobile = useIsMobileWindowWidth();
 
