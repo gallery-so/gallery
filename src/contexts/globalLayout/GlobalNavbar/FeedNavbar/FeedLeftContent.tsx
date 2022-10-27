@@ -43,7 +43,7 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
     queryRef
   );
 
-  const [showDrodown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <HStack
@@ -57,7 +57,7 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
       <NavDownArrow />
 
       <ProfileDropdownContent
-        showDropdown={showDrodown}
+        showDropdown={showDropdown}
         onClose={() => setShowDropdown(false)}
         queryRef={query}
       />
