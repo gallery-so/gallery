@@ -47,7 +47,7 @@
 
 .navbar-fade-enter.navbar-fade-enter-active {
   opacity: 1;
-  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  /* NOTE: if you change this, update `GlobalNavbar.tsx` */
   transition: opacity 300ms ease-in-out 300ms;
 }
 
@@ -62,6 +62,6 @@
 
 .navbar-fade-exit.navbar-fade-exit-active {
   opacity: 0;
-  /* NOTE: if you change this, update `FadeTransitioner.tsx` */
+  /* NOTE: if you change this, update `GlobalNavbar.tsx` */
   transition: opacity 300ms ease-in-out;
 }
