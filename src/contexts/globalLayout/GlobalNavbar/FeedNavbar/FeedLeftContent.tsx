@@ -2,42 +2,29 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { FeedLeftContentFragment$key } from '__generated__/FeedLeftContentFragment.graphql';
 import { HomeText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import { size } from 'components/core/breakpoints';
 import { HStack } from 'components/core/Spacer/Stack';
 import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { useState } from 'react';
 import { ProfileDropdownContent } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { FeedLeftContentDesktop$key } from '../../../../../__generated__/FeedLeftContentDesktop.graphql';
-import { FeedLeftContentMobile$key } from '../../../../../__generated__/FeedLeftContentMobile.graphql';
-import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
+import Link from 'next/link';
+import styled from 'styled-components';
 
-type DesktopLeftContentProps = {
-  queryRef: FeedLeftContentDesktop$key;
+type FeedLeftContentProps = {
+  queryRef: FeedLeftContentFragment$key;
 };
 
-function DesktopLeftContent({ queryRef }: DesktopLeftContentProps) {
+export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
   const query = useFragment(
     graphql`
-      fragment FeedLeftContentDesktop on Query {
-        ...ProfileDropdownFragment
-      }
-    `,
-    queryRef
-  );
-
-  return <ProfileDropdown queryRef={query} rightContent={<HomeText>Home</HomeText>} />;
-}
-
-type MobileLeftContentProps = {
-  queryRef: FeedLeftContentMobile$key;
-};
-
-function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
-  const query = useFragment(
-    graphql`
-      fragment FeedLeftContentMobile on Query {
+      fragment FeedLeftContentFragment on Query {
         ...ProfileDropdownContentFragment
+
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
       }
     `,
     queryRef
@@ -45,15 +32,28 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
 
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
+  if (!isLoggedIn) {
+    return (
+      <Link href={{ pathname: '/' }}>
+        <GLogoLinkWrapper href="/">
+          <GLogo />
+        </GLogoLinkWrapper>
+      </Link>
+    );
+  }
+
   return (
     <HStack
       gap={4}
       align="center"
       role="button"
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', cursor: 'pointer' }}
       onClick={() => setShowDropdown(true)}
     >
       <HomeText>Home</HomeText>
+
       <NavDownArrow />
 
       <ProfileDropdownContent
@@ -65,30 +65,7 @@ function MobileLeftContent({ queryRef }: MobileLeftContentProps) {
   );
 }
 
-type FeedLeftContentProps = {
-  queryRef: FeedLeftContentFragment$key;
-};
-
-export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
-  const query = useFragment(
-    graphql`
-      fragment FeedLeftContentFragment on Query {
-        ...FeedLeftContentMobile
-        ...FeedLeftContentDesktop
-      }
-    `,
-    queryRef
-  );
-
-  const breakpoint = useBreakpoint();
-
-  return (
-    <>
-      {breakpoint === size.mobile ? (
-        <MobileLeftContent queryRef={query} />
-      ) : (
-        <DesktopLeftContent queryRef={query} />
-      )}
-    </>
-  );
-}
+const GLogoLinkWrapper = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+`;

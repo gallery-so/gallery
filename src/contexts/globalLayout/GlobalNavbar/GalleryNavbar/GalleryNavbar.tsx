@@ -12,10 +12,12 @@ import {
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
-import { BreadcrumbText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { BreadcrumbLink } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import styled from 'styled-components';
 import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
 import FollowButton from 'components/Follow/FollowButton';
+import { route, Route } from 'nextjs-routes';
+import Link from 'next/link';
 
 type Props = {
   username: string;
@@ -31,6 +33,11 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         ...GalleryNavLinksFragment
         ...FollowButtonQueryFragment
 
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
         userByUsername(username: $username) {
           ...FollowButtonUserFragment
         }
@@ -39,9 +46,12 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     queryRef
   );
 
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const is3ac = isUsername3ac(username);
+
+  const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
   return (
     <VStack>
@@ -52,8 +62,12 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         <NavbarCenterContent>
           {isMobile ? (
             <HStack gap={4}>
-              <BreadcrumbText>{is3ac ? 'The Unofficial 3AC Gallery' : username}</BreadcrumbText>
-              {query.userByUsername && (
+              <Link href={userGalleryRoute}>
+                <BreadcrumbLink href={route(userGalleryRoute)}>
+                  {is3ac ? 'The Unofficial 3AC Gallery' : username}
+                </BreadcrumbLink>
+              </Link>
+              {query.userByUsername && isLoggedIn && (
                 <FollowButton queryRef={query} userRef={query.userByUsername} />
               )}
             </HStack>
