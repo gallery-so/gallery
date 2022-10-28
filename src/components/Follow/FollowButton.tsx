@@ -11,7 +11,6 @@ import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFr
 import { TitleXSBold } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { HStack } from 'components/core/Spacer/Stack';
-import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -37,9 +36,6 @@ export default function FollowButton({ queryRef, userRef }: Props) {
         followers @required(action: THROW) {
           id @required(action: THROW)
         }
-        following @required(action: THROW) {
-          id @required(action: THROW)
-        }
       }
     `,
     userRef
@@ -52,23 +48,10 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     [user.followers]
   );
 
-  const followingIds = useMemo(
-    () => new Set(user.following.map((follower: { id: string } | null) => follower?.id)),
-    [user.following]
-  );
-
   const isFollowing = useMemo(
     () => !!loggedInUserId && followerIds.has(loggedInUserId),
     [followerIds, loggedInUserId]
   );
-
-  const isUserFollowingLoggedInuser = useMemo(() => {
-    if (!loggedInUserId) {
-      return false;
-    }
-
-    return followingIds.has(loggedInUserId);
-  }, [followingIds, loggedInUserId]);
 
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
@@ -132,7 +115,6 @@ export default function FollowButton({ queryRef, userRef }: Props) {
   return (
     <HStack gap={4} onClick={handleWrapperClick}>
       {followChip}
-      {isUserFollowingLoggedInuser ? <FollowsYouChip disabled>Follows You</FollowsYouChip> : null}
     </HStack>
   );
 }
@@ -142,6 +124,8 @@ const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean 
   cursor: pointer;
 
   border-radius: 2px;
+
+  white-space: nowrap;
 
   ${({ disabled }) =>
     disabled
@@ -192,14 +176,4 @@ const UnfollowChip = styled(Chip)`
 
   color: #c72905;
   border: 1px solid #c72905;
-`;
-
-const FollowsYouChip = styled(Chip)`
-  background-color: ${colors.faint};
-  color: ${colors.metal};
-
-  display: none;
-  @media only screen and ${breakpoints.tablet} {
-    display: flex;
-  }
 `;

@@ -50,7 +50,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   return (
-    <Wrapper gap={8} align="center">
+    <Wrapper gap={4} align="center">
       {isLoggedIn ? (
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
           {/* Here for when we implement notifications */}
@@ -95,9 +95,10 @@ const LogoContainer = styled(HStack)`
 
 const Wrapper = styled(HStack)`
   position: relative;
+  max-width: 100%;
 `;
 
-const SlashText = styled(Paragraph)`
+export const SlashText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
   font-size: 18px;
   font-weight: 300;

@@ -21,6 +21,8 @@ export const BreadcrumbText = styled(Paragraph)`
   font-weight: 400;
   line-height: 21px;
 
+  white-space: nowrap;
+
   text-align: center;
 
   letter-spacing: -0.04em;

@@ -154,16 +154,6 @@ function CollectionGalleryHeader({
       <HStack align="flex-start" justify="space-between">
         <VStack grow>
           <StyledBreadcrumbsWrapper>
-            <HStack align="flex-start" justify="space-between">
-              <HStack>
-                {username ? (
-                  <UnstyledLink href={{ pathname: '/[username]', query: { username } }}>
-                    <StyledUsername>{username}</StyledUsername>
-                  </UnstyledLink>
-                ) : null}
-                {username && collection.name ? <StyledSeparator>/</StyledSeparator> : null}
-              </HStack>
-            </HStack>
             <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
           </StyledBreadcrumbsWrapper>
           {unescapedCollectorsNote && (

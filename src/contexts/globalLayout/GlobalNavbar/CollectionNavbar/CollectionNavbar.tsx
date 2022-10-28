@@ -13,13 +13,18 @@ import {
 } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
-import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+import {
+  ProfileDropdown,
+  SlashText,
+} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import Link from 'next/link';
 import { route, Route } from 'nextjs-routes';
+import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
+import NavActionFollow from 'components/Follow/NavActionFollow';
 
 type CollectionNavbarProps = {
   username: string;
@@ -32,7 +37,13 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     graphql`
       fragment CollectionNavbarFragment on Query {
         ...CollectionRightContentFragment
+        ...GalleryNavLinksFragment
         ...ProfileDropdownFragment
+        ...NavActionFollowQueryFragment
+
+        userByUsername(username: $username) {
+          ...NavActionFollowUserFragment
+        }
 
         collectionById(id: $collectionId) {
           ... on Collection {
@@ -51,23 +62,34 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <ProfileDropdown queryRef={query} />
+        <ProfileDropdown
+          queryRef={query}
+          rightContent={
+            <RightContentWrapper gap={4}>
+              {query.userByUsername && (
+                <NavActionFollow userRef={query.userByUsername} queryRef={query} />
+              )}
+
+              <SlashText>/</SlashText>
+
+              <CollectionNameText title={query.collectionById?.name ?? ''}>
+                {query.collectionById?.name}
+              </CollectionNameText>
+            </RightContentWrapper>
+          }
+        />
       </NavbarLeftContent>
 
       <NavbarCenterContent>
         {isMobile ? (
-          <>
-            <VStack align="center">
-              <Link href={usernameRoute}>
-                <MobileUsernameText>{username}</MobileUsernameText>
-              </Link>
-              <BreadcrumbText>{query.collectionById?.name}</BreadcrumbText>
-            </VStack>
-          </>
+          <VStack align="center">
+            <Link href={usernameRoute}>
+              <MobileUsernameText>{username}</MobileUsernameText>
+            </Link>
+            <BreadcrumbText>{query.collectionById?.name}</BreadcrumbText>
+          </VStack>
         ) : (
-          <Link href={usernameRoute}>
-            <BreadcrumbLink href={route(usernameRoute)}>{username}</BreadcrumbLink>
-          </Link>
+          <GalleryNavLinks username={username} queryRef={query} />
         )}
       </NavbarCenterContent>
 
@@ -77,6 +99,14 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     </StandardNavbarContainer>
   );
 }
+const CollectionNameText = styled(BreadcrumbText)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const RightContentWrapper = styled(HStack)`
+  overflow: hidden;
+`;
 
 const MobileUsernameText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
