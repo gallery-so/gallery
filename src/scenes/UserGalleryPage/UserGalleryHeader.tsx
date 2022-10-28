@@ -16,8 +16,6 @@ import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
 import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import Badge from 'components/Badge/Badge';
-import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
-import { UserGalleryHeaderQueryFragment$key } from '__generated__/UserGalleryHeaderQueryFragment.graphql';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
@@ -49,24 +47,12 @@ function UserGalleryHeader({
     userRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserGalleryHeaderQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   const { username, bio, badges } = user;
 
   const isMobile = useIsMobileWindowWidth();
   const is3ac = useIs3acProfilePage();
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
-
-  const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
-  const styledQrCode = useQrCode();
 
   const userBadges = useMemo(() => {
     if (!badges) return [];

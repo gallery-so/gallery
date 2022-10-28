@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -39,7 +39,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
   );
 
   const track = useTrack();
-  const handleFollowingModeClick = useCallback(
+  const handleFollowingModeClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
 
@@ -49,7 +49,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
     [onChange, track]
   );
 
-  const handleWorldwideModeClick = useCallback(
+  const handleWorldwideModeClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
 
