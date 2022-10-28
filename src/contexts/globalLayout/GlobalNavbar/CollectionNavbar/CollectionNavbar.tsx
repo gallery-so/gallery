@@ -22,7 +22,7 @@ import {
   SlashText,
 } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import Link from 'next/link';
-import { route, Route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import NavActionFollow from 'components/Follow/NavActionFollow';
 

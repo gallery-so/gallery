@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleL } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import Markdown from 'components/core/Markdown/Markdown';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
@@ -18,7 +17,6 @@ import { graphql, useFragment } from 'react-relay';
 
 import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { route } from 'nextjs-routes';
@@ -217,21 +215,6 @@ const StyledBreadcrumbsWrapper = styled(VStack)`
 
 const StyledCollectionName = styled(TitleL)`
   word-break: break-word;
-`;
-
-const StyledSeparator = styled(TitleL)`
-  margin: 0 10px;
-  display: block;
-  color: ${colors.offBlack};
-`;
-
-const StyledUsername = styled(TitleL)`
-  cursor: pointer;
-  color: ${colors.metal};
-  display: flex;
-  &:hover {
-    color: ${colors.shadow};
-  }
 `;
 
 const StyledCollectionNote = styled(BaseM)<{ clamp?: number }>`

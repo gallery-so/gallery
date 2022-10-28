@@ -33,6 +33,9 @@ export default function FollowButton({ queryRef, userRef }: Props) {
         id
         dbid
         username
+        following @required(action: THROW) {
+          id @required(action: THROW)
+        }
         followers @required(action: THROW) {
           id @required(action: THROW)
         }
