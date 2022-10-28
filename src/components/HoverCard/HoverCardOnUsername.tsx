@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -65,14 +65,22 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
+
     setIsActive(true);
     setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovering(false);
-    setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
+    deactivateHoverCardTimeoutRef.current = setTimeout(
+      () => setIsActive(false),
+      ANIMATED_COMPONENT_TRANSITION_MS
+    );
   };
 
   const handleClick = useCallback<MouseEventHandler>(
