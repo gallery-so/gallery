@@ -1,4 +1,4 @@
-import { memo, ReactElement } from 'react';
+import { memo, ReactElement, Suspense } from 'react';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -7,13 +7,16 @@ export type Props = {
 };
 
 function GlobalNavbar({ content }: Props) {
-  const transitionKey = content?.type.toString();
+  const transitionKey = content?.type?.toString();
 
   return (
     <StyledGlobalNavbar className="GlobalNavbar" data-testid="navbar">
       <TransitionGroup>
         <CSSTransition key={transitionKey} timeout={300} classNames="navbar-fade">
-          {content ?? <></>}
+          {/* We need a Suspense fallback here as not to trigger the root suspense boundary
+          Anything else will end up fucking with React Transition Group's internal state
+          and we'll get double navbars :(*/}
+          <Suspense fallback={null}>{content ?? <></>}</Suspense>
         </CSSTransition>
       </TransitionGroup>
     </StyledGlobalNavbar>

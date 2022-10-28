@@ -18,6 +18,7 @@ import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
 import FollowButton from 'components/Follow/FollowButton';
 import { route, Route } from 'nextjs-routes';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 type Props = {
   username: string;
@@ -68,7 +69,9 @@ export function GalleryNavbar({ queryRef, username }: Props) {
                 </BreadcrumbLink>
               </Link>
               {query.userByUsername && isLoggedIn && (
-                <FollowButton queryRef={query} userRef={query.userByUsername} />
+                <Suspense fallback={null}>
+                  <FollowButton queryRef={query} userRef={query.userByUsername} />
+                </Suspense>
               )}
             </HStack>
           ) : (
