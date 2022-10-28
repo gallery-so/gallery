@@ -14,6 +14,8 @@ import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import welcomeDoormat from 'utils/welcomeDoormat';
 import isProduction from 'utils/isProduction';
 
+import { Analytics } from '@vercel/analytics/react';
+
 type NameOrProperty =
   | { name: string; property?: undefined }
   | { name?: undefined; property: string };
@@ -86,7 +88,10 @@ const App: FC<{
       <SafeHydrate>
         <AppProvider relayCache={relayCache}>
           <FadeTransitioner locationKey={locationKey}>
-            <Component {...pageProps} />
+            <>
+              <Component {...pageProps} />
+              <Analytics />
+            </>
           </FadeTransitioner>
         </AppProvider>
       </SafeHydrate>
