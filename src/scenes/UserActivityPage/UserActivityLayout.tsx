@@ -20,7 +20,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
       fragment UserActivityLayoutQueryFragment on Query
       @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
         ...NavActionFollowQueryFragment
-        ...UserGalleryHeaderQueryFragment
         ...UserActivityFeedQueryFragment
       }
     `,

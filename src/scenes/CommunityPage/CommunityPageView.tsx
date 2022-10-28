@@ -10,9 +10,14 @@ import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFr
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TextButton from 'components/core/Button/TextButton';
 import breakpoints from 'components/core/breakpoints';
-import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
 import formatUrl from 'utils/formatUrl';
-import { VStack } from 'components/core/Spacer/Stack';
+import { HStack, VStack } from 'components/core/Spacer/Stack';
+import colors from 'components/core/colors';
+import LayoutToggleButton from './LayoutToggleButton';
+import { DisplayLayout } from 'components/core/enums';
+import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
+import { GRID_ENABLED_COMMUNITY_ADDRESSES } from 'constants/community';
+import CommunityHolderList from 'components/Community/CommunityHolderList';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
@@ -24,20 +29,28 @@ export default function CommunityPageView({ communityRef }: Props) {
       fragment CommunityPageViewFragment on Community {
         name
         description
-        owners(first: 10000) @connection(key: "CommunityPageView_owners") {
-          edges {
-            node {
-              ...TokenHolderListFragment
-            }
-          }
+        badgeURL
+        contractAddress {
+          address
         }
+
+        ...CommunityHolderGridFragment
+        ...CommunityHolderListFragment
       }
     `,
     communityRef
   );
 
-  const { name, description, owners } = community;
+  const { name, description, contractAddress, badgeURL } = community;
   const isMobile = useIsMobileWindowWidth();
+
+  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
+  const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
+
+  const isArtGobbler = useMemo(
+    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress?.address || ''),
+    [contractAddress]
+  );
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -45,18 +58,6 @@ export default function CommunityPageView({ communityRef }: Props) {
   const [isLineClampEnabled, setIsLineClampEnabled] = useState(false);
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
-
-  const nonNullTokenHolders = useMemo(() => {
-    const holders = [];
-
-    for (const owner of owners?.edges ?? []) {
-      if (owner?.node) {
-        holders.push(owner.node);
-      }
-    }
-
-    return holders;
-  }, [owners?.edges]);
 
   const handleShowMoreClick = useCallback(() => {
     setShowExpandedDescription((prev) => !prev);
@@ -76,33 +77,52 @@ export default function CommunityPageView({ communityRef }: Props) {
   return (
     <MemberListPageProvider>
       <StyledCommunityPageContainer>
-        <StyledHeader>
-          <TitleL>{name}</TitleL>
-          {description && (
-            <StyledDescriptionWrapper gap={8}>
-              <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-                <Markdown text={formattedDescription} />
-              </StyledBaseM>
-              {isLineClampEnabled && (
-                <TextButton
-                  text={showExpandedDescription ? 'Show less' : 'Show More'}
-                  onClick={handleShowMoreClick}
-                />
-              )}
-            </StyledDescriptionWrapper>
+        <HStack>
+          <StyledHeader>
+            <HStack gap={4} align="center">
+              <TitleL>{name}</TitleL>
+              {badgeURL && <StyledBadge src={badgeURL} />}
+            </HStack>
+
+            {description && (
+              <StyledDescriptionWrapper gap={8}>
+                <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
+                  <Markdown text={formattedDescription} />
+                </StyledBaseM>
+                {isLineClampEnabled && (
+                  <TextButton
+                    text={showExpandedDescription ? 'Show less' : 'Show More'}
+                    onClick={handleShowMoreClick}
+                  />
+                )}
+              </StyledDescriptionWrapper>
+            )}
+          </StyledHeader>
+
+          {isArtGobbler && (
+            <StyledLayoutToggleButtonContainer>
+              <LayoutToggleButton layout={layout} setLayout={setLayout} />
+            </StyledLayoutToggleButtonContainer>
           )}
-        </StyledHeader>
+        </HStack>
 
-        <StyledMemberListFilterContainer isMobile={isMobile}>
-          <MemberListFilter />
-        </StyledMemberListFilterContainer>
-
-        <StyledListWrapper>
-          <TokenHolderList
-            title="Members in this community"
-            tokenHoldersRef={nonNullTokenHolders}
-          />
-        </StyledListWrapper>
+        {isGrid && isArtGobbler ? (
+          <StyledGridViewContainer gap={24}>
+            <StyledBreakLine />
+            <StyledListWrapper>
+              <CommunityHolderGrid communityRef={community} />
+            </StyledListWrapper>
+          </StyledGridViewContainer>
+        ) : (
+          <>
+            <StyledMemberListFilterContainer isMobile={isMobile}>
+              <MemberListFilter />
+            </StyledMemberListFilterContainer>
+            <StyledListWrapper>
+              <CommunityHolderList communityRef={community} />
+            </StyledListWrapper>
+          </>
+        )}
       </StyledCommunityPageContainer>
     </MemberListPageProvider>
   );
@@ -145,6 +165,26 @@ const StyledHeader = styled.div`
   width: 100%;
 `;
 
+const StyledLayoutToggleButtonContainer = styled.div`
+  align-self: flex-end;
+`;
+
+const StyledGridViewContainer = styled(VStack)`
+  padding-top: 24px;
+`;
+
+const StyledBreakLine = styled.hr`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.faint};
+  border: none;
+`;
+
 const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
   padding: ${({ isMobile }) => (isMobile ? '32px 0' : '80px 0 64px')};
+`;
+
+const StyledBadge = styled.img`
+  height: 24px;
+  width: 24px;
 `;

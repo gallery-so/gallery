@@ -22,7 +22,6 @@ import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
-  queryRef: UserGalleryHeaderQueryFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
@@ -30,7 +29,6 @@ type Props = {
 
 function UserGalleryHeader({
   userRef,
-  queryRef,
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
@@ -60,7 +58,7 @@ function UserGalleryHeader({
     queryRef
   );
 
-  const { bio, badges, username } = user;
+  const { username, bio, badges } = user;
 
   const isMobile = useIsMobileWindowWidth();
   const is3ac = useIs3acProfilePage();
@@ -68,12 +66,13 @@ function UserGalleryHeader({
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
   const isArtGobblersEnabled = isFeatureEnabled(FeatureFlag.ART_GOBBLERS, query);
+  const styledQrCode = useQrCode();
 
   const userBadges = useMemo(() => {
-    if (!badges || !isArtGobblersEnabled) return [];
+    if (!badges) return [];
 
     return badges.filter((badge) => badge && badge?.imageURL);
-  }, [badges, isArtGobblersEnabled]);
+  }, [badges]);
 
   const [showMore, setShowMore] = useState(false);
   const handleBioClick = useCallback(() => {

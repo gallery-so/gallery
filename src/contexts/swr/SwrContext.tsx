@@ -1,20 +1,20 @@
-import { memo, useCallback, useMemo } from 'react';
-import { SWRConfig } from 'swr';
+import { memo, PropsWithChildren, useCallback, useMemo } from 'react';
+import { SWRConfig, SWRConfiguration } from 'swr';
 import { SECOND } from 'utils/time';
 import { vanillaFetcher } from './fetch';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
-export const SwrProvider = memo(({ children }) => {
+export const SwrProvider = memo(({ children }: PropsWithChildren) => {
   const reportError = useReportError();
 
   const handleLoadingSlow = useCallback(
-    (key) => {
+    (key: string) => {
       reportError(new Error('Slow request detected'), { tags: { endpoint: key } });
     },
     [reportError]
   );
 
-  const value = useMemo(
+  const value: SWRConfiguration = useMemo(
     () => ({
       suspense: true,
       // custom fetcher

@@ -21,7 +21,7 @@ export default function useMultiKeyDown(_targetKeys: string[], callbackFn: () =>
   }, [keyPressedMap, targetKeys]);
 
   const handleToggleKeypress = useCallback(
-    (key, status) => {
+    (key: string, status: boolean) => {
       setKeyPressedMap((prev) => {
         const next = new Map(prev);
         if (targetKeys.includes(key.toLowerCase())) {

@@ -69,6 +69,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
           contractAddress {
             address
           }
+          badgeURL
         }
 
         ...getCommunityUrlForTokenFragment
@@ -99,9 +100,12 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   }
 
   return shouldDisplayLinkToCommunityPage ? (
-    <StyledBaseM lines={2}>
-      <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-    </StyledBaseM>
+    <HStack gap={4} align="center" justify="flex-end">
+      <StyledBaseM lines={2}>
+        <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+      </StyledBaseM>
+      {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+    </HStack>
   ) : (
     <StyledBaseM color={colors.white} lines={2}>
       {collectionName}
@@ -169,6 +173,11 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
     text-overflow: unset;
   }
 }
+`;
+
+const StyledBadge = styled.img`
+  width: 12px;
+  height: 12px;
 `;
 
 /**

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -75,7 +75,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
   };
 
-  const handleClick = useCallback(
+  const handleClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       router.push({ pathname: '/[username]', query: { username: user.username as string } });

@@ -22,7 +22,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
         ...NavActionFollowQueryFragment
-        ...UserGalleryHeaderQueryFragment
       }
     `,
     queryRef
@@ -64,7 +63,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     <StyledUserGalleryLayout>
       <UserGalleryHeader
         userRef={user}
-        queryRef={query}
         showMobileLayoutToggle={showMobileLayoutToggle}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}

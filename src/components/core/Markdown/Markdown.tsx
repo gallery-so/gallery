@@ -5,11 +5,12 @@ import InteractiveLink, {
   InteractiveLinkNeedsVerification,
 } from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
+import { PropsWithChildren } from 'react';
 
 type PublicProps = {
   text: string;
   inheritLinkStyling?: boolean;
-  CustomInternalLinkComponent?: React.FunctionComponent<{ href: string }>;
+  CustomInternalLinkComponent?: React.FunctionComponent<PropsWithChildren<{ href: string }>>;
 };
 
 // Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app

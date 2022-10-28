@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function useKeyDown(targetKey: string, callbackFn: () => void) {
   // State for keeping track of whether key is pressed
@@ -6,7 +6,7 @@ export default function useKeyDown(targetKey: string, callbackFn: () => void) {
 
   // If pressed key is our target key then set to true
   const pressHandler = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return;
       }

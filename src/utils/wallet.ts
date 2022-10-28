@@ -3,6 +3,8 @@ import { graphql, readInlineData } from 'relay-runtime';
 import { walletTruncateAddressFragment$key } from '../../__generated__/walletTruncateAddressFragment.graphql';
 import { walletGetExternalAddressLinkFragment$key } from '../../__generated__/walletGetExternalAddressLinkFragment.graphql';
 
+import { walletTruncateUniversalUsernameFragment$key } from '__generated__/walletTruncateUniversalUsernameFragment.graphql';
+
 const overrides: Record<string, string> = {
   METAMASK: 'MetaMask',
   WALLETCONNECT: 'WalletConnect',
@@ -48,6 +50,35 @@ export function graphqlTruncateAddress(chainAddressRef: walletTruncateAddressFra
     return `${address.slice(0, 6)}....${address.slice(-6)}`;
   } else {
     return `${address.slice(0, 8)}...${address.slice(-4)}`;
+  }
+}
+
+export function graphqlTruncateUniversalUsername(
+  chainAddressRef: walletTruncateUniversalUsernameFragment$key
+) {
+  const { username, universal } = readInlineData(
+    graphql`
+      fragment walletTruncateUniversalUsernameFragment on GalleryUser @inline {
+        username
+        universal
+      }
+    `,
+    chainAddressRef
+  );
+
+  if (!username || !universal) {
+    // If there's any bad data, we'll try to
+    // use the address raw. Might be null.
+    return username;
+  }
+
+  // Might need to support .tez addresses in the future
+  const isEns = username.includes('.eth');
+
+  if (universal && !isEns) {
+    return `${username.slice(0, 5)}....${username.slice(-2)}`;
+  } else {
+    return username;
   }
 }
 

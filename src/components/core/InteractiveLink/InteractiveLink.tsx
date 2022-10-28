@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { MouseEventHandler, ReactNode, useCallback, MouseEvent } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -16,7 +16,7 @@ type InteractiveLinkProps = {
   size?: string; // 'M', 'L', 'XL'
   className?: string;
   disabled?: boolean;
-  onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
+  onClick?: MouseEventHandler;
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
 };
@@ -32,7 +32,7 @@ export default function InteractiveLink({
 }: InteractiveLinkProps) {
   const track = useTrack();
 
-  const handleClick = useCallback(
+  const handleClick = useCallback<MouseEventHandler>(
     (event) => {
       event.stopPropagation();
 
@@ -111,7 +111,7 @@ export function InteractiveLinkNeedsVerification({
   const track = useTrack();
 
   const handleClick = useCallback(
-    (e, href) => {
+    (e: MouseEvent, href: string) => {
       e.preventDefault();
 
       track('Link Click', {

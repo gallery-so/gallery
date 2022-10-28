@@ -25,7 +25,7 @@ type NftDetailAssetComponentProps = {
   onLoad: () => void;
 };
 
-function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
+export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
