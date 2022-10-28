@@ -106,6 +106,10 @@ const CollectionNameText = styled(BreadcrumbText)`
 
 const RightContentWrapper = styled(HStack)`
   overflow: hidden;
+
+  ${BreadcrumbLink} {
+    color: ${colors.shadow};
+  }
 `;
 
 const MobileUsernameText = styled(Paragraph)`
