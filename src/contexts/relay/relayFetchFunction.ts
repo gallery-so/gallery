@@ -12,7 +12,7 @@ export function getGraphqlPath() {
 }
 
 export function getGraphqlUrl() {
-  return `${getGraphqlHost()}${getGraphqlPath()}`;
+  return `http://localhost:3000${getGraphqlPath()}`;
 }
 
 /**
@@ -25,16 +25,20 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
   const transaction = initSentryTracing(request);
   // ---------- end pre-request hooks
 
-  const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
-    body: {
-      operationName: request.name,
-      query: request.text,
-      variables,
+  const response = await _fetch<GraphQLResponse>(
+    getGraphqlUrl(),
+    {
+      body: {
+        operationName: request.name,
+        query: request.text,
+        variables,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    true
+  );
 
   // ---------- begin post-request hooks
   teardownSentryTracing(transaction);

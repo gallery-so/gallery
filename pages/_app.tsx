@@ -1,4 +1,4 @@
-import { FC, ComponentType, useEffect, useState, PropsWithChildren } from 'react';
+import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -13,6 +13,9 @@ import FadeTransitioner, {
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import welcomeDoormat from 'utils/welcomeDoormat';
 import isProduction from 'utils/isProduction';
+import { createRelayEnvironmentFromRecords } from 'contexts/relay/RelayProvider';
+import { PreloadQueryArgs } from 'types/PageComponentPreloadQuery';
+import { useRouter } from 'next/router';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -23,6 +26,10 @@ type MetaTag = NameOrProperty & {
 
 export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
+};
+
+type PageComponent = ComponentType<MetaTagProps> & {
+  preloadQuery?: (args: PreloadQueryArgs) => Promise<void>;
 };
 
 // This component ensures that we don't try to render anything on the server.
@@ -39,16 +46,22 @@ function SafeHydrate({ children }: PropsWithChildren) {
 }
 
 const App: FC<{
-  Component: ComponentType<MetaTagProps>;
+  Component: PageComponent;
   pageProps: MetaTagProps & Record<string, unknown>;
 }> = ({ Component, pageProps }) => {
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
+  const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords(relayCache));
 
   const locationKey = useStabilizedRouteTransitionKey();
 
   useEffect(() => {
     if (isProduction()) welcomeDoormat();
   }, []);
+
+  const { query } = useRouter();
+  if (Component.preloadQuery) {
+    Component.preloadQuery({ relayEnvironment, query });
+  }
 
   return (
     <>
@@ -84,7 +97,7 @@ const App: FC<{
         )}
       </Head>
       <SafeHydrate>
-        <AppProvider relayCache={relayCache}>
+        <AppProvider relayEnvironment={relayEnvironment}>
           <FadeTransitioner locationKey={locationKey}>
             <Component {...pageProps} />
           </FadeTransitioner>

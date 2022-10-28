@@ -34,6 +34,15 @@ const nextConfig = {
     styledComponents: true,
   },
 
+  async rewrites() {
+    return [
+      {
+        source: '/glry/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/:path*`,
+      },
+    ];
+  },
+
   async redirects() {
     return [
       {

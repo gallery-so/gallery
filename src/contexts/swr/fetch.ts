@@ -7,10 +7,11 @@ type RequestParameters<T> = {
 
 export type FetcherType = <ResponseData, RequestBody = Record<string, unknown>>(
   path: string,
-  parameters?: RequestParameters<RequestBody>
+  parameters?: RequestParameters<RequestBody>,
+  forceRawPath?: boolean
 ) => Promise<ResponseData>;
 
-export const _fetch: FetcherType = async (path, parameters = {}) => {
+export const _fetch: FetcherType = async (path, parameters = {}, forceRawPath?: boolean) => {
   const { body, headers = {} } = parameters;
 
   const requestOptions: RequestInit = {
@@ -30,11 +31,13 @@ export const _fetch: FetcherType = async (path, parameters = {}) => {
   }
 
   let response: Response;
-  if (path.includes('http')) {
+  if (path.includes('http') || forceRawPath) {
     response = await fetch(path, requestOptions);
   } else {
     response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
   }
+
+  // console.log(await response.text());
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const responseBody = await response.json().catch((error: unknown) => {

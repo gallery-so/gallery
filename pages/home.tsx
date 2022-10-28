@@ -1,33 +1,42 @@
 import { ITEMS_PER_PAGE } from 'components/Feed/constants';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { Environment, graphql, useLazyLoadQuery } from 'react-relay';
 import HomeScene from 'scenes/Home/Home';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { homeQuery } from '__generated__/homeQuery.graphql';
 import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
+import { fetchQuery } from 'relay-runtime';
+import { PreloadQueryArgs } from 'types/PageComponentPreloadQuery';
+
+const homeQueryNode = graphql`
+  query homeQuery(
+    $interactionsFirst: Int!
+    $interactionsAfter: String
+    $globalLast: Int!
+    $globalBefore: String
+    $viewerLast: Int!
+    $viewerBefore: String
+  ) {
+    ...HomeFragment
+  }
+`;
 
 export default function Home() {
-  const query = useLazyLoadQuery<homeQuery>(
-    graphql`
-      query homeQuery(
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-        $globalLast: Int!
-        $globalBefore: String
-        $viewerLast: Int!
-        $viewerBefore: String
-      ) {
-        ...HomeFragment
-      }
-    `,
-    {
-      interactionsFirst: NOTES_PER_PAGE,
-      globalLast: ITEMS_PER_PAGE,
-      viewerLast: ITEMS_PER_PAGE,
-    }
-  );
+  const query = useLazyLoadQuery<homeQuery>(homeQueryNode, {
+    interactionsFirst: NOTES_PER_PAGE,
+    globalLast: ITEMS_PER_PAGE,
+    viewerLast: ITEMS_PER_PAGE,
+  });
 
   return <GalleryRoute element={<HomeScene queryRef={query} />} navbar={true} />;
 }
+
+Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  fetchQuery<homeQuery>(relayEnvironment, homeQueryNode, {
+    interactionsFirst: NOTES_PER_PAGE,
+    globalLast: ITEMS_PER_PAGE,
+    viewerLast: ITEMS_PER_PAGE,
+  }).toPromise();
+};
 
 /**
  * Wacky bugfix that addresses a bizarre inconsistency in the NextJS router.

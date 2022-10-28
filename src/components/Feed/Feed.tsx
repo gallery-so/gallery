@@ -9,7 +9,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { FEED_MODE_KEY } from 'constants/storageKeys';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import usePersistedState from 'hooks/usePersistedState';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 import styled from 'styled-components';
 import { FEED_MAX_WIDTH } from './dimensions';
@@ -103,10 +103,15 @@ export default function Feed({ queryRef }: Props) {
 
   const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
 
+  const firstMountRef = useRef(true);
   // refetch when changing modes. this not only displays up-to-date data, but fixes a bug
   // for users logging in from the feed view who were seeing empty ViewerFeeds
   useEffect(() => {
-    refetch({}, { fetchPolicy: 'store-and-network' });
+    if (!firstMountRef.current) {
+      refetch({}, { fetchPolicy: 'store-and-network' });
+    }
+
+    firstMountRef.current = false;
   }, [feedMode, refetch]);
 
   const { setCustomNavCenterContent } = useGlobalLayoutActions();

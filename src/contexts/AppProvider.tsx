@@ -7,26 +7,25 @@ import AnalyticsProvider from './analytics/AnalyticsContext';
 import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
 import { Web3ProviderNetwork } from './auth/Web3WalletContext';
 import { GalleryNavigationProvider } from 'contexts/navigation/GalleryNavigationProvider';
-import { RelayProvider } from 'contexts/relay/RelayProvider';
-import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import Debugger from 'components/Debugger/Debugger';
 import isProduction from 'utils/isProduction';
 import BeaconProvider from './beacon/BeaconContext';
 import { SyncTokensLockProvider } from 'contexts/SyncTokensLockContext';
+import { Environment, RelayEnvironmentProvider } from 'react-relay';
 
 type Props = {
   children: React.ReactNode;
-  relayCache?: RecordMap;
+  relayEnvironment: Environment;
 };
 
 const isProd = isProduction();
 
-export default function AppProvider({ children, relayCache }: Props) {
+export default function AppProvider({ children, relayEnvironment }: Props) {
   return (
     <Boundary>
       <ToastProvider>
-        <RelayProvider initialCache={relayCache}>
+        <RelayEnvironmentProvider environment={relayEnvironment}>
           <AuthProvider>
             <AnalyticsProvider>
               <ErrorReportingProvider>
@@ -49,7 +48,7 @@ export default function AppProvider({ children, relayCache }: Props) {
               </ErrorReportingProvider>
             </AnalyticsProvider>
           </AuthProvider>
-        </RelayProvider>
+        </RelayEnvironmentProvider>
       </ToastProvider>
     </Boundary>
   );
