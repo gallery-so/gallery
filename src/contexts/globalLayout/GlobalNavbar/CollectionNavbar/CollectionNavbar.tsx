@@ -65,17 +65,19 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
         <ProfileDropdown
           queryRef={query}
           rightContent={
-            <RightContentWrapper gap={4}>
-              {query.userByUsername && (
-                <NavActionFollow userRef={query.userByUsername} queryRef={query} />
-              )}
+            isMobile ? null : (
+              <RightContentWrapper gap={4}>
+                {query.userByUsername && (
+                  <NavActionFollow userRef={query.userByUsername} queryRef={query} />
+                )}
 
-              <SlashText>/</SlashText>
+                <SlashText>/</SlashText>
 
-              <CollectionNameText title={query.collectionById?.name ?? ''}>
-                {query.collectionById?.name}
-              </CollectionNameText>
-            </RightContentWrapper>
+                <CollectionNameText title={query.collectionById?.name ?? ''}>
+                  {query.collectionById?.name}
+                </CollectionNameText>
+              </RightContentWrapper>
+            )
           }
         />
       </NavbarLeftContent>
