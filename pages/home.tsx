@@ -13,7 +13,7 @@ import colors from 'components/core/colors';
 
 const TIME_RANGE = 60 * 1000 * 2;
 const MIN_TIME_BETWEEN_APPEARANCES = 5000;
-const GHOST_VISIBLE_TIME = 1000;
+const GHOST_VISIBLE_TIME = 2000;
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
