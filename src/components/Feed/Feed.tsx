@@ -44,7 +44,10 @@ export default function Feed({ queryRef, feedMode, setFeedMode }: Props) {
 const StyledFeed = styled(VStack)`
   width: 100vw;
   flex: 1;
-  padding-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 24px;
+  }
 
   @media only screen and ${breakpoints.desktop} {
     width: ${FEED_MAX_WIDTH}px;
