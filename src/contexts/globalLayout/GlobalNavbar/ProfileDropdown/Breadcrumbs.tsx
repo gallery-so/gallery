@@ -20,17 +20,16 @@ export const BreadcrumbText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
   font-weight: 400;
   line-height: 21px;
-
-  white-space: nowrap;
-
+  color: ${colors.offBlack};
   text-align: center;
-
   letter-spacing: -0.04em;
 
-  color: ${colors.offBlack};
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 
   font-size: 16px;
-
   @media only screen and ${breakpoints.tablet} {
     font-size: 18px;
   }
@@ -41,15 +40,16 @@ export const BreadcrumbLink = styled.a`
   font-weight: 400;
   line-height: 21px;
   text-decoration: none;
-
   text-align: center;
-
   letter-spacing: -0.04em;
-
   color: ${colors.offBlack};
 
-  font-size: 16px;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 
+  font-size: 16px;
   @media only screen and ${breakpoints.tablet} {
     font-size: 18px;
   }

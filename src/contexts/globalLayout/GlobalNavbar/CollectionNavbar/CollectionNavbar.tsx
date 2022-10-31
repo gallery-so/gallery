@@ -84,7 +84,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
       <NavbarCenterContent>
         {isMobile ? (
-          <VStack align="center">
+          <VStack align="center" shrink>
             <Link href={usernameRoute}>
               <MobileUsernameText>{username}</MobileUsernameText>
             </Link>
