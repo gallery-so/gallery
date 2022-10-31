@@ -3,12 +3,12 @@ import { useMemo } from 'react';
 import Header from 'components/ManageGallery/OrganizeGallery/Header';
 import { useFragment } from 'react-relay';
 import CollectionDnd from 'components/ManageGallery/OrganizeGallery/CollectionDnd';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import { OrganizeGalleryFragment$key } from '../../../../__generated__/OrganizeGalleryFragment.graphql';
 import { VStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
 import useNotOptimizedForMobileWarning from '../useNotOptimizedForMobileWarning';
+import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   onAddCollection: () => void;
@@ -56,8 +56,10 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
     [gallery.collections.length]
   );
 
+  const navbarHeight = useGlobalNavbarHeight();
+
   return (
-    <StyledOrganizeGallery align="center">
+    <StyledOrganizeGallery align="center" navbarHeight={navbarHeight}>
       <Content gap={24}>
         <Header onAddCollection={onAddCollection} />
         {isEmptyGallery ? (
@@ -76,9 +78,7 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
   );
 }
 
-const StyledOrganizeGallery = styled(VStack)`
-  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
-`;
+const StyledOrganizeGallery = styled(VStack)<{ navbarHeight: number }>``;
 
 const StyledEmptyGalleryMessage = styled(VStack)`
   text-align: center;
@@ -88,6 +88,6 @@ const StyledEmptyGalleryMessage = styled(VStack)`
 
 const Content = styled(VStack)`
   width: 100%;
-  padding: 0 16px 120px 0;
+  padding: 0 16px 120px 16px;
   max-width: 777px;
 `;

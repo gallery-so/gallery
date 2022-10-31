@@ -27,10 +27,14 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
     setIsActive(true);
 
     if (autoClose) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setIsActive(false);
         setTimeout(onClose, ANIMATED_COMPONENT_TRANSITION_MS);
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
     }
   }, [autoClose, onClose]);
 

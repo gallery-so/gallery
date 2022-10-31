@@ -8,16 +8,15 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import FullPageStep from 'components/Onboarding/FullPageStep';
-import { VStack } from 'components/core/Spacer/Stack';
-import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
+import { OnboardingCollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingCollectionEditorNavbar/OnboardingCollectionEditorNavbar';
 import { Route } from 'nextjs-routes';
+import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
 
 type Props = {
   collectionId: string;
@@ -35,6 +34,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
           }
         }
         ...CollectionEditorFragment
+        ...OnboardingCollectionEditorNavbarFragment
       }
     `,
     { collectionId }
@@ -110,25 +110,23 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
-        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-      </FullPageStep>
-
-      <WizardFooter
-        isNextEnabled={isCollectionValid}
-        nextText={'Save'}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        previousText="Cancel"
-      />
-    </VStack>
+    <FullPageStep
+      withBorder
+      navbar={
+        <OnboardingCollectionEditorNavbar
+          isCollectionValid={isCollectionValid}
+          onBack={handlePrevious}
+          onNext={handleNext}
+          queryRef={query}
+        />
+      }
+    >
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    </FullPageStep>
   );
 }
 
 export default function OrganizeCollectionOnboardingWithProvider({ collectionId }: Props) {
-  console.log('Initial render', collectionId);
-
   return (
     <CollectionWizardContext initialCollectionId={collectionId}>
       <CollectionEditorProvider>

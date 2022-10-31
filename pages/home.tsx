@@ -4,6 +4,11 @@ import HomeScene from 'scenes/Home/Home';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { homeQuery } from '__generated__/homeQuery.graphql';
 import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
+import { FeedNavbar } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedNavbar';
+import { useEffect } from 'react';
+import { FeedMode } from 'components/Feed/Feed';
+import usePersistedState from 'hooks/usePersistedState';
+import { FEED_MODE_KEY } from 'constants/storageKeys';
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
@@ -16,7 +21,16 @@ export default function Home() {
         $viewerLast: Int!
         $viewerBefore: String
       ) {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+
         ...HomeFragment
+        ...FeedNavbarFragment
       }
     `,
     {
@@ -26,7 +40,25 @@ export default function Home() {
     }
   );
 
-  return <GalleryRoute element={<HomeScene queryRef={query} />} navbar={true} />;
+  const { viewer } = query;
+  const viewerUserId = viewer?.user?.dbid ?? '';
+  const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
+
+  const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
+
+  // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
+  useEffect(() => {
+    if (!viewerUserId) {
+      setFeedMode('WORLDWIDE');
+    }
+  }, [viewerUserId, feedMode, setFeedMode]);
+
+  return (
+    <GalleryRoute
+      navbar={<FeedNavbar feedMode={feedMode} onChange={setFeedMode} queryRef={query} />}
+      element={<HomeScene setFeedMode={setFeedMode} feedMode={feedMode} queryRef={query} />}
+    />
+  );
 }
 
 /**

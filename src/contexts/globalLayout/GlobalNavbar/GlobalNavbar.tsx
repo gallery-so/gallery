@@ -1,52 +1,30 @@
-import { memo, ReactElement } from 'react';
+import { memo, ReactElement, Suspense } from 'react';
 import styled from 'styled-components';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { graphql, useFragment } from 'react-relay';
-import { GlobalNavbarFragment$key } from '__generated__/GlobalNavbarFragment.graphql';
-import RightContent from './RightContent';
-import LeftContent from './LeftContent';
-import CenterContent from './CenterContent';
-import NavbarGLink from 'components/NavbarGLink';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 export type Props = {
-  queryRef: GlobalNavbarFragment$key;
-  customLeftContent: ReactElement | null;
-  customCenterContent: ReactElement | null;
+  content: ReactElement | null;
 };
 
-function GlobalNavbar({ queryRef, customLeftContent, customCenterContent }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment GlobalNavbarFragment on Query {
-        ...RightContentFragment
-      }
-    `,
-    queryRef
-  );
+function GlobalNavbar({ content }: Props) {
+  const transitionKey = content?.type?.toString();
 
   return (
-    <StyledGlobalNavbar data-testid="navbar">
-      <StyledContentWrapperLeft>
-        {customLeftContent && <LeftContent content={customLeftContent} />}
-      </StyledContentWrapperLeft>
-      <StyledContentWrapper>
-        <CenterContent content={customCenterContent || <NavbarGLink />} />
-      </StyledContentWrapper>
-      <StyledContentWrapperRight>
-        <RightContent queryRef={query} />
-      </StyledContentWrapperRight>
+    <StyledGlobalNavbar className="GlobalNavbar" data-testid="navbar">
+      <TransitionGroup>
+        <CSSTransition key={transitionKey} timeout={300} classNames="navbar-fade">
+          {/* We need a Suspense fallback here as not to trigger the root suspense boundary
+          Anything else will end up fucking with React Transition Group's internal state
+          and we'll get double navbars :(*/}
+          <Suspense fallback={null}>{content ?? <></>}</Suspense>
+        </CSSTransition>
+      </TransitionGroup>
     </StyledGlobalNavbar>
   );
 }
 
-export const GLOBAL_NAVBAR_HEIGHT = 64;
-
 const StyledGlobalNavbar = styled.div`
   width: 100%;
-  height: ${GLOBAL_NAVBAR_HEIGHT}px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
   // TODO: standardize these settings
   background: rgba(254, 254, 254, 0.95);
@@ -54,26 +32,6 @@ const StyledGlobalNavbar = styled.div`
 
   position: fixed;
   z-index: 3;
-
-  padding: 0 ${pageGutter.mobile}px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 0 ${pageGutter.tablet}px;
-  }
-`;
-
-const StyledContentWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-`;
-
-const StyledContentWrapperLeft = styled(StyledContentWrapper)`
-  justify-content: flex-start;
-`;
-
-const StyledContentWrapperRight = styled(StyledContentWrapper)`
-  justify-content: flex-end;
 `;
 
 export default memo(GlobalNavbar);

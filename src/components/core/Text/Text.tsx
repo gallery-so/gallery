@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import colors from '../colors';
 
-const TITLE_FONT_FAMILY = "'GT Alpina', serif";
+export const TITLE_FONT_FAMILY = "'GT Alpina', serif";
 export const BODY_FONT_FAMILY = "'ABC Diatype', Helvetica, Arial, sans-serif";
 export const BODY_MONO_FONT_FAMILY = "'ABC Diatype Mono', monospace";
 
@@ -28,7 +28,7 @@ const H3 = styled.h3<TextProps>`
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
-const Paragraph = styled.p<TextProps>`
+export const Paragraph = styled.p<TextProps>`
   margin: 0;
   color: ${({ color }) => (color ? color : colors.offBlack)};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
