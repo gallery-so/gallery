@@ -42,7 +42,7 @@ import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import useKeyDown from 'hooks/useKeyDown';
 import { VStack } from 'components/core/Spacer/Stack';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -343,10 +343,8 @@ function StagingArea({ tokensRef }: Props) {
 
   useKeyDown('Backspace', handleBackspacePress);
 
-  const navbarHeight = useGlobalNavbarHeight();
-
   return (
-    <StyledStagingArea navbarHeight={navbarHeight}>
+    <StyledStagingArea>
       <DndContext
         sensors={sensors}
         onDragEnd={handleDragEnd}
@@ -421,7 +419,7 @@ function StagingArea({ tokensRef }: Props) {
   );
 }
 
-const StyledStagingArea = styled.div<{ navbarHeight: number }>`
+const StyledStagingArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -430,7 +428,7 @@ const StyledStagingArea = styled.div<{ navbarHeight: number }>`
 
   margin: 0 auto;
 
-  height: 100%;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 
   padding: 48px 0px;
 

@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { route } from 'nextjs-routes';
 
 type UserGalleryProps = MetaTagProps & {
@@ -18,18 +17,12 @@ export default function UserGallery({ username }: UserGalleryProps) {
     graphql`
       query UsernameQuery($username: String!) {
         ...UserGalleryPageFragment
-        ...GalleryNavbarFragment
       }
     `,
     { username }
   );
 
-  return (
-    <GalleryRoute
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
-      element={<UserGalleryPage username={username} queryRef={query} />}
-    />
-  );
+  return <GalleryRoute element={<UserGalleryPage username={username} queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => {

@@ -3,27 +3,23 @@ import isProduction from 'utils/isProduction';
 import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFragment.graphql';
 
 export enum FeatureFlag {
-  ART_GOBBLERS = 'ART_GOBBLERS',
+  REFRESH_METADATA = 'REFRESH_METADATA',
   ADMIRE_COMMENT = 'ADMIRE_COMMENT',
-  WHITE_RINO = 'WHITE_RINO',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: false,
+  REFRESH_METADATA: true,
   ADMIRE_COMMENT: false,
-  WHITE_RINO: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: true,
+  REFRESH_METADATA: true,
   ADMIRE_COMMENT: true,
-  WHITE_RINO: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: false,
+  REFRESH_METADATA: true,
   ADMIRE_COMMENT: true,
-  WHITE_RINO: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(

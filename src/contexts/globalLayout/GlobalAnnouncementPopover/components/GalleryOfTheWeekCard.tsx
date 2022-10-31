@@ -66,8 +66,8 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>
-            <DescriptionText>{user.username}</DescriptionText>
             <FollowButton queryRef={query} userRef={user} />
+            <DescriptionText>{user.username}</DescriptionText>
           </GotwHeader>
           <GotwBody>
             {imageUrls.map((url) => (

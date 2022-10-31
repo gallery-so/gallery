@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { ContractAddressTezosQuery } from '../../../../__generated__/ContractAddressTezosQuery.graphql';
-import { CommunityNavbar } from 'contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
 import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
@@ -26,7 +25,6 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
-        ...CommunityNavbarFragment
       }
     `,
     {
@@ -46,12 +44,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return (
-    <GalleryRoute
-      navbar={<CommunityNavbar queryRef={query} />}
-      element={<CommunityPageScene queryRef={query} />}
-    />
-  );
+  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

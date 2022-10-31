@@ -8,14 +8,15 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
+import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { editCollectionQuery } from '../../../../../__generated__/editCollectionQuery.graphql';
 import FullPageStep from 'components/Onboarding/FullPageStep';
+import { VStack } from 'components/core/Spacer/Stack';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import GenericActionModal from 'scenes/Modals/GenericActionModal';
-import { CollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorNavbar';
 import { Route } from 'nextjs-routes';
 
 type Props = {
@@ -26,13 +27,11 @@ type Props = {
 function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const query = useLazyLoadQuery<editCollectionQuery>(
     graphql`
-      query editCollectionQuery($collectionId: DBID!) {
+      query editCollectionQuery {
         ...CollectionEditorFragment
-        ...CollectionEditorNavbarFragment
-        ...GalleryAuthenticatedRouteFragment
       }
     `,
-    { collectionId }
+    {}
   );
 
   const { showModal } = useModalActions();
@@ -105,20 +104,19 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <FullPageStep
-      navbar={
-        <CollectionEditorNavbar
-          galleryId={galleryId}
-          isCollectionValid={isCollectionValid}
-          onDone={handleNext}
-          onCancel={handlePrevious}
-          queryRef={query}
-        />
-      }
-      withBorder
-    >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-    </FullPageStep>
+    <VStack>
+      <FullPageStep withFooter>
+        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      </FullPageStep>
+
+      <WizardFooter
+        isNextEnabled={isCollectionValid}
+        nextText={'Save'}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        previousText="Cancel"
+      />
+    </VStack>
   );
 }
 

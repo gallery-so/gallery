@@ -20,7 +20,6 @@ import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation
 import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import breakpoints from 'components/core/breakpoints';
 
 const MAX_TEXT_LENGTH = 100;
 
@@ -304,12 +303,7 @@ const ClickPreventingOverlay = styled.div`
 `;
 
 const CommentBoxWrapper = styled.div<{ active: boolean }>`
-  // Full width with 16px of padding on either side
-  width: calc(100vw - 32px);
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
-  }
+  width: 375px;
 
   position: absolute;
   bottom: 0;

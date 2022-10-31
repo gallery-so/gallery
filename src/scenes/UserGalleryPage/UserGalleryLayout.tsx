@@ -8,6 +8,9 @@ import { graphql } from 'relay-runtime';
 import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFragment.graphql';
 import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
+import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
+import { useEffect } from 'react';
+import NavActionFollow from 'components/Follow/NavActionFollow';
 import { VStack } from 'components/core/Spacer/Stack';
 import breakpoints from 'components/core/breakpoints';
 
@@ -59,11 +62,29 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     <EmptyGallery message="This user has not set up their gallery yet." />
   );
 
+  const { setCustomNavLeftContent } = useGlobalLayoutActions();
+
+  useEffect(() => {
+    setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
+
+    return () => {
+      // [GAL-302] figure out a cleaner way to do this. prevent dismount of follow icon
+      // if we're transitioning in between pages on the same user. otherwise there's a
+      // race condition between this page trying to dismount the follow icon vs. the next
+      // page trying to mount it again
+      if (window.location.href.includes(user.username ?? '')) {
+        return;
+      }
+      setCustomNavLeftContent(null);
+    };
+  }, [query, setCustomNavLeftContent, user]);
+
   return (
     <StyledUserGalleryLayout>
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
+        isMobile={isMobile}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
@@ -77,7 +98,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 export const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
-  padding: 8px 0 32px;
+  padding: 48px 0 32px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 80px 0 32px;

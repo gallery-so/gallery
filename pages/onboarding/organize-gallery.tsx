@@ -3,8 +3,9 @@ import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
+import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
+import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
-import { OnboardingGalleryEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(
@@ -39,12 +40,21 @@ export default function OrganizeGalleryPage() {
   }, [push, urlQuery]);
 
   return (
-    <FullPageStep navbar={<OnboardingGalleryEditorNavbar onBack={back} onNext={handleNext} />}>
-      <OrganizeGallery
-        queryRef={query}
-        onAddCollection={handleAddCollection}
-        onEditCollection={handleEditCollection}
+    <VStack>
+      <FullPageStep withFooter>
+        <OrganizeGallery
+          queryRef={query}
+          onAddCollection={handleAddCollection}
+          onEditCollection={handleEditCollection}
+        />
+      </FullPageStep>
+
+      <OnboardingFooter
+        step="organize-gallery"
+        onNext={handleNext}
+        isNextEnabled={true}
+        onPrevious={back}
       />
-    </FullPageStep>
+    </VStack>
   );
 }

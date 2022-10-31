@@ -23,8 +23,8 @@ import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import { useToastActions } from 'contexts/toast/ToastContext';
 import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
 import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -78,8 +78,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
-
-  const navbarHeight = useGlobalNavbarHeight();
 
   const isSearching = debouncedSearchQuery.length > 0;
 
@@ -174,7 +172,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   }, [isLocked, pushToast, reportError, selectedChain, syncTokens]);
 
   return (
-    <StyledSidebar navbarHeight={navbarHeight}>
+    <StyledSidebar>
       <StyledSidebarContainer gap={8}>
         <Header>
           <TitleS>All pieces</TitleS>
@@ -229,13 +227,13 @@ const AddBlankSpaceButton = styled(Button)`
   margin: 4px 0;
 `;
 
-const StyledSidebar = styled.div<{ navbarHeight: number }>`
+const StyledSidebar = styled.div`
   display: flex;
   flex-direction: column;
 
   padding-top: 16px;
 
-  height: 100%;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
   border-right: 1px solid ${colors.porcelain};
   user-select: none;
 
