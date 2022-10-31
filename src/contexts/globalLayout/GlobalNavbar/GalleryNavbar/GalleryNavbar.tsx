@@ -13,12 +13,14 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import { BreadcrumbLink } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
 import FollowButton from 'components/Follow/FollowButton';
 import { route, Route } from 'nextjs-routes';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import colors from 'components/core/colors';
+import { useRouter } from 'next/router';
 
 type Props = {
   username: string;
@@ -47,10 +49,11 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     queryRef
   );
 
-  const isLoggedIn = query.viewer?.__typename === 'Viewer';
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   const is3ac = isUsername3ac(username);
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const { pathname } = useRouter();
+
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
@@ -64,9 +67,12 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           {isMobile ? (
             <HStack gap={4}>
               <Link href={userGalleryRoute}>
-                <BreadcrumbLink href={route(userGalleryRoute)}>
+                <UsernameBreadcrumbLink
+                  mainGalleryPage={pathname === '/[username]'}
+                  href={route(userGalleryRoute)}
+                >
                   {is3ac ? 'The Unofficial 3AC Gallery' : username}
-                </BreadcrumbLink>
+                </UsernameBreadcrumbLink>
               </Link>
               {query.userByUsername && isLoggedIn && (
                 <Suspense fallback={null}>
@@ -94,6 +100,17 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     </VStack>
   );
 }
+
+const UsernameBreadcrumbLink = styled(BreadcrumbLink)<{ mainGalleryPage: boolean }>`
+  ${({ mainGalleryPage }) =>
+    mainGalleryPage
+      ? css`
+          color: ${colors.offBlack};
+        `
+      : css`
+          color: ${colors.shadow};
+        `};
+`;
 
 const MobileNavLinks = styled(HStack)`
   padding: 4px 0 16px 0;
