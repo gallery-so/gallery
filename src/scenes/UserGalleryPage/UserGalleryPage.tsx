@@ -8,7 +8,7 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;
@@ -28,7 +28,6 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
 
   const track = useTrack();
-  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     track('Page View: User Gallery', { username });
@@ -39,17 +38,17 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledUserGalleryPage navbarHeight={navbarHeight}>
+      <StyledUserGalleryPage>
         <UserGallery queryRef={query} />
       </StyledUserGalleryPage>
     </>
   );
 }
 
-export const StyledUserGalleryPage = styled.div<{ navbarHeight: number }>`
+export const StyledUserGalleryPage = styled.div`
   display: flex;
   justify-content: center;
-  padding-top: ${({ navbarHeight }) => navbarHeight}px;
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
   min-height: 100vh;
 
   display: flex;

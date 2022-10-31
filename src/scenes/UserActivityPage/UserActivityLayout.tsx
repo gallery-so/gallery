@@ -1,6 +1,12 @@
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import useMobileLayout from 'hooks/useMobileLayout';
+import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
+import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
+import { useEffect } from 'react';
+import NavActionFollow from 'components/Follow/NavActionFollow';
 import { VStack } from 'components/core/Spacer/Stack';
 import UserActivityFeed from './UserActivityFeed';
 import { UserActivityLayoutQueryFragment$key } from '__generated__/UserActivityLayoutQueryFragment.graphql';
@@ -18,7 +24,7 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   const query = useFragment(
     graphql`
       fragment UserActivityLayoutQueryFragment on Query
-      @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
+        @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
         ...NavActionFollowQueryFragment
         ...UserActivityFeedQueryFragment
       }
@@ -41,8 +47,35 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
     userRef
   );
 
+  const isMobile = useIsMobileWindowWidth();
+  const { mobileLayout, setMobileLayout } = useMobileLayout();
+
+  const { setCustomNavLeftContent } = useGlobalLayoutActions();
+
+  useEffect(() => {
+    setCustomNavLeftContent(<NavActionFollow userRef={user} queryRef={query} />);
+
+    return () => {
+      // [GAL-302] figure out a cleaner way to do this. prevent dismount of follow icon
+      // if we're transitioning in between pages on the same user. otherwise there's a
+      // race condition between this page trying to dismount the follow icon vs. the next
+      // page trying to mount it again
+      if (window.location.href.includes(user.username ?? '')) {
+        return;
+      }
+      setCustomNavLeftContent(null);
+    };
+  }, [query, setCustomNavLeftContent, user]);
+
   return (
     <StyledUserGalleryLayout align="center">
+      <UserGalleryHeader
+        userRef={user}
+        showMobileLayoutToggle={false}
+        isMobile={isMobile}
+        mobileLayout={mobileLayout}
+        setMobileLayout={setMobileLayout}
+      />
       <StyledUserActivityLayout gap={32}>
         <UserActivityFeed userRef={user} queryRef={query} />
       </StyledUserActivityLayout>

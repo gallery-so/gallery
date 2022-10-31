@@ -65,7 +65,7 @@ export default function FollowList({ userRef }: Props) {
 }
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
-  height: 100%;
+  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;

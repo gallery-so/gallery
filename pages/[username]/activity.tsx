@@ -8,7 +8,6 @@ import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import UserActivityPage from 'scenes/UserActivityPage/UserActivityPage';
 import { ITEMS_PER_PAGE } from 'components/Feed/constants';
 import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 
 type UserActivityProps = MetaTagProps & {
   username: string;
@@ -25,7 +24,6 @@ export default function UserFeed({ username }: UserActivityProps) {
         $viewerBefore: String
       ) {
         ...UserActivityPageFragment
-        ...GalleryNavbarFragment
       }
     `,
     {
@@ -35,12 +33,7 @@ export default function UserFeed({ username }: UserActivityProps) {
     }
   );
 
-  return (
-    <GalleryRoute
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
-      element={<UserActivityPage username={username} queryRef={query} />}
-    />
-  );
+  return <GalleryRoute element={<UserActivityPage username={username} queryRef={query} />} />;
 }
 
 export const getServerSideProps: GetServerSideProps<UserActivityProps> = async ({ params }) => {

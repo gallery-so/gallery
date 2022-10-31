@@ -10,7 +10,7 @@ export default function Header({ onAddCollection }: Props) {
   return (
     <StyledHeader>
       <TitleContainer>
-        <TitleDiatypeL>Collections</TitleDiatypeL>
+        <TitleDiatypeL>Your collections</TitleDiatypeL>
         <BaseM>Drag to re-order collections</BaseM>
       </TitleContainer>
       <OptionsContainer>

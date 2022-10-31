@@ -1,5 +1,5 @@
-import { createContext, CSSProperties, memo, Suspense, useMemo } from 'react';
-import { CSSTransition, TransitionGroup, TransitionStatus } from 'react-transition-group';
+import { CSSProperties, memo, Suspense, useMemo } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { FullPageLoaderWithLayoutTransitionSupport } from 'components/core/Loader/FullPageLoader';
 import { useRouter } from 'next/router';
@@ -23,10 +23,6 @@ const childNodeStyles = {
   height: '100%',
 };
 
-// This context exists to ensure children that are unmounting know they're unmounting and
-// don't try to do any B.S. while they're unmounting
-export const TransitionStateContext = createContext<TransitionStatus | undefined>(undefined);
-
 /**
  * Fades child elements in and out as they mount/unmount.
  *
@@ -37,19 +33,11 @@ function FadeTransitioner({ locationKey, children }: Props) {
   return (
     <TransitionGroup>
       <CSSTransition key={locationKey} timeout={timeoutConfig} classNames="fade">
-        {(state) => {
-          // Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
-          // to remain uninterrupted upon navigation
-          return (
-            <TransitionStateContext.Provider value={state}>
-              <div style={childNodeStyles as CSSProperties}>
-                <Suspense fallback={<FullPageLoaderWithLayoutTransitionSupport />}>
-                  {children}
-                </Suspense>
-              </div>
-            </TransitionStateContext.Provider>
-          );
-        }}
+        {/* Placing the Suspense boundary here (within the TransitionGroup) allows the scroll position
+            to remain uninterrupted upon navigation */}
+        <div style={childNodeStyles as CSSProperties}>
+          <Suspense fallback={<FullPageLoaderWithLayoutTransitionSupport />}>{children}</Suspense>
+        </div>
       </CSSTransition>
     </TransitionGroup>
   );

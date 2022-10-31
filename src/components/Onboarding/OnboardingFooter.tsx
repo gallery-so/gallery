@@ -1,8 +1,4 @@
-import {
-  ONBOARDING_NEXT_BUTTON_TEXT_MAP,
-  getStepIndex,
-  StepName,
-} from 'components/Onboarding/constants';
+import { FOOTER_BUTTON_TEXT_MAP, getStepIndex, StepName } from 'components/Onboarding/constants';
 import { WizardFooter } from 'components/WizardFooter';
 
 type Props = {
@@ -16,7 +12,7 @@ export function OnboardingFooter({ onNext, onPrevious, step, isNextEnabled }: Pr
   const stepIndex = getStepIndex(step);
   const isFirstStep = stepIndex === 0;
 
-  const nextButtonText = ONBOARDING_NEXT_BUTTON_TEXT_MAP[step];
+  const nextButtonText = FOOTER_BUTTON_TEXT_MAP[step];
 
   return (
     <WizardFooter

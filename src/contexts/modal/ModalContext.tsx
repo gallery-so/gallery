@@ -200,8 +200,10 @@ function ModalProvider({ children }: Props) {
        * Commenting this out to prevent a regression on the banner width not extending to 100%.
        * Leaving the code in tho in case scrollbar issue comes back
        */
-      globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
-      globalNavbar.style.width = modalShowing ? `calc(100vw - ${currentScrollbarWidth}px)` : '100%';
+      // globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
+      // globalNavbar.style.width = modalShowing
+      //   ? `calc(100vw - ${currentScrollbarWidth}px)`
+      //   : 'unset';
     }
   }, [modals.length]);
 

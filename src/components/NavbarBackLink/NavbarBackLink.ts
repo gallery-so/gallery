@@ -1,16 +1,10 @@
 import styled from 'styled-components';
 import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-
-export default function StyledBackLink() {
-  const navbarHeight = useGlobalNavbarHeight();
-
-  return <BackLink navbarHeight={navbarHeight} />;
-}
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 
 // mimics a navbar element on the top left corner
-const BackLink = styled.div<{ navbarHeight: number }>`
-  height: ${({ navbarHeight }) => navbarHeight}px;
+const StyledBackLink = styled.div`
+  height: ${GLOBAL_NAVBAR_HEIGHT}px;
   display: flex;
   align-items: center;
 
@@ -25,3 +19,5 @@ const BackLink = styled.div<{ navbarHeight: number }>`
     padding: 0 ${pageGutter.tablet}px;
   }
 `;
+
+export default StyledBackLink;

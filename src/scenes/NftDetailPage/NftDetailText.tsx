@@ -6,6 +6,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useCallback, useMemo, useState } from 'react';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
 import { Button } from 'components/core/Button/Button';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
@@ -16,7 +17,6 @@ import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import TextButton from 'components/core/Button/TextButton';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -97,10 +97,8 @@ function NftDetailText({ tokenRef }: Props) {
   const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
   const poapUrl = metadata.event_id ? `https://poap.gallery/event/${metadata.event_id}` : null;
 
-  const navbarHeight = useGlobalNavbarHeight();
-
   return (
-    <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
+    <StyledDetailLabel horizontalLayout={horizontalLayout}>
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={4}>
           {token.name && <TitleM>{token.name}</TitleM>}
@@ -162,16 +160,16 @@ const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo
   height: 16px;
 `;
 
-const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
+const StyledDetailLabel = styled.div<{ horizontalLayout: boolean }>`
   display: block;
   max-width: 296px;
   min-width: 296px;
   word-wrap: break-word;
 
-  ${({ horizontalLayout, navbarHeight }) =>
+  ${({ horizontalLayout }) =>
     horizontalLayout
       ? `
-    max-height: calc(100vh - ${navbarHeight * 2}px);
+    max-height: calc(100vh - ${GLOBAL_NAVBAR_HEIGHT * 2}px);
     overflow: auto;
     padding-right: 16px;
     `

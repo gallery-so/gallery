@@ -7,10 +7,10 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
+import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
 import { useModalState } from 'contexts/modal/ModalContext';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type CollectionGalleryPageProps = {
   username: string;
@@ -94,22 +94,20 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
 
   useDisplayFullPageNftDetailModal();
 
-  const navbarHeight = useGlobalNavbarHeight();
-
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledCollectionGalleryWrapper navbarHeight={navbarHeight}>
+      <StyledCollectionGalleryWrapper>
         <CollectionGallery queryRef={query} />
       </StyledCollectionGalleryWrapper>
     </>
   );
 }
 
-const StyledCollectionGalleryWrapper = styled.div<{ navbarHeight: number }>`
-  padding-top: ${({ navbarHeight }) => navbarHeight}px;
+const StyledCollectionGalleryWrapper = styled.div`
+  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
   min-height: 100vh;
 
   display: flex;
