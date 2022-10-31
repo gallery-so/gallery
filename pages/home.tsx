@@ -11,7 +11,7 @@ import { BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import colors from 'components/core/colors';
 
-const TIME_RANGE = 5000;
+const TIME_RANGE = 60 * 1000 * 2;
 const MIN_TIME_BETWEEN_APPEARANCES = 5000;
 const GHOST_VISIBLE_TIME = 1000;
 
