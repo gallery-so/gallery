@@ -17,6 +17,7 @@ import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import TextButton from 'components/core/Button/TextButton';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { htmlDecode } from 'utils/htmlDecode';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -97,11 +98,19 @@ function NftDetailText({ tokenRef }: Props) {
   const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
   const poapUrl = metadata.event_id ? `https://poap.gallery/event/${metadata.event_id}` : null;
 
+  const decodedTokenName = useMemo(() => {
+    if (token.name) {
+      return htmlDecode(token.name);
+    }
+
+    return null;
+  }, [token.name]);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout}>
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={4}>
-          {token.name && <TitleM>{token.name}</TitleM>}
+          {token.name && <TitleM>{decodedTokenName}</TitleM>}
           <HStack align="center" gap={4}>
             {token.chain === 'POAP' && <PoapLogo />}
 
