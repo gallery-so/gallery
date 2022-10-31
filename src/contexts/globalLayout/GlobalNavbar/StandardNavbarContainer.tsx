@@ -10,6 +10,8 @@ export const StandardNavbarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  gap: 0 24px;
+
   padding: 0 ${pageGutter.mobile}px;
 `;
 
@@ -18,12 +20,13 @@ export const NavbarLeftContent = styled.div`
   justify-content: flex-start;
 
   min-width: 0;
-  flex: 1 1 33%;
+  flex: 1 1 20%;
 `;
 
 export const NavbarCenterContent = styled.div`
   display: flex;
   justify-content: center;
+  min-width: 0;
 
   flex: 1 1 content;
 `;
@@ -33,5 +36,5 @@ export const NavbarRightContent = styled.div`
   justify-content: flex-end;
 
   min-width: 0;
-  flex: 1 1 33%;
+  flex: 1 1 20%;
 `;
