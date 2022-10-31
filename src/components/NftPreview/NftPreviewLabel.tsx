@@ -8,8 +8,8 @@ import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLa
 import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { htmlDecode } from 'utils/htmlDecode';
 import { useMemo } from 'react';
+import unescape from 'utils/unescape';
 
 type Props = {
   className?: string;
@@ -36,7 +36,7 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
 
   const decodedTokenName = useMemo(() => {
     if (token.name) {
-      return htmlDecode(token.name);
+      return unescape(token.name);
     }
 
     return null;

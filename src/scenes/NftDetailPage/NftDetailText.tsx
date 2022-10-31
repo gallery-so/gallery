@@ -17,7 +17,7 @@ import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/
 import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
 import TextButton from 'components/core/Button/TextButton';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { htmlDecode } from 'utils/htmlDecode';
+import unescape from 'utils/unescape';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -100,7 +100,7 @@ function NftDetailText({ tokenRef }: Props) {
 
   const decodedTokenName = useMemo(() => {
     if (token.name) {
-      return htmlDecode(token.name);
+      return unescape(token.name);
     }
 
     return null;
