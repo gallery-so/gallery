@@ -120,6 +120,7 @@ const MobileUsernameText = styled(Paragraph)`
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
+  letter-spacing: -0.04em;
 
   color: ${colors.shadow};
 `;
