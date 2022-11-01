@@ -55,6 +55,8 @@ const CollectionName = styled(Paragraph)`
   line-height: 21px;
   letter-spacing: -0.04em;
   
+  white-space: nowrap;
+  
   color ${colors.offBlack}
 
   font-size: 16px;

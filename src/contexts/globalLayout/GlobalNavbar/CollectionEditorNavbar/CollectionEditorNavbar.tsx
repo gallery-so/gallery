@@ -1,5 +1,5 @@
 import { CollectionEditorCenterContent } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/CollectionEditorCenterContent';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionEditorNavbarFragment$key } from '../../../../../__generated__/CollectionEditorNavbarFragment.graphql';
@@ -11,6 +11,9 @@ import {
 } from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
 import { Button } from 'components/core/Button/Button';
+import { GalleryNameAndCollectionName } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
+import { Route } from 'nextjs-routes';
+import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   galleryId: string;
@@ -30,24 +33,41 @@ export function CollectionEditorNavbar({
   const query = useFragment(
     graphql`
       fragment CollectionEditorNavbarFragment on Query {
-        ...CollectionEditorCenterContentFragment
+        collectionById(id: $collectionId) {
+          ... on Collection {
+            name
+          }
+        }
       }
     `,
     queryRef
   );
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const mainContent = useMemo(() => {
+    const editGalleryRoute: Route = {
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId },
+    };
+
+    return (
+      <GalleryNameAndCollectionName
+        editGalleryRoute={editGalleryRoute}
+        rightText="Editing"
+        galleryName="My gallery"
+        collectionName={query.collectionById?.name ?? ''}
+      />
+    );
+  }, [galleryId, query.collectionById?.name]);
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <BackButton onClick={onCancel} />
+        {isMobile ? mainContent : <BackButton onClick={onCancel} />}
       </NavbarLeftContent>
 
-      <NavbarCenterContent>
-        {/* Need a fallback here to stop the entire navbar from suspending */}
-        <Suspense fallback={null}>
-          <CollectionEditorCenterContent queryRef={query} galleryId={galleryId} />
-        </Suspense>
-      </NavbarCenterContent>
+      <NavbarCenterContent>{!isMobile && mainContent}</NavbarCenterContent>
 
       <NavbarRightContent>
         <Button disabled={!isCollectionValid} onClick={onDone}>
