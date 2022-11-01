@@ -7,79 +7,11 @@ import { BaseXL, TitleDiatypeL, TitleXS } from 'components/core/Text/Text';
 import { Notification } from './Notification';
 import colors from 'components/core/colors';
 import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/constants';
+import { useMemo } from 'react';
 
 type NotificationDropdownProps = {
   queryRef: NotificationDropdownFragment$key;
 };
-
-const notifications = [
-  {
-    kind: 'admired',
-    who: 'robin',
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    seen: false,
-    timeAgo: '2m',
-    count: 1,
-  },
-  { kind: 'viewed', who: 'robin', count: 1, seen: false, timeAgo: '2m' },
-  {
-    kind: 'commented',
-    who: 'jess',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'so aesthetic',
-    seen: false,
-    timeAgo: '8m',
-  },
-  { kind: 'followed', count: 5, seen: true, timeAgo: '1d', who: 'robin' },
-  {
-    kind: 'commented',
-    who: 'robin',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'so aesthetic',
-    seen: true,
-    timeAgo: '1d',
-  },
-  {
-    kind: 'commented',
-    who: 'kaito',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'so aesthetic',
-    seen: true,
-    timeAgo: '1d',
-  },
-  {
-    kind: 'commented',
-    who: 'mikey',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'so aesthetic',
-    seen: true,
-    timeAgo: '1d',
-  },
-  {
-    kind: 'commented',
-    who: 'terence',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'ayy yooo',
-    seen: true,
-    timeAgo: '1d',
-  },
-  {
-    kind: 'commented',
-    who: 'jrl',
-    count: 1,
-    collectionName: 'Ornament, Jan Robert Leegte, 2021',
-    commentText: 'so dope',
-    seen: true,
-    timeAgo: '1d',
-  },
-] as const;
-
-export type NotificationType = typeof notifications[number];
 
 export function NotificationDropdown({ queryRef }: NotificationDropdownProps) {
   const query = useFragment(
@@ -87,8 +19,13 @@ export function NotificationDropdown({ queryRef }: NotificationDropdownProps) {
       fragment NotificationDropdownFragment on Query {
         viewer {
           ... on Viewer {
-            user {
-              dbid
+            notifications(last: 10) {
+              edges {
+                node {
+                  id
+                  ...NotificationFragment
+                }
+              }
             }
           }
         }
@@ -96,6 +33,20 @@ export function NotificationDropdown({ queryRef }: NotificationDropdownProps) {
     `,
     queryRef
   );
+
+  const nonNullNotifications = useMemo(() => {
+    const notifications = [];
+
+    for (const edge of query.viewer?.notifications?.edges ?? []) {
+      if (edge?.node) {
+        notifications.push(edge.node);
+      }
+    }
+
+    return notifications;
+  }, [query.viewer?.notifications?.edges]);
+
+  console.log(nonNullNotifications);
 
   const hasNotifications = true;
 
@@ -106,8 +57,8 @@ export function NotificationDropdown({ queryRef }: NotificationDropdownProps) {
       <NotificationsContent grow>
         {hasNotifications ? (
           <>
-            {notifications.map((notification) => {
-              return <Notification notification={notification} />;
+            {nonNullNotifications.map((notification) => {
+              return <Notification key={notification.id} notificationRef={notification} />;
             })}
             <div>
               <TitleXS>See more</TitleXS>

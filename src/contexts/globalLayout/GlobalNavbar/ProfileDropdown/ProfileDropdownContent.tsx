@@ -2,7 +2,7 @@ import colors from 'components/core/colors';
 import { Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -16,6 +16,8 @@ import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
 import breakpoints from 'components/core/breakpoints';
+import { NotificationDropdown } from 'components/NotificationBox/NotificationDropdown';
+import { useCallback, useEffect, useState } from 'react';
 
 type Props = {
   showDropdown: boolean;
@@ -36,10 +38,13 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         }
 
         ...getEditGalleryUrlFragment
+        ...NotificationDropdownFragment
       }
     `,
     queryRef
   );
+
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const showWalletModal = useWalletModal();
   const { handleLogout } = useAuthActions();
@@ -54,9 +59,14 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
+  const handleClose = useCallback(() => {
+    setNotificationsOpen(false);
+    onClose();
+  }, [onClose]);
+
   return (
     <>
-      <Dropdown position="left" active={showDropdown} onClose={onClose}>
+      <Dropdown position="left" active={showDropdown} onClose={handleClose}>
         <DropdownSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
@@ -73,6 +83,9 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
+          <NotificationsDropdownItem onClick={() => setNotificationsOpen(!notificationsOpen)}>
+            NOTIFICATIONS
+          </NotificationsDropdownItem>
         </DropdownSection>
 
         <DropdownSection gap={4}>
@@ -88,10 +101,36 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         <DropdownSection gap={4}>
           <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
         </DropdownSection>
+
+        <DropdownContainer open={notificationsOpen}>
+          <NotificationDropdown queryRef={query} />
+        </DropdownContainer>
       </Dropdown>
     </>
   );
 }
+
+const DropdownContainer = styled.div<{ open: boolean }>`
+  position: absolute;
+
+  left: 100%;
+  top: 0;
+
+  transition: transform 300ms ease-out, opacity 300ms ease-out;
+
+  ${({ open }) =>
+    open
+      ? css`
+          transform: translateX(12px);
+          opacity: 1;
+        `
+      : css`
+          transform: translateX(8px);
+          opacity: 0;
+        `}
+`;
+
+const NotificationsDropdownItem = styled(DropdownItem)``;
 
 const StyledObjectsText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';
