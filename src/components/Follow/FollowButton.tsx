@@ -115,6 +115,10 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     event.stopPropagation();
   }, []);
 
+  if (!followChip) {
+    return null;
+  }
+
   return (
     <HStack gap={4} onClick={handleWrapperClick}>
       {followChip}
