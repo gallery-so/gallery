@@ -25,6 +25,8 @@ import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import NavActionFollow from 'components/Follow/NavActionFollow';
+import { useMemo } from 'react';
+import unescape from 'utils/unescape';
 
 type CollectionNavbarProps = {
   username: string;
@@ -59,6 +61,11 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
   const usernameRoute: Route = { pathname: '/[username]', query: { username } };
 
+  const unescapedCollectionName = useMemo(
+    () => unescape(query.collectionById?.name ?? ''),
+    [query.collectionById?.name]
+  );
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -73,8 +80,8 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
                 <SlashText>/</SlashText>
 
-                <CollectionNameText title={query.collectionById?.name ?? ''}>
-                  {query.collectionById?.name}
+                <CollectionNameText title={unescapedCollectionName}>
+                  {unescapedCollectionName}
                 </CollectionNameText>
               </RightContentWrapper>
             )
@@ -88,7 +95,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
             <Link href={usernameRoute}>
               <MobileUsernameText>{username}</MobileUsernameText>
             </Link>
-            <BreadcrumbText>{query.collectionById?.name}</BreadcrumbText>
+            <BreadcrumbText>{unescapedCollectionName}</BreadcrumbText>
           </VStack>
         ) : (
           <GalleryNavLinks username={username} queryRef={query} />
