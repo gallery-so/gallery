@@ -11,11 +11,11 @@ import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery
 import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { WizardFooter } from 'components/WizardFooter';
 import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
 import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
 import FullPageStep from 'components/Onboarding/FullPageStep';
+import { CollectionCreateNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
+import GenericActionModal from 'scenes/Modals/GenericActionModal';
 import { Route } from 'nextjs-routes';
 
 type Props = {
@@ -72,29 +72,39 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      replace(editGalleryUrl);
-    }
-  }, [back, canGoBack, editGalleryUrl, replace]);
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            if (canGoBack) {
+              back();
+            } else {
+              replace(editGalleryUrl);
+            }
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
-        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-      </FullPageStep>
-
-      <WizardFooter
-        isNextEnabled={isCollectionValid}
-        nextText={'Save'}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        previousText="Cancel"
-      />
-    </VStack>
+    <FullPageStep
+      withBorder
+      navbar={
+        <CollectionCreateNavbar
+          galleryId={galleryId}
+          onBack={handlePrevious}
+          onNext={handleNext}
+          isCollectionValid={isCollectionValid}
+        />
+      }
+    >
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    </FullPageStep>
   );
 }
 

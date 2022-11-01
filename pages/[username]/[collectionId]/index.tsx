@@ -6,6 +6,7 @@ import { openGraphMetaTags } from 'utils/openGraphMetaTags';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import { CollectionNavbar } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionNavbar';
 import { route } from 'nextjs-routes';
 
 type CollectionGalleryProps = MetaTagProps & {
@@ -16,18 +17,24 @@ type CollectionGalleryProps = MetaTagProps & {
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
-      query CollectionIdQuery($collectionId: DBID!) {
+      query CollectionIdQuery($collectionId: DBID!, $username: String!) {
+        ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
       }
     `,
-    { collectionId }
+    { collectionId, username }
   );
 
   if (!username || !collectionId) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return <GalleryRoute element={<CollectionGalleryPage queryRef={query} username={username} />} />;
+  return (
+    <GalleryRoute
+      navbar={<CollectionNavbar username={username} collectionId={collectionId} queryRef={query} />}
+      element={<CollectionGalleryPage queryRef={query} username={username} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = async ({

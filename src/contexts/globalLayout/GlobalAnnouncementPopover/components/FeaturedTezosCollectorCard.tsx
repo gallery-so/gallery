@@ -76,8 +76,8 @@ export default function FeaturedTezosCollectorCard({
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>
-            <FollowButton queryRef={query} userRef={owner} />
             <DescriptionText>{owner.username}</DescriptionText>
+            <FollowButton queryRef={query} userRef={owner} />
           </GotwHeader>
           <GotwBody>
             {imageUrls.map((url) => (

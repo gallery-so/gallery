@@ -7,6 +7,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { DISABLED_CONTRACTS } from 'utils/getCommunityUrlForToken';
+import { CommunityNavbar } from 'contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
 import {
   GRID_ENABLED_COMMUNITY_ADDRESSES,
   GRID_ITEM_PER_PAGE,
@@ -32,6 +33,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
+        ...CommunityNavbarFragment
       }
     `,
     {
@@ -55,7 +57,12 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
+  return (
+    <GalleryRoute
+      navbar={<CommunityNavbar queryRef={query} />}
+      element={<CommunityPageScene queryRef={query} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

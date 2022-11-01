@@ -8,6 +8,8 @@ import { TimeAgoText } from 'components/Feed/Socialize/NotesModal/TimeAgoText';
 import { ListItem } from 'components/Feed/Socialize/NotesModal/ListItem';
 import { UsernameLink } from 'components/Feed/Socialize/NotesModal/UsernameLink';
 import colors from 'components/core/colors';
+import { AdmireIcon, IconWrapper } from 'icons/SocializeIcons';
+import styled from 'styled-components';
 
 type AdmireNoteProps = {
   admireRef: AdmireNoteFragment$key;
@@ -31,13 +33,21 @@ export function AdmireNote({ admireRef }: AdmireNoteProps) {
   const timeAgo = admire.creationTime ? getTimeSince(admire.creationTime) : null;
 
   return (
-    <ListItem justify="space-between" gap={4}>
-      <HStack gap={4}>
+    <StyledListItem justify="space-between" gap={4}>
+      <HStack gap={4} align="center">
+        <AdmireIcon active width={16} height={16} />
         <UsernameLink username={admire.admirer?.username ?? null} />
         <BaseM>admired this</BaseM>
       </HStack>
 
       <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-    </ListItem>
+    </StyledListItem>
   );
 }
+
+const StyledListItem = styled(ListItem)`
+  ${IconWrapper} {
+    padding-left: 0;
+    cursor: default;
+  }
+`;

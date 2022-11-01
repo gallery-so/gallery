@@ -9,7 +9,7 @@ import { graphql, useFragment } from 'react-relay';
 import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import styled from 'styled-components';
 import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
-import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
+import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   title?: React.ReactNode | string;
@@ -60,8 +60,10 @@ export default function Banner({
     }
   }, [dismissOnActionComponentClick, hideBanner]);
 
+  const navbarHeight = useGlobalNavbarHeight();
+
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
-    <StyledContainer>
+    <StyledContainer navbarHeight={navbarHeight}>
       <StyledBanner>
         <TextContainer>
           {title && <StyledTitle>{title}</StyledTitle>}
@@ -78,10 +80,10 @@ export default function Banner({
   );
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<{ navbarHeight: number }>`
   position: absolute;
   width: 100%;
-  height: ${GLOBAL_NAVBAR_HEIGHT}px;
+  height: ${({ navbarHeight }) => navbarHeight}px;
   z-index: 4;
 
   // TODO: standardize these settings

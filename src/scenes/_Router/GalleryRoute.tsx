@@ -1,30 +1,41 @@
 import GlobalFooter from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { TransitionStateContext } from 'components/FadeTransitioner/FadeTransitioner';
 
 export type Props = {
   element: JSX.Element;
   banner?: boolean;
-  navbar?: boolean;
+  navbar: JSX.Element | false;
   footer?: boolean;
 };
 
 export default function GalleryRoute({
   element,
-  navbar = true,
+  navbar = false,
   footer = true,
   banner = true,
 }: Props) {
   const [mounted, setMounted] = useState(false);
+  const { setContent } = useGlobalLayoutActions();
   const { setBannerVisible, setNavbarVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
     setBannerVisible(banner);
-    setNavbarVisible(navbar);
     setMounted(true);
-    // we only want these properties to be set on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [banner, navbar, setBannerVisible, setContent, setNavbarVisible]);
+
+  const transitionState = useContext(TransitionStateContext);
+  useLayoutEffect(() => {
+    if (transitionState === 'entering' || transitionState === 'entered') {
+      if (navbar === false) {
+        setNavbarVisible(false);
+      } else {
+        setContent(navbar);
+        setNavbarVisible(true);
+      }
+    }
+  }, [navbar, setContent, setNavbarVisible, transitionState]);
 
   return mounted ? (
     <>

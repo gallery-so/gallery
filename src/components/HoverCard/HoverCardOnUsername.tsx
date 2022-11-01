@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOn
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -64,14 +65,22 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
+
     setIsActive(true);
     setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovering(false);
-    setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
+    deactivateHoverCardTimeoutRef.current = setTimeout(
+      () => setIsActive(false),
+      ANIMATED_COMPONENT_TRANSITION_MS
+    );
   };
 
   const handleClick = useCallback<MouseEventHandler>(
@@ -101,14 +110,15 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
         {isActive && (
           <StyledCardContainer>
             <StyledCardHeader>
-              <StyledHoverCardTitleContainer>
+              <HStack align="center" gap={4}>
+                <StyledCardUsername>{user.username}</StyledCardUsername>
+
                 {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>
                 )}
-                <StyledCardUsername>{user.username}</StyledCardUsername>
-              </StyledHoverCardTitleContainer>
+              </HStack>
 
               <BaseM>{totalCollections} collections</BaseM>
             </StyledCardHeader>
@@ -163,11 +173,6 @@ const StyledCardHeader = styled.div`
   justify-content: space-between;
   // enforce height on container since the follow button causes additional height
   height: 24px;
-`;
-
-const StyledHoverCardTitleContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const StyledFollowButtonWrapper = styled.div`
