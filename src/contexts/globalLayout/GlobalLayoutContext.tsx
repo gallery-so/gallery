@@ -328,7 +328,9 @@ function GlobalNavbarWithFadeEnabled({
         // this is normally as simple as setting the navbar z-index to -1, but doing so right
         // away makes it look like the navbar vanishes immediately; therefore we add a delay
         // until the navbar has already faded out of sight.
-        setTimeout(() => setZIndex(-1), FADE_TRANSITION_TIME_MS);
+        const timeoutId = setTimeout(() => setZIndex(-1), FADE_TRANSITION_TIME_MS);
+
+        return () => clearTimeout(timeoutId);
       }
     }
     setZIndex(2);
@@ -344,11 +346,14 @@ function GlobalNavbarWithFadeEnabled({
     [handleFadeNavbarOnHover]
   );
 
+  const navbarHeight = useGlobalNavbarHeight();
+
   return (
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
       transitionStyles={transitionStyles}
       zIndex={zIndex}
+      navbarHeight={navbarHeight}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -371,10 +376,12 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   isVisible: boolean;
   transitionStyles?: string;
   zIndex: number;
+  navbarHeight: number;
 }>`
   position: fixed;
   width: 100%;
   z-index: ${({ zIndex }) => zIndex};
+  height: ${({ navbarHeight }) => navbarHeight}px;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: ${({ transitionStyles }) => transitionStyles};
