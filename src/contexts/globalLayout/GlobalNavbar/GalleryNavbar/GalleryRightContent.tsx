@@ -4,7 +4,7 @@ import { GalleryRightContentFragment$key } from '__generated__/GalleryRightConte
 import styled from 'styled-components';
 import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -81,12 +81,29 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   const editGalleryUrl = getEditGalleryUrl(query);
 
+  const dropdown = useMemo(() => {
+    return (
+      <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
+        <DropdownSection>
+          {editGalleryUrl && <DropdownLink href={editGalleryUrl}>EDIT GALLERY</DropdownLink>}
+          <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+        </DropdownSection>
+      </Dropdown>
+    );
+  }, [editGalleryUrl, handleCloseDropdown, handleNameAndBioClick, showDropdown]);
+
   if (isMobile) {
     return (
       <HStack gap={8} align="center">
         <QRCodeButton username={username} styledQrCode={styledQrCode} />
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
-        {shouldShowEditButton && <EditLink role="button" onClick={handleEditClick} />}
+        {shouldShowEditButton && (
+          <EditLinkWrapper>
+            <EditLink role="button" onClick={handleEditClick} />
+
+            {dropdown}
+          </EditLinkWrapper>
+        )}
       </HStack>
     );
   }
@@ -96,12 +113,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       <EditButtonContainer onClick={handleEditClick}>
         <TitleXS>EDIT</TitleXS>
 
-        <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
-          <DropdownSection>
-            {editGalleryUrl && <DropdownLink href={editGalleryUrl}>EDIT GALLERY</DropdownLink>}
-            <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
-          </DropdownSection>
-        </Dropdown>
+        {dropdown}
       </EditButtonContainer>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
@@ -110,6 +122,10 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   return null;
 }
+
+const EditLinkWrapper = styled.div`
+  position: relative;
+`;
 
 const EditButtonContainer = styled.div.attrs({ role: 'button' })`
   position: relative;

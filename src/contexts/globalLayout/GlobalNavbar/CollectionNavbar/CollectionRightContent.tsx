@@ -110,16 +110,29 @@ export function CollectionRightContent({
     return null;
   }, [collectionId, query.collectionById?.gallery?.dbid]);
 
+  const dropdown = useMemo(() => {
+    return (
+      <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
+        <DropdownSection>
+          {editCollectionUrl && (
+            <DropdownLink href={editCollectionUrl}>EDIT COLLECTION</DropdownLink>
+          )}
+          <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+        </DropdownSection>
+      </Dropdown>
+    );
+  }, [editCollectionUrl, handleCloseDropdown, handleNameAndBioClick, showDropdown]);
+
   if (isMobile) {
     return (
       <HStack gap={8} align="center">
         <LinkButton textToCopy={`https://gallery.so/${username}/${collectionId}`} />
-        {shouldShowEditButton && editCollectionUrl && (
-          <Link href={editCollectionUrl}>
-            <a href={route(editCollectionUrl)}>
-              <EditLink />
-            </a>
-          </Link>
+        {shouldShowEditButton && (
+          <EditLinkWrapper>
+            <EditLink onClick={handleEditClick} />
+
+            {dropdown}
+          </EditLinkWrapper>
         )}
       </HStack>
     );
@@ -128,14 +141,7 @@ export function CollectionRightContent({
       <EditButtonContainer onClick={handleEditClick}>
         <TitleXS>EDIT</TitleXS>
 
-        <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
-          <DropdownSection>
-            {editCollectionUrl && (
-              <DropdownLink href={editCollectionUrl}>EDIT COLLECTION</DropdownLink>
-            )}
-            <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
-          </DropdownSection>
-        </Dropdown>
+        {dropdown}
       </EditButtonContainer>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
@@ -144,6 +150,10 @@ export function CollectionRightContent({
 
   return null;
 }
+
+const EditLinkWrapper = styled.div`
+  position: relative;
+`;
 
 const EditButtonContainer = styled.div`
   position: relative;
