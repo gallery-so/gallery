@@ -73,7 +73,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
           queryRef={query}
           rightContent={
             isMobile ? null : (
-              <RightContentWrapper gap={4}>
+              <RightContentWrapper shrink gap={4}>
                 {query.userByUsername && (
                   <NavActionFollow userRef={query.userByUsername} queryRef={query} />
                 )}
@@ -114,8 +114,6 @@ const CollectionNameText = styled(BreadcrumbText)`
 `;
 
 const RightContentWrapper = styled(HStack)`
-  overflow: hidden;
-
   ${BreadcrumbLink} {
     color: ${colors.shadow};
   }
