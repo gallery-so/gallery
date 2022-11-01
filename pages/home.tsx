@@ -9,6 +9,16 @@ import { useEffect } from 'react';
 import { FeedMode } from 'components/Feed/Feed';
 import usePersistedState from 'hooks/usePersistedState';
 import { FEED_MODE_KEY } from 'constants/storageKeys';
+import usePersistedState from 'hooks/usePersistedState';
+import { useCallback, useEffect, useRef } from 'react';
+import { HStack } from 'components/core/Spacer/Stack';
+import { BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
+import styled from 'styled-components';
+import colors from 'components/core/colors';
+
+const TIME_RANGE = 60 * 1000 * 2;
+const MIN_TIME_BETWEEN_APPEARANCES = 5000;
+const GHOST_VISIBLE_TIME = 2000;
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(
@@ -39,6 +49,42 @@ export default function Home() {
       viewerLast: ITEMS_PER_PAGE,
     }
   );
+  const [points, setPoints] = usePersistedState('HALLOWEEN_EASTER_EGG_POINTS', 0);
+
+  const ghostRef = useRef<HTMLDivElement | null>(null);
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelAnimations = useCallback(() => {
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+  }, []);
+
+  const hideGhost = useCallback(() => {
+    if (ghostRef.current) {
+      ghostRef.current.style.opacity = '0';
+    }
+
+    setTimeout(() => {
+      if (ghostRef.current) {
+        ghostRef.current.style.pointerEvents = 'none';
+      }
+    }, 100);
+  }, []);
+
+  const showGhost = useCallback(() => {
+    const width = window.innerWidth - 200;
+    const height = window.innerHeight - 200;
+
+    const randomX = Math.random() * width;
+    const randomY = Math.random() * height;
+
+    if (ghostRef.current) {
+      ghostRef.current.style.pointerEvents = 'initial';
+      ghostRef.current.style.opacity = '1';
+      ghostRef.current.style.transform = `translateX(${randomX}px) translateY(${randomY}px)`;
+    }
+  }, []);
 
   const { viewer } = query;
   const viewerUserId = viewer?.user?.dbid ?? '';
@@ -96,3 +142,11 @@ export const getServerSideProps = async () => {
     props: {},
   };
 };
+
+const StyledGhost = styled.div`
+  position: fixed;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+  font-size: 32px;
+`;

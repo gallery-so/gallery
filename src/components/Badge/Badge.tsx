@@ -61,10 +61,10 @@ export default function Badge({ badgeRef }: Props) {
   }, []);
 
   return (
-    <InteractiveLink to={communityUrl}>
+    <StyledInteractiveLink to={communityUrl}>
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <StyledBadge src={imageURL} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit} />
-    </InteractiveLink>
+    </StyledInteractiveLink>
   );
 }
 
@@ -73,8 +73,12 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
 `;
 
+const StyledInteractiveLink = styled(InteractiveLink)`
+  line-height: 1;
+`;
+
 const StyledBadge = styled.img`
-  height: 16px;
-  width: 16px;
+  height: 24px;
+  width: 24px;
   cursor: pointer;
 `;

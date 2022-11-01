@@ -68,6 +68,7 @@ const _Animate = styled.div<{ isActive: boolean }>`
   animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   animation-fill-mode: forwards;
 
+  pointer-events: none;
   position: fixed;
   left: 0;
   right: 0;
@@ -106,6 +107,8 @@ const StyledToast = styled.div`
   padding: 8px 10px 8px 16px;
   max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};
+
+  pointer-events: auto;
 `;
 
 const StyledClose = styled.button`

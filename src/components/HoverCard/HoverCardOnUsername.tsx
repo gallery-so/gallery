@@ -95,11 +95,15 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
+  const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
+    event.stopPropagation();
+  }, []);
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
         <Link href={{ pathname: '/[username]', query: { username: user.username as string } }}>
-          <TitleDiatypeM>{user.username}</TitleDiatypeM>
+          <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
         </Link>
       </StyledLinkContainer>
       <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
