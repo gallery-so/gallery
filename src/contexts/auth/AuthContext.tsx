@@ -1,15 +1,15 @@
 import usePersistedState from 'hooks/usePersistedState';
 import {
-  ReactNode,
   createContext,
-  useContext,
+  Fragment,
   memo,
-  useState,
+  ReactNode,
+  Suspense,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
-  Fragment,
-  Suspense,
+  useState,
 } from 'react';
 import Web3WalletProvider from './Web3WalletContext';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
@@ -126,17 +126,22 @@ const useLogout = () => {
     `
   );
 
-  return useCallback(() => {
-    logout({
+  return useCallback(async () => {
+    await logout({
       variables: {},
-      updater: (store) => {
-        // TODO: manually dropping the viewer on logout for now.
-        // for some reason the mutation that returns Viewer => user
-        // doesn't update the store as expected, and the Viewer
-        // remains in our cache...
-        store.delete('client:root:viewer');
-      },
     });
+
+    // Need to do this for now.
+    // Steps to reproduce
+    // 1. Visit Home page logged in
+    // 2. Load worldwide tab
+    // 3. Select following tab
+    // 4. log out.
+    // See bug
+    //
+    // This happens because the worldwide tab is reloading and using a cached
+    // response which has the old viewer inside. This is a fucking disaster
+    location.reload();
   }, [logout]);
 };
 
