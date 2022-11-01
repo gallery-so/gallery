@@ -155,7 +155,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   //-------------- ROUTE ---------------
   const handleFadeNavbarFromGalleryRoute = useCallback((visible: boolean) => {
     setFadeType('route');
-    setIsNavbarEnabled(visible);
+    setIsNavbarEnabled(visible && window.scrollY <= navbarHeight);
 
     forcedHiddenByRouteRef.current = !visible;
     lastFadeTriggeredByRouteTimestampRef.current = Date.now();
@@ -308,8 +308,7 @@ function GlobalNavbarWithFadeEnabled({
       }
       // if moving between routes, fade-in navbar with delay
       if (fadeType === 'route') {
-        // @robin Why do we want delay when loading the page for example?
-        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${0}ms`;
+        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${FADE_TRANSITION_TIME_MS}ms`;
       }
     }
   }, [wasVisible, fadeType]);
