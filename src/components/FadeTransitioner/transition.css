@@ -48,7 +48,7 @@
 .navbar-fade-enter.navbar-fade-enter-active {
   opacity: 1;
   /* NOTE: if you change this, update `GlobalNavbar.tsx` */
-  transition: opacity 300ms ease-in-out 300ms;
+  transition: opacity 300ms ease-in-out 700ms;
 }
 
 /* Fade-out */
