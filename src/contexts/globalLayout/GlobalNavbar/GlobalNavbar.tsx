@@ -12,7 +12,7 @@ function GlobalNavbar({ content }: Props) {
   return (
     <StyledGlobalNavbar className="GlobalNavbar" data-testid="navbar">
       <TransitionGroup>
-        <CSSTransition key={transitionKey} timeout={300} classNames="navbar-fade">
+        <CSSTransition key={transitionKey} timeout={500} classNames="navbar-fade">
           {/* We need a Suspense fallback here as not to trigger the root suspense boundary
           Anything else will end up fucking with React Transition Group's internal state
           and we'll get double navbars :(*/}
