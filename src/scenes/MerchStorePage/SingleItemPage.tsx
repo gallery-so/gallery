@@ -9,7 +9,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import { truncateAddress } from 'utils/wallet';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import noop from 'utils/noop';
 import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
 import { VStack } from 'components/core/Spacer/Stack';
@@ -33,9 +33,9 @@ export default function ItemPage({
 
   const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
     useMintContractWithQuantity({
-    contract,
-    tokenId,
-  });
+      contract,
+      tokenId,
+    });
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -46,6 +46,17 @@ export default function ItemPage({
   const [isReceiptState, setIsReceiptState] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showBox, setShowBox] = useState(false);
+
+  const supplyCopy = useMemo(() => {
+    if (typeof publicSupply === 'number' && typeof usedPublicSupply === 'number') {
+      const remainingSupply = publicSupply - usedPublicSupply;
+      if (remainingSupply * 2 < publicSupply) {
+        return `${remainingSupply} / ${publicSupply} left`;
+      }
+      return `Edition of ${publicSupply}`;
+    }
+    return '';
+  }, [publicSupply, usedPublicSupply]);
 
   return (
     <>
@@ -83,11 +94,7 @@ export default function ItemPage({
             <StyledPriceQuantityAndPurchaseContainer>
               <StyledPriceAndQuantity>
                 <StyledPrice>{ethers.utils.formatEther(tokenPrice)} Ξ each</StyledPrice>
-                <BaseM>
-                  {typeof publicSupply == 'number' && typeof usedPublicSupply == 'number'
-                    ? `${publicSupply - usedPublicSupply} / ${publicSupply} left`
-                    : ''}
-                </BaseM>
+                <BaseM>{supplyCopy}</BaseM>
               </StyledPriceAndQuantity>
               <StyledPurchaseBoxContainer>
                 <PurchaseBox
@@ -230,4 +237,4 @@ const StyledPurchaseBoxContainer = styled.div`
   @media only screen and (max-width: 768px) {
     padding-top: 16px;
   }
-`
+`;

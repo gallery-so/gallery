@@ -7,28 +7,18 @@ import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
-import { GLOBAL_NAVBAR_HEIGHT } from 'contexts/globalLayout/GlobalNavbar/GlobalNavbar';
 import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
 import { useModalState } from 'contexts/modal/ModalContext';
+import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type CollectionGalleryPageProps = {
   username: string;
-  collectionId: string;
   queryRef: CollectionGalleryPageFragment$key;
 };
 
-function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionGalleryPageProps) {
+function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProps) {
   const headTitle = `${username} | Gallery`;
-
-  const track = useTrack();
-
-  useEffect(() => {
-    track('Page View: Collection', {
-      username,
-      collectionId,
-    });
-  }, [username, collectionId, track]);
 
   const query = useFragment(
     graphql`
@@ -40,11 +30,45 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
             }
           }
         }
+        collection: collectionById(id: $collectionId) {
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on Collection {
+            __typename
+            dbid
+
+            gallery @required(action: THROW) {
+              dbid
+            }
+          }
+        }
         ...CollectionGalleryFragment
       }
     `,
     queryRef
   );
+
+  if (query?.collection?.__typename !== 'Collection') {
+    throw new Error('CollectionGalleryPage expected valid Collection');
+  }
+
+  const {
+    collection: {
+      dbid: collectionId,
+      gallery: { dbid: galleryId },
+    },
+  } = query;
+
+  const track = useTrack();
+
+  useEffect(() => {
+    track('Page View: Collection', {
+      username,
+      collectionId,
+    });
+  }, [username, collectionId, track]);
 
   const { push } = useRouter();
 
@@ -57,30 +81,35 @@ function CollectionGalleryPage({ collectionId, username, queryRef }: CollectionG
     if (!isLoggedIn) return;
     if (isModalOpenRef.current) return;
     if (userOwnsCollection) {
-      void push(`/edit?collectionId=${collectionId}`);
+      void push({
+        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        query: { galleryId, collectionId },
+      });
     } else {
-      void push(`/edit`);
+      void push({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } });
     }
-  }, [push, collectionId, userOwnsCollection, isLoggedIn, isModalOpenRef]);
+  }, [isLoggedIn, isModalOpenRef, userOwnsCollection, push, galleryId, collectionId]);
 
   useKeyDown('e', navigateToEdit);
 
   useDisplayFullPageNftDetailModal();
+
+  const navbarHeight = useGlobalNavbarHeight();
 
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledCollectionGalleryWrapper>
+      <StyledCollectionGalleryWrapper navbarHeight={navbarHeight}>
         <CollectionGallery queryRef={query} />
       </StyledCollectionGalleryWrapper>
     </>
   );
 }
 
-const StyledCollectionGalleryWrapper = styled.div`
-  padding-top: ${GLOBAL_NAVBAR_HEIGHT}px;
+const StyledCollectionGalleryWrapper = styled.div<{ navbarHeight: number }>`
+  padding-top: ${({ navbarHeight }) => navbarHeight}px;
   min-height: 100vh;
 
   display: flex;

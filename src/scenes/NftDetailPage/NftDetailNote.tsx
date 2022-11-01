@@ -1,6 +1,6 @@
 import { BaseM, TitleXS } from 'components/core/Text/Text';
 import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo, useRef } from 'react';
+import { useCallback, useState, useMemo, useRef, KeyboardEventHandler } from 'react';
 import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
 import unescape from 'utils/unescape';
 import styled from 'styled-components';
@@ -81,7 +81,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
   }, [updateNft, tokenId, collectorsNote, unescapedCollectorsNote, track, collectionId]);
 
   // If the user hits cmd + ctrl enter, submit the note
-  const handleKeyDown = useCallback(
+  const handleKeyDown = useCallback<KeyboardEventHandler>(
     async (event) => {
       if (event.key === 'Enter' && event.metaKey) {
         event.preventDefault();
@@ -165,7 +165,7 @@ type NoteViewerProps = {
   nftCollectorsNote: string;
 };
 
-function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
+export function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
   return (
     <VStack gap={8}>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
@@ -204,7 +204,7 @@ function NftDetailNote({
   );
 }
 
-const StyledContainer = styled.div<{ footerHeight: number }>`
+export const StyledContainer = styled.div<{ footerHeight: number }>`
   padding-top: 12px;
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;

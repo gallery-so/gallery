@@ -62,6 +62,15 @@ export default function getVideoOrImageUrlForNftPreview(
             }
           }
 
+          ... on GIFMedia {
+            __typename
+            previewURLs {
+              small
+              medium
+              large
+            }
+          }
+
           ... on InvalidMedia {
             __typename
             previewURLs {

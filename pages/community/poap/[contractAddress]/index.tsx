@@ -6,6 +6,8 @@ import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
 import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { ContractAddressPoapQuery } from '../../../../__generated__/ContractAddressPoapQuery.graphql';
+import { CommunityNavbar } from 'contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
+import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from 'constants/community';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -17,8 +19,14 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       query ContractAddressPoapQuery(
         $communityAddress: ChainAddressInput!
         $forceRefresh: Boolean
+        $tokenCommunityFirst: Int!
+        $tokenCommunityAfter: String
+        $listOwnersFirst: Int!
+        $listOwnersAfter: String
+        $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
+        ...CommunityNavbarFragment
       }
     `,
     {
@@ -27,15 +35,23 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         chain: 'POAP',
       },
       forceRefresh: false,
+      tokenCommunityFirst: GRID_ITEM_PER_PAGE,
+      listOwnersFirst: LIST_ITEM_PER_PAGE,
+      onlyGalleryUsers: true,
     }
   );
 
   if (!contractAddress) {
     // Something went horribly wrong
-    return <GalleryRedirect to="/" />;
+    return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
+  return (
+    <GalleryRoute
+      navbar={<CommunityNavbar queryRef={query} />}
+      element={<CommunityPageScene queryRef={query} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

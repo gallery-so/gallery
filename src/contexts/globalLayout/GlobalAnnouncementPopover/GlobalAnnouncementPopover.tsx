@@ -112,7 +112,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
           queryRef={query}
           onTezosAddWalletSuccess={() => {
             clearAllModals();
-            push('/edit');
+            push({ pathname: '/edit' });
           }}
         />
       ),

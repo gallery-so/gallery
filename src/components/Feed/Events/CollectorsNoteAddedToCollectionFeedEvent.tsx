@@ -19,15 +19,19 @@ import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import Markdown from 'components/core/Markdown/Markdown';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { Route } from 'nextjs-routes';
 
 type Props = {
-  eventRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
+  eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToCollectionFeedEvent({
+  eventDataRef,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
@@ -49,7 +53,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
         newCollectorsNote
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -65,7 +69,11 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
     return removeNullValues(event.collection.tokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [event.collection.tokens]) as TokenToPreview[];
 
-  const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
+  const collectionPagePath: Route = {
+    pathname: '/[username]/[collectionId]',
+    query: { username: event.owner.username as string, collectionId: event.collection.dbid },
+  };
+
   const track = useTrack();
 
   const numAdditionalPieces = event.collection.tokens.length - MAX_PIECES_DISPLAYED;
@@ -74,7 +82,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({ eventRef, que
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!event.collection.tokens.length) {
-    return null;
+    throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without any tokens');
   }
 
   return (

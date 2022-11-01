@@ -4,11 +4,11 @@ export type CollectionWizardState = {
   collectionIdBeingEdited?: string;
 };
 
-const CollectionWizardStateContext = createContext<CollectionWizardState>({
-  collectionIdBeingEdited: undefined,
-});
+const CollectionWizardStateContext = createContext<CollectionWizardState | undefined>(undefined);
+
 export const useCollectionWizardState = (): CollectionWizardState => {
   const context = useContext(CollectionWizardStateContext);
+
   if (!context) {
     throw new Error('Attempted to use CollectionWizardStateContext without a provider');
   }
@@ -33,11 +33,11 @@ export const useCollectionWizardActions = (): CollectionWizardActions => {
   return context;
 };
 
-type Props = { children: ReactNode };
+type Props = { children: ReactNode; initialCollectionId?: string };
 
-const CollectionWizardProvider = memo(({ children }: Props) => {
+const CollectionWizardProvider = memo(({ children, initialCollectionId }: Props) => {
   const [CollectionWizardState, setCollectionWizardState] = useState<CollectionWizardState>({
-    collectionIdBeingEdited: undefined,
+    collectionIdBeingEdited: initialCollectionId,
   });
 
   const setCollectionIdBeingEdited = useCallback((collectionIdBeingEdited: string) => {

@@ -1,14 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import unescape from 'utils/unescape';
 import { BaseM, TitleS } from 'components/core/Text/Text';
 import breakpoints from 'components/core/breakpoints';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'components/core/Markdown/Markdown';
 import { DisplayLayout } from 'components/core/enums';
 import NftGallery from 'components/NftGallery/NftGallery';
 import TextButton from 'components/core/Button/TextButton';
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
 import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useRouter } from 'next/router';
 import { baseUrl } from 'utils/baseUrl';
@@ -17,12 +16,17 @@ import { graphql } from 'relay-runtime';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { UserGalleryCollectionFragment$key } from '__generated__/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '__generated__/UserGalleryCollectionQueryFragment.graphql';
-import CollectionCreateOrEditForm from 'flows/shared/steps/OrganizeCollection/CollectionCreateOrEditForm';
 import noop from 'utils/noop';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import useResizeObserver from 'hooks/useResizeObserver';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { HStack } from 'components/core/Spacer/Stack';
+import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { Route, route } from 'nextjs-routes';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
+import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
+import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
+import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
@@ -30,6 +34,7 @@ type Props = {
   mobileLayout: DisplayLayout;
   cacheHeight: number;
   onLoad: () => void;
+  onLayoutShift: () => void;
 };
 
 function UserGalleryCollection({
@@ -38,6 +43,7 @@ function UserGalleryCollection({
   mobileLayout,
   onLoad,
   cacheHeight,
+  onLayoutShift,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -70,7 +76,10 @@ function UserGalleryCollection({
 
   const loggedInUserId = useLoggedInUserId(query);
   const showEditActions = loggedInUserId === collection.gallery.owner.id;
-  const galleryId = collection.gallery.dbid;
+  const {
+    dbid: collectionId,
+    gallery: { dbid: galleryId },
+  } = collection;
 
   const { showModal } = useModalActions();
   const router = useRouter();
@@ -82,7 +91,11 @@ function UserGalleryCollection({
   );
 
   const username = router.query.username as string;
-  const collectionUrl = `/${username}/${collection.dbid}`;
+  const collectionUrlPath: Route = {
+    pathname: '/[username]/[collectionId]',
+    query: { username, collectionId },
+  };
+  const collectionUrl = route(collectionUrlPath);
 
   const track = useTrack();
 
@@ -108,55 +121,59 @@ function UserGalleryCollection({
           // No need for onNext because this isn't part of a wizard
           onNext={noop}
           galleryId={galleryId}
-          collectionId={collection.dbid}
+          collectionId={collectionId}
           collectionName={collection.name}
           collectionCollectorsNote={collection.collectorsNote ?? ''}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collection.dbid, collection.name, galleryId, showModal]);
+  }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
+
+  const [showMore, setShowMore] = useState(false);
+  const handleCollectorsNoteClick = useCallback(() => {
+    setShowMore((previous) => !previous);
+
+    onLayoutShift();
+  }, [onLayoutShift]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
-          <UnstyledLink href={collectionUrl}>
+          <UnstyledLink href={collectionUrlPath}>
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
-              <StyledShareButton text="Share" onClick={handleShareClick} />
+              <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <StyledSettingsDropdown>
-              <Dropdown>
-                <VStack gap={8}>
-                  {showEditActions && (
-                    <>
-                      <TextButton
-                        onClick={handleEditNameClick}
-                        text="EDIT NAME & DESCRIPTION"
-                        underlineOnHover
-                      />
-                      <UnstyledLink
-                        href={`/edit?collectionId=${collection.dbid}`}
-                        onClick={() => track('Update existing collection button clicked')}
-                      >
-                        <TextButton text="Edit Collection" underlineOnHover />
-                      </UnstyledLink>
-                    </>
-                  )}
-                  <UnstyledLink href={collectionUrl}>
-                    <TextButton text="View Collection" underlineOnHover />
-                  </UnstyledLink>
-                </VStack>
-              </Dropdown>
-            </StyledSettingsDropdown>
+            <SettingsDropdown>
+              <DropdownSection>
+                {showEditActions && (
+                  <>
+                    <DropdownItem onClick={handleEditNameClick}>
+                      EDIT NAME & DESCRIPTION
+                    </DropdownItem>
+                    <DropdownLink
+                      href={{
+                        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                        query: { galleryId, collectionId },
+                      }}
+                      onClick={() => track('Update existing collection button clicked')}
+                    >
+                      EDIT COLLECTION
+                    </DropdownLink>
+                  </>
+                )}
+                <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
+              </DropdownSection>
+            </SettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
-            <StyledCollectorsNote>
+            <StyledCollectorsNote showMore={showMore} onClick={handleCollectorsNoteClick}>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
@@ -167,30 +184,18 @@ function UserGalleryCollection({
   );
 }
 
-const StyledSettingsDropdown = styled.div`
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-
-  background: url(/icons/ellipses.svg) no-repeat scroll 10px 9px;
-  background-position: center;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ${StyledDropdownButton} {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const StyledShareButton = styled(TextButton)`
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-`;
-
 const StyledCopyToClipboard = styled(CopyToClipboard)`
   height: 24px !important;
+`;
+
+const StyledOptionsContainer = styled(HStack)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+
+  transition: opacity 200ms ease-in-out;
+  opacity: 0;
 `;
 
 const StyledCollectionWrapper = styled.div`
@@ -199,7 +204,7 @@ const StyledCollectionWrapper = styled.div`
   width: 100%;
   position: relative;
 
-  &:hover ${StyledSettingsDropdown}, &:hover ${StyledShareButton} {
+  &:hover ${StyledOptionsContainer} {
     opacity: 1;
   }
 `;
@@ -233,23 +238,38 @@ const StyledCollectorsTitle = styled(TitleS)`
   }
 `;
 
-const StyledCollectorsNote = styled(BaseM)`
+const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   width: 100%;
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 70%;
-  }
 
   @media only screen and ${breakpoints.tablet} {
     width: 70%;
   }
-`;
 
-const StyledOptionsContainer = styled(HStack)`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  p {
+    display: inline;
+  }
+
+  ${({ showMore }) =>
+    showMore
+      ? css`
+          -webkit-line-clamp: unset;
+        `
+      : css`
+          // We only care about line clamping on mobile
+          @media only screen and ${breakpoints.tablet} {
+            -webkit-line-clamp: unset;
+          }
+
+          -webkit-line-clamp: 2;
+
+          p {
+            padding-bottom: 0 !important;
+          }
+        `}
 `;
 
 export default UserGalleryCollection;

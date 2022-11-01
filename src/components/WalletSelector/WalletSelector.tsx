@@ -17,6 +17,7 @@ type Props = {
   connectionMode?: ConnectionMode;
   queryRef: WalletSelectorFragment$key;
   variant?: WalletSelectorVariant;
+  onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
 };
 
@@ -24,6 +25,7 @@ export default function WalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant,
+  onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
 }: Props) {
   // Our feature flags are semi-global flags and I want to be able to toggle
@@ -54,6 +56,7 @@ export default function WalletSelector({
       connectionMode={connectionMode}
       queryRef={query}
       variant={variant}
+      onEthAddWalletSuccess={onEthAddWalletSuccess}
       onTezosAddWalletSuccess={onTezosAddWalletSuccess}
     />
   ) : (

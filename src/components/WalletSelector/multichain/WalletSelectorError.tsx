@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import { Button } from 'components/core/Button/Button';
-import Markdown from 'components/core/Markdown/Markdown';
 import { VStack } from 'components/core/Spacer/Stack';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   heading: string;
@@ -11,20 +10,15 @@ type Props = {
 };
 
 export const WalletSelectorError = ({ heading, body, reset }: Props) => (
-  <VStack gap={16}>
-    <TitleS>{heading}</TitleS>
-    <VStack>
-      <StyledBody>
-        <Markdown text={body} />
-      </StyledBody>
+  <EmptyState title={heading} description={body}>
+    <StyledButtonContainer>
       <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
-    </VStack>
-  </VStack>
+    </StyledButtonContainer>
+  </EmptyState>
 );
 
-const StyledBody = styled(BaseM)`
-  margin-bottom: 30px;
-  white-space: pre-wrap;
+const StyledButtonContainer = styled(VStack)`
+  padding-top: 30px;
 `;
 
 const StyledRetryButton = styled(Button)`

@@ -1,7 +1,6 @@
-import { useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, TitleM } from 'components/core/Text/Text';
+import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
 import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
@@ -15,6 +14,8 @@ import transitions, {
 import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
 import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -64,20 +65,28 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
+
     setIsActive(true);
     setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovering(false);
-    setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
+    deactivateHoverCardTimeoutRef.current = setTimeout(
+      () => setIsActive(false),
+      ANIMATED_COMPONENT_TRANSITION_MS
+    );
   };
 
-  const handleClick = useCallback(
+  const handleClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
-      router.push(`${user.username}`);
+      router.push({ pathname: '/[username]', query: { username: user.username as string } });
     },
     [user, router]
   );
@@ -86,23 +95,30 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
+  const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
+    event.stopPropagation();
+  }, []);
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <InteractiveLink to={`/${user.username}`}>{user.username}</InteractiveLink>
+        <Link href={{ pathname: '/[username]', query: { username: user.username as string } }}>
+          <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
+        </Link>
       </StyledLinkContainer>
       <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
         {isActive && (
           <StyledCardContainer>
             <StyledCardHeader>
-              <StyledHoverCardTitleContainer>
+              <HStack align="center" gap={4}>
+                <StyledCardUsername>{user.username}</StyledCardUsername>
+
                 {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>
                 )}
-                <StyledCardUsername>{user.username}</StyledCardUsername>
-              </StyledHoverCardTitleContainer>
+              </HStack>
 
               <BaseM>{totalCollections} collections</BaseM>
             </StyledCardHeader>
@@ -157,11 +173,6 @@ const StyledCardHeader = styled.div`
   justify-content: space-between;
   // enforce height on container since the follow button causes additional height
   height: 24px;
-`;
-
-const StyledHoverCardTitleContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const StyledFollowButtonWrapper = styled.div`

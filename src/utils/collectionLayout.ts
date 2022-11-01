@@ -4,7 +4,7 @@ import {
   StagedCollection,
   StagingItem,
   WhitespaceBlock,
-} from 'flows/shared/steps/OrganizeCollection/types';
+} from 'flows/../components/ManageGallery/OrganizeCollection/types';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
 type Section<T> = {

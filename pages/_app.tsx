@@ -1,4 +1,4 @@
-import { FC, ComponentType, useEffect } from 'react';
+import { FC, ComponentType, useEffect, useState, PropsWithChildren } from 'react';
 
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
@@ -14,6 +14,8 @@ import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import welcomeDoormat from 'utils/welcomeDoormat';
 import isProduction from 'utils/isProduction';
 
+import { Analytics } from '@vercel/analytics/react';
+
 type NameOrProperty =
   | { name: string; property?: undefined }
   | { name?: undefined; property: string };
@@ -25,9 +27,18 @@ export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
 };
 
-const SafeHydrate: FC = ({ children }) => (
-  <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
-);
+// This component ensures that we don't try to render anything on the server.
+// We have a long way to go until we're able to do this w/o compromising
+// on the user's experience.
+function SafeHydrate({ children }: PropsWithChildren) {
+  const [render, setRender] = useState(false);
+
+  useEffect(() => {
+    setRender(true);
+  }, []);
+
+  return <div suppressHydrationWarning>{render ? children : null}</div>;
+}
 
 const App: FC<{
   Component: ComponentType<MetaTagProps>;
@@ -77,7 +88,10 @@ const App: FC<{
       <SafeHydrate>
         <AppProvider relayCache={relayCache}>
           <FadeTransitioner locationKey={locationKey}>
-            <Component {...pageProps} />
+            <>
+              <Component {...pageProps} />
+              <Analytics />
+            </>
           </FadeTransitioner>
         </AppProvider>
       </SafeHydrate>

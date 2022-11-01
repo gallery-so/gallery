@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 import { DisplayLayout } from 'components/core/enums';
@@ -19,6 +19,7 @@ import {
   WindowScroller,
 } from 'react-virtualized';
 import breakpoints from 'components/core/breakpoints';
+import useWindowSize from 'hooks/useWindowSize';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;
@@ -68,19 +69,22 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const nonNullCollections = removeNullValues(collections);
 
-  const cache = useRef(
-    new CellMeasurerCache({
-      fixedWidth: true,
-      minHeight: 100,
-    })
+  const [cache] = useState(
+    () =>
+      new CellMeasurerCache({
+        fixedWidth: true,
+        minHeight: 100,
+      })
   );
+
   const listRef = useRef<List>(null);
+  const { width } = useWindowSize();
 
   // If the mobileLayout is changed, we need to recalculate the cache height.
   useEffect(() => {
-    cache.current.clearAll();
+    cache.clearAll();
     listRef.current?.recomputeRowHeights();
-  }, [mobileLayout]);
+  }, [cache, mobileLayout, width]);
 
   const collectionsToDisplay = useMemo(
     () =>
@@ -96,26 +100,29 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     [nonNullCollections]
   );
 
+  const handleLayoutShift = useCallback(
+    (index: number) => {
+      cache.clear(index, 0);
+      listRef.current?.recomputeRowHeights(index);
+    },
+    [cache]
+  );
+
   const rowRenderer = useCallback(
     ({ index, key, parent, style }: ListRowProps) => {
       const collection = collectionsToDisplay[index];
       return (
-        <CellMeasurer
-          cache={cache.current}
-          columnIndex={0}
-          rowIndex={index}
-          key={key}
-          parent={parent}
-        >
+        <CellMeasurer cache={cache} columnIndex={0} rowIndex={index} key={key} parent={parent}>
           {({ registerChild, measure }) => {
             return (
               // @ts-expect-error Bad types from react-virtualized
               <StyledUserGalleryCollectionContainer ref={registerChild} key={key} style={style}>
                 <UserGalleryCollection
+                  onLayoutShift={() => handleLayoutShift(index)}
                   queryRef={query}
                   collectionRef={collection}
                   mobileLayout={mobileLayout}
-                  cacheHeight={cache.current.getHeight(index, 0)}
+                  cacheHeight={cache.getHeight(index, 0)}
                   onLoad={measure}
                 />
               </StyledUserGalleryCollectionContainer>
@@ -124,14 +131,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         </CellMeasurer>
       );
     },
-    [collectionsToDisplay, mobileLayout, query]
+    [cache, collectionsToDisplay, handleLayoutShift, mobileLayout, query]
   );
 
   const numCollectionsToDisplay = collectionsToDisplay.length;
 
   if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
-      ? 'Your gallery is empty. Display your NFTs by creating a collection.'
+      ? 'Your gallery is empty. Display your pieces by creating a collection.'
       : 'Curation in progress.';
 
     return <EmptyGallery message={emptyGalleryMessage} />;
@@ -143,6 +150,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         {({ height, registerChild, scrollTop, onChildScroll }) => (
           <AutoSizer disableHeight>
             {({ width }) => (
+              // @ts-expect-error shitty react-virtualized types
               <div ref={registerChild}>
                 <List
                   ref={listRef}
@@ -150,10 +158,10 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   width={width}
                   height={height}
                   onScroll={onChildScroll}
-                  rowHeight={cache.current.rowHeight}
+                  rowHeight={cache.rowHeight}
                   rowCount={numCollectionsToDisplay}
                   scrollTop={scrollTop}
-                  deferredMeasurementCache={cache.current}
+                  deferredMeasurementCache={cache}
                   rowRenderer={rowRenderer}
                   style={{
                     outline: 'none',
@@ -179,7 +187,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
 const StyledUserGalleryCollections = styled.div`
   width: 100%;
-  padding-top: 48px;
+  padding-top: 16px;
 
   @media only screen and ${breakpoints.tablet} {
     padding-top: 80px;

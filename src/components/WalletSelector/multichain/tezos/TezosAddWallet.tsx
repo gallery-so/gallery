@@ -1,6 +1,6 @@
 import { Button } from 'components/core/Button/Button';
 import colors from 'components/core/colors';
-import { BaseM, TitleS } from 'components/core/Text/Text';
+import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Web3Error } from 'types/Error';
@@ -29,9 +29,9 @@ import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
 import { useBeaconActions } from 'contexts/beacon/BeaconContext';
-import WalletOnboardingMessage from '../WalletOnboardingMessage';
 import { VStack } from 'components/core/Spacer/Stack';
 import noop from 'utils/noop';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;
@@ -206,48 +206,49 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with Tezos</TitleS>
-        <BaseM>The following address is already connected to this account:</BaseM>
-        <BaseM color={colors.offBlack}>{account}</BaseM>
-      </VStack>
+      <EmptyState title="Connect with Tezos">
+        <VStack>
+          <BaseM>The following address is already connected to this account:</BaseM>
+          <BaseM color={colors.offBlack}>{account}</BaseM>
+        </VStack>
+      </EmptyState>
     );
   }
 
-  // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account && publicKey) {
     return (
-      <VStack gap={24}>
-        <VStack gap={16}>
-          <VStack gap={8}>
-            <TitleS>Connect with Tezos</TitleS>
-            <BaseM>Confirm the following wallet address:</BaseM>
-            <BaseM color={colors.offBlack}>{account}</BaseM>
+      <EmptyState title="Connect with Tezos">
+        <VStack gap={24}>
+          <VStack gap={16}>
+            <VStack>
+              <BaseM>Confirm the following wallet address:</BaseM>
+              <BaseM color={colors.offBlack}>{account}</BaseM>
+            </VStack>
+            <BaseM>
+              If you want to connect a different address via Tezos wallet, please switch accounts in
+              the extension and try again.
+            </BaseM>
           </VStack>
-          <BaseM>
-            If you want to connect a different address via Tezos wallet, please switch accounts in
-            the extension and try again.
-          </BaseM>
+          <StyledButton
+            onClick={() => attemptAddWallet(account, publicKey)}
+            disabled={isConnecting}
+          >
+            {isConnecting ? 'Connecting...' : 'Confirm'}
+          </StyledButton>
         </VStack>
-        <StyledButton onClick={() => attemptAddWallet(account, publicKey)} disabled={isConnecting}>
-          {isConnecting ? 'Connecting...' : 'Confirm'}
-        </StyledButton>
-      </VStack>
+      </EmptyState>
     );
   }
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <WalletOnboardingMessage
-        title={messageHeaderText}
-        description="Sign the message with your wallet."
-      />
+      <EmptyState title={messageHeaderText} description="Sign the message with your wallet." />
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
-    <WalletOnboardingMessage
+    <EmptyState
       title={messageHeaderText}
       description="Approve your wallet to connect to Gallery."
     />

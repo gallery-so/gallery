@@ -27,10 +27,14 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
     setIsActive(true);
 
     if (autoClose) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setIsActive(false);
         setTimeout(onClose, ANIMATED_COMPONENT_TRANSITION_MS);
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
     }
   }, [autoClose, onClose]);
 
@@ -64,6 +68,7 @@ const _Animate = styled.div<{ isActive: boolean }>`
   animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   animation-fill-mode: forwards;
 
+  pointer-events: none;
   position: fixed;
   left: 0;
   right: 0;
@@ -102,6 +107,8 @@ const StyledToast = styled.div`
   padding: 8px 10px 8px 16px;
   max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};
+
+  pointer-events: auto;
 `;
 
 const StyledClose = styled.button`

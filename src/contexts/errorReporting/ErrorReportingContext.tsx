@@ -4,7 +4,7 @@ import { ScopeContext } from '@sentry/types';
 import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
 import noop from 'utils/noop';
 
-type AdditionalContext = Partial<Pick<ScopeContext, 'tags' | 'level'>>;
+export type AdditionalContext = Partial<Pick<ScopeContext, 'tags' | 'level'>>;
 
 export type ReportFn = (
   errorOrMessage: Error | string,

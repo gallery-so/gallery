@@ -66,35 +66,29 @@ export default function useLoginOrRedirectToOnboarding() {
       } else {
         // Redirect user to the onboarding flow with necessary input params to create an account
         if (authMechanism.mechanism.eoa) {
-          push(
-            {
-              pathname: '/welcome',
-              query: {
-                authMechanismType: 'eoa',
-                chain: authMechanism.mechanism.eoa.chainPubKey.chain,
-                address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
-                nonce: authMechanism.mechanism.eoa.nonce,
-                signature: authMechanism.mechanism.eoa.signature,
-                userFriendlyWalletName,
-              },
+          push({
+            pathname: '/onboarding/welcome',
+            query: {
+              authMechanismType: 'eoa',
+              chain: authMechanism.mechanism.eoa.chainPubKey.chain,
+              address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
+              nonce: authMechanism.mechanism.eoa.nonce,
+              signature: authMechanism.mechanism.eoa.signature,
+              userFriendlyWalletName,
             },
-            '/welcome'
-          );
+          });
         }
 
         if (authMechanism.mechanism.gnosisSafe) {
-          push(
-            {
-              pathname: '/welcome',
-              query: {
-                authMechanismType: 'gnosisSafe',
-                address: authMechanism.mechanism.gnosisSafe.address,
-                nonce: authMechanism.mechanism.gnosisSafe.nonce,
-                userFriendlyWalletName,
-              },
+          push({
+            pathname: '/onboarding/welcome',
+            query: {
+              authMechanismType: 'gnosisSafe',
+              address: authMechanism.mechanism.gnosisSafe.address,
+              nonce: authMechanism.mechanism.gnosisSafe.nonce,
+              userFriendlyWalletName,
             },
-            '/welcome'
-          );
+          });
         }
 
         return;

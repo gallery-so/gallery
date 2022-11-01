@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { StagedCollection } from 'flows/shared/steps/OrganizeCollection/types';
 import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
 import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
+import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
 
 type Props = {
   galleryId: string;
@@ -19,10 +19,16 @@ export default function useCreateCollection() {
   const [createCollection] = usePromisifiedMutation<useCreateCollectionMutation>(graphql`
     mutation useCreateCollectionMutation($input: CreateCollectionInput!) {
       createCollection(input: $input) {
+        ... on ErrInvalidInput {
+          __typename
+          message
+        }
         ... on CreateCollectionPayload {
           __typename
 
           collection {
+            dbid
+
             gallery {
               # This is how we update all galleries in the app.
               # Any other component that needs data from a collection
@@ -75,10 +81,15 @@ export default function useCreateCollection() {
         },
       });
 
-      if (response.createCollection?.__typename !== 'CreateCollectionPayload') {
-        // TODO(Terence): How do we really want to handle this.
-        throw new Error('something went wrong while creating your collection');
+      if (response.createCollection?.__typename === 'ErrInvalidInput') {
+        throw new Error('The description you entered is too long.');
+      } else if (response.createCollection?.__typename !== 'CreateCollectionPayload') {
+        throw new Error(
+          `Something went wrong while creating your collection, we're looking into it.`
+        );
       }
+
+      return response;
     },
     [createCollection]
   );

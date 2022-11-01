@@ -1,14 +1,16 @@
+import { route } from 'nextjs-routes';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import InteractiveLink, {
   InteractiveLinkNeedsVerification,
 } from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
+import { PropsWithChildren } from 'react';
 
 type PublicProps = {
   text: string;
   inheritLinkStyling?: boolean;
-  CustomInternalLinkComponent?: React.FunctionComponent<{ href: string }>;
+  CustomInternalLinkComponent?: React.FunctionComponent<PropsWithChildren<{ href: string }>>;
 };
 
 // Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app
@@ -41,7 +43,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === '/';
+            const isInternalLink = href[0] === route({ pathname: '/' });
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>
@@ -49,6 +51,7 @@ function BaseMarkdown({
             }
             if (isInternalLink) {
               return (
+                // @ts-expect-error href is a dynamic route and therefore needs to be passed as a string
                 <InteractiveLink inheritLinkStyling={inheritLinkStyling} to={href}>
                   {children}
                 </InteractiveLink>

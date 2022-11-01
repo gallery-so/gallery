@@ -36,8 +36,10 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
 
   const handleVideoLoadError = useCallback(
     (e: SyntheticEvent<HTMLVideoElement, Event>) => {
-      setErrored(true);
-      handleError(e);
+      if (e.currentTarget.error) {
+        setErrored(true);
+        handleError(e);
+      }
     },
     [handleError]
   );

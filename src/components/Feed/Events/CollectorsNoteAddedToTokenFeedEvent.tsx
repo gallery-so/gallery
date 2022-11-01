@@ -3,7 +3,7 @@ import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
@@ -19,7 +19,7 @@ import Markdown from 'components/core/Markdown/Markdown';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
+  eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
@@ -28,7 +28,7 @@ const MIDDLE_GAP = 24;
 // images will be rendered within a square of this size
 const IMAGE_SPACE_SIZE = 269;
 
-export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
@@ -51,7 +51,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
         }
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -70,7 +70,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
   const track = useTrack();
 
-  const handleEventClick = useCallback(
+  const handleEventClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked collectors note added to token event');
@@ -97,7 +97,14 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventRef, queryRef
                 <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's
                 note to{' '}
                 <InteractiveLink
-                  to={`/${event.owner.username}/${event.token.collection?.dbid}/${event.token.token?.dbid}`}
+                  to={{
+                    pathname: '/[username]/[collectionId]/[tokenId]',
+                    query: {
+                      username: event.owner.username as string,
+                      collectionId: event.token.collection?.dbid as string,
+                      tokenId: event.token.token?.dbid,
+                    },
+                  }}
                   onClick={handleEventClick}
                 >
                   {event.token.token?.name}

@@ -33,6 +33,7 @@ import { graphql } from 'relay-runtime';
 import useCreateNonce from '../mutations/useCreateNonce';
 import useAddWallet from '../mutations/useAddWallet';
 import { VStack } from 'components/core/Spacer/Stack';
+import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -51,10 +52,10 @@ function AddWalletPendingDefault({
   queryRef,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
-  const signer = useMemo(
-    () => (library && account ? library.getSigner(account) : undefined),
-    [library, account]
-  );
+  const signer = useMemo(() => (library && account ? library.getSigner(account) : undefined), [
+    library,
+    account,
+  ]);
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -243,19 +244,19 @@ function AddWalletPendingDefault({
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <VStack gap={8}>
-        <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-        <BaseM>Sign the message with your wallet.</BaseM>
-      </VStack>
+      <EmptyState
+        title={`Connect with ${userFriendlyWalletName}`}
+        description="Sign the message with your wallet."
+      />
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
-    <VStack gap={8}>
-      <TitleS>Connect with {userFriendlyWalletName}</TitleS>
-      <BaseM>Approve your wallet to connect to Gallery.</BaseM>
-    </VStack>
+    <EmptyState
+      title={`Connect with ${userFriendlyWalletName}`}
+      description="Approve your wallet to connect to Gallery."
+    />
   );
 }
 

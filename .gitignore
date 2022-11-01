@@ -21,6 +21,7 @@
 # e2e
 /tests/e2e/screenshots/*
 /tests/e2e/videos/*
+/cypress/screenshots
 /cypress/videos
 
 # misc
@@ -41,6 +42,9 @@ _internal*
 
 # GraphQL Codegen Files
 __generated__/operations.ts
+
+# Next.js Routes Types
+nextjs-routes.d.ts
 
 # Sentry
 .sentryclirc

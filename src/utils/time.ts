@@ -34,7 +34,7 @@ export const getTimeSince = (time: string) => {
   const interval = Math.floor(Date.now() - new Date(time).getTime());
 
   if (interval < MINUTE) {
-    return `${Math.floor(interval / SECOND)}s`;
+    return `a few seconds ago`;
   }
   if (interval < HOUR) {
     return `${Math.floor(interval / MINUTE)}m`;
@@ -46,7 +46,7 @@ export const getTimeSince = (time: string) => {
     return `${Math.floor(interval / DAY)}d`;
   }
   if (interval < YEAR) {
-    return `${Math.floor(interval / MONTH)}m`;
+    return `${Math.floor(interval / MONTH)}mo`;
   }
 
   return `${Math.floor(interval / YEAR)}y`;

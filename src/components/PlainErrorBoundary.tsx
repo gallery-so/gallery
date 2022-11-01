@@ -1,14 +1,14 @@
-import React, { ErrorInfo } from 'react';
+import { Component, ErrorInfo, PropsWithChildren, ReactNode } from 'react';
 
-type Props = {
-  fallback: React.ReactNode;
-};
+type Props = PropsWithChildren<{
+  fallback: ReactNode;
+}>;
 
 type State = {
   hasError: boolean;
 };
 
-export class PlainErrorBoundary extends React.Component<Props, State> {
+export class PlainErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(): State {
     return { hasError: true };
   }

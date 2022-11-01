@@ -13,6 +13,7 @@ import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import Debugger from 'components/Debugger/Debugger';
 import isProduction from 'utils/isProduction';
 import BeaconProvider from './beacon/BeaconContext';
+import { SyncTokensLockProvider } from 'contexts/SyncTokensLockContext';
 
 type Props = {
   children: React.ReactNode;
@@ -34,10 +35,12 @@ export default function AppProvider({ children, relayCache }: Props) {
                     <BeaconProvider>
                       <GalleryNavigationProvider>
                         <ModalProvider>
-                          <GlobalLayoutContextProvider>
-                            {isProd ? null : <Debugger />}
-                            {children}
-                          </GlobalLayoutContextProvider>
+                          <SyncTokensLockProvider>
+                            <GlobalLayoutContextProvider>
+                              {isProd ? null : <Debugger />}
+                              {children}
+                            </GlobalLayoutContextProvider>
+                          </SyncTokensLockProvider>
                         </ModalProvider>
                       </GalleryNavigationProvider>
                     </BeaconProvider>

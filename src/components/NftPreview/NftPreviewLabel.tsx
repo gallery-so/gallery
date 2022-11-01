@@ -8,6 +8,8 @@ import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLa
 import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
 import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { useMemo } from 'react';
+import unescape from 'utils/unescape';
 
 type Props = {
   className?: string;
@@ -32,6 +34,14 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
 
   const showCollectionName = Boolean(token.name);
 
+  const decodedTokenName = useMemo(() => {
+    if (token.name) {
+      return unescape(token.name);
+    }
+
+    return null;
+  }, [token.name]);
+
   return (
     <StyledNftPreviewLabel className={className}>
       <HStack gap={4} justify={'flex-end'} align="center">
@@ -42,7 +52,7 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
             // token name, we don't want to show duplicate information
             token.chain === 'POAP' ? null : (
               <StyledBaseM color={colors.white} lines={1}>
-                {token.name}
+                {decodedTokenName}
               </StyledBaseM>
             )
           }
@@ -69,6 +79,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
           contractAddress {
             address
           }
+          badgeURL
         }
 
         ...getCommunityUrlForTokenFragment
@@ -99,9 +110,12 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   }
 
   return shouldDisplayLinkToCommunityPage ? (
-    <StyledBaseM lines={2}>
-      <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-    </StyledBaseM>
+    <HStack gap={4} align="center" justify="flex-end">
+      <StyledBaseM lines={2}>
+        <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
+      </StyledBaseM>
+      {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+    </HStack>
   ) : (
     <StyledBaseM color={colors.white} lines={2}>
       {collectionName}
@@ -169,6 +183,11 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
     text-overflow: unset;
   }
 }
+`;
+
+const StyledBadge = styled.img`
+  width: 12px;
+  height: 12px;
 `;
 
 /**

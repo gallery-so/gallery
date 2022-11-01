@@ -9,7 +9,7 @@ import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { getTimeSince } from 'utils/time';
@@ -22,12 +22,12 @@ import { removeNullValues } from 'utils/removeNullValues';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: UserFollowedUsersFeedEventFragment$key;
+  eventDataRef: UserFollowedUsersFeedEventFragment$key;
   queryRef: UserFollowedUsersFeedEventQueryFragment$key;
   feedMode: FeedMode;
 };
 
-export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMode }: Props) {
+export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, feedMode }: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
@@ -53,7 +53,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
       }
     `,
 
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -82,11 +82,11 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const firstFolloweeUsername = event.followed[0]?.user?.username;
   const track = useTrack();
 
-  const handleSeeFollowedUserClick = useCallback(
+  const handleSeeFollowedUserClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked see single followed user event');
-      void push(`/${firstFolloweeUsername}`);
+      void push({ pathname: '/[username]', query: { username: firstFolloweeUsername as string } });
     },
     [firstFolloweeUsername, push, track]
   );
@@ -117,7 +117,7 @@ export default function UserFollowedUsersFeedEvent({ eventRef, queryRef, feedMod
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const handleSeeMoreClick = useCallback(
+  const handleSeeMoreClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
       track('Feed: Clicked See more followed users event');
@@ -197,6 +197,12 @@ const StyledEventContent = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+
+  // These styles are here since this is the only
+  // event that doesn't have the socialize section
+  // The padding / border are typically on the FeedEventSocializeSection component
+  padding-bottom: 16px;
+  border-bottom: 1px solid ${colors.faint};
 `;
 
 const StyledEventHeaderContainer = styled(VStack)`

@@ -80,7 +80,8 @@ const ToastProvider = memo(({ children }: Props) => {
     <ToastActionsContext.Provider value={value}>
       {toasts.map(({ message, autoClose, id }) => (
         <AnimatedToast
-          key={message}
+          data-testid={id}
+          key={id}
           message={message}
           onClose={() => dismissToast(id)}
           autoClose={autoClose}

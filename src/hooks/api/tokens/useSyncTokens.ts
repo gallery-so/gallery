@@ -1,25 +1,24 @@
 import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql } from 'relay-runtime';
 import { useSyncTokensMutation } from '__generated__/useSyncTokensMutation.graphql';
+import { useSyncTokensContext } from 'contexts/SyncTokensLockContext';
+import { useToastActions } from 'contexts/toast/ToastContext';
+import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
 
 export default function useSyncTokens() {
+  const { isLocked, lock } = useSyncTokensContext();
+
   const [syncTokens] = usePromisifiedMutation<useSyncTokensMutation>(
     graphql`
-      mutation useSyncTokensMutation {
-        syncTokens {
+      mutation useSyncTokensMutation($chain: Chain!) {
+        syncTokens(chains: [$chain]) {
           __typename
           ... on SyncTokensPayload {
             viewer {
-              user {
-                tokens {
-                  dbid @required(action: THROW)
-                  name @required(action: THROW)
-                  lastUpdated @required(action: THROW)
-                  ...SidebarFragment
-                  ...StagingAreaFragment
-                }
-              }
+              # This should be sufficient to capture all the things
+              # we want to refresh. Don't @me when this fails.
+              ...CollectionEditorViewerFragment
             }
           }
           ... on ErrNotAuthorized {
@@ -33,19 +32,43 @@ export default function useSyncTokens() {
     `
   );
 
-  return useCallback(async () => {
-    const response = await syncTokens({
-      variables: {},
-    });
+  const { pushToast } = useToastActions();
+  const sync = useCallback(
+    async (chain: Chain) => {
+      if (isLocked) {
+        return false;
+      }
 
-    if (response.syncTokens?.__typename === 'ErrSyncFailed') {
-      throw new Error(
-        'Error while fetching latest NFTs. Opensea may be temporarily unavailable. Please try again later.'
-      );
-    }
-    // TODO: log the user out
-    if (response.syncTokens?.__typename === 'ErrNotAuthorized') {
-      throw new Error('You are not authorized!');
-    }
-  }, [syncTokens]);
+      const unlock = lock();
+
+      function showFailure() {
+        pushToast({
+          autoClose: true,
+          message:
+            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+        });
+      }
+
+      try {
+        const response = await syncTokens({
+          variables: {
+            chain,
+          },
+        });
+
+        if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+          showFailure();
+        }
+      } catch (error) {
+        showFailure();
+      } finally {
+        unlock();
+      }
+    },
+    [isLocked, lock, pushToast, syncTokens]
+  );
+
+  return useMemo(() => {
+    return { isLocked, syncTokens: sync };
+  }, [isLocked, sync]);
 }

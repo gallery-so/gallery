@@ -17,15 +17,16 @@ import { UnstyledLink } from 'components/core/Link/UnstyledLink';
 import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { Route } from 'nextjs-routes';
 
 type Props = {
-  eventRef: TokensAddedToCollectionFeedEventFragment$key;
+  eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -53,7 +54,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
         isPreFeed
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -73,7 +74,10 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [tokens]) as TokenToPreview[];
 
-  const collectionPagePath = `/${event.owner.username}/${event.collection.dbid}`;
+  const collectionPagePath: Route = {
+    pathname: '/[username]/[collectionId]',
+    query: { username: event.owner.username as string, collectionId: event.collection.dbid },
+  };
   const track = useTrack();
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
@@ -82,7 +86,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventRef, queryRef }:
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length) {
-    return null;
+    throw new Error('Tried to render TokensAddedToCollectionFeedEvent without any tokens');
   }
 
   return (

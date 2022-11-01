@@ -18,13 +18,13 @@ import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
-  eventRef: CollectionCreatedFeedEventFragment$key;
+  eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -45,7 +45,7 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
         }
       }
     `,
-    eventRef
+    eventDataRef
   );
 
   const query = useFragment(
@@ -63,7 +63,6 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
   }, [tokens]) as TokenToPreview[];
 
-  const collectionPagePath = `/${event.owner?.username}/${event.collection.dbid}`;
   const track = useTrack();
 
   const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
@@ -72,12 +71,15 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
   const collectionName = unescape(event.collection.name ?? '');
 
   if (!tokens.length || !event.owner) {
-    return null;
+    throw new Error('Tried to render CollectionCreatedFeedEvent without an owner / tokens');
   }
 
   return (
     <UnstyledLink
-      href={collectionPagePath}
+      href={{
+        pathname: '/[username]/[collectionId]',
+        query: { username: event.owner.username as string, collectionId: event.collection.dbid },
+      }}
       onClick={() => track('Feed: Clicked collection created event')}
     >
       <StyledEvent>
@@ -90,7 +92,15 @@ export default function CollectionCreatedFeedEvent({ eventRef, queryRef }: Props
             </BaseM>
             <HStack gap={4} inline>
               {collectionName && (
-                <InteractiveLink to={`/${event.owner.username}/${event.collection.dbid}`}>
+                <InteractiveLink
+                  to={{
+                    pathname: '/[username]/[collectionId]',
+                    query: {
+                      username: event.owner.username as string,
+                      collectionId: event.collection.dbid,
+                    },
+                  }}
+                >
                   {unescape(event.collection.name ?? '')}
                 </InteractiveLink>
               )}
