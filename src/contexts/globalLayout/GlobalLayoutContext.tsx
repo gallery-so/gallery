@@ -21,10 +21,7 @@ import isTouchscreenDevice from 'utils/isTouchscreenDevice';
 import GlobalNavbar, { Props as GlobalNavbarProps } from './GlobalNavbar/GlobalNavbar';
 import Banner from './GlobalBanner/GlobalBanner';
 import useThrottle from 'hooks/useThrottle';
-import {
-  FADE_TRANSITION_TIME_MS,
-  NAVIGATION_TRANSITION_TIME_MS,
-} from 'components/FadeTransitioner/FadeTransitioner';
+import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
 import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
 import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
 import NavLink from 'components/core/NavLink/NavLink';
@@ -153,13 +150,16 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const lastFadeTriggeredByRouteTimestampRef = useRef(0);
 
   //-------------- ROUTE ---------------
-  const handleFadeNavbarFromGalleryRoute = useCallback((visible: boolean) => {
-    setFadeType('route');
-    setIsNavbarEnabled(visible && window.scrollY <= navbarHeight);
+  const handleFadeNavbarFromGalleryRoute = useCallback(
+    (visible: boolean) => {
+      setFadeType('route');
+      setIsNavbarEnabled(visible && window.scrollY <= navbarHeight);
 
-    forcedHiddenByRouteRef.current = !visible;
-    lastFadeTriggeredByRouteTimestampRef.current = Date.now();
-  }, []);
+      forcedHiddenByRouteRef.current = !visible;
+      lastFadeTriggeredByRouteTimestampRef.current = Date.now();
+    },
+    [navbarHeight]
+  );
 
   //-------------- SCROLL --------------
   const handleFadeNavbarOnScroll = useCallback(() => {
