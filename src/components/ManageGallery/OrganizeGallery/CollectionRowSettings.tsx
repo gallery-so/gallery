@@ -13,7 +13,7 @@ import { CollectionRowSettingsFragment$key } from '__generated__/CollectionRowSe
 import { HStack } from 'components/core/Spacer/Stack';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 
 type Props = {
   collectionRef: CollectionRowSettingsFragment$key;
@@ -86,11 +86,11 @@ function CollectionRowSettings({ collectionRef, onEditCollection }: Props) {
     <SettingsContainer gap={8} align="center">
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
       <SettingsDropdown>
-        <NavSection>
+        <DropdownSection>
           <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
           <DropdownItem onClick={handleToggleHiddenClick}>{hidden ? 'SHOW' : 'HIDE'}</DropdownItem>
           <DropdownItem onClick={handleDeleteClick}>DELETE</DropdownItem>
-        </NavSection>
+        </DropdownSection>
       </SettingsDropdown>
     </SettingsContainer>
   );

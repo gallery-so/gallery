@@ -20,7 +20,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/Collecti
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { route } from 'nextjs-routes';
-import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
 
@@ -170,7 +170,7 @@ function CollectionGalleryHeader({
 
               {/* On mobile, we show these options in the navbar, not in header */}
               <SettingsDropdown>
-                <NavSection>
+                <DropdownSection>
                   <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
 
                   {!shouldDisplayMobileLayoutToggle && (
@@ -186,7 +186,7 @@ function CollectionGalleryHeader({
                       EDIT COLLECTION
                     </DropdownLink>
                   )}
-                </NavSection>
+                </DropdownSection>
               </SettingsDropdown>
             </>
           ) : (

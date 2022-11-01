@@ -12,7 +12,7 @@ import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 import { route, Route } from 'nextjs-routes';
 import { Dropdown } from 'components/core/Dropdown/Dropdown';
 import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
-import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
 import breakpoints from 'components/core/breakpoints';
@@ -57,7 +57,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   return (
     <>
       <Dropdown position="left" active={showDropdown} onClose={onClose}>
-        <NavSection>
+        <DropdownSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
               <UsernameText>{username}</UsernameText>
@@ -69,13 +69,13 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
               )}
             </DropdownProfileSection>
           </Link>
-        </NavSection>
+        </DropdownSection>
 
-        <NavSection gap={4}>
+        <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-        </NavSection>
+        </DropdownSection>
 
-        <NavSection gap={4}>
+        <DropdownSection gap={4}>
           <DropdownItem onClick={showWalletModal}>ACCOUNTS</DropdownItem>
           <DropdownLink href={{ pathname: '/shop' }}>
             <HStack gap={8}>
@@ -83,11 +83,11 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
               <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
           </DropdownLink>
-        </NavSection>
+        </DropdownSection>
 
-        <NavSection gap={4}>
+        <DropdownSection gap={4}>
           <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
-        </NavSection>
+        </DropdownSection>
       </Dropdown>
     </>
   );

@@ -23,7 +23,7 @@ import useResizeObserver from 'hooks/useResizeObserver';
 import { HStack } from 'components/core/Spacer/Stack';
 import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { Route, route } from 'nextjs-routes';
-import { NavSection } from 'components/core/Dropdown/NavSection';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
@@ -149,7 +149,7 @@ function UserGalleryCollection({
               <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
             <SettingsDropdown>
-              <NavSection>
+              <DropdownSection>
                 {showEditActions && (
                   <>
                     <DropdownItem onClick={handleEditNameClick}>
@@ -167,7 +167,7 @@ function UserGalleryCollection({
                   </>
                 )}
                 <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
-              </NavSection>
+              </DropdownSection>
             </SettingsDropdown>
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>

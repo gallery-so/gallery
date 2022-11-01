@@ -27,6 +27,8 @@ const StyledDropdownLink = styled.a`
   cursor: pointer;
   text-decoration: none;
 
+  white-space: nowrap;
+
   :hover {
     color: ${colors.offBlack};
     background-color: ${colors.faint};

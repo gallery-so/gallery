@@ -4,7 +4,7 @@ import { GalleryRightContentFragment$key } from '__generated__/GalleryRightConte
 import styled from 'styled-components';
 import { TitleXS } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { HStack } from 'components/core/Spacer/Stack';
 import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -14,6 +14,11 @@ import QRCodeButton from './QRCodeButton';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
 import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
+import { Dropdown } from 'components/core/Dropdown/Dropdown';
+import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
+import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
+import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
+import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 
 type GalleryRightContentProps = {
   username: string;
@@ -25,6 +30,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
+        ...getEditGalleryUrlFragment
 
         viewer {
           ... on Viewer {
@@ -48,7 +54,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
 
-  const handleEditClick = useCallback(() => {
+  const handleNameAndBioClick = useCallback(() => {
     showModal({
       content: <EditUserInfoModal queryRef={query} />,
       headerText: 'Edit username and bio',
@@ -63,6 +69,18 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   );
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleEditClick = useCallback(() => {
+    setShowDropdown((previous) => !previous);
+  }, []);
+
+  const handleCloseDropdown = useCallback(() => {
+    setShowDropdown(false);
+  }, []);
+
+  const editGalleryUrl = getEditGalleryUrl(query);
+
   if (isMobile) {
     return (
       <HStack gap={8} align="center">
@@ -77,6 +95,13 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     return (
       <EditButtonContainer onClick={handleEditClick}>
         <TitleXS>EDIT</TitleXS>
+
+        <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
+          <DropdownSection>
+            {editGalleryUrl && <DropdownLink href={editGalleryUrl}>EDIT GALLERY</DropdownLink>}
+            <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+          </DropdownSection>
+        </Dropdown>
       </EditButtonContainer>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
@@ -87,6 +112,8 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 }
 
 const EditButtonContainer = styled.div.attrs({ role: 'button' })`
+  position: relative;
+
   padding: 8px;
   display: flex;
   justify-content: center;
