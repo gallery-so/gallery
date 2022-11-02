@@ -52,10 +52,10 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     [user.followers]
   );
 
-  const isFollowing = useMemo(() => !!loggedInUserId && followerIds.has(loggedInUserId), [
-    followerIds,
-    loggedInUserId,
-  ]);
+  const isFollowing = useMemo(
+    () => !!loggedInUserId && followerIds.has(loggedInUserId),
+    [followerIds, loggedInUserId]
+  );
 
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
