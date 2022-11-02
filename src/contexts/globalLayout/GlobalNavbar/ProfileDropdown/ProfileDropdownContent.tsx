@@ -39,13 +39,11 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
             notifications(last: 1)
               @connection(key: "ProfileDropdownContentFragment_notifications") {
+              unseenCount
               # Relay requires that we grab the edges field if we use the connection directive
               # We're selecting __typename since that shouldn't have a cost
               edges {
                 __typename
-              }
-              pageInfo {
-                total
               }
             }
           }
@@ -82,7 +80,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
-  const notificationCount = query.viewer?.notifications?.pageInfo?.total ?? 0;
+  const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
   return (
     <>
