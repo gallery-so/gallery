@@ -2,12 +2,13 @@ import useAuthModal from 'hooks/useAuthModal';
 import { Paragraph } from 'components/core/Text/Text';
 import styled from 'styled-components';
 import breakpoints from 'components/core/breakpoints';
+import colors from 'components/core/colors';
 
 export function SignInButton() {
   const showAuthModal = useAuthModal();
 
   return (
-    <SignInText role="button" onClick={showAuthModal}>
+    <SignInText role="button" onClick={showAuthModal} color={colors.shadow}>
       Sign in
     </SignInText>
   );

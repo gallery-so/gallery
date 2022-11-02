@@ -1,5 +1,4 @@
 import { HStack } from 'components/core/Spacer/Stack';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { graphql, useFragment } from 'react-relay';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
@@ -30,14 +29,10 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     graphql`
       fragment NavActionFollowQueryFragment on Query {
         ...FollowButtonQueryFragment
-        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
   );
-
-  const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
-  const isLoggedIn = !!loggedInUserId;
 
   if (!user.username) {
     return null;
@@ -53,7 +48,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
           {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
         </BreadcrumbLink>
       </Link>
-      {isLoggedIn ? <FollowButton queryRef={loggedInUserQuery} userRef={user} /> : null}
+      <FollowButton queryRef={loggedInUserQuery} userRef={user} />
     </HStack>
   );
 }

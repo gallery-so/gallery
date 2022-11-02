@@ -67,13 +67,17 @@ function UserGalleryHeader({
 
   return (
     <StyledUserGalleryHeader gap={2}>
-      {isMobile ? (
-        <StyledUsernameMobile>
-          {is3ac ? 'The Unofficial 3AC Gallery' : username}
-        </StyledUsernameMobile>
-      ) : (
-        <StyledUsername>{is3ac ? 'The Unofficial 3AC Gallery' : username}</StyledUsername>
-      )}
+      <HStack align="center" gap={6}>
+        {isMobile ? (
+          <StyledUsernameMobile>
+            {is3ac ? 'The Unofficial 3AC Gallery' : username}
+          </StyledUsernameMobile>
+        ) : (
+          <StyledUsername>{is3ac ? 'The Unofficial 3AC Gallery' : username}</StyledUsername>
+        )}
+
+        {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+      </HStack>
 
       <HStack align="flex-start" justify="space-between">
         <HStack align="center" gap={8} grow>
@@ -86,9 +90,6 @@ function UserGalleryHeader({
               </StyledBioWrapper>
             )}
           </StyledUserDetails>
-
-          {/* TODO(Terence): Test how this looks w/ badges */}
-          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
         </HStack>
 
         {showMobileLayoutToggle && (
@@ -152,10 +153,6 @@ const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
   -webkit-box-orient: vertical;
   overflow: hidden;
 
-  p {
-    display: inline;
-  }
-
   ${({ showMore }) =>
     showMore
       ? css`
@@ -173,15 +170,11 @@ const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
 
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
 `;
 
 const StyledUsernameMobile = styled(TitleM)`
   font-style: normal;
   overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
 `;
 
 const StyledUserGalleryHeader = styled(VStack)`

@@ -249,10 +249,6 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   -webkit-box-orient: vertical;
   overflow: hidden;
 
-  p {
-    display: inline;
-  }
-
   ${({ showMore }) =>
     showMore
       ? css`

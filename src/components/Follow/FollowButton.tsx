@@ -11,6 +11,7 @@ import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFr
 import { TitleXSBold } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { HStack } from 'components/core/Spacer/Stack';
+import useAuthModal from 'hooks/useAuthModal';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -59,6 +60,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
+  const showAuthModal = useAuthModal();
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
@@ -67,13 +69,14 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     });
 
     if (!loggedInUserId) {
+      showAuthModal();
       return;
     }
 
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have followed ${user.username}.` });
-  }, [loggedInUserId, user, track, followUser, pushToast]);
+  }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
 
   const handleUnfollowClick = useCallback(async () => {
     track('Unfollow Click', {
@@ -144,8 +147,8 @@ const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean 
 `;
 
 const FollowingChip = styled(Chip)`
-  background-color: ${colors.offBlack};
-  color: ${colors.offWhite};
+  background-color: ${colors.faint};
+  color: ${colors.offBlack};
 `;
 
 const UnfollowChipContainer = styled.div`
