@@ -1,5 +1,5 @@
 import colors from 'components/core/colors';
-import { Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
+import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import styled, { css } from 'styled-components';
@@ -16,8 +16,11 @@ import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
 import breakpoints from 'components/core/breakpoints';
-import { NotificationDropdown } from 'components/NotificationBox/NotificationDropdown';
+import { NotificationDropdown } from 'components/NotificationsModal/NotificationDropdown';
 import { useCallback, useEffect, useState } from 'react';
+import { useModalActions } from 'contexts/modal/ModalContext';
+import { NotificationsModal } from 'components/NotificationsModal/NotificationsModal';
+import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 
 type Props = {
   showDropdown: boolean;
@@ -38,16 +41,26 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         }
 
         ...getEditGalleryUrlFragment
-        ...NotificationDropdownFragment
+        ...NotificationsModalFragment
       }
     `,
     queryRef
   );
 
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-
+  const { showModal } = useModalActions();
   const showWalletModal = useWalletModal();
   const { handleLogout } = useAuthActions();
+
+  const isMobile = useIsMobileWindowWidth();
+
+  const handleNotificationsClick = useCallback(() => {
+    showModal({
+      content: <NotificationsModal queryRef={query} fullscreen={isMobile} />,
+      isFullPage: isMobile,
+      isPaddingDisabled: true,
+      headerVariant: 'standard',
+    });
+  }, [query, showModal]);
 
   const username = query.viewer?.user?.username;
 
@@ -59,14 +72,9 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
-  const handleClose = useCallback(() => {
-    setNotificationsOpen(false);
-    onClose();
-  }, [onClose]);
-
   return (
     <>
-      <Dropdown position="left" active={showDropdown} onClose={handleClose}>
+      <Dropdown position="left" active={showDropdown} onClose={onClose}>
         <DropdownSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
@@ -83,8 +91,11 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-          <NotificationsDropdownItem onClick={() => setNotificationsOpen(!notificationsOpen)}>
-            NOTIFICATIONS
+          <NotificationsDropdownItem onClick={handleNotificationsClick}>
+            <HStack align="center" gap={10}>
+              <div>NOTIFICATIONS</div>
+              <CountText role="button">{4}</CountText>
+            </HStack>
           </NotificationsDropdownItem>
         </DropdownSection>
 
@@ -101,14 +112,31 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         <DropdownSection gap={4}>
           <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
         </DropdownSection>
-
-        <DropdownContainer open={notificationsOpen}>
-          <NotificationDropdown queryRef={query} />
-        </DropdownContainer>
       </Dropdown>
     </>
   );
 }
+
+const CountText = styled(BaseM)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 16px;
+  height: 16px;
+
+  font-size: 12px;
+
+  color: ${colors.white};
+  background-color: ${colors.hyperBlue};
+
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+
+  user-select: none;
+
+  border-radius: 99999px;
+`;
 
 const DropdownContainer = styled.div<{ open: boolean }>`
   position: absolute;

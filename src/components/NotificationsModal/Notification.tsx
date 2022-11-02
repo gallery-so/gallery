@@ -7,11 +7,11 @@ import { graphql } from 'relay-runtime';
 import { NotificationFragment$key } from '../../../__generated__/NotificationFragment.graphql';
 import { getTimeSince } from 'utils/time';
 import { NotificationInnerFragment$key } from '../../../__generated__/NotificationInnerFragment.graphql';
-import { SomeoneAdmiredYourFeedEvent } from 'components/NotificationBox/notifications/SomeoneAdmiredYourFeedEvent';
-import { SomeoneCommentedOnYourFeedEvent } from 'components/NotificationBox/notifications/SomeoneCommentedOnYourFeedEvent';
-import { SomeoneViewedYourGallery } from 'components/NotificationBox/notifications/SomeoneViewedYourGallery';
-import { SomeoneFollowedYou } from 'components/NotificationBox/notifications/SomeoneFollowedYou';
-import { SomeoneFollowedYouBack } from 'components/NotificationBox/notifications/SomeoneFollowedYouBack';
+import { SomeoneAdmiredYourFeedEvent } from 'components/NotificationsModal/notifications/SomeoneAdmiredYourFeedEvent';
+import { SomeoneCommentedOnYourFeedEvent } from 'components/NotificationsModal/notifications/SomeoneCommentedOnYourFeedEvent';
+import { SomeoneViewedYourGallery } from 'components/NotificationsModal/notifications/SomeoneViewedYourGallery';
+import { SomeoneFollowedYou } from 'components/NotificationsModal/notifications/SomeoneFollowedYou';
+import { SomeoneFollowedYouBack } from 'components/NotificationsModal/notifications/SomeoneFollowedYouBack';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
