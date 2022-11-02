@@ -85,9 +85,10 @@ function UserGalleryCollection({
   const router = useRouter();
 
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectorsNote ?? ''), [
-    collection.collectorsNote,
-  ]);
+  const unescapedCollectorsNote = useMemo(
+    () => unescape(collection.collectorsNote ?? ''),
+    [collection.collectorsNote]
+  );
 
   const username = router.query.username as string;
   const collectionUrlPath: Route = {
