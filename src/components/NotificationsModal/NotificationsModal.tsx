@@ -8,7 +8,8 @@ import {
   NotificationList,
   NOTIFICATIONS_PER_PAGE,
 } from 'components/NotificationsModal/NotificationList';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useClearNotifications } from 'components/NotificationsModal/useClearNotifications';
 
 type NotificationsModalProps = {
   fullscreen: boolean;
@@ -23,6 +24,15 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
     `,
     { notificationsLast: NOTIFICATIONS_PER_PAGE }
   );
+
+  const clearAllNotifications = useClearNotifications();
+
+  useEffect(() => {
+    // When they close the modal, clear their notifications
+    return () => {
+      clearAllNotifications();
+    };
+  }, [clearAllNotifications]);
 
   return (
     <ModalContent fullscreen={fullscreen}>
