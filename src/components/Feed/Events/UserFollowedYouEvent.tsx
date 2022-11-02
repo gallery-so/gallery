@@ -1,4 +1,3 @@
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { BaseM } from 'components/core/Text/Text';
 import FollowButton from 'components/Follow/FollowButton';
 import styled from 'styled-components';
