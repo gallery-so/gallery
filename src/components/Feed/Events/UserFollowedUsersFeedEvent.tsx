@@ -164,7 +164,7 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
       ) : (
         <CustomStyledEvent onClick={handleSeeMoreClick}>
           <StyledEventContent>
-            <StyledEventHeaderContainer gap={16} grow>
+            <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
                 <HStack gap={4} inline>
                   <BaseM>
