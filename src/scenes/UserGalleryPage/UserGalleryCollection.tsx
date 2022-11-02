@@ -85,10 +85,9 @@ function UserGalleryCollection({
   const router = useRouter();
 
   const unescapedCollectionName = useMemo(() => unescape(collection.name), [collection.name]);
-  const unescapedCollectorsNote = useMemo(
-    () => unescape(collection.collectorsNote ?? ''),
-    [collection.collectorsNote]
-  );
+  const unescapedCollectorsNote = useMemo(() => unescape(collection.collectorsNote ?? ''), [
+    collection.collectorsNote,
+  ]);
 
   const username = router.query.username as string;
   const collectionUrlPath: Route = {
@@ -248,10 +247,6 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-
-  p {
-    display: inline;
-  }
 
   ${({ showMore }) =>
     showMore
