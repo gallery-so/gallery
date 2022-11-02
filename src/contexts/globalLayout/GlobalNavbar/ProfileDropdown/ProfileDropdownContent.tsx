@@ -2,7 +2,7 @@ import colors from 'components/core/colors';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
 import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -16,8 +16,7 @@ import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
 import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
 import breakpoints from 'components/core/breakpoints';
-import { NotificationDropdown } from 'components/NotificationsModal/NotificationDropdown';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { NotificationsModal } from 'components/NotificationsModal/NotificationsModal';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
@@ -136,26 +135,6 @@ const CountText = styled(BaseM)`
   user-select: none;
 
   border-radius: 99999px;
-`;
-
-const DropdownContainer = styled.div<{ open: boolean }>`
-  position: absolute;
-
-  left: 100%;
-  top: 0;
-
-  transition: transform 300ms ease-out, opacity 300ms ease-out;
-
-  ${({ open }) =>
-    open
-      ? css`
-          transform: translateX(12px);
-          opacity: 1;
-        `
-      : css`
-          transform: translateX(8px);
-          opacity: 0;
-        `}
 `;
 
 const NotificationsDropdownItem = styled(DropdownItem)``;
