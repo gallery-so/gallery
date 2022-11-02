@@ -76,7 +76,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have followed ${user.username}.` });
-  }, [loggedInUserId, user, track, followUser, pushToast]);
+  }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
 
   const handleUnfollowClick = useCallback(async () => {
     track('Unfollow Click', {

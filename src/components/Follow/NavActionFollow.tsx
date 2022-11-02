@@ -1,5 +1,4 @@
 import { HStack } from 'components/core/Spacer/Stack';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { graphql, useFragment } from 'react-relay';
 import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
