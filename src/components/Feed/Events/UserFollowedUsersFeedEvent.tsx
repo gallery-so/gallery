@@ -68,6 +68,7 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
         }
         ...FollowButtonQueryFragment
         ...HoverCardOnUsernameFollowFragment
+        ...UserFollowedYouEventEventQueryFragment
       }
     `,
     queryRef
