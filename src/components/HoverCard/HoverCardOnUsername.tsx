@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useRef, useState } from 'react';
+import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
 import colors from 'components/core/colors';
 import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
 import styled from 'styled-components';
@@ -16,6 +16,7 @@ import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { HStack } from 'components/core/Spacer/Stack';
+import Badge from 'components/Badge/Badge';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -37,6 +38,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
             name
             hidden
           }
+        }
+        badges {
+          name
+          imageURL
+          ...BadgeFragment
         }
         ...FollowButtonUserFragment
       }
@@ -99,6 +105,18 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     event.stopPropagation();
   }, []);
 
+  const userBadges = useMemo(() => {
+    const badges = [];
+
+    for (const badge of user?.badges ?? []) {
+      if (badge?.imageURL) {
+        badges.push(badge);
+      }
+    }
+
+    return badges;
+  }, [user?.badges]);
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
@@ -111,7 +129,14 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
           <StyledCardContainer>
             <StyledCardHeader>
               <HStack align="center" gap={4}>
-                <StyledCardUsername>{user.username}</StyledCardUsername>
+                <HStack align="center" gap={6}>
+                  <StyledCardUsername>{user.username}</StyledCardUsername>
+
+                  {userBadges.map((badge) => (
+                    // Might need to rethink this layout when we have more badges
+                    <Badge key={badge.name} badgeRef={badge} />
+                  ))}
+                </HStack>
 
                 {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
