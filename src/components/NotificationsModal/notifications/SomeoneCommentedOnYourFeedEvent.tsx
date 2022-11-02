@@ -56,7 +56,7 @@ export function SomeoneCommentedOnYourFeedEvent({
   return (
     <VStack gap={8}>
       <BaseM>
-        <strong>{commenterUsername ?? 'Someone'}</strong>
+        <strong>{commenterUsername ?? 'Someone'} </strong>
         {notification.feedEvent?.eventData?.collection ? (
           <>
             commented on your additions to{' '}
