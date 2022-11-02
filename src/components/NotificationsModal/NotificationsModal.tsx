@@ -29,8 +29,6 @@ export function NotificationsModal({ queryRef, fullscreen }: NotificationsModalP
             }
           }
         }
-
-        ...NotificationDropdownFragment
       }
     `,
     queryRef
