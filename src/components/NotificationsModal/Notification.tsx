@@ -42,7 +42,7 @@ export function Notification({ notificationRef }: NotificationProps) {
         )}
         <NotificationInner notificationRef={notification} />
         <HStack grow justify="flex-end">
-          <BaseS color={colors.metal}>{timeAgo}</BaseS>
+          <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
         </HStack>
       </HStack>
     </Container>
@@ -100,6 +100,11 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
 
   return null;
 }
+
+export const TimeAgoText = styled(BaseS)`
+  white-space: nowrap;
+  flex-shrink: 0;
+`;
 
 const UnseenDotContainer = styled.div`
   align-self: stretch;
