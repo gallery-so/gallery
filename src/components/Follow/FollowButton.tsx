@@ -144,8 +144,8 @@ const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean 
 `;
 
 const FollowingChip = styled(Chip)`
-  background-color: ${colors.offBlack};
-  color: ${colors.offWhite};
+  background-color: ${colors.faint};
+  color: ${colors.offBlack};
 `;
 
 const UnfollowChipContainer = styled.div`
