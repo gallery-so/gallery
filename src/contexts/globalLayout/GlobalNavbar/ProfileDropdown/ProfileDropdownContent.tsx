@@ -36,11 +36,22 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
             user {
               username
             }
+
+            notifications(last: 1)
+              @connection(key: "ProfileDropdownContentFragment_notifications") {
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              edges {
+                __typename
+              }
+              pageInfo {
+                total
+              }
+            }
           }
         }
 
         ...getEditGalleryUrlFragment
-        ...NotificationsModalFragment
       }
     `,
     queryRef
@@ -54,12 +65,12 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const handleNotificationsClick = useCallback(() => {
     showModal({
-      content: <NotificationsModal queryRef={query} fullscreen={isMobile} />,
+      content: <NotificationsModal fullscreen={isMobile} />,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-  }, [query, showModal]);
+  }, [isMobile, showModal]);
 
   const username = query.viewer?.user?.username;
 
@@ -70,6 +81,8 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   const editGalleryUrl = getEditGalleryUrl(query);
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
+
+  const notificationCount = query.viewer?.notifications?.pageInfo?.total ?? 0;
 
   return (
     <>
@@ -93,7 +106,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
           <NotificationsDropdownItem onClick={handleNotificationsClick}>
             <HStack align="center" gap={10}>
               <div>NOTIFICATIONS</div>
-              <CountText role="button">{4}</CountText>
+              {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
             </HStack>
           </NotificationsDropdownItem>
         </DropdownSection>
@@ -121,8 +134,8 @@ const CountText = styled(BaseM)`
   justify-content: center;
   align-items: center;
 
-  width: 16px;
-  height: 16px;
+  padding: 4px 6px;
+  font-variant-numeric: tabular-nums;
 
   font-size: 12px;
 
