@@ -36,11 +36,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         ...GalleryNavLinksFragment
         ...FollowButtonQueryFragment
 
-        viewer {
-          ... on Viewer {
-            __typename
-          }
-        }
         userByUsername(username: $username) {
           ...FollowButtonUserFragment
         }
@@ -52,8 +47,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
   const is3ac = isUsername3ac(username);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const { pathname } = useRouter();
-
-  const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
@@ -74,7 +67,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
                   {is3ac ? 'The Unofficial 3AC Gallery' : username}
                 </UsernameBreadcrumbLink>
               </Link>
-              {query.userByUsername && isLoggedIn && (
+              {query.userByUsername && (
                 <Suspense fallback={null}>
                   <FollowButton queryRef={query} userRef={query.userByUsername} />
                 </Suspense>

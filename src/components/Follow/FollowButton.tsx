@@ -11,6 +11,7 @@ import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFr
 import { TitleXSBold } from 'components/core/Text/Text';
 import colors from 'components/core/colors';
 import { HStack } from 'components/core/Spacer/Stack';
+import useAuthModal from 'hooks/useAuthModal';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -51,14 +52,15 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     [user.followers]
   );
 
-  const isFollowing = useMemo(
-    () => !!loggedInUserId && followerIds.has(loggedInUserId),
-    [followerIds, loggedInUserId]
-  );
+  const isFollowing = useMemo(() => !!loggedInUserId && followerIds.has(loggedInUserId), [
+    followerIds,
+    loggedInUserId,
+  ]);
 
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
+  const showAuthModal = useAuthModal();
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
@@ -67,6 +69,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     });
 
     if (!loggedInUserId) {
+      showAuthModal();
       return;
     }
 
