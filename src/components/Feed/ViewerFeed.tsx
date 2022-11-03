@@ -1,18 +1,19 @@
 import { useMemo } from 'react';
-import { Button } from 'components/core/Button/Button';
-import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
-import { FeedByUserIdPaginationQuery } from '__generated__/FeedByUserIdPaginationQuery.graphql';
-import { ViewerFeedFragment$key } from '__generated__/ViewerFeedFragment.graphql';
-import { useTrackLoadMoreFeedEvents } from './analytics';
-import { FeedMode } from './Feed';
 
-import FeedList from './FeedList';
+import { Button } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { FeedByUserIdPaginationQuery } from '~/generated/FeedByUserIdPaginationQuery.graphql';
+import { ViewerFeedFragment$key } from '~/generated/ViewerFeedFragment.graphql';
+
+import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
-import { VStack } from 'components/core/Spacer/Stack';
+import { FeedMode } from './Feed';
+import FeedList from './FeedList';
 
 type Props = {
   queryRef: ViewerFeedFragment$key;
@@ -20,10 +21,11 @@ type Props = {
 };
 
 export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
-  const { data: query, loadPrevious, hasPrevious } = usePaginationFragment<
-    FeedByUserIdPaginationQuery,
-    ViewerFeedFragment$key
-  >(
+  const {
+    data: query,
+    loadPrevious,
+    hasPrevious,
+  } = usePaginationFragment<FeedByUserIdPaginationQuery, ViewerFeedFragment$key>(
     graphql`
       fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
         ...FeedListFragment

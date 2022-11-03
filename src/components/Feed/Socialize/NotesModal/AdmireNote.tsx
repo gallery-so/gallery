@@ -1,15 +1,16 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { AdmireNoteFragment$key } from '__generated__/AdmireNoteFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
-import { HStack } from 'components/core/Spacer/Stack';
-import { getTimeSince } from 'utils/time';
-import { TimeAgoText } from 'components/Feed/Socialize/NotesModal/TimeAgoText';
-import { ListItem } from 'components/Feed/Socialize/NotesModal/ListItem';
-import { UsernameLink } from 'components/Feed/Socialize/NotesModal/UsernameLink';
-import colors from 'components/core/colors';
-import { AdmireIcon, IconWrapper } from 'icons/SocializeIcons';
 import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
+import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
+import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
+import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
+import { AdmireIcon, IconWrapper } from '~/icons/SocializeIcons';
+import { getTimeSince } from '~/utils/time';
 
 type AdmireNoteProps = {
   admireRef: AdmireNoteFragment$key;

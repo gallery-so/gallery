@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import colors from 'components/core/colors';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+
+import colors from '~/components/core/colors';
+import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 type Props = {
   children: ReactNode | ReactNode[];

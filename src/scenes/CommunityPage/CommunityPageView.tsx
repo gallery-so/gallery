@@ -1,23 +1,25 @@
-import { BaseM, TitleL } from 'components/core/Text/Text';
-import MemberListFilter from 'components/TokenHolderList/TokenHolderListFilter';
-import styled from 'styled-components';
-import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import Markdown from 'components/core/Markdown/Markdown';
-import { graphql } from 'relay-runtime';
-import { useFragment } from 'react-relay';
-import { CommunityPageViewFragment$key } from '__generated__/CommunityPageViewFragment.graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import TextButton from 'components/core/Button/TextButton';
-import breakpoints from 'components/core/breakpoints';
-import formatUrl from 'utils/formatUrl';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import colors from 'components/core/colors';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import CommunityHolderList from '~/components/Community/CommunityHolderList';
+import CommunityHolderGrid from '~/components/CommunityHolderGrid/CommunityHolderGrid';
+import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
+import colors from '~/components/core/colors';
+import { DisplayLayout } from '~/components/core/enums';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL } from '~/components/core/Text/Text';
+import MemberListFilter from '~/components/TokenHolderList/TokenHolderListFilter';
+import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
+import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
+import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import formatUrl from '~/utils/formatUrl';
+
 import LayoutToggleButton from './LayoutToggleButton';
-import { DisplayLayout } from 'components/core/enums';
-import CommunityHolderGrid from 'components/CommunityHolderGrid/CommunityHolderGrid';
-import { GRID_ENABLED_COMMUNITY_ADDRESSES } from 'constants/community';
-import CommunityHolderList from 'components/Community/CommunityHolderList';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;

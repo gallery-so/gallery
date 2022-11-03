@@ -1,17 +1,19 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleXSBold } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
+import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+
 import useFollowUser from './mutations/useFollowUser';
 import useUnfollowUser from './mutations/useUnfollowUser';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
-import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
-import { TitleXSBold } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import { HStack } from 'components/core/Spacer/Stack';
-import useAuthModal from 'hooks/useAuthModal';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;

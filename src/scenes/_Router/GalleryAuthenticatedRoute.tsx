@@ -1,5 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
-import { GalleryAuthenticatedRouteFragment$key } from '__generated__/GalleryAuthenticatedRouteFragment.graphql';
+
+import { GalleryAuthenticatedRouteFragment$key } from '~/generated/GalleryAuthenticatedRouteFragment.graphql';
+
 import GalleryRedirect from './GalleryRedirect';
 import GalleryRoute, { Props as GalleryRouteProps } from './GalleryRoute';
 

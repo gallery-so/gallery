@@ -1,10 +1,11 @@
+import { captureException } from '@sentry/nextjs';
 import { Component, PropsWithChildren } from 'react';
 import styled from 'styled-components';
-import { BaseXL, BaseM } from 'components/core/Text/Text';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import formatError from 'errors/formatError';
-import { captureException } from '@sentry/nextjs';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseXL } from '~/components/core/Text/Text';
+import formatError from '~/errors/formatError';
 
 class ErrorBoundary extends Component<PropsWithChildren> {
   static getDerivedStateFromError(error: Error) {

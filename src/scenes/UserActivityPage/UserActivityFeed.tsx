@@ -1,11 +1,12 @@
-import { useTrackLoadMoreFeedEvents } from 'components/Feed/analytics';
-import { ITEMS_PER_PAGE } from 'components/Feed/constants';
-import FeedList from 'components/Feed/FeedList';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
-import { UserActivityFeedFragment$key } from '__generated__/UserActivityFeedFragment.graphql';
-import { UserActivityFeedQueryFragment$key } from '__generated__/UserActivityFeedQueryFragment.graphql';
-import { UserFeedByUserIdPaginationQuery } from '__generated__/UserFeedByUserIdPaginationQuery.graphql';
+
+import { useTrackLoadMoreFeedEvents } from '~/components/Feed/analytics';
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import FeedList from '~/components/Feed/FeedList';
+import { UserActivityFeedFragment$key } from '~/generated/UserActivityFeedFragment.graphql';
+import { UserActivityFeedQueryFragment$key } from '~/generated/UserActivityFeedQueryFragment.graphql';
+import { UserFeedByUserIdPaginationQuery } from '~/generated/UserFeedByUserIdPaginationQuery.graphql';
 
 type Props = {
   userRef: UserActivityFeedFragment$key;
@@ -13,13 +14,14 @@ type Props = {
 };
 
 function UserActivityFeed({ userRef, queryRef }: Props) {
-  const { data: user, loadPrevious, hasPrevious } = usePaginationFragment<
-    UserFeedByUserIdPaginationQuery,
-    UserActivityFeedFragment$key
-  >(
+  const {
+    data: user,
+    loadPrevious,
+    hasPrevious,
+  } = usePaginationFragment<UserFeedByUserIdPaginationQuery, UserActivityFeedFragment$key>(
     graphql`
       fragment UserActivityFeedFragment on GalleryUser
-        @refetchable(queryName: "UserFeedByUserIdPaginationQuery") {
+      @refetchable(queryName: "UserFeedByUserIdPaginationQuery") {
         feed(before: $viewerBefore, last: $viewerLast)
           @connection(key: "UserActivityFeedFragment_feed") {
           edges {

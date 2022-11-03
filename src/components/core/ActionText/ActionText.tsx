@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { BaseS } from '../Text/Text';
+
 import colors from '../colors';
+import { BaseS } from '../Text/Text';
 import transitions from '../transitions';
 
 type Props = {

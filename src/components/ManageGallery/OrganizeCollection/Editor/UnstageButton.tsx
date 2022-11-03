@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import TrashIcon from 'icons/Trash';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
+
+import colors from '~/components/core/colors';
+import { BaseM } from '~/components/core/Text/Text';
+import { useCollectionEditorActions } from '~/contexts/collectionEditor/CollectionEditorContext';
+import TrashIcon from '~/icons/Trash';
 
 type Props = {
   className?: string;

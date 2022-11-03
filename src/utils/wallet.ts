@@ -1,9 +1,9 @@
 // map WalletName symbol description to user friendly name
 import { graphql, readInlineData } from 'relay-runtime';
-import { walletTruncateAddressFragment$key } from '../../__generated__/walletTruncateAddressFragment.graphql';
-import { walletGetExternalAddressLinkFragment$key } from '../../__generated__/walletGetExternalAddressLinkFragment.graphql';
 
-import { walletTruncateUniversalUsernameFragment$key } from '__generated__/walletTruncateUniversalUsernameFragment.graphql';
+import { walletGetExternalAddressLinkFragment$key } from '~/generated/walletGetExternalAddressLinkFragment.graphql';
+import { walletTruncateAddressFragment$key } from '~/generated/walletTruncateAddressFragment.graphql';
+import { walletTruncateUniversalUsernameFragment$key } from '~/generated/walletTruncateUniversalUsernameFragment.graphql';
 
 const overrides: Record<string, string> = {
   METAMASK: 'MetaMask',

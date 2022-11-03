@@ -1,14 +1,15 @@
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import styled from 'styled-components';
-
-import UserGallery from './UserGallery';
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryPageFragment$key } from '__generated__/UserGalleryPageFragment.graphql';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import styled from 'styled-components';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
+
+import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
   queryRef: UserGalleryPageFragment$key;

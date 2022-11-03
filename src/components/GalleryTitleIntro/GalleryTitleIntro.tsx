@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { TitleM } from 'components/core/Text/Text';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleM } from '~/components/core/Text/Text';
 
 function GalleryTitleIntro() {
   return (

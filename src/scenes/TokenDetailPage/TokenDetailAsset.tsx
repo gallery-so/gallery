@@ -1,16 +1,17 @@
-import breakpoints, { size } from 'components/core/breakpoints';
-import styled from 'styled-components';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
-import { useNftRetry } from 'hooks/useNftRetry';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { NftDetailAssetComponent } from 'scenes/NftDetailPage/NftDetailAsset';
-import { TokenDetailAssetFragment$key } from '__generated__/TokenDetailAssetFragment.graphql';
+import styled from 'styled-components';
+
+import breakpoints, { size } from '~/components/core/breakpoints';
+import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
+import { useBreakpoint } from '~/hooks/useWindowSize';
+import { NftDetailAssetComponent } from '~/scenes/NftDetailPage/NftDetailAsset';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
   tokenRef: TokenDetailAssetFragment$key;
@@ -53,15 +54,10 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const {
-    retryKey,
-    handleNftLoaded,
-    refreshMetadata,
-    refreshingMetadata,
-    handleNftError,
-  } = useNftRetry({
-    tokenId: token.dbid,
-  });
+  const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
+    useNftRetry({
+      tokenId: token.dbid,
+    });
 
   return (
     <StyledAssetContainer

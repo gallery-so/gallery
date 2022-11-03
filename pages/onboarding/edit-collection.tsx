@@ -1,22 +1,23 @@
+import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+
+import CollectionEditor from '~/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
-import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
-import useUpdateCollectionTokens from 'hooks/api/collections/useUpdateCollectionTokens';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import FullPageStep from 'components/Onboarding/FullPageStep';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import GenericActionModal from 'scenes/Modals/GenericActionModal';
-import { OnboardingCollectionEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingCollectionEditorNavbar/OnboardingCollectionEditorNavbar';
-import { Route } from 'nextjs-routes';
-import { editCollectionOnboardingQuery } from '../../__generated__/editCollectionOnboardingQuery.graphql';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { OnboardingCollectionEditorNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingCollectionEditorNavbar/OnboardingCollectionEditorNavbar';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
+import { editCollectionOnboardingQuery } from '~/generated/editCollectionOnboardingQuery.graphql';
+import useUpdateCollectionTokens from '~/hooks/api/collections/useUpdateCollectionTokens';
+import GenericActionModal from '~/scenes/Modals/GenericActionModal';
 
 type Props = {
   collectionId: string;

@@ -1,6 +1,15 @@
+import { ErrorBoundary } from '@sentry/nextjs';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { FeedEventFragment$key } from '__generated__/FeedEventFragment.graphql';
-import { FeedEventQueryFragment$key } from '__generated__/FeedEventQueryFragment.graphql';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
+import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
+import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
+import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
+import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
@@ -8,13 +17,6 @@ import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFe
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
 import FeedEventErrorBoundary from './FeedEventErrorBoundary';
-import { FeedEventSocializeSection } from 'components/Feed/Socialize/FeedEventSocializeSection';
-import { ErrorBoundary } from '@sentry/nextjs';
-import { FeedEventWithErrorBoundaryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryFragment.graphql';
-import { FeedEventWithErrorBoundaryQueryFragment$key } from '../../../__generated__/FeedEventWithErrorBoundaryQueryFragment.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
-import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
-import { useCallback } from 'react';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;

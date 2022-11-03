@@ -1,8 +1,9 @@
-import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListTierFragment$key } from '__generated__/MemberListTierFragment.graphql';
-import { useMemo } from 'react';
+
+import TokenHolderList from '~/components/TokenHolderList/TokenHolderList';
+import { MemberListTierFragment$key } from '~/generated/MemberListTierFragment.graphql';
 
 type Props = {
   tierRef: MemberListTierFragment$key;

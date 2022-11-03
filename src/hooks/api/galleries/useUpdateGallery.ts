@@ -1,10 +1,11 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import {
   useUpdateGalleryMutation,
   useUpdateGalleryMutation$data,
-} from '__generated__/useUpdateGalleryMutation.graphql';
+} from '~/generated/useUpdateGalleryMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUpdateGallery() {
   const [updateGallery] = usePromisifiedMutation<useUpdateGalleryMutation>(graphql`

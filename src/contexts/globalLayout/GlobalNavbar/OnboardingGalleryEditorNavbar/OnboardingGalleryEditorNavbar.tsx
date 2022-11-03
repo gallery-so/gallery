@@ -1,17 +1,17 @@
+import { Button } from '~/components/core/Button/Button';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
+import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import {
+  EditingText,
+  MainGalleryText,
+} from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { Button } from 'components/core/Button/Button';
-import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from 'components/Onboarding/constants';
-import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
-import { HStack } from 'components/core/Spacer/Stack';
-import {
-  EditingText,
-  MainGalleryText,
-} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 
 type OnboardingGalleryEditorNavbarProps = {
   onBack: () => void;

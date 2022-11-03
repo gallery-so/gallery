@@ -1,7 +1,8 @@
-import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
 import styled from 'styled-components';
-import colors from 'components/core/colors';
-import breakpoints from 'components/core/breakpoints';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 
 export const NavbarLink = styled.a<{ active: boolean }>`
   font-family: ${BODY_FONT_FAMILY};

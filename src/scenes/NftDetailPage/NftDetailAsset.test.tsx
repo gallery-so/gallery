@@ -1,15 +1,16 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import AppProvider from 'contexts/AppProvider';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { NftDetailAssetTestQuery } from '../../../__generated__/NftDetailAssetTestQuery.graphql';
-import { mockProviderQueries } from '../../../tests/graphql/mockProviderQueries';
-import { mockGraphqlQuery } from '../../../tests/graphql/mockGraphqlQuery';
+
+import AppProvider from '~/contexts/AppProvider';
+import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import {
   Chain,
   NftDetailAssetTestQueryQuery,
   UseNftRetryMutationMutation,
-} from '../../../__generated__/operations';
-import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
+} from '~/generated/operations';
+import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
+import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 
 function Fixture() {
   const query = useLazyLoadQuery<NftDetailAssetTestQuery>(

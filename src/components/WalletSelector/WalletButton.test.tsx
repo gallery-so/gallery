@@ -4,8 +4,9 @@
 // @ts-nocheck
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import WalletButton from 'components/WalletSelector/WalletButton';
-import { injected } from 'connectors/index';
+
+import WalletButton from '~/components/WalletSelector/WalletButton';
+import { injected } from '~/connectors/index';
 
 const activate = jest.fn();
 const setToPendingState = jest.fn();

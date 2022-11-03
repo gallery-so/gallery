@@ -1,8 +1,9 @@
-import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
+import { captureException } from '@sentry/nextjs';
 import mixpanel from 'mixpanel-browser';
 import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
-import { captureException } from '@sentry/nextjs';
-import noop from 'utils/noop';
+
+import useAuthenticatedUserId from '~/contexts/auth/useAuthenticatedUserId';
+import noop from '~/utils/noop';
 
 type EventProps = Record<string, unknown>;
 

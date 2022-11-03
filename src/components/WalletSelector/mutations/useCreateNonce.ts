@@ -1,9 +1,10 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { Web3Error } from 'types/Error';
-import { useCreateNonceMutation } from '__generated__/useCreateNonceMutation.graphql';
-import { Chain } from '__generated__/useCreateUserMutation.graphql';
+
+import { useCreateNonceMutation } from '~/generated/useCreateNonceMutation.graphql';
+import { Chain } from '~/generated/useCreateUserMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { Web3Error } from '~/types/Error';
 
 /**
  * Retrieve a nonce for the client to sign given a wallet address.

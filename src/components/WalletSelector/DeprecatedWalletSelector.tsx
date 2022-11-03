@@ -1,24 +1,26 @@
-import styled from 'styled-components';
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
-import { injected, walletconnect, walletlink } from 'connectors/index';
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { useCallback, useMemo, useState } from 'react';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { Button } from 'components/core/Button/Button';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from 'types/Wallet';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
-import breakpoints from 'components/core/breakpoints';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { UserRejectedRequestError } from '@web3-react/injected-connector';
-import WalletButton from './WalletButton';
-import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
-import AddWalletPending from './AddWalletPending/AddWalletPending';
-import Markdown from 'components/core/Markdown/Markdown';
-import { getUserFriendlyWalletName } from 'utils/wallet';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { isNotEarlyAccessError } from 'contexts/analytics/authUtil';
-import { DeprecatedWalletSelectorFragment$key } from '__generated__/DeprecatedWalletSelectorFragment.graphql';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { injected, walletconnect, walletlink } from '~/connectors/index';
+import { isNotEarlyAccessError } from '~/contexts/analytics/authUtil';
+import { DeprecatedWalletSelectorFragment$key } from '~/generated/DeprecatedWalletSelectorFragment.graphql';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY, WalletName } from '~/types/Wallet';
+import { getUserFriendlyWalletName } from '~/utils/wallet';
+
+import AddWalletPending from './AddWalletPending/AddWalletPending';
+import AuthenticateWalletPending from './AuthenticateWalletPending/AuthenticateWalletPending';
+import WalletButton from './WalletButton';
 import { ConnectionMode } from './WalletSelector';
-import { VStack } from 'components/core/Spacer/Stack';
 
 const walletConnectorMap: Record<string, AbstractConnector> = {
   Metamask: injected,

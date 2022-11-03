@@ -1,4 +1,4 @@
-import { UpdateCollectionTokensInput } from '__generated__/useUpdateCollectionTokensMutation.graphql';
+import { UpdateCollectionTokensInput } from '~/generated/useUpdateCollectionTokensMutation.graphql';
 
 type TokenId = string;
 type TokenSettingsObject = Record<TokenId, boolean>;

@@ -1,5 +1,6 @@
-import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from 'constants/opengraph';
-import { MetaTagProps } from 'pages/_app';
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
+import { MetaTagProps } from '~/pages/_app';
+
 import isProduction from './isProduction';
 
 type Params = {

@@ -1,12 +1,14 @@
-import styled from 'styled-components';
-import NotFound from 'scenes/NotFound/NotFound';
-import CollectionGalleryHeader from './CollectionGalleryHeader';
-import NftGallery from 'components/NftGallery/NftGallery';
-import useMobileLayout from 'hooks/useMobileLayout';
 import { graphql, useFragment } from 'react-relay';
-import { CollectionGalleryFragment$key } from '__generated__/CollectionGalleryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import NftGallery from '~/components/NftGallery/NftGallery';
+import { CollectionGalleryFragment$key } from '~/generated/CollectionGalleryFragment.graphql';
+import useMobileLayout from '~/hooks/useMobileLayout';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import NotFound from '~/scenes/NotFound/NotFound';
+
+import CollectionGalleryHeader from './CollectionGalleryHeader';
 
 type Props = {
   queryRef: CollectionGalleryFragment$key;

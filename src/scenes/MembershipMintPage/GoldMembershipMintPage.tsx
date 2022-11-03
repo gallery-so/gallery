@@ -1,6 +1,7 @@
+import MembershipMintPageProvider from '~/contexts/membershipMintPage/MembershipMintPageContext';
+
 import { MEMBERSHIP_NFT_GOLD } from './cardProperties';
 import PremiumMembershipMintPage from './PremiumMembershipMintPage';
-import MembershipMintPageProvider from 'contexts/membershipMintPage/MembershipMintPageContext';
 
 function GoldMembershipMintPage() {
   return (

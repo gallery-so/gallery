@@ -1,10 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
-import { Web3Error } from 'types/Error';
-import { WalletName, GNOSIS_SAFE } from 'types/Wallet';
+import { Web3Error } from '~/types/Error';
+import { GNOSIS_SAFE, WalletName } from '~/types/Wallet';
 
-import AuthenticateWalletPendingGnosisSafe from './AuthenticateWalletPendingGnosisSafe';
 import AuthenticateWalletPendingDefault from './AuthenticateWalletPendingDefault';
+import AuthenticateWalletPendingGnosisSafe from './AuthenticateWalletPendingGnosisSafe';
 
 type Props = {
   pendingWallet: AbstractConnector;

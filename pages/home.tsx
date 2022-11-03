@@ -1,14 +1,15 @@
-import { ITEMS_PER_PAGE } from 'components/Feed/constants';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import HomeScene from 'scenes/Home/Home';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { homeQuery } from '__generated__/homeQuery.graphql';
-import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
-import { FeedNavbar } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedNavbar';
 import { useEffect } from 'react';
-import { FeedMode } from 'components/Feed/Feed';
-import usePersistedState from 'hooks/usePersistedState';
-import { FEED_MODE_KEY } from 'constants/storageKeys';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import { FeedMode } from '~/components/Feed/Feed';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { FEED_MODE_KEY } from '~/constants/storageKeys';
+import { FeedNavbar } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedNavbar';
+import { homeQuery } from '~/generated/homeQuery.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import HomeScene from '~/scenes/Home/Home';
 
 export default function Home() {
   const query = useLazyLoadQuery<homeQuery>(

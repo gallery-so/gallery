@@ -1,27 +1,26 @@
+import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 
+import { OPENSEA_API_BASEURL } from '~/constants/opensea';
+import MembershipMintPageProvider, {
+  useMembershipMintPageActions,
+} from '~/contexts/membershipMintPage/MembershipMintPageContext';
+import { GeneralMembershipMintPageContentFragment$key } from '~/generated/GeneralMembershipMintPageContentFragment.graphql';
+import { GeneralMembershipMintPageFragment$key } from '~/generated/GeneralMembershipMintPageFragment.graphql';
+import { GeneralMembershipMintPageUseAllowlistFragment$key } from '~/generated/GeneralMembershipMintPageUseAllowlistFragment.graphql';
 import {
   GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
   useGeneralMembershipCardContract,
-} from 'hooks/useContract';
+} from '~/hooks/useContract';
+import MerkleTree from '~/utils/MerkleTree';
+import { removeNullValues } from '~/utils/removeNullValues';
 
-import MerkleTree from 'utils/MerkleTree';
-import { Contract } from '@ethersproject/contracts';
-
-import MembershipMintPageProvider, {
-  useMembershipMintPageActions,
-} from 'contexts/membershipMintPage/MembershipMintPageContext';
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
-import { getLocalAllowlist } from './GeneralCardAllowlist';
-import { graphql, useFragment } from 'react-relay';
-import { GeneralMembershipMintPageUseAllowlistFragment$key } from '__generated__/GeneralMembershipMintPageUseAllowlistFragment.graphql';
-import { GeneralMembershipMintPageContentFragment$key } from '__generated__/GeneralMembershipMintPageContentFragment.graphql';
-import { GeneralMembershipMintPageFragment$key } from '__generated__/GeneralMembershipMintPageFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { OPENSEA_API_BASEURL } from 'constants/opensea';
 import { CustomizedGeneralMembershipMintPage } from './CustomizedGeneralMembershipMintPage';
+import { getLocalAllowlist } from './GeneralCardAllowlist';
 
 export type AssetContract = {
   address: string;

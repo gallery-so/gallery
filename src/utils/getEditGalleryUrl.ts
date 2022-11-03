@@ -1,6 +1,7 @@
-import { graphql, readInlineData } from 'relay-runtime';
-import { getEditGalleryUrlFragment$key } from '../../__generated__/getEditGalleryUrlFragment.graphql';
 import { Route } from 'nextjs-routes';
+import { graphql, readInlineData } from 'relay-runtime';
+
+import { getEditGalleryUrlFragment$key } from '~/generated/getEditGalleryUrlFragment.graphql';
 
 export function getEditGalleryUrl(queryRef: getEditGalleryUrlFragment$key): Route | null {
   const query = readInlineData(

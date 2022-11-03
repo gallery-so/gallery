@@ -1,32 +1,34 @@
+import Link from 'next/link';
+import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CollectionNavbarFragment$key } from '__generated__/CollectionNavbarFragment.graphql';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
+import NavActionFollow from '~/components/Follow/NavActionFollow';
+import { CollectionRightContent } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
+import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
+import {
+  BreadcrumbLink,
+  BreadcrumbText,
+} from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import {
+  ProfileDropdown,
+  SlashText,
+} from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import unescape from '~/utils/unescape';
+
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
 } from '../StandardNavbarContainer';
-import {
-  BreadcrumbLink,
-  BreadcrumbText,
-} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import { CollectionRightContent } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
-import styled from 'styled-components';
-import colors from 'components/core/colors';
-import {
-  ProfileDropdown,
-  SlashText,
-} from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
-import Link from 'next/link';
-import { Route } from 'nextjs-routes';
-import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
-import NavActionFollow from 'components/Follow/NavActionFollow';
-import { useMemo } from 'react';
-import unescape from 'utils/unescape';
 
 type CollectionNavbarProps = {
   username: string;

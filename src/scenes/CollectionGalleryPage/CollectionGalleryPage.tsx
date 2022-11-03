@@ -1,16 +1,18 @@
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import styled from 'styled-components';
 import Head from 'next/head';
-import CollectionGallery from './CollectionGallery';
-import { useEffect, useCallback } from 'react';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import useKeyDown from 'hooks/useKeyDown';
 import { useRouter } from 'next/router';
+import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
-import { CollectionGalleryPageFragment$key } from '__generated__/CollectionGalleryPageFragment.graphql';
-import { useModalState } from 'contexts/modal/ModalContext';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import styled from 'styled-components';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { useModalState } from '~/contexts/modal/ModalContext';
+import { CollectionGalleryPageFragment$key } from '~/generated/CollectionGalleryPageFragment.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
+
+import CollectionGallery from './CollectionGallery';
 
 type CollectionGalleryPageProps = {
   username: string;

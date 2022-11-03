@@ -1,14 +1,16 @@
-import colors from 'components/core/colors';
-import { TitleS } from 'components/core/Text/Text';
-import {
-  useActiveSectionIdState,
-  useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
 import React from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { EditorMenuFragment$key } from '__generated__/EditorMenuFragment.graphql';
+
+import colors from '~/components/core/colors';
+import { TitleS } from '~/components/core/Text/Text';
+import {
+  useActiveSectionIdState,
+  useStagedCollectionState,
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { EditorMenuFragment$key } from '~/generated/EditorMenuFragment.graphql';
+
 import ColumnAdjuster from './ColumnAdjuster';
 
 type Props = {

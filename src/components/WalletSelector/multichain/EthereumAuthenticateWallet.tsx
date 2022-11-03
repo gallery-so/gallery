@@ -1,20 +1,22 @@
+import { captureException } from '@sentry/nextjs';
+import { signMessage } from '@wagmi/core';
 import { useCallback, useEffect, useState } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
+import { useAccount } from 'wagmi';
+
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 import {
   isEarlyAccessError,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
+} from '~/contexts/analytics/authUtil';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
+
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { useAccount } from 'wagmi';
-import { WalletError } from './WalletError';
 import { normalizeError } from './normalizeError';
-import { signMessage } from '@wagmi/core';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+import { WalletError } from './WalletError';
 
 type Props = {
   reset: () => void;

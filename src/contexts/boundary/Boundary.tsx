@@ -1,5 +1,7 @@
-import { Suspense, memo, PropsWithChildren } from 'react';
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
+import { memo, PropsWithChildren, Suspense } from 'react';
+
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+
 import ErrorBoundary from './ErrorBoundary';
 
 const Boundary = memo(({ children }: PropsWithChildren) => (

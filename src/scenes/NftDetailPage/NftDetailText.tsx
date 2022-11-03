@@ -1,23 +1,23 @@
-import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
-
-import breakpoints, { size } from 'components/core/breakpoints';
-import styled from 'styled-components';
-import Markdown from 'components/core/Markdown/Markdown';
-import { useBreakpoint, useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import { useCallback, useMemo, useState } from 'react';
-import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { Button } from 'components/core/Button/Button';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
-import { NftDetailTextFragment$key } from '../../../__generated__/NftDetailTextFragment.graphql';
-import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
-import { NftAdditionalDetails } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
-import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import TextButton from 'components/core/Button/TextButton';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import unescape from 'utils/unescape';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import styled from 'styled-components';
+
+import breakpoints, { size } from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import TextButton from '~/components/core/Button/TextButton';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
+import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
+import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
+import unescape from '~/utils/unescape';
 
 /**
  * TODO: Figure out when to support creator addresses

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { BODY_FONT_FAMILY, Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import breakpoints from 'components/core/breakpoints';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { BODY_FONT_FAMILY, Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 
 export const HomeText = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};

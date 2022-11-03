@@ -1,7 +1,8 @@
-import colors from 'components/core/colors';
-import { DisplayLayout } from 'components/core/enums';
 import { useCallback } from 'react';
 import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { DisplayLayout } from '~/components/core/enums';
 
 type Props = {
   mobileLayout: DisplayLayout;

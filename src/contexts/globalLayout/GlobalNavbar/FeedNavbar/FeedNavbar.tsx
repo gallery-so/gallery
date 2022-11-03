@@ -1,20 +1,20 @@
 import { MouseEventHandler, useCallback } from 'react';
-
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { FeedNavbarFragment$key } from '__generated__/FeedNavbarFragment.graphql';
-import { FeedMode } from 'components/Feed/Feed';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { FeedMode } from '~/components/Feed/Feed';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { FeedLeftContent } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
+import { NavbarLink } from '~/contexts/globalLayout/GlobalNavbar/NavbarLink';
+import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { HStack } from 'components/core/Spacer/Stack';
-import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { FeedLeftContent } from 'contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
-import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { FeedNavbarFragment$key } from '~/generated/FeedNavbarFragment.graphql';
 
 type FeedNavbarProps = {
   queryRef: FeedNavbarFragment$key;

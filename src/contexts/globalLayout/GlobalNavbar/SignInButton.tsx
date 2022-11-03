@@ -1,8 +1,9 @@
-import useAuthModal from 'hooks/useAuthModal';
-import { Paragraph } from 'components/core/Text/Text';
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
-import colors from 'components/core/colors';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { Paragraph } from '~/components/core/Text/Text';
+import useAuthModal from '~/hooks/useAuthModal';
 
 export function SignInButton() {
   const showAuthModal = useAuthModal();

@@ -1,20 +1,20 @@
-import { useCallback } from 'react';
-import styled from 'styled-components';
-import UserInfoForm from 'components/Profile/UserInfoForm';
-import ErrorText from 'components/core/Text/ErrorText';
-
-import useUserInfoForm from 'components/Profile/useUserInfoForm';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { VStack } from 'components/core/Spacer/Stack';
 import { useRouter } from 'next/router';
-import { OnboardingFooter } from 'components/Onboarding/OnboardingFooter';
-import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
-import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
+import { useCallback } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { addUserInfoQuery } from '../../__generated__/addUserInfoQuery.graphql';
-import noop from 'utils/noop';
-import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
+import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
+import UserInfoForm from '~/components/Profile/UserInfoForm';
+import useUserInfoForm from '~/components/Profile/useUserInfoForm';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { addUserInfoQuery } from '~/generated/addUserInfoQuery.graphql';
+import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import noop from '~/utils/noop';
 
 function AddUserInfo() {
   const query = useLazyLoadQuery<addUserInfoQuery>(

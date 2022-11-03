@@ -1,9 +1,9 @@
 import {
-  ONBOARDING_NEXT_BUTTON_TEXT_MAP,
   getStepIndex,
+  ONBOARDING_NEXT_BUTTON_TEXT_MAP,
   StepName,
-} from 'components/Onboarding/constants';
-import { WizardFooter } from 'components/WizardFooter';
+} from '~/components/Onboarding/constants';
+import { WizardFooter } from '~/components/WizardFooter';
 
 type Props = {
   step: StepName;

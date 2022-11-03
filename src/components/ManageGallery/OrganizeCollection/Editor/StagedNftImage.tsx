@@ -1,14 +1,15 @@
-import styled from 'styled-components';
-import NftPreviewLabel from 'components/NftPreview/NftPreviewLabel';
 import { graphql, useFragment } from 'react-relay';
-import { StagedNftImageFragment$key } from '__generated__/StagedNftImageFragment.graphql';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
-import { StagedNftImageImageFragment$key } from '../../../../../__generated__/StagedNftImageImageFragment.graphql';
-import { StagedNftImageVideoFragment$key } from '../../../../../__generated__/StagedNftImageVideoFragment.graphql';
+import styled from 'styled-components';
+
+import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
+import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImageFragment.graphql';
+import { StagedNftImageVideoFragment$key } from '~/generated/StagedNftImageVideoFragment.graphql';
+import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
+import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;

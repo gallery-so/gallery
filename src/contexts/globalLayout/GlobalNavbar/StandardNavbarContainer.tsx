@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { pageGutter } from 'components/core/breakpoints';
+
+import { pageGutter } from '~/components/core/breakpoints';
 
 export const StandardNavbarContainer = styled.div`
   width: 100%;

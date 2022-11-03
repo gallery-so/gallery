@@ -1,45 +1,46 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { captureException } from '@sentry/nextjs';
 import { useWeb3React } from '@web3-react/core';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
-import { normalizeError } from './normalizeError';
+import { graphql, useFragment } from 'react-relay';
 
-import { Web3Error } from 'types/Error';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { walletconnect } from '~/connectors/index';
+import { GNOSIS_NONCE_STORAGE_KEY } from '~/constants/storageKeys';
+import {
+  isEarlyAccessError,
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { GnosisSafeAddWalletFragment$key } from '~/generated/GnosisSafeAddWalletFragment.graphql';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
   INITIAL,
-  PROMPT_SIGNATURE,
-  PendingState,
   LISTENING_ONCHAIN,
-} from 'types/Wallet';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
+  PendingState,
+  PROMPT_SIGNATURE,
+} from '~/types/Wallet';
+import { getLocalStorageItem } from '~/utils/localStorage';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
+import useAddWallet from '../mutations/useAddWallet';
+import useCreateNonce from '../mutations/useCreateNonce';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,
   validateNonceSignedByGnosis,
 } from '../walletUtils';
-import { getLocalStorageItem } from 'utils/localStorage';
-import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
-import {
-  useTrackAddWalletAttempt,
-  useTrackAddWalletSuccess,
-  useTrackAddWalletError,
-  isEarlyAccessError,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import { graphql, useFragment } from 'react-relay';
-import { GnosisSafeAddWalletFragment$key } from '__generated__/GnosisSafeAddWalletFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useAddWallet from '../mutations/useAddWallet';
-import { WalletError } from './WalletError';
+import { normalizeError } from './normalizeError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
-import { walletconnect } from '../../../connectors';
-import { VStack } from 'components/core/Spacer/Stack';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+import { WalletError } from './WalletError';
 
 type Props = {
   queryRef: GnosisSafeAddWalletFragment$key;

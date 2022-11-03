@@ -1,14 +1,15 @@
+import { useRouter } from 'next/router';
+import { ReactNode, useCallback, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { ProfileDropdownFragment$key } from '__generated__/ProfileDropdownFragment.graphql';
-import { ReactNode, useCallback, useState } from 'react';
-import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
-import { HStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
-import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
-import { Paragraph, TITLE_FONT_FAMILY } from 'components/core/Text/Text';
-import { ProfileDropdownContent } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
-import { useRouter } from 'next/router';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
+import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
+import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
+import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
+import { ProfileDropdownFragment$key } from '~/generated/ProfileDropdownFragment.graphql';
 
 type ProfileDropdownProps = {
   queryRef: ProfileDropdownFragment$key;

@@ -1,5 +1,5 @@
-import colors from 'components/core/colors';
-import noop from 'utils/noop';
+import colors from '~/components/core/colors';
+import noop from '~/utils/noop';
 
 type Props = {
   className?: string;

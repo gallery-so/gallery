@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
-import { TitleS } from 'components/core/Text/Text';
-import TokenHolderListItem from './TokenHolderListItem';
-import { Directions } from 'src/components/core/enums';
-import { removeNullValues } from 'utils/removeNullValues';
-import { useMemberListPageState } from 'contexts/memberListPage/MemberListPageContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { TokenHolderListFragment$key } from '../../../__generated__/TokenHolderListFragment.graphql';
+import styled from 'styled-components';
+
+import { Directions } from '~/components/core/enums';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleS } from '~/components/core/Text/Text';
+import { useMemberListPageState } from '~/contexts/memberListPage/MemberListPageContext';
+import { TokenHolderListFragment$key } from '~/generated/TokenHolderListFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import TokenHolderListItem from './TokenHolderListItem';
 
 // Get which side of the tokenHolder name to show the preview on
 // 1st and 2nd column should be right, 3rd and 4th column should be left

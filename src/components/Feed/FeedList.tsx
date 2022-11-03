@@ -1,8 +1,3 @@
-import breakpoints from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import Loader from 'components/core/Loader/Loader';
-import { TitleM } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import {
@@ -15,8 +10,14 @@ import {
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
 
-import { FeedListEventDataFragment$key } from '__generated__/FeedListEventDataFragment.graphql';
-import { FeedListFragment$key } from '__generated__/FeedListFragment.graphql';
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import Loader from '~/components/core/Loader/Loader';
+import { TitleM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
+import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+
 import { FeedMode } from './Feed';
 import FeedEvent from './FeedEvent';
 

@@ -1,6 +1,8 @@
 import { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
-import noop from 'utils/noop';
+
+import noop from '~/utils/noop';
+
 import colors from '../colors';
 import { VStack } from '../Spacer/Stack';
 import ErrorText from '../Text/ErrorText';

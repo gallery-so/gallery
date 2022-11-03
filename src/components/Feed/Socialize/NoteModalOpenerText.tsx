@@ -1,13 +1,14 @@
-import styled from 'styled-components';
 import { ReactNode, useCallback } from 'react';
-import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NoteModalOpenerTextFragment$key } from '../../../../__generated__/NoteModalOpenerTextFragment.graphql';
-import { NotesModal } from 'components/Feed/Socialize/NotesModal/NotesModal';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { NotesModal } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { NoteModalOpenerTextFragment$key } from '~/generated/NoteModalOpenerTextFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   children: ReactNode;

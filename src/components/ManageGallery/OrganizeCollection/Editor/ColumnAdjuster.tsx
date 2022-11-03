@@ -1,18 +1,19 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
-import colors from 'components/core/colors';
-import { HStack } from 'components/core/Spacer/Stack';
-import { BaseM } from 'components/core/Text/Text';
+import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import {
   useCollectionEditorActions,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import useMaxColumns from 'contexts/collectionEditor/useMaxColumns';
-import { useCallback } from 'react';
-import { graphql, useFragment } from 'react-relay';
-import CircleMinusIcon from 'icons/CircleMinusIcon';
-import CirclePlusIcon from 'icons/CirclePlusIcon';
-import styled from 'styled-components';
-import { ColumnAdjusterFragment$key } from '__generated__/ColumnAdjusterFragment.graphql';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import useMaxColumns from '~/contexts/collectionEditor/useMaxColumns';
+import { ColumnAdjusterFragment$key } from '~/generated/ColumnAdjusterFragment.graphql';
+import CircleMinusIcon from '~/icons/CircleMinusIcon';
+import CirclePlusIcon from '~/icons/CirclePlusIcon';
 
 type Props = {
   viewerRef: ColumnAdjusterFragment$key;

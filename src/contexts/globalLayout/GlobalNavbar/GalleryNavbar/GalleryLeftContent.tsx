@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { GalleryLeftContentFragment$key } from '../../../../../__generated__/GalleryLeftContentFragment.graphql';
-import NavActionFollow from 'components/Follow/NavActionFollow';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useMemo } from 'react';
-import { ProfileDropdown } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+
+import NavActionFollow from '~/components/Follow/NavActionFollow';
+import { ProfileDropdown } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
+import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   queryRef: GalleryLeftContentFragment$key;

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import colors from 'components/core/colors';
+
+import colors from '~/components/core/colors';
 
 type Props = {
   onClick: () => void;

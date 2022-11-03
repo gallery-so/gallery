@@ -1,26 +1,27 @@
-import GalleryLeftContent from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Route, route } from 'nextjs-routes';
+import { Suspense } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { GalleryNavbarFragment$key } from '../../../../../__generated__/GalleryNavbarFragment.graphql';
-import { GalleryRightContent } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryRightContent';
+import styled, { css } from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import FollowButton from '~/components/Follow/FollowButton';
+import GalleryLeftContent from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';
+import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
+import { GalleryRightContent } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryRightContent';
+import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { GalleryNavLinks } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
-import { BreadcrumbLink } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import styled, { css } from 'styled-components';
-import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
-import FollowButton from 'components/Follow/FollowButton';
-import { route, Route } from 'nextjs-routes';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import colors from 'components/core/colors';
-import { useRouter } from 'next/router';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
+import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   username: string;

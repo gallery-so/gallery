@@ -1,17 +1,19 @@
-import { Button } from 'components/core/Button/Button';
-import Input from 'components/core/Input/Input';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import ErrorText from 'components/core/Text/ErrorText';
-import { TitleS } from 'components/core/Text/Text';
-import { DEBUG_USERNAME_KEY } from 'constants/storageKeys';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import useKeyDown from 'hooks/useKeyDown';
-import useMultiKeyDown from 'hooks/useMultiKeyDown';
-import usePersistedState from 'hooks/usePersistedState';
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
-import { DebuggerQuery } from '__generated__/DebuggerQuery.graphql';
+
+import { Button } from '~/components/core/Button/Button';
+import Input from '~/components/core/Input/Input';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { TitleS } from '~/components/core/Text/Text';
+import { DEBUG_USERNAME_KEY } from '~/constants/storageKeys';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import useMultiKeyDown from '~/hooks/useMultiKeyDown';
+import usePersistedState from '~/hooks/usePersistedState';
+
 import { useDebugAuthLogin } from './useDebugAuth';
 
 const Debugger = () => {

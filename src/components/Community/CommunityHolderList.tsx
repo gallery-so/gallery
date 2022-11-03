@@ -1,22 +1,27 @@
-import Loader from 'components/core/Loader/Loader';
-import { VStack } from 'components/core/Spacer/Stack';
-import TokenHolderList from 'components/TokenHolderList/TokenHolderList';
-import { LIST_ITEM_PER_PAGE } from 'constants/community';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
-import { CommunityHolderListFragment$key } from '__generated__/CommunityHolderListFragment.graphql';
+
+import Loader from '~/components/core/Loader/Loader';
+import { VStack } from '~/components/core/Spacer/Stack';
+import TokenHolderList from '~/components/TokenHolderList/TokenHolderList';
+import { LIST_ITEM_PER_PAGE } from '~/constants/community';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { CommunityHolderListFragment$key } from '~/generated/CommunityHolderListFragment.graphql';
 
 type Props = {
   communityRef: CommunityHolderListFragment$key;
 };
 
 export default function CommunityHolderList({ communityRef }: Props) {
-  const { data: community, loadNext, hasNext } = usePaginationFragment(
+  const {
+    data: community,
+    loadNext,
+    hasNext,
+  } = usePaginationFragment(
     graphql`
       fragment CommunityHolderListFragment on Community
-        @refetchable(queryName: "CommunityHolderListRefetchableFragment") {
+      @refetchable(queryName: "CommunityHolderListRefetchableFragment") {
         id
 
         owners(

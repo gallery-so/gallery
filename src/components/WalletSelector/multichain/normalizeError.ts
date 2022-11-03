@@ -1,4 +1,5 @@
-import { isBeaconError, isWeb3Error, Web3Error } from 'types/Error';
+import { isBeaconError, isWeb3Error, Web3Error } from '~/types/Error';
+
 import { getErrorCode } from './tezos/tezosUtils';
 
 export const normalizeError = (error: unknown): Error | Web3Error => {

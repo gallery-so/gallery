@@ -1,24 +1,26 @@
-import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
-import { SIDEBAR_ICON_DIMENSIONS } from 'constants/sidebar';
-import { useCollectionEditorActions } from 'contexts/collectionEditor/CollectionEditorContext';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 import { memo, useCallback, useEffect, useRef } from 'react';
 import { graphql, useFragment, useRelayEnvironment } from 'react-relay';
-import styled from 'styled-components';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { SidebarNftIconFragment$key } from '__generated__/SidebarNftIconFragment.graphql';
-import { EditModeToken } from '../types';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftRetry, useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { SidebarNftIconPreviewAsset$key } from '../../../../../__generated__/SidebarNftIconPreviewAsset.graphql';
-import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
 import { fetchQuery } from 'relay-runtime';
-import { SidebarNftIconPollerQuery } from '../../../../../__generated__/SidebarNftIconPollerQuery.graphql';
-import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
+import { useCollectionEditorActions } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.graphql';
+import { SidebarNftIconPollerQuery } from '~/generated/SidebarNftIconPollerQuery.graphql';
+import { SidebarNftIconPreviewAsset$key } from '~/generated/SidebarNftIconPreviewAsset.graphql';
+import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
+
+import { EditModeToken } from '../types';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { Button } from 'components/core/Button/Button';
-import { VStack } from 'components/core/Spacer/Stack';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+
+import { Button } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 
 type Props = {
   heading: string;

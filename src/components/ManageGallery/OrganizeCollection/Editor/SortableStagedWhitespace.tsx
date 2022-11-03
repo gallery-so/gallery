@@ -1,12 +1,14 @@
 import { useSortable } from '@dnd-kit/sortable';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
+import { CSS } from '@dnd-kit/utilities';
 import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { CSS } from '@dnd-kit/utilities';
+
+import colors from '~/components/core/colors';
+import { BaseM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import { SPACE_BETWEEN_ITEMS } from '~/contexts/collectionEditor/useDndDimensions';
+
 import UnstageButton from './UnstageButton';
-import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions';
 
 type Props = {
   id: string;

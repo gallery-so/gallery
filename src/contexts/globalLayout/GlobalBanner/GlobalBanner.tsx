@@ -1,15 +1,16 @@
-import breakpoints, { contentSize } from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import Markdown from 'components/core/Markdown/Markdown';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { GLOBAL_BANNER_STORAGE_KEY } from 'constants/storageKeys';
-import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import styled from 'styled-components';
-import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+
+import breakpoints, { contentSize } from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { GLOBAL_BANNER_STORAGE_KEY } from '~/constants/storageKeys';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 
 type Props = {
   title?: React.ReactNode | string;

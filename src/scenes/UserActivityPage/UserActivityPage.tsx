@@ -1,12 +1,14 @@
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { UserActivityPageFragment$key } from '~/generated/UserActivityPageFragment.graphql';
+import { StyledUserGalleryPage } from '~/scenes/UserGalleryPage/UserGalleryPage';
+
 import UserActivity from './UserActivity';
-import { UserActivityPageFragment$key } from '__generated__/UserActivityPageFragment.graphql';
-import { StyledUserGalleryPage } from 'scenes/UserGalleryPage/UserGalleryPage';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type UserActivityPageProps = {
   queryRef: UserActivityPageFragment$key;

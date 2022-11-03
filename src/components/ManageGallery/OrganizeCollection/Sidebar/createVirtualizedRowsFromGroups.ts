@@ -1,11 +1,12 @@
-import { CollectionGroup } from 'components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
+import keyBy from 'lodash.keyby';
+
+import { CollectionGroup } from '~/components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
 import {
   TokenAndEditModeToken,
   VirtualizedRow,
-} from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
-import { SidebarTokensFragment$data } from '../../../../../__generated__/SidebarTokensFragment.graphql';
-import { EditModeToken } from 'components/ManageGallery/OrganizeCollection/types';
-import keyBy from 'lodash.keyby';
+} from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
+import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
   groups: CollectionGroup[];

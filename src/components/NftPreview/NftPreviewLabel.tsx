@@ -1,15 +1,16 @@
-import colors from 'components/core/colors';
-import styled from 'styled-components';
-import { BaseM } from 'components/core/Text/Text';
-import breakpoints from 'components/core/breakpoints';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { graphql, useFragment } from 'react-relay';
-import { NftPreviewLabelFragment$key } from '../../../__generated__/NftPreviewLabelFragment.graphql';
-import { NftPreviewLabelCollectionNameFragment$key } from '../../../__generated__/NftPreviewLabelCollectionNameFragment.graphql';
-import { getCommunityUrlForToken } from 'utils/getCommunityUrlForToken';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
 import { useMemo } from 'react';
-import unescape from 'utils/unescape';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
+import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
+import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import unescape from '~/utils/unescape';
 
 type Props = {
   className?: string;

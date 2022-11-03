@@ -1,9 +1,10 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { getExternalAddressLink, graphqlTruncateAddress } from 'utils/wallet';
-import { LinkableAddressFragment$key } from '../../__generated__/LinkableAddressFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { BaseM } from '~/components/core/Text/Text';
+import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
+import { getExternalAddressLink, graphqlTruncateAddress } from '~/utils/wallet';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;

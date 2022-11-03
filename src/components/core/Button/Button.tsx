@@ -1,11 +1,13 @@
-import styled, { css } from 'styled-components';
-import colors from '../colors';
-import transitions from '../transitions';
-import { ButtonHTMLAttributes } from 'react';
-import { BODY_FONT_FAMILY } from '../Text/Text';
 import Link from 'next/link';
+import { ButtonHTMLAttributes } from 'react';
+import styled, { css } from 'styled-components';
+
+import { InternalAnchorElementProps } from '~/types/Elements';
+
+import colors from '../colors';
 import { Spinner } from '../Spinner/Spinner';
-import { InternalAnchorElementProps } from 'types/Elements';
+import { BODY_FONT_FAMILY } from '../Text/Text';
+import transitions from '../transitions';
 
 // A Chrome bug seems to double apply opacity when used with animate, so we add
 // an alpha value on hex colors for things like disabled states. This assumes

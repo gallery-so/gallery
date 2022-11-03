@@ -1,8 +1,9 @@
-import { graphql, useFragment } from 'react-relay';
 import { format, parse } from 'date-fns';
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
-import { NftAdditionalDetailsPOAPFragment$key } from '../../../../__generated__/NftAdditionalDetailsPOAPFragment.graphql';
+import { graphql, useFragment } from 'react-relay';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
 
 type POAPNftDetailSectionProps = {
   showDetails: boolean;

@@ -1,7 +1,8 @@
 import {
   EditModeToken,
   EditModeTokenChild,
-} from 'flows/../components/ManageGallery/OrganizeCollection/types';
+} from '~/components/ManageGallery/OrganizeCollection/types';
+
 import {
   generateLayoutFromCollection,
   getWhitespacePositionsFromStagedItems,

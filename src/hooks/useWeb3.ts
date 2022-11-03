@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { NETWORK_CONTEXT_NAME } from 'connectors/index';
+
+import { NETWORK_CONTEXT_NAME } from '~/connectors/index';
 
 export function useActiveWeb3React() {
   const context = useWeb3React<Web3Provider>();

@@ -1,16 +1,17 @@
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
-import { AdmireButtonFragment$key } from '__generated__/AdmireButtonFragment.graphql';
-import { AuthModal } from 'hooks/useAuthModal';
-import { AdditionalContext, useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { useCallback } from 'react';
-import { AdmireButtonQueryFragment$key } from '../../../../__generated__/AdmireButtonQueryFragment.graphql';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { AdmireButtonMutation } from '../../../../__generated__/AdmireButtonMutation.graphql';
-import { AdmireIcon } from 'icons/SocializeIcons';
-import { AdmireButtonRemoveMutation } from '../../../../__generated__/AdmireButtonRemoveMutation.graphql';
+
+import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graphql';
+import { AdmireButtonMutation } from '~/generated/AdmireButtonMutation.graphql';
+import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
+import { AdmireButtonRemoveMutation } from '~/generated/AdmireButtonRemoveMutation.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { AdmireIcon } from '~/icons/SocializeIcons';
 
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;

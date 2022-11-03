@@ -1,11 +1,12 @@
-import colors from 'components/core/colors';
-import {
-  ModalPaddingVariant,
-  MODAL_PADDING_PX,
-  MODAL_PADDING_THICC_PX,
-} from 'contexts/modal/constants';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import {
+  MODAL_PADDING_PX,
+  MODAL_PADDING_THICC_PX,
+  ModalPaddingVariant,
+} from '~/contexts/modal/constants';
 
 type Props = {
   isActive: boolean;

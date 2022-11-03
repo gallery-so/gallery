@@ -1,13 +1,14 @@
-import UserGalleryPage from 'scenes/UserGalleryPage/UserGalleryPage';
 import { GetServerSideProps } from 'next';
-import { MetaTagProps } from 'pages/_app';
-import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { graphql } from 'relay-runtime';
-import { useLazyLoadQuery } from 'react-relay';
-import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { route } from 'nextjs-routes';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
+
+import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type UserGalleryProps = MetaTagProps & {
   username: string;

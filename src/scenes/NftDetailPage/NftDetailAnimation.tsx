@@ -2,10 +2,12 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { NftDetailAnimationFragment$key } from '__generated__/NftDetailAnimationFragment.graphql';
+
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
+import { NftDetailAnimationFragment$key } from '~/generated/NftDetailAnimationFragment.graphql';
+
 import { RawNftDetailModel } from './NftDetailModel';
 import processIFrameRenderUrl from './processIFrameRenderUrl';
-import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
 
 type Props = {
   mediaRef: NftDetailAnimationFragment$key;

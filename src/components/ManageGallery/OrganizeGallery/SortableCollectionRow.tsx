@@ -3,9 +3,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+
+import { SortableCollectionRowFragment$key } from '~/generated/SortableCollectionRowFragment.graphql';
+
 import CollectionRow from './CollectionRow';
 import CollectionRowSettings from './CollectionRowSettings';
-import { SortableCollectionRowFragment$key } from '../../../../__generated__/SortableCollectionRowFragment.graphql';
 
 type Props = {
   onEditCollection: (dbid: string) => void;

@@ -1,13 +1,15 @@
-import breakpoints from 'components/core/breakpoints';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NoteViewer, StyledContainer } from 'scenes/NftDetailPage/NftDetailNote';
-import NftDetailText from 'scenes/NftDetailPage/NftDetailText';
 import styled from 'styled-components';
-import { TokenDetailViewFragment$key } from '__generated__/TokenDetailViewFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
+import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
+import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
+
 import TokenDetailAsset from './TokenDetailAsset';
 
 type Props = {

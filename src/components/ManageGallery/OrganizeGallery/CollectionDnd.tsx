@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
   defaultDropAnimationSideEffects,
@@ -13,17 +12,19 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
-
-import useUpdateGallery from 'hooks/api/galleries/useUpdateGallery';
-import CollectionRowWrapper from './CollectionRowWrapper';
-import CollectionRowDragging from './CollectionRowDragging';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionDndFragment$key } from '__generated__/CollectionDndFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import keyBy from 'lodash.keyby';
-import { VStack } from 'components/core/Spacer/Stack';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { CollectionDndFragment$key } from '~/generated/CollectionDndFragment.graphql';
+import useUpdateGallery from '~/hooks/api/galleries/useUpdateGallery';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import CollectionRowDragging from './CollectionRowDragging';
+import CollectionRowWrapper from './CollectionRowWrapper';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({

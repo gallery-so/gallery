@@ -1,13 +1,14 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CommentNoteFragment$key } from '__generated__/CommentNoteFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
-import { HStack } from 'components/core/Spacer/Stack';
-import { getTimeSince } from 'utils/time';
-import { TimeAgoText } from 'components/Feed/Socialize/NotesModal/TimeAgoText';
-import { ListItem } from 'components/Feed/Socialize/NotesModal/ListItem';
-import { UsernameLink } from 'components/Feed/Socialize/NotesModal/UsernameLink';
-import colors from 'components/core/colors';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
+import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
+import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
+import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import { getTimeSince } from '~/utils/time';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;

@@ -1,16 +1,15 @@
 import { memo, useEffect } from 'react';
-
-import WalletSelector from 'components/WalletSelector/WalletSelector';
-import { BaseM } from 'components/core/Text/Text';
-import styled from 'styled-components';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import breakpoints from 'components/core/breakpoints';
-
-// Preloading images for the welcome screen
-import { animatedImages } from 'src/scenes/WelcomeAnimation/Images';
 import { graphql, useFragment } from 'react-relay';
-import { AuthFragment$key } from '__generated__/AuthFragment.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import WalletSelector from '~/components/WalletSelector/WalletSelector';
+import { AuthFragment$key } from '~/generated/AuthFragment.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+// Preloading images for the welcome screen
+import { animatedImages } from '~/scenes/WelcomeAnimation/Images';
 
 const preloadImages = () => {
   animatedImages.forEach((image) => {

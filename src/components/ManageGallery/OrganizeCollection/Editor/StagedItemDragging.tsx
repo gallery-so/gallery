@@ -1,15 +1,17 @@
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { StagedItemDraggingFragment$key } from '__generated__/StagedItemDraggingFragment.graphql';
+
+import colors from '~/components/core/colors';
+import { BaseM } from '~/components/core/Text/Text';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
+import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
+import noop from '~/utils/noop';
+
 import StagedNftImageDragging from './StagedNftImageDragging';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftRetry } from 'hooks/useNftRetry';
-import { StagedItemDraggingWrapperFragment$key } from '../../../../../__generated__/StagedItemDraggingWrapperFragment.graphql';
-import noop from 'utils/noop';
 
 type Props = {
   tokenRef: StagedItemDraggingFragment$key | null;

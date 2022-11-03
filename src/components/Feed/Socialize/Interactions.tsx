@@ -1,13 +1,14 @@
-import { VStack } from 'components/core/Spacer/Stack';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CommentLine } from 'components/Feed/Socialize/CommentLine';
-import { AdmireLine } from 'components/Feed/Socialize/AdmireLine';
-import { RemainingAdmireCount } from 'components/Feed/Socialize/RemainingAdmireCount';
-import { NoteModalOpenerText } from 'components/Feed/Socialize/NoteModalOpenerText';
-import { useLayoutEffect, useMemo, useRef } from 'react';
-import { InteractionsQueryFragment$key } from '../../../../__generated__/InteractionsQueryFragment.graphql';
-import { InteractionsFragment$key } from '../../../../__generated__/InteractionsFragment.graphql';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
+import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
+import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
+import { RemainingAdmireCount } from '~/components/Feed/Socialize/RemainingAdmireCount';
+import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
+import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
 
 type Props = {
   onPotentialLayoutShift: () => void;

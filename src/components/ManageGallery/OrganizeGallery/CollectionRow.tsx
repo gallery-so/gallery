@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
-import unescape from 'utils/unescape';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
 import { graphql, useFragment } from 'react-relay';
-import { CollectionRowFragment$key } from '__generated__/CollectionRowFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { CollectionRowCompactNftsFragment$key } from '__generated__/CollectionRowCompactNftsFragment.graphql';
-import Markdown from 'components/core/Markdown/Markdown';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
 import {
   BIG_NFT_SIZE_PX,
   BigNft,
   BigNftContainer,
-} from 'components/ManageGallery/OrganizeGallery/BigNft';
-import { SmolNft, SmolNftContainer } from 'components/ManageGallery/OrganizeGallery/SmolNft';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+} from '~/components/ManageGallery/OrganizeGallery/BigNft';
+import { SmolNft, SmolNftContainer } from '~/components/ManageGallery/OrganizeGallery/SmolNft';
+import { CollectionRowCompactNftsFragment$key } from '~/generated/CollectionRowCompactNftsFragment.graphql';
+import { CollectionRowFragment$key } from '~/generated/CollectionRowFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/utils/removeNullValues';
+import unescape from '~/utils/unescape';
 
 type Props = {
   className?: string;
