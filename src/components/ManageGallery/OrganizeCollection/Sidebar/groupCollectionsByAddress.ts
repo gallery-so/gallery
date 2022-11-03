@@ -1,6 +1,7 @@
-import { SidebarTokensFragment$data } from '../../../../../__generated__/SidebarTokensFragment.graphql';
-import { EditModeToken } from 'components/ManageGallery/OrganizeCollection/types';
 import keyBy from 'lodash.keyby';
+
+import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
 export type CollectionGroup = {
   title: string;

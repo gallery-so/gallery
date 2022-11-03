@@ -1,17 +1,18 @@
+import { GetServerSideProps } from 'next';
+import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
-import { GetServerSideProps } from 'next';
-import { galleriesQuery } from '../../__generated__/galleriesQuery.graphql';
 import styled from 'styled-components';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { EmptyState } from 'components/EmptyState/EmptyState';
-import { ButtonLink } from 'components/core/Button/Button';
-import { galleriesGalleryPageFragment$key } from '../../__generated__/galleriesGalleryPageFragment.graphql';
-import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
-import { useMemo } from 'react';
-import { Route } from 'nextjs-routes';
+
+import { ButtonLink } from '~/components/core/Button/Button';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { galleriesGalleryPageFragment$key } from '~/generated/galleriesGalleryPageFragment.graphql';
+import { galleriesQuery } from '~/generated/galleriesQuery.graphql';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type GalleryPageProps = {
   queryRef: galleriesGalleryPageFragment$key;

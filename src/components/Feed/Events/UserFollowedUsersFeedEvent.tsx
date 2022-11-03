@@ -1,25 +1,27 @@
-import breakpoints from 'components/core/breakpoints';
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
-import FollowListUsers from 'components/Follow/FollowListUsers';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useRouter } from 'next/router';
 import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { getTimeSince } from 'utils/time';
-import { UserFollowedUsersFeedEventFragment$key } from '__generated__/UserFollowedUsersFeedEventFragment.graphql';
-import { UserFollowedUsersFeedEventQueryFragment$key } from '__generated__/UserFollowedUsersFeedEventQueryFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import FollowListUsers from '~/components/Follow/FollowListUsers';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
+import { UserFollowedUsersFeedEventQueryFragment$key } from '~/generated/UserFollowedUsersFeedEventQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { getTimeSince } from '~/utils/time';
+
 import { FeedMode } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
-import { removeNullValues } from 'utils/removeNullValues';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventDataRef: UserFollowedUsersFeedEventFragment$key;

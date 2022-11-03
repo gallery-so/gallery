@@ -1,6 +1,7 @@
-import Shimmer from 'components/Shimmer/Shimmer';
 import { createContext, memo, ReactNode, useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
+
+import Shimmer from '~/components/Shimmer/Shimmer';
 
 type AspectRatio = 'wide' | 'square' | 'tall' | 'unknown';
 

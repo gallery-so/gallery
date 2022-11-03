@@ -1,15 +1,5 @@
-import styled from 'styled-components';
-
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import EmptyGallery from './EmptyGallery';
-import UserGalleryCollection from './UserGalleryCollection';
-import { DisplayLayout } from 'components/core/enums';
 import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { UserGalleryCollectionsFragment$key } from '__generated__/UserGalleryCollectionsFragment.graphql';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { UserGalleryCollectionsQueryFragment$key } from '__generated__/UserGalleryCollectionsQueryFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
 import {
   AutoSizer,
   CellMeasurer,
@@ -18,8 +8,19 @@ import {
   ListRowProps,
   WindowScroller,
 } from 'react-virtualized';
-import breakpoints from 'components/core/breakpoints';
-import useWindowSize from 'hooks/useWindowSize';
+import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { DisplayLayout } from '~/components/core/enums';
+import { UserGalleryCollectionsFragment$key } from '~/generated/UserGalleryCollectionsFragment.graphql';
+import { UserGalleryCollectionsQueryFragment$key } from '~/generated/UserGalleryCollectionsQueryFragment.graphql';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import useWindowSize from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import EmptyGallery from './EmptyGallery';
+import UserGalleryCollection from './UserGalleryCollection';
 
 type Props = {
   galleryRef: UserGalleryCollectionsFragment$key;

@@ -1,13 +1,14 @@
-import styled from 'styled-components';
-import colors from 'components/core/colors';
-import { Button } from 'components/core/Button/Button';
 import { useCallback, useState } from 'react';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useDeleteCollection } from 'hooks/api/collections/useDeleteCollection';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { graphql, useFragment } from 'react-relay';
-import { DeleteCollectionConfirmationFragment$key } from '__generated__/DeleteCollectionConfirmationFragment.graphql';
-import { HStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { DeleteCollectionConfirmationFragment$key } from '~/generated/DeleteCollectionConfirmationFragment.graphql';
+import { useDeleteCollection } from '~/hooks/api/collections/useDeleteCollection';
 
 type Props = {
   collectionRef: DeleteCollectionConfirmationFragment$key;

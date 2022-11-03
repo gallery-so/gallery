@@ -1,11 +1,5 @@
+import { useCallback, useMemo, useState } from 'react';
 import { usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { NotesModalFragment$key } from '__generated__/NotesModalFragment.graphql';
-import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
-import styled from 'styled-components';
-import { VStack } from 'components/core/Spacer/Stack';
-import colors from 'components/core/colors';
-import { TitleXS } from 'components/core/Text/Text';
 import {
   AutoSizer,
   CellMeasurer,
@@ -13,10 +7,17 @@ import {
   List,
   ListRowRenderer,
 } from 'react-virtualized';
-import { useCallback, useMemo, useState } from 'react';
-import { AdmireNote } from 'components/Feed/Socialize/NotesModal/AdmireNote';
-import { CommentNote } from 'components/Feed/Socialize/NotesModal/CommentNote';
-import { ListItem } from 'components/Feed/Socialize/NotesModal/ListItem';
+import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
+import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';
+import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
+import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
+import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 
 export const NOTES_PER_PAGE = 10;
 

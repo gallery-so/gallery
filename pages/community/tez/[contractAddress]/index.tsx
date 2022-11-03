@@ -1,13 +1,14 @@
-import CommunityPageScene from 'scenes/CommunityPage/CommunityPage';
 import { GetServerSideProps } from 'next';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import { MetaTagProps } from 'pages/_app';
-import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { ContractAddressTezosQuery } from '../../../../__generated__/ContractAddressTezosQuery.graphql';
-import { CommunityNavbar } from 'contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
-import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from 'constants/community';
+import { graphql } from 'relay-runtime';
+
+import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from '~/constants/community';
+import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
+import { ContractAddressTezosQuery } from '~/generated/ContractAddressTezosQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import CommunityPageScene from '~/scenes/CommunityPage/CommunityPage';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;

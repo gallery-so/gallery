@@ -1,15 +1,16 @@
-import UserGalleryCollections from 'scenes/UserGalleryPage/UserGalleryCollections';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import useMobileLayout from 'hooks/useMobileLayout';
-import EmptyGallery from 'scenes/UserGalleryPage/EmptyGallery';
-import UserGalleryHeader from 'scenes/UserGalleryPage/UserGalleryHeader';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryLayoutFragment$key } from '__generated__/UserGalleryLayoutFragment.graphql';
-import { UserGalleryLayoutQueryFragment$key } from '__generated__/UserGalleryLayoutQueryFragment.graphql';
 import styled from 'styled-components';
-import { VStack } from 'components/core/Spacer/Stack';
-import breakpoints from 'components/core/breakpoints';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { UserGalleryLayoutFragment$key } from '~/generated/UserGalleryLayoutFragment.graphql';
+import { UserGalleryLayoutQueryFragment$key } from '~/generated/UserGalleryLayoutQueryFragment.graphql';
+import useMobileLayout from '~/hooks/useMobileLayout';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import EmptyGallery from '~/scenes/UserGalleryPage/EmptyGallery';
+import UserGalleryCollections from '~/scenes/UserGalleryPage/UserGalleryCollections';
+import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
 
 type Props = {
   userRef: UserGalleryLayoutFragment$key;

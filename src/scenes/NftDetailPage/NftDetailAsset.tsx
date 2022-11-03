@@ -1,24 +1,26 @@
-import breakpoints, { size } from 'components/core/breakpoints';
-import styled from 'styled-components';
-import NftDetailAnimation from './NftDetailAnimation';
-import NftDetailVideo from './NftDetailVideo';
-import NftDetailAudio from './NftDetailAudio';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { useContentState } from 'contexts/shimmer/ShimmerContext';
 import { graphql, useFragment } from 'react-relay';
-import { NftDetailAssetFragment$key } from '__generated__/NftDetailAssetFragment.graphql';
-import { NftDetailAssetComponentFragment$key } from '__generated__/NftDetailAssetComponentFragment.graphql';
+import styled from 'styled-components';
+
+import breakpoints, { size } from '~/components/core/breakpoints';
+import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
+import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
+import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
+import { useBreakpoint } from '~/hooks/useWindowSize';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
+
+import NftDetailAnimation from './NftDetailAnimation';
+import NftDetailAudio from './NftDetailAudio';
+import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
-import { useNftRetry } from 'hooks/useNftRetry';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { NftDetailAssetTokenFragment$key } from '../../../__generated__/NftDetailAssetTokenFragment.graphql';
-import NftDetailGif from './NftDetailGif';
+import NftDetailVideo from './NftDetailVideo';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;

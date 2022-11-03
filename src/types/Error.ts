@@ -1,5 +1,6 @@
 import { BeaconErrorType } from '@airgap/beacon-types';
-import { getErrorCode } from 'components/WalletSelector/multichain/tezos/tezosUtils';
+
+import { getErrorCode } from '~/components/WalletSelector/multichain/tezos/tezosUtils';
 
 export type ErrorCode = string;
 export type Web3Error = Error & { code: ErrorCode; customMessage?: string };

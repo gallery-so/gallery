@@ -1,4 +1,4 @@
-import usePersistedState from 'hooks/usePersistedState';
+import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import {
   createContext,
   Fragment,
@@ -11,25 +11,27 @@ import {
   useMemo,
   useState,
 } from 'react';
-import Web3WalletProvider from './Web3WalletContext';
-import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
-import clearLocalStorageWithException from './clearLocalStorageWithException';
+import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import {
   GLOBAL_BANNER_STORAGE_KEY,
   TEZOS_ANNOUNCEMENT_STORAGE_KEY,
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from 'constants/storageKeys';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { _identify } from 'contexts/analytics/AnalyticsContext';
-import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
-import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
-import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
-import { getCurrentHub, startTransaction } from '@sentry/nextjs';
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import { isWeb3Error, Web3Error } from 'types/Error';
+} from '~/constants/storageKeys';
+import { _identify } from '~/contexts/analytics/AnalyticsContext';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { AuthContextFetchUserQuery } from '~/generated/AuthContextFetchUserQuery.graphql';
+import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { isWeb3Error, Web3Error } from '~/types/Error';
+
+import clearLocalStorageWithException from './clearLocalStorageWithException';
 import { EtheremProviders } from './EthereumProviders';
+import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
+import Web3WalletProvider from './Web3WalletContext';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 

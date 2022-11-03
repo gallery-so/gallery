@@ -1,8 +1,9 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
-import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
-import { BaseM } from 'components/core/Text/Text';
+
+import colors from '~/components/core/colors';
+import { BaseM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
 
 export const walletIconMap = {
   metamask: '/icons/metamask.svg',

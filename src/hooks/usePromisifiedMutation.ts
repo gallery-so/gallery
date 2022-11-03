@@ -1,5 +1,5 @@
-import { GraphQLTaggedNode, useMutation, UseMutationConfig } from 'react-relay';
 import { useCallback } from 'react';
+import { GraphQLTaggedNode, useMutation, UseMutationConfig } from 'react-relay';
 import { MutationParameters } from 'relay-runtime';
 
 export const usePromisifiedMutation = <T extends MutationParameters>(

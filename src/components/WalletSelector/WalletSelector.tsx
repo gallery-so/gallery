@@ -1,11 +1,13 @@
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
 import { graphql, useFragment } from 'react-relay';
-import { WalletSelectorFragment$key } from '__generated__/WalletSelectorFragment.graphql';
+
+import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
+
+import DeprecatedWalletSelector from './DeprecatedWalletSelector';
 import {
   MultichainWalletSelector,
   WalletSelectorVariant,
 } from './multichain/MultichainWalletSelector';
-import DeprecatedWalletSelector from './DeprecatedWalletSelector';
 
 // AUTH: authenticate with wallet (sign in)
 // ADD_WALLET_TO_USER: add wallet to user

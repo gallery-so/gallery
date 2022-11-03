@@ -1,8 +1,9 @@
-import styled from 'styled-components';
 import Link from 'next/link';
-import { TitleS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import { route, Route } from 'nextjs-routes';
+import { Route, route } from 'nextjs-routes';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { TitleS } from '~/components/core/Text/Text';
 
 type UsernameLinkProps = { username: string | null };
 

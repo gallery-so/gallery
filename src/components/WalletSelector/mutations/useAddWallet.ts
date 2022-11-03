@@ -1,10 +1,11 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import {
   useAddWalletMutation,
   useAddWalletMutation$variables,
-} from '__generated__/useAddWalletMutation.graphql';
+} from '~/generated/useAddWalletMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useAddWallet() {
   const [addWallet] = usePromisifiedMutation<useAddWalletMutation>(

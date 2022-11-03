@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import { Button } from 'components/core/Button/Button';
+
+import { Button } from '~/components/core/Button/Button';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 
 type Props = {
   onAddCollection: () => void;

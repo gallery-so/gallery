@@ -1,24 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useUpdateUser from 'hooks/api/users/useUpdateUser';
-import useCreateUser from 'hooks/api/users/useCreateUser';
-
-import {
-  validate,
-  required,
-  minLength,
-  maxLength,
-  alphanumericUnderscores,
-  noConsecutivePeriodsOrUnderscores,
-} from 'utils/validators';
-
-import formatError from 'errors/formatError';
-import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
-import useDebounce from 'hooks/useDebounce';
-import useAuthPayloadQuery from 'hooks/api/users/useAuthPayloadQuery';
-import { useTrackCreateUserSuccess } from 'contexts/analytics/authUtil';
-import { useUserInfoFormIsUsernameAvailableQuery } from '../../../__generated__/useUserInfoFormIsUsernameAvailableQuery.graphql';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+
+import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import formatError from '~/errors/formatError';
+import { useUserInfoFormIsUsernameAvailableQuery } from '~/generated/useUserInfoFormIsUsernameAvailableQuery.graphql';
+import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
+import useCreateUser from '~/hooks/api/users/useCreateUser';
+import useUpdateUser from '~/hooks/api/users/useUpdateUser';
+import useDebounce from '~/hooks/useDebounce';
+import {
+  alphanumericUnderscores,
+  maxLength,
+  minLength,
+  noConsecutivePeriodsOrUnderscores,
+  required,
+  validate,
+} from '~/utils/validators';
+
+import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {
   onSuccess: (username: string) => void;

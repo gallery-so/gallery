@@ -1,9 +1,10 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftAdditionalDetailsFragment$key } from '../../../../__generated__/NftAdditionalDetailsFragment.graphql';
-import { NftAdditionalDetailsPOAP } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsPOAP';
-import { NftAdditionalDetailsEth } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsEth';
-import { NftAdditionalDetailsTezos } from 'scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsTezos';
+
+import { NftAdditionalDetailsFragment$key } from '~/generated/NftAdditionalDetailsFragment.graphql';
+import { NftAdditionalDetailsEth } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsEth';
+import { NftAdditionalDetailsPOAP } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsPOAP';
+import { NftAdditionalDetailsTezos } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetailsTezos';
 
 type NftAdditionalDetailsProps = {
   showDetails: boolean;

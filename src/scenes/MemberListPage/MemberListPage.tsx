@@ -1,14 +1,16 @@
-import styled from 'styled-components';
-import { TitleL } from 'components/core/Text/Text';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import MemberListTier from './MemberListTier';
-import TokenHolderListFilter from 'components/TokenHolderList/TokenHolderListFilter';
-import MemberListPageProvider from 'contexts/memberListPage/MemberListPageContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { MemberListPageFragment$key } from '__generated__/MemberListPageFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleL } from '~/components/core/Text/Text';
+import TokenHolderListFilter from '~/components/TokenHolderList/TokenHolderListFilter';
+import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
+import { MemberListPageFragment$key } from '~/generated/MemberListPageFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import MemberListTier from './MemberListTier';
 
 type Props = {
   queryRef: MemberListPageFragment$key;

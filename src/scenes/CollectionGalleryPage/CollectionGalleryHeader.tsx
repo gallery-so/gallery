@@ -1,28 +1,28 @@
-import { useCallback, useMemo } from 'react';
-import styled from 'styled-components';
-import unescape from 'utils/unescape';
-import { BaseM, TitleL } from 'components/core/Text/Text';
-import Markdown from 'components/core/Markdown/Markdown';
-import TextButton from 'components/core/Button/TextButton';
-import breakpoints from 'components/core/breakpoints';
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import noop from 'utils/noop';
-import MobileLayoutToggle from 'scenes/UserGalleryPage/MobileLayoutToggle';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { DisplayLayout } from 'components/core/enums';
-import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
-
-import { CollectionGalleryHeaderFragment$key } from '__generated__/CollectionGalleryHeaderFragment.graphql';
-import { CollectionGalleryHeaderQueryFragment$key } from '__generated__/CollectionGalleryHeaderQueryFragment.graphql';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import CollectionCreateOrEditForm from 'components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
 import { route } from 'nextjs-routes';
-import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
-import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
+import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
+import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
+import { DisplayLayout } from '~/components/core/enums';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL } from '~/components/core/Text/Text';
+import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CollectionGalleryHeaderFragment$key } from '~/generated/CollectionGalleryHeaderFragment.graphql';
+import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/CollectionGalleryHeaderQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
+import noop from '~/utils/noop';
+import unescape from '~/utils/unescape';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;

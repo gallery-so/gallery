@@ -1,7 +1,8 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import AuthScene from 'scenes/Auth/Auth';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { authQuery } from '__generated__/authQuery.graphql';
+
+import { authQuery } from '~/generated/authQuery.graphql';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import AuthScene from '~/scenes/Auth/Auth';
 
 export default function Auth() {
   const query = useLazyLoadQuery<authQuery>(

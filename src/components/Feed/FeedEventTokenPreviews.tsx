@@ -1,11 +1,13 @@
-import { size } from 'components/core/breakpoints';
+import { useMemo } from 'react';
+import styled from 'styled-components';
+
+import { size } from '~/components/core/breakpoints';
+import { EventMediaFragment$key } from '~/generated/EventMediaFragment.graphql';
 import useWindowSize, {
   useBreakpoint,
   useIsMobileOrMobileLargeWindowWidth,
-} from 'hooks/useWindowSize';
-import { useMemo } from 'react';
-import styled from 'styled-components';
-import { EventMediaFragment$key } from '__generated__/EventMediaFragment.graphql';
+} from '~/hooks/useWindowSize';
+
 import EventMedia from './Events/EventMedia';
 
 export type TokenToPreview = EventMediaFragment$key & {

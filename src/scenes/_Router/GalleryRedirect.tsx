@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import { Route } from 'nextjs-routes';
+import { useEffect } from 'react';
+import styled from 'styled-components';
 
 type Props = {
   to: Route;

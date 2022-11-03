@@ -1,23 +1,25 @@
-import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
 import {
+  createContext,
+  memo,
+  MutableRefObject,
   ReactElement,
   ReactNode,
-  createContext,
-  useContext,
-  memo,
-  useState,
   useCallback,
+  useContext,
+  useEffect,
   useMemo,
   useRef,
-  MutableRefObject,
-  useEffect,
+  useState,
 } from 'react';
-import noop from 'utils/noop';
+import { v4 as uuid } from 'uuid';
+
+import { useStabilizedRouteTransitionKey } from '~/components/FadeTransitioner/FadeTransitioner';
+import useKeyDown from '~/hooks/useKeyDown';
+import { getScrollBarWidth } from '~/utils/getScrollbarWidth';
+import noop from '~/utils/noop';
+
 import AnimatedModal from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
-import { v4 as uuid } from 'uuid';
-import useKeyDown from 'hooks/useKeyDown';
-import { getScrollBarWidth } from 'utils/getScrollbarWidth';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;

@@ -1,7 +1,8 @@
-import { TitleXSBold } from 'components/core/Text/Text';
-import styled, { css } from 'styled-components';
-import Tooltip from 'components/Tooltip/Tooltip';
 import { useState } from 'react';
+import styled, { css } from 'styled-components';
+
+import { TitleXSBold } from '~/components/core/Text/Text';
+import Tooltip from '~/components/Tooltip/Tooltip';
 
 type Props = {
   icon: string;

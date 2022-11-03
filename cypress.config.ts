@@ -1,5 +1,5 @@
-import { defineConfig } from 'cypress';
 import synpressPlugins from '@synthetixio/synpress/plugins';
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
   userAgent: 'synpress',

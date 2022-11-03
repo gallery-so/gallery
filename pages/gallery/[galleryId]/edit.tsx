@@ -1,14 +1,15 @@
-import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useCallback } from 'react';
-import { editGalleryPageQuery } from '../../../__generated__/editGalleryPageQuery.graphql';
-import { useRouter } from 'next/router';
-import FullPageStep from 'components/Onboarding/FullPageStep';
-import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
-import { GalleryEditNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
+
+import breakpoints from '~/components/core/breakpoints';
+import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
+import { GalleryEditNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
+import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
 
 export default function EditGalleryPage() {
   const query = useLazyLoadQuery<editGalleryPageQuery>(

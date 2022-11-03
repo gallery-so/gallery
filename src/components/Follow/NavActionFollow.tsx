@@ -1,12 +1,14 @@
-import { HStack } from 'components/core/Spacer/Stack';
-import { graphql, useFragment } from 'react-relay';
-import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
-import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
-import FollowButton from './FollowButton';
-import { BreadcrumbLink } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import { route, Route } from 'nextjs-routes';
 import Link from 'next/link';
-import { isUsername3ac } from 'hooks/oneOffs/useIs3acProfilePage';
+import { Route, route } from 'nextjs-routes';
+import { graphql, useFragment } from 'react-relay';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
+import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
+import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
+
+import FollowButton from './FollowButton';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;

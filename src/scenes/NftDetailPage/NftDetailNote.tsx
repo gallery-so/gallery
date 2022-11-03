@@ -1,17 +1,18 @@
-import { BaseM, TitleXS } from 'components/core/Text/Text';
-import TextButton from 'components/core/Button/TextButton';
-import { useCallback, useState, useMemo, useRef, KeyboardEventHandler } from 'react';
-import { AutoResizingTextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import unescape from 'utils/unescape';
+import { KeyboardEventHandler, useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import useUpdateNft from 'hooks/api/tokens/useUpdateNft';
-import Markdown from 'components/core/Markdown/Markdown';
-import breakpoints from 'components/core/breakpoints';
-import ErrorText from 'components/core/Text/ErrorText';
-import formatError from 'errors/formatError';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+
+import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { AutoResizingTextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import formatError from '~/errors/formatError';
+import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
+import unescape from '~/utils/unescape';
 
 const MAX_CHAR_COUNT = 1200;
 

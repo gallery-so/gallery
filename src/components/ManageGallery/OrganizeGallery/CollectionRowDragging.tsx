@@ -1,8 +1,10 @@
-import colors from 'components/core/colors';
-import useMouseUp from 'hooks/useMouseUp';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { CollectionRowDraggingFragment$key } from '__generated__/CollectionRowDraggingFragment.graphql';
+
+import colors from '~/components/core/colors';
+import { CollectionRowDraggingFragment$key } from '~/generated/CollectionRowDraggingFragment.graphql';
+import useMouseUp from '~/hooks/useMouseUp';
+
 import CollectionRow from './CollectionRow';
 import CollectionRowSettings from './CollectionRowSettings';
 

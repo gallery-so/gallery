@@ -1,14 +1,15 @@
-import colors from 'components/core/colors';
-import { TitleDiatypeM } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
+import { DraggableAttributes } from '@dnd-kit/core';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
-import TrashIcon from 'icons/Trash';
-import DragHandleIcon from 'icons/DragHandleIcon';
-import noop from 'utils/noop';
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { DraggableAttributes } from '@dnd-kit/core';
-import { HStack } from 'components/core/Spacer/Stack';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import DragHandleIcon from '~/icons/DragHandleIcon';
+import TrashIcon from '~/icons/Trash';
+import noop from '~/utils/noop';
 
 interface Props {
   children: ReactNode;

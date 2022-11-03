@@ -1,11 +1,13 @@
-import { ReactNode, useCallback } from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { BODY_FONT_FAMILY } from '../Text/Text';
-import colors from '../colors';
-import transitions from '../transitions';
 import { Route } from 'nextjs-routes';
+import { ReactNode, useCallback } from 'react';
+import styled from 'styled-components';
+
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+
+import colors from '../colors';
+import { BODY_FONT_FAMILY } from '../Text/Text';
+import transitions from '../transitions';
 
 type Props = {
   to?: Route;

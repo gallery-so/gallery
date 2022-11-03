@@ -1,15 +1,17 @@
-import { JsonRpcSigner } from '@ethersproject/providers';
-import GNOSIS_SAFE_CONTRACT_ABI from 'abis/gnosis-safe-contract.json';
+import { Contract } from '@ethersproject/contracts';
 import { keccak256 } from '@ethersproject/keccak256';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import { toUtf8Bytes } from '@ethersproject/strings';
-import { CONTRACT_ACCOUNT, EXTERNALLY_OWNED_ACCOUNT } from 'types/Wallet';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import walletlinkSigner from './walletlinkSigner';
-import { Contract } from '@ethersproject/contracts';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
-import { Web3Error } from 'types/Error';
-import { Web3Provider } from '@ethersproject/providers';
+
+import GNOSIS_SAFE_CONTRACT_ABI from '~/abis/gnosis-safe-contract.json';
+import { Web3Error } from '~/types/Error';
+import { CONTRACT_ACCOUNT, EXTERNALLY_OWNED_ACCOUNT } from '~/types/Wallet';
+
+import walletlinkSigner from './walletlinkSigner';
 
 // The hard coded value that Gnosis Safe contract's isValidSignature method returns if the message was signed
 // https://github.com/gnosis/safe-contracts/blob/dec13f7cdab62056984343c4edfe40df5a1954dc6/contracts/handler/CompatibilityFallbackHandler.sol#L19

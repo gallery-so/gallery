@@ -1,7 +1,8 @@
-import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import { VStack } from 'components/core/Spacer/Stack';
 import { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 
 type Reason = 'no-search-results' | 'no-nfts';
 

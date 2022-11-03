@@ -1,21 +1,23 @@
-import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, BaseS } from 'components/core/Text/Text';
-import unescape from 'utils/unescape';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { pluralize } from 'utils/string';
-import { getTimeSince } from 'utils/time';
-import { CollectionCreatedFeedEventFragment$key } from '__generated__/CollectionCreatedFeedEventFragment.graphql';
-import { CollectionCreatedFeedEventQueryFragment$key } from '__generated__/CollectionCreatedFeedEventQueryFragment.graphql';
+
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { pluralize } from '~/utils/string';
+import { getTimeSince } from '~/utils/time';
+import unescape from '~/utils/unescape';
+
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   eventDataRef: CollectionCreatedFeedEventFragment$key;

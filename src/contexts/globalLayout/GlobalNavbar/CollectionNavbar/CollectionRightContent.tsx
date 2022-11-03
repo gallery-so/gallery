@@ -1,22 +1,23 @@
+import { Route } from 'nextjs-routes';
+import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CollectionRightContentFragment$key } from '__generated__/CollectionRightContentFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { useCallback, useMemo, useState } from 'react';
-import { HStack } from 'components/core/Spacer/Stack';
-import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import styled from 'styled-components';
-import LinkButton from 'scenes/UserGalleryPage/LinkButton';
-import { TitleXS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import { Route } from 'nextjs-routes';
-import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
-import { Dropdown } from 'components/core/Dropdown/Dropdown';
-import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
-import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
-import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
-import { useModalActions } from 'contexts/modal/ModalContext';
+
+import colors from '~/components/core/colors';
+import { Dropdown } from '~/components/core/Dropdown/Dropdown';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
+import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
+import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CollectionRightContentFragment$key } from '~/generated/CollectionRightContentFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
+import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 
 type CollectionRightContentProps = {
   username: string;

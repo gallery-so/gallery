@@ -1,5 +1,3 @@
-import styled, { css } from 'styled-components';
-import colors from 'components/core/colors';
 import {
   ClipboardEventHandler,
   KeyboardEventHandler,
@@ -9,18 +7,21 @@ import {
   useRef,
   useState,
 } from 'react';
-import { SendButton } from 'components/Feed/Socialize/SendButton';
-import { BaseM, BODY_FONT_FAMILY } from 'components/core/Text/Text';
-import { HStack } from 'components/core/Spacer/Stack';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
-import { CommentBoxFragment$key } from '../../../../__generated__/CommentBoxFragment.graphql';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { CommentBoxMutation } from '../../../../__generated__/CommentBoxMutation.graphql';
-import { CommentBoxQueryFragment$key } from '../../../../__generated__/CommentBoxQueryFragment.graphql';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import breakpoints from 'components/core/breakpoints';
+import styled, { css } from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
+import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
+import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 const MAX_TEXT_LENGTH = 100;
 

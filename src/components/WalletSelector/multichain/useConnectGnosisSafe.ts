@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
-import { walletconnect } from '../../../connectors';
+import { useWeb3React } from '@web3-react/core';
+import { useCallback } from 'react';
+
+import { walletconnect } from '~/connectors/index';
 
 export const useConnectGnosisSafe = () => {
   const { activate } = useWeb3React<Web3Provider>();

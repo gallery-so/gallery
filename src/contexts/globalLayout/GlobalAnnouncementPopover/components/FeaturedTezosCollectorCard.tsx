@@ -1,18 +1,19 @@
-import breakpoints from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { TitleM } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
-import FollowButton from 'components/Follow/FollowButton';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from 'utils/removeNullValues';
-import { FeaturedTezosCollectorCardCollectionFragment$key } from '__generated__/FeaturedTezosCollectorCardCollectionFragment.graphql';
-import { FeaturedTezosCollectorCardFragment$key } from '__generated__/FeaturedTezosCollectorCardFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import FollowButton from '~/components/Follow/FollowButton';
+import { FeaturedTezosCollectorCardCollectionFragment$key } from '~/generated/FeaturedTezosCollectorCardCollectionFragment.graphql';
+import { FeaturedTezosCollectorCardFragment$key } from '~/generated/FeaturedTezosCollectorCardFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 type FeaturedTezosCollectorCardProps = {
   queryRef: FeaturedTezosCollectorCardFragment$key;

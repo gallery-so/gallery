@@ -1,12 +1,13 @@
-import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftPreviewAssetFragment$key } from '__generated__/NftPreviewAssetFragment.graphql';
-import VideoWithLoading from 'components/LoadingAsset/VideoWithLoading';
-import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import isVideoUrl from 'utils/isVideoUrl';
+
+import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
+import VideoWithLoading from '~/components/LoadingAsset/VideoWithLoading';
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
+import isVideoUrl from '~/utils/isVideoUrl';
+import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;

@@ -1,13 +1,14 @@
 import { Contract } from '@ethersproject/contracts';
-import { useConnectEthereum } from 'components/WalletSelector/multichain/useConnectEthereum';
-import { TransactionStatus } from 'constants/transaction';
+import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import web3 from 'web3';
-import MerkleTree from 'utils/MerkleTree';
-import { MAX_NFTS_PER_WALLET } from 'scenes/MerchStorePage/constants';
-import { BigNumber } from 'ethers';
-import premiumAndActiveDiscordMembers from 'snapshots/aug_2022_merch/premiumAndActiveDiscordMembers.json';
+
+import { useConnectEthereum } from '~/components/WalletSelector/multichain/useConnectEthereum';
+import { TransactionStatus } from '~/constants/transaction';
+import { MAX_NFTS_PER_WALLET } from '~/scenes/MerchStorePage/constants';
+import premiumAndActiveDiscordMembers from '~/snapshots/aug_2022_merch/premiumAndActiveDiscordMembers.json';
+import MerkleTree from '~/utils/MerkleTree';
 
 type Props = {
   contract: Contract | null;

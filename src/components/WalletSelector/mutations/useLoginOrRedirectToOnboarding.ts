@@ -1,11 +1,12 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import {
   useLoginOrRedirectToOnboardingMutation,
   useLoginOrRedirectToOnboardingMutation$variables,
-} from '__generated__/useLoginOrRedirectToOnboardingMutation.graphql';
+} from '~/generated/useLoginOrRedirectToOnboardingMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useLoginOrRedirectToOnboarding() {
   const [login] = usePromisifiedMutation<useLoginOrRedirectToOnboardingMutation>(

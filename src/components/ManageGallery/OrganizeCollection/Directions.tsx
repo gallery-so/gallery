@@ -1,7 +1,8 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { EmptyState } from 'components/EmptyState/EmptyState';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 
 function Directions() {
   return (

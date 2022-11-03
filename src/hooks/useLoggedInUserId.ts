@@ -1,6 +1,7 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useLoggedInUserIdFragment$key } from '__generated__/useLoggedInUserIdFragment.graphql';
+
+import { useLoggedInUserIdFragment$key } from '~/generated/useLoggedInUserIdFragment.graphql';
 
 export const useLoggedInUserId = (queryRef: useLoggedInUserIdFragment$key) => {
   const user = useFragment(

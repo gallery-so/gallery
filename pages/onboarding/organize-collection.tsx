@@ -1,18 +1,19 @@
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+
+import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import CollectionEditor from '~/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
-import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import { useRouter } from 'next/router';
-import { organizeCollectionPageQuery } from '../../__generated__/organizeCollectionPageQuery.graphql';
-import FullPageStep from 'components/Onboarding/FullPageStep';
-import { OnboardingCollectionCreateNavbar } from '../../src/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { OnboardingCollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
+import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
 
 function LazyLoadedCollectionEditor() {
   const query = useLazyLoadQuery<organizeCollectionPageQuery>(

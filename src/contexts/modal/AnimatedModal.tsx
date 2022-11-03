@@ -1,15 +1,17 @@
 import { ReactElement, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import colors from 'components/core/colors';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { TitleS } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
-} from 'components/core/transitions';
-import breakpoints from 'components/core/breakpoints';
-import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
-import { ModalPaddingVariant, MODAL_PADDING_PX } from './constants';
-import { TitleS } from 'components/core/Text/Text';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+} from '~/components/core/transitions';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+
+import { MODAL_PADDING_PX, ModalPaddingVariant } from './constants';
 
 type Props = {
   /**

@@ -1,14 +1,16 @@
-import { BaseM, BaseXL } from 'components/core/Text/Text';
 import { useMemo } from 'react';
-import Header from 'components/ManageGallery/OrganizeGallery/Header';
 import { useFragment } from 'react-relay';
-import CollectionDnd from 'components/ManageGallery/OrganizeGallery/CollectionDnd';
-import { OrganizeGalleryFragment$key } from '../../../../__generated__/OrganizeGalleryFragment.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
-import styled from 'styled-components';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseXL } from '~/components/core/Text/Text';
+import CollectionDnd from '~/components/ManageGallery/OrganizeGallery/CollectionDnd';
+import Header from '~/components/ManageGallery/OrganizeGallery/Header';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { OrganizeGalleryFragment$key } from '~/generated/OrganizeGalleryFragment.graphql';
+
 import useNotOptimizedForMobileWarning from '../useNotOptimizedForMobileWarning';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   onAddCollection: () => void;

@@ -12,20 +12,22 @@ import {
   useRef,
   useState,
 } from 'react';
-import { graphql } from 'relay-runtime';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import usePrevious from 'hooks/usePrevious';
-import useDebounce from 'hooks/useDebounce';
-import isTouchscreenDevice from 'utils/isTouchscreenDevice';
-import GlobalNavbar, { Props as GlobalNavbarProps } from './GlobalNavbar/GlobalNavbar';
+
+import NavLink from '~/components/core/NavLink/NavLink';
+import { FADE_TRANSITION_TIME_MS } from '~/components/FadeTransitioner/FadeTransitioner';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
+import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
+import useDebounce from '~/hooks/useDebounce';
+import usePrevious from '~/hooks/usePrevious';
+import useThrottle from '~/hooks/useThrottle';
+import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
+
 import Banner from './GlobalBanner/GlobalBanner';
-import useThrottle from 'hooks/useThrottle';
-import { FADE_TRANSITION_TIME_MS } from 'components/FadeTransitioner/FadeTransitioner';
-import { GlobalLayoutContextQuery } from '__generated__/GlobalLayoutContextQuery.graphql';
-import { GlobalLayoutContextNavbarFragment$key } from '__generated__/GlobalLayoutContextNavbarFragment.graphql';
-import NavLink from 'components/core/NavLink/NavLink';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import GlobalNavbar, { Props as GlobalNavbarProps } from './GlobalNavbar/GlobalNavbar';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;

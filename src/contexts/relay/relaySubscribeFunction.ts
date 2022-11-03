@@ -1,5 +1,5 @@
-import { Observable, SubscribeFunction } from 'relay-runtime';
 import { Client, createClient } from 'graphql-ws';
+import { Observable, SubscribeFunction } from 'relay-runtime';
 
 let websocketClient: Client;
 

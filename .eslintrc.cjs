@@ -1,6 +1,6 @@
 module.exports = {
-  extends: ["next", "plugin:@typescript-eslint/recommended", "prettier"],
-  plugins: ["@typescript-eslint"],
+  extends: ['next', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  plugins: ['@typescript-eslint', 'simple-import-sort'],
   ignorePatterns: ['*.graphql.ts', 'src/__generated__/operations.ts'],
 
   rules: {
@@ -24,15 +24,18 @@ module.exports = {
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
+
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
   },
 
   overrides: [
     {
-      files: ["next.config.js", "jest.config.js"],
+      files: ['next.config.js', 'jest.config.js'],
       rules: {
         // Okay to use require in these files
-        "@typescript-eslint/no-var-requires": "off",
-      }
-    }
-  ]
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+  ],
 };

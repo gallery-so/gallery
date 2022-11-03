@@ -1,6 +1,6 @@
-import styled, { css, Keyframes } from 'styled-components';
-import { useState, useRef, useCallback, MouseEventHandler } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
+import styled, { css, Keyframes } from 'styled-components';
 
 type Props = {
   alt: string;

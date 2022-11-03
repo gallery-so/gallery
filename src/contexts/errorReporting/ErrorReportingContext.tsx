@@ -1,8 +1,9 @@
-import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
 import { captureException, captureMessage, setUser } from '@sentry/nextjs';
 import { ScopeContext } from '@sentry/types';
-import useAuthenticatedUserId from 'contexts/auth/useAuthenticatedUserId';
-import noop from 'utils/noop';
+import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
+
+import useAuthenticatedUserId from '~/contexts/auth/useAuthenticatedUserId';
+import noop from '~/utils/noop';
 
 export type AdditionalContext = Partial<Pick<ScopeContext, 'tags' | 'level'>>;
 

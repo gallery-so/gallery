@@ -1,14 +1,16 @@
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import NotFound from 'scenes/NotFound/NotFound';
 import styled from 'styled-components';
-import { CommunityPageFragment$key } from '__generated__/CommunityPageFragment.graphql';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { CommunityPageFragment$key } from '~/generated/CommunityPageFragment.graphql';
+import NotFound from '~/scenes/NotFound/NotFound';
+
 import CommunityPageView from './CommunityPageView';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 type Props = {
   queryRef: CommunityPageFragment$key;

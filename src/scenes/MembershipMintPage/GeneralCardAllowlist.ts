@@ -1,4 +1,4 @@
-import isProduction from 'utils/isProduction';
+import isProduction from '~/utils/isProduction';
 
 const ALLOWLIST_DEV: string[] = [];
 

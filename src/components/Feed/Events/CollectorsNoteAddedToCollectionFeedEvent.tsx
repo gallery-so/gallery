@@ -1,25 +1,27 @@
-import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, BaseS } from 'components/core/Text/Text';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { pluralize } from 'utils/string';
-import { getTimeSince } from 'utils/time';
-import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { pluralize } from '~/utils/string';
+import { getTimeSince } from '~/utils/time';
+import unescape from '~/utils/unescape';
+
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
-import unescape from 'utils/unescape';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import breakpoints from 'components/core/breakpoints';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
-import Markdown from 'components/core/Markdown/Markdown';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { Route } from 'nextjs-routes';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;

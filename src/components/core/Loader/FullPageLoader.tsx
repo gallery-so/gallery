@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
+import styled from 'styled-components';
+
 import {
   useGlobalLayoutActions,
   useGlobalLayoutState,
-} from 'contexts/globalLayout/GlobalLayoutContext';
-import { useEffect } from 'react';
-import styled from 'styled-components';
+} from '~/contexts/globalLayout/GlobalLayoutContext';
+
 import CapitalGLoader from './CapitalGLoader';
 
 export default function FullPageLoader() {

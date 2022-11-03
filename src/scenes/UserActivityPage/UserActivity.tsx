@@ -1,13 +1,15 @@
-import useKeyDown from 'hooks/useKeyDown';
-import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
-import { useModalState } from 'contexts/modal/ModalContext';
+
+import { useModalState } from '~/contexts/modal/ModalContext';
+import { UserActivityFragment$key } from '~/generated/UserActivityFragment.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
+import NotFound from '~/scenes/NotFound/NotFound';
+
 import { UserActivityLayout } from './UserActivityLayout';
-import { UserActivityFragment$key } from '__generated__/UserActivityFragment.graphql';
 
 type Props = {
   queryRef: UserActivityFragment$key;

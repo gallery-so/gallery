@@ -1,16 +1,17 @@
-import { ReactElement, useMemo } from 'react';
-import styled from 'styled-components';
-import ActionText from 'components/core/ActionText/ActionText';
-import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
-import { Directions } from 'components/core/enums';
-import breakpoints from 'components/core/breakpoints';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import ArrowLeft from 'public/icons/arrow_left.svg';
 import ArrowRight from 'public/icons/arrow_right.svg';
-import ArrowLeftIcon from 'src/icons/ArrowLeftIcon';
-import ArrowRightIcon from 'src/icons/ArrowRightIcon';
-import { HStack } from 'components/core/Spacer/Stack';
+import { ReactElement, useMemo } from 'react';
+import styled from 'styled-components';
+
+import ActionText from '~/components/core/ActionText/ActionText';
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { Directions } from '~/components/core/enums';
+import { HStack } from '~/components/core/Spacer/Stack';
+import transitions from '~/components/core/transitions';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
+import ArrowRightIcon from '~/icons/ArrowRightIcon';
 
 const ARROWS = new Map<number, ReactElement>([
   [Directions.LEFT, <ArrowLeftIcon key={1} />],

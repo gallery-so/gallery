@@ -1,13 +1,14 @@
 import styled from 'styled-components';
-import { BaseM, TitleM, TitleXS } from 'components/core/Text/Text';
-import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import ActionText from 'components/core/ActionText/ActionText';
-import StyledBackLink from 'components/NavbarBackLink/NavbarBackLink';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
-import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import ActionText from '~/components/core/ActionText/ActionText';
+import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import StyledBackLink from '~/components/NavbarBackLink/NavbarBackLink';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();

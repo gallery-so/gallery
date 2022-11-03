@@ -1,6 +1,7 @@
-import { readInlineData, graphql } from 'relay-runtime';
-import isProduction from 'utils/isProduction';
-import { isFeatureEnabledFragment$key } from '__generated__/isFeatureEnabledFragment.graphql';
+import { graphql, readInlineData } from 'relay-runtime';
+
+import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragment.graphql';
+import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   ART_GOBBLERS = 'ART_GOBBLERS',

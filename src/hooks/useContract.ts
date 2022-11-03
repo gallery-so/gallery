@@ -1,9 +1,10 @@
-import PREMIUM_MEMBERSHIP_CONTRACT_ABI from 'abis/premium-membership-contract.json';
-import GENERAL_MEMBERSHIP_CONTRACT_ABI from 'abis/general-membership-contract.json';
-import GALLERY_MEMENTOS_CONTRACT_ABI from 'abis/gallery-mementos-contract.json';
 import { ContractInterface } from '@ethersproject/contracts';
-import GALLERY_MERCH_CONTRACT_ABI from 'abis/gallery-merch-contract.json';
-import { useSigner, useContract, useProvider } from 'wagmi';
+import { useContract, useProvider,useSigner } from 'wagmi';
+
+import GALLERY_MEMENTOS_CONTRACT_ABI from '~/abis/gallery-mementos-contract.json';
+import GALLERY_MERCH_CONTRACT_ABI from '~/abis/gallery-merch-contract.json';
+import GENERAL_MEMBERSHIP_CONTRACT_ABI from '~/abis/general-membership-contract.json';
+import PREMIUM_MEMBERSHIP_CONTRACT_ABI from '~/abis/premium-membership-contract.json';
 
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS ?? '';

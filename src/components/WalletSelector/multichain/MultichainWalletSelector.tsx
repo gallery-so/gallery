@@ -1,22 +1,24 @@
-import styled from 'styled-components';
 import { useCallback, useState } from 'react';
-import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from 'types/Wallet';
-import breakpoints from 'components/core/breakpoints';
 import { graphql, useFragment } from 'react-relay';
-import { MultichainWalletSelectorFragment$key } from '__generated__/MultichainWalletSelectorFragment.graphql';
-import WalletButton from './WalletButton';
-import { useConnectEthereum } from './useConnectEthereum';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
+import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
+import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
+
 import { ConnectionMode } from '../WalletSelector';
-import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
-import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { EthereumAddWallet } from './EthereumAddWallet';
+import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
-import { BaseM } from 'components/core/Text/Text';
-import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
+import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
-import { useBeaconActions } from 'contexts/beacon/BeaconContext';
-import { VStack } from 'components/core/Spacer/Stack';
+import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
+import { useConnectEthereum } from './useConnectEthereum';
+import WalletButton from './WalletButton';
 
 export type WalletSelectorVariant = 'default' | 'tezos-announcement';
 

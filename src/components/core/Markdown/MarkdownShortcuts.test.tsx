@@ -1,7 +1,8 @@
-import { fireEvent, render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
-import MarkdownShortcuts from './MarkdownShortcuts';
+import { fireEvent, render } from '@testing-library/react';
 import { useEffect, useRef } from 'react';
+
+import MarkdownShortcuts from './MarkdownShortcuts';
 
 function MarkdownShortcutsWithTextArea() {
   const ref = useRef<HTMLTextAreaElement>(null);

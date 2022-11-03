@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import { GlobalFeedFragment$key } from '__generated__/GlobalFeedFragment.graphql';
-import { GlobalFeedPaginationQuery } from '__generated__/GlobalFeedPaginationQuery.graphql';
+
+import { GlobalFeedFragment$key } from '~/generated/GlobalFeedFragment.graphql';
+import { GlobalFeedPaginationQuery } from '~/generated/GlobalFeedPaginationQuery.graphql';
+
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
-
 import FeedList from './FeedList';
 
 type Props = {

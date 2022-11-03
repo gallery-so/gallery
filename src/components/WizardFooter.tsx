@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import isPromise from 'utils/isPromise';
-import ActionText from 'components/core/ActionText/ActionText';
-import { HStack } from 'components/core/Spacer/Stack';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
+
+import ActionText from '~/components/core/ActionText/ActionText';
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import isPromise from '~/utils/isPromise';
 
 type Props = {
   isNextEnabled: boolean;

@@ -1,10 +1,11 @@
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Tooltip from 'components/Tooltip/Tooltip';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { BadgeFragment$key } from '__generated__/BadgeFragment.graphql';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Tooltip from '~/components/Tooltip/Tooltip';
+import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 
 type Props = {
   badgeRef: BadgeFragment$key;

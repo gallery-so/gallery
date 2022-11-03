@@ -1,12 +1,14 @@
-import { useModalActions } from 'contexts/modal/ModalContext';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
+import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+
 import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
-import { useGlobalAnnouncementPopoverFragment$key } from '../../../../__generated__/useGlobalAnnouncementPopoverFragment.graphql';
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
-import usePersistedState from 'hooks/usePersistedState';
 
 type Props = {
   queryRef: useGlobalAnnouncementPopoverFragment$key;

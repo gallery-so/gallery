@@ -1,15 +1,17 @@
+import { TezosToolkit } from '@taquito/taquito';
+import { Tzip16Module } from '@taquito/tzip16';
+import { TaquitoTezosDomainsClient } from '@tezos-domains/taquito-client';
 import { Suspense } from 'react';
-import useSWR from 'swr';
-import { PlainErrorBoundary } from './PlainErrorBoundary';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { LinkableAddress, RawLinkableAddress } from 'components/LinkableAddress';
-import { TezosDomainOrAddressFragment$key } from '../../__generated__/TezosDomainOrAddressFragment.graphql';
-import { TezosDomainOrAddressWithSuspenseFragment$key } from '../../__generated__/TezosDomainOrAddressWithSuspenseFragment.graphql';
-import { TezosToolkit } from '@taquito/taquito';
-import { TaquitoTezosDomainsClient } from '@tezos-domains/taquito-client';
-import { Tzip16Module } from '@taquito/tzip16';
-import { getExternalAddressLink } from 'utils/wallet';
+import useSWR from 'swr';
+
+import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
+import { TezosDomainOrAddressFragment$key } from '~/generated/TezosDomainOrAddressFragment.graphql';
+import { TezosDomainOrAddressWithSuspenseFragment$key } from '~/generated/TezosDomainOrAddressWithSuspenseFragment.graphql';
+import { getExternalAddressLink } from '~/utils/wallet';
+
+import { PlainErrorBoundary } from './PlainErrorBoundary';
 
 async function tezosDomainFetcher(address: string): Promise<string | null> {
   const tezos = new TezosToolkit('https://mainnet.api.tez.ie');

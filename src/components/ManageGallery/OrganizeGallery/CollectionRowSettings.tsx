@@ -1,19 +1,20 @@
 import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import TextButton from 'components/core/Button/TextButton';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
-import noop from 'utils/noop';
+import TextButton from '~/components/core/Button/TextButton';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CollectionRowSettingsFragment$key } from '~/generated/CollectionRowSettingsFragment.graphql';
+import useUpdateCollectionHidden from '~/hooks/api/collections/useUpdateCollectionHidden';
+import noop from '~/utils/noop';
+
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionRowSettingsFragment$key } from '__generated__/CollectionRowSettingsFragment.graphql';
-import { HStack } from 'components/core/Spacer/Stack';
-import SettingsDropdown from 'components/core/Dropdown/SettingsDropdown';
-import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
 
 type Props = {
   collectionRef: CollectionRowSettingsFragment$key;

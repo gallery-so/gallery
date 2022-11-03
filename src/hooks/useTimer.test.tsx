@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+
 import useTimer from './useTimer';
 
 describe('useTimer hooks', () => {

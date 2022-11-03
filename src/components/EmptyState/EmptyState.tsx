@@ -1,7 +1,8 @@
-import Markdown from 'components/core/Markdown/Markdown';
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM, BaseXL } from 'components/core/Text/Text';
 import styled from 'styled-components';
+
+import Markdown from '~/components/core/Markdown/Markdown';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseXL } from '~/components/core/Text/Text';
 
 type Props = {
   title: string;

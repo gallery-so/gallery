@@ -1,12 +1,13 @@
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { getDefaultWallets, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
-import { defaultChains, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { getDefaultWallets, lightTheme,RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import merge from 'lodash.merge';
+import { ReactNode } from 'react';
+import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-import merge from 'lodash.merge';
-import colors from 'components/core/colors';
-import { ReactNode } from 'react';
+
+import colors from '~/components/core/colors';
 
 // Unfortunately, RainbowKit has no way to customize font weight
 // https://github.com/rainbow-me/rainbowkit/discussions/361
