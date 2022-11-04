@@ -6,7 +6,9 @@ import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
-import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL } from '~/components/core/transitions';
+import transitions, {
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+} from '~/components/core/transitions';
 import CloseIcon from '~/icons/CloseIcon';
 
 type Props = {
@@ -53,36 +55,34 @@ export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSav
           </StyledChevronSvg>
         </HStack>
       </Button>
-      {isShowPopup && (
-        <StyledCardContainer gap={12} isActive={isShowPopup}>
-          <HStack justify="flex-end">
-            <StyledCloseButton onClick={toggleSaveButton}>
-              <CloseIcon isActive={true} />
-            </StyledCloseButton>
-          </HStack>
-          {hasUnsavedChange ? (
-            <>
-              <StyledConfirmationContent gap={8}>
-                <BaseM>Share your update to the feed with an optional note.</BaseM>
-                <TextAreaWithCharCount
-                  currentCharCount={caption.length}
-                  maxCharCount={600}
-                  onChange={handleCaptionChange}
-                  hasPadding
-                  placeholder="Add a note..."
-                  textAreaHeight="50px"
-                />
-              </StyledConfirmationContent>
+      <StyledCardContainer gap={12} isActive={isShowPopup}>
+        <HStack justify="flex-end">
+          <StyledCloseButton onClick={toggleSaveButton}>
+            <CloseIcon isActive={true} />
+          </StyledCloseButton>
+        </HStack>
+        {hasUnsavedChange ? (
+          <>
+            <StyledConfirmationContent gap={8}>
+              <BaseM>Share your update to the feed with an optional note.</BaseM>
+              <TextAreaWithCharCount
+                currentCharCount={caption.length}
+                maxCharCount={600}
+                onChange={handleCaptionChange}
+                hasPadding
+                placeholder="Add a note..."
+                textAreaHeight="50px"
+              />
+            </StyledConfirmationContent>
 
-              <Button onClick={handleSubmit} disabled={isDisabledonSave}>
-                Save
-              </Button>
-            </>
-          ) : (
-            <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
-          )}
-        </StyledCardContainer>
-      )}
+            <Button onClick={handleSubmit} disabled={isDisabledonSave}>
+              Save
+            </Button>
+          </>
+        ) : (
+          <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
+        )}
+      </StyledCardContainer>
     </StyledConfirmationContainer>
   );
 }
@@ -107,6 +107,7 @@ const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
   right: 0;
   top: calc(100% + 8px);
 
+  transition: ${transitions.cubic};
   transform: ${({ isActive }) =>
     `translateY(${isActive ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
   opacity: ${({ isActive }) => (isActive ? 1 : 0)};
