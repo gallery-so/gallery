@@ -256,15 +256,19 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
           -webkit-line-clamp: unset;
         `
       : css`
-          // We only care about line clamping on mobile
-          @media only screen and ${breakpoints.tablet} {
-            -webkit-line-clamp: unset;
-          }
-
           -webkit-line-clamp: 2;
 
           p {
             padding-bottom: 0 !important;
+          }
+
+          // We only care about line clamping on mobile
+          @media only screen and ${breakpoints.tablet} {
+            -webkit-line-clamp: unset;
+
+            p:not(:last-child) {
+              padding-bottom: 12px !important;
+            }
           }
         `}
 `;
