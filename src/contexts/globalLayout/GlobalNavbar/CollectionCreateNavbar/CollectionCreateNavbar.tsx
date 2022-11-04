@@ -1,7 +1,7 @@
 import { Route } from 'nextjs-routes';
 
-import { Button } from '~/components/core/Button/Button';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { CollectionConfirmationNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionConfirmationNavbar/CollectionConfirmationNavbar';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
   NavbarCenterContent,
@@ -10,9 +10,10 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 
+
 type CollectionCreateNavbarProps = {
   onBack: () => void;
-  onNext: () => void;
+  onNext: (caption: string) => void;
   galleryId: string;
   isCollectionValid: boolean;
 };
@@ -41,9 +42,11 @@ export function CollectionCreateNavbar({
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <Button disabled={!isCollectionValid} onClick={onNext}>
-          Save
-        </Button>
+        <CollectionConfirmationNavbar
+          disabled={!isCollectionValid}
+          onSave={onNext}
+          hasUnsavedChange={true}
+        />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

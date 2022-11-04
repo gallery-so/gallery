@@ -14,6 +14,7 @@ import { OnboardingCollectionCreateNavbar } from '~/contexts/globalLayout/Global
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
+import noop from '~/utils/noop';
 
 function LazyLoadedCollectionEditor() {
   const query = useLazyLoadQuery<organizeCollectionPageQuery>(
@@ -63,7 +64,7 @@ function LazyLoadedCollectionEditor() {
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          onNext={async (collectionId) => {
+          onNext={async ({ collectionId }) => {
             // Replace the current route with the "edit-collection" route
             // so if the user hits the back button, they'll rightfully
             // be editing a collection instead of creating another one.
@@ -108,7 +109,7 @@ function LazyLoadedCollectionEditor() {
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} onHasUnsavedChange={noop} />
     </FullPageStep>
   );
 }

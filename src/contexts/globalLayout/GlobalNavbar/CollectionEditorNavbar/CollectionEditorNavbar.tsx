@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { Button } from '~/components/core/Button/Button';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { CollectionConfirmationNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionConfirmationNavbar/CollectionConfirmationNavbar';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
   NavbarCenterContent,
@@ -17,14 +17,16 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   galleryId: string;
-  onDone: () => void;
+  onDone: (caption: string) => void;
   onCancel: () => void;
   isCollectionValid: boolean;
+  hasUnsavedChange: boolean;
   queryRef: CollectionEditorNavbarFragment$key;
 };
 
 export function CollectionEditorNavbar({
   queryRef,
+  hasUnsavedChange,
   isCollectionValid,
   onDone,
   onCancel,
@@ -70,9 +72,11 @@ export function CollectionEditorNavbar({
       <NavbarCenterContent>{!isMobile && mainContent}</NavbarCenterContent>
 
       <NavbarRightContent>
-        <Button disabled={!isCollectionValid} onClick={onDone}>
-          Done
-        </Button>
+      <CollectionConfirmationNavbar
+          disabled={!isCollectionValid}
+          onSave={onDone}
+          hasUnsavedChange={hasUnsavedChange}
+        />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

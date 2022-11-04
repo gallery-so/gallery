@@ -18,6 +18,7 @@ import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import { editCollectionOnboardingQuery } from '~/generated/editCollectionOnboardingQuery.graphql';
 import useUpdateCollectionTokens from '~/hooks/api/collections/useUpdateCollectionTokens';
 import GenericActionModal from '~/scenes/Modals/GenericActionModal';
+import noop from '~/utils/noop';
 
 type Props = {
   collectionId: string;
@@ -67,6 +68,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
         collectionId,
         stagedCollection: stagedCollectionState,
         tokenSettings: collectionMetadata.tokenSettings,
+        caption: null,
       });
 
       replace(returnUrl);
@@ -122,7 +124,9 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid}
+      onHasUnsavedChange={noop}
+      />
     </FullPageStep>
   );
 }

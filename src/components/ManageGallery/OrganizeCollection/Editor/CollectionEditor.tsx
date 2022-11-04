@@ -1,3 +1,5 @@
+import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
+import cloneDeep from 'lodash.clonedeep';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -9,7 +11,6 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
-import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
 import { parseCollectionLayout } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -38,6 +39,7 @@ function convertNftsToEditModeTokens(
 type Props = {
   queryRef: CollectionEditorFragment$key;
   onValidChange: (valid: boolean) => void;
+  onHasUnsavedChange: (hasUnsavedChanges: boolean) => void;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
@@ -78,7 +80,7 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-function CollectionEditor({ queryRef, onValidChange }: Props) {
+function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorFragment on Query {
@@ -87,7 +89,6 @@ function CollectionEditor({ queryRef, onValidChange }: Props) {
             ...CollectionEditorViewerFragment
           }
         }
-
         ...SidebarViewerFragment
       }
     `,
@@ -117,6 +118,25 @@ function CollectionEditor({ queryRef, onValidChange }: Props) {
     },
     [stagedCollectionState, onValidChange]
   );
+
+  const lastStagedCollection = useRef<StagedCollection | Record<string, unknown>>({});
+  const isStagedCollectionInitialized = useRef(false);
+
+  useEffect(() => {
+    if (Object.keys(stagedCollectionState).length === 0 || isStagedCollectionInitialized.current) {
+      return;
+    }
+
+    lastStagedCollection.current = cloneDeep(stagedCollectionState);
+    isStagedCollectionInitialized.current = true;
+  }, [stagedCollectionState]);
+
+  useEffect(() => {
+    if (JSON.stringify(stagedCollectionState) !== JSON.stringify(lastStagedCollection.current)) {
+      onHasUnsavedChange(true);
+      return;
+    }
+  }, [onHasUnsavedChange, stagedCollectionState]);
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
     useCollectionEditorActions();

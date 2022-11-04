@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo,useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -12,15 +12,19 @@ import { TokenSettings } from '~/contexts/collectionEditor/CollectionEditorConte
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import formatError from '~/errors/formatError';
-import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
-import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
 import unescape from '~/utils/unescape';
 
 import { StagedCollection } from './types';
 
+type wizardProps = {
+  collectionId?: string;
+  title?: string;
+  description?: string;
+};
+
 type Props = {
-  onNext: (collectionId: string) => void;
+  onNext: (props: wizardProps) => void;
   galleryId: string;
   collectionId?: string;
   collectionName?: string;
@@ -38,7 +42,6 @@ function CollectionCreateOrEditForm({
   collectionName,
   collectionCollectorsNote,
   stagedCollection,
-  tokenSettings = {},
 }: Props) {
   const { hideModal } = useModalActions();
 
@@ -70,15 +73,19 @@ function CollectionCreateOrEditForm({
   const buttonText = useMemo(() => {
     // Collection is being created
     if (stagedCollection) {
-      return 'create';
+      return 'save';
     }
 
     return hasEnteredValue ? 'save' : 'skip';
   }, [hasEnteredValue, stagedCollection]);
 
   const goToNextStep = useCallback(
-    (collectionId: string) => {
-      onNext(collectionId);
+    ({ collectionId, title, description }: wizardProps) => {
+      onNext({
+        collectionId,
+        title,
+        description,
+      });
       hideModal();
     },
     [onNext, hideModal]
@@ -87,7 +94,6 @@ function CollectionCreateOrEditForm({
   const [isLoading, setIsLoading] = useState(false);
 
   const updateCollection = useUpdateCollectionInfo();
-  const createCollection = useCreateCollection();
 
   const track = useTrack();
   const reportError = useReportError();
@@ -112,30 +118,14 @@ function CollectionCreateOrEditForm({
 
         await updateCollection(collectionId, title, description);
 
-        goToNextStep(collectionId);
+        goToNextStep({ collectionId });
       } else if (stagedCollection) {
-        track('Create collection', {
-          added_name: title.length > 0,
-          added_description: description.length > 0,
-          nft_ids: getTokenIdsFromCollection(stagedCollection),
-        });
-
-        const response = await createCollection({
-          galleryId,
+        goToNextStep({
           title,
           description,
-          stagedCollection: stagedCollection,
-          tokenSettings,
         });
-
-        if (
-          response.createCollection?.__typename === 'CreateCollectionPayload' &&
-          response.createCollection.collection
-        ) {
-          goToNextStep(response.createCollection.collection.dbid);
-        }
       }
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
         reportError(error);
         setGeneralError(formatError(error));
@@ -152,16 +142,14 @@ function CollectionCreateOrEditForm({
 
     setIsLoading(false);
   }, [
-    description,
     collectionId,
+    description,
+    galleryId,
     stagedCollection,
     track,
     title,
     updateCollection,
     goToNextStep,
-    createCollection,
-    galleryId,
-    tokenSettings,
     reportError,
   ]);
 
@@ -188,7 +176,17 @@ function CollectionCreateOrEditForm({
           {generalError && <StyledErrorText message={generalError} />}
         </VStack>
         {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
-        <ButtonContainer justify="flex-end">
+        <ButtonContainer isNewCollection={!!stagedCollection}>
+          {stagedCollection && (
+            <Button
+              variant="secondary"
+              onClick={handleClick}
+              disabled={isLoading}
+              pending={isLoading}
+            >
+              skip and add later
+            </Button>
+          )}
           <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
             {buttonText}
           </Button>
@@ -209,8 +207,9 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
 `;
 
-const ButtonContainer = styled(HStack)`
+const ButtonContainer = styled(HStack)<{ isNewCollection: boolean }>`
   padding-top: 12px;
+  justify-content: ${({ isNewCollection }) => (isNewCollection ? 'space-between' : 'flex-end')};
 `;
 
 const StyledErrorText = styled(ErrorText)`
