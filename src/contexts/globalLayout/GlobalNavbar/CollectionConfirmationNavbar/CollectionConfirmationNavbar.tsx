@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import Input from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
+import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL } from '~/components/core/transitions';
 import CloseIcon from '~/icons/CloseIcon';
 
@@ -19,18 +19,13 @@ export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSav
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
 
-  const charactersLeft = useMemo(() => 600 - caption.length, [caption]);
-
   const toggleSaveButton = () => {
     setIsShowPopup(!isShowPopup);
   };
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setCaption(e.target.value);
-    },
-    [setCaption]
-  );
+  const handleCaptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCaption(event.target.value);
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     onSave(caption);
@@ -61,18 +56,22 @@ export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSav
       {isShowPopup && (
         <StyledCardContainer gap={12} isActive={isShowPopup}>
           <HStack justify="flex-end">
-            <CloseIcon isActive={true} />
+            <StyledCloseButton onClick={toggleSaveButton}>
+              <CloseIcon isActive={true} />
+            </StyledCloseButton>
           </HStack>
           {hasUnsavedChange ? (
             <>
               <StyledConfirmationContent gap={8}>
                 <BaseM>Share your update to the feed with an optional note.</BaseM>
-                <StyledInputContainer>
-                  <StyledInput placeholder="Add a note..." onChange={handleInputChange} />
-                  <StyledCharacterCounter error={charactersLeft < 1}>
-                    <BaseM>{charactersLeft}</BaseM>
-                  </StyledCharacterCounter>
-                </StyledInputContainer>
+                <TextAreaWithCharCount
+                  currentCharCount={caption.length}
+                  maxCharCount={600}
+                  onChange={handleCaptionChange}
+                  hasPadding
+                  placeholder="Add a note..."
+                  textAreaHeight="50px"
+                />
               </StyledConfirmationContent>
 
               <Button onClick={handleSubmit} disabled={isDisabledonSave}>
@@ -113,32 +112,17 @@ const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
   opacity: ${({ isActive }) => (isActive ? 1 : 0)};
 `;
 
+const StyledCloseButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+`;
+
 const StyledConfirmationContent = styled(VStack)`
   padding: 12px 0;
 `;
 
-const StyledInputContainer = styled.div`
-  position: relative;
-`;
-const StyledInput = styled(Input)`
-  padding-right: 40px;
-  font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
-`;
-
 const StyledNoChangesTitle = styled(TitleDiatypeL)`
   text-align: center;
-`;
-
-const StyledCharacterCounter = styled(VStack)<{ error: boolean }>`
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  color: ${colors.white};
-
-  padding: 8px;
-
-  ${BaseM} {
-    color: ${({ error }) => (error ? colors.error : colors.metal)};
-  }
 `;
