@@ -27,9 +27,9 @@ export function CollectionSaveButtonWithCaption({
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
 
-  const toggleSaveButton = () => {
-    setIsShowPopup(!isShowPopup);
-  };
+  const toggleSaveButton = useCallback(() => {
+    setIsShowPopup((previous) => !previous);
+  }, []);
 
   const handleCaptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCaption(event.target.value);
