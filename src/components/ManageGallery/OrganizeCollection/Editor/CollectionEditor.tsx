@@ -123,6 +123,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
   const lastStagedCollection = useRef<StagedCollection | Record<string, unknown>>({});
   const isStagedCollectionInitialized = useRef(false);
 
+  // Initialize the lastStagedCollection ref
   useEffect(() => {
     if (Object.keys(stagedCollectionState).length === 0 || isStagedCollectionInitialized.current) {
       return;
@@ -137,6 +138,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       onHasUnsavedChange(true);
       return;
     }
+    onHasUnsavedChange(false);
   }, [onHasUnsavedChange, stagedCollectionState]);
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
