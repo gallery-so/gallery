@@ -119,6 +119,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
     [stagedCollectionState, onValidChange]
   );
 
+  // Check if the collection has unsaved changes
   const lastStagedCollection = useRef<StagedCollection | Record<string, unknown>>({});
   const isStagedCollectionInitialized = useRef(false);
 
