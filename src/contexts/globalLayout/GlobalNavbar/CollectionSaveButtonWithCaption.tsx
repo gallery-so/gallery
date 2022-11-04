@@ -27,8 +27,12 @@ export function CollectionSaveButtonWithCaption({
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
 
-  const toggleSaveButton = useCallback(() => {
-    setIsShowPopup((previous) => !previous);
+  const handleOpenCaption = useCallback(() => {
+    setIsShowPopup(true);
+  }, []);
+
+  const handleCloseCaption = useCallback(() => {
+    setIsShowPopup(false);
   }, []);
 
   const handleCaptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -38,9 +42,9 @@ export function CollectionSaveButtonWithCaption({
   const handleSubmit = useCallback(async () => {
     setIsLoading(true);
     await onSave(caption);
-    setIsShowPopup(false);
+    handleCloseCaption();
     setIsLoading(false);
-  }, [caption, onSave]);
+  }, [caption, handleCloseCaption, onSave]);
 
   const isDisabledonSave = useMemo(() => {
     return caption.length > 600;
@@ -50,7 +54,7 @@ export function CollectionSaveButtonWithCaption({
 
   return (
     <StyledConfirmationContainer>
-      <Button onClick={toggleSaveButton} disabled={disabled}>
+      <Button onClick={isShowPopup ? handleCloseCaption : handleOpenCaption} disabled={disabled}>
         <HStack gap={4} align="center">
           {label}
           <StyledChevronSvg
@@ -67,7 +71,7 @@ export function CollectionSaveButtonWithCaption({
       </Button>
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isShowPopup}>
         <HStack justify="flex-end">
-          <StyledCloseButton onClick={toggleSaveButton}>
+          <StyledCloseButton onClick={handleCloseCaption}>
             <CloseIcon isActive={true} />
           </StyledCloseButton>
         </HStack>
