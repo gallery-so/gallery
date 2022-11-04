@@ -17,7 +17,7 @@ type Props = {
   onSave: (caption: string) => void;
 };
 
-export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSave }: Props) {
+export function CollectionSaveButtonWithCaption({ disabled, hasUnsavedChange, onSave }: Props) {
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
 
@@ -30,13 +30,17 @@ export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSav
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    setIsLoading(true);
     onSave(caption);
     setIsShowPopup(false);
+    setIsLoading(false);
   }, [caption, onSave]);
 
   const isDisabledonSave = useMemo(() => {
     return caption.length > 600;
   }, [caption]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <StyledConfirmationContainer>
@@ -75,7 +79,7 @@ export function CollectionConfirmationNavbar({ disabled, hasUnsavedChange, onSav
               />
             </StyledConfirmationContent>
 
-            <Button onClick={handleSubmit} disabled={isDisabledonSave}>
+            <Button onClick={handleSubmit} disabled={isDisabledonSave} pending={isLoading}>
               Save
             </Button>
           </>

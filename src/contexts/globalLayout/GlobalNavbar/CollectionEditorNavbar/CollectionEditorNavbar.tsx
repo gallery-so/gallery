@@ -4,7 +4,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { CollectionConfirmationNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionConfirmationNavbar/CollectionConfirmationNavbar';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
   NavbarCenterContent,
@@ -14,6 +13,8 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { CollectionEditorNavbarFragment$key } from '~/generated/CollectionEditorNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+
+import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
 type Props = {
   galleryId: string;
@@ -72,7 +73,7 @@ export function CollectionEditorNavbar({
       <NavbarCenterContent>{!isMobile && mainContent}</NavbarCenterContent>
 
       <NavbarRightContent>
-      <CollectionConfirmationNavbar
+        <CollectionSaveButtonWithCaption
           disabled={!isCollectionValid}
           onSave={onDone}
           hasUnsavedChange={hasUnsavedChange}
