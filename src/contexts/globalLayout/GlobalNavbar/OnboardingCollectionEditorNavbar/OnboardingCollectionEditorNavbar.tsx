@@ -18,7 +18,7 @@ import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCapt
 type OnboardingCollectionEditorNavbarProps = {
   queryRef: OnboardingCollectionEditorNavbarFragment$key;
   onBack: () => void;
-  onNext: (caption: string) => void;
+  onNext: (caption: string) => Promise<void>;
   isCollectionValid: boolean;
   hasUnsavedChange: boolean;
 };

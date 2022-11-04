@@ -13,7 +13,7 @@ import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCapt
 
 type CollectionCreateNavbarProps = {
   onBack: () => void;
-  onNext: (caption: string) => void;
+  onNext: (caption: string) => Promise<void>;
   galleryId: string;
   isCollectionValid: boolean;
 };

@@ -18,7 +18,7 @@ import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCapt
 
 type Props = {
   galleryId: string;
-  onDone: (caption: string) => void;
+  onDone: (caption: string) => Promise<void>;
   onCancel: () => void;
   isCollectionValid: boolean;
   hasUnsavedChange: boolean;
