@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
@@ -10,10 +10,13 @@ import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { OnboardingCollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
+import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
+import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
 import noop from '~/utils/noop';
 
 function LazyLoadedCollectionEditor() {
@@ -53,30 +56,95 @@ function LazyLoadedCollectionEditor() {
   }
 
   const track = useTrack();
+  const reportError = useReportError();
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
+  const createCollection = useCreateCollection();
+
+  const hasShownAddCollectionModal = useRef(false);
 
   const { push, query: urlQuery, back, replace } = useRouter();
-  const handleNext = useCallback(() => {
+
+  const collectionTitle = useRef('');
+  const collectionDescription = useRef('');
+
+  const handleNext = useCallback(async () => {
     track('Save new collection button clicked');
+
+    const title = collectionTitle.current;
+    const description = collectionDescription.current;
+
+    try {
+      track('Create collection', {
+        added_name: title.length > 0,
+        added_description: description.length > 0,
+        nft_ids: getTokenIdsFromCollection(stagedCollectionState),
+      });
+
+      const response = await createCollection({
+        galleryId,
+        title,
+        description,
+        stagedCollection: stagedCollectionState,
+        tokenSettings: collectionMetadata.tokenSettings,
+        caption: null,
+      });
+
+      if (
+        response.createCollection?.__typename === 'CreateCollectionPayload' &&
+        response.createCollection.collection
+      ) {
+        const collectionId = response.createCollection.collection.dbid;
+        // Replace the current route with the "edit-collection" route
+        // so if the user hits the back button, they'll rightfully
+        // be editing a collection instead of creating another one.
+        await replace({
+          pathname: '/onboarding/edit-collection',
+          query: { ...urlQuery, collectionId },
+        });
+
+        await push({
+          pathname: '/onboarding/organize-gallery',
+          query: { ...urlQuery },
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error);
+      }
+
+      reportError('Something unexpected occurred while trying to update a collection', {
+        tags: {
+          title,
+          galleryId,
+          description,
+        },
+      });
+    }
+  }, [
+    collectionMetadata.tokenSettings,
+    createCollection,
+    galleryId,
+    push,
+    replace,
+    reportError,
+    stagedCollectionState,
+    track,
+    urlQuery,
+  ]);
+
+  const [isCollectionValid, setIsCollectionValid] = useState(false);
+
+  useEffect(() => {
+    if (hasShownAddCollectionModal.current) return;
 
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          onNext={async ({ collectionId }) => {
-            // Replace the current route with the "edit-collection" route
-            // so if the user hits the back button, they'll rightfully
-            // be editing a collection instead of creating another one.
-            await replace({
-              pathname: '/onboarding/edit-collection',
-              query: { ...urlQuery, collectionId },
-            });
-
-            await push({
-              pathname: '/onboarding/organize-gallery',
-              query: { ...urlQuery },
-            });
+          onNext={({ title, description }) => {
+            collectionTitle.current = title ?? '';
+            collectionDescription.current = description ?? '';
           }}
           galleryId={galleryId}
           stagedCollection={stagedCollectionState}
@@ -84,19 +152,11 @@ function LazyLoadedCollectionEditor() {
         />
       ),
       headerText: 'Name and describe your collection',
+      isBlurBackground: true,
     });
-  }, [
-    collectionMetadata.tokenSettings,
-    galleryId,
-    push,
-    replace,
-    showModal,
-    stagedCollectionState,
-    track,
-    urlQuery,
-  ]);
 
-  const [isCollectionValid, setIsCollectionValid] = useState(false);
+    hasShownAddCollectionModal.current = true;
+  }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
 
   return (
     <FullPageStep
@@ -109,7 +169,11 @@ function LazyLoadedCollectionEditor() {
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} onHasUnsavedChange={noop} />
+      <CollectionEditor
+        queryRef={query}
+        onValidChange={setIsCollectionValid}
+        onHasUnsavedChange={noop}
+      />
     </FullPageStep>
   );
 }

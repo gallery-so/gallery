@@ -124,8 +124,10 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid}
-      onHasUnsavedChange={noop}
+      <CollectionEditor
+        queryRef={query}
+        onValidChange={setIsCollectionValid}
+        onHasUnsavedChange={noop}
       />
     </FullPageStep>
   );
