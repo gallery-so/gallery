@@ -1,6 +1,5 @@
 import { Route } from 'nextjs-routes';
 
-import { Button } from '~/components/core/Button/Button';
 import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
@@ -11,9 +10,11 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 
+import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
+
 type OnboardingCollectionCreateNavbarProps = {
   onBack: () => void;
-  onNext: () => void;
+  onNext: (caption: string) => void;
   isCollectionValid: boolean;
 };
 
@@ -40,9 +41,12 @@ export function OnboardingCollectionCreateNavbar({
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <Button disabled={!isCollectionValid} onClick={onNext}>
-          {ONBOARDING_NEXT_BUTTON_TEXT_MAP['organize-collection']}
-        </Button>
+        <CollectionSaveButtonWithCaption
+          disabled={!isCollectionValid}
+          label={ONBOARDING_NEXT_BUTTON_TEXT_MAP['organize-collection']}
+          onSave={onNext}
+          hasUnsavedChange={true}
+        />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

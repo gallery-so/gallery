@@ -18,7 +18,6 @@ import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import { editCollectionOnboardingQuery } from '~/generated/editCollectionOnboardingQuery.graphql';
 import useUpdateCollectionTokens from '~/hooks/api/collections/useUpdateCollectionTokens';
 import GenericActionModal from '~/scenes/Modals/GenericActionModal';
-import noop from '~/utils/noop';
 
 type Props = {
   collectionId: string;
@@ -62,34 +61,37 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
     };
   }, [urlQuery]);
 
-  const handleNext = useCallback(async () => {
-    try {
-      await updateCollection({
-        collectionId,
-        stagedCollection: stagedCollectionState,
-        tokenSettings: collectionMetadata.tokenSettings,
-        caption: null,
-      });
-
-      replace(returnUrl);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        pushToast({
-          message:
-            'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+  const handleNext = useCallback(
+    async (caption: string) => {
+      try {
+        await updateCollection({
+          collectionId,
+          stagedCollection: stagedCollectionState,
+          tokenSettings: collectionMetadata.tokenSettings,
+          caption,
         });
-        return;
+
+        replace(returnUrl);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          pushToast({
+            message:
+              'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+          });
+          return;
+        }
       }
-    }
-  }, [
-    collectionId,
-    collectionMetadata.tokenSettings,
-    pushToast,
-    replace,
-    returnUrl,
-    stagedCollectionState,
-    updateCollection,
-  ]);
+    },
+    [
+      collectionId,
+      collectionMetadata.tokenSettings,
+      pushToast,
+      replace,
+      returnUrl,
+      stagedCollectionState,
+      updateCollection,
+    ]
+  );
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
@@ -111,6 +113,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   }, [back, canGoBack, replace, returnUrl, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
+  const [hasUnsavedChange, setHasUnsavedChange] = useState(false);
 
   return (
     <FullPageStep
@@ -118,6 +121,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
       navbar={
         <OnboardingCollectionEditorNavbar
           isCollectionValid={isCollectionValid}
+          hasUnsavedChange={hasUnsavedChange}
           onBack={handlePrevious}
           onNext={handleNext}
           queryRef={query}
@@ -127,7 +131,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
       <CollectionEditor
         queryRef={query}
         onValidChange={setIsCollectionValid}
-        onHasUnsavedChange={noop}
+        onHasUnsavedChange={setHasUnsavedChange}
       />
     </FullPageStep>
   );

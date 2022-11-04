@@ -14,10 +14,16 @@ import CloseIcon from '~/icons/CloseIcon';
 type Props = {
   disabled?: boolean;
   hasUnsavedChange?: boolean;
+  label?: string;
   onSave: (caption: string) => void;
 };
 
-export function CollectionSaveButtonWithCaption({ disabled, hasUnsavedChange, onSave }: Props) {
+export function CollectionSaveButtonWithCaption({
+  disabled,
+  hasUnsavedChange,
+  label = 'Save',
+  onSave,
+}: Props) {
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
 
@@ -46,7 +52,7 @@ export function CollectionSaveButtonWithCaption({ disabled, hasUnsavedChange, on
     <StyledConfirmationContainer>
       <Button onClick={toggleSaveButton} disabled={disabled}>
         <HStack gap={4} align="center">
-          Save
+          {label}
           <StyledChevronSvg
             isActive={isShowPopup}
             width="12"
