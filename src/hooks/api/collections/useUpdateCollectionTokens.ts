@@ -43,7 +43,7 @@ export default function useUpdateCollectionTokens() {
             tokens: tokenIds,
             layout,
             tokenSettings: tokenSettingsArray,
-            ...(caption && { caption }),
+            caption: caption || null,
           },
         },
       });

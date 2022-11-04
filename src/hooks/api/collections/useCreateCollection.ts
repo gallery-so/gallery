@@ -79,7 +79,7 @@ export default function useCreateCollection() {
             tokens: tokenIds,
             layout,
             tokenSettings: tokenSettingsArray,
-            ...(caption && { caption }),
+            caption: caption || null,
           },
         },
       });
