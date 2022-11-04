@@ -65,7 +65,7 @@ export function CollectionSaveButtonWithCaption({
           </StyledChevronSvg>
         </HStack>
       </Button>
-      <StyledCardContainer gap={12} isActive={isShowPopup}>
+      <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isShowPopup}>
         <HStack justify="flex-end">
           <StyledCloseButton onClick={toggleSaveButton}>
             <CloseIcon isActive={true} />
