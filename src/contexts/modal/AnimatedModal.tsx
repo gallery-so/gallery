@@ -26,6 +26,7 @@ type Props = {
   content: ReactElement;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
+  isBlurBackground: boolean;
   headerText: string;
   headerVariant: ModalPaddingVariant;
 };
@@ -37,6 +38,7 @@ function AnimatedModal({
   content,
   isFullPage,
   isPaddingDisabled,
+  isBlurBackground,
   headerText,
   headerVariant,
 }: Props) {
@@ -78,7 +80,7 @@ function AnimatedModal({
 
   return (
     <_ToggleFade isActive={isActive}>
-      <Overlay onClick={hideModal} />
+      <Overlay onClick={hideModal} isBlurBackground={isBlurBackground} />
       <StyledContentContainer isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContent
@@ -139,14 +141,14 @@ const _ToggleTranslate = styled.div<{ isActive: boolean }>`
   animation-fill-mode: forwards;
 `;
 
-const Overlay = styled.div`
+const Overlay = styled.div<{ isBlurBackground: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: ${colors.white};
-  opacity: 0.95;
+  background: ${({ isBlurBackground }) => (isBlurBackground ? colors.offBlack : colors.white)};
+  opacity: ${({ isBlurBackground }) => (isBlurBackground ? 0.1 : 0.95)};
 
   // should appear above rest of site
   z-index: 10;

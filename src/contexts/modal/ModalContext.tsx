@@ -43,6 +43,7 @@ type ShowModalFnProps = {
   headerVariant?: ModalPaddingVariant;
   isFullPage?: boolean;
   isPaddingDisabled?: boolean;
+  isBlurBackground?: boolean;
   onClose?: () => void;
 };
 
@@ -78,6 +79,7 @@ type Modal = {
   headerVariant: ModalPaddingVariant;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
+  isBlurBackground?: boolean;
   onClose: () => void;
 };
 
@@ -100,6 +102,7 @@ function ModalProvider({ children }: Props) {
       headerVariant = 'standard',
       isFullPage = false,
       isPaddingDisabled = false,
+      isBlurBackground = false,
       onClose = noop,
     }: ShowModalFnProps) => {
       setModals((prevModals) => [
@@ -112,6 +115,7 @@ function ModalProvider({ children }: Props) {
           headerVariant,
           isFullPage,
           isPaddingDisabled,
+          isBlurBackground,
           onClose,
         },
       ]);
@@ -236,7 +240,7 @@ function ModalProvider({ children }: Props) {
       <ModalActionsContext.Provider value={actions}>
         {children}
         {modals.map(
-          ({ id, isActive, content, headerText, headerVariant, isFullPage, isPaddingDisabled }) => {
+          ({ id, isActive, content, headerText, headerVariant, isFullPage, isPaddingDisabled, isBlurBackground = false }) => {
             return (
               <AnimatedModal
                 key={id}
@@ -248,6 +252,7 @@ function ModalProvider({ children }: Props) {
                 isFullPage={isFullPage}
                 isPaddingDisabled={isPaddingDisabled}
                 headerVariant={headerVariant}
+                isBlurBackground={isBlurBackground}
               />
             );
           }
