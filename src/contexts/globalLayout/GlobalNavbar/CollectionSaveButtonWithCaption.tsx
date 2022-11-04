@@ -37,7 +37,7 @@ export function CollectionSaveButtonWithCaption({
 
   const handleSubmit = useCallback(async () => {
     setIsLoading(true);
-    onSave(caption);
+    await onSave(caption);
     setIsShowPopup(false);
     setIsLoading(false);
   }, [caption, onSave]);
