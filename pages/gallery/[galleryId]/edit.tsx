@@ -8,7 +8,6 @@ import breakpoints from '~/components/core/breakpoints';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { GalleryEditNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
-import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
 
 export default function EditGalleryPage() {
