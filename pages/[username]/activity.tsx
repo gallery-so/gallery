@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { activityQuery } from '~/generated/activityQuery.graphql';
@@ -24,6 +24,7 @@ export default function UserFeed({ username }: UserActivityProps) {
         $interactionsAfter: String
         $viewerLast: Int!
         $viewerBefore: String
+        $visibleTokensPerFeedEvent: Int!
       ) {
         ...UserActivityPageFragment
         ...GalleryNavbarFragment
@@ -33,6 +34,7 @@ export default function UserFeed({ username }: UserActivityProps) {
       username: username,
       interactionsFirst: NOTES_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
     }
   );
 

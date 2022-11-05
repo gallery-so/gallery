@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { FeedMode } from '~/components/Feed/Feed';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { FEED_MODE_KEY } from '~/constants/storageKeys';
@@ -21,6 +21,7 @@ export default function Home() {
         $globalBefore: String
         $viewerLast: Int!
         $viewerBefore: String
+        $visibleTokensPerFeedEvent: Int!
       ) {
         viewer {
           ... on Viewer {
@@ -38,6 +39,7 @@ export default function Home() {
       interactionsFirst: NOTES_PER_PAGE,
       globalLast: ITEMS_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
     }
   );
 
