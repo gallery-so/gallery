@@ -16,6 +16,7 @@ import { pluralize } from '~/utils/string';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
+import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
@@ -23,8 +24,6 @@ type Props = {
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
-
-const MAX_PIECES_DISPLAYED = 4;
 
 export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
@@ -62,12 +61,12 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
   const tokens = event.newTokens;
 
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
+    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
   }, [tokens]) as TokenToPreview[];
 
   const track = useTrack();
 
-  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
+  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED_PER_FEED_EVENT;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
