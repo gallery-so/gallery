@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -7,6 +7,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import transitions, {
+  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import CloseIcon from '~/icons/CloseIcon';
@@ -26,13 +27,20 @@ export function CollectionSaveButtonWithCaption({
 }: Props) {
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [caption, setCaption] = useState('');
+  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOpenCaption = useCallback(() => {
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
     setIsShowPopup(true);
   }, []);
 
   const handleCloseCaption = useCallback(() => {
-    setIsShowPopup(false);
+    deactivateHoverCardTimeoutRef.current = setTimeout(
+      () => setIsShowPopup(false),
+      ANIMATED_COMPONENT_TRANSITION_MS
+    );
   }, []);
 
   const handleCaptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -70,31 +78,35 @@ export function CollectionSaveButtonWithCaption({
         </HStack>
       </Button>
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isShowPopup}>
-        <HStack justify="flex-end">
-          <StyledCloseButton onClick={handleCloseCaption}>
-            <CloseIcon isActive={true} />
-          </StyledCloseButton>
-        </HStack>
-        {hasUnsavedChange ? (
+        {isShowPopup && (
           <>
-            <StyledConfirmationContent gap={8}>
-              <BaseM>Share your update to the feed with an optional note.</BaseM>
-              <TextAreaWithCharCount
-                currentCharCount={caption.length}
-                maxCharCount={600}
-                onChange={handleCaptionChange}
-                hasPadding
-                placeholder="Add a note..."
-                textAreaHeight="50px"
-              />
-            </StyledConfirmationContent>
+            <HStack justify="flex-end">
+              <StyledCloseButton onClick={handleCloseCaption}>
+                <CloseIcon isActive={true} />
+              </StyledCloseButton>
+            </HStack>
+            {hasUnsavedChange ? (
+              <>
+                <StyledConfirmationContent gap={8}>
+                  <BaseM>Share your update to the feed with an optional note.</BaseM>
+                  <TextAreaWithCharCount
+                    currentCharCount={caption.length}
+                    maxCharCount={600}
+                    onChange={handleCaptionChange}
+                    hasPadding
+                    placeholder="Add a note..."
+                    textAreaHeight="50px"
+                  />
+                </StyledConfirmationContent>
 
-            <Button onClick={handleSubmit} disabled={isDisabledonSave} pending={isLoading}>
-              Save
-            </Button>
+                <Button onClick={handleSubmit} disabled={isDisabledonSave} pending={isLoading}>
+                  Save
+                </Button>
+              </>
+            ) : (
+              <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
+            )}
           </>
-        ) : (
-          <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
         )}
       </StyledCardContainer>
     </StyledConfirmationContainer>
