@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import colors from '../colors';
 
 export const TITLE_FONT_FAMILY = "'GT Alpina', serif";

@@ -1,20 +1,22 @@
-import { Button } from 'components/core/Button/Button';
-import TextButton from 'components/core/Button/TextButton';
-import colors from 'components/core/colors';
-import { BaseM, TitleM } from 'components/core/Text/Text';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useCallback } from 'react';
-import { AuthModal } from 'hooks/useAuthModal';
-import { GlobalAnnouncementPopoverFragment$key } from '__generated__/GlobalAnnouncementPopoverFragment.graphql';
-import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
-import { removeNullValues } from 'utils/removeNullValues';
-import { FragmentRefs } from 'relay-runtime';
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import { FragmentRefs } from 'relay-runtime';
+import styled from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import TextButton from '~/components/core/Button/TextButton';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
 
 type Props = {
   queryRef: GlobalAnnouncementPopoverFragment$key;

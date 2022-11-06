@@ -4,6 +4,7 @@ import { HStack, VStack } from 'components/core/Spacer/Stack';
 import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { Route, route } from 'nextjs-routes';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { useAuthActions } from 'contexts/auth/AuthContext';
@@ -20,6 +21,21 @@ import { useCallback } from 'react';
 import { useModalActions } from 'contexts/modal/ModalContext';
 import { NotificationsModal } from 'components/NotificationsModal/NotificationsModal';
 import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { Dropdown } from '~/components/core/Dropdown/Dropdown';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
+import useWalletModal from '~/hooks/useWalletModal';
+import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type Props = {
   showDropdown: boolean;

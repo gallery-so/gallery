@@ -1,16 +1,17 @@
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { BigNftFragment$key } from '~/generated/BigNftFragment.graphql';
+import { BigNftPreviewFragment$key } from '~/generated/BigNftPreviewFragment.graphql';
+import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import {
   getBackgroundColorOverrideForContract,
   graphqlGetResizedNftImageUrlWithFallback,
-} from 'utils/token';
-import { BigNftFragment$key } from '../../../../__generated__/BigNftFragment.graphql';
-import styled from 'styled-components';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftRetry, useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { BigNftPreviewFragment$key } from '../../../../__generated__/BigNftPreviewFragment.graphql';
+} from '~/utils/token';
 
 export const BIG_NFT_SIZE_PX = 160;
 

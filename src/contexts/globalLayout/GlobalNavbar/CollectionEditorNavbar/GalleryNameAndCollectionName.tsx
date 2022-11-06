@@ -1,14 +1,15 @@
-import { HStack } from 'components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY, Paragraph } from 'components/core/Text/Text';
+import Link from 'next/link';
+import { Route, route } from 'nextjs-routes';
 import styled from 'styled-components';
-import colors from 'components/core/colors';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import {
   EditingText,
   MainGalleryText,
-} from 'contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
-import Link from 'next/link';
-import { route, Route } from 'nextjs-routes';
-import breakpoints from 'components/core/breakpoints';
+} from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
 
 type Props = {
   editGalleryRoute: Route;

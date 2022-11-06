@@ -1,12 +1,13 @@
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
-import GlobalAnnouncementPopover, {
-  FEATURED_TEZOS_COLLECTION_IDS,
-} from 'contexts/globalLayout/GlobalAnnouncementPopover/GlobalAnnouncementPopover';
-import usePersistedState from 'hooks/usePersistedState';
 import { useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { announcementsQuery } from '__generated__/announcementsQuery.graphql';
+
+import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import GlobalAnnouncementPopover, {
+  FEATURED_TEZOS_COLLECTION_IDS,
+} from '~/contexts/globalLayout/GlobalAnnouncementPopover/GlobalAnnouncementPopover';
+import { announcementsQuery } from '~/generated/announcementsQuery.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 export default function Announcements() {
   const [, setDismissed] = usePersistedState(TEZOS_ANNOUNCEMENT_STORAGE_KEY, false);

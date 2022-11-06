@@ -1,17 +1,18 @@
+import { Route } from 'nextjs-routes';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+
+import { Button } from '~/components/core/Button/Button';
+import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
+import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { Button } from 'components/core/Button/Button';
-import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from 'components/Onboarding/constants';
-import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
-import { GalleryNameAndCollectionName } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { OnboardingCollectionEditorNavbarFragment$key } from '../../../../../__generated__/OnboardingCollectionEditorNavbarFragment.graphql';
-import { Route } from 'nextjs-routes';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { OnboardingCollectionEditorNavbarFragment$key } from '~/generated/OnboardingCollectionEditorNavbarFragment.graphql';
 
 type OnboardingCollectionEditorNavbarProps = {
   queryRef: OnboardingCollectionEditorNavbarFragment$key;

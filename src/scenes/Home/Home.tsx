@@ -1,10 +1,11 @@
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import Feed, { FeedMode } from 'components/Feed/Feed';
 import Head from 'next/head';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { HomeFragment$key } from '__generated__/HomeFragment.graphql';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import Feed, { FeedMode } from '~/components/Feed/Feed';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { HomeFragment$key } from '~/generated/HomeFragment.graphql';
 
 type Props = {
   queryRef: HomeFragment$key;

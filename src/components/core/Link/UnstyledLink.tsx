@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { InternalAnchorElementProps } from 'types/Elements';
+
+import { InternalAnchorElementProps } from '~/types/Elements';
 
 // TODO:
 // - handle rel="noopener noreferrer" for target="_blank" links

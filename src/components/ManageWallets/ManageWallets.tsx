@@ -1,17 +1,19 @@
-import { Button } from 'components/core/Button/Button';
-import { VStack } from 'components/core/Spacer/Stack';
-import ErrorText from 'components/core/Text/ErrorText';
-import { BaseM } from 'components/core/Text/Text';
-import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from 'constants/storageKeys';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import useAddWalletModal from 'hooks/useAddWalletModal';
-import usePersistedState from 'hooks/usePersistedState';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { truncateAddress } from 'utils/wallet';
-import { ManageWalletsFragment$key } from '__generated__/ManageWalletsFragment.graphql';
+
+import { Button } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { BaseM } from '~/components/core/Text/Text';
+import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from '~/constants/storageKeys';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
+import useAddWalletModal from '~/hooks/useAddWalletModal';
+import usePersistedState from '~/hooks/usePersistedState';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { truncateAddress } from '~/utils/wallet';
+
 import ManageWalletsRow from './ManageWalletsRow';
 
 type Props = {

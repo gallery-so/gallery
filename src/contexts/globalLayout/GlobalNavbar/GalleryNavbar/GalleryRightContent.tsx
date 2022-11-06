@@ -1,24 +1,26 @@
+import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { GalleryRightContentFragment$key } from '__generated__/GalleryRightContentFragment.graphql';
 import styled from 'styled-components';
-import { TitleXS } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import { useCallback, useMemo, useState } from 'react';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { HStack } from 'components/core/Spacer/Stack';
-import { EditLink } from 'contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
-import LinkButton from 'scenes/UserGalleryPage/LinkButton';
-import { useQrCode } from 'scenes/Modals/QRCodePopover';
+
+import colors from '~/components/core/colors';
+import { Dropdown } from '~/components/core/Dropdown/Dropdown';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
+import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
+import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useQrCode } from '~/scenes/Modals/QRCodePopover';
+import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
+import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
+import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
+
 import QRCodeButton from './QRCodeButton';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import EditUserInfoModal from 'scenes/UserGalleryPage/EditUserInfoModal';
-import { SignInButton } from 'contexts/globalLayout/GlobalNavbar/SignInButton';
-import { Dropdown } from 'components/core/Dropdown/Dropdown';
-import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
-import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
-import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
 
 type GalleryRightContentProps = {
   username: string;

@@ -1,30 +1,31 @@
-import colors from 'components/core/colors';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, BaseS } from 'components/core/Text/Text';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { removeNullValues } from 'utils/removeNullValues';
-import { pluralize } from 'utils/string';
-import { getTimeSince } from 'utils/time';
-import { TokensAddedToCollectionFeedEventFragment$key } from '__generated__/TokensAddedToCollectionFeedEventFragment.graphql';
+
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { pluralize } from '~/utils/string';
+import { getTimeSince } from '~/utils/time';
+import unescape from '~/utils/unescape';
+
+import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
-import unescape from 'utils/unescape';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { UnstyledLink } from 'components/core/Link/UnstyledLink';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { TokensAddedToCollectionFeedEventQueryFragment$key } from '__generated__/TokensAddedToCollectionFeedEventQueryFragment.graphql';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { Route } from 'nextjs-routes';
 
 type Props = {
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
-
-const MAX_PIECES_DISPLAYED = 4;
 
 export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
@@ -38,7 +39,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRe
         collection @required(action: THROW) {
           dbid
           name
-          tokens @required(action: THROW) {
+          tokens(limit: $visibleTokensPerFeedEvent) @required(action: THROW) {
             token {
               dbid
             }
@@ -71,7 +72,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRe
   const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
 
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED);
+    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
   }, [tokens]) as TokenToPreview[];
 
   const collectionPagePath: Route = {
@@ -80,7 +81,7 @@ export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRe
   };
   const track = useTrack();
 
-  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED;
+  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED_PER_FEED_EVENT;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');

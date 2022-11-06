@@ -1,6 +1,7 @@
-import { useToastActions } from 'contexts/toast/ToastContext';
 import { useEffect } from 'react';
-import detectMobileDevice from 'utils/detectMobileDevice';
+
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import detectMobileDevice from '~/utils/detectMobileDevice';
 
 export default function useNotOptimizedForMobileWarning() {
   const { pushToast } = useToastActions();

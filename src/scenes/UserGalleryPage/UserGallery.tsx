@@ -1,13 +1,14 @@
-import useKeyDown from 'hooks/useKeyDown';
-import NotFound from 'scenes/NotFound/NotFound';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
-import { UserGalleryFragment$key } from '__generated__/UserGalleryFragment.graphql';
-import useDisplayFullPageNftDetailModal from 'scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
-import { useModalState } from 'contexts/modal/ModalContext';
+
+import { useModalState } from '~/contexts/modal/ModalContext';
+import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
+import NotFound from '~/scenes/NotFound/NotFound';
+import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
 type Props = {
   queryRef: UserGalleryFragment$key;

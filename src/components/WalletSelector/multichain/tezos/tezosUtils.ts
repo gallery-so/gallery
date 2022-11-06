@@ -1,6 +1,7 @@
 import { SigningType } from '@airgap/beacon-types';
 import { char2Bytes } from '@taquito/utils';
-import { BeaconError } from 'types/Error';
+
+import { BeaconError } from '~/types/Error';
 
 export function generatePayload(nonce: string, address: string) {
   const formattedInput: string = ['Tezos Signed Message:', nonce].join(' ');

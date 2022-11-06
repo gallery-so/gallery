@@ -1,14 +1,15 @@
-import breakpoints from 'components/core/breakpoints';
-import { StyledImageWithLoading } from 'components/LoadingAsset/ImageWithLoading';
-import NftPreview from 'components/NftPreview/NftPreview';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
-import { FeedEventNftPreviewWrapperFragment$key } from '__generated__/FeedEventNftPreviewWrapperFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
+import NftPreview from '~/components/NftPreview/NftPreview';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
+import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 
 type Props = {
   tokenRef: FeedEventNftPreviewWrapperFragment$key;

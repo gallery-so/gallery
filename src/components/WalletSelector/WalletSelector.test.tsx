@@ -5,7 +5,7 @@ test('NavActionFollow', () => {});
 export {};
 
 // import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-// import AuthProvider from 'contexts/auth/AuthContext';
+// import AuthProvider from '~/contexts/auth/AuthContext';
 // import WalletSelector from './WalletSelector';
 
 // describe.skip('WalletSelector', () => {

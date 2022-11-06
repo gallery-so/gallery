@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Dropdown } from 'components/core/Dropdown/Dropdown';
+
+import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 
 type Props = {
   children: ReactNode;

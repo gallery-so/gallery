@@ -1,20 +1,21 @@
 import throttle from 'lodash.throttle';
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import { graphql } from 'react-relay';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
-import { EditModeToken } from 'components/ManageGallery/OrganizeCollection/types';
-import { ExpandedIcon } from 'components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
-import SidebarNftIcon from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
+import { readInlineData } from 'relay-runtime';
+import styled from 'styled-components';
+
+import { TitleXS } from '~/components/core/Text/Text';
+import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
+import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
+import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
   SIDEBAR_ICON_DIMENSIONS,
   SIDEBAR_ICON_GAP,
-} from 'constants/sidebar';
-import styled from 'styled-components';
-import { TitleXS } from 'components/core/Text/Text';
-import { readInlineData } from 'relay-runtime';
-import { graphql } from 'react-relay';
-import { SidebarListTokenFragment$key } from '../../../../../__generated__/SidebarListTokenFragment.graphql';
+} from '~/constants/sidebar';
+import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 
 export type TokenAndEditModeToken = {
   token: SidebarListTokenFragment$key;

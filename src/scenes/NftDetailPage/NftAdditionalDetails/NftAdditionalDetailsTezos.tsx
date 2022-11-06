@@ -1,15 +1,16 @@
-import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
-import { hexHandler } from 'utils/getOpenseaExternalUrl';
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { NftAdditionalDetailsTezosFragment$key } from '../../../../__generated__/NftAdditionalDetailsTezosFragment.graphql';
-import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { getFxHashExternalUrl, getObjktExternalUrl } from 'utils/getTezosExternalUrl';
-import { TezosDomainOrAddress } from 'components/TezosDomainOrAddress';
-import { LinkableAddress } from 'components/LinkableAddress';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { LinkableAddress } from '~/components/LinkableAddress';
+import { TezosDomainOrAddress } from '~/components/TezosDomainOrAddress';
+import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
+import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { hexHandler } from '~/utils/getOpenseaExternalUrl';
+import { getFxHashExternalUrl, getObjktExternalUrl } from '~/utils/getTezosExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;

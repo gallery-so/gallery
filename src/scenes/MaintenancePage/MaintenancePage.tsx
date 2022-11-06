@@ -1,14 +1,15 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { BaseM } from 'components/core/Text/Text';
-import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
+
+import breakpoints from '~/components/core/breakpoints';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
 import {
   GLOBAL_FOOTER_HEIGHT,
   GLOBAL_FOOTER_HEIGHT_MOBILE,
-} from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import breakpoints from 'components/core/breakpoints';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+} from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 
 function MaintenancePage() {
   return (

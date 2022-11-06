@@ -1,16 +1,18 @@
-import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
-import { useFragment } from 'react-relay';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
-import { graphql } from 'relay-runtime';
-import { size } from 'components/core/breakpoints';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import { NftDetailImageFragment$key } from '__generated__/NftDetailImageFragment.graphql';
 import { useMemo } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+
+import { size } from '~/components/core/breakpoints';
+import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { NftDetailImageFragment$key } from '~/generated/NftDetailImageFragment.graphql';
+import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useBreakpoint } from '~/hooks/useWindowSize';
+import isVideoUrl from '~/utils/isVideoUrl';
+import noop from '~/utils/noop';
+import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
+
 import { StyledVideo } from './NftDetailVideo';
-import noop from 'utils/noop';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import isVideoUrl from 'utils/isVideoUrl';
 
 type Props = {
   tokenRef: NftDetailImageFragment$key;

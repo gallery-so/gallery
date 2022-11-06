@@ -1,5 +1,6 @@
-import { BaseM } from 'components/core/Text/Text';
 import styled from 'styled-components';
+
+import { BaseM } from '~/components/core/Text/Text';
 
 type Props = {
   message: string;

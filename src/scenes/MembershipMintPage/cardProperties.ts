@@ -1,4 +1,4 @@
-import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
+import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
 
 const DESCRIPTION_SILVER = `Become a member of Gallery.\n
 Holding this grants you the ability to sign up as a new user and access the Gallery beta. You must be holding a membership card at all times in order to continue updating your gallery.\n

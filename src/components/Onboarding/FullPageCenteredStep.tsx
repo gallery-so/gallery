@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
+
+import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 type Props = {
   children: ReactNode | ReactNode[];

@@ -1,5 +1,6 @@
-import { size } from 'components/core/breakpoints';
-import { SMALL_DIMENSIONS_DESKTOP, FEED_EVENT_TOKEN_MARGIN } from './FeedEventTokenPreviews';
+import { size } from '~/components/core/breakpoints';
+
+import { FEED_EVENT_TOKEN_MARGIN, SMALL_DIMENSIONS_DESKTOP } from './FeedEventTokenPreviews';
 
 // 105px per column * 10 columns
 export const FEED_MAX_WIDTH = 950;

@@ -1,7 +1,8 @@
-import { Button, ButtonLink } from 'components/core/Button/Button';
-import styled from 'styled-components';
 import React, { useState } from 'react';
-import { TitleM } from 'components/core/Text/Text';
+import styled from 'styled-components';
+
+import { Button, ButtonLink } from '~/components/core/Button/Button';
+import { TitleM } from '~/components/core/Text/Text';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);

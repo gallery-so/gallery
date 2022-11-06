@@ -1,4 +1,3 @@
-import colors from 'components/core/colors';
 import {
   ChangeEventHandler,
   Dispatch,
@@ -7,10 +6,12 @@ import {
   useEffect,
   useState,
 } from 'react';
-import styled from 'styled-components';
-import useDebounce from 'hooks/useDebounce';
 import { graphql, useFragment } from 'react-relay';
-import { SearchBarFragment$key } from '__generated__/SearchBarFragment.graphql';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { SearchBarFragment$key } from '~/generated/SearchBarFragment.graphql';
+import useDebounce from '~/hooks/useDebounce';
 
 type Props = {
   tokensRef: SearchBarFragment$key;

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { TitleL, BaseM } from 'components/core/Text/Text';
-import { ButtonLink } from 'components/core/Button/Button';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import { GALLERY_DISCORD, GALLERY_TWITTER } from 'constants/urls';
 
-import { VStack } from 'components/core/Spacer/Stack';
+import { ButtonLink } from '~/components/core/Button/Button';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL } from '~/components/core/Text/Text';
+import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
 
 type Props = {
   resource?: string;

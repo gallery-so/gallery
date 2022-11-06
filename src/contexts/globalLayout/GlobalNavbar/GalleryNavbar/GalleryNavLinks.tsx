@@ -1,12 +1,13 @@
-import { HStack } from 'components/core/Spacer/Stack';
-import { NavbarLink } from 'contexts/globalLayout/GlobalNavbar/NavbarLink';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import isFeatureEnabled, { FeatureFlag } from 'utils/graphql/isFeatureEnabled';
+import { Route, route } from 'nextjs-routes';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { GalleryNavLinksFragment$key } from '../../../../../__generated__/GalleryNavLinksFragment.graphql';
-import { route, Route } from 'nextjs-routes';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { NavbarLink } from '~/contexts/globalLayout/GlobalNavbar/NavbarLink';
+import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   username: string;

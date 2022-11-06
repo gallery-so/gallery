@@ -1,14 +1,16 @@
-import { BaseM } from 'components/core/Text/Text';
-import FollowButton from 'components/Follow/FollowButton';
-import styled from 'styled-components';
-import { getTimeSince } from 'utils/time';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import { graphql, useFragment } from 'react-relay';
-import { UserFollowedYouEventFragment$key } from '../../../../__generated__/UserFollowedYouEventFragment.graphql';
-import { UserFollowedYouEventEventFragment$key } from '../../../../__generated__/UserFollowedYouEventEventFragment.graphql';
-import { HStack } from 'components/core/Spacer/Stack';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { UserFollowedYouEventEventQueryFragment$key } from '__generated__/UserFollowedYouEventEventQueryFragment.graphql';
+import styled from 'styled-components';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import FollowButton from '~/components/Follow/FollowButton';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
+import { UserFollowedYouEventEventQueryFragment$key } from '~/generated/UserFollowedYouEventEventQueryFragment.graphql';
+import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
+import { getTimeSince } from '~/utils/time';
+
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   queryRef: UserFollowedYouEventEventQueryFragment$key;

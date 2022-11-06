@@ -1,15 +1,16 @@
-import { useCallback, useState } from 'react';
-import styled from 'styled-components';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import UserInfoForm from 'components/Profile/UserInfoForm';
-import useUserInfoForm from 'components/Profile/useUserInfoForm';
-import { Button } from 'components/core/Button/Button';
-import ErrorText from 'components/core/Text/ErrorText';
-import breakpoints from 'components/core/breakpoints';
 import { useRouter } from 'next/router';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { EditUserInfoModalFragment$key } from '__generated__/EditUserInfoModalFragment.graphql';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import UserInfoForm from '~/components/Profile/UserInfoForm';
+import useUserInfoForm from '~/components/Profile/useUserInfoForm';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { EditUserInfoModalFragment$key } from '~/generated/EditUserInfoModalFragment.graphql';
 
 type Props = {
   queryRef: EditUserInfoModalFragment$key;

@@ -1,12 +1,14 @@
-import breakpoints from 'components/core/breakpoints';
 import { useEffect } from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { FeedViewerFragment$key } from '~/generated/FeedViewerFragment.graphql';
+
 import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
-import { FeedViewerFragment$key } from '__generated__/FeedViewerFragment.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
 
 export type FeedMode = 'FOLLOWING' | 'WORLDWIDE' | 'USER';
 

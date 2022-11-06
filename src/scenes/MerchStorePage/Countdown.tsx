@@ -1,11 +1,13 @@
-import useTimer from 'hooks/useTimer';
-import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } from './times';
-import { useState, useEffect } from 'react';
-import { BaseS, BaseM, TitleM } from 'components/core/Text/Text';
+import { useEffect,useState } from 'react';
 import styled from 'styled-components';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import colors from 'components/core/colors';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
+import useTimer from '~/hooks/useTimer';
+
+import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } from './times';
 
 export default function Countdown() {
   const [nextTime, setNextTime] = useState('');

@@ -1,15 +1,16 @@
-import colors from 'components/core/colors';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import useMouseUp from 'hooks/useMouseUp';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { StagedNftImageDraggingFragment$key } from '__generated__/StagedNftImageDraggingFragment.graphql';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { useImageFailureCheck } from 'hooks/useImageFailureCheck';
+
+import colors from '~/components/core/colors';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDraggingFragment.graphql';
+import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
+import useMouseUp from '~/hooks/useMouseUp';
+import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
   tokenRef: StagedNftImageDraggingFragment$key;

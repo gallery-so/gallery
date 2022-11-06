@@ -1,13 +1,14 @@
-import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
-import { useFragment } from 'react-relay';
-import { graphqlGetResizedNftImageUrlWithFallback } from 'utils/token';
-import { graphql } from 'relay-runtime';
-import { size } from 'components/core/breakpoints';
-import { useBreakpoint } from 'hooks/useWindowSize';
 import { useMemo } from 'react';
-import noop from 'utils/noop';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { NftDetailGifFragment$key } from '__generated__/NftDetailGifFragment.graphql';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+
+import { size } from '~/components/core/breakpoints';
+import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { NftDetailGifFragment$key } from '~/generated/NftDetailGifFragment.graphql';
+import { useBreakpoint } from '~/hooks/useWindowSize';
+import noop from '~/utils/noop';
+import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 
 type Props = {
   tokenRef: NftDetailGifFragment$key;

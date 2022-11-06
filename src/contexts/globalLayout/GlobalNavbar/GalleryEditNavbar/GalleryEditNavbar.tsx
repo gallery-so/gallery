@@ -1,16 +1,17 @@
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BODY_FONT_FAMILY, Paragraph, TitleXS } from '~/components/core/Text/Text';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import styled from 'styled-components';
-import { BODY_FONT_FAMILY, Paragraph, TitleXS } from 'components/core/Text/Text';
-import { HStack } from 'components/core/Spacer/Stack';
-import { Button } from 'components/core/Button/Button';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import colors from 'components/core/colors';
-import breakpoints from 'components/core/breakpoints';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   onDone: () => void;

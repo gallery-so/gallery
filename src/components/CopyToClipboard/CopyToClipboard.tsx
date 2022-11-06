@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
-import { useToastActions } from 'contexts/toast/ToastContext';
+
+import { useToastActions } from '~/contexts/toast/ToastContext';
 
 type Props = {
   textToCopy: string;

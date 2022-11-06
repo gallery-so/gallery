@@ -1,15 +1,17 @@
 import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
-import { Section } from './Section';
 import { CSS } from '@dnd-kit/utilities';
 import { useCallback, useMemo } from 'react';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
 import {
   useActiveSectionIdState,
   useCollectionEditorActions,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import styled from 'styled-components';
-import colors from 'components/core/colors';
-import PlusIcon from 'icons/PlusIcon';
-import { VStack } from 'components/core/Spacer/Stack';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import PlusIcon from '~/icons/PlusIcon';
+
+import { Section } from './Section';
 
 type Props = {
   children: React.ReactNode;

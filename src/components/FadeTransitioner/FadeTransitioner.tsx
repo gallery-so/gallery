@@ -1,8 +1,8 @@
+import { useRouter } from 'next/router';
 import { createContext, CSSProperties, memo, Suspense, useMemo } from 'react';
 import { CSSTransition, TransitionGroup, TransitionStatus } from 'react-transition-group';
 
-import { FullPageLoaderWithLayoutTransitionSupport } from 'components/core/Loader/FullPageLoader';
-import { useRouter } from 'next/router';
+import { FullPageLoaderWithLayoutTransitionSupport } from '~/components/core/Loader/FullPageLoader';
 
 type Props = {
   locationKey?: string;

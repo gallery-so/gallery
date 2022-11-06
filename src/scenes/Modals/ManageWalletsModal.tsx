@@ -1,8 +1,9 @@
-import breakpoints from 'components/core/breakpoints';
-import ManageWallets from 'components/ManageWallets/ManageWallets';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { ManageWalletsModalFragment$key } from '__generated__/ManageWalletsModalFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import ManageWallets from '~/components/ManageWallets/ManageWallets';
+import { ManageWalletsModalFragment$key } from '~/generated/ManageWalletsModalFragment.graphql';
 
 type Props = {
   queryRef: ManageWalletsModalFragment$key;

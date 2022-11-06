@@ -1,8 +1,10 @@
 import { memo, PropsWithChildren, useCallback, useMemo } from 'react';
 import { SWRConfig, SWRConfiguration } from 'swr';
-import { SECOND } from 'utils/time';
+
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { SECOND } from '~/utils/time';
+
 import { vanillaFetcher } from './fetch';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 export const SwrProvider = memo(({ children }: PropsWithChildren) => {
   const reportError = useReportError();

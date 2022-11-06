@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { OrganizeGallery } from 'components/ManageGallery/OrganizeGallery/OrganizeGallery';
-import { organizeGalleryQuery } from '../../__generated__/organizeGalleryQuery.graphql';
-import FullPageStep from 'components/Onboarding/FullPageStep';
-import { OnboardingGalleryEditorNavbar } from 'contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
+
+import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
+import { OnboardingGalleryEditorNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
+import { organizeGalleryQuery } from '~/generated/organizeGalleryQuery.graphql';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(

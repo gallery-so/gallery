@@ -1,15 +1,15 @@
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injected } from 'connectors/index';
-import colors from 'components/core/colors';
-import transitions from 'components/core/transitions';
 
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { BaseM } from 'components/core/Text/Text';
-import { getUserFriendlyWalletName } from 'utils/wallet';
-import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from 'types/Wallet';
+import colors from '~/components/core/colors';
+import { BaseM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import { injected } from '~/connectors/index';
+import { GNOSIS_SAFE, METAMASK, WALLETCONNECT, WALLETLINK, WalletName } from '~/types/Wallet';
+import { getUserFriendlyWalletName } from '~/utils/wallet';
 
 const walletIconMap: Record<string, string> = {
   metamask: '/icons/metamask.svg',

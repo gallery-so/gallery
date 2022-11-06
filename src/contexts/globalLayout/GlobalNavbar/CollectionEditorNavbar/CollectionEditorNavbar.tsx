@@ -1,18 +1,19 @@
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CollectionEditorNavbarFragment$key } from '../../../../../__generated__/CollectionEditorNavbarFragment.graphql';
+
+import { Button } from '~/components/core/Button/Button';
+import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
   NavbarRightContent,
   StandardNavbarContainer,
-} from 'contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { BackButton } from 'contexts/globalLayout/GlobalNavbar/BackButton';
-import { Button } from 'components/core/Button/Button';
-import { GalleryNameAndCollectionName } from 'contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
-import { Route } from 'nextjs-routes';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
+} from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { CollectionEditorNavbarFragment$key } from '~/generated/CollectionEditorNavbarFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   galleryId: string;

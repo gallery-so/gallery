@@ -1,30 +1,31 @@
+import keyBy from 'lodash.keyby';
 import { memo, useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { TitleS } from 'components/core/Text/Text';
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleS } from '~/components/core/Text/Text';
+import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import { SidebarChainSelector } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainSelector';
+import { SidebarTokens } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarTokens';
 import {
   SidebarTokensState,
   useCollectionEditorActions,
-} from 'contexts/collectionEditor/CollectionEditorContext';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { SidebarFragment$key } from '~/generated/SidebarFragment.graphql';
+import { SidebarViewerFragment$key } from '~/generated/SidebarViewerFragment.graphql';
+import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { generate12DigitId } from '~/utils/collectionLayout';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import { convertObjectToArray } from '../convertObjectToArray';
-import SearchBar from './SearchBar';
-import colors from 'components/core/colors';
-import { graphql, useFragment } from 'react-relay';
-import { SidebarFragment$key } from '__generated__/SidebarFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { SidebarViewerFragment$key } from '__generated__/SidebarViewerFragment.graphql';
-import keyBy from 'lodash.keyby';
-import { SidebarChainSelector } from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainSelector';
-import { Button } from 'components/core/Button/Button';
-import { generate12DigitId } from 'utils/collectionLayout';
-import { SidebarTokens } from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarTokens';
-import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
-import { VStack } from 'components/core/Spacer/Stack';
 import { AddWalletSidebar } from './AddWalletSidebar';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import useSyncTokens from 'hooks/api/tokens/useSyncTokens';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import SearchBar from './SearchBar';
 
 type Props = {
   sidebarTokens: SidebarTokensState;

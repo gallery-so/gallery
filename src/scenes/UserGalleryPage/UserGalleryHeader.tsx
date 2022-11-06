@@ -1,22 +1,24 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
-import styled, { css } from 'styled-components';
-import unescape from 'utils/unescape';
-import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import Markdown from 'components/core/Markdown/Markdown';
-import MobileLayoutToggle from './MobileLayoutToggle';
-import { DisplayLayout } from 'components/core/enums';
-import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
-import TextButton from 'components/core/Button/TextButton';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
-import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
-import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import Badge from 'components/Badge/Badge';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
+import styled, { css } from 'styled-components';
+
+import Badge from '~/components/Badge/Badge';
+import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
+import { DisplayLayout } from '~/components/core/enums';
+import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL, TitleM } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFragment.graphql';
+import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import unescape from '~/utils/unescape';
+
+import MobileLayoutToggle from './MobileLayoutToggle';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;

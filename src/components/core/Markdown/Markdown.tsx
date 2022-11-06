@@ -1,11 +1,12 @@
 import { route } from 'nextjs-routes';
+import { PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
+
 import InteractiveLink, {
   InteractiveLinkNeedsVerification,
 } from '../InteractiveLink/InteractiveLink';
 import { BaseXL } from '../Text/Text';
-import { PropsWithChildren } from 'react';
 
 type PublicProps = {
   text: string;

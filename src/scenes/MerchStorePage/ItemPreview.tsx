@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
-import { TitleMonoM, BaseM, BlueLabel } from 'components/core/Text/Text';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import SingleItemPage from './SingleItemPage';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { BaseM, BlueLabel, TitleMonoM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useMintMerchContract } from '~/hooks/useContract';
+import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
+
 import FlippingImage from './FlippingImage';
-import colors from 'components/core/colors';
-import { useMintMerchContract } from 'hooks/useContract';
-import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
+import SingleItemPage from './SingleItemPage';
 
 export default function ItemPreview({
   label,

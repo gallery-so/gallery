@@ -7,15 +7,15 @@ export {};
 // import NavActionFollow from './NavActionFollow';
 // import { useLazyLoadQuery } from 'react-relay/hooks';
 // import { graphql } from 'react-relay';
-// import { RelayProvider } from 'contexts/relay/RelayProvider';
+// import { RelayProvider } from '~/contexts/relay/RelayProvider';
 // import { Suspense } from 'react';
 // import nock from 'nock';
-// import { baseurl } from 'contexts/swr/fetch';
-// import { NavActionFollowTestQueryQuery } from 'src/__generated__/operations';
-// import ModalProvider from 'contexts/modal/ModalContext';
-// import ToastProvider from 'contexts/toast/ToastContext';
-// import { NavActionFollowTestQuery } from '__generated__/NavActionFollowTestQuery.graphql';
-// import Boundary from 'contexts/boundary/Boundary';
+// import { baseurl } from '~/contexts/swr/fetch';
+// import { NavActionFollowTestQueryQuery } from '~/__generated__/operations';
+// import ModalProvider from '~/contexts/modal/ModalContext';
+// import ToastProvider from '~/contexts/toast/ToastContext';
+// import { NavActionFollowTestQuery } from '~/generated/NavActionFollowTestQuery.graphql';
+// import Boundary from '~/contexts/boundary/Boundary';
 
 // jest.mock('@rainbow-me/rainbowkit', () => ({
 //   useConnectModal: jest.fn(),

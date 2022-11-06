@@ -1,11 +1,12 @@
-import LandingPageScene from 'scenes/LandingPage/LandingPage';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import { Suspense } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { pagesQuery } from '../__generated__/pagesQuery.graphql';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import { Suspense } from 'react';
-import { pagesRedirectFragment$key } from '../__generated__/pagesRedirectFragment.graphql';
+
+import { pagesQuery } from '~/generated/pagesQuery.graphql';
+import { pagesRedirectFragment$key } from '~/generated/pagesRedirectFragment.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import LandingPageScene from '~/scenes/LandingPage/LandingPage';
 
 type LandingPageSceneWithRedirectProps = {
   queryRef: pagesRedirectFragment$key;

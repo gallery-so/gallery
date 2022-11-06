@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { graphql } from 'relay-runtime';
+
 import {
   UpdateTokenInfoInput,
   useUpdateNftMutation,
-} from '__generated__/useUpdateNftMutation.graphql';
+} from '~/generated/useUpdateNftMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUpdateNft() {
   const [updateNft] = usePromisifiedMutation<useUpdateNftMutation>(

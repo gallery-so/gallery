@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { BaseXL } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
-import breakpoints from 'components/core/breakpoints';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { BaseXL } from '~/components/core/Text/Text';
 import {
   useMemberListPageActions,
   useMemberListPageState,
-} from 'contexts/memberListPage/MemberListPageContext';
+} from '~/contexts/memberListPage/MemberListPageContext';
 
 function getAlphabet() {
   return [...Array(26)].map((_, i) => String.fromCharCode(65 + i));

@@ -1,13 +1,15 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { FEED_MAX_WIDTH } from '~/components/Feed/dimensions';
+import { UserActivityLayoutFragment$key } from '~/generated/UserActivityLayoutFragment.graphql';
+import { UserActivityLayoutQueryFragment$key } from '~/generated/UserActivityLayoutQueryFragment.graphql';
+import { StyledUserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
+
 import UserActivityFeed from './UserActivityFeed';
-import { UserActivityLayoutQueryFragment$key } from '__generated__/UserActivityLayoutQueryFragment.graphql';
-import { UserActivityLayoutFragment$key } from '__generated__/UserActivityLayoutFragment.graphql';
-import { StyledUserGalleryLayout } from 'scenes/UserGalleryPage/UserGalleryLayout';
-import { FEED_MAX_WIDTH } from 'components/Feed/dimensions';
-import breakpoints from 'components/core/breakpoints';
 
 type Props = {
   userRef: UserActivityLayoutFragment$key;

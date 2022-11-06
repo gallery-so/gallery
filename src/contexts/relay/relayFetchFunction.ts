@@ -1,7 +1,8 @@
-import { FetchFunction, GraphQLResponse, RequestParameters } from 'relay-runtime';
-import { _fetch, baseurl } from 'contexts/swr/fetch';
-import { startTransaction, getCurrentHub } from '@sentry/nextjs';
+import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
+import { FetchFunction, GraphQLResponse, RequestParameters } from 'relay-runtime';
+
+import { _fetch, baseurl } from '~/contexts/swr/fetch';
 
 export function getGraphqlHost() {
   return baseurl;

@@ -1,13 +1,14 @@
+import { GetServerSideProps } from 'next';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import styled from 'styled-components';
-import { GetServerSideProps } from 'next';
-import { followersQuery } from '../../__generated__/followersQuery.graphql';
-import FollowList from 'components/Follow/FollowList';
-import { followersFollowersPageFragment$key } from '../../__generated__/followersFollowersPageFragment.graphql';
+
+import FollowList from '~/components/Follow/FollowList';
+import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
+import { followersQuery } from '~/generated/followersQuery.graphql';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 type FollowersPageProps = {
   queryRef: followersFollowersPageFragment$key;

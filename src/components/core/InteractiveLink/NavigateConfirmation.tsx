@@ -1,10 +1,12 @@
-import { useModalActions } from 'contexts/modal/ModalContext';
 import styled from 'styled-components';
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import { BaseM } from '../Text/Text';
-import { MODAL_PADDING_PX } from 'contexts/modal/constants';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+
 import { VStack } from '../Spacer/Stack';
+import { BaseM } from '../Text/Text';
 
 export default function VerifyNavigationPopover({ href }: { href: string }) {
   const { hideModal } = useModalActions();

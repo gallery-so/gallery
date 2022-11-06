@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { useGlobalNavbarHeight } from 'contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
 export default function StyledBackLink() {
   const navbarHeight = useGlobalNavbarHeight();

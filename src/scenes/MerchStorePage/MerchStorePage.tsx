@@ -1,14 +1,16 @@
-import styled from 'styled-components';
-import breakpoints from 'components/core/breakpoints';
 import React from 'react';
-import { TitleM } from 'components/core/Text/Text';
-import ItemPreview from './ItemPreview';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleM } from '~/components/core/Text/Text';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import LogoBracketLeft from '~/icons/LogoBracketLeft';
+import LogoBracketRight from '~/icons/LogoBracketRight';
+
 import Countdown from './Countdown';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import colors from 'components/core/colors';
-import LogoBracketLeft from 'icons/LogoBracketLeft';
-import LogoBracketRight from 'icons/LogoBracketRight';
-import { HStack } from 'components/core/Spacer/Stack';
+import ItemPreview from './ItemPreview';
 
 const items = [
   {

@@ -1,8 +1,9 @@
-import { pageGutter } from 'components/core/breakpoints';
-import Markdown from 'components/core/Markdown/Markdown';
-import { BaseXL, TitleL, TitleM } from 'components/core/Text/Text';
 import unescape from 'lodash/unescape';
 import styled from 'styled-components';
+
+import { pageGutter } from '~/components/core/breakpoints';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { BaseXL, TitleL, TitleM } from '~/components/core/Text/Text';
 
 type Props = {
   title: string;

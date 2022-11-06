@@ -1,12 +1,13 @@
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import VideoEnabledIcon from 'icons/Video';
-import VideoDisabledIcon from 'icons/VideoDisabled';
+
+import Tooltip from '~/components/Tooltip/Tooltip';
 import {
   useCollectionEditorActions,
   useCollectionMetadataState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import { useMemo, useState } from 'react';
-import Tooltip from 'components/Tooltip/Tooltip';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import VideoEnabledIcon from '~/icons/Video';
+import VideoDisabledIcon from '~/icons/VideoDisabled';
 
 type Props = {
   id: string;

@@ -1,13 +1,14 @@
-import { BaseM, BODY_MONO_FONT_FAMILY } from 'components/core/Text/Text';
 import { useCallback, useState } from 'react';
-import styled from 'styled-components';
-import { truncateAddress } from 'utils/wallet';
-import { isWeb3Error } from 'types/Error';
 import ReactTooltip from 'react-tooltip';
-import useRemoveWallet from 'components/WalletSelector/mutations/useRemoveWallet';
-import { walletIconMap } from 'components/WalletSelector/multichain/WalletButton';
-import Tooltip from 'components/Tooltip/Tooltip';
-import { Button } from 'components/core/Button/Button';
+import styled from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import { BaseM, BODY_MONO_FONT_FAMILY } from '~/components/core/Text/Text';
+import Tooltip from '~/components/Tooltip/Tooltip';
+import { walletIconMap } from '~/components/WalletSelector/multichain/WalletButton';
+import useRemoveWallet from '~/components/WalletSelector/mutations/useRemoveWallet';
+import { isWeb3Error } from '~/types/Error';
+import { truncateAddress } from '~/utils/wallet';
 
 type Props = {
   walletId: string;

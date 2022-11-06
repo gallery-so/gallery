@@ -1,9 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { graphql, useFragment } from 'react-relay';
 
-import { Web3Error } from 'types/Error';
-import { GNOSIS_SAFE, WalletName } from 'types/Wallet';
-import { AddWalletPendingFragment$key } from '__generated__/AddWalletPendingFragment.graphql';
+import { AddWalletPendingFragment$key } from '~/generated/AddWalletPendingFragment.graphql';
+import { Web3Error } from '~/types/Error';
+import { GNOSIS_SAFE, WalletName } from '~/types/Wallet';
+
 import AddWalletPendingDefault from './AddWalletPendingDefault';
 import AddWalletPendingGnosisSafe from './AddWalletPendingGnosisSafe';
 

@@ -1,14 +1,15 @@
+import Link from 'next/link';
+import { useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { FeedLeftContentFragment$key } from '__generated__/FeedLeftContentFragment.graphql';
-import { HomeText } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import { HStack } from 'components/core/Spacer/Stack';
-import { NavDownArrow } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
-import { useState } from 'react';
-import { ProfileDropdownContent } from 'contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
-import { GLogo } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
-import Link from 'next/link';
 import styled from 'styled-components';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
+import { HomeText } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
+import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
+import { FeedLeftContentFragment$key } from '~/generated/FeedLeftContentFragment.graphql';
 
 type FeedLeftContentProps = {
   queryRef: FeedLeftContentFragment$key;

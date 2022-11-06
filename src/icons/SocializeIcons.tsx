@@ -1,6 +1,7 @@
-import styled, { css } from 'styled-components';
-import colors from 'components/core/colors';
 import { forwardRef } from 'react';
+import styled, { css } from 'styled-components';
+
+import colors from '~/components/core/colors';
 
 type Props = {
   active?: boolean;

@@ -1,7 +1,8 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useRemoveWalletMutation } from '__generated__/useRemoveWalletMutation.graphql';
+
+import { useRemoveWalletMutation } from '~/generated/useRemoveWalletMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useRemoveWallet() {
   const [removeWallet] = usePromisifiedMutation<useRemoveWalletMutation>(

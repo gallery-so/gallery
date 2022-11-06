@@ -1,10 +1,11 @@
-import { BaseM } from 'components/core/Text/Text';
-import breakpoints from 'components/core/breakpoints';
-import { Button } from 'components/core/Button/Button';
-import styled from 'styled-components';
-import { useModalActions } from 'contexts/modal/ModalContext';
 import { useCallback } from 'react';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 
 export default function GenericActionModal({
   action,

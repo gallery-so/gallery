@@ -1,7 +1,8 @@
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM, TitleM } from 'components/core/Text/Text';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
 
 export function useQrCode() {
   // Figure out if not using the QRCodeStyling type is actually

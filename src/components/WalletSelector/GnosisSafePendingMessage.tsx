@@ -1,14 +1,15 @@
-import { Button } from 'components/core/Button/Button';
-import { BaseM } from 'components/core/Text/Text';
-import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from 'types/Wallet';
-import colors from 'components/core/colors';
-import styled, { keyframes } from 'styled-components';
-import { useMemo, useEffect } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
-import { getLocalStorageItem } from 'utils/localStorage';
-import { VStack } from 'components/core/Spacer/Stack';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+import { useWeb3React } from '@web3-react/core';
+import { useEffect, useMemo } from 'react';
+import styled, { keyframes } from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
+import { getLocalStorageItem } from '~/utils/localStorage';
 
 const GNOSIS_NONCE_STORAGE_KEY = 'gallery_gnosis_nonce';
 

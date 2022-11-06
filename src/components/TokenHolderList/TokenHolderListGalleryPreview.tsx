@@ -1,8 +1,9 @@
-import styled, { css, keyframes } from 'styled-components';
-import { Directions } from 'src/components/core/enums';
 import { useCallback, useMemo, useState } from 'react';
-import { GOOGLE_CONTENT_IMG_URL } from 'utils/regex';
-import colors from 'components/core/colors';
+import styled, { css, keyframes } from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { Directions } from '~/components/core/enums';
+import { GOOGLE_CONTENT_IMG_URL } from '~/utils/regex';
 
 const verticalOffset = [0, 130, 260];
 const horizontalOffset = [0, 90, 180];

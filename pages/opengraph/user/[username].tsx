@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
-import { OpenGraphPreview } from 'components/opengraph/OpenGraphPreview';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { UsernameOpengraphQuery } from '__generated__/UsernameOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from 'utils/removeNullValues';
-import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from 'constants/opengraph';
+
+import { OpenGraphPreview } from '~/components/opengraph/OpenGraphPreview';
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
+import { UsernameOpengraphQuery } from '~/generated/UsernameOpengraphQuery.graphql';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 export default function OpenGraphUserPage() {
   const { query } = useRouter();

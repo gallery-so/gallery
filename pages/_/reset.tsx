@@ -1,9 +1,10 @@
-import { VStack } from 'components/core/Spacer/Stack';
-import { TitleL, TitleS } from 'components/core/Text/Text';
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from 'constants/storageKeys';
-import usePersistedState from 'hooks/usePersistedState';
 import { useEffect } from 'react';
 import styled from 'styled-components';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleL, TitleS } from '~/components/core/Text/Text';
+import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import usePersistedState from '~/hooks/usePersistedState';
 
 export default function Secret() {
   const [, setDismissed] = usePersistedState(TEZOS_ANNOUNCEMENT_STORAGE_KEY, false);

@@ -1,14 +1,15 @@
 import { GetServerSideProps } from 'next';
-import { MetaTagProps } from 'pages/_app';
-import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import { activityQuery } from '__generated__/activityQuery.graphql';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import UserActivityPage from 'scenes/UserActivityPage/UserActivityPage';
-import { ITEMS_PER_PAGE } from 'components/Feed/constants';
-import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
-import { GalleryNavbar } from 'contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { graphql } from 'relay-runtime';
+
+import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { activityQuery } from '~/generated/activityQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type UserActivityProps = MetaTagProps & {
   username: string;
@@ -23,6 +24,7 @@ export default function UserFeed({ username }: UserActivityProps) {
         $interactionsAfter: String
         $viewerLast: Int!
         $viewerBefore: String
+        $visibleTokensPerFeedEvent: Int!
       ) {
         ...UserActivityPageFragment
         ...GalleryNavbarFragment
@@ -32,6 +34,7 @@ export default function UserFeed({ username }: UserActivityProps) {
       username: username,
       interactionsFirst: NOTES_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
     }
   );
 

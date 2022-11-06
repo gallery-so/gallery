@@ -1,7 +1,8 @@
-import GlobalFooter from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { useGlobalLayoutActions } from 'contexts/globalLayout/GlobalLayoutContext';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { TransitionStateContext } from 'components/FadeTransitioner/FadeTransitioner';
+
+import { TransitionStateContext } from '~/components/FadeTransitioner/FadeTransitioner';
+import GlobalFooter from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useGlobalLayoutActions } from '~/contexts/globalLayout/GlobalLayoutContext';
 
 export type Props = {
   element: JSX.Element;

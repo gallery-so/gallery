@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { size } from 'components/core/breakpoints';
+
+import { size } from '~/components/core/breakpoints';
+
 import useDebounce from './useDebounce';
 
 export default function useWindowSize() {

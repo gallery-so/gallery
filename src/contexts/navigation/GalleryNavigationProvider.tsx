@@ -1,10 +1,11 @@
+import { NextRouter, useRouter } from 'next/router';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
   FADE_TRANSITION_TIME_MS,
   useStabilizedRouteTransitionKey,
-} from 'components/FadeTransitioner/FadeTransitioner';
-import { NextRouter, useRouter } from 'next/router';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
+} from '~/components/FadeTransitioner/FadeTransitioner';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 
 type HistoryStackElement = Pick<NextRouter, 'asPath' | 'route' | 'pathname' | 'query'>;
 type GalleryNavigationContextType = {

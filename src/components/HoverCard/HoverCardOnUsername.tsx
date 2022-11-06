@@ -1,22 +1,23 @@
-import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
-import colors from 'components/core/colors';
-import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
-import styled from 'styled-components';
-import { graphql, useFragment } from 'react-relay';
-import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
-import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
-import FollowButton from 'components/Follow/FollowButton';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import Badge from '~/components/Badge/Badge';
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-} from 'components/core/transitions';
-import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { HStack } from 'components/core/Spacer/Stack';
-import Badge from 'components/Badge/Badge';
+} from '~/components/core/transitions';
+import FollowButton from '~/components/Follow/FollowButton';
+import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUsernameFollowFragment.graphql';
+import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;

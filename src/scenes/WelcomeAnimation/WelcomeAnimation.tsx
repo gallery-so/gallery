@@ -1,16 +1,16 @@
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { BaseM, TitleL } from 'components/core/Text/Text';
-import { Button } from 'components/core/Button/Button';
+import { animated, useSpring } from 'react-spring';
+import styled, { css, keyframes } from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import useWindowSize from '~/hooks/useWindowSize';
 
 import Image from './Image';
 import { AnimatedImage, animatedImages } from './Images';
-
-import styled, { css, keyframes } from 'styled-components';
-import { animated, useSpring } from 'react-spring';
-import useWindowSize from 'src/hooks/useWindowSize';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { VStack } from 'components/core/Spacer/Stack';
-import { useRouter } from 'next/router';
 
 const FADE_DURATION = 2000;
 // The calc function allows us to control the effect of onMouseMove's x and y movement values on the resulting parallax.

@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-
 import { graphql } from 'relay-runtime';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+
 import {
   useUpdateCollectionHiddenMutation,
   useUpdateCollectionHiddenMutation$data,
-} from '__generated__/useUpdateCollectionHiddenMutation.graphql';
+} from '~/generated/useUpdateCollectionHiddenMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUpdateCollectionHidden() {
   const [updateCollection] = usePromisifiedMutation<useUpdateCollectionHiddenMutation>(

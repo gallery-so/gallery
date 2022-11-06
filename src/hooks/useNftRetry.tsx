@@ -1,18 +1,18 @@
+import { addBreadcrumb, Severity } from '@sentry/nextjs';
 import { useCallback, useContext, useMemo, useState } from 'react';
-import { ContentIsLoadedEvent, ShimmerActionContext } from 'contexts/shimmer/ShimmerContext';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { graphql } from 'relay-runtime';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
-import { useNftRetryMutation } from '../../__generated__/useNftRetryMutation.graphql';
 import { useRelayEnvironment } from 'react-relay';
-
 // @ts-expect-error We're in untyped territory
 import { getFragmentResourceForEnvironment } from 'react-relay/lib/relay-hooks/FragmentResource';
-import { addBreadcrumb, Severity } from '@sentry/nextjs';
-import { isIosSafari } from 'utils/browser';
+import { graphql } from 'relay-runtime';
+import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
+
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { ContentIsLoadedEvent, ShimmerActionContext } from '~/contexts/shimmer/ShimmerContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { useNftRetryMutation } from '~/generated/useNftRetryMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { isIosSafari } from '~/utils/browser';
 
 type useNftRetryArgs = {
   tokenId: string;

@@ -1,30 +1,31 @@
+import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
+import { useWeb3React } from '@web3-react/core';
+import { route } from 'nextjs-routes';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BaseM, BaseXL, TitleM, TitleXS } from 'components/core/Text/Text';
-import Markdown from 'components/core/Markdown/Markdown';
-import { Button } from 'components/core/Button/Button';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
 
-import ShimmerProvider, { useSetContentIsLoaded } from 'contexts/shimmer/ShimmerContext';
-import ErrorText from 'components/core/Text/ErrorText';
-import { useWeb3React } from '@web3-react/core';
-import useWalletModal from 'hooks/useWalletModal';
-import { useModalActions } from 'contexts/modal/ModalContext';
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { BaseM, BaseXL, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { TransactionStatus } from '~/constants/transaction';
+import { GALLERY_FAQ } from '~/constants/urls';
 import {
   useMembershipMintPageActions,
   useMembershipMintPageState,
-} from 'contexts/membershipMintPage/MembershipMintPageContext';
-import { Contract } from '@ethersproject/contracts';
+} from '~/contexts/membershipMintPage/MembershipMintPageContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import ShimmerProvider, { useSetContentIsLoaded } from '~/contexts/shimmer/ShimmerContext';
+import useWalletModal from '~/hooks/useWalletModal';
+
 import { MembershipNft } from './cardProperties';
-import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { GALLERY_FAQ } from 'constants/urls';
-import colors from 'components/core/colors';
-import { TransactionStatus } from 'constants/transaction';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { route } from 'nextjs-routes';
 
 type Props = {
   membershipNft: MembershipNft;

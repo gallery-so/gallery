@@ -1,4 +1,4 @@
-import { Directions } from 'components/core/enums';
+import { Directions } from '~/components/core/enums';
 
 export type VisibilityState = 'hidden-left' | 'visible' | 'hidden-right';
 export type MountedNft<T> = { token: T; visibility: VisibilityState };

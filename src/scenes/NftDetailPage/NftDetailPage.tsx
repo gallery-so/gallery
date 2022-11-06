@@ -1,23 +1,25 @@
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
 import Head from 'next/head';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import NftDetailView from './NftDetailView';
-import { NftDetailPageQuery } from '__generated__/NftDetailPageQuery.graphql';
 import { useRouter } from 'next/router';
+import { route } from 'nextjs-routes';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import styled from 'styled-components';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import { Directions } from '~/components/core/enums';
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
-} from 'components/core/transitions';
-import { Directions } from 'components/core/enums';
-import useKeyDown from 'hooks/useKeyDown';
+} from '~/components/core/transitions';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
+import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import NavigationHandle from './NavigationHandle';
-import { removeNullValues } from 'utils/removeNullValues';
+import NftDetailView from './NftDetailView';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { route } from 'nextjs-routes';
 
 type Props = {
   username: string;

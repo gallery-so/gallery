@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
-import styled from 'styled-components';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import WalletSelector from 'components/WalletSelector/WalletSelector';
-import { ADD_WALLET_TO_USER } from 'types/Wallet';
-import { graphql } from 'relay-runtime';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { useAddWalletModalFragment$key } from '__generated__/useAddWalletModalFragment.graphql';
-import { useAddWalletModalQuery } from '__generated__/useAddWalletModalQuery.graphql';
+import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import WalletSelector from '~/components/WalletSelector/WalletSelector';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useAddWalletModalFragment$key } from '~/generated/useAddWalletModalFragment.graphql';
+import { useAddWalletModalQuery } from '~/generated/useAddWalletModalQuery.graphql';
+import { ADD_WALLET_TO_USER } from '~/types/Wallet';
 
 type ModalProps = {
   queryRef: useAddWalletModalFragment$key;

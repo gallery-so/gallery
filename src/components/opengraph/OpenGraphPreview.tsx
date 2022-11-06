@@ -1,11 +1,11 @@
-import { pageGutter } from 'components/core/breakpoints';
-import Markdown from 'components/core/Markdown/Markdown';
-import { BaseXL, TitleL } from 'components/core/Text/Text';
 import unescape from 'lodash/unescape';
+import CloseBracket from 'public/icons/close_bracket.svg';
+import OpenBracket from 'public/icons/open_bracket.svg';
 import styled from 'styled-components';
 
-import OpenBracket from 'public/icons/open_bracket.svg';
-import CloseBracket from 'public/icons/close_bracket.svg';
+import { pageGutter } from '~/components/core/breakpoints';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { BaseXL, TitleL } from '~/components/core/Text/Text';
 
 type Props = {
   title: string;
