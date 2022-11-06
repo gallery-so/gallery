@@ -1,26 +1,8 @@
-import colors from 'components/core/colors';
-import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from 'components/core/Text/Text';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import styled from 'styled-components';
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import useWalletModal from 'hooks/useWalletModal';
-import { getEditGalleryUrl } from 'utils/getEditGalleryUrl';
-import { route, Route } from 'nextjs-routes';
-import { Dropdown } from 'components/core/Dropdown/Dropdown';
-import { DropdownLink } from 'components/core/Dropdown/DropdownLink';
-import { DropdownSection } from 'components/core/Dropdown/DropdownSection';
-import { DropdownItem } from 'components/core/Dropdown/DropdownItem';
-import { ProfileDropdownContentFragment$key } from '../../../../../__generated__/ProfileDropdownContentFragment.graphql';
-import breakpoints from 'components/core/breakpoints';
-import { useCallback } from 'react';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { NotificationsModal } from 'components/NotificationsModal/NotificationsModal';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -31,10 +13,13 @@ import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import useWalletModal from '~/hooks/useWalletModal';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type Props = {
