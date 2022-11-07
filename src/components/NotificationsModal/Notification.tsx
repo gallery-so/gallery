@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -10,8 +11,11 @@ import { SomeoneCommentedOnYourFeedEvent } from '~/components/NotificationsModal
 import { SomeoneFollowedYou } from '~/components/NotificationsModal/notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from '~/components/NotificationsModal/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
+import { NotificationUserListModal } from '~/components/NotificationsModal/NotificationUserListModal';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getTimeSince } from '~/utils/time';
 
 type NotificationProps = {
@@ -22,6 +26,7 @@ export function Notification({ notificationRef }: NotificationProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
+        id
         seen
         updatedTime
 
@@ -31,10 +36,23 @@ export function Notification({ notificationRef }: NotificationProps) {
     notificationRef
   );
 
+  const { showModal } = useModalActions();
+
   const timeAgo = getTimeSince(notification.updatedTime);
 
+  const isMobile = useIsMobileWindowWidth();
+
+  const handleNotificationClick = useCallback(() => {
+    showModal({
+      content: <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />,
+      isFullPage: isMobile,
+      isPaddingDisabled: true,
+      headerVariant: 'standard',
+    });
+  }, [isMobile, notification.id, showModal]);
+
   return (
-    <Container>
+    <Container onClick={handleNotificationClick}>
       <HStack gap={8} align="center">
         {!notification.seen && (
           <UnseenDotContainer>
@@ -121,4 +139,8 @@ const UnseenDot = styled.div`
 
 const Container = styled.div`
   padding: 16px 12px;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
 `;

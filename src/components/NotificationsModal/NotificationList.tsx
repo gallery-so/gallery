@@ -4,9 +4,9 @@ import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import Loader from '~/components/core/Loader/Loader';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
+import { TitleDiatypeL } from '~/components/core/Text/Text';
+import { SeeMore } from '~/components/NotificationsModal/SeeMore';
 
 import { Notification } from './Notification';
 
@@ -72,11 +72,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
             return <Notification key={notification.id} notificationRef={notification} />;
           })}
 
-          {hasPrevious && (
-            <SeeMoreContainer role="button" onClick={handleSeeMore}>
-              {isLoadingPrevious ? <Loader size="mini" /> : <TitleXS>See more</TitleXS>}
-            </SeeMoreContainer>
-          )}
+          {hasPrevious && <SeeMore onClick={handleSeeMore} isLoading={isLoadingPrevious} />}
         </>
       ) : (
         <>
@@ -86,11 +82,6 @@ export function NotificationList({ queryRef }: NotificationListProps) {
     </NotificationsContent>
   );
 }
-
-const SeeMoreContainer = styled(VStack)`
-  padding: 16px 12px;
-  cursor: pointer;
-`;
 
 const EmptyNotificationsText = styled(TitleDiatypeL)`
   text-align: center;
