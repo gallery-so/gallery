@@ -18,7 +18,6 @@ import { NotificationsModal } from '~/components/NotificationsModal/Notification
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
-import useWalletModal from '~/hooks/useWalletModal';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
@@ -57,10 +56,8 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
     `,
     queryRef
   );
-  const { showModal } = useModalActions();
 
   const { showModal } = useModalActions();
-  const showWalletModal = useWalletModal();
   const { handleLogout } = useAuthActions();
 
   const isMobile = useIsMobileWindowWidth();
@@ -73,7 +70,6 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
       headerVariant: 'standard',
     });
   }, [isMobile, showModal]);
-  const { handleLogout } = useAuthActions();
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({
