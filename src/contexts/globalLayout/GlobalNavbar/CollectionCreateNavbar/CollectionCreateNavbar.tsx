@@ -16,9 +16,11 @@ type CollectionCreateNavbarProps = {
   onNext: (caption: string) => Promise<void>;
   galleryId: string;
   isCollectionValid: boolean;
+  collectionName?: string;
 };
 
 export function CollectionCreateNavbar({
+  collectionName,
   galleryId,
   onBack,
   onNext,
@@ -36,7 +38,7 @@ export function CollectionCreateNavbar({
         <GalleryNameAndCollectionName
           editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
-          collectionName={'New Collection'}
+          collectionName={collectionName || 'New Collection'}
           rightText="Creating"
         />
       </NavbarCenterContent>

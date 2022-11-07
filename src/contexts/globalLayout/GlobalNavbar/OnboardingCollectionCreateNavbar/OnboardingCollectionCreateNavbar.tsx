@@ -16,12 +16,14 @@ type OnboardingCollectionCreateNavbarProps = {
   onBack: () => void;
   onNext: (caption: string) => Promise<void>;
   isCollectionValid: boolean;
+  collectionName?: string;
 };
 
 export function OnboardingCollectionCreateNavbar({
   onBack,
   onNext,
   isCollectionValid,
+  collectionName,
 }: OnboardingCollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
 
@@ -35,7 +37,7 @@ export function OnboardingCollectionCreateNavbar({
         <GalleryNameAndCollectionName
           editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
-          collectionName={'New Collection'}
+          collectionName={collectionName || 'New Collection'}
           rightText="Creating"
         />
       </NavbarCenterContent>

@@ -42,6 +42,9 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const reportError = useReportError();
   const [, setGeneralError] = useState('');
 
+  const [collectionTitle, setCollectionTitle] = useState('');
+  const [collectionDescription, setCollectionDescription] = useState('');
+
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
@@ -60,8 +63,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     async (caption: string) => {
       track('Save new collection button clicked');
 
-      const title = collectionTitle.current;
-      const description = collectionDescription.current;
+      const title = collectionTitle;
+      const description = collectionDescription;
 
       try {
         track('Create collection', {
@@ -102,6 +105,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       }
     },
     [
+      collectionTitle,
+      collectionDescription,
       collectionMetadata.tokenSettings,
       createCollection,
       editGalleryUrl,
@@ -134,9 +139,6 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
-  const collectionTitle = useRef('');
-  const collectionDescription = useRef('');
-
   useEffect(() => {
     if (hasShownAddCollectionModal.current) return;
 
@@ -144,8 +146,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       content: (
         <CollectionCreateOrEditForm
           onNext={({ title, description }) => {
-            collectionTitle.current = title ?? '';
-            collectionDescription.current = description ?? '';
+            setCollectionTitle(title ?? '');
+            setCollectionDescription(description ?? '');
           }}
           galleryId={galleryId}
           stagedCollection={stagedCollectionState}
@@ -163,6 +165,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       withBorder
       navbar={
         <CollectionCreateNavbar
+          collectionName={collectionTitle}
           galleryId={galleryId}
           onBack={handlePrevious}
           onNext={handleNext}

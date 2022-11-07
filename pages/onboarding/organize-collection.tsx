@@ -62,19 +62,19 @@ function LazyLoadedCollectionEditor() {
   const collectionMetadata = useCollectionMetadataState();
   const createCollection = useCreateCollection();
 
+  const [collectionTitle, setCollectionTitle] = useState('');
+  const [collectionDescription, setCollectionDescription] = useState('');
+
   const hasShownAddCollectionNameAndDescriptionModal = useRef(false);
 
   const { push, query: urlQuery, back, replace } = useRouter();
-
-  const collectionTitle = useRef('');
-  const collectionDescription = useRef('');
 
   const handleNext = useCallback(
     async (caption: string) => {
       track('Save new collection button clicked');
 
-      const title = collectionTitle.current;
-      const description = collectionDescription.current;
+      const title = collectionTitle;
+      const description = collectionDescription;
 
       try {
         track('Create collection', {
@@ -126,6 +126,8 @@ function LazyLoadedCollectionEditor() {
       }
     },
     [
+      collectionTitle,
+      collectionDescription,
       collectionMetadata.tokenSettings,
       createCollection,
       galleryId,
@@ -147,8 +149,8 @@ function LazyLoadedCollectionEditor() {
       content: (
         <CollectionCreateOrEditForm
           onNext={({ title, description }) => {
-            collectionTitle.current = title ?? '';
-            collectionDescription.current = description ?? '';
+            setCollectionTitle(title ?? '');
+            setCollectionDescription(description ?? '');
           }}
           galleryId={galleryId}
           stagedCollection={stagedCollectionState}
@@ -169,6 +171,7 @@ function LazyLoadedCollectionEditor() {
           onBack={back}
           onNext={handleNext}
           isCollectionValid={isCollectionValid}
+          collectionName={collectionTitle}
         />
       }
     >
