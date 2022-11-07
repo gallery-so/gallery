@@ -33,12 +33,23 @@ export function UserListItem({ userRef }: UserListItemProps) {
       <StyledLink href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
-          {user.bio && <BaseM>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BaseM>}
+          {user.bio && <BioText>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BioText>}
         </Container>
       </StyledLink>
     </Link>
   );
 }
+
+const BioText = styled(BaseM)`
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  p {
+    padding-bottom: 0;
+  }
+`;
 
 const StyledLink = styled.a`
   text-decoration: none;
