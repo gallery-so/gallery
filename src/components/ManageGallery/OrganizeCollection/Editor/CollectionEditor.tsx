@@ -1,5 +1,4 @@
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
-import cloneDeep from 'lodash.clonedeep';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -129,7 +128,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       return;
     }
 
-    lastStagedCollection.current = cloneDeep(stagedCollectionState);
+    lastStagedCollection.current = stagedCollectionState;
     isStagedCollectionInitialized.current = true;
   }, [stagedCollectionState]);
 
