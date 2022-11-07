@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -11,7 +13,9 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
+import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   disabled?: boolean;
@@ -19,6 +23,7 @@ type Props = {
   hasUnsavedChange?: boolean;
   label?: string;
   onSave: (caption: string) => Promise<void>;
+  queryRef: CollectionSaveButtonWithCaptionFragment$key;
 };
 
 export function CollectionSaveButtonWithCaption({
@@ -27,17 +32,22 @@ export function CollectionSaveButtonWithCaption({
   hasUnsavedChange,
   label = 'Save',
   onSave,
+  queryRef,
 }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionSaveButtonWithCaptionFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleOpenCaption = useCallback(() => {
-    if (deactivateHoverCardTimeoutRef.current) {
-      clearTimeout(deactivateHoverCardTimeoutRef.current);
-    }
-    setIsPopupDisplayed(true);
-  }, []);
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
@@ -57,6 +67,19 @@ export function CollectionSaveButtonWithCaption({
     setIsLoading(false);
   }, [caption, handleCloseCaption, onSave]);
 
+  const handleOpenCaption = useCallback(() => {
+    // If feature flag off, skip caption and save immediately
+    if (!isWhiteRinoEnabled) {
+      handleSubmit();
+      return;
+    }
+
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
+    setIsPopupDisplayed(true);
+  }, [handleSubmit, isWhiteRinoEnabled]);
+
   const isSaveDisabled = useMemo(() => {
     return caption.length > 600;
   }, [caption]);
@@ -68,19 +91,26 @@ export function CollectionSaveButtonWithCaption({
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
         disabled={disabled}
+        pending={isLoading && !isWhiteRinoEnabled}
       >
         <HStack gap={4} align="center">
           {label}
-          <StyledChevronSvg
-            isActive={isPopupDisplayed}
-            width="12"
-            height="7"
-            viewBox="0 0 12 7"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M1.33337 1L6.00004 5.66667L10.6667 1" stroke="#FEFEFE" strokeMiterlimit="10" />
-          </StyledChevronSvg>
+          {isWhiteRinoEnabled && (
+            <StyledChevronSvg
+              isActive={isPopupDisplayed}
+              width="12"
+              height="7"
+              viewBox="0 0 12 7"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.33337 1L6.00004 5.66667L10.6667 1"
+                stroke="#FEFEFE"
+                strokeMiterlimit="10"
+              />
+            </StyledChevronSvg>
+          )}
         </HStack>
       </StyledButton>
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>

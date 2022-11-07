@@ -37,6 +37,7 @@ function LazyLoadedCollectionEditor() {
         }
 
         ...CollectionEditorFragment
+        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     {}
@@ -177,6 +178,7 @@ function LazyLoadedCollectionEditor() {
           isCollectionValid={isCollectionValid}
           collectionName={collectionTitle}
           error={generalError}
+          queryRef={query}
         />
       }
     >

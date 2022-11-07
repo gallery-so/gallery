@@ -38,6 +38,7 @@ export function OnboardingCollectionEditorNavbar({
             name
           }
         }
+        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     queryRef
@@ -66,6 +67,7 @@ export function OnboardingCollectionEditorNavbar({
           label={ONBOARDING_NEXT_BUTTON_TEXT_MAP['edit-collection']}
           onSave={onNext}
           hasUnsavedChange={hasUnsavedChange}
+          queryRef={query}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

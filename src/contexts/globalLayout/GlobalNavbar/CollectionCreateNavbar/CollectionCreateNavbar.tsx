@@ -8,6 +8,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
@@ -18,6 +19,7 @@ type CollectionCreateNavbarProps = {
   isCollectionValid: boolean;
   collectionName?: string;
   error?: string;
+  queryRef: CollectionSaveButtonWithCaptionFragment$key;
 };
 
 export function CollectionCreateNavbar({
@@ -27,6 +29,7 @@ export function CollectionCreateNavbar({
   onNext,
   isCollectionValid,
   error,
+  queryRef,
 }: CollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/gallery/[galleryId]/edit', query: { galleryId } };
 
@@ -51,6 +54,7 @@ export function CollectionCreateNavbar({
           onSave={onNext}
           hasUnsavedChange={true}
           error={error}
+          queryRef={queryRef}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>
