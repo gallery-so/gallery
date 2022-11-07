@@ -65,20 +65,6 @@ function CollectionCreateOrEditForm({
     setDescription(event.target?.value);
   }, []);
 
-  const hasEnteredValue = useMemo(
-    () => title.length > 0 || description.length > 0,
-    [title, description]
-  );
-
-  const buttonText = useMemo(() => {
-    // Collection is being created
-    if (stagedCollection) {
-      return 'save';
-    }
-
-    return hasEnteredValue ? 'save' : 'skip';
-  }, [hasEnteredValue, stagedCollection]);
-
   const goToNextStep = useCallback(
     ({ collectionId, title, description }: wizardProps) => {
       onNext({
@@ -190,7 +176,7 @@ function CollectionCreateOrEditForm({
             </Button>
           )}
           <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
-            {buttonText}
+            save
           </Button>
         </ButtonContainer>
       </VStack>
