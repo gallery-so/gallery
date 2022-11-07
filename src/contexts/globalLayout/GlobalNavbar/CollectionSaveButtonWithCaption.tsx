@@ -62,7 +62,7 @@ export function CollectionSaveButtonWithCaption({
 
   return (
     <StyledConfirmationContainer>
-      <Button
+      <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
         disabled={disabled}
       >
@@ -79,7 +79,7 @@ export function CollectionSaveButtonWithCaption({
             <path d="M1.33337 1L6.00004 5.66667L10.6667 1" stroke="#FEFEFE" strokeMiterlimit="10" />
           </StyledChevronSvg>
         </HStack>
-      </Button>
+      </StyledButton>
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
         {isPopupDisplayed && (
           <>
@@ -118,6 +118,11 @@ export function CollectionSaveButtonWithCaption({
 
 const StyledConfirmationContainer = styled(VStack)`
   position: relative;
+`;
+
+const StyledButton = styled(Button)`
+  /* padding: 16px; */
+  padding: 8px 12px;
 `;
 
 const StyledChevronSvg = styled.svg<{ isActive: boolean }>`
