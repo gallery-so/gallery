@@ -24,7 +24,7 @@ function EmailManager({ queryRef }: Props) {
             }
           }
         }
-        # ...EmailFormFragment
+        ...EmailFormFragment
       }
     `,
     queryRef
@@ -45,7 +45,7 @@ function EmailManager({ queryRef }: Props) {
   return (
     <StyledEmailManager>
       {showInput ? (
-        <EmailForm savedEmail={savedEmail} setIsEditMode={setIsEditMode} />
+        <EmailForm queryRef={query} savedEmail={savedEmail} setIsEditMode={setIsEditMode} />
       ) : (
         <EmailVerificationStatus savedEmail={savedEmail} setIsEditMode={setIsEditMode} />
       )}

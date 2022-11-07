@@ -14,24 +14,26 @@ type Props = {
   setIsEditMode: (editMode: boolean) => void;
 };
 
-function EmailForm({ savedEmail, setIsEditMode }: Props) {
-  // const query = useFragment(
-  //   graphql`
-  //     fragment EmailFormFragment on Query {
-  //       viewer {
-  //         ... on Viewer {
-  //           user {
-  //             id
-  //           }
-  //           email {
-  //             email
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `,
-  //   queryRef
-  // );
+function EmailForm({ savedEmail, setIsEditMode, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment EmailFormFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+            email {
+              email
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  console.log('query', query);
 
   const [updateEmail] = usePromisifiedMutation<EmailFormMutation>(graphql`
     mutation EmailFormMutation($input: UpdateEmailInput!) @raw_response_type {
