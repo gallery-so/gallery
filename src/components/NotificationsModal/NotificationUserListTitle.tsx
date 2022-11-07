@@ -38,9 +38,9 @@ export function NotificationUserListTitle({ queryRef }: NotificationUserListTitl
     const typename = query.node?.__typename;
 
     if (typename === 'SomeoneFollowedYouNotification') {
-      return 'Followers';
+      return 'Follows';
     } else if (typename === 'SomeoneFollowedYouBackNotification') {
-      return 'Followers';
+      return 'Follows';
     } else if (typename === 'SomeoneAdmiredYourFeedEventNotification') {
       return 'Admirers';
     } else if (typename === 'SomeoneViewedYourGalleryNotification') {

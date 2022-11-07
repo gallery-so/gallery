@@ -3,12 +3,27 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BaseM } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
+  queryRef: SomeoneViewedYourGalleryQueryFragment$key;
 };
 
-export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourGalleryProps) {
+export function SomeoneViewedYourGallery({
+  notificationRef,
+  queryRef,
+}: SomeoneViewedYourGalleryProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneViewedYourGalleryQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
@@ -18,7 +33,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourG
         userViewers {
           edges {
             node {
-              username
+              ...HoverCardOnUsernameFragment
             }
           }
         }
@@ -28,7 +43,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourG
   );
 
   const count = notification.count ?? 1;
-  const lastViewersUsername = notification.userViewers?.edges?.[0]?.node?.username;
+  const lastViewer = notification.userViewers?.edges?.[0]?.node;
 
   return (
     <>
@@ -40,7 +55,14 @@ export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourG
           </>
         ) : (
           <>
-            <strong>{lastViewersUsername ?? 'Someone'}</strong> has viewed your gallery
+            <strong>
+              {lastViewer ? (
+                <HoverCardOnUsername userRef={lastViewer} queryRef={query} />
+              ) : (
+                'Someone'
+              )}
+            </strong>{' '}
+            has viewed your gallery
           </>
         )}
       </BaseM>

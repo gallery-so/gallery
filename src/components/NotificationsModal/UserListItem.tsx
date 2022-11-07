@@ -1,6 +1,6 @@
 import { UserListItemFragment$key } from '__generated__/UserListItemFragment.graphql';
 import Link from 'next/link';
-import { Route } from 'nextjs-routes';
+import { Route, route } from 'nextjs-routes';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -30,7 +30,7 @@ export function UserListItem({ userRef }: UserListItemProps) {
 
   return (
     <Link href={userRoute}>
-      <StyledLink>
+      <StyledLink href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
           {user.bio && <BaseM>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BaseM>}

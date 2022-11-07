@@ -5,14 +5,18 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
+import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
+  queryRef: SomeoneCommentedOnYourFeedEventQueryFragment$key;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
   notificationRef,
+  queryRef,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -21,7 +25,7 @@ export function SomeoneCommentedOnYourFeedEvent({
 
         comment {
           commenter {
-            username
+            ...HoverCardOnUsernameFragment
           }
           comment
         }
@@ -52,12 +56,25 @@ export function SomeoneCommentedOnYourFeedEvent({
     notificationRef
   );
 
-  const commenterUsername = notification.comment?.commenter?.username;
+  const query = useFragment(
+    graphql`
+      fragment SomeoneCommentedOnYourFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
 
   return (
     <VStack gap={8}>
       <BaseM>
-        <strong>{commenterUsername ?? 'Someone'} </strong>
+        <strong>
+          {notification.comment?.commenter ? (
+            <HoverCardOnUsername userRef={notification.comment?.commenter} queryRef={query} />
+          ) : (
+            'Someone'
+          )}{' '}
+        </strong>
         {notification.feedEvent?.eventData?.collection ? (
           <>
             commented on your additions to{' '}

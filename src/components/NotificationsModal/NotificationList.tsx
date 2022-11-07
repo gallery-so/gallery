@@ -39,6 +39,8 @@ export function NotificationList({ queryRef }: NotificationListProps) {
             }
           }
         }
+
+        ...NotificationQueryFragment
       }
     `,
     queryRef
@@ -69,7 +71,9 @@ export function NotificationList({ queryRef }: NotificationListProps) {
       {hasNotifications ? (
         <>
           {nonNullNotifications.map((notification) => {
-            return <Notification key={notification.id} notificationRef={notification} />;
+            return (
+              <Notification queryRef={query} key={notification.id} notificationRef={notification} />
+            );
           })}
 
           {hasPrevious && <SeeMore onClick={handleSeeMore} isLoading={isLoadingPrevious} />}

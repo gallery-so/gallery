@@ -92,6 +92,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 
   const handleClick = useCallback<MouseEventHandler>(
     (e) => {
+      e.stopPropagation();
       e.preventDefault();
       router.push({ pathname: '/[username]', query: { username: user.username as string } });
     },
@@ -166,6 +167,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 const StyledContainer = styled.span`
   position: relative;
   display: inline-block;
+  cursor: pointer;
 `;
 
 const StyledLinkContainer = styled.div`

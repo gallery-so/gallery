@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -34,7 +34,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const { push } = useRouter();
+  const { push, pathname, query: urlQuery } = useRouter();
 
   const handleLoggedInLogoClick = useCallback(() => {
     setShowDropdown((previous) => !previous);
@@ -47,6 +47,13 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   const handleClose = useCallback(() => {
     setShowDropdown(false);
   }, []);
+
+  useEffect(
+    function closeDropdownWhenRouteChanges() {
+      handleClose();
+    },
+    [handleClose, pathname, urlQuery]
+  );
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 

@@ -55,7 +55,7 @@ const StyledHeader = styled.div`
 
 const ModalContent = styled.div<{ fullscreen: boolean }>`
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
-  width: ${({ fullscreen }) => (fullscreen ? '100%' : '375px')};
+  width: ${({ fullscreen }) => (fullscreen ? '100%' : '420px')};
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_THICC_PX}px 4px;

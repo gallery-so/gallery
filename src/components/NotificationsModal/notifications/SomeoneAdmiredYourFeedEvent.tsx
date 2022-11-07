@@ -3,13 +3,28 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BaseM } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
+import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
+  queryRef: SomeoneAdmiredYourFeedEventQueryFragment$key;
 };
 
-export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
+export function SomeoneAdmiredYourFeedEvent({
+  notificationRef,
+  queryRef,
+}: SomeoneAdmiredYourFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneAdmiredYourFeedEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -40,7 +55,7 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
         admirers(last: 1) {
           edges {
             node {
-              username
+              ...HoverCardOnUsernameFragment
             }
           }
         }
@@ -50,7 +65,7 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
   );
 
   const count = notification.count ?? 1;
-  const firstAdmirerUsername = notification.admirers?.edges?.[0]?.node?.username;
+  const firstAdmirer = notification.admirers?.edges?.[0]?.node;
 
   return (
     <>
@@ -59,7 +74,13 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
           {count > 1 ? (
             <>{notification.count} collectors</>
           ) : (
-            <>{firstAdmirerUsername ?? 'Someone'}</>
+            <>
+              {firstAdmirer ? (
+                <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
+              ) : (
+                'Someone'
+              )}
+            </>
           )}
         </strong>{' '}
         {notification.feedEvent?.eventData?.collection ? (
