@@ -43,7 +43,11 @@ export function CollectionSaveButtonWithCaption({
     queryRef
   );
 
+  // Pseudo-state for signaling animations. This gives us a chance
+  // to display an animation prior to unmounting the component and its contents
+  const [isActive, setIsActive] = useState(false);
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
+
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -51,9 +55,10 @@ export function CollectionSaveButtonWithCaption({
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
-      () => setIsPopupDisplayed(false),
+      () => setIsActive(false),
       ANIMATED_COMPONENT_TRANSITION_MS
     );
+    setIsPopupDisplayed(false);
   }, []);
 
   const handleCaptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -77,6 +82,7 @@ export function CollectionSaveButtonWithCaption({
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
+    setIsActive(true);
     setIsPopupDisplayed(true);
   }, [handleSubmit, isWhiteRinoEnabled]);
 
@@ -114,7 +120,7 @@ export function CollectionSaveButtonWithCaption({
         </HStack>
       </StyledButton>
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
-        {isPopupDisplayed && (
+        {isActive && (
           <>
             <HStack justify="flex-end">
               <StyledCloseButton onClick={handleCloseCaption}>
