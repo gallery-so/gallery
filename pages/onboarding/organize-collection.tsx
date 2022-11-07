@@ -156,7 +156,6 @@ function LazyLoadedCollectionEditor() {
         />
       ),
       headerText: 'Name and describe your collection',
-      isBlurBackground: true,
     });
 
     hasShownAddCollectionModal.current = true;

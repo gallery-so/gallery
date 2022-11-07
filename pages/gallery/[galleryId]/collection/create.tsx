@@ -153,17 +153,10 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
         />
       ),
       headerText: 'Name and describe your collection',
-      isBlurBackground: true,
     });
 
     hasShownAddCollectionModal.current = true;
-  }, [
-    showModal,
-    stagedCollectionState,
-    collectionMetadata.tokenSettings,
-    galleryId,
-    push,
-  ]);
+  }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
 
   return (
     <FullPageStep
