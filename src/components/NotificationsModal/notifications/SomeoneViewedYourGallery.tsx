@@ -1,7 +1,8 @@
+import { SomeoneViewedYourGalleryFragment$key } from '__generated__/SomeoneViewedYourGalleryFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { SomeoneViewedYourGalleryFragment$key } from '__generated__/SomeoneViewedYourGalleryFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
+
+import { BaseM } from '~/components/core/Text/Text';
 
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;

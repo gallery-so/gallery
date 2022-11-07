@@ -1,8 +1,9 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import { useCallback } from 'react';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { useFragment } from 'react-relay';
+import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
+
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+
 import { useClearNotificationsMutation } from '../../../__generated__/useClearNotificationsMutation.graphql';
 
 export function useClearNotifications() {
@@ -38,5 +39,5 @@ export function useClearNotifications() {
         reportError('Something unexpected went wrong while trying to clear all notifications');
       }
     }
-  }, []);
+  }, [clear, reportError]);
 }

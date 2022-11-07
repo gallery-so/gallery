@@ -1,8 +1,9 @@
+import { SomeoneAdmiredYourFeedEventFragment$key } from '__generated__/SomeoneAdmiredYourFeedEventFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { SomeoneAdmiredYourFeedEventFragment$key } from '__generated__/SomeoneAdmiredYourFeedEventFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
-import { CollectionLink } from 'components/NotificationsModal/CollectionLink';
+
+import { BaseM } from '~/components/core/Text/Text';
+import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;

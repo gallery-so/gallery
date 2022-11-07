@@ -1,12 +1,14 @@
-import { usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
 import { NotificationListFragment$key } from '__generated__/NotificationListFragment.graphql';
 import { useCallback, useMemo } from 'react';
-import { TitleDiatypeL, TitleXS } from 'components/core/Text/Text';
-import { VStack } from 'components/core/Spacer/Stack';
-import { Notification } from './Notification';
+import { usePaginationFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import Loader from 'components/core/Loader/Loader';
+
+import Loader from '~/components/core/Loader/Loader';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
+
+import { Notification } from './Notification';
 
 export const NOTIFICATIONS_PER_PAGE = 10;
 

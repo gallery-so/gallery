@@ -1,10 +1,11 @@
+import { SomeoneCommentedOnYourFeedEventFragment$key } from '__generated__/SomeoneCommentedOnYourFeedEventFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { SomeoneCommentedOnYourFeedEventFragment$key } from '__generated__/SomeoneCommentedOnYourFeedEventFragment.graphql';
 import styled from 'styled-components';
-import { BaseM } from 'components/core/Text/Text';
-import { VStack } from 'components/core/Spacer/Stack';
-import { CollectionLink } from 'components/NotificationsModal/CollectionLink';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;

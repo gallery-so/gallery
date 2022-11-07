@@ -1,7 +1,8 @@
+import { SomeoneFollowedYouBackFragment$key } from '__generated__/SomeoneFollowedYouBackFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { SomeoneFollowedYouBackFragment$key } from '__generated__/SomeoneFollowedYouBackFragment.graphql';
-import { BaseM } from 'components/core/Text/Text';
+
+import { BaseM } from '~/components/core/Text/Text';
 
 type SomeoneFollowedYouBackProps = {
   notificationRef: SomeoneFollowedYouBackFragment$key;

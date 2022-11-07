@@ -1,15 +1,16 @@
+import { Suspense, useEffect } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
-import { TitleDiatypeM } from 'components/core/Text/Text';
-import { NotificationsModalQuery } from '../../../__generated__/NotificationsModalQuery.graphql';
+
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   NotificationList,
   NOTIFICATIONS_PER_PAGE,
-} from 'components/NotificationsModal/NotificationList';
-import { Suspense, useEffect } from 'react';
-import { useClearNotifications } from 'components/NotificationsModal/useClearNotifications';
+} from '~/components/NotificationsModal/NotificationList';
+import { useClearNotifications } from '~/components/NotificationsModal/useClearNotifications';
+import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
 
 type NotificationsModalProps = {
   fullscreen: boolean;

@@ -1,9 +1,10 @@
+import { Route, route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CollectionLinkFragment$key } from '__generated__/CollectionLinkFragment.graphql';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { useMemo } from 'react';
-import { route, Route } from 'nextjs-routes';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { CollectionLinkFragment$key } from '~/generated/CollectionLinkFragment.graphql';
 
 type CollectionLinkProps = {
   collectionRef: CollectionLinkFragment$key;

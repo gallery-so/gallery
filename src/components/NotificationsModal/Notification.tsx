@@ -1,17 +1,18 @@
-import styled from 'styled-components';
-import { HStack } from 'components/core/Spacer/Stack';
-import colors from 'components/core/colors';
-import { BaseS } from 'components/core/Text/Text';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NotificationFragment$key } from '../../../__generated__/NotificationFragment.graphql';
-import { getTimeSince } from 'utils/time';
-import { NotificationInnerFragment$key } from '../../../__generated__/NotificationInnerFragment.graphql';
-import { SomeoneAdmiredYourFeedEvent } from 'components/NotificationsModal/notifications/SomeoneAdmiredYourFeedEvent';
-import { SomeoneCommentedOnYourFeedEvent } from 'components/NotificationsModal/notifications/SomeoneCommentedOnYourFeedEvent';
-import { SomeoneViewedYourGallery } from 'components/NotificationsModal/notifications/SomeoneViewedYourGallery';
-import { SomeoneFollowedYou } from 'components/NotificationsModal/notifications/SomeoneFollowedYou';
-import { SomeoneFollowedYouBack } from 'components/NotificationsModal/notifications/SomeoneFollowedYouBack';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseS } from '~/components/core/Text/Text';
+import { SomeoneAdmiredYourFeedEvent } from '~/components/NotificationsModal/notifications/SomeoneAdmiredYourFeedEvent';
+import { SomeoneCommentedOnYourFeedEvent } from '~/components/NotificationsModal/notifications/SomeoneCommentedOnYourFeedEvent';
+import { SomeoneFollowedYou } from '~/components/NotificationsModal/notifications/SomeoneFollowedYou';
+import { SomeoneFollowedYouBack } from '~/components/NotificationsModal/notifications/SomeoneFollowedYouBack';
+import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
+import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
+import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
+import { getTimeSince } from '~/utils/time';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
