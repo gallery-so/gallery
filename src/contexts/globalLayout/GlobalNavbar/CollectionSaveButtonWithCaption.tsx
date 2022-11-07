@@ -122,7 +122,6 @@ const StyledConfirmationContainer = styled(VStack)`
 
 const StyledChevronSvg = styled.svg<{ isActive: boolean }>`
   transform: ${({ isActive }) => (isActive ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform 0.2s ease-in-out;
 `;
 
 const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
