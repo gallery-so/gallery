@@ -62,7 +62,7 @@ function LazyLoadedCollectionEditor() {
   const collectionMetadata = useCollectionMetadataState();
   const createCollection = useCreateCollection();
 
-  const hasShownAddCollectionModal = useRef(false);
+  const hasShownAddCollectionNameAndDescriptionModal = useRef(false);
 
   const { push, query: urlQuery, back, replace } = useRouter();
 
@@ -141,7 +141,7 @@ function LazyLoadedCollectionEditor() {
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   useEffect(() => {
-    if (hasShownAddCollectionModal.current) return;
+    if (hasShownAddCollectionNameAndDescriptionModal.current) return;
 
     showModal({
       content: (
@@ -158,7 +158,7 @@ function LazyLoadedCollectionEditor() {
       headerText: 'Name and describe your collection',
     });
 
-    hasShownAddCollectionModal.current = true;
+    hasShownAddCollectionNameAndDescriptionModal.current = true;
   }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
 
   return (

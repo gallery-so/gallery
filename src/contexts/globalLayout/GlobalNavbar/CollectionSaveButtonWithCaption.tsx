@@ -25,7 +25,7 @@ export function CollectionSaveButtonWithCaption({
   label = 'Save',
   onSave,
 }: Props) {
-  const [isShowPopup, setIsShowPopup] = useState(false);
+  const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,12 +33,12 @@ export function CollectionSaveButtonWithCaption({
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
-    setIsShowPopup(true);
+    setIsPopupDisplayed(true);
   }, []);
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
-      () => setIsShowPopup(false),
+      () => setIsPopupDisplayed(false),
       ANIMATED_COMPONENT_TRANSITION_MS
     );
   }, []);
@@ -54,7 +54,7 @@ export function CollectionSaveButtonWithCaption({
     setIsLoading(false);
   }, [caption, handleCloseCaption, onSave]);
 
-  const isDisabledonSave = useMemo(() => {
+  const isSaveDisabled = useMemo(() => {
     return caption.length > 600;
   }, [caption]);
 
@@ -62,11 +62,14 @@ export function CollectionSaveButtonWithCaption({
 
   return (
     <StyledConfirmationContainer>
-      <Button onClick={isShowPopup ? handleCloseCaption : handleOpenCaption} disabled={disabled}>
+      <Button
+        onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
+        disabled={disabled}
+      >
         <HStack gap={4} align="center">
           {label}
           <StyledChevronSvg
-            isActive={isShowPopup}
+            isActive={isPopupDisplayed}
             width="12"
             height="7"
             viewBox="0 0 12 7"
@@ -77,8 +80,8 @@ export function CollectionSaveButtonWithCaption({
           </StyledChevronSvg>
         </HStack>
       </Button>
-      <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isShowPopup}>
-        {isShowPopup && (
+      <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
+        {isPopupDisplayed && (
           <>
             <HStack justify="flex-end">
               <StyledCloseButton onClick={handleCloseCaption}>
@@ -99,7 +102,7 @@ export function CollectionSaveButtonWithCaption({
                   />
                 </StyledConfirmationContent>
 
-                <Button onClick={handleSubmit} disabled={isDisabledonSave} pending={isLoading}>
+                <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
                   Save
                 </Button>
               </>
