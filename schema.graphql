@@ -715,6 +715,7 @@ type FeedConnection {
 }
 
 type Query {
+    component: Component
     node(id: ID!): Node
     viewer: ViewerOrError @authRequired
     userByUsername(username: String!): UserByUsernameOrError
@@ -1340,7 +1341,22 @@ type Mutation {
     updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
 
     verifyEmail(token: String!): VerifyEmailPayloadOrError
+
 }
+
+interface Component {
+    name: String
+}
+
+type LeafComponent implements Component {
+    name: String
+}
+
+type SimpleLayoutContainer implements Component {
+    name: String
+    children: [Component]
+}
+
 
 type Subscription {
     newNotification: Notification
