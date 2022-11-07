@@ -17,6 +17,7 @@ type OnboardingCollectionCreateNavbarProps = {
   onNext: (caption: string) => Promise<void>;
   isCollectionValid: boolean;
   collectionName?: string;
+  error?: string;
 };
 
 export function OnboardingCollectionCreateNavbar({
@@ -24,6 +25,7 @@ export function OnboardingCollectionCreateNavbar({
   onNext,
   isCollectionValid,
   collectionName,
+  error,
 }: OnboardingCollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
 
@@ -48,6 +50,7 @@ export function OnboardingCollectionCreateNavbar({
           label={ONBOARDING_NEXT_BUTTON_TEXT_MAP['organize-collection']}
           onSave={onNext}
           hasUnsavedChange={true}
+          error={error}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

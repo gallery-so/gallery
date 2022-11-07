@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import transitions, {
@@ -14,6 +15,7 @@ import CloseIcon from '~/icons/CloseIcon';
 
 type Props = {
   disabled?: boolean;
+  error?: string;
   hasUnsavedChange?: boolean;
   label?: string;
   onSave: (caption: string) => Promise<void>;
@@ -21,6 +23,7 @@ type Props = {
 
 export function CollectionSaveButtonWithCaption({
   disabled,
+  error,
   hasUnsavedChange,
   label = 'Save',
   onSave,
@@ -105,6 +108,8 @@ export function CollectionSaveButtonWithCaption({
                 <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
                   Save
                 </Button>
+
+                {error && <ErrorText message={error} />}
               </>
             ) : (
               <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
@@ -121,7 +126,6 @@ const StyledConfirmationContainer = styled(VStack)`
 `;
 
 const StyledButton = styled(Button)`
-  /* padding: 16px; */
   padding: 8px 12px;
 `;
 

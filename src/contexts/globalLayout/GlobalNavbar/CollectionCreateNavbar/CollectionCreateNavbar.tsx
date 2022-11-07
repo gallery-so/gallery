@@ -17,6 +17,7 @@ type CollectionCreateNavbarProps = {
   galleryId: string;
   isCollectionValid: boolean;
   collectionName?: string;
+  error?: string;
 };
 
 export function CollectionCreateNavbar({
@@ -25,6 +26,7 @@ export function CollectionCreateNavbar({
   onBack,
   onNext,
   isCollectionValid,
+  error,
 }: CollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/gallery/[galleryId]/edit', query: { galleryId } };
 
@@ -48,6 +50,7 @@ export function CollectionCreateNavbar({
           disabled={!isCollectionValid}
           onSave={onNext}
           hasUnsavedChange={true}
+          error={error}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

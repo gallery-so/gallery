@@ -40,7 +40,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const track = useTrack();
   const reportError = useReportError();
-  const [, setGeneralError] = useState('');
+  const [generalError, setGeneralError] = useState('');
 
   const [collectionTitle, setCollectionTitle] = useState('');
   const [collectionDescription, setCollectionDescription] = useState('');
@@ -170,6 +170,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
           onBack={handlePrevious}
           onNext={handleNext}
           isCollectionValid={isCollectionValid}
+          error={generalError}
         />
       }
     >

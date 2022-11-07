@@ -14,6 +14,7 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { OnboardingCollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
+import formatError from '~/errors/formatError';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
 import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
@@ -57,6 +58,8 @@ function LazyLoadedCollectionEditor() {
 
   const track = useTrack();
   const reportError = useReportError();
+  const [generalError, setGeneralError] = useState('');
+
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
@@ -114,6 +117,7 @@ function LazyLoadedCollectionEditor() {
       } catch (error) {
         if (error instanceof Error) {
           reportError(error);
+          setGeneralError(formatError(error));
         }
 
         reportError('Something unexpected occurred while trying to update a collection', {
@@ -172,6 +176,7 @@ function LazyLoadedCollectionEditor() {
           onNext={handleNext}
           isCollectionValid={isCollectionValid}
           collectionName={collectionTitle}
+          error={generalError}
         />
       }
     >
