@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import {
   createContext,
   memo,
@@ -218,14 +217,6 @@ function ModalProvider({ children }: Props) {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [clearAllModals]);
-
-  const { pathname, query } = useRouter();
-  useEffect(
-    function hideAllModalsWhenTheRouteChanges() {
-      clearAllModals();
-    },
-    [clearAllModals, pathname, query]
-  );
 
   /**
    * EFFECT: Pop one modal if user hits Escape key
