@@ -1,4 +1,4 @@
-import { useCallback, useMemo,useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -98,6 +98,13 @@ function CollectionCreateOrEditForm({
   const track = useTrack();
   const reportError = useReportError();
 
+  const handeSkipNameAndDescription = useCallback(() => {
+    goToNextStep({
+      title: '',
+      description: '',
+    });
+  }, [goToNextStep]);
+
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
@@ -178,12 +185,7 @@ function CollectionCreateOrEditForm({
         {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
         <ButtonContainer isNewCollection={!!stagedCollection}>
           {stagedCollection && (
-            <Button
-              variant="secondary"
-              onClick={handleClick}
-              disabled={isLoading}
-              pending={isLoading}
-            >
+            <Button variant="secondary" onClick={handeSkipNameAndDescription}>
               skip and add later
             </Button>
           )}
