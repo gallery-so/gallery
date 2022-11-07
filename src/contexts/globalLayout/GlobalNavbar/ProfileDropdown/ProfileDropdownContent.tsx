@@ -20,6 +20,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import useWalletModal from '~/hooks/useWalletModal';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type Props = {
@@ -51,10 +52,12 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         }
 
         ...getEditGalleryUrlFragment
+        ...ManageWalletsModalFragment
       }
     `,
     queryRef
   );
+  const { showModal } = useModalActions();
 
   const { showModal } = useModalActions();
   const showWalletModal = useWalletModal();
@@ -70,6 +73,14 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
       headerVariant: 'standard',
     });
   }, [isMobile, showModal]);
+  const { handleLogout } = useAuthActions();
+
+  const handleManageWalletsClick = useCallback(() => {
+    showModal({
+      content: <ManageWalletsModal queryRef={query} />,
+      headerText: 'Manage accounts',
+    });
+  }, [query, showModal]);
 
   const username = query.viewer?.user?.username;
 
@@ -111,7 +122,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         </DropdownSection>
 
         <DropdownSection gap={4}>
-          <DropdownItem onClick={showWalletModal}>ACCOUNTS</DropdownItem>
+          <DropdownItem onClick={handleManageWalletsClick}>ACCOUNTS</DropdownItem>
           <DropdownLink href={{ pathname: '/shop' }}>
             <HStack gap={8}>
               <span>SHOP</span>
