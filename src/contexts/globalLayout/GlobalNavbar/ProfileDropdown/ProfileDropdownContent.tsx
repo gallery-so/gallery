@@ -15,6 +15,7 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
 import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
@@ -29,6 +30,8 @@ type Props = {
 };
 
 export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Props) {
+  useSubscribeToNotifications();
+
   const query = useFragment(
     graphql`
       fragment ProfileDropdownContentFragment on Query {
