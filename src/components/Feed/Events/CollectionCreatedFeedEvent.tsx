@@ -20,13 +20,14 @@ import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreview
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
+  caption: string | null;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ caption, eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -87,27 +88,36 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
       <StyledEvent>
         <VStack gap={16}>
           <StyledEventHeader>
-            <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
-            <BaseM>
-              added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
-              {collectionName ? `, ` : ' '}
-            </BaseM>
-            <HStack gap={4} inline>
-              {collectionName && (
-                <InteractiveLink
-                  to={{
-                    pathname: '/[username]/[collectionId]',
-                    query: {
-                      username: event.owner.username as string,
-                      collectionId: event.collection.dbid,
-                    },
-                  }}
-                >
-                  {unescape(event.collection.name ?? '')}
-                </InteractiveLink>
+            <VStack gap={4}>
+              <HStack inline gap={2} align="center">
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
+                <BaseM>
+                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                  {collectionName ? `, ` : ' '}
+                </BaseM>
+                <HStack gap={4} inline>
+                  {collectionName && (
+                    <InteractiveLink
+                      to={{
+                        pathname: '/[username]/[collectionId]',
+                        query: {
+                          username: event.owner.username as string,
+                          collectionId: event.collection.dbid,
+                        },
+                      }}
+                    >
+                      {unescape(event.collection.name ?? '')}
+                    </InteractiveLink>
+                  )}
+                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                </HStack>
+              </HStack>
+              {caption && (
+                <StyledCaptionContainer gap={8} align="center">
+                  <BaseS>{caption}</BaseS>
+                </StyledCaptionContainer>
               )}
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </HStack>
+            </VStack>
           </StyledEventHeader>
           <VStack gap={8}>
             <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
@@ -126,4 +136,13 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
+`;
+
+export const StyledCaptionContainer = styled(HStack)`
+  border-left: 2px solid #d9d9d9;
+  padding-left: 8px;
+
+  ${BaseS} {
+    color: ${colors.metal};
+  }
 `;

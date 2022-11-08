@@ -19,16 +19,22 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
+import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
+  caption: string | null;
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 const MAX_PIECES_DISPLAYED = 4;
 
-export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function TokensAddedToCollectionFeedEvent({
+  caption,
+  eventDataRef,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -99,15 +105,22 @@ export default function TokensAddedToCollectionFeedEvent({ eventDataRef, queryRe
       <StyledEvent>
         <VStack gap={16}>
           <StyledEventHeader>
-            <HStack gap={4} inline>
-              <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
-                {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-                {collectionName ? ' ' : ' their collection'}
-                <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-              </BaseM>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </HStack>
+            <VStack gap={4}>
+              <HStack gap={4} inline>
+                <BaseM>
+                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
+                  {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+                  {collectionName ? ' ' : ' their collection'}
+                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                </BaseM>
+                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              </HStack>
+              {caption && (
+                <StyledCaptionContainer gap={8} align="center">
+                  <BaseS>{caption}</BaseS>
+                </StyledCaptionContainer>
+              )}
+            </VStack>
           </StyledEventHeader>
           <VStack gap={8}>
             <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
