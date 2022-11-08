@@ -27,20 +27,16 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
   const transaction = initSentryTracing(request);
   // ---------- end pre-request hooks
 
-  const response = await _fetch<GraphQLResponse>(
-    getGraphqlUrl(),
-    {
-      body: {
-        operationName: request.name,
-        query: request.text,
-        variables,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
+    body: {
+      operationName: request.name,
+      query: request.text,
+      variables,
     },
-    true
-  );
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
   // ---------- begin post-request hooks
   teardownSentryTracing(transaction);
