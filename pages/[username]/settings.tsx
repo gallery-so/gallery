@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { settingsQuery } from '~/generated/settingsQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserSettingsPage from '~/scenes/UserSettingsPage/UserSettingsPage';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
@@ -20,10 +21,24 @@ export default function Settings({ username }: UserSettingsProps) {
       query settingsQuery($username: String!) {
         ...GalleryNavbarFragment
         ...UserSettingsPageFragment
+
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
       }
     `,
     { username }
   );
+
+  const loggedInUser = query.viewer?.user?.username;
+
+  if (loggedInUser !== username) {
+    return <GalleryRedirect to={{ pathname: '/home' }} />;
+  }
 
   return (
     <GalleryRoute
