@@ -5,8 +5,16 @@ import { FetchFunction, GraphQLResponse, RequestParameters } from 'relay-runtime
 import { _fetch } from '~/contexts/swr/fetch';
 import { baseUrl } from '~/utils/baseUrl';
 
+export function getGraphqlHost() {
+  return baseUrl;
+}
+
+export function getGraphqlPath() {
+  return `/glry/graphql/query`;
+}
+
 export function getGraphqlUrl() {
-  return `${baseUrl}/glry/graphql/query`;
+  return `${getGraphqlHost()}${getGraphqlPath()}`;
 }
 
 /**
