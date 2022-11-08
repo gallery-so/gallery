@@ -3,6 +3,7 @@ import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
 import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
+import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
@@ -98,7 +99,7 @@ export default function useCreateUser() {
 
       // Update the cache with a fresh user.
       // This is to ensure the entire app knows we're logged in now
-      await fetchQuery(
+      await fetchQuery<useCreateUserRefreshViewerQuery>(
         environment,
         graphql`
           query useCreateUserRefreshViewerQuery {
