@@ -136,6 +136,7 @@ export function CollectionSaveButtonWithCaption({
                     maxCharCount={600}
                     onChange={handleCaptionChange}
                     hasPadding
+                    defaultValue={caption}
                     placeholder="Add a note..."
                     textAreaHeight="50px"
                   />
