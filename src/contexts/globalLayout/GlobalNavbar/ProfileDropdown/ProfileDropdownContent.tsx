@@ -87,7 +87,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         </DropdownSection>
 
         <DropdownSection gap={4}>
-          <DropdownItem onClick={handleManageWalletsClick}>ACCOUNTS</DropdownItem>
+          <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
           <DropdownLink href={{ pathname: '/shop' }}>
             <HStack gap={8}>
               <span>SHOP</span>
