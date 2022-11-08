@@ -45,10 +45,6 @@ const BioText = styled(BaseM)`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-
-  p {
-    padding-bottom: 0;
-  }
 `;
 
 const StyledLink = styled.a`
