@@ -60,7 +60,7 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   );
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => setEnableFlashFirstRowAnimation(false), 1000);
+    const timeoutId = setTimeout(() => setEnableFlashFirstRowAnimation(false), 5000);
 
     return () => {
       clearTimeout(timeoutId);
@@ -79,6 +79,20 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   );
 };
 
+const flashAnimation = keyframes`
+  0% {
+    background-color: transparent; 
+  }
+  
+  50% {
+    background-color: ${colors.faint};
+  }
+
+  100% {
+    background-color: transparent;
+  }
+`;
+
 const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: boolean }>`
   margin: 0 -16px;
   padding-top: 24px;
@@ -91,19 +105,7 @@ const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: 
     enableFlashFirstRowAnimation
       ? css`
           .FeedList > div > div:first-child {
-            animation: ${keyframes`
-      0% {
-        background-color: transparent; 
-      }
-      
-      50% {
-        background-color: ${colors.faint};
-      }
-      
-      100% {
-        background-color: transparent;
-      }
-    `} 500ms linear 500ms;
+            animation: ${flashAnimation} 1s linear 1s;
           }
         `
       : null}
