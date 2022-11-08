@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { BaseM, TitleDiatypeL } from 'components/core/Text/Text';
-import { Button } from 'components/core/Button/Button';
+
+import { Button } from '~/components/core/Button/Button';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 
 type Props = {
   onAddCollection: () => void;
@@ -10,7 +11,7 @@ export default function Header({ onAddCollection }: Props) {
   return (
     <StyledHeader>
       <TitleContainer>
-        <TitleDiatypeL>Your collections</TitleDiatypeL>
+        <TitleDiatypeL>Collections</TitleDiatypeL>
         <BaseM>Drag to re-order collections</BaseM>
       </TitleContainer>
       <OptionsContainer>

@@ -1,24 +1,25 @@
-import { memo, useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { memo, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Gradient from 'components/core/Gradient/Gradient';
-import { StyledNftPreviewLabel } from 'components/NftPreview/NftPreviewLabel';
-import StagedNftImage from './StagedNftImage';
-import UnstageButton from './UnstageButton';
-import { graphql, useFragment } from 'react-relay';
-import { SortableStagedNftFragment$key } from '__generated__/SortableStagedNftFragment.graphql';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
+import Gradient from '~/components/core/Gradient/Gradient';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { StyledNftPreviewLabel } from '~/components/NftPreview/NftPreviewLabel';
+import { SPACE_BETWEEN_ITEMS } from '~/contexts/collectionEditor/useDndDimensions';
+import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
+import isLiveMediaType from '~/utils/isLiveMediaType';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
+
 import LiveDisplayButton, {
   StyledVideoDisabledIcon,
   StyledVideoEnabledIcon,
 } from './LiveDisplayButton';
-import isLiveMediaType from 'utils/isLiveMediaType';
-import { SPACE_BETWEEN_ITEMS } from 'contexts/collectionEditor/useDndDimensions';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { useNftRetry } from 'hooks/useNftRetry';
+import StagedNftImage from './StagedNftImage';
+import UnstageButton from './UnstageButton';
 
 type Props = {
   tokenRef: SortableStagedNftFragment$key;

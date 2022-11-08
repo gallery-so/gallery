@@ -1,14 +1,19 @@
-import { useCallback, useMemo } from 'react';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleXSBold } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
+import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+
 import useFollowUser from './mutations/useFollowUser';
 import useUnfollowUser from './mutations/useUnfollowUser';
-import IconButton from 'components/IconButton/IconButton';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { FollowButtonUserFragment$key } from '__generated__/FollowButtonUserFragment.graphql';
-import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -31,10 +36,10 @@ export default function FollowButton({ queryRef, userRef }: Props) {
         id
         dbid
         username
-        followers @required(action: THROW) {
+        following @required(action: THROW) {
           id @required(action: THROW)
         }
-        following @required(action: THROW) {
+        followers @required(action: THROW) {
           id @required(action: THROW)
         }
       }
@@ -45,18 +50,19 @@ export default function FollowButton({ queryRef, userRef }: Props) {
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
 
   const followerIds = useMemo(
-    () => user.followers.map((follower: { id: string } | null) => follower?.id),
+    () => new Set(user.followers.map((follower: { id: string } | null) => follower?.id)),
     [user.followers]
   );
 
   const isFollowing = useMemo(
-    () => !!loggedInUserId && followerIds.indexOf(loggedInUserId) > -1,
+    () => !!loggedInUserId && followerIds.has(loggedInUserId),
     [followerIds, loggedInUserId]
   );
 
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
+  const showAuthModal = useAuthModal();
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
@@ -65,13 +71,14 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     });
 
     if (!loggedInUserId) {
+      showAuthModal();
       return;
     }
 
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You have followed ${user.username}.` });
-  }, [loggedInUserId, user, track, followUser, pushToast]);
+  }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
 
   const handleUnfollowClick = useCallback(async () => {
     track('Unfollow Click', {
@@ -84,22 +91,101 @@ export default function FollowButton({ queryRef, userRef }: Props) {
     pushToast({ message: `You have unfollowed ${user.username}.` });
   }, [user, track, unfollowUser, pushToast, loggedInUserId]);
 
-  const handleClick = isFollowing ? handleUnfollowClick : handleFollowClick;
-
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
-  const isFollowActionDisabled = isAuthenticatedUsersPage || !loggedInUserId;
+
+  const followChip = useMemo(() => {
+    if (isAuthenticatedUsersPage) {
+      return null;
+    } else if (isFollowing) {
+      return (
+        // return following & hover show unfollow
+        <FollowingChipContainer>
+          <FollowingChip>Following</FollowingChip>
+
+          <UnfollowChipContainer>
+            <UnfollowChip onClick={handleUnfollowClick}>Unfollow</UnfollowChip>
+          </UnfollowChipContainer>
+        </FollowingChipContainer>
+      );
+    } else {
+      return <FollowChip onClick={handleFollowClick}>Follow</FollowChip>;
+      // show follow button
+    }
+  }, [handleFollowClick, handleUnfollowClick, isAuthenticatedUsersPage, isFollowing]);
+
+  const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
+    // We want to make sure clicking these buttons doesn't bubble up to
+    // to prevent any surrounding links from triggering
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
+
+  if (!followChip) {
+    return null;
+  }
 
   return (
-    <IconButton
-      onClick={handleClick}
-      isFollowing={isFollowing}
-      disabled={isFollowActionDisabled}
-      isSignedIn={!!loggedInUserId}
-      isAuthenticatedUsersPage={isAuthenticatedUsersPage}
-    />
+    <HStack gap={4} onClick={handleWrapperClick}>
+      {followChip}
+    </HStack>
   );
 }
 
-export const TooltipWrapper = styled.div`
+const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean }>`
+  padding: 2px 4px;
+  cursor: pointer;
+
+  border-radius: 2px;
+
+  white-space: nowrap;
+
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          pointer-events: none;
+          cursor: default;
+        `
+      : null};
+`;
+
+const FollowingChip = styled(Chip)`
+  background-color: ${colors.faint};
+  color: ${colors.offBlack};
+`;
+
+const UnfollowChipContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+`;
+
+const FollowingChipContainer = styled.div`
   position: relative;
+
+  ${UnfollowChipContainer} {
+    opacity: 0;
+  }
+
+  :hover {
+    ${FollowingChip} {
+      opacity: 0;
+    }
+
+    ${UnfollowChipContainer} {
+      opacity: 1;
+    }
+  }
+`;
+
+const FollowChip = styled(Chip)`
+  background-color: ${colors.offBlack};
+  color: ${colors.offWhite};
+`;
+
+const UnfollowChip = styled(Chip)`
+  background-color: ${colors.offWhite};
+
+  color: #c72905;
+  border: 1px solid #c72905;
 `;

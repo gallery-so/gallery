@@ -1,26 +1,28 @@
-import transitions from 'components/core/transitions';
+import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
-import NftPreviewAsset from './NftPreviewAsset';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import Gradient from 'components/core/Gradient/Gradient';
 import styled from 'styled-components';
+
+import Gradient from '~/components/core/Gradient/Gradient';
+import transitions from '~/components/core/transitions';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
+import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
+import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
+import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
+import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
+import { isFirefox } from '~/utils/browser';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import isSvg from '~/utils/isSvg';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
+
+import NftPreviewAsset from './NftPreviewAsset';
 import NftPreviewLabel from './NftPreviewLabel';
-import { getBackgroundColorOverrideForContract } from 'utils/token';
-import { useRouter } from 'next/router';
-import { NftPreviewFragment$key } from '__generated__/NftPreviewFragment.graphql';
-import NftDetailVideo from 'scenes/NftDetailPage/NftDetailVideo';
-import NftDetailAnimation from 'scenes/NftDetailPage/NftDetailAnimation';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import isSvg from 'utils/isSvg';
-import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
-import { useContentState } from 'contexts/shimmer/ShimmerContext';
-import { useNftRetry } from 'hooks/useNftRetry';
-import { NftFailureFallback } from 'components/NftFailureFallback/NftFailureFallback';
-import { NftPreviewTokenFragment$key } from '../../../__generated__/NftPreviewTokenFragment.graphql';
-import { NftFailureBoundary } from 'components/NftFailureFallback/NftFailureBoundary';
-import { isFirefox } from 'utils/browser';
-import NftDetailGif from 'scenes/NftDetailPage/NftDetailGif';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;

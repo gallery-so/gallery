@@ -1,13 +1,15 @@
-import { MouseEventHandler, ReactNode, useCallback, MouseEvent } from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { BODY_FONT_FAMILY } from '../Text/Text';
-import colors from '../colors';
-import transitions from '../transitions';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import NavigateConfirmation from './NavigateConfirmation';
 import { Route } from 'nextjs-routes';
+import { MouseEvent, MouseEventHandler, ReactNode, useCallback } from 'react';
+import styled from 'styled-components';
+
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+
+import colors from '../colors';
+import { BODY_FONT_FAMILY } from '../Text/Text';
+import transitions from '../transitions';
+import NavigateConfirmation from './NavigateConfirmation';
 
 type InteractiveLinkProps = {
   to?: Route;

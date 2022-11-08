@@ -1,12 +1,13 @@
-import breakpoints from 'components/core/breakpoints';
-import { DisplayLayout } from 'components/core/enums';
 import { useMemo } from 'react';
-import styled from 'styled-components';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { NftGalleryFragment$key } from '__generated__/NftGalleryFragment.graphql';
-import { parseCollectionLayout } from 'utils/collectionLayout';
-import NftPreviewWrapper from 'components/NftPreview/GalleryNftPreviewWrapper';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { DisplayLayout } from '~/components/core/enums';
+import NftPreviewWrapper from '~/components/NftPreview/GalleryNftPreviewWrapper';
+import { NftGalleryFragment$key } from '~/generated/NftGalleryFragment.graphql';
+import { parseCollectionLayout } from '~/utils/collectionLayout';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;

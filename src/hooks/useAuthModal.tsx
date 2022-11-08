@@ -1,11 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import styled from 'styled-components';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import WalletSelector from 'components/WalletSelector/WalletSelector';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { useAuthModalFragment$key } from '__generated__/useAuthModalFragment.graphql';
-import { useAuthModalQuery } from '__generated__/useAuthModalQuery.graphql';
-import { WalletSelectorVariant } from 'components/WalletSelector/multichain/MultichainWalletSelector';
+import styled from 'styled-components';
+
+import { WalletSelectorVariant } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
+import WalletSelector from '~/components/WalletSelector/WalletSelector';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useAuthModalFragment$key } from '~/generated/useAuthModalFragment.graphql';
+import { useAuthModalQuery } from '~/generated/useAuthModalQuery.graphql';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;

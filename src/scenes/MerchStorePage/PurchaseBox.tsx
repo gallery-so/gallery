@@ -1,21 +1,22 @@
-import styled from 'styled-components';
-import { Button } from 'components/core/Button/Button';
-import { useCallback } from 'react';
-import colors from 'components/core/colors';
-import { BaseM, BaseXL, TitleDiatypeL } from 'components/core/Text/Text';
-import HorizontalBreak from 'components/core/HorizontalBreak/HorizontalBreak';
-import { useMintMerchContract } from 'hooks/useContract';
-import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
-
-import MerchMintButton from './MerchMintButton';
-import CircleMinusIcon from 'src/icons/CircleMinusIcon';
-import CirclePlusIcon from 'src/icons/CirclePlusIcon';
-import { MAX_NFTS_PER_WALLET } from './constants';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { ethers } from 'ethers';
-import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
-import transitions from 'components/core/transitions';
-import { VStack } from 'components/core/Spacer/Stack';
+import { useCallback } from 'react';
+import styled from 'styled-components';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseXL, TitleDiatypeL } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import { useMintMerchContract } from '~/hooks/useContract';
+import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import CircleMinusIcon from '~/icons/CircleMinusIcon';
+import CirclePlusIcon from '~/icons/CirclePlusIcon';
+import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+
+import { MAX_NFTS_PER_WALLET } from './constants';
+import MerchMintButton from './MerchMintButton';
 
 export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenId: number }) {
   const contract = useMintMerchContract();

@@ -1,6 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { EventMediaFragment$key } from '__generated__/EventMediaFragment.graphql';
+
+import { EventMediaFragment$key } from '~/generated/EventMediaFragment.graphql';
+
 import FeedEventNftPreviewWrapper from './FeedEventNftPreviewWrapper';
 
 type Props = {

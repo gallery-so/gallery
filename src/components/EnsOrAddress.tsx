@@ -1,12 +1,14 @@
 import { Suspense } from 'react';
-import useSWR from 'swr';
-import { PlainErrorBoundary } from './PlainErrorBoundary';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { LinkableAddress, RawLinkableAddress } from 'components/LinkableAddress';
-import { EnsOrAddressFragment$key } from '../../__generated__/EnsOrAddressFragment.graphql';
-import { EnsOrAddressWithSuspenseFragment$key } from '../../__generated__/EnsOrAddressWithSuspenseFragment.graphql';
-import { getExternalAddressLink } from 'utils/wallet';
+import useSWR from 'swr';
+
+import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
+import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
+import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
+import { getExternalAddressLink } from '~/utils/wallet';
+
+import { PlainErrorBoundary } from './PlainErrorBoundary';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;

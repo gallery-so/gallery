@@ -1,31 +1,30 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import unescape from 'utils/unescape';
-import { BaseM, TitleL, TitleM } from 'components/core/Text/Text';
-import Markdown from 'components/core/Markdown/Markdown';
-import MobileLayoutToggle from './MobileLayoutToggle';
-import QRCodeButton from './QRCodeButton';
-import LinkButton from './LinkButton';
-import { DisplayLayout } from 'components/core/enums';
-import breakpoints from 'components/core/breakpoints';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { UserGalleryHeaderFragment$key } from '__generated__/UserGalleryHeaderFragment.graphql';
-import { useQrCode } from 'scenes/Modals/QRCodePopover';
-import TextButton from 'components/core/Button/TextButton';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { StyledAnchor } from 'components/core/InteractiveLink/InteractiveLink';
-import LinkToNftDetailView from 'scenes/NftDetailPage/LinkToNftDetailView';
-import useIs3acProfilePage from 'hooks/oneOffs/useIs3acProfilePage';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import Badge from 'components/Badge/Badge';
+import styled, { css } from 'styled-components';
+
+import Badge from '~/components/Badge/Badge';
+import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
+import { DisplayLayout } from '~/components/core/enums';
+import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL, TitleM } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFragment.graphql';
+import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import unescape from '~/utils/unescape';
+
+import MobileLayoutToggle from './MobileLayoutToggle';
 
 type Props = {
   userRef: UserGalleryHeaderFragment$key;
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
-  isMobile: boolean;
 };
 
 function UserGalleryHeader({
@@ -33,12 +32,11 @@ function UserGalleryHeader({
   showMobileLayoutToggle,
   mobileLayout,
   setMobileLayout,
-  isMobile,
 }: Props) {
   const user = useFragment(
     graphql`
       fragment UserGalleryHeaderFragment on GalleryUser {
-        username @required(action: THROW)
+        username
         dbid
         bio
         badges {
@@ -53,12 +51,10 @@ function UserGalleryHeader({
 
   const { username, bio, badges } = user;
 
+  const isMobile = useIsMobileWindowWidth();
   const is3ac = useIs3acProfilePage();
-  const displayName = is3ac ? 'The Unofficial 3AC Gallery' : username;
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
-
-  const styledQrCode = useQrCode();
 
   const userBadges = useMemo(() => {
     if (!badges) return [];
@@ -66,39 +62,44 @@ function UserGalleryHeader({
     return badges.filter((badge) => badge && badge?.imageURL);
   }, [badges]);
 
+  const [showMore, setShowMore] = useState(false);
+  const handleBioClick = useCallback(() => {
+    setShowMore((previous) => !previous);
+  }, []);
+
   return (
     <StyledUserGalleryHeader gap={2}>
+      <HStack align="center" gap={6}>
+        {isMobile ? (
+          <StyledUsernameMobile>
+            {is3ac ? 'The Unofficial 3AC Gallery' : username}
+          </StyledUsernameMobile>
+        ) : (
+          <StyledUsername>{is3ac ? 'The Unofficial 3AC Gallery' : username}</StyledUsername>
+        )}
+
+        {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+      </HStack>
+
       <HStack align="flex-start" justify="space-between">
-        <HStack align="center" gap={8}>
-          {isMobile ? (
-            <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
-          ) : (
-            <StyledUsername>{displayName}</StyledUsername>
-          )}
-          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        <HStack align="center" gap={8} grow>
+          <StyledUserDetails>
+            {is3ac ? (
+              <ExpandableBio text={unescapedBio} />
+            ) : (
+              <StyledBioWrapper showMore={showMore} onClick={handleBioClick}>
+                <Markdown text={unescapedBio} />
+              </StyledBioWrapper>
+            )}
+          </StyledUserDetails>
         </HStack>
 
-        <StyledButtonsWrapper gap={8} align="center" justify="space-between">
-          {isMobile && (
-            <>
-              <LinkButton textToCopy={`https://gallery.so/${username}`} />
-              <QRCodeButton username={username} styledQrCode={styledQrCode} />
-            </>
-          )}
-          {showMobileLayoutToggle && (
+        {showMobileLayoutToggle && (
+          <StyledButtonsWrapper gap={8} align="center" justify="space-between">
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
-          )}
-        </StyledButtonsWrapper>
-      </HStack>
-      <StyledUserDetails>
-        {is3ac ? (
-          <ExpandableBio text={unescapedBio} />
-        ) : (
-          <BaseM>
-            <Markdown text={unescapedBio} />
-          </BaseM>
+          </StyledButtonsWrapper>
         )}
-      </StyledUserDetails>
+      </HStack>
     </StyledUserGalleryHeader>
   );
 }
@@ -149,21 +150,37 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
-const StyledUserGalleryHeader = styled(VStack)`
-  width: 100%;
+const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  ${({ showMore }) =>
+    showMore
+      ? css`
+          -webkit-line-clamp: unset;
+        `
+      : css`
+          // We only care about line clamping on mobile
+          @media only screen and ${breakpoints.mobileLarge} {
+            -webkit-line-clamp: unset;
+          }
+
+          -webkit-line-clamp: 2;
+        `}
 `;
 
 const StyledUsername = styled(TitleL)`
   overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
 `;
 
 const StyledUsernameMobile = styled(TitleM)`
   font-style: normal;
   overflow-wrap: break-word;
-  width: calc(100% - 48px);
-  flex: 1;
+`;
+
+const StyledUserGalleryHeader = styled(VStack)`
+  width: 100%;
 `;
 
 const StyledButtonsWrapper = styled(HStack)`

@@ -1,41 +1,42 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { captureException } from '@sentry/nextjs';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import colors from 'components/core/colors';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
+import { graphql, useFragment } from 'react-relay';
 
-import { isWeb3Error, Web3Error } from 'types/Error';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { GNOSIS_NONCE_STORAGE_KEY } from '~/constants/storageKeys';
+import {
+  isNotEarlyAccessError,
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { AddWalletPendingGnosisSafeFragment$key } from '~/generated/AddWalletPendingGnosisSafeFragment.graphql';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { isWeb3Error, Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
   INITIAL,
-  PROMPT_SIGNATURE,
-  PendingState,
   LISTENING_ONCHAIN,
-} from 'types/Wallet';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
+  PendingState,
+  PROMPT_SIGNATURE,
+} from '~/types/Wallet';
+import { getLocalStorageItem } from '~/utils/localStorage';
+import { removeNullValues } from '~/utils/removeNullValues';
+
+import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
+import useAddWallet from '../mutations/useAddWallet';
+import useCreateNonce from '../mutations/useCreateNonce';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,
   validateNonceSignedByGnosis,
 } from '../walletUtils';
-import { getLocalStorageItem } from 'utils/localStorage';
-import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
-import {
-  useTrackAddWalletAttempt,
-  useTrackAddWalletSuccess,
-  useTrackAddWalletError,
-  isNotEarlyAccessError,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import { graphql, useFragment } from 'react-relay';
-import { AddWalletPendingGnosisSafeFragment$key } from '__generated__/AddWalletPendingGnosisSafeFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useAddWallet from '../mutations/useAddWallet';
-import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   pendingWallet: AbstractConnector;

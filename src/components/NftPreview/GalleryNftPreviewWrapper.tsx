@@ -1,7 +1,9 @@
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { graphql, useFragment } from 'react-relay';
-import { GalleryNftPreviewWrapperFragment$key } from '__generated__/GalleryNftPreviewWrapperFragment.graphql';
+
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
+import { GalleryNftPreviewWrapperFragment$key } from '~/generated/GalleryNftPreviewWrapperFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+
 import NftPreview from './NftPreview';
 
 type Props = {

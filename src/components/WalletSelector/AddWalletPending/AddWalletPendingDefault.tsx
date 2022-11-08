@@ -1,12 +1,27 @@
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { captureException } from '@sentry/nextjs';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import { BaseM, TitleS } from 'components/core/Text/Text';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { isWeb3Error, Web3Error } from 'types/Error';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import {
+  isNotEarlyAccessError,
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { AddWalletPendingDefaultFragment$key } from '~/generated/AddWalletPendingDefaultFragment.graphql';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { isWeb3Error, Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
@@ -15,25 +30,12 @@ import {
   PendingState,
   PROMPT_SIGNATURE,
   WalletName,
-} from 'types/Wallet';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import ManageWalletsModal from 'scenes/Modals/ManageWalletsModal';
-import { signMessageWithEOA } from '../walletUtils';
-import {
-  isNotEarlyAccessError,
-  useTrackAddWalletAttempt,
-  useTrackAddWalletError,
-  useTrackAddWalletSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import { AddWalletPendingDefaultFragment$key } from '__generated__/AddWalletPendingDefaultFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import useCreateNonce from '../mutations/useCreateNonce';
+} from '~/types/Wallet';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import useAddWallet from '../mutations/useAddWallet';
-import { VStack } from 'components/core/Spacer/Stack';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+import useCreateNonce from '../mutations/useCreateNonce';
+import { signMessageWithEOA } from '../walletUtils';
 
 type Props = {
   pendingWallet: AbstractConnector;
@@ -52,10 +54,10 @@ function AddWalletPendingDefault({
   queryRef,
 }: Props) {
   const { library, account } = useWeb3React<Web3Provider>();
-  const signer = useMemo(() => (library && account ? library.getSigner(account) : undefined), [
-    library,
-    account,
-  ]);
+  const signer = useMemo(
+    () => (library && account ? library.getSigner(account) : undefined),
+    [library, account]
+  );
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [isConnecting, setIsConnecting] = useState(false);

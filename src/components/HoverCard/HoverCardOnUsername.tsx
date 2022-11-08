@@ -1,20 +1,23 @@
-import { MouseEventHandler, useCallback, useState } from 'react';
-import colors from 'components/core/colors';
-import { BaseM, TitleDiatypeM, TitleM } from 'components/core/Text/Text';
-import styled from 'styled-components';
-import { graphql, useFragment } from 'react-relay';
-import { HoverCardOnUsernameFragment$key } from '__generated__/HoverCardOnUsernameFragment.graphql';
-import Markdown from 'components/core/Markdown/Markdown';
 import unescape from 'lodash/unescape';
-import FollowButton from 'components/Follow/FollowButton';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import Badge from '~/components/Badge/Badge';
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-} from 'components/core/transitions';
-import { HoverCardOnUsernameFollowFragment$key } from '__generated__/HoverCardOnUsernameFollowFragment.graphql';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+} from '~/components/core/transitions';
+import FollowButton from '~/components/Follow/FollowButton';
+import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUsernameFollowFragment.graphql';
+import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
@@ -36,6 +39,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
             name
             hidden
           }
+        }
+        badges {
+          name
+          imageURL
+          ...BadgeFragment
         }
         ...FollowButtonUserFragment
       }
@@ -64,14 +72,22 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
+    if (deactivateHoverCardTimeoutRef.current) {
+      clearTimeout(deactivateHoverCardTimeoutRef.current);
+    }
+
     setIsActive(true);
     setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovering(false);
-    setTimeout(() => setIsActive(false), ANIMATED_COMPONENT_TRANSITION_MS);
+    deactivateHoverCardTimeoutRef.current = setTimeout(
+      () => setIsActive(false),
+      ANIMATED_COMPONENT_TRANSITION_MS
+    );
   };
 
   const handleClick = useCallback<MouseEventHandler>(
@@ -86,25 +102,49 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
+  const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
+    event.stopPropagation();
+  }, []);
+
+  const userBadges = useMemo(() => {
+    const badges = [];
+
+    for (const badge of user?.badges ?? []) {
+      if (badge?.imageURL) {
+        badges.push(badge);
+      }
+    }
+
+    return badges;
+  }, [user?.badges]);
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
         <Link href={{ pathname: '/[username]', query: { username: user.username as string } }}>
-          <TitleDiatypeM>{user.username}</TitleDiatypeM>
+          <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
         </Link>
       </StyledLinkContainer>
       <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
         {isActive && (
           <StyledCardContainer>
             <StyledCardHeader>
-              <StyledHoverCardTitleContainer>
+              <HStack align="center" gap={4}>
+                <HStack align="center" gap={6}>
+                  <StyledCardUsername>{user.username}</StyledCardUsername>
+
+                  {userBadges.map((badge) => (
+                    // Might need to rethink this layout when we have more badges
+                    <Badge key={badge.name} badgeRef={badge} />
+                  ))}
+                </HStack>
+
                 {isLoggedIn && !isOwnProfile && (
                   <StyledFollowButtonWrapper>
                     <FollowButton userRef={user} queryRef={query} />
                   </StyledFollowButtonWrapper>
                 )}
-                <StyledCardUsername>{user.username}</StyledCardUsername>
-              </StyledHoverCardTitleContainer>
+              </HStack>
 
               <BaseM>{totalCollections} collections</BaseM>
             </StyledCardHeader>
@@ -159,11 +199,6 @@ const StyledCardHeader = styled.div`
   justify-content: space-between;
   // enforce height on container since the follow button causes additional height
   height: 24px;
-`;
-
-const StyledHoverCardTitleContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const StyledFollowButtonWrapper = styled.div`

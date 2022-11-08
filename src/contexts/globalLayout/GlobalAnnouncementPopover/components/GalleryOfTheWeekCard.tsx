@@ -1,18 +1,19 @@
-import breakpoints from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { TitleM } from 'components/core/Text/Text';
-import transitions from 'components/core/transitions';
-import FollowButton from 'components/Follow/FollowButton';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from 'utils/removeNullValues';
-import { GalleryOfTheWeekCardQueryFragment$key } from '__generated__/GalleryOfTheWeekCardQueryFragment.graphql';
-import { GalleryOfTheWeekCardUserFragment$key } from '__generated__/GalleryOfTheWeekCardUserFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleM } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
+import FollowButton from '~/components/Follow/FollowButton';
+import { GalleryOfTheWeekCardQueryFragment$key } from '~/generated/GalleryOfTheWeekCardQueryFragment.graphql';
+import { GalleryOfTheWeekCardUserFragment$key } from '~/generated/GalleryOfTheWeekCardUserFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryOfTheWeekCardProps = {
   queryRef: GalleryOfTheWeekCardQueryFragment$key;
@@ -66,8 +67,8 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>
-            <FollowButton queryRef={query} userRef={user} />
             <DescriptionText>{user.username}</DescriptionText>
+            <FollowButton queryRef={query} userRef={user} />
           </GotwHeader>
           <GotwBody>
             {imageUrls.map((url) => (

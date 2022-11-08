@@ -1,9 +1,11 @@
 import styled from 'styled-components';
+
+import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
+
 import { isEditModeToken, StagingItem } from '../../types';
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
 import { Section } from './Section';
-import { SortableStagedNftFragment$key } from '../../../../../../__generated__/SortableStagedNftFragment.graphql';
 
 type Props = {
   items: StagingItem[];

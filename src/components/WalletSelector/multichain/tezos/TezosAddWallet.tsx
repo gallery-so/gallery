@@ -1,37 +1,39 @@
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
+import { captureException } from '@sentry/nextjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { Web3Error } from 'types/Error';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import useAddWallet from '~/components/WalletSelector/mutations/useAddWallet';
+import useCreateNonce from '~/components/WalletSelector/mutations/useCreateNonce';
+import {
+  isEarlyAccessError,
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { TezosAddWalletFragment$key } from '~/generated/TezosAddWalletFragment.graphql';
+import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
   INITIAL,
   PendingState,
   PROMPT_SIGNATURE,
-} from 'types/Wallet';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import {
-  isEarlyAccessError,
-  useTrackAddWalletAttempt,
-  useTrackAddWalletError,
-  useTrackAddWalletSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import { TezosAddWalletFragment$key } from '__generated__/TezosAddWalletFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import useAddWallet from 'components/WalletSelector/mutations/useAddWallet';
-import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
+} from '~/types/Wallet';
+import noop from '~/utils/noop';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
-import { useBeaconActions } from 'contexts/beacon/BeaconContext';
-import { VStack } from 'components/core/Spacer/Stack';
-import noop from 'utils/noop';
-import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   queryRef: TezosAddWalletFragment$key;

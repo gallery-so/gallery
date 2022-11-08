@@ -1,15 +1,16 @@
-import breakpoints, { contentSize } from 'components/core/breakpoints';
-import colors from 'components/core/colors';
-import Markdown from 'components/core/Markdown/Markdown';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { GLOBAL_BANNER_STORAGE_KEY } from 'constants/storageKeys';
-import usePersistedState from 'hooks/usePersistedState';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
 import styled from 'styled-components';
-import { GlobalBannerFragment$key } from '__generated__/GlobalBannerFragment.graphql';
-import { GLOBAL_NAVBAR_HEIGHT } from '../GlobalNavbar/GlobalNavbar';
+
+import breakpoints, { contentSize } from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { GLOBAL_BANNER_STORAGE_KEY } from '~/constants/storageKeys';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 
 type Props = {
   title?: React.ReactNode | string;
@@ -60,8 +61,10 @@ export default function Banner({
     }
   }, [dismissOnActionComponentClick, hideBanner]);
 
+  const navbarHeight = useGlobalNavbarHeight();
+
   return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
-    <StyledContainer>
+    <StyledContainer navbarHeight={navbarHeight}>
       <StyledBanner>
         <TextContainer>
           {title && <StyledTitle>{title}</StyledTitle>}
@@ -78,10 +81,10 @@ export default function Banner({
   );
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<{ navbarHeight: number }>`
   position: absolute;
   width: 100%;
-  height: ${GLOBAL_NAVBAR_HEIGHT}px;
+  height: ${({ navbarHeight }) => navbarHeight}px;
   z-index: 4;
 
   // TODO: standardize these settings

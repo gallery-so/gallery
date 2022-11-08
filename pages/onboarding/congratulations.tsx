@@ -1,11 +1,12 @@
-import styled from 'styled-components';
-import { BaseM, TitleL } from 'components/core/Text/Text';
 import { useLazyLoadQuery } from 'react-relay';
-import { ButtonLink } from 'components/core/Button/Button';
-import { VStack } from 'components/core/Spacer/Stack';
 import { graphql } from 'relay-runtime';
-import { congratulationsQuery } from '../../__generated__/congratulationsQuery.graphql';
-import FullPageCenteredStep from 'components/Onboarding/FullPageCenteredStep';
+import styled from 'styled-components';
+
+import { ButtonLink } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleL } from '~/components/core/Text/Text';
+import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
+import { congratulationsQuery } from '~/generated/congratulationsQuery.graphql';
 
 export default function Congratulations() {
   const query = useLazyLoadQuery<congratulationsQuery>(

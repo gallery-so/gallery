@@ -1,48 +1,48 @@
-import { memo, useCallback, useState, useMemo, useRef, useEffect } from 'react';
-import keyBy from 'lodash.keyby';
-import styled from 'styled-components';
-
 import {
   closestCenter,
-  pointerWithin,
-  rectIntersection,
   CollisionDetection,
+  defaultDropAnimationSideEffects,
   DndContext,
+  DragEndEvent,
+  DragOverEvent,
   DragOverlay,
+  DragStartEvent,
   DropAnimation,
   getFirstCollision,
-  MouseSensor,
-  TouchSensor,
-  useSensors,
-  useSensor,
   MeasuringStrategy,
-  defaultDropAnimationSideEffects,
-  DragOverEvent,
-  DragEndEvent,
-  DragStartEvent,
+  MouseSensor,
+  pointerWithin,
+  rectIntersection,
+  TouchSensor,
   UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import keyBy from 'lodash.keyby';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
+import { VStack } from '~/components/core/Spacer/Stack';
 import {
   useActiveSectionIdState,
   useCollectionEditorActions,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import { MENU_WIDTH } from './EditorMenu';
-import StagedItemDragging from './StagedItemDragging';
-import SortableStagedNft from './SortableStagedNft';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
+import useKeyDown from '~/hooks/useKeyDown';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import { isEditModeToken, Section } from '../types';
-import { graphql, useFragment } from 'react-relay';
-import { StagingAreaFragment$key } from '__generated__/StagingAreaFragment.graphql';
-import SortableStagedWhitespace from './SortableStagedWhitespace';
-import { removeNullValues } from 'utils/removeNullValues';
-import { IMAGE_SIZES } from 'contexts/collectionEditor/useDndDimensions';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
-import useKeyDown from 'hooks/useKeyDown';
-import { VStack } from 'components/core/Spacer/Stack';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
+import { MENU_WIDTH } from './EditorMenu';
+import SortableStagedNft from './SortableStagedNft';
+import SortableStagedWhitespace from './SortableStagedWhitespace';
+import StagedItemDragging from './StagedItemDragging';
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -343,8 +343,10 @@ function StagingArea({ tokensRef }: Props) {
 
   useKeyDown('Backspace', handleBackspacePress);
 
+  const navbarHeight = useGlobalNavbarHeight();
+
   return (
-    <StyledStagingArea>
+    <StyledStagingArea navbarHeight={navbarHeight}>
       <DndContext
         sensors={sensors}
         onDragEnd={handleDragEnd}
@@ -419,7 +421,7 @@ function StagingArea({ tokensRef }: Props) {
   );
 }
 
-const StyledStagingArea = styled.div`
+const StyledStagingArea = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -428,7 +430,7 @@ const StyledStagingArea = styled.div`
 
   margin: 0 auto;
 
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  height: 100%;
 
   padding: 48px 0px;
 

@@ -1,11 +1,11 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import unescape from 'utils/unescape';
 
-import { TitleS } from 'components/core/Text/Text';
-import Input from 'components/core/Input/Input';
-import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import { VStack } from 'components/core/Spacer/Stack';
+import Input from '~/components/core/Input/Input';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleS } from '~/components/core/Text/Text';
+import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import unescape from '~/utils/unescape';
 
 type Props = {
   className?: string;

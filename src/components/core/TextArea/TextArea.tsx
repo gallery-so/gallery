@@ -1,17 +1,19 @@
 import {
   ChangeEventHandler,
-  useRef,
-  useEffect,
-  useState,
   forwardRef,
-  useCallback,
   KeyboardEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import styled from 'styled-components';
-import noop from 'utils/noop';
+
+import noop from '~/utils/noop';
+
 import colors from '../colors';
-import { BaseM } from '../Text/Text';
 import MarkdownShortcuts, { setValueAndTriggerOnChange } from '../Markdown/MarkdownShortcuts';
+import { BaseM } from '../Text/Text';
 
 type TextAreaProps = {
   className?: string;

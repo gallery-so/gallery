@@ -1,10 +1,14 @@
-import { HStack } from 'components/core/Spacer/Stack';
-import { useLoggedInUserId } from 'hooks/useLoggedInUserId';
+import Link from 'next/link';
+import { Route, route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
-import { NavActionFollowQueryFragment$key } from '__generated__/NavActionFollowQueryFragment.graphql';
-import { NavActionFollowUserFragment$key } from '__generated__/NavActionFollowUserFragment.graphql';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
+import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
+import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
+
 import FollowButton from './FollowButton';
-import FollowerListButton from './FollowerListButton';
 
 type Props = {
   userRef: NavActionFollowUserFragment$key;
@@ -15,8 +19,9 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment NavActionFollowUserFragment on GalleryUser {
+        username
+
         ...FollowButtonUserFragment
-        ...FollowerListButtonFragment
       }
     `,
     userRef
@@ -26,19 +31,26 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     graphql`
       fragment NavActionFollowQueryFragment on Query {
         ...FollowButtonQueryFragment
-        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
   );
 
-  const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
-  const isLoggedIn = !!loggedInUserId;
+  if (!user.username) {
+    return null;
+  }
+
+  const is3ac = isUsername3ac(user.username);
+  const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
 
   return (
-    <HStack gap={4} align="center">
-      {isLoggedIn ? <FollowButton queryRef={loggedInUserQuery} userRef={user} /> : null}
-      <FollowerListButton userRef={user} />
+    <HStack gap={8} align="center">
+      <Link href={usernameRoute}>
+        <BreadcrumbLink href={route(usernameRoute)}>
+          {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
+        </BreadcrumbLink>
+      </Link>
+      <FollowButton queryRef={loggedInUserQuery} userRef={user} />
     </HStack>
   );
 }

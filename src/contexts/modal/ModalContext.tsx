@@ -1,23 +1,25 @@
-import { useStabilizedRouteTransitionKey } from 'components/FadeTransitioner/FadeTransitioner';
 import {
+  createContext,
+  memo,
+  MutableRefObject,
   ReactElement,
   ReactNode,
-  createContext,
-  useContext,
-  memo,
-  useState,
   useCallback,
+  useContext,
+  useEffect,
   useMemo,
   useRef,
-  MutableRefObject,
-  useEffect,
+  useState,
 } from 'react';
-import noop from 'utils/noop';
+import { v4 as uuid } from 'uuid';
+
+import { useStabilizedRouteTransitionKey } from '~/components/FadeTransitioner/FadeTransitioner';
+import useKeyDown from '~/hooks/useKeyDown';
+import { getScrollBarWidth } from '~/utils/getScrollbarWidth';
+import noop from '~/utils/noop';
+
 import AnimatedModal from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
-import { v4 as uuid } from 'uuid';
-import useKeyDown from 'hooks/useKeyDown';
-import { getScrollBarWidth } from 'utils/getScrollbarWidth';
 
 type ModalState = {
   isModalOpenRef: MutableRefObject<boolean>;
@@ -200,10 +202,8 @@ function ModalProvider({ children }: Props) {
        * Commenting this out to prevent a regression on the banner width not extending to 100%.
        * Leaving the code in tho in case scrollbar issue comes back
        */
-      // globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
-      // globalNavbar.style.width = modalShowing
-      //   ? `calc(100vw - ${currentScrollbarWidth}px)`
-      //   : 'unset';
+      globalNavbar.style.transform = modalShowing ? 'translateX(0px)' : 'unset';
+      globalNavbar.style.width = modalShowing ? `calc(100vw - ${currentScrollbarWidth}px)` : '100%';
     }
   }, [modals.length]);
 

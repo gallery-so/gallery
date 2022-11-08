@@ -1,22 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { captureException } from '@sentry/nextjs';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { isWeb3Error, Web3Error } from 'types/Error';
-import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
-import { signMessageWithEOA } from '../walletUtils';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
 import {
   isNotEarlyAccessError,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
+} from '~/contexts/analytics/authUtil';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { isWeb3Error, Web3Error } from '~/types/Error';
+import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
+
 import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { VStack } from 'components/core/Spacer/Stack';
+import { signMessageWithEOA } from '../walletUtils';
 
 type Props = {
   pendingWallet: AbstractConnector;

@@ -1,22 +1,23 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import unescape from 'utils/unescape';
 
-import Input from 'components/core/Input/Input';
-import { Button } from 'components/core/Button/Button';
-import { TextAreaWithCharCount } from 'components/core/TextArea/TextArea';
-import ErrorText from 'components/core/Text/ErrorText';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import formatError from 'errors/formatError';
-import useUpdateCollectionInfo from 'hooks/api/collections/useUpdateCollectionInfo';
-import useCreateCollection from 'hooks/api/collections/useCreateCollection';
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import Input from '~/components/core/Input/Input';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import ErrorText from '~/components/core/Text/ErrorText';
+import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { TokenSettings } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import formatError from '~/errors/formatError';
+import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
+import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
+import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
+import unescape from '~/utils/unescape';
+
 import { StagedCollection } from './types';
-import { getTokenIdsFromCollection } from 'utils/collectionLayout';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import breakpoints from 'components/core/breakpoints';
-import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
 
 type Props = {
   onNext: (collectionId: string) => void;

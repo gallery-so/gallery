@@ -1,12 +1,13 @@
-import colors from 'components/core/colors';
-import Markdown from 'components/core/Markdown/Markdown';
-import { BaseM, TitleS } from 'components/core/Text/Text';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useCallback } from 'react';
-import styled from 'styled-components';
 import { graphql, useFragment } from 'react-relay';
-import { FollowListUsersFragment$key } from '../../../__generated__/FollowListUsersFragment.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
@@ -56,7 +57,6 @@ export default function FollowListUsers({
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   height: 100%;
 `;
 const StyledListItem = styled.a`

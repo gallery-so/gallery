@@ -5,9 +5,8 @@
 // custom error boundary which will catch certain errors before they bubble
 // up to our handlers.
 
-import NextErrorComponent from 'next/error';
-
 import * as Sentry from '@sentry/nextjs';
+import NextErrorComponent from 'next/error';
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
   if (!hasGetInitialPropsRun && err) {

@@ -1,14 +1,16 @@
-import TextButton, { StyledButtonText } from 'components/core/Button/TextButton';
-import colors from 'components/core/colors';
-import { MODAL_PADDING_THICC_PX } from 'contexts/modal/constants';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { FollowListFragment$key } from '__generated__/FollowListFragment.graphql';
+
+import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import FollowListUsers from './FollowListUsers';
-import { removeNullValues } from 'utils/removeNullValues';
-import { HStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   userRef: FollowListFragment$key;
@@ -65,7 +67,7 @@ export default function FollowList({ userRef }: Props) {
 }
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  height: 100%;
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;

@@ -1,22 +1,23 @@
+import { useCallback, useRef, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { FeedEventSocializeSectionFragment$key } from '__generated__/FeedEventSocializeSectionFragment.graphql';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { CommentIcon } from 'icons/SocializeIcons';
 import styled from 'styled-components';
-import { CommentBox } from 'components/Feed/Socialize/CommentBox';
-import { useCallback, useRef, useState } from 'react';
-import { Interactions } from 'components/Feed/Socialize/Interactions';
-import { FeedEventSocializeSectionQueryFragment$key } from '../../../../__generated__/FeedEventSocializeSectionQueryFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import {
   FEED_EVENT_ROW_WIDTH_DESKTOP,
   FEED_EVENT_ROW_WIDTH_TABLET,
-} from 'components/Feed/dimensions';
-import breakpoints from 'components/core/breakpoints';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { AuthModal } from 'hooks/useAuthModal';
-import colors from 'components/core/colors';
-import { AdmireButton } from 'components/Feed/Socialize/AdmireButton';
+} from '~/components/Feed/dimensions';
+import { AdmireButton } from '~/components/Feed/Socialize/AdmireButton';
+import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
+import { Interactions } from '~/components/Feed/Socialize/Interactions';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
+import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
+import { CommentIcon } from '~/icons/SocializeIcons';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;

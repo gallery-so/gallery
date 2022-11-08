@@ -1,33 +1,67 @@
-import { ITEMS_PER_PAGE } from 'components/Feed/constants';
-import { Environment, graphql, useLazyLoadQuery } from 'react-relay';
-import HomeScene from 'scenes/Home/Home';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { homeQuery } from '__generated__/homeQuery.graphql';
-import { NOTES_PER_PAGE } from 'components/Feed/Socialize/NotesModal/NotesModal';
-import { fetchQuery } from 'relay-runtime';
-import { PreloadQueryArgs } from 'types/PageComponentPreloadQuery';
+import { useEffect } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
-const homeQueryNode = graphql`
-  query homeQuery(
-    $interactionsFirst: Int!
-    $interactionsAfter: String
-    $globalLast: Int!
-    $globalBefore: String
-    $viewerLast: Int!
-    $viewerBefore: String
-  ) {
-    ...HomeFragment
-  }
-`;
+import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
+import { FeedMode } from '~/components/Feed/Feed';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { FEED_MODE_KEY } from '~/constants/storageKeys';
+import { FeedNavbar } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedNavbar';
+import { homeQuery } from '~/generated/homeQuery.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import HomeScene from '~/scenes/Home/Home';
 
 export default function Home() {
-  const query = useLazyLoadQuery<homeQuery>(homeQueryNode, {
-    interactionsFirst: NOTES_PER_PAGE,
-    globalLast: ITEMS_PER_PAGE,
-    viewerLast: ITEMS_PER_PAGE,
-  });
+  const query = useLazyLoadQuery<homeQuery>(
+    graphql`
+      query homeQuery(
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+        $globalLast: Int!
+        $globalBefore: String
+        $viewerLast: Int!
+        $viewerBefore: String
+        $visibleTokensPerFeedEvent: Int!
+      ) {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
 
-  return <GalleryRoute element={<HomeScene queryRef={query} />} navbar={true} />;
+        ...HomeFragment
+        ...FeedNavbarFragment
+      }
+    `,
+    {
+      interactionsFirst: NOTES_PER_PAGE,
+      globalLast: ITEMS_PER_PAGE,
+      viewerLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+    }
+  );
+
+  const { viewer } = query;
+  const viewerUserId = viewer?.user?.dbid ?? '';
+  const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
+
+  const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
+
+  // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
+  useEffect(() => {
+    if (!viewerUserId) {
+      setFeedMode('WORLDWIDE');
+    }
+  }, [viewerUserId, feedMode, setFeedMode]);
+
+  return (
+    <GalleryRoute
+      navbar={<FeedNavbar feedMode={feedMode} onChange={setFeedMode} queryRef={query} />}
+      element={<HomeScene setFeedMode={setFeedMode} feedMode={feedMode} queryRef={query} />}
+    />
+  );
 }
 
 Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {

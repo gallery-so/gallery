@@ -1,7 +1,8 @@
-import { InternalMarkdown } from 'components/core/Markdown/Markdown';
-import { VStack } from 'components/core/Spacer/Stack';
-import { TitleL } from 'components/core/Text/Text';
 import styled from 'styled-components';
+
+import { InternalMarkdown } from '~/components/core/Markdown/Markdown';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleL } from '~/components/core/Text/Text';
 
 type Props = {
   title: string;

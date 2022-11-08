@@ -1,18 +1,20 @@
+import { ethers } from 'ethers';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { BaseM, TitleM } from 'components/core/Text/Text';
-import breakpoints, { contentSize, pageGutter } from 'components/core/breakpoints';
+import { useAccount } from 'wagmi';
+
+import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { useMintMerchContract } from '~/hooks/useContract';
+import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import noop from '~/utils/noop';
+import { truncateAddress } from '~/utils/wallet';
+
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
-import { useMintMerchContract } from 'hooks/useContract';
-import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { ethers } from 'ethers';
-import { useAccount } from 'wagmi';
-import { truncateAddress } from 'utils/wallet';
-import { useMemo, useState } from 'react';
-import noop from 'utils/noop';
-import { UserOwnsBox, MobileReceiptBox } from './PurchaseBox';
-import { VStack } from 'components/core/Spacer/Stack';
+import { MobileReceiptBox,UserOwnsBox } from './PurchaseBox';
 
 export default function ItemPage({
   label,

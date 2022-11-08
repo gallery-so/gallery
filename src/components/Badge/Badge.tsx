@@ -1,10 +1,11 @@
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import Tooltip from 'components/Tooltip/Tooltip';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { BadgeFragment$key } from '__generated__/BadgeFragment.graphql';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Tooltip from '~/components/Tooltip/Tooltip';
+import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -61,10 +62,10 @@ export default function Badge({ badgeRef }: Props) {
   }, []);
 
   return (
-    <InteractiveLink to={communityUrl}>
+    <StyledInteractiveLink to={communityUrl}>
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <StyledBadge src={imageURL} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit} />
-    </InteractiveLink>
+    </StyledInteractiveLink>
   );
 }
 
@@ -73,8 +74,12 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
 `;
 
+const StyledInteractiveLink = styled(InteractiveLink)`
+  line-height: 1;
+`;
+
 const StyledBadge = styled.img`
-  height: 16px;
-  width: 16px;
+  height: 24px;
+  width: 24px;
   cursor: pointer;
 `;

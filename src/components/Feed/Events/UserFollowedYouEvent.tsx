@@ -1,17 +1,19 @@
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM } from 'components/core/Text/Text';
-import FollowButton from 'components/Follow/FollowButton';
-import styled from 'styled-components';
-import { getTimeSince } from 'utils/time';
-import { FollowButtonQueryFragment$key } from '__generated__/FollowButtonQueryFragment.graphql';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 import { graphql, useFragment } from 'react-relay';
-import { UserFollowedYouEventFragment$key } from '../../../../__generated__/UserFollowedYouEventFragment.graphql';
-import { UserFollowedYouEventEventFragment$key } from '../../../../__generated__/UserFollowedYouEventEventFragment.graphql';
-import { HStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import FollowButton from '~/components/Follow/FollowButton';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
+import { UserFollowedYouEventEventQueryFragment$key } from '~/generated/UserFollowedYouEventEventQueryFragment.graphql';
+import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
+import { getTimeSince } from '~/utils/time';
+
+import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
-  queryRef: FollowButtonQueryFragment$key;
+  queryRef: UserFollowedYouEventEventQueryFragment$key;
   eventRef: UserFollowedYouEventEventFragment$key;
   followInfoRef: UserFollowedYouEventFragment$key;
 };
@@ -24,6 +26,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
         owner @required(action: THROW) {
           username @required(action: THROW)
           ...FollowButtonUserFragment
+          ...HoverCardOnUsernameFragment
         }
       }
     `,
@@ -39,23 +42,29 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     followInfoRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment UserFollowedYouEventEventQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <StyledEvent>
       <StyledEventContent>
         <StyledEventHeader>
           <HStack gap={4} inline>
             <BaseM>
-              <InteractiveLink
-                to={{ pathname: '/[username]', query: { username: event.owner.username } }}
-              >
-                {event.owner.username}
-              </InteractiveLink>{' '}
-              followed you {followInfo.followedBack && 'back'}
+              <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed you{' '}
+              {followInfo.followedBack && 'back'}
             </BaseM>
             <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>
-        {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={queryRef} />}
+        {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={query} />}
       </StyledEventContent>
     </StyledEvent>
   );

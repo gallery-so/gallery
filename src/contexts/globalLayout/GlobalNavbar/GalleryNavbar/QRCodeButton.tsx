@@ -1,10 +1,11 @@
-import colors from 'components/core/colors';
-import styled from 'styled-components';
 import { useCallback } from 'react';
-import QRIcon from 'src/icons/QRIcon';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import QRCodePopover from 'scenes/Modals/QRCodePopover';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import QRIcon from '~/icons/QRIcon';
+import QRCodePopover from '~/scenes/Modals/QRCodePopover';
 
 export default function QRCode({
   username,

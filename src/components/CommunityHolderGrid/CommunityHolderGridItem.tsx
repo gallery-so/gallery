@@ -1,19 +1,20 @@
-import breakpoints from 'components/core/breakpoints';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM } from 'components/core/Text/Text';
-import { useReportError } from 'contexts/errorReporting/ErrorReportingContext';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import { useMemo, useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import TokenDetailView from 'scenes/TokenDetailPage/TokenDetailView';
 import styled from 'styled-components';
-import { getOpenseaExternalUrl } from 'utils/getOpenseaExternalUrl';
-import getVideoOrImageUrlForNftPreview from 'utils/graphql/getVideoOrImageUrlForNftPreview';
-import { graphqlTruncateUniversalUsername } from 'utils/wallet';
-import { CommunityHolderGridItemFragment$key } from '__generated__/CommunityHolderGridItemFragment.graphql';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import colors from 'components/core/colors';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
+import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
+import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
+import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;

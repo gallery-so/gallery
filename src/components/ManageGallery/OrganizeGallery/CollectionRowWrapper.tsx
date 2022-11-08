@@ -1,8 +1,9 @@
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { CollectionRowWrapperFragment$key } from '~/generated/CollectionRowWrapperFragment.graphql';
+
 import SortableCollectionRow from './SortableCollectionRow';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionRowWrapperFragment$key } from '__generated__/CollectionRowWrapperFragment.graphql';
 
 type Props = {
   onEditCollection: (dbid: string) => void;

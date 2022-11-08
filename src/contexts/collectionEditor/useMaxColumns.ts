@@ -1,6 +1,7 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useMaxColumnsFragment$key } from '__generated__/useMaxColumnsFragment.graphql';
+
+import { useMaxColumnsFragment$key } from '~/generated/useMaxColumnsFragment.graphql';
 
 const USER_IDS_WITH_10_COLUMNS_ENABLED = [
   '2BzTRFDU9wuQCYW6E62cY6J6XvU', // figure31

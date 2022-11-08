@@ -1,8 +1,10 @@
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import { useModalActions, useModalState } from 'contexts/modal/ModalContext';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useEffect, Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
+
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+import { useModalActions, useModalState } from '~/contexts/modal/ModalContext';
+
 import NftDetailPage from './NftDetailPage';
 
 // displays a full-screen NFT Detail Modal if the route is detected to follow /username/collectionId/tokenId.

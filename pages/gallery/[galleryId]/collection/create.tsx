@@ -1,22 +1,23 @@
+import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+
+import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import CollectionEditor from '~/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import CollectionWizardContext from 'contexts/wizard/CollectionWizardContext';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import CollectionCreateOrEditForm from 'flows/../../src/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
-import CollectionEditor from 'flows/../../src/components/ManageGallery/OrganizeCollection/Editor/CollectionEditor';
-import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
-import { WizardFooter } from 'components/WizardFooter';
-import { useCanGoBack } from 'contexts/navigation/GalleryNavigationProvider';
-import { createCollectionQuery } from '../../../../__generated__/createCollectionQuery.graphql';
-import { VStack } from 'components/core/Spacer/Stack';
-import FullPageStep from 'components/Onboarding/FullPageStep';
-import { Route } from 'nextjs-routes';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { CollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
+import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
+import { createCollectionQuery } from '~/generated/createCollectionQuery.graphql';
+import GenericActionModal from '~/scenes/Modals/GenericActionModal';
 
 type Props = {
   galleryId: string;
@@ -72,29 +73,39 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else {
-      replace(editGalleryUrl);
-    }
-  }, [back, canGoBack, editGalleryUrl, replace]);
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            if (canGoBack) {
+              back();
+            } else {
+              replace(editGalleryUrl);
+            }
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
   return (
-    <VStack>
-      <FullPageStep withFooter>
-        <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
-      </FullPageStep>
-
-      <WizardFooter
-        isNextEnabled={isCollectionValid}
-        nextText={'Save'}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        previousText="Cancel"
-      />
-    </VStack>
+    <FullPageStep
+      withBorder
+      navbar={
+        <CollectionCreateNavbar
+          galleryId={galleryId}
+          onBack={handlePrevious}
+          onNext={handleNext}
+          isCollectionValid={isCollectionValid}
+        />
+      }
+    >
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+    </FullPageStep>
   );
 }
 

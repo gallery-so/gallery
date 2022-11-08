@@ -1,20 +1,22 @@
+import { captureException } from '@sentry/nextjs';
 import { useCallback, useEffect, useState } from 'react';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { INITIAL, PROMPT_SIGNATURE, PendingState } from 'types/Wallet';
+
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import useCreateNonce from '~/components/WalletSelector/mutations/useCreateNonce';
+import useLoginOrRedirectToOnboarding from '~/components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
 import {
   isEarlyAccessError,
   useTrackSignInAttempt,
   useTrackSignInError,
   useTrackSignInSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import useCreateNonce from 'components/WalletSelector/mutations/useCreateNonce';
-import useLoginOrRedirectToOnboarding from 'components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
-import { WalletError } from '../WalletError';
+} from '~/contexts/analytics/authUtil';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
+import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
+
 import { normalizeError } from '../normalizeError';
+import { WalletError } from '../WalletError';
 import { generatePayload, getNonceNumber } from './tezosUtils';
-import { useBeaconActions } from 'contexts/beacon/BeaconContext';
-import { EmptyState } from 'components/EmptyState/EmptyState';
 
 type Props = {
   reset: () => void;

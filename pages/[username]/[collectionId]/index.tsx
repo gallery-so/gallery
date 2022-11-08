@@ -1,12 +1,14 @@
 import { GetServerSideProps } from 'next';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import CollectionGalleryPage from 'scenes/CollectionGalleryPage/CollectionGalleryPage';
-import { MetaTagProps } from 'pages/_app';
-import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { CollectionIdQuery } from '__generated__/CollectionIdQuery.graphql';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { route } from 'nextjs-routes';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+
+import { CollectionNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionNavbar';
+import { CollectionIdQuery } from '~/generated/CollectionIdQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import CollectionGalleryPage from '~/scenes/CollectionGalleryPage/CollectionGalleryPage';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type CollectionGalleryProps = MetaTagProps & {
   username: string;
@@ -16,18 +18,24 @@ type CollectionGalleryProps = MetaTagProps & {
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
-      query CollectionIdQuery($collectionId: DBID!) {
+      query CollectionIdQuery($collectionId: DBID!, $username: String!) {
+        ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
       }
     `,
-    { collectionId }
+    { collectionId, username }
   );
 
   if (!username || !collectionId) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return <GalleryRoute element={<CollectionGalleryPage queryRef={query} username={username} />} />;
+  return (
+    <GalleryRoute
+      navbar={<CollectionNavbar username={username} collectionId={collectionId} queryRef={query} />}
+      element={<CollectionGalleryPage queryRef={query} username={username} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = async ({

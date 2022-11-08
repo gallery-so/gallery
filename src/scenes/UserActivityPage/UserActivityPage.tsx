@@ -1,11 +1,14 @@
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { UserActivityPageFragment$key } from '~/generated/UserActivityPageFragment.graphql';
+import { StyledUserGalleryPage } from '~/scenes/UserGalleryPage/UserGalleryPage';
+
 import UserActivity from './UserActivity';
-import { UserActivityPageFragment$key } from '__generated__/UserActivityPageFragment.graphql';
-import { StyledUserGalleryPage } from 'scenes/UserGalleryPage/UserGalleryPage';
 
 type UserActivityPageProps = {
   queryRef: UserActivityPageFragment$key;
@@ -25,6 +28,7 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
   const headTitle = `${username} | Gallery`;
 
   const track = useTrack();
+  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     track('Page View: User Gallery', { username });
@@ -35,7 +39,7 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledUserGalleryPage>
+      <StyledUserGalleryPage navbarHeight={navbarHeight}>
         <UserActivity queryRef={query} />
       </StyledUserGalleryPage>
     </>

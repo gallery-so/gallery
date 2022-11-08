@@ -1,12 +1,13 @@
-import styled from 'styled-components';
-import ImageWithLoading from 'components/LoadingAsset/ImageWithLoading';
 import { graphql, useFragment } from 'react-relay';
-import { NftDetailAudioFragment$key } from '__generated__/NftDetailAudioFragment.graphql';
-import noop from 'utils/noop';
-import { CouldNotRenderNftError } from 'errors/CouldNotRenderNftError';
-import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
-import { VStack } from 'components/core/Spacer/Stack';
-import breakpoints from 'components/core/breakpoints';
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { NftDetailAudioFragment$key } from '~/generated/NftDetailAudioFragment.graphql';
+import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import noop from '~/utils/noop';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;

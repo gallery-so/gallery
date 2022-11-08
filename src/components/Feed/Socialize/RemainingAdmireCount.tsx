@@ -1,7 +1,8 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { RemainingAdmireCountFragment$key } from '__generated__/RemainingAdmireCountFragment.graphql';
-import { NoteModalOpenerText } from 'components/Feed/Socialize/NoteModalOpenerText';
+
+import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
+import { RemainingAdmireCountFragment$key } from '~/generated/RemainingAdmireCountFragment.graphql';
 
 type RemainingAdmireCountProps = {
   remainingCount: number;

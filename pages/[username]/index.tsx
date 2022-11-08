@@ -1,28 +1,37 @@
-import UserGalleryPage from 'scenes/UserGalleryPage/UserGalleryPage';
 import { GetServerSideProps } from 'next';
-import { MetaTagProps } from 'pages/_app';
-import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { fetchQuery, graphql } from 'relay-runtime';
-import { useLazyLoadQuery } from 'react-relay';
-import { UsernameQuery } from '__generated__/UsernameQuery.graphql';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
 import { route } from 'nextjs-routes';
-import { PreloadQueryArgs } from 'types/PageComponentPreloadQuery';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
-const UsernameQueryNode = graphql`
-  query UsernameQuery($username: String!) {
-    ...UserGalleryPageFragment
-  }
-`;
+import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type UserGalleryProps = MetaTagProps & {
   username: string;
 };
 
 export default function UserGallery({ username }: UserGalleryProps) {
-  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
+  const query = useLazyLoadQuery<UsernameQuery>(
+    graphql`
+      query UsernameQuery($username: String!) {
+        ...UserGalleryPageFragment
+        ...GalleryNavbarFragment
+      }
+    `,
+    { username }
+  );
 
-  return <GalleryRoute element={<UserGalleryPage username={username} queryRef={query} />} />;
+  return (
+    <GalleryRoute
+      navbar={<GalleryNavbar username={username} queryRef={query} />}
+      element={<UserGalleryPage username={username} queryRef={query} />}
+    />
+  );
 }
 
 UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {

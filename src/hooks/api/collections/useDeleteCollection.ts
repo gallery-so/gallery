@@ -1,7 +1,8 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { useDeleteCollectionMutation } from '__generated__/useDeleteCollectionMutation.graphql';
+
+import { useDeleteCollectionMutation } from '~/generated/useDeleteCollectionMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export function useDeleteCollection() {
   // TODO: handle error cases

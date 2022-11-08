@@ -1,12 +1,14 @@
-import styled, { css } from 'styled-components';
-import IconContainer from 'components/core/Markdown/IconContainer';
-import { RefreshIcon } from 'icons/RefreshIcon';
 import { useCallback, useState } from 'react';
-import Tooltip from 'components/Tooltip/Tooltip';
 import { graphql, useFragment } from 'react-relay';
-import { SidebarChainSelectorFragment$key } from '../../../../../__generated__/SidebarChainSelectorFragment.graphql';
-import { SidebarChainButton } from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainButton';
-import { Chain, chains } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import styled, { css } from 'styled-components';
+
+import IconContainer from '~/components/core/Markdown/IconContainer';
+import { Chain, chains } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import { SidebarChainButton } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainButton';
+import Tooltip from '~/components/Tooltip/Tooltip';
+import { SidebarChainSelectorFragment$key } from '~/generated/SidebarChainSelectorFragment.graphql';
+import { RefreshIcon } from '~/icons/RefreshIcon';
+
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 
 type SidebarChainsProps = {

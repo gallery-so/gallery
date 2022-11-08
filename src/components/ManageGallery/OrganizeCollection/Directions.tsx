@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { FOOTER_HEIGHT } from 'components/Onboarding/constants';
-import { EmptyState } from 'components/EmptyState/EmptyState';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import { VStack } from '~/components/core/Spacer/Stack';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 
 function Directions() {
   return (
@@ -19,7 +19,7 @@ function Directions() {
 
 const DirectionsContainer = styled(VStack)`
   width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  height: 100%;
 `;
 
 const StyledDirections = styled.div`

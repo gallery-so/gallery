@@ -1,17 +1,20 @@
 import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Dropdown, { StyledDropdownButton } from 'components/core/Dropdown/Dropdown';
-import TextButton from 'components/core/Button/TextButton';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import useUpdateCollectionHidden from 'hooks/api/collections/useUpdateCollectionHidden';
-import noop from 'utils/noop';
+import TextButton from '~/components/core/Button/TextButton';
+import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CollectionRowSettingsFragment$key } from '~/generated/CollectionRowSettingsFragment.graphql';
+import useUpdateCollectionHidden from '~/hooks/api/collections/useUpdateCollectionHidden';
+import noop from '~/utils/noop';
+
 import CollectionCreateOrEditForm from '../OrganizeCollection/CollectionCreateOrEditForm';
 import DeleteCollectionConfirmation from './DeleteCollectionConfirmation';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionRowSettingsFragment$key } from '__generated__/CollectionRowSettingsFragment.graphql';
-import Settings from 'public/icons/ellipses.svg';
 
 type Props = {
   collectionRef: CollectionRowSettingsFragment$key;
@@ -81,32 +84,24 @@ function CollectionRowSettings({ collectionRef, onEditCollection }: Props) {
   }, [collection, showModal, track]);
 
   return (
-    <StyledCollectionRowSettings>
-      <StyledSettings />
+    <SettingsContainer gap={8} align="center">
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
-      <Dropdown>
-        <TextButton onClick={handleEditNameClick} text="EDIT NAME & DESCRIPTION" />
-        <TextButton onClick={handleToggleHiddenClick} text={hidden ? 'Show' : 'Hide'} />
-        <TextButton onClick={handleDeleteClick} text="Delete" />
-      </Dropdown>
-    </StyledCollectionRowSettings>
+      <SettingsDropdown>
+        <DropdownSection>
+          <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
+          <DropdownItem onClick={handleToggleHiddenClick}>{hidden ? 'SHOW' : 'HIDE'}</DropdownItem>
+          <DropdownItem onClick={handleDeleteClick}>DELETE</DropdownItem>
+        </DropdownSection>
+      </SettingsDropdown>
+    </SettingsContainer>
   );
 }
 
-const StyledCollectionRowSettings = styled.div`
+const SettingsContainer = styled(HStack)`
   position: absolute;
-  right: 16px;
-  top: 16px;
-  z-index: 1;
-  display: flex;
-  place-items: center;
-  height: 20px;
-  width: 75px;
 
-  ${StyledDropdownButton} {
-    width: 32px;
-    height: 16px;
-  }
+  right: 12px;
+  top: 12px;
 `;
 
 const StyledTextButton = styled(TextButton)`
@@ -115,11 +110,6 @@ const StyledTextButton = styled(TextButton)`
   border-radius: 1px;
   padding: 8px;
   font-weight: 500;
-`;
-
-const StyledSettings = styled(Settings)`
-  position: absolute;
-  right: 0;
 `;
 
 export default CollectionRowSettings;

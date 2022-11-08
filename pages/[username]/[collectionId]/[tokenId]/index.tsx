@@ -1,15 +1,16 @@
-import NftDetailPageScene from 'scenes/NftDetailPage/NftDetailPage';
 import { GetServerSideProps } from 'next';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import { MetaTagProps } from 'pages/_app';
-import { openGraphMetaTags } from 'utils/openGraphMetaTags';
-import { DecoratedCloseIcon } from 'src/icons/CloseIcon';
-import styled from 'styled-components';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import useKeyDown from 'hooks/useKeyDown';
 import { useCallback, useMemo } from 'react';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
+import styled from 'styled-components';
+
+import useKeyDown from '~/hooks/useKeyDown';
+import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import NftDetailPageScene from '~/scenes/NftDetailPage/NftDetailPage';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type NftDetailPageProps = MetaTagProps & {
   tokenId: string;

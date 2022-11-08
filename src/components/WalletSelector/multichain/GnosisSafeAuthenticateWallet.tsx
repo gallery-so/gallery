@@ -1,31 +1,33 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
+import { captureException } from '@sentry/nextjs';
 import { useWeb3React } from '@web3-react/core';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { Web3Error } from 'types/Error';
-import { INITIAL, PROMPT_SIGNATURE, PendingState, LISTENING_ONCHAIN } from 'types/Wallet';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { walletconnect } from '~/connectors/index';
+import { GNOSIS_NONCE_STORAGE_KEY } from '~/constants/storageKeys';
+import {
+  isEarlyAccessError,
+  useTrackCreateUserSuccess,
+  useTrackSignInAttempt,
+  useTrackSignInError,
+  useTrackSignInSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { Web3Error } from '~/types/Error';
+import { INITIAL, LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
+import { getLocalStorageItem } from '~/utils/localStorage';
+
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
+import useCreateNonce from '../mutations/useCreateNonce';
+import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,
   validateNonceSignedByGnosis,
 } from '../walletUtils';
-import { GNOSIS_NONCE_STORAGE_KEY } from 'constants/storageKeys';
-import { getLocalStorageItem } from 'utils/localStorage';
-import {
-  useTrackSignInAttempt,
-  useTrackSignInSuccess,
-  useTrackSignInError,
-  useTrackCreateUserSuccess,
-  isEarlyAccessError,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import useCreateNonce from '../mutations/useCreateNonce';
-import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import { normalizeError } from './normalizeError';
-import { WalletError } from './WalletError';
 import { useConnectGnosisSafe } from './useConnectGnosisSafe';
-import { walletconnect } from '../../../connectors';
+import { WalletError } from './WalletError';
 
 type Props = {
   reset: () => void;

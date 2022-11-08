@@ -1,9 +1,10 @@
 import { memo, useEffect } from 'react';
 import styled from 'styled-components';
-import { BaseXL } from 'components/core/Text/Text';
-import { ButtonLink } from 'components/core/Button/Button';
-import { useAuthActions } from 'contexts/auth/AuthContext';
-import { VStack } from 'components/core/Spacer/Stack';
+
+import { ButtonLink } from '~/components/core/Button/Button';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseXL } from '~/components/core/Text/Text';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {

@@ -1,21 +1,19 @@
-import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
-
 import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
 import 'src/index.css';
 import 'src/scenes/NftDetailPage/model-viewer.css';
 
+import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head';
-import AppProvider from 'contexts/AppProvider';
+import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
+import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+
 import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
-} from 'components/FadeTransitioner/FadeTransitioner';
-import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
-import welcomeDoormat from 'utils/welcomeDoormat';
-import isProduction from 'utils/isProduction';
-import { createRelayEnvironmentFromRecords } from 'contexts/relay/RelayProvider';
-import { PreloadQueryArgs } from 'types/PageComponentPreloadQuery';
-import { useRouter } from 'next/router';
+} from '~/components/FadeTransitioner/FadeTransitioner';
+import AppProvider from '~/contexts/AppProvider';
+import isProduction from '~/utils/isProduction';
+import welcomeDoormat from '~/utils/welcomeDoormat';
 
 type NameOrProperty =
   | { name: string; property?: undefined }
@@ -99,7 +97,10 @@ const App: FC<{
       <SafeHydrate>
         <AppProvider relayEnvironment={relayEnvironment}>
           <FadeTransitioner locationKey={locationKey}>
-            <Component {...pageProps} />
+            <>
+              <Component {...pageProps} />
+              <Analytics />
+            </>
           </FadeTransitioner>
         </AppProvider>
       </SafeHydrate>

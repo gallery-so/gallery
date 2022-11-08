@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
-import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
 import { graphql } from 'relay-runtime';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { useCreateCollectionMutation } from '__generated__/useCreateCollectionMutation.graphql';
-import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
-import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
-import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
+
+import { StagedCollection } from '~/components/ManageGallery/OrganizeCollection/types';
+import { TokenSettings } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCreateCollectionMutation } from '~/generated/useCreateCollectionMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from '~/utils/collectionLayout';
+import { collectionTokenSettingsObjectToArray } from '~/utils/collectionTokenSettings';
 
 type Props = {
   galleryId: string;

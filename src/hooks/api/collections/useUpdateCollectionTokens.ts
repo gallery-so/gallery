@@ -1,14 +1,15 @@
-import { useCallback } from 'react';
-import { generateLayoutFromCollection, getTokenIdsFromCollection } from 'utils/collectionLayout';
-import { fetchQuery, graphql } from 'relay-runtime';
-import { useRelayEnvironment } from 'react-relay';
-import { useUpdateCollectionTokensRefresherQuery } from '__generated__/useUpdateCollectionTokensRefresherQuery.graphql';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { useUpdateCollectionTokensMutation } from '__generated__/useUpdateCollectionTokensMutation.graphql';
-import { TokenSettings } from 'contexts/collectionEditor/CollectionEditorContext';
-import { collectionTokenSettingsObjectToArray } from 'utils/collectionTokenSettings';
 import { captureException } from '@sentry/nextjs';
-import { StagedCollection } from 'components/ManageGallery/OrganizeCollection/types';
+import { useCallback } from 'react';
+import { useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
+
+import { StagedCollection } from '~/components/ManageGallery/OrganizeCollection/types';
+import { TokenSettings } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useUpdateCollectionTokensMutation } from '~/generated/useUpdateCollectionTokensMutation.graphql';
+import { useUpdateCollectionTokensRefresherQuery } from '~/generated/useUpdateCollectionTokensRefresherQuery.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { generateLayoutFromCollection, getTokenIdsFromCollection } from '~/utils/collectionLayout';
+import { collectionTokenSettingsObjectToArray } from '~/utils/collectionTokenSettings';
 
 type Props = {
   collectionId: string;

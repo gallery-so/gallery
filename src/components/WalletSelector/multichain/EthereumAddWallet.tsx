@@ -1,37 +1,39 @@
-import { Button } from 'components/core/Button/Button';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
+import { captureException } from '@sentry/nextjs';
+import { signMessage } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { Web3Error } from 'types/Error';
+import { useAccount } from 'wagmi';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
+import {
+  isEarlyAccessError,
+  useTrackAddWalletAttempt,
+  useTrackAddWalletError,
+  useTrackAddWalletSuccess,
+} from '~/contexts/analytics/authUtil';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { EthereumAddWalletFragment$key } from '~/generated/EthereumAddWalletFragment.graphql';
+import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
   CONFIRM_ADDRESS,
   INITIAL,
   PendingState,
   PROMPT_SIGNATURE,
-} from 'types/Wallet';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import {
-  isEarlyAccessError,
-  useTrackAddWalletAttempt,
-  useTrackAddWalletError,
-  useTrackAddWalletSuccess,
-} from 'contexts/analytics/authUtil';
-import { captureException } from '@sentry/nextjs';
-import { EthereumAddWalletFragment$key } from '__generated__/EthereumAddWalletFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import useCreateNonce from '../mutations/useCreateNonce';
+} from '~/types/Wallet';
+import noop from '~/utils/noop';
+import { removeNullValues } from '~/utils/removeNullValues';
+
 import useAddWallet from '../mutations/useAddWallet';
-import { useAccount } from 'wagmi';
-import { signMessage } from '@wagmi/core';
-import { WalletError } from './WalletError';
+import useCreateNonce from '../mutations/useCreateNonce';
 import { normalizeError } from './normalizeError';
-import { VStack } from 'components/core/Spacer/Stack';
-import noop from 'utils/noop';
-import { EmptyState } from 'components/EmptyState/EmptyState';
+import { WalletError } from './WalletError';
 
 type Props = {
   queryRef: EthereumAddWalletFragment$key;

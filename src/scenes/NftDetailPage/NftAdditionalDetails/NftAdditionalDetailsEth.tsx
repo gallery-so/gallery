@@ -1,14 +1,15 @@
-import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
-import { getOpenseaExternalUrl, hexHandler } from 'utils/getOpenseaExternalUrl';
-import { VStack } from 'components/core/Spacer/Stack';
-import { BaseM, TitleXS } from 'components/core/Text/Text';
-import { EnsOrAddress } from 'components/EnsOrAddress';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { NftAdditionalDetailsEthFragment$key } from '../../../../__generated__/NftAdditionalDetailsEthFragment.graphql';
-import { useRefreshMetadata } from 'scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { LinkableAddress } from 'components/LinkableAddress';
+
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { EnsOrAddress } from '~/components/EnsOrAddress';
+import { LinkableAddress } from '~/components/LinkableAddress';
+import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
+import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { getOpenseaExternalUrl, hexHandler } from '~/utils/getOpenseaExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;

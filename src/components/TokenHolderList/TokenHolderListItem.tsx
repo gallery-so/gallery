@@ -1,20 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import { BaseXL } from 'components/core/Text/Text';
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import breakpoints, { size } from 'components/core/breakpoints';
-import useDebounce from 'hooks/useDebounce';
-import { Directions } from 'src/components/core/enums';
-import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
-import detectMobileDevice from 'utils/detectMobileDevice';
-import { useBreakpoint } from 'hooks/useWindowSize';
-import colors from 'components/core/colors';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { removeNullValues } from 'utils/removeNullValues';
-import { useMemberListPageActions } from 'contexts/memberListPage/MemberListPageContext';
-import { TokenHolderListItemFragment$key } from '__generated__/TokenHolderListItemFragment.graphql';
-import { graphqlTruncateUniversalUsername } from 'utils/wallet';
+import styled from 'styled-components';
+
+import breakpoints, { size } from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { Directions } from '~/components/core/enums';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import { BaseXL } from '~/components/core/Text/Text';
+import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
+import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
+import useDebounce from '~/hooks/useDebounce';
+import { useBreakpoint } from '~/hooks/useWindowSize';
+import detectMobileDevice from '~/utils/detectMobileDevice';
+import { removeNullValues } from '~/utils/removeNullValues';
+import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
+
+import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 
 type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
@@ -81,9 +83,10 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
 
   const breakpoint = useBreakpoint();
 
-  const isDesktop = useMemo(() => breakpoint === size.desktop && !detectMobileDevice(), [
-    breakpoint,
-  ]);
+  const isDesktop = useMemo(
+    () => breakpoint === size.desktop && !detectMobileDevice(),
+    [breakpoint]
+  );
 
   const previewTokens = useMemo(
     () => (owner.previewTokens ? removeNullValues(owner.previewTokens) : null),

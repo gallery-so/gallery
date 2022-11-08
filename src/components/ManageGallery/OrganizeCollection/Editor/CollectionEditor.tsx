@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import {
@@ -6,22 +7,21 @@ import {
   useCollectionEditorActions,
   useSidebarTokensState,
   useStagedCollectionState,
-} from 'contexts/collectionEditor/CollectionEditorContext';
-import { useCollectionWizardState } from 'contexts/wizard/CollectionWizardContext';
+} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
+import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
+import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
+import { parseCollectionLayout } from '~/utils/collectionLayout';
+import { removeNullValues } from '~/utils/removeNullValues';
 
-import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
+import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
+import useNotOptimizedForMobileWarning from '../../useNotOptimizedForMobileWarning';
+import { convertObjectToArray } from '../convertObjectToArray';
 import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
-import { convertObjectToArray } from '../convertObjectToArray';
-import StagingArea from './StagingArea';
+import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
-import { parseCollectionLayout } from 'utils/collectionLayout';
-import { graphql, useFragment } from 'react-relay';
-import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
-import { removeNullValues } from 'utils/removeNullValues';
-import { CollectionEditorViewerFragment$key } from '../../../../../__generated__/CollectionEditorViewerFragment.graphql';
-import useNotOptimizedForMobileWarning from '../../useNotOptimizedForMobileWarning';
-import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
+import StagingArea from './StagingArea';
 
 function convertNftsToEditModeTokens(
   tokens: EditModeTokenChild[],
@@ -270,6 +270,7 @@ const SIDEBAR_WIDTH = 250;
 
 const StyledOrganizeCollection = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const StyledSidebarContainer = styled.div`

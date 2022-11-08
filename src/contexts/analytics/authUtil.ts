@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
-import { isWeb3Error } from 'types/Error';
+
+import { isWeb3Error } from '~/types/Error';
+
 import { useTrack } from './AnalyticsContext';
 
 const useTrackAuthEvent = () => {

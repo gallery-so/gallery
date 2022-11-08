@@ -1,7 +1,8 @@
-import { readInlineData } from 'relay-runtime';
-import { graphql } from 'react-relay';
-import { getCommunityUrlForTokenFragment$key } from '../../__generated__/getCommunityUrlForTokenFragment.graphql';
 import { Route } from 'nextjs-routes';
+import { graphql } from 'react-relay';
+import { readInlineData } from 'relay-runtime';
+
+import { getCommunityUrlForTokenFragment$key } from '~/generated/getCommunityUrlForTokenFragment.graphql';
 
 export const DISABLED_CONTRACTS = [
   '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Art Blocks

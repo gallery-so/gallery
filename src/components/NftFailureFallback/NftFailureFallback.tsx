@@ -1,11 +1,12 @@
-import styled from 'styled-components';
-import colors from 'components/core/colors';
-import { RefreshIcon } from 'icons/RefreshIcon';
-import { BaseM } from 'components/core/Text/Text';
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
-import Tooltip from 'components/Tooltip/Tooltip';
-import IconContainer from 'components/core/Markdown/IconContainer';
-import { VStack } from 'components/core/Spacer/Stack';
+import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import Tooltip from '~/components/Tooltip/Tooltip';
+import { RefreshIcon } from '~/icons/RefreshIcon';
 
 type Size = 'tiny' | 'medium';
 

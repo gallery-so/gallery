@@ -1,9 +1,11 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
-import { fetchQuery, graphql } from 'relay-runtime';
-import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
-import { useCreateUserMutation } from '../../../../__generated__/useCreateUserMutation.graphql';
 import { useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
+
+import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+
+import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
 
 export default function useCreateUser() {
   const environment = useRelayEnvironment();

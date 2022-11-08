@@ -1,6 +1,7 @@
-import { mockGraphqlQuery } from './mockGraphqlQuery';
-import { DebuggerQueryQuery } from '../../__generated__/operations';
+import { DebuggerQueryQuery } from '~/generated/operations';
+
 import { GALLERY_USER_DBID, GALLERY_USER_ID, GALLERY_USER_USERNAME, WALLETS } from '../constants';
+import { mockGraphqlQuery } from './mockGraphqlQuery';
 
 export function mockDebuggerQuery() {
   const response: DebuggerQueryQuery = {

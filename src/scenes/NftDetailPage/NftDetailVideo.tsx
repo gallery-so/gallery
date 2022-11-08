@@ -1,12 +1,13 @@
-import { useFragment } from 'react-relay';
-import styled from 'styled-components';
-import { graphql } from 'relay-runtime';
-import { NftDetailVideoFragment$key } from '__generated__/NftDetailVideoFragment.graphql';
-import { ContentIsLoadedEvent } from 'contexts/shimmer/ShimmerContext';
-import { useThrowOnMediaFailure } from 'hooks/useNftRetry';
 import { SyntheticEvent, useCallback, useMemo, useState } from 'react';
-import isVideoUrl from 'utils/isVideoUrl';
-import { isSafari } from 'utils/browser';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
+
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
+import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
+import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { isSafari } from '~/utils/browser';
+import isVideoUrl from '~/utils/isVideoUrl';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;

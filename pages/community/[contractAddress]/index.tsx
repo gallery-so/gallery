@@ -1,17 +1,19 @@
-import CommunityPageScene from 'scenes/CommunityPage/CommunityPage';
 import { GetServerSideProps } from 'next';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
-import { MetaTagProps } from 'pages/_app';
-import { graphql } from 'relay-runtime';
 import { useLazyLoadQuery } from 'react-relay';
-import { ContractAddressQuery } from '__generated__/ContractAddressQuery.graphql';
-import GalleryRoute from 'scenes/_Router/GalleryRoute';
-import { DISABLED_CONTRACTS } from 'utils/getCommunityUrlForToken';
+import { graphql } from 'relay-runtime';
+
 import {
   GRID_ENABLED_COMMUNITY_ADDRESSES,
   GRID_ITEM_PER_PAGE,
   LIST_ITEM_PER_PAGE,
-} from 'constants/community';
+} from '~/constants/community';
+import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
+import { ContractAddressQuery } from '~/generated/ContractAddressQuery.graphql';
+import { MetaTagProps } from '~/pages/_app';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import CommunityPageScene from '~/scenes/CommunityPage/CommunityPage';
+import { DISABLED_CONTRACTS } from '~/utils/getCommunityUrlForToken';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -32,6 +34,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
         $onlyGalleryUsers: Boolean
       ) {
         ...CommunityPageFragment
+        ...CommunityNavbarFragment
       }
     `,
     {
@@ -55,7 +58,12 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  return <GalleryRoute element={<CommunityPageScene queryRef={query} />} />;
+  return (
+    <GalleryRoute
+      navbar={<CommunityNavbar queryRef={query} />}
+      element={<CommunityPageScene queryRef={query} />}
+    />
+  );
 }
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {

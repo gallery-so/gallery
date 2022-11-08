@@ -1,35 +1,37 @@
-import usePersistedState from 'hooks/usePersistedState';
+import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import {
-  ReactNode,
   createContext,
-  useContext,
+  Fragment,
   memo,
-  useState,
+  ReactNode,
+  Suspense,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
-  Fragment,
-  Suspense,
+  useState,
 } from 'react';
-import Web3WalletProvider from './Web3WalletContext';
-import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
-import clearLocalStorageWithException from './clearLocalStorageWithException';
+import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import {
   GLOBAL_BANNER_STORAGE_KEY,
   TEZOS_ANNOUNCEMENT_STORAGE_KEY,
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-} from 'constants/storageKeys';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { _identify } from 'contexts/analytics/AnalyticsContext';
-import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
-import { AuthContextFetchUserQuery } from '__generated__/AuthContextFetchUserQuery.graphql';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
-import { AuthContextLogoutMutation } from '__generated__/AuthContextLogoutMutation.graphql';
-import ErrorBoundary from 'contexts/boundary/ErrorBoundary';
-import { getCurrentHub, startTransaction } from '@sentry/nextjs';
-import FullPageLoader from 'components/core/Loader/FullPageLoader';
-import { isWeb3Error, Web3Error } from 'types/Error';
+} from '~/constants/storageKeys';
+import { _identify } from '~/contexts/analytics/AnalyticsContext';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { AuthContextFetchUserQuery } from '~/generated/AuthContextFetchUserQuery.graphql';
+import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { isWeb3Error, Web3Error } from '~/types/Error';
+
+import clearLocalStorageWithException from './clearLocalStorageWithException';
 import { EtheremProviders } from './EthereumProviders';
+import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
+import Web3WalletProvider from './Web3WalletContext';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -101,6 +103,8 @@ const useImperativelyFetchUser = () => {
               }
             }
           }
+
+          ...ProfileDropdownFragment
         }
       `,
       {}
@@ -124,17 +128,22 @@ const useLogout = () => {
     `
   );
 
-  return useCallback(() => {
-    logout({
+  return useCallback(async () => {
+    await logout({
       variables: {},
-      updater: (store) => {
-        // TODO: manually dropping the viewer on logout for now.
-        // for some reason the mutation that returns Viewer => user
-        // doesn't update the store as expected, and the Viewer
-        // remains in our cache...
-        store.delete('client:root:viewer');
-      },
     });
+
+    // Need to do this for now.
+    // Steps to reproduce
+    // 1. Visit Home page logged in
+    // 2. Load worldwide tab
+    // 3. Select following tab
+    // 4. log out.
+    // See bug
+    //
+    // This happens because the worldwide tab is reloading and using a cached
+    // response which has the old viewer inside. This is a fucking disaster
+    location.reload();
   }, [logout]);
 };
 

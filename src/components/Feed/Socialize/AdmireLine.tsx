@@ -1,14 +1,15 @@
+import Link from 'next/link';
+import { Route, route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { HStack } from 'components/core/Spacer/Stack';
 import styled from 'styled-components';
-import { BODY_FONT_FAMILY } from 'components/core/Text/Text';
-import { AdmireLineFragment$key } from '../../../../__generated__/AdmireLineFragment.graphql';
-import { AdmireLineQueryFragment$key } from '../../../../__generated__/AdmireLineQueryFragment.graphql';
-import { useMemo } from 'react';
-import colors from 'components/core/colors';
-import Link from 'next/link';
-import { route, Route } from 'nextjs-routes';
+
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
+import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 
 type CommentLineProps = {
   admireRef: AdmireLineFragment$key;

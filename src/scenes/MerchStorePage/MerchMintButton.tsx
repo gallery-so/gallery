@@ -1,16 +1,18 @@
-import GalleryLink from 'components/core/GalleryLink/GalleryLink';
-import colors from 'components/core/colors';
-import { BaseM } from 'components/core/Text/Text';
 import { useEffect, useMemo } from 'react';
-import { useToastActions } from 'contexts/toast/ToastContext';
-import { TransactionStatus } from 'constants/transaction';
-import useMintContractWithQuantity from 'hooks/useMintContractWithQuantity';
-import { Button } from 'components/core/Button/Button';
 import styled from 'styled-components';
-import { useMintMerchContract } from 'hooks/useContract';
+
+import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
+import { TransactionStatus } from '~/constants/transaction';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { useMintMerchContract } from '~/hooks/useContract';
+import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+
 import { MAX_NFTS_PER_WALLET } from './constants';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import { VStack } from 'components/core/Spacer/Stack';
 
 type Props = {
   onMintSuccess: () => void;
@@ -26,10 +28,10 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   const { transactionHash, transactionStatus, buttonText, error, handleClick, userOwnedSupply } =
     useMintContractWithQuantity({
-    contract,
-    tokenId,
-    quantity,
-  });
+      contract,
+      tokenId,
+      quantity,
+    });
 
   useEffect(() => {
     if (transactionStatus === TransactionStatus.SUCCESS) {

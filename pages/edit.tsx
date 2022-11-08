@@ -8,9 +8,10 @@
  */
 
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { editQuery } from '__generated__/editQuery.graphql';
-import NotFound from 'scenes/NotFound/NotFound';
-import GalleryRedirect from 'scenes/_Router/GalleryRedirect';
+
+import { editQuery } from '~/generated/editQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import NotFound from '~/scenes/NotFound/NotFound';
 
 export default function Edit() {
   const query = useLazyLoadQuery<editQuery>(

@@ -1,11 +1,12 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { FollowButtonUserFragment$data } from '__generated__/FollowButtonUserFragment.graphql';
+
+import { FollowButtonUserFragment$data } from '~/generated/FollowButtonUserFragment.graphql';
 import {
   useUnfollowUserMutation,
   useUnfollowUserMutation$data,
-} from '__generated__/useUnfollowUserMutation.graphql';
+} from '~/generated/useUnfollowUserMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUnfollowUser() {
   const [unfollowUserMutate] = usePromisifiedMutation<useUnfollowUserMutation>(

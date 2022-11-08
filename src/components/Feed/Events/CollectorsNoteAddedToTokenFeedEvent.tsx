@@ -1,22 +1,24 @@
-import breakpoints from 'components/core/breakpoints';
-import InteractiveLink from 'components/core/InteractiveLink/InteractiveLink';
-import { BaseM, TitleM } from 'components/core/Text/Text';
-import { useModalActions } from 'contexts/modal/ModalContext';
-import useWindowSize, { useIsMobileWindowWidth } from 'hooks/useWindowSize';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import NftDetailView from 'scenes/NftDetailPage/NftDetailView';
 import styled from 'styled-components';
-import { getTimeSince } from 'utils/time';
-import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+
+import breakpoints from '~/components/core/breakpoints';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
+import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
+import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+import { getTimeSince } from '~/utils/time';
+import unescape from '~/utils/unescape';
+
 import EventMedia from './EventMedia';
-import unescape from 'utils/unescape';
-import { useTrack } from 'contexts/analytics/AnalyticsContext';
-import HoverCardOnUsername from 'components/HoverCard/HoverCardOnUsername';
-import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '__generated__/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
-import Markdown from 'components/core/Markdown/Markdown';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
+import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;

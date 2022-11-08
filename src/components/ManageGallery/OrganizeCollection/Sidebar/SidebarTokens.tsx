@@ -1,15 +1,16 @@
-import { EditModeToken } from 'components/ManageGallery/OrganizeCollection/types';
-import { SidebarTokensFragment$key } from '../../../../../__generated__/SidebarTokensFragment.graphql';
-import { graphql, useFragment } from 'react-relay';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { groupCollectionsByAddress } from 'components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
+import { graphql, useFragment } from 'react-relay';
+
+import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import {
   createVirtualizedRowsFromGroups,
   createVirtualizedRowsFromTokens,
-} from 'components/ManageGallery/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
-import { EmptySidebar } from 'components/ManageGallery/OrganizeCollection/Sidebar/EmptySidebar';
-import { SidebarList } from 'components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
-import { Chain } from 'components/ManageGallery/OrganizeCollection/Sidebar/chains';
+} from '~/components/ManageGallery/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
+import { EmptySidebar } from '~/components/ManageGallery/OrganizeCollection/Sidebar/EmptySidebar';
+import { groupCollectionsByAddress } from '~/components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
+import { SidebarList } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
+import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
 
 type SidebarTokensProps = {
   isSearching: boolean;

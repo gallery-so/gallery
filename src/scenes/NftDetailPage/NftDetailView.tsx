@@ -1,10 +1,12 @@
-import breakpoints from 'components/core/breakpoints';
-import ShimmerProvider from 'contexts/shimmer/ShimmerContext';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { NftDetailViewFragment$key } from '__generated__/NftDetailViewFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
+import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';

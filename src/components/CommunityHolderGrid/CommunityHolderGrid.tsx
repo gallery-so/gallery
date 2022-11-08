@@ -1,13 +1,15 @@
-import breakpoints from 'components/core/breakpoints';
-import Loader from 'components/core/Loader/Loader';
-import { VStack } from 'components/core/Spacer/Stack';
-import { TitleS } from 'components/core/Text/Text';
-import { GRID_ITEM_PER_PAGE } from 'constants/community';
-import { GLOBAL_FOOTER_HEIGHT } from 'contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
-import { CommunityHolderGridFragment$key } from '__generated__/CommunityHolderGridFragment.graphql';
+
+import breakpoints from '~/components/core/breakpoints';
+import Loader from '~/components/core/Loader/Loader';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleS } from '~/components/core/Text/Text';
+import { GRID_ITEM_PER_PAGE } from '~/constants/community';
+import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { CommunityHolderGridFragment$key } from '~/generated/CommunityHolderGridFragment.graphql';
+
 import CommunityHolderGridItem from './CommunityHolderGridItem';
 
 type Props = {
@@ -15,10 +17,14 @@ type Props = {
 };
 
 export default function CommunityHolderGrid({ communityRef }: Props) {
-  const { data: community, loadNext, hasNext } = usePaginationFragment(
+  const {
+    data: community,
+    loadNext,
+    hasNext,
+  } = usePaginationFragment(
     graphql`
       fragment CommunityHolderGridFragment on Community
-        @refetchable(queryName: "CommunityHolderRefetchableFragment") {
+      @refetchable(queryName: "CommunityHolderRefetchableFragment") {
         id
 
         tokensInCommunity(

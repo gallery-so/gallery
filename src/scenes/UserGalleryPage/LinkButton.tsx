@@ -1,8 +1,8 @@
-import colors from 'components/core/colors';
 import styled from 'styled-components';
 
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard';
-import LinkIcon from 'src/icons/LinkIcon';
+import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
+import colors from '~/components/core/colors';
+import LinkIcon from '~/icons/LinkIcon';
 
 export default function LinkButton({ textToCopy }: { textToCopy: string }) {
   return (

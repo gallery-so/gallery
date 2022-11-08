@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
+import { graphql } from 'react-relay';
+
 import {
   useUpdateCollectionInfoMutation,
   useUpdateCollectionInfoMutation$data,
-} from '__generated__/useUpdateCollectionInfoMutation.graphql';
-import { graphql } from 'react-relay';
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
+} from '~/generated/useUpdateCollectionInfoMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUpdateCollectionInfo() {
   const [updateCollection] = usePromisifiedMutation<useUpdateCollectionInfoMutation>(graphql`

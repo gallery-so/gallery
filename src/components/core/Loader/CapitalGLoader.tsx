@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+
 import { TitleL } from '../Text/Text';
 
 export default function CapitalGLoader() {

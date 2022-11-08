@@ -1,6 +1,7 @@
-import colors from 'components/core/colors';
-import { TitleXSBold } from 'components/core/Text/Text';
 import styled from 'styled-components';
+
+import colors from '~/components/core/colors';
+import { TitleXSBold } from '~/components/core/Text/Text';
 
 type Props = {
   text: string;

@@ -1,22 +1,23 @@
+import Link from 'next/link';
+import { route } from 'nextjs-routes';
 import styled from 'styled-components';
-import breakpoints, { pageGutter } from 'components/core/breakpoints';
-import { BaseS, TitleM } from 'components/core/Text/Text';
-import colors from 'components/core/colors';
+
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import NavLink from '~/components/core/NavLink/NavLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseS, TitleM } from '~/components/core/Text/Text';
 import {
+  GALLERY_BLOG,
+  GALLERY_DISCORD,
   GALLERY_FAQ,
   GALLERY_JOBS,
-  GALLERY_DISCORD,
   GALLERY_MEMBERSHIP_OPENSEA,
   GALLERY_TWITTER,
-  GALLERY_BLOG,
-} from 'constants/urls';
-import { useIsMobileOrMobileLargeWindowWidth } from 'hooks/useWindowSize';
-import Link from 'next/link';
-import NavLink from 'components/core/NavLink/NavLink';
-import LogoBracketLeft from 'icons/LogoBracketLeft';
-import LogoBracketRight from 'icons/LogoBracketRight';
-import { HStack, VStack } from 'components/core/Spacer/Stack';
-import { route } from 'nextjs-routes';
+} from '~/constants/urls';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import LogoBracketLeft from '~/icons/LogoBracketLeft';
+import LogoBracketRight from '~/icons/LogoBracketRight';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();

@@ -1,10 +1,11 @@
-import { usePromisifiedMutation } from 'hooks/usePromisifiedMutation';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import {
   DebugAuth,
   useDebugAuthLoginMutation,
-} from '__generated__/useDebugAuthLoginMutation.graphql';
+} from '~/generated/useDebugAuthLoginMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export function useDebugAuthLogin() {
   const [login] = usePromisifiedMutation<useDebugAuthLoginMutation>(
