@@ -2,18 +2,11 @@ import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
 import { FetchFunction, GraphQLResponse, RequestParameters } from 'relay-runtime';
 
-import { _fetch, baseurl } from '~/contexts/swr/fetch';
-
-export function getGraphqlHost() {
-  return baseurl;
-}
-
-export function getGraphqlPath() {
-  return `/glry/graphql/query`;
-}
+import { _fetch } from '~/contexts/swr/fetch';
+import { baseUrl } from '~/utils/baseUrl';
 
 export function getGraphqlUrl() {
-  return `http://localhost:3000${getGraphqlPath()}`;
+  return `${baseUrl}/glry/graphql/query`;
 }
 
 /**
