@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -27,25 +27,20 @@ function UserSettingsPage({ queryRef, username }: Props) {
 
   const { showModal } = useModalActions();
   const router = useRouter();
-
-  const handleManageWalletsClick = useCallback(() => {
-    showModal({
-      content: <ManageWalletsModal queryRef={query} />,
-      headerText: 'Manage accounts',
-      onClose: () => {
-        router.push({ pathname: '/[username]', query: { username } });
-      },
-    });
-  }, [query, router, showModal, username]);
-
-  const isShowModal = useRef(false);
+  const isModalDisplayed = useRef(false);
 
   useEffect(() => {
-    if (!isShowModal.current) {
-      handleManageWalletsClick();
-      isShowModal.current = true;
+    if (!isModalDisplayed.current) {
+      showModal({
+        content: <ManageWalletsModal queryRef={query} />,
+        headerText: 'Manage accounts',
+        onClose: () => {
+          router.push({ pathname: '/[username]', query: { username } });
+        },
+      });
+      isModalDisplayed.current = true;
     }
-  }, [handleManageWalletsClick]);
+  }, [query, router, showModal, username]);
 
   return <UserGalleryPage username={username} queryRef={query} />;
 }
