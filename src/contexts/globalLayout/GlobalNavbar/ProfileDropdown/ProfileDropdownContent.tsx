@@ -22,6 +22,7 @@ import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownC
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   showDropdown: boolean;
@@ -55,6 +56,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         ...getEditGalleryUrlFragment
         ...ManageWalletsModalFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -93,6 +95,8 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+
   return (
     <>
       <Dropdown position="left" active={showDropdown} onClose={onClose}>
@@ -112,12 +116,14 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-          <NotificationsDropdownItem onClick={handleNotificationsClick}>
-            <HStack align="center" gap={10}>
-              <div>NOTIFICATIONS</div>
-              {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
-            </HStack>
-          </NotificationsDropdownItem>
+          {isWhiteRinoEnabled && (
+            <NotificationsDropdownItem onClick={handleNotificationsClick}>
+              <HStack align="center" gap={10}>
+                <div>NOTIFICATIONS</div>
+                {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
+              </HStack>
+            </NotificationsDropdownItem>
+          )}
         </DropdownSection>
 
         <DropdownSection gap={4}>
