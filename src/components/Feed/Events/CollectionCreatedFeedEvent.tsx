@@ -26,8 +26,6 @@ type Props = {
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-const MAX_PIECES_DISPLAYED = 4;
-
 export default function CollectionCreatedFeedEvent({ caption, eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`

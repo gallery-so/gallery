@@ -29,8 +29,6 @@ type Props = {
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
-const MAX_PIECES_DISPLAYED = 4;
-
 export default function TokensAddedToCollectionFeedEvent({
   caption,
   eventDataRef,
