@@ -10,7 +10,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
-const GALLERY_OF_THE_WEEK_USER = 'pk';
+const GALLERY_OF_THE_WEEK_USER = 'masisus';
 
 export default function LandingPage() {
   const track = useTrack();

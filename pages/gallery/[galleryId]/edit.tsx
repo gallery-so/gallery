@@ -8,7 +8,6 @@ import breakpoints from '~/components/core/breakpoints';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { GalleryEditNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
-import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
 
 export default function EditGalleryPage() {
@@ -28,7 +27,7 @@ export default function EditGalleryPage() {
     {}
   );
 
-  const { push, back, query: urlQuery } = useRouter();
+  const { push, query: urlQuery } = useRouter();
 
   const handleAddCollection = useCallback(() => {
     if (!urlQuery.galleryId) {
@@ -55,16 +54,13 @@ export default function EditGalleryPage() {
     [push, urlQuery.galleryId]
   );
 
-  const canGoBack = useCanGoBack();
   const handleDone = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else if (query.viewer?.user?.username) {
+    if (query.viewer?.user?.username) {
       push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
       push({ pathname: '/home' });
     }
-  }, [back, canGoBack, push, query.viewer?.user?.username]);
+  }, [push, query.viewer?.user?.username]);
 
   return (
     <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
