@@ -2,6 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import AppProvider from '~/contexts/AppProvider';
+import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
 import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import {
   Chain,
@@ -122,8 +123,9 @@ describe('NftDetailAsset', () => {
     // Mock the retry for when they hit the button
     mockGraphqlQuery('useNftRetryMutation', RetryImageMediaResponse);
 
+    const relayEnvironment = createRelayEnvironmentFromRecords();
     const { findByText, findByTestId, findByAltText } = render(
-      <AppProvider>
+      <AppProvider relayEnvironment={relayEnvironment}>
         <Fixture />
       </AppProvider>
     );

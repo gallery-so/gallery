@@ -1,8 +1,7 @@
-import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { Environment, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
-import { RelayProvider } from '~/contexts/relay/RelayProvider';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import isProduction from '~/utils/isProduction';
 

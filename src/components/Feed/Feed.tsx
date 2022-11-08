@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -29,6 +29,7 @@ export default function Feed({ queryRef, feedMode, setFeedMode }: Props) {
     queryRef
   );
 
+  const firstMountRef = useRef(true);
   // refetch when changing modes. this not only displays up-to-date data, but fixes a bug
   // for users logging in from the feed view who were seeing empty ViewerFeeds
   useEffect(() => {

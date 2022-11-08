@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { route } from 'nextjs-routes';
 import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { fetchQuery, graphql } from 'relay-runtime';
 
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
@@ -11,20 +11,19 @@ import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
+const UsernameQueryNode = graphql`
+  query UsernameQuery($username: String!) {
+    ...UserGalleryPageFragment
+    ...GalleryNavbarFragment
+  }
+`;
+
 type UserGalleryProps = MetaTagProps & {
   username: string;
 };
 
 export default function UserGallery({ username }: UserGalleryProps) {
-  const query = useLazyLoadQuery<UsernameQuery>(
-    graphql`
-      query UsernameQuery($username: String!) {
-        ...UserGalleryPageFragment
-        ...GalleryNavbarFragment
-      }
-    `,
-    { username }
-  );
+  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
 
   return (
     <GalleryRoute

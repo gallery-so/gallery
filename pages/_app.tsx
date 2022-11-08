@@ -5,6 +5,7 @@ import 'src/scenes/NftDetailPage/model-viewer.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
@@ -12,6 +13,8 @@ import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
 } from '~/components/FadeTransitioner/FadeTransitioner';
 import AppProvider from '~/contexts/AppProvider';
+import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
 
