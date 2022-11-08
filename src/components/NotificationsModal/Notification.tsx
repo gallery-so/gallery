@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
@@ -34,7 +35,20 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
         seen
         updatedTime
 
-        # Only grouped notifications should be clickable to see a user list
+        __typename
+
+        ... on SomeoneCommentedOnYourFeedEventNotification {
+          feedEvent {
+            dbid
+          }
+        }
+
+        ... on SomeoneAdmiredYourFeedEventNotification {
+          feedEvent {
+            dbid
+          }
+        }
+
         ... on GroupedNotification {
           count
         }
@@ -48,6 +62,14 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
   const query = useFragment(
     graphql`
       fragment NotificationQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+
         ...NotificationInnerQueryFragment
       }
     `,
@@ -55,31 +77,54 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
   );
 
   const { showModal } = useModalActions();
+  const { push } = useRouter();
   const isMobile = useIsMobileWindowWidth();
 
   /**
-   * This is a kind of strange heuristic to determine if the notification
-   * can be clicked into. Right now, all grouped notifications have an
-   * associated user list tied to them, and we only want to show
-   * that list if there is more than one user associated
-   * with this notification.
+   * Bare with me here, this `useMemo` returns a stable function
+   * if we want that notification type to have a clickable action.
+   *
+   * If the notification should not be clickable, we return undefined
+   * instead of a function. Signaling downstream that this notification
+   * is not actionable.
    */
-  const isClickable = (notification.count ?? 0) > 1;
+  const handleNotificationClick = useMemo(() => {
+    if (notification.feedEvent) {
+      const username = query.viewer?.user?.username;
+      const eventId = notification.feedEvent.dbid;
 
-  const timeAgo = getTimeSince(notification.updatedTime);
-
-  const handleNotificationClick = useCallback(() => {
-    if (!isClickable) {
-      return;
+      return function navigateToUserActivityWithFeedEventAtTop() {
+        if (username && eventId) {
+          push({ pathname: '/[username]/activity', query: { username, eventId } });
+        }
+      };
+    } else if (notification.count && notification.count > 1) {
+      return function showUserListModal() {
+        showModal({
+          content: (
+            <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
+          ),
+          isFullPage: isMobile,
+          isPaddingDisabled: true,
+          headerVariant: 'standard',
+        });
+      };
     }
 
-    showModal({
-      content: <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />,
-      isFullPage: isMobile,
-      isPaddingDisabled: true,
-      headerVariant: 'standard',
-    });
-  }, [isClickable, isMobile, notification.id, showModal]);
+    return undefined;
+  }, [
+    isMobile,
+    notification.count,
+    notification.feedEvent,
+    notification.id,
+    push,
+    query.viewer?.user?.username,
+    showModal,
+  ]);
+
+  const isClickable = handleNotificationClick != undefined;
+
+  const timeAgo = getTimeSince(notification.updatedTime);
 
   return (
     <Container isClickable={isClickable} onClick={handleNotificationClick}>

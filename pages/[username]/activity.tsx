@@ -13,9 +13,10 @@ import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type UserActivityProps = MetaTagProps & {
   username: string;
+  eventId: string | null;
 };
 
-export default function UserFeed({ username }: UserActivityProps) {
+export default function UserFeed({ username, eventId }: UserActivityProps) {
   const query = useLazyLoadQuery<activityQuery>(
     graphql`
       query activityQuery(
@@ -25,6 +26,7 @@ export default function UserFeed({ username }: UserActivityProps) {
         $viewerLast: Int!
         $viewerBefore: String
         $visibleTokensPerFeedEvent: Int!
+        $topEventId: DBID!
       ) {
         ...UserActivityPageFragment
         ...GalleryNavbarFragment
@@ -32,8 +34,9 @@ export default function UserFeed({ username }: UserActivityProps) {
     `,
     {
       username: username,
-      interactionsFirst: NOTES_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
+      interactionsFirst: NOTES_PER_PAGE,
+      topEventId: eventId ?? 'some-non-existent-feed-event-id',
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
     }
   );
@@ -46,8 +49,12 @@ export default function UserFeed({ username }: UserActivityProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<UserActivityProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<UserActivityProps> = async ({
+  params,
+  query,
+}) => {
   const username = params?.username ? (params.username as string) : undefined;
+  const eventId = (query?.eventId ?? null) as string | null;
 
   if (!username)
     return {
@@ -59,6 +66,7 @@ export const getServerSideProps: GetServerSideProps<UserActivityProps> = async (
 
   return {
     props: {
+      eventId,
       username,
       metaTags: username
         ? openGraphMetaTags({
