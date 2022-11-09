@@ -5,22 +5,22 @@ import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   ART_GOBBLERS = 'ART_GOBBLERS',
-  WHITE_RINO = 'WHITE_RINO',
+  WHITE_RHINO = 'WHITE_RHINO',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: false,
-  WHITE_RINO: false,
+  WHITE_RHINO: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: true,
-  WHITE_RINO: true,
+  WHITE_RHINO: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
   ART_GOBBLERS: false,
-  WHITE_RINO: true,
+  WHITE_RHINO: true,
 };
 
 const EMPLOYEE_USER_IDS = new Set(

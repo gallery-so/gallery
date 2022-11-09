@@ -30,7 +30,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
   const activityRoute: Route = { pathname: '/[username]/activity', query: { username } };
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <HStack gap={8}>
