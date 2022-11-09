@@ -4,13 +4,12 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { ButtonLink } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseXL, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
-import EmailForm from '~/components/Email/EmailForm';
+import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import EmailManager from '~/components/Email/EmailManager';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
+import { addEmailQuery } from '~/generated/addEmailQuery.graphql';
 
 export default function AddEmail() {
   const query = useLazyLoadQuery<addEmailQuery>(
@@ -22,6 +21,9 @@ export default function AddEmail() {
 
             user {
               username
+            }
+            email {
+              email
             }
           }
         }
@@ -37,19 +39,17 @@ export default function AddEmail() {
     );
   }
 
-  const { push, back, query: urlQuery } = useRouter();
+  const { push, back } = useRouter();
 
   const username = query?.viewer?.user?.username;
-  console.log(username);
+  const savedEmail = query?.viewer?.email?.email;
 
   const handleNext = useCallback(() => {
     // track('');
-
     push({
-      pathname: '/onboarding/organize-collection',
-      query: { ...query },
+      pathname: `/${username}`,
     });
-  }, []);
+  }, [push, username]);
 
   return (
     <VStack>
@@ -69,7 +69,8 @@ export default function AddEmail() {
       <OnboardingFooter
         step={'add-email'}
         onNext={handleNext}
-        // isNextEnabled={}
+        previousTextOverride="Skip"
+        isNextEnabled={!!savedEmail}
         onPrevious={back}
       />
     </VStack>
@@ -78,8 +79,4 @@ export default function AddEmail() {
 
 const StyledBodyText = styled(BaseM)`
   max-width: 400px;
-`;
-
-const FixedWidthButtonLink = styled(ButtonLink)`
-  min-width: 200px;
 `;

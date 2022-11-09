@@ -1,58 +1,127 @@
 import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { EmailVerificationStatusFragment$key } from '~/generated/EmailVerificationStatusFragment.graphql';
+import { EmailVerificationStatusMutation } from '~/generated/EmailVerificationStatusMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import ClockIcon from '~/icons/ClockIcon';
 
 import { Button } from '../core/Button/Button';
+import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 
-const UNVERIFIED = Symbol('UNVERIFIED');
-const VERIFIED = Symbol('VERIFIED');
-const FAILED = Symbol('FAILED');
-const ADMIN = Symbol('ADMIN');
-
 type Props = {
-  savedEmail: string;
   setIsEditMode: (editMode: boolean) => void;
+  queryRef: EmailVerificationStatusFragment$key;
 };
 
-// can we use graphql enum for this
-type VerificationStatus = typeof UNVERIFIED | typeof VERIFIED | typeof FAILED | typeof ADMIN;
+function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment EmailVerificationStatusFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+            email {
+              email
+              verificationStatus
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
 
-function EmailVerificationStatus({ setIsEditMode, savedEmail }: Props) {
+  const savedEmail = query?.viewer?.email?.email;
+  const verificationStatus = query?.viewer?.email?.verificationStatus;
+
   const handleEditClick = useCallback(() => {
     setIsEditMode(true);
   }, [setIsEditMode]);
 
-  const verificationStatus = UNVERIFIED;
+  const [resendVerificationEmail] = usePromisifiedMutation<EmailVerificationStatusMutation>(graphql`
+    mutation EmailVerificationStatusMutation @raw_response_type {
+      resendVerificationEmail {
+        ... on ResendVerificationEmailPayload {
+          __typename
+        }
+        ... on ErrInvalidInput {
+          __typename
+        }
+      }
+    }
+  `);
+
+  const { pushToast } = useToastActions();
+
+  const handleResendClick = useCallback(async () => {
+    function pushErrorToast() {
+      pushToast({
+        autoClose: true,
+        message: `Something went wrong while sending a verification email. We are looking into it.`,
+      });
+    }
+    try {
+      const response = await resendVerificationEmail({ variables: {} });
+      if (response.resendVerificationEmail?.__typename !== 'ResendVerificationEmailPayload') {
+        pushErrorToast();
+        reportError(
+          `Could not save email address, typename was ${response.resendVerificationEmail?.__typename}`
+        );
+      } else {
+        pushToast({
+          autoClose: true,
+          message: `We've resent you an email to verify your email address. You can complete onboarding in the meantime.`,
+        });
+      }
+    } catch (error) {
+      pushErrorToast();
+    }
+  }, [pushToast, resendVerificationEmail]);
+
+  const resendEmailButton = useMemo(() => {
+    return (
+      <ResendEmail onClick={handleResendClick}>
+        <BaseS color={colors.shadow}>Resend verification email</BaseS>
+      </ResendEmail>
+    );
+  }, [handleResendClick]);
 
   const verificationStatusIndicator = useMemo(() => {
     switch (verificationStatus) {
-      case UNVERIFIED:
+      case 'Unverified':
         return (
           <>
             <ClockIcon />
             <BaseS>Pending verification</BaseS>
+            {resendEmailButton}
           </>
         );
-      case VERIFIED:
+      case 'Verified':
         return (
           <>
             <CircleCheckIcon />
             <BaseS>Verified</BaseS>
           </>
         );
-      case FAILED:
+      case 'Failed':
         return (
           <>
             <AlertTriangleIcon />
             <BaseS>Could not verify.</BaseS>
+            {resendEmailButton}
           </>
         );
     }
-  }, [verificationStatus]);
+  }, [resendEmailButton, verificationStatus]);
   return (
     <HStack justify="space-between">
       <VStack>
@@ -65,5 +134,16 @@ function EmailVerificationStatus({ setIsEditMode, savedEmail }: Props) {
     </HStack>
   );
 }
+
+const ResendEmail = styled.button`
+  background: none;
+  border: 0;
+  color: ${colors.shadow};
+  text-decoration: underline;
+  cursor: pointer;
+  &:hover {
+    text-decoration: none;
+  }
+`;
 
 export default EmailVerificationStatus;

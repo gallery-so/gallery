@@ -10,9 +10,16 @@ type Props = {
   onNext: () => void | Promise<unknown>;
   isNextEnabled: boolean;
   onPrevious: () => void;
+  previousTextOverride?: string;
 };
 
-export function OnboardingFooter({ onNext, onPrevious, step, isNextEnabled }: Props) {
+export function OnboardingFooter({
+  onNext,
+  onPrevious,
+  step,
+  isNextEnabled,
+  previousTextOverride,
+}: Props) {
   const stepIndex = getStepIndex(step);
   const isFirstStep = stepIndex === 0;
 
@@ -22,7 +29,7 @@ export function OnboardingFooter({ onNext, onPrevious, step, isNextEnabled }: Pr
     <WizardFooter
       isNextEnabled={isNextEnabled}
       nextText={nextButtonText}
-      previousText={isFirstStep ? 'Cancel' : 'Back'}
+      previousText={previousTextOverride || (isFirstStep ? 'Cancel' : 'Back')}
       onNext={onNext}
       onPrevious={onPrevious}
     />
