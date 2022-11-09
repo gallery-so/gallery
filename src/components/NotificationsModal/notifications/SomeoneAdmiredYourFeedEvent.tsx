@@ -68,29 +68,27 @@ export function SomeoneAdmiredYourFeedEvent({
   const firstAdmirer = notification.admirers?.edges?.[0]?.node;
 
   return (
-    <>
-      <BaseM>
-        <strong>
-          {count > 1 ? (
-            <>{notification.count} collectors</>
-          ) : (
-            <>
-              {firstAdmirer ? (
-                <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
-              ) : (
-                'Someone'
-              )}
-            </>
-          )}
-        </strong>{' '}
-        {notification.feedEvent?.eventData?.collection ? (
-          <>
-            <CollectionLink collectionRef={notification.feedEvent.eventData.collection} />
-          </>
+    <BaseM>
+      <strong>
+        {count > 1 ? (
+          <>{notification.count} collectors</>
         ) : (
-          <>admired your additions to one of your collections</>
+          <>
+            {firstAdmirer ? (
+              <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
+            ) : (
+              'Someone'
+            )}
+          </>
         )}
-      </BaseM>
-    </>
+      </strong>{' '}
+      {notification.feedEvent?.eventData?.collection ? (
+        <>
+          <CollectionLink collectionRef={notification.feedEvent.eventData.collection} />
+        </>
+      ) : (
+        <>admired your additions to one of your collections</>
+      )}
+    </BaseM>
   );
 }

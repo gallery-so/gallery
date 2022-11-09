@@ -46,26 +46,20 @@ export function SomeoneViewedYourGallery({
   const lastViewer = notification.userViewers?.edges?.[0]?.node;
 
   return (
-    <>
-      <BaseM>
-        {count > 1 ? (
-          <>
-            <strong>{count} collectors</strong>
-            have viewed your gallery
-          </>
-        ) : (
-          <>
-            <strong>
-              {lastViewer ? (
-                <HoverCardOnUsername userRef={lastViewer} queryRef={query} />
-              ) : (
-                'Someone'
-              )}
-            </strong>{' '}
-            has viewed your gallery
-          </>
-        )}
-      </BaseM>
-    </>
+    <BaseM>
+      {count > 1 ? (
+        <>
+          <strong>{count} collectors</strong>
+          have viewed your gallery
+        </>
+      ) : (
+        <>
+          <strong>
+            {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
+          </strong>{' '}
+          has viewed your gallery
+        </>
+      )}
+    </BaseM>
   );
 }
