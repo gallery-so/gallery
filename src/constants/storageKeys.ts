@@ -8,3 +8,5 @@ export const TEZOS_ANNOUNCEMENT_STORAGE_KEY = 'gallery_tezos_announcement_09_25_
 export const DEBUG_USERNAME_KEY = 'debug_username';
 
 export const GLOBAL_BANNER_STORAGE_KEY = 'GLOBAL_BANNER_STORAGE_KEY';
+
+export const ENABLE_EMAIL_DISMISSED_KEY = 'ENABLE_EMAIL_DISMISSED_KEY';
