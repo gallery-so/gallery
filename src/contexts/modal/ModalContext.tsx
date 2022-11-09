@@ -44,6 +44,7 @@ type ShowModalFnProps = {
   isFullPage?: boolean;
   isPaddingDisabled?: boolean;
   onClose?: () => void;
+  headerActions?: JSX.Element | false;
 };
 
 type HideModalFnProps = {
@@ -74,6 +75,7 @@ type Modal = {
   id: string;
   isActive: boolean;
   content: ReactElement;
+  headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
   isFullPage: boolean;
@@ -96,6 +98,7 @@ function ModalProvider({ children }: Props) {
     ({
       id = uuid(),
       content,
+      headerActions,
       headerText = '',
       headerVariant = 'standard',
       isFullPage = false,
@@ -108,6 +111,7 @@ function ModalProvider({ children }: Props) {
           id,
           isActive: true,
           content,
+          headerActions,
           headerText,
           headerVariant,
           isFullPage,
@@ -236,7 +240,16 @@ function ModalProvider({ children }: Props) {
       <ModalActionsContext.Provider value={actions}>
         {children}
         {modals.map(
-          ({ id, isActive, content, headerText, headerVariant, isFullPage, isPaddingDisabled }) => {
+          ({
+            id,
+            isActive,
+            content,
+            headerActions,
+            headerText,
+            headerVariant,
+            isFullPage,
+            isPaddingDisabled,
+          }) => {
             return (
               <AnimatedModal
                 key={id}
@@ -248,6 +261,7 @@ function ModalProvider({ children }: Props) {
                 isFullPage={isFullPage}
                 isPaddingDisabled={isPaddingDisabled}
                 headerVariant={headerVariant}
+                headerActions={headerActions}
               />
             );
           }

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -20,6 +20,7 @@ import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import CogIcon from '~/icons/CogIcon';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -62,10 +63,28 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
     queryRef
   );
 
-  const { showModal } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
   const { handleLogout } = useAuthActions();
 
   const isMobile = useIsMobileWindowWidth();
+
+  const notificationModalActions = useMemo(() => {
+    const handleSettingsClick = () => {
+      // Hide notification modal
+      hideModal();
+
+      showModal({
+        content: <ManageWalletsModal queryRef={query} />,
+        headerText: 'Manage accounts',
+      });
+    };
+
+    return (
+      <StyledCogButton onClick={handleSettingsClick}>
+        <CogIcon />
+      </StyledCogButton>
+    );
+  }, [hideModal, showModal, query]);
 
   const handleNotificationsClick = useCallback(() => {
     showModal({
@@ -73,8 +92,9 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
+      headerActions: notificationModalActions,
     });
-  }, [isMobile, showModal]);
+  }, [isMobile, notificationModalActions, showModal]);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({
@@ -207,6 +227,21 @@ const DropdownProfileSection = styled.a`
   text-decoration: none;
 
   padding: 8px;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
+`;
+
+const StyledCogButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   :hover {
     background-color: ${colors.faint};

@@ -3,6 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
@@ -26,6 +27,7 @@ type Props = {
   content: ReactElement;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
+  headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
 };
@@ -37,6 +39,7 @@ function AnimatedModal({
   content,
   isFullPage,
   isPaddingDisabled,
+  headerActions,
   headerText,
   headerVariant,
 }: Props) {
@@ -90,7 +93,10 @@ function AnimatedModal({
           >
             <StyledHeader>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
-              <StyledDecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+              <StyledModalActions align="center">
+                {headerActions}
+                <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+              </StyledModalActions>
             </StyledHeader>
             {content}
           </StyledContent>
@@ -205,7 +211,7 @@ const StyledContent = styled.div<{
   width: ${({ width }) => width};
 `;
 
-const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
+const StyledModalActions = styled(HStack)`
   z-index: 3;
   position: absolute;
   right: 0;
