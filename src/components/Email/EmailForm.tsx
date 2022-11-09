@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
+import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 import { Button } from '../core/Button/Button';

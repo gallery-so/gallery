@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { Route } from 'nextjs-routes';
+import { useCallback, useMemo } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -44,12 +45,19 @@ export default function AddEmail() {
   const username = query?.viewer?.user?.username;
   const savedEmail = query?.viewer?.email?.email;
 
+  if (!username) {
+    throw new Error(`AddEmail expected non-null username, but got: ${username}`);
+  }
+
+  const userGalleryRoute: Route = useMemo(
+    () => ({ pathname: '/[username]', query: { username } }),
+    [username]
+  );
+
   const handleNext = useCallback(() => {
     // track('');
-    push({
-      pathname: `/${username}`,
-    });
-  }, [push, username]);
+    push(userGalleryRoute);
+  }, [push, userGalleryRoute]);
 
   return (
     <VStack>

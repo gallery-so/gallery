@@ -8,7 +8,6 @@ import EmailForm from './EmailForm';
 import EmailVerificationStatus from './EmailVerificationStatus';
 
 type Props = {
-  emailAddress: string;
   queryRef: EmailManagerFragment$key;
 };
 
