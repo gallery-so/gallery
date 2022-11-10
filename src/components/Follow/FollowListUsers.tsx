@@ -8,13 +8,12 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { getFirstLine } from '~/utils/getFirstLine';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
   emptyListText?: string;
 };
-
-const getFirstLine = (text: string) => (text ? text.split('\n')[0] : '');
 
 export default function FollowListUsers({
   userRefs,

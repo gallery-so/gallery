@@ -13,12 +13,16 @@ import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   showDropdown: boolean;
@@ -27,6 +31,8 @@ type Props = {
 };
 
 export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Props) {
+  useSubscribeToNotifications();
+
   const query = useFragment(
     graphql`
       fragment ProfileDropdownContentFragment on Query {
@@ -35,18 +41,40 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
             user {
               username
             }
+
+            notifications(last: 1)
+              @connection(key: "ProfileDropdownContentFragment_notifications") {
+              unseenCount
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              edges {
+                __typename
+              }
+            }
           }
         }
 
         ...getEditGalleryUrlFragment
         ...ManageWalletsModalFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-  const { showModal } = useModalActions();
 
+  const { showModal } = useModalActions();
   const { handleLogout } = useAuthActions();
+
+  const isMobile = useIsMobileWindowWidth();
+
+  const handleNotificationsClick = useCallback(() => {
+    showModal({
+      content: <NotificationsModal fullscreen={isMobile} />,
+      isFullPage: isMobile,
+      isPaddingDisabled: true,
+      headerVariant: 'standard',
+    });
+  }, [isMobile, showModal]);
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({
@@ -64,6 +92,10 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   const editGalleryUrl = getEditGalleryUrl(query);
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
+
+  const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
+
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <>
@@ -84,6 +116,14 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
+          {isWhiteRhinoEnabled && (
+            <NotificationsDropdownItem onClick={handleNotificationsClick}>
+              <HStack align="center" gap={10}>
+                <div>NOTIFICATIONS</div>
+                {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
+              </HStack>
+            </NotificationsDropdownItem>
+          )}
         </DropdownSection>
 
         <DropdownSection gap={4}>
@@ -103,6 +143,29 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
     </>
   );
 }
+
+const CountText = styled(BaseM)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 4px 6px;
+  font-variant-numeric: tabular-nums;
+
+  font-size: 12px;
+
+  color: ${colors.white};
+  background-color: ${colors.hyperBlue};
+
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+
+  user-select: none;
+
+  border-radius: 99999px;
+`;
+
+const NotificationsDropdownItem = styled(DropdownItem)``;
 
 const StyledObjectsText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';

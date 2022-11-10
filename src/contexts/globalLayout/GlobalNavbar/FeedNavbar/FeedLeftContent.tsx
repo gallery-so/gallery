@@ -1,15 +1,17 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
+import { NotificationsCircle } from '~/contexts/globalLayout/GlobalNavbar/NotificationCircle';
 import { HomeText } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { FeedLeftContentFragment$key } from '~/generated/FeedLeftContentFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type FeedLeftContentProps = {
   queryRef: FeedLeftContentFragment$key;
@@ -24,8 +26,19 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
         viewer {
           ... on Viewer {
             __typename
+
+            notifications(last: 1) @connection(key: "FeedLeftContentFragment_notifications") {
+              unseenCount
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              edges {
+                __typename
+              }
+            }
           }
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -34,6 +47,18 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
+  const notificationCount = useMemo(() => {
+    if (
+      query.viewer &&
+      query.viewer.__typename === 'Viewer' &&
+      query.viewer.notifications?.unseenCount
+    ) {
+      return query.viewer.notifications.unseenCount;
+    }
+
+    return 0;
+  }, [query.viewer]);
 
   if (!isLoggedIn) {
     return (
@@ -45,6 +70,8 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     );
   }
 
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+
   return (
     <HStack
       gap={4}
@@ -53,6 +80,8 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
       style={{ position: 'relative', cursor: 'pointer' }}
       onClick={() => setShowDropdown(true)}
     >
+      {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
+
       <HomeText>Home</HomeText>
 
       <NavDownArrow />

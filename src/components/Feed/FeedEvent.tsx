@@ -164,7 +164,7 @@ export default function FeedEventWithBoundary({
     queryRef
   );
 
-  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.ADMIRE_COMMENT, query);
+  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
   const eventSupportsAdmireComment =
     event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
 

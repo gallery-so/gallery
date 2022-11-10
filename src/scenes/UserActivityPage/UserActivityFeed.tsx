@@ -43,6 +43,12 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     graphql`
       fragment UserActivityFeedQueryFragment on Query {
         ...FeedListFragment
+
+        feedEventById(id: $topEventId) {
+          ... on FeedEvent {
+            ...FeedListEventDataFragment
+          }
+        }
       }
     `,
     queryRef
@@ -67,8 +73,12 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
       }
     }
 
+    if (query.feedEventById) {
+      events.push(query.feedEventById);
+    }
+
     return events;
-  }, [user.feed?.edges]);
+  }, [query.feedEventById, user.feed?.edges]);
 
   return (
     <FeedList
