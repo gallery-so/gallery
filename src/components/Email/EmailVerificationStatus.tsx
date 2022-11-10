@@ -79,7 +79,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
       } else {
         pushToast({
           autoClose: true,
-          message: `We've resent you an email to verify your email address. You can complete onboarding in the meantime.`,
+          message: `We've resent you an email to verify your email address.`,
         });
       }
     } catch (error) {
