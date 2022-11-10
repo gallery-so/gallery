@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TIMEOUT_MS,
@@ -92,7 +92,11 @@ function Toast({ message, onClose, variant }: Props) {
   return (
     <ToastContainer>
       <StyledToast align="center" gap={8} variant={variant}>
-        {variant === 'error' && <AlertIcon />}
+        {variant === 'error' && (
+          <StyledAlertIcon>
+            <AlertIcon />
+          </StyledAlertIcon>
+        )}
         <BaseM>{message}</BaseM>
         <StyledClose onClick={handleClose}>
           <CloseIcon isActive />
@@ -116,6 +120,11 @@ const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
   background: ${colors.white};
 
   pointer-events: auto;
+`;
+
+const StyledAlertIcon = styled(VStack)`
+  height: 24px;
+  width: 24px;
 `;
 
 const StyledClose = styled.button`
