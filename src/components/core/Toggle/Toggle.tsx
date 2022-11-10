@@ -34,6 +34,7 @@ const StyledInput = styled.input`
   width: 22px;
   z-index: 1;
   margin: 0;
+  cursor: pointer;
 `;
 
 const StyledToggleContainer = styled.div<{ active: boolean }>`
