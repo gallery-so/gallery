@@ -151,7 +151,7 @@ const Overlay = styled.div`
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: ${colors.white};
+  background-color: ${colors.white};
   opacity: 0.95;
 
   // should appear above rest of site
