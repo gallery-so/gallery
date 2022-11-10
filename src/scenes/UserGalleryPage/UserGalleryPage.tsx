@@ -48,7 +48,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
     if (settings === 'true') {
       showModal({
         content: <ManageWalletsModalWithEmail queryRef={query} />,
-        headerText: 'Manage accounts',
+        headerText: 'Settings',
       });
     }
   }, [query, router, showModal, username, settings]);

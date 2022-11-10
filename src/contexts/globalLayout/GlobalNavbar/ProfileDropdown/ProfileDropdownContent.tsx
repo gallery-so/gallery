@@ -75,7 +75,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
       showModal({
         content: <ManageWalletsModalWithEmail queryRef={query} />,
-        headerText: 'Manage accounts',
+        headerText: 'Settings',
       });
     };
 
