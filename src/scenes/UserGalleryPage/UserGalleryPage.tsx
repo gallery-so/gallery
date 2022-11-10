@@ -45,11 +45,12 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const { showModal } = useModalActions();
 
   useEffect(() => {
-    if (!settings) return;
-    showModal({
-      content: <ManageWalletsModal queryRef={query} />,
-      headerText: 'Manage accounts',
-    });
+    if (settings === 'true') {
+      showModal({
+        content: <ManageWalletsModal queryRef={query} />,
+        headerText: 'Manage accounts',
+      });
+    }
   }, [query, router, showModal, username, settings]);
 
   return (
