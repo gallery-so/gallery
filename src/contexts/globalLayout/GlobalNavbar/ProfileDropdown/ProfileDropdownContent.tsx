@@ -117,7 +117,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <>

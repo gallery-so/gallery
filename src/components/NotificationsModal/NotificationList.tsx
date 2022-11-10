@@ -99,13 +99,15 @@ export function NotificationList({ queryRef }: NotificationListProps) {
           {hasPrevious && <SeeMore onClick={handleSeeMore} isLoading={isLoadingPrevious} />}
         </>
       ) : (
-        <>
+        <EmptyContainer grow justify="center">
           <EmptyNotificationsText>Nothing to see here yet.</EmptyNotificationsText>
-        </>
+        </EmptyContainer>
       )}
     </NotificationsContent>
   );
 }
+
+const EmptyContainer = styled(VStack)``;
 
 const EmptyNotificationsText = styled(TitleDiatypeL)`
   text-align: center;

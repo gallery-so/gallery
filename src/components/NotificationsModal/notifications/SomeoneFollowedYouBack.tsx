@@ -42,23 +42,21 @@ export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFol
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
   return (
-    <>
-      <BaseM>
-        <strong>
-          {count > 1 ? (
-            <>{count} collectors</>
-          ) : (
-            <>
-              {lastFollower ? (
-                <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
-              ) : (
-                'Someone'
-              )}
-            </>
-          )}
-        </strong>{' '}
-        followed you back
-      </BaseM>
-    </>
+    <BaseM>
+      <strong>
+        {count > 1 ? (
+          <>{count} collectors</>
+        ) : (
+          <>
+            {lastFollower ? (
+              <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
+            ) : (
+              'Someone'
+            )}
+          </>
+        )}
+      </strong>{' '}
+      followed you back
+    </BaseM>
   );
 }
