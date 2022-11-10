@@ -11,7 +11,7 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 
-import ManageWalletsModal from '../Modals/ManageWalletsModal';
+import ManageWalletsModalWithEmail from '../Modals/ManageWalletModalWithEmail';
 import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
@@ -24,7 +24,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
     graphql`
       fragment UserGalleryPageFragment on Query {
         ...UserGalleryFragment
-        ...ManageWalletsModalFragment
+        ...ManageWalletModalWithEmailFragment
       }
     `,
     queryRef
@@ -47,7 +47,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   useEffect(() => {
     if (settings === 'true') {
       showModal({
-        content: <ManageWalletsModal queryRef={query} />,
+        content: <ManageWalletsModalWithEmail queryRef={query} />,
         headerText: 'Manage accounts',
       });
     }
