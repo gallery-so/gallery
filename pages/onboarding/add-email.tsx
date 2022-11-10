@@ -10,6 +10,7 @@ import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import EmailManager from '~/components/Email/EmailManager';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { addEmailQuery } from '~/generated/addEmailQuery.graphql';
 
 export default function AddEmail() {
@@ -40,7 +41,8 @@ export default function AddEmail() {
     );
   }
 
-  const { push, back } = useRouter();
+  const track = useTrack();
+  const { push } = useRouter();
 
   const username = query?.viewer?.user?.username;
   const savedEmail = query?.viewer?.email?.email;
@@ -55,9 +57,14 @@ export default function AddEmail() {
   );
 
   const handleNext = useCallback(() => {
-    // track('');
+    track('Onboarding: add-email Done click');
     push(userGalleryRoute);
-  }, [push, userGalleryRoute]);
+  }, [push, track, userGalleryRoute]);
+
+  const handleSkip = useCallback(() => {
+    track('Onboarding: add-email Skip click');
+    push(userGalleryRoute);
+  }, [push, track, userGalleryRoute]);
 
   return (
     <VStack>
@@ -79,7 +86,7 @@ export default function AddEmail() {
         onNext={handleNext}
         previousTextOverride="Skip"
         isNextEnabled={!!savedEmail}
-        onPrevious={back}
+        onPrevious={handleSkip}
       />
     </VStack>
   );
