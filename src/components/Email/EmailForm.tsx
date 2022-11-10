@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -75,6 +76,13 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
     setIsEditMode(false);
   }, [setIsEditMode]);
 
+  const { route } = useRouter();
+  // console.log(asPath, route, pathname);
+  const isOnboarding = route === '/onboarding/add-email';
+  const toastSuccessCopy = isOnboarding
+    ? `We've sent you an email to verify your email address. You can complete onboarding in the meantime.`
+    : `We've sent you an email to verify your email address.`;
+
   const handleSaveClick = useCallback(async () => {
     setSavePending(true);
     function pushErrorToast() {
@@ -105,7 +113,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
         // SUCCESS
         pushToast({
           autoClose: true,
-          message: `We've sent you an email to verify your email address. You can complete onboarding in the meantime.`,
+          message: toastSuccessCopy,
         });
         setIsEditMode(false);
       }
@@ -114,7 +122,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
       pushErrorToast();
       setSavePending(false);
     }
-  }, [email, pushToast, reportError, setIsEditMode, updateEmail, userId]);
+  }, [email, pushToast, reportError, setIsEditMode, toastSuccessCopy, updateEmail, userId]);
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -142,7 +150,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
           )}
           <Button
             variant="primary"
-            disabled={!isValidEmail || savePending}
+            disabled={!isValidEmail || savePending || savedEmail === email}
             onClick={handleSaveClick}
           >
             Save
