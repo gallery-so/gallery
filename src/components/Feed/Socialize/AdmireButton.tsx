@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -94,6 +95,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
   const reportError = useReportError();
   const { pushToast } = useToastActions();
   const { showModal } = useModalActions();
+  const track = useTrack();
 
   const interactionsConnection = ConnectionHandler.getConnectionID(
     event.id,
@@ -194,6 +196,8 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
 
       return;
     }
+
+    track('Admire Click');
 
     const errorMetadata: AdditionalContext['tags'] = {
       eventId: event.dbid,

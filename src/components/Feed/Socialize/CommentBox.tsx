@@ -16,6 +16,7 @@ import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
@@ -88,6 +89,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
+  const track = useTrack();
 
   const resetInputState = useCallback(() => {
     setValue('');
@@ -109,6 +111,8 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
         message: "Something went wrong while posting your comment. We're looking into it.",
       });
     }
+
+    track('Comment Click');
 
     try {
       const interactionsConnection = ConnectionHandler.getConnectionID(
