@@ -30,7 +30,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
   const activityRoute: Route = { pathname: '/[username]/activity', query: { username } };
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <HStack gap={8}>
@@ -46,7 +46,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         </NavbarLink>
       </Link>
 
-      {isWhiteRinoEnabled && (
+      {isWhiteRhinoEnabled && (
         <Link href={activityRoute}>
           <NavbarLink href={route(activityRoute)} active={pathname === activityRoute.pathname}>
             Activity

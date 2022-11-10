@@ -82,13 +82,13 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     return 0;
   }, [query.viewer]);
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <Wrapper gap={4} align="center">
       {isLoggedIn ? (
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
-          {isWhiteRinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
+          {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
 
           <HStack gap={2}>
             <GLogo />

@@ -70,7 +70,7 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     );
   }
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <HStack
@@ -80,7 +80,7 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
       style={{ position: 'relative', cursor: 'pointer' }}
       onClick={() => setShowDropdown(true)}
     >
-      {isWhiteRinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
+      {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
 
       <HomeText>Home</HomeText>
 

@@ -53,7 +53,7 @@ export function CollectionSaveButtonWithCaption({
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
@@ -79,7 +79,7 @@ export function CollectionSaveButtonWithCaption({
 
   const handleOpenCaption = useCallback(() => {
     // If feature flag off, skip caption and save immediately
-    if (!isWhiteRinoEnabled) {
+    if (!isWhiteRhinoEnabled) {
       handleSubmit();
       return;
     }
@@ -89,7 +89,7 @@ export function CollectionSaveButtonWithCaption({
     }
     setIsActive(true);
     setIsPopupDisplayed(true);
-  }, [handleSubmit, isWhiteRinoEnabled]);
+  }, [handleSubmit, isWhiteRhinoEnabled]);
 
   const isSaveDisabled = useMemo(() => {
     return caption.length > 600;
@@ -102,11 +102,11 @@ export function CollectionSaveButtonWithCaption({
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
         disabled={disabled}
-        pending={isLoading && !isWhiteRinoEnabled}
+        pending={isLoading && !isWhiteRhinoEnabled}
       >
         <HStack gap={4} align="center">
           {label}
-          {isWhiteRinoEnabled && (
+          {isWhiteRhinoEnabled && (
             <StyledChevronSvg
               isActive={isPopupDisplayed}
               width="12"
