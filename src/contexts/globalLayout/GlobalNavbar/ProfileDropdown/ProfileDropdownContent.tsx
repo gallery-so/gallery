@@ -58,6 +58,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         ...getEditGalleryUrlFragment
         ...ManageWalletsModalFragment
+        ...ManageWalletModalWithEmailFragment
         ...isFeatureEnabledFragment
       }
     `,

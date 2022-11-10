@@ -8,10 +8,10 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
-import { ManageWalletsModalFragment$key } from '~/generated/ManageWalletsModalFragment.graphql';
+import { ManageWalletModalWithEmailFragment$key } from '~/generated/ManageWalletModalWithEmailFragment.graphql';
 
 type Props = {
-  queryRef: ManageWalletsModalFragment$key;
+  queryRef: ManageWalletModalWithEmailFragment$key;
   newAddress?: string;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
@@ -25,7 +25,7 @@ function ManageWalletsModalWithEmail({
 }: Props) {
   const query = useFragment(
     graphql`
-      fragment ManageWalletsModalFragment on Query {
+      fragment ManageWalletModalWithEmailFragment on Query {
         ...ManageWalletsFragment
       }
     `,
