@@ -11,6 +11,7 @@ import { HomeText } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/B
 import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { FeedLeftContentFragment$key } from '~/generated/FeedLeftContentFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type FeedLeftContentProps = {
   queryRef: FeedLeftContentFragment$key;
@@ -36,6 +37,8 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
             }
           }
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -67,6 +70,8 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     );
   }
 
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+
   return (
     <HStack
       gap={4}
@@ -75,7 +80,7 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
       style={{ position: 'relative', cursor: 'pointer' }}
       onClick={() => setShowDropdown(true)}
     >
-      {notificationCount > 0 ? <NotificationsCircle /> : null}
+      {isWhiteRinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
 
       <HomeText>Home</HomeText>
 

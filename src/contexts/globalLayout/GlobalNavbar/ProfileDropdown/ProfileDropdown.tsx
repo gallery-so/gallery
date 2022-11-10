@@ -10,6 +10,7 @@ import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo'
 import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { ProfileDropdownFragment$key } from '~/generated/ProfileDropdownFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { NotificationsCircle } from '../NotificationCircle';
 
@@ -37,6 +38,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           }
         }
 
+        ...isFeatureEnabledFragment
         ...ProfileDropdownContentFragment
       }
     `,
@@ -80,11 +82,13 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     return 0;
   }, [query.viewer]);
 
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+
   return (
     <Wrapper gap={4} align="center">
       {isLoggedIn ? (
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
-          {notificationCount > 0 ? <NotificationsCircle /> : null}
+          {isWhiteRinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
 
           <HStack gap={2}>
             <GLogo />
