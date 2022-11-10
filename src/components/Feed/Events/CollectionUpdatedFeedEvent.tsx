@@ -4,15 +4,17 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
-import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
+import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 import { pluralize } from '~/utils/string';
 import { getTimeSince } from '~/utils/time';
@@ -20,23 +22,17 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
-  caption: string | null;
-  eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
-  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
+  eventDataRef: CollectionUpdatedFeedEventFragment$key;
+  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
 };
 
-export default function TokensAddedToCollectionFeedEvent({
-  caption,
-  eventDataRef,
-  queryRef,
-}: Props) {
+export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
+      fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
         eventTime
         owner @required(action: THROW) {
           username
@@ -52,13 +48,13 @@ export default function TokensAddedToCollectionFeedEvent({
             ...EventMediaFragment
           }
         }
+        newCollectorsNote @required(action: THROW)
         newTokens @required(action: THROW) {
           token {
             dbid
           }
           ...EventMediaFragment
         }
-        isPreFeed
       }
     `,
     eventDataRef
@@ -66,20 +62,16 @@ export default function TokensAddedToCollectionFeedEvent({
 
   const query = useFragment(
     graphql`
-      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+      fragment CollectionUpdatedFeedEventQueryFragment on Query {
         ...HoverCardOnUsernameFollowFragment
       }
     `,
     queryRef
   );
 
-  const { isPreFeed } = event;
-
-  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
-
   const tokensToPreview = useMemo(() => {
-    return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
-  }, [tokens]) as TokenToPreview[];
+    return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
+  }, [event.newTokens]) as TokenToPreview[];
 
   const collectionPagePath: Route = {
     pathname: '/[username]/[collectionId]',
@@ -87,43 +79,38 @@ export default function TokensAddedToCollectionFeedEvent({
   };
   const track = useTrack();
 
-  const numAdditionalPieces = tokens.length - MAX_PIECES_DISPLAYED_PER_FEED_EVENT;
+  const numAdditionalPieces = event.newTokens.length - MAX_PIECES_DISPLAYED_PER_FEED_EVENT;
   const showAdditionalPiecesIndicator = numAdditionalPieces > 0;
 
   const collectionName = unescape(event.collection.name ?? '');
 
-  if (!tokens.length) {
-    throw new Error('Tried to render TokensAddedToCollectionFeedEvent without any tokens');
+  if (!event.newTokens.length) {
+    throw new Error('Tried to render CollectionUpdatedFeedEvent without any tokens');
   }
 
   return (
     <UnstyledLink
       href={collectionPagePath}
-      onClick={() => track('Feed: Clicked Tokens added to collection event')}
+      onClick={() => track('Feed: Clicked collection updated event')}
     >
       <StyledEvent>
         <VStack gap={16}>
           <StyledEventHeader>
-            <VStack gap={4}>
-              <HStack gap={4} inline>
-                <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
-                  {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-                  {collectionName ? ' ' : ' their collection'}
-                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-                </BaseM>
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-              </HStack>
-              {caption && (
-                <StyledCaptionContainer gap={8} align="center">
-                  <BaseS>{caption}</BaseS>
-                </StyledCaptionContainer>
-              )}
-            </VStack>
+            <HStack gap={4} inline>
+              <BaseM>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> made updates to
+                {collectionName ? ' ': 'their collection'}
+                <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+              </BaseM>
+              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+            </HStack>
           </StyledEventHeader>
+            <StyledQuote>
+              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+            </StyledQuote>
           <VStack gap={8}>
             <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-            {showAdditionalPiecesIndicator && !isPreFeed && (
+            {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
               </StyledAdditionalPieces>
@@ -138,4 +125,13 @@ export default function TokensAddedToCollectionFeedEvent({
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
-`;
+`
+const StyledQuote = styled(BaseM)`
+  color: ${colors.metal};
+  border-left: 2px solid ${colors.porcelain};
+  padding-left: 8px;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-width: 50%;
+  };
+`

@@ -11,6 +11,7 @@ import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEve
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
+import CollectionUpdatedFeedEvent from './Events/CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
@@ -28,6 +29,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEvent {
+        caption
         eventData {
           __typename
 
@@ -49,6 +51,12 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
           ... on CollectorsNoteAddedToCollectionFeedEventData {
             ...CollectorsNoteAddedToCollectionFeedEventFragment
           }
+          ... on CollectorsNoteAddedToCollectionFeedEventData {
+            ...CollectorsNoteAddedToCollectionFeedEventFragment
+          }
+          ... on CollectionUpdatedFeedEventData {
+            ...CollectionUpdatedFeedEventFragment
+          }
         }
       }
     `,
@@ -63,6 +71,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
         ...CollectionCreatedFeedEventQueryFragment
         ...CollectorsNoteAddedToTokenFeedEventQueryFragment
+        ...CollectionUpdatedFeedEventQueryFragment
       }
     `,
     queryRef
@@ -70,13 +79,27 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 
   switch (event.eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      return <CollectionCreatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
+      return (
+        <CollectionCreatedFeedEvent
+          caption={event.caption}
+          eventDataRef={event.eventData}
+          queryRef={query}
+        />
+      );
+    case 'CollectionUpdatedFeedEventData':
+      return <CollectionUpdatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return (
         <CollectorsNoteAddedToTokenFeedEvent eventDataRef={event.eventData} queryRef={query} />
       );
     case 'TokensAddedToCollectionFeedEventData':
-      return <TokensAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />;
+      return (
+        <TokensAddedToCollectionFeedEvent
+          caption={event.caption}
+          eventDataRef={event.eventData}
+          queryRef={query}
+        />
+      );
     case 'CollectorsNoteAddedToCollectionFeedEventData':
       return (
         <CollectorsNoteAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />
