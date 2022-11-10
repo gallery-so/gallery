@@ -8,6 +8,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
@@ -68,7 +69,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
     setEmail(event.target.value);
   }, []);
 
-  const isValidEmail = useMemo(() => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email), [email]);
+  const isValidEmail = useMemo(() => EMAIL_FORMAT.test(email), [email]);
 
   const reportError = useReportError();
 
