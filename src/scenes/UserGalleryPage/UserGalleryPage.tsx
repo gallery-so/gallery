@@ -12,6 +12,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 
 import ManageWalletsModalWithEmail from '../Modals/ManageWalletModalWithEmail';
+import useVerifyEmailOnPage from '../Modals/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
@@ -23,6 +24,12 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const query = useFragment(
     graphql`
       fragment UserGalleryPageFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
+
         ...UserGalleryFragment
         ...ManageWalletModalWithEmailFragment
       }
@@ -34,6 +41,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
+  useVerifyEmailOnPage();
 
   useEffect(() => {
     track('Page View: User Gallery', { username });
@@ -44,14 +52,18 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
   const { showModal } = useModalActions();
 
+  // Check if the user logged in
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
   useEffect(() => {
-    if (settings === 'true') {
+    // Only show the modal if the user is logged in and the settings query param is set
+    if (settings === 'true' && isLoggedIn) {
       showModal({
         content: <ManageWalletsModalWithEmail queryRef={query} />,
         headerText: 'Settings',
       });
     }
-  }, [query, router, showModal, username, settings]);
+  }, [query, router, showModal, username, settings, isLoggedIn]);
 
   return (
     <>
