@@ -190,6 +190,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
     reportError,
     resetInputState,
     submitComment,
+    track,
     value,
   ]);
 

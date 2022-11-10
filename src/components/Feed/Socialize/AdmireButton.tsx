@@ -273,17 +273,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
         });
       }
     }
-  }, [
-    admire,
-    event.dbid,
-    event.id,
-    interactionsConnection,
-    notesModalConnection,
-    pushToast,
-    query,
-    reportError,
-    showModal,
-  ]);
+  }, [admire, event.dbid, event.id, interactionsConnection, notesModalConnection, pushToast, query, reportError, showModal, track]);
 
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
