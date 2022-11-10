@@ -38,7 +38,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
   );
 
   const [updateEmail] = usePromisifiedMutation<EmailFormMutation>(graphql`
-    mutation EmailFormMutation($input: UpdateEmailInput!) @raw_response_type {
+    mutation EmailFormMutation($input: UpdateEmailInput!) {
       updateEmail(input: $input) {
         ... on UpdateEmailPayload {
           __typename
@@ -77,7 +77,6 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
   }, [setIsEditMode]);
 
   const { route } = useRouter();
-  // console.log(asPath, route, pathname);
   const isOnboarding = route === '/onboarding/add-email';
   const toastSuccessCopy = isOnboarding
     ? `We've sent you an email to verify your email address. You can complete onboarding in the meantime.`

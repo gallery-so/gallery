@@ -48,7 +48,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
   }, [setIsEditMode]);
 
   const [resendVerificationEmail] = usePromisifiedMutation<EmailVerificationStatusMutation>(graphql`
-    mutation EmailVerificationStatusMutation @raw_response_type {
+    mutation EmailVerificationStatusMutation {
       resendVerificationEmail {
         ... on ResendVerificationEmailPayload {
           __typename
