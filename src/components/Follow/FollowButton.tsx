@@ -66,14 +66,14 @@ export default function FollowButton({ queryRef, userRef }: Props) {
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
-    track('Follow Click', {
-      followee: user.dbid,
-    });
-
     if (!loggedInUserId) {
       showAuthModal();
       return;
     }
+
+    track('Follow Click', {
+      followee: user.dbid,
+    });
 
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);

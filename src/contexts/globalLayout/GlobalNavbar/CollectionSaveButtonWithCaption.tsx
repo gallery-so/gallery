@@ -13,6 +13,7 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -47,6 +48,7 @@ export function CollectionSaveButtonWithCaption({
   // to display an animation prior to unmounting the component and its contents
   const [isActive, setIsActive] = useState(false);
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
+  const track = useTrack();
 
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -67,10 +69,13 @@ export function CollectionSaveButtonWithCaption({
 
   const handleSubmit = useCallback(async () => {
     setIsLoading(true);
+    if (!!caption) {
+      track('Saved Collection With Caption');
+    }
     await onSave(caption);
     handleCloseCaption();
     setIsLoading(false);
-  }, [caption, handleCloseCaption, onSave]);
+  }, [caption, handleCloseCaption, onSave, track]);
 
   const handleOpenCaption = useCallback(() => {
     // If feature flag off, skip caption and save immediately
