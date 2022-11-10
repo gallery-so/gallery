@@ -68,12 +68,13 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
     });
   }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
-  const handleNext = useCallback(async () => {
+  const handleNext = useCallback(async (caption: string) => {
     try {
       await updateCollection({
         collectionId,
         stagedCollection: stagedCollectionState,
         tokenSettings: collectionMetadata.tokenSettings,
+        caption,
       });
 
       if (canGoBack) {
@@ -104,6 +105,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   ]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
+  const [hasUnsavedChange, setHasUnsavedChange] = useState(false);
 
   return (
     <FullPageStep
@@ -111,6 +113,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         <CollectionEditorNavbar
           galleryId={galleryId}
           isCollectionValid={isCollectionValid}
+          hasUnsavedChange={hasUnsavedChange}
           onDone={handleNext}
           onCancel={handlePrevious}
           queryRef={query}
@@ -118,7 +121,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       }
       withBorder
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} onHasUnsavedChange={setHasUnsavedChange}/>
     </FullPageStep>
   );
 }

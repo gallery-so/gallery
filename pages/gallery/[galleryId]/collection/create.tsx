@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
@@ -12,12 +12,17 @@ import CollectionEditorProvider, {
   useCollectionMetadataState,
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { CollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
+import formatError from '~/errors/formatError';
 import { createCollectionQuery } from '~/generated/createCollectionQuery.graphql';
+import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import GenericActionModal from '~/scenes/Modals/GenericActionModal';
+import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
+import noop from '~/utils/noop';
 
 type Props = {
   galleryId: string;
@@ -28,15 +33,25 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     graphql`
       query createCollectionQuery {
         ...CollectionEditorFragment
+        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     {}
   );
 
   const track = useTrack();
+  const reportError = useReportError();
+  const [generalError, setGeneralError] = useState('');
+
+  const [collectionTitle, setCollectionTitle] = useState('');
+  const [collectionDescription, setCollectionDescription] = useState('');
+
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
+  const createCollection = useCreateCollection();
+
+  const hasShownAddCollectionModal = useRef(false);
 
   const { push, back, replace } = useRouter();
 
@@ -45,31 +60,64 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     [galleryId]
   );
 
-  const handleNext = useCallback(() => {
-    track('Save new collection button clicked');
+  const handleNext = useCallback(
+    async (caption: string) => {
+      track('Save new collection button clicked');
 
-    showModal({
-      content: (
-        <CollectionCreateOrEditForm
-          onNext={() => {
-            push(editGalleryUrl);
-          }}
-          galleryId={galleryId}
-          stagedCollection={stagedCollectionState}
-          tokenSettings={collectionMetadata.tokenSettings}
-        />
-      ),
-      headerText: 'Name and describe your collection',
-    });
-  }, [
-    collectionMetadata.tokenSettings,
-    editGalleryUrl,
-    galleryId,
-    push,
-    showModal,
-    stagedCollectionState,
-    track,
-  ]);
+      const title = collectionTitle;
+      const description = collectionDescription;
+
+      try {
+        track('Create collection', {
+          added_name: title.length > 0,
+          added_description: description.length > 0,
+          nft_ids: getTokenIdsFromCollection(stagedCollectionState),
+          caption: caption.length > 0,
+        });
+
+        const response = await createCollection({
+          galleryId,
+          title,
+          description,
+          stagedCollection: stagedCollectionState,
+          tokenSettings: collectionMetadata.tokenSettings,
+          caption,
+        });
+
+        if (
+          response.createCollection?.__typename === 'CreateCollectionPayload' &&
+          response.createCollection.collection
+        ) {
+          push(editGalleryUrl);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError(error);
+          setGeneralError(formatError(error));
+        }
+
+        reportError('Something unexpected occurred while trying to update a collection', {
+          tags: {
+            title,
+            galleryId,
+            description,
+          },
+        });
+      }
+    },
+    [
+      collectionTitle,
+      collectionDescription,
+      collectionMetadata.tokenSettings,
+      createCollection,
+      editGalleryUrl,
+      galleryId,
+      push,
+      reportError,
+      stagedCollectionState,
+      track,
+    ]
+  );
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
@@ -92,19 +140,47 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
 
+  useEffect(() => {
+    if (hasShownAddCollectionModal.current) return;
+
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          onNext={({ title, description }) => {
+            setCollectionTitle(title ?? '');
+            setCollectionDescription(description ?? '');
+          }}
+          galleryId={galleryId}
+          stagedCollection={stagedCollectionState}
+          tokenSettings={collectionMetadata.tokenSettings}
+        />
+      ),
+      headerText: 'Name and describe your collection',
+    });
+
+    hasShownAddCollectionModal.current = true;
+  }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
+
   return (
     <FullPageStep
       withBorder
       navbar={
         <CollectionCreateNavbar
+          collectionName={collectionTitle}
           galleryId={galleryId}
           onBack={handlePrevious}
           onNext={handleNext}
           isCollectionValid={isCollectionValid}
+          error={generalError}
+          queryRef={query}
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      <CollectionEditor
+        queryRef={query}
+        onValidChange={setIsCollectionValid}
+        onHasUnsavedChange={noop}
+      />
     </FullPageStep>
   );
 }
