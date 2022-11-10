@@ -51,7 +51,7 @@ export function CollectionSaveButtonWithCaption({
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
