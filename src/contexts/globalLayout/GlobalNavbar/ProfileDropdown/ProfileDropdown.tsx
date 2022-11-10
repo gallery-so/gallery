@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -10,6 +10,8 @@ import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo'
 import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { ProfileDropdownFragment$key } from '~/generated/ProfileDropdownFragment.graphql';
+
+import { NotificationsCircle } from '../NotificationCircle';
 
 type ProfileDropdownProps = {
   queryRef: ProfileDropdownFragment$key;
@@ -23,6 +25,15 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
         viewer {
           ... on Viewer {
             __typename
+
+            notifications(last: 1) @connection(key: "ProfileDropdownFragment_notifications") {
+              unseenCount
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              edges {
+                __typename
+              }
+            }
           }
         }
 
@@ -57,12 +68,23 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
+  const notificationCount = useMemo(() => {
+    if (
+      query.viewer &&
+      query.viewer.__typename === 'Viewer' &&
+      query.viewer.notifications?.unseenCount
+    ) {
+      return query.viewer.notifications.unseenCount;
+    }
+
+    return 0;
+  }, [query.viewer]);
+
   return (
     <Wrapper gap={4} align="center">
       {isLoggedIn ? (
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
-          {/* Here for when we implement notifications */}
-          {/*<NotificationsCircle />*/}
+          {notificationCount > 0 ? <NotificationsCircle /> : null}
 
           <HStack gap={2}>
             <GLogo />
@@ -89,13 +111,6 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     </Wrapper>
   );
 }
-
-// const NotificationsCircle = styled.div`
-//   width: 4px;
-//   height: 4px;
-//   background-color: ${colors.hyperBlue};
-//   border-radius: 99999px;
-// `;
 
 const LogoContainer = styled(HStack)`
   cursor: pointer;
