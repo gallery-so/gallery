@@ -21,6 +21,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
+import ManageWalletsModalWithEmail from '~/scenes/Modals/ManageWalletModalWithEmail';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -98,8 +99,8 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const handleManageWalletsClick = useCallback(() => {
     showModal({
-      content: <ManageWalletsModal queryRef={query} />,
-      headerText: 'Manage accounts',
+      content: <ManageWalletsModalWithEmail queryRef={query} />,
+      headerText: 'Settings',
     });
   }, [query, showModal]);
 
