@@ -1407,11 +1407,6 @@ type Mutation {
     updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
 
     verifyEmail(token: String!): VerifyEmailPayloadOrError
-
-}
-
-interface Component {
-    name: String
 }
 
 type Subscription {
