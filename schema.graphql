@@ -446,38 +446,61 @@ type NotificationsConnection @goEmbedHelper {
 }
 
 type Viewer {
-    user: GalleryUser @goField(forceResolver: true)
-    viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
-    feed(before: String, after: String, first: Int, last: Int): FeedConnection
+  user: GalleryUser @goField(forceResolver: true)
+  viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
+  feed(before: String, after: String, first: Int, last: Int): FeedConnection
     @goField(forceResolver: true)
 
-    email: UserEmail @goField(forceResolver: true)
-    """
-    Returns a list of notifications in reverse chronological order.
-    Seen notifications come after unseen notifications
-    """
-    notifications(
-        before: String
-        after: String
-        first: Int
-        last: Int
-    ): NotificationsConnection @goField(forceResolver: true)
+  email: UserEmail @goField(forceResolver: true)
+  """
+  Returns a list of notifications in reverse chronological order.
+  Seen notifications come after unseen notifications
+  """
+  notifications(
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): NotificationsConnection @goField(forceResolver: true)
 
-    notificationSettings: NotificationSettings @goField(forceResolver: true)
+  notificationSettings: NotificationSettings @goField(forceResolver: true)
 }
 
 type NotificationSettings {
-    someoneFollowedYou: Boolean
-    someoneAdmiredYourUpdate: Boolean
-    someoneCommentedOnYourUpdate: Boolean
-    someoneViewedYourGallery: Boolean
+  someoneFollowedYou: Boolean
+  someoneAdmiredYourUpdate: Boolean
+  someoneCommentedOnYourUpdate: Boolean
+  someoneViewedYourGallery: Boolean
 }
 
 input NotificationSettingsInput {
-    someoneFollowedYou: Boolean
-    someoneAdmiredYourUpdate: Boolean
-    someoneCommentedOnYourUpdate: Boolean
-    someoneViewedYourGallery: Boolean
+  someoneFollowedYou: Boolean
+  someoneAdmiredYourUpdate: Boolean
+  someoneCommentedOnYourUpdate: Boolean
+  someoneViewedYourGallery: Boolean
+}
+
+enum EmailVerificationStatus {
+    Unverified
+    Verified
+    Failed
+    Admin
+}
+
+type UserEmail {
+    email: String
+    verificationStatus: EmailVerificationStatus
+    emailNotificationSettings: EmailNotificationSettings
+}
+
+type EmailNotificationSettings {
+    unsubscribedFromAll: Boolean!
+    unsubscribedFromNotifications: Boolean!
+}
+
+input UpdateEmailNotificationSettingsInput {
+    unsubscribedFromAll: Boolean!
+    unsubscribedFromNotifications: Boolean!
 }
 
 enum EmailVerificationStatus {
@@ -1308,13 +1331,21 @@ union UpdateEmailPayloadOrError =
     UpdateEmailPayload
     | ErrInvalidInput
 
+type ResendVerificationEmailPayload {
+    viewer: Viewer
+}
+
+union ResendVerificationEmailPayloadOrError =
+    ResendVerificationEmailPayload
+    | ErrInvalidInput
+
 type UpdateEmailNotificationSettingsPayload {
-  viewer: Viewer
+    viewer: Viewer
 }
 
 union UpdateEmailNotificationSettingsPayloadOrError =
     UpdateEmailNotificationSettingsPayload
-  | ErrInvalidInput
+    | ErrInvalidInput
 
 type Mutation {
     # User Mutations
@@ -1346,6 +1377,7 @@ type Mutation {
 
     createUser(authMechanism: AuthMechanism!, username: String!, bio: String, email: String): CreateUserPayloadOrError
     updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError @authRequired
+    resendVerificationEmail: ResendVerificationEmailPayloadOrError @authRequired
     updateEmailNotificationSettings(input: UpdateEmailNotificationSettingsInput!): UpdateEmailNotificationSettingsPayloadOrError @authRequired
     login(authMechanism: AuthMechanism!): LoginPayloadOrError
     logout: LogoutPayload
