@@ -18,11 +18,6 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   EMAIL: true,
 };
 
-const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
-  WHITE_RHINO: true,
-  EMAIL: true,
-};
-
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     WHITE_RHINO: true,
@@ -40,10 +35,6 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   },
 };
 
-const EMPLOYEE_USER_IDS = new Set(
-  process.env.NEXT_PUBLIC_EMPLOYEE_IDS ? process.env.NEXT_PUBLIC_EMPLOYEE_IDS.split(',') : []
-);
-
 /**
  * Returns a boolean depending on whether a feature is enabled for a user.
  * 1) This function will work even if the user is logged out, in which case it will default to using environment-based FF
@@ -60,7 +51,6 @@ export default function isFeatureEnabled(
         viewer {
           ... on Viewer {
             user {
-              dbid
               roles
             }
           }
@@ -70,18 +60,8 @@ export default function isFeatureEnabled(
     queryRef
   );
 
-  const userId = result?.viewer?.user?.dbid;
-
   function checkEnvironment() {
     return isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
-  }
-
-  function checkEmployee() {
-    if (userId && EMPLOYEE_USER_IDS.has(userId)) {
-      return EMPLOYEE_FLAGS[flag];
-    }
-
-    return false;
   }
 
   function checkRole() {
@@ -100,11 +80,7 @@ export default function isFeatureEnabled(
     return anyRoleEnablesFeatureFlag;
   }
 
-  const checks = [checkEnvironment(), checkEmployee(), checkRole()];
-
-  // If any of the checks tell us the feature flag is enabled
-  // then the feature flag should be enabled.
-  const isEnabled = checks.some((check) => check === true);
+  const isEnabled = checkEnvironment() || checkRole();
 
   return isEnabled;
 }
