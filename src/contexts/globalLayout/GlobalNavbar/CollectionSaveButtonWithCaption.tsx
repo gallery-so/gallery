@@ -13,6 +13,7 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -47,11 +48,12 @@ export function CollectionSaveButtonWithCaption({
   // to display an animation prior to unmounting the component and its contents
   const [isActive, setIsActive] = useState(false);
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
+  const track = useTrack();
 
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
     deactivateHoverCardTimeoutRef.current = setTimeout(
@@ -67,14 +69,17 @@ export function CollectionSaveButtonWithCaption({
 
   const handleSubmit = useCallback(async () => {
     setIsLoading(true);
+    if (!!caption) {
+      track('Saved Collection With Caption');
+    }
     await onSave(caption);
     handleCloseCaption();
     setIsLoading(false);
-  }, [caption, handleCloseCaption, onSave]);
+  }, [caption, handleCloseCaption, onSave, track]);
 
   const handleOpenCaption = useCallback(() => {
     // If feature flag off, skip caption and save immediately
-    if (!isWhiteRinoEnabled) {
+    if (!isWhiteRhinoEnabled) {
       handleSubmit();
       return;
     }
@@ -84,7 +89,7 @@ export function CollectionSaveButtonWithCaption({
     }
     setIsActive(true);
     setIsPopupDisplayed(true);
-  }, [handleSubmit, isWhiteRinoEnabled]);
+  }, [handleSubmit, isWhiteRhinoEnabled]);
 
   const isSaveDisabled = useMemo(() => {
     return caption.length > 600;
@@ -97,11 +102,11 @@ export function CollectionSaveButtonWithCaption({
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
         disabled={disabled}
-        pending={isLoading && !isWhiteRinoEnabled}
+        pending={isLoading && !isWhiteRhinoEnabled}
       >
         <HStack gap={4} align="center">
           {label}
-          {isWhiteRinoEnabled && (
+          {isWhiteRhinoEnabled && (
             <StyledChevronSvg
               isActive={isPopupDisplayed}
               width="12"

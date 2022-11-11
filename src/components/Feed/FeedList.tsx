@@ -157,6 +157,7 @@ export default function FeedList({
             // @ts-expect-error shitty react-virtualized types
             <div ref={registerChild}>
               <List
+                className="FeedList"
                 ref={virtualizedListRef}
                 autoHeight
                 width={width}
