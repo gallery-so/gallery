@@ -6,12 +6,14 @@ import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/Orga
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { OnboardingGalleryEditorNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
 import { organizeGalleryQuery } from '~/generated/organizeGalleryQuery.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(
     graphql`
       query organizeGalleryQuery {
         ...OrganizeGalleryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     {}
@@ -35,9 +37,14 @@ export default function OrganizeGalleryPage() {
     [push, urlQuery]
   );
 
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
+
   const handleNext = useCallback(() => {
-    return push({ pathname: '/onboarding/congratulations', query: { ...urlQuery } });
-  }, [push, urlQuery]);
+    const pathname = isEmailFeatureEnabled
+      ? '/onboarding/add-email'
+      : '/onboarding/congratulations';
+    return push({ pathname, query: { ...urlQuery } });
+  }, [isEmailFeatureEnabled, push, urlQuery]);
 
   return (
     <FullPageStep navbar={<OnboardingGalleryEditorNavbar onBack={back} onNext={handleNext} />}>
