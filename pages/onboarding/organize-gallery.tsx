@@ -37,7 +37,7 @@ export default function OrganizeGalleryPage() {
     [push, urlQuery]
   );
 
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.WHITE_RINO, query);
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const handleNext = useCallback(() => {
     const pathname = isEmailFeatureEnabled
