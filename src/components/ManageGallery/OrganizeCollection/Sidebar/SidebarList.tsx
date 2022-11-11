@@ -1,5 +1,7 @@
 import throttle from 'lodash.throttle';
-import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import Hide from 'public/icons/hide.svg';
+import Show from 'public/icons/show.svg';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { graphql } from 'react-relay';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
@@ -9,6 +11,7 @@ import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
 import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+import Tooltip from '~/components/Tooltip/Tooltip';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
@@ -17,29 +20,99 @@ import {
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 
+import { SidebarView } from './SidebarViewSelector';
+
 export type TokenAndEditModeToken = {
   token: SidebarListTokenFragment$key;
   editModeToken: EditModeToken;
 };
 
+export type CollectionTitleRow = {
+  type: 'collection-title';
+  expanded: boolean;
+  address: string;
+  title: string;
+};
+
 export type VirtualizedRow =
-  | { type: 'collection-title'; expanded: boolean; address: string; title: string }
+  | CollectionTitleRow
   | { type: 'tokens'; tokens: TokenAndEditModeToken[]; expanded: boolean };
 
 type Props = {
   rows: VirtualizedRow[];
+  selectedView: SidebarView;
   shouldUseCollectionGrouping: boolean;
   onToggleExpanded(address: string): void;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
+  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
 };
+
+function CollectionTitle({
+  row,
+  key,
+  style,
+  selectedView,
+  onToggleExpanded,
+  setSpamPreferenceForCollection,
+}: {
+  row: CollectionTitleRow;
+  key: string;
+  style: React.CSSProperties;
+  selectedView: SidebarView;
+  onToggleExpanded: (address: string) => void;
+  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
+}) {
+  const [showIcon, setShowIcon] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <CollectionTitleContainer
+      expanded={row.expanded}
+      onClick={() => onToggleExpanded(row.address)}
+      key={key}
+      style={style}
+      onMouseEnter={() => setShowIcon(true)}
+      onMouseLeave={() => setShowIcon(false)}
+    >
+      <ExpandedIcon expanded={row.expanded} />
+
+      <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
+
+      {showIcon && (
+        <>
+          <ShowHideContainer
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
+            }}
+          >
+            {selectedView === 'Hidden' ? <Show /> : <Hide />}
+          </ShowHideContainer>
+          <StyledTooltip
+            text={selectedView === 'Hidden' ? 'Show' : 'Hide'}
+            description={`This will move "${row.title}" to the ${
+              selectedView === 'Hidden' ? 'Collected' : 'Hidden'
+            } folder.`}
+            whiteSpace="normal"
+            visible={showTooltip}
+          />
+        </>
+      )}
+    </CollectionTitleContainer>
+  );
+}
 
 export function SidebarList({
   rows,
+  selectedView,
   onToggleExpanded,
   handleTokenRenderError,
   handleTokenRenderSuccess,
   shouldUseCollectionGrouping,
+  setSpamPreferenceForCollection,
 }: Props) {
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -51,16 +124,14 @@ export function SidebarList({
 
       if (row.type === 'collection-title') {
         return (
-          <CollectionTitleContainer
-            expanded={row.expanded}
-            onClick={() => onToggleExpanded(row.address)}
+          <CollectionTitle
+            row={row}
             key={key}
             style={style}
-          >
-            <ExpandedIcon expanded={row.expanded} />
-
-            <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-          </CollectionTitleContainer>
+            selectedView={selectedView}
+            onToggleExpanded={onToggleExpanded}
+            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+          />
         );
       }
 
@@ -96,7 +167,14 @@ export function SidebarList({
         );
       }
     },
-    [handleTokenRenderError, handleTokenRenderSuccess, onToggleExpanded, rows]
+    [
+      handleTokenRenderError,
+      handleTokenRenderSuccess,
+      onToggleExpanded,
+      rows,
+      selectedView,
+      setSpamPreferenceForCollection,
+    ]
   );
 
   const rowHeightCalculator = useCallback(
@@ -184,6 +262,7 @@ const CollectionTitleText = styled(TitleXS)`
 const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded: boolean }>`
   display: flex;
   align-items: center;
+  gap: 4px;
 
   cursor: pointer;
 
@@ -202,4 +281,18 @@ const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boole
 const Selection = styled.div`
   display: flex;
   grid-gap: ${SIDEBAR_ICON_GAP}px;
+`;
+
+const ShowHideContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+`;
+
+const StyledTooltip = styled(Tooltip)<{ visible: boolean }>`
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  width: 50%;
+  right: 0;
+  top: 30px;
+  z-index: 1;
 `;

@@ -53,6 +53,8 @@ const collectionEditorViewerFragment = graphql`
               dbid @required(action: THROW)
               name @required(action: THROW)
               lastUpdated @required(action: THROW)
+              isSpamByUser
+              isSpamByProvider
             }
             tokenSettings {
               renderLive
@@ -71,6 +73,8 @@ const collectionEditorViewerFragment = graphql`
         dbid @required(action: THROW)
         name @required(action: THROW)
         lastUpdated @required(action: THROW)
+        isSpamByUser
+        isSpamByProvider
         ...SidebarFragment
         ...StagingAreaFragment
       }

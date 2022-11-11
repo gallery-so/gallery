@@ -4,6 +4,8 @@ export type EditModeTokenChild = {
   dbid: string;
   name: string;
   lastUpdated: number;
+  isSpamByUser: boolean | null;
+  isSpamByProvider: boolean | null;
 };
 
 export type EditModeToken = {

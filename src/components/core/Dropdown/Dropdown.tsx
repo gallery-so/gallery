@@ -10,9 +10,10 @@ type Props = {
   onClose: () => void;
   children?: ReactNode;
   position: 'right' | 'left';
+  style?: React.CSSProperties;
 };
 
-export function Dropdown({ active, onClose, children, position }: Props) {
+export function Dropdown({ active, onClose, children, position, style }: Props) {
   const handleClose = useCallback<MouseEventHandler>(
     (event) => {
       event.stopPropagation();
@@ -27,7 +28,7 @@ export function Dropdown({ active, onClose, children, position }: Props) {
       {/* Used to hijack click events on things outside of the dropdown */}
       {active && <Backdrop onClick={handleClose} />}
 
-      <DropdownContainer position={position} active={active}>
+      <DropdownContainer position={position} active={active} style={style}>
         {children}
       </DropdownContainer>
     </>
