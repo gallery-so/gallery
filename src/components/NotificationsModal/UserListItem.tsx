@@ -1,6 +1,7 @@
 import { UserListItemFragment$key } from '__generated__/UserListItemFragment.graphql';
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -9,6 +10,7 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { getFirstLine } from '~/utils/getFirstLine';
 
 type UserListItemProps = {
@@ -28,8 +30,14 @@ export function UserListItem({ userRef }: UserListItemProps) {
 
   const userRoute: Route = { pathname: '/[username]', query: { username: user.username } };
 
+  const { clearAllModals } = useModalActions();
+
+  const handleUserClick = useCallback(() => {
+    clearAllModals();
+  }, [clearAllModals]);
+
   return (
-    <Link href={userRoute}>
+    <Link href={userRoute} onClick={handleUserClick}>
       <StyledLink href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
