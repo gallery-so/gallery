@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { graphql } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailOnPageMutation } from '~/generated/useVerifyEmailOnPageMutation.graphql';
@@ -11,6 +12,7 @@ export default function useVerifyEmailOnPage() {
     mutation useVerifyEmailOnPageMutation($token: String!) @raw_response_type {
       verifyEmail(token: $token) {
         ... on VerifyEmailPayload {
+          __typename
           email
         }
         ... on ErrInvalidInput {
@@ -24,11 +26,24 @@ export default function useVerifyEmailOnPage() {
   const { verifyEmail } = router.query;
   const { pushToast } = useToastActions();
 
+  const updater: SelectorStoreUpdater<useVerifyEmailOnPageMutation['response']> = (
+    store,
+    response
+  ) => {
+    if (response.verifyEmail?.__typename === 'VerifyEmailPayload' && response.verifyEmail?.email) {
+      store
+        .get('client:root:viewer')
+        ?.getLinkedRecord('email')
+        ?.setValue('Verified', 'verificationStatus');
+    }
+  };
+
   useEffect(() => {
     if (!verifyEmail) return;
     const handleVerifyEmail = async (token: string) => {
       try {
         const response = await verifyEmailMutate({
+          updater,
           variables: { token },
         });
 
