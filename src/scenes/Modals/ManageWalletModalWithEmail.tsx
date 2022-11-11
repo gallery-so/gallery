@@ -56,14 +56,21 @@ function ManageWalletsModalWithEmail({
   const { pushToast } = useToastActions();
   const reportError = useReportError();
 
-  const isEmailNotificationUnsubscribed =
-    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
+  // Invert the value since in the db stored as unsubscribe while in the UI it's subscribe
+  const isEmailNotificationSubscribed =
+    !query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
+
+  console.log(query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications);
+  console.log(isEmailNotificationSubscribed);
+
+  const isEmailUnsubscribedFromAll =
+    !!query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
 
   // Set the initial state of the email notification toggle
   // so we can instantly toggle it on/off without waiting for the mutation to complete
   useEffect(() => {
-    setIsEmailNotificationChecked(!isEmailNotificationUnsubscribed);
-  }, [isEmailNotificationUnsubscribed]);
+    setIsEmailNotificationChecked(isEmailNotificationSubscribed);
+  }, [isEmailNotificationSubscribed]);
 
   // If the user already have email attached, toggle the email manager ui
   const userEmail = query?.viewer?.email?.email;
@@ -71,49 +78,57 @@ function ManageWalletsModalWithEmail({
     setIsShowAddEmail(Boolean(userEmail));
   }, [userEmail]);
 
-  // TODO: Check it again after update notication setting deployed
   const [isPending, setIsPending] = useState(false);
 
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
+      const unsubscribedFromNotifications = !checked;
+      setIsEmailNotificationChecked(checked);
       setIsPending(true);
       try {
-        setIsEmailNotificationChecked(checked);
-        const response = await updateEmailNotificationSettings(checked);
+        const response = await updateEmailNotificationSettings(
+          unsubscribedFromNotifications,
+          isEmailUnsubscribedFromAll
+        );
+
         // If its failed, revert the toggle state
         if (!response?.updateEmailNotificationSettings) {
-          setIsEmailNotificationChecked(!checked);
+          // setIsEmailNotificationChecked(!checked);
           pushToast({
-            message: 'Settings successfully updated. You will now receive notification emails',
+            message:
+              'Settings successfully updated. You will no longer receive notification emails',
           });
           return;
         }
         pushToast({
-          message: 'Settings successfully updated. You will no longer receive notification emails',
+          message: 'Settings successfully updated. You will now receive notification emails',
         });
+        return;
       } catch (error) {
         if (error instanceof Error) {
           reportError('Failed to update email notification settings');
         }
+
         setIsEmailNotificationChecked(!checked);
       } finally {
         setIsPending(false);
       }
     },
-    [pushToast, reportError, updateEmailNotificationSettings]
+    [isEmailUnsubscribedFromAll, pushToast, reportError, updateEmailNotificationSettings]
   );
 
   const toggleEmailNotification = useCallback(() => {
+    // Invert the value from subscribe to unsubscribe
     handleEmailNotificationChange(!isEmailNotificationChecked);
   }, [handleEmailNotificationChange, isEmailNotificationChecked]);
 
-  const handleAddEmail = () => {
+  const handleOpenEmailManager = useCallback(() => {
     setIsShowAddEmail(true);
-  };
+  }, []);
 
-  const handleCloseEmailManager = () => {
+  const handleCloseEmailManager = useCallback(() => {
     setIsShowAddEmail(false);
-  };
+  }, []);
 
   return (
     <StyledManageWalletsModal gap={24}>
@@ -136,7 +151,7 @@ function ManageWalletsModalWithEmail({
           {isShowAddEmail ? (
             <EmailManager queryRef={query} onClosed={handleCloseEmailManager} />
           ) : (
-            <StyledButton variant="secondary" onClick={handleAddEmail}>
+            <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
               add email address
             </StyledButton>
           )}

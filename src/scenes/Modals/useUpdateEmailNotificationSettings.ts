@@ -28,13 +28,12 @@ export default function useUpdateEmailNotificationSettings() {
     `);
 
   return useCallback(
-    (unsubscribedFromNotifications: boolean) => {
+    (unsubscribedFromNotifications: boolean, unsubscribedFromAll: boolean) => {
       return updateEmailNotificationSettings({
         variables: {
           enabledNotification: {
             unsubscribedFromNotifications,
-            // TODO: Remove this since its not needed
-            unsubscribedFromAll: false,
+            unsubscribedFromAll,
           },
         },
       });
