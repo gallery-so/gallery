@@ -137,7 +137,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
       <VStack gap={8}>
         <StyledInput
           onChange={handleEmailChange}
-          placeholder="Enter your email address..."
+          placeholder="Email address"
           defaultValue={savedEmail || ''}
           autoFocus
           disabled={savePending}
