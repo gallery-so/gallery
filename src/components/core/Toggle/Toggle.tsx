@@ -4,17 +4,24 @@ import colors from '../colors';
 
 type Props = {
   checked: boolean;
+  isPending?: boolean;
   onChange: (checked: boolean) => void;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
-export default function Toggle({ checked, onChange }: Props) {
+export default function Toggle({ checked, isPending, onChange, ...inputProps }: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.checked);
   };
 
   return (
-    <StyledToggle>
-      <StyledInput type="checkbox" checked={checked} onChange={handleChange} />
+    <StyledToggle disabled={isPending}>
+      <StyledInput
+        type="checkbox"
+        checked={checked}
+        onChange={handleChange}
+        disabled={isPending}
+        {...inputProps}
+      />
       <StyledToggleContainer active={checked}>
         <StyledTogglePill active={checked} />
       </StyledToggleContainer>
@@ -22,9 +29,10 @@ export default function Toggle({ checked, onChange }: Props) {
   );
 }
 
-const StyledToggle = styled.div`
+const StyledToggle = styled.div<{ disabled?: boolean }>`
   position: relative;
   display: inline-block;
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `;
 
 const StyledInput = styled.input`
@@ -35,6 +43,10 @@ const StyledInput = styled.input`
   z-index: 1;
   margin: 0;
   cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const StyledToggleContainer = styled.div<{ active: boolean }>`
