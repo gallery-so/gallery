@@ -10,6 +10,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import ManageWalletsModalWithEmail from '../../components/Email/ManageWalletModalWithEmail';
 import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
@@ -33,6 +34,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
         ...UserGalleryFragment
         ...ManageWalletModalWithEmailFragment
         ...useVerifyEmailOnPageQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -56,16 +58,17 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
   // Check if the user logged in
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   useEffect(() => {
     // Only show the modal if the user is logged in and the settings query param is set
-    if (settings === 'true' && isLoggedIn) {
+    if (settings === 'true' && isLoggedIn && isEmailFeatureEnabled) {
       showModal({
         content: <ManageWalletsModalWithEmail queryRef={query} />,
         headerText: 'Settings',
       });
     }
-  }, [query, router, showModal, username, settings, isLoggedIn]);
+  }, [query, router, showModal, username, settings, isLoggedIn, isEmailFeatureEnabled]);
 
   return (
     <>

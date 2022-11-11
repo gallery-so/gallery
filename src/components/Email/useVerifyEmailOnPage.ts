@@ -7,6 +7,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailOnPageMutation } from '~/generated/useVerifyEmailOnPageMutation.graphql';
 import { useVerifyEmailOnPageQueryFragment$key } from '~/generated/useVerifyEmailOnPageQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQueryFragment$key) {
   const query = useFragment(
@@ -19,12 +20,14 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
             }
           }
         }
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
   const verificationStatus = query.viewer?.email?.verificationStatus;
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailOnPageMutation>(graphql`
     mutation useVerifyEmailOnPageMutation($token: String!) @raw_response_type {
@@ -57,6 +60,8 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
   };
 
   useEffect(() => {
+    if (!isEmailFeatureEnabled) return;
+
     // If the user is already verified and have invalid verifyEmail, don't do anything
     if (!verifyEmail || verificationStatus === 'Verified') return;
     const handleVerifyEmail = async (token: string) => {
@@ -88,5 +93,5 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
       }
     };
     handleVerifyEmail(verifyEmail as string);
-  }, [pushToast, verifyEmail, verifyEmailMutate, verificationStatus]);
+  }, [isEmailFeatureEnabled, pushToast, verifyEmail, verifyEmailMutate, verificationStatus]);
 }

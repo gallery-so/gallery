@@ -22,6 +22,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
+import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
@@ -56,6 +57,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
         }
 
         ...getEditGalleryUrlFragment
+        ...ManageWalletsModalFragment
         ...ManageWalletModalWithEmailFragment
         ...isFeatureEnabledFragment
       }
@@ -67,6 +69,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   const { handleLogout } = useAuthActions();
 
   const isMobile = useIsMobileWindowWidth();
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const notificationModalActions = useMemo(() => {
     const handleSettingsClick = () => {
@@ -92,16 +95,24 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
-      headerActions: notificationModalActions,
+      headerActions: isEmailFeatureEnabled ? notificationModalActions : false,
     });
-  }, [isMobile, notificationModalActions, showModal]);
+  }, [isEmailFeatureEnabled, isMobile, notificationModalActions, showModal]);
 
   const handleManageWalletsClick = useCallback(() => {
+    if (isEmailFeatureEnabled) {
+      showModal({
+        content: <ManageWalletsModalWithEmail queryRef={query} />,
+        headerText: 'Settings',
+      });
+      return;
+    }
+
     showModal({
-      content: <ManageWalletsModalWithEmail queryRef={query} />,
+      content: <ManageWalletsModal queryRef={query} />,
       headerText: 'Settings',
     });
-  }, [query, showModal]);
+  }, [isEmailFeatureEnabled, query, showModal]);
 
   const username = query.viewer?.user?.username;
 
