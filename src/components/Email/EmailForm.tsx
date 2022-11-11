@@ -87,7 +87,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
     setSavePending(true);
     function pushErrorToast() {
       pushToast({
-        autoClose: true,
+        autoClose: false,
         message: `Something went wrong while saving your email address. We are looking into it.`,
       });
     }
@@ -112,7 +112,7 @@ function EmailForm({ setIsEditMode, queryRef }: Props) {
       } else {
         // SUCCESS
         pushToast({
-          autoClose: true,
+          autoClose: false,
           message: toastSuccessCopy,
         });
         setIsEditMode(false);

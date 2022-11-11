@@ -65,7 +65,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
   const handleResendClick = useCallback(async () => {
     function pushErrorToast() {
       pushToast({
-        autoClose: true,
+        autoClose: false,
         message: `Something went wrong while sending a verification email. We are looking into it.`,
       });
     }
@@ -78,7 +78,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         );
       } else {
         pushToast({
-          autoClose: true,
+          autoClose: false,
           message: `We've resent you an email to verify your email address.`,
         });
       }
