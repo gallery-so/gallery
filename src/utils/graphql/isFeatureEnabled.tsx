@@ -30,7 +30,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   },
   BETA_TESTER: {
     WHITE_RHINO: true,
-    EMAIL: true,
+    EMAIL: false,
   },
   // In case a new role gets added, how do we want to handle that new role
   // if the client hasn't been updated to handle the new role.
