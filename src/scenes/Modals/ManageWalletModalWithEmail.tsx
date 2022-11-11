@@ -60,7 +60,12 @@ function ManageWalletsModalWithEmail({
   const handleEmailNotificationChange = async (checked: boolean) => {
     try {
       setIsEmailNotificationChecked(checked);
-      await updateEmailNotificationSettings(checked);
+      const response = await updateEmailNotificationSettings(checked);
+
+      // If its failed, turn off the toggle
+      if (!response?.updateEmailNotificationSettings) {
+        setIsEmailNotificationChecked(false);
+      }
     } catch (error) {
       console.error(error);
       // TODO: Show error message in toast?
