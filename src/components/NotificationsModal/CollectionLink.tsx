@@ -43,7 +43,7 @@ export function CollectionLink({ collectionRef }: CollectionLinkProps) {
 
   return (
     <InteractiveLink href={route(collectionRoute)}>
-      {collection.name ?? 'your collection'}
+      {collection.name || 'your collection'}
     </InteractiveLink>
   );
 }
