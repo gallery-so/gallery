@@ -9,6 +9,8 @@ import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text
 import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletModalWithEmailFragment$key } from '~/generated/ManageWalletModalWithEmailFragment.graphql';
 
 import useUpdateEmailNotificationSettings from './useUpdateEmailNotificationSettings';
@@ -51,6 +53,8 @@ function ManageWalletsModalWithEmail({
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
   const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(false);
   const [isShowAddEmail, setIsShowAddEmail] = useState(false);
+  const { pushToast } = useToastActions();
+  const reportError = useReportError();
 
   const isEmailNotificationUnsubscribed =
     query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
@@ -76,10 +80,20 @@ function ManageWalletsModalWithEmail({
       // If its failed, turn off the toggle
       if (!response?.updateEmailNotificationSettings) {
         setIsEmailNotificationChecked(false);
+        pushToast({
+          message: 'Settings successfully updated. You will now receive notification emails',
+        });
+        return;
       }
+
+      pushToast({
+        message: 'Settings successfully updated. You will no longer receive notification emails',
+      });
     } catch (error) {
-      console.error(error);
-      // TODO: Show error message in toast?
+      if (error instanceof Error) {
+        reportError('Failed to update email notification settings');
+      }
+      setIsEmailNotificationChecked(checked);
     }
   };
 
