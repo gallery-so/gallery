@@ -111,6 +111,10 @@ function ManageWalletsModalWithEmail({
     setIsShowAddEmail(true);
   };
 
+  const handleCloseEmailManager = () => {
+    setIsShowAddEmail(false);
+  };
+
   return (
     <StyledManageWalletsModal gap={24}>
       <VStack gap={16}>
@@ -130,7 +134,7 @@ function ManageWalletsModalWithEmail({
         </VStack>
         <StyledButtonContaienr>
           {isShowAddEmail ? (
-            <EmailManager queryRef={query} />
+            <EmailManager queryRef={query} onClosed={handleCloseEmailManager} />
           ) : (
             <StyledButton variant="secondary" onClick={handleAddEmail}>
               add email address
