@@ -1,34 +1,43 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
-import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragment.graphql';
+import { isFeatureEnabledFragment$key, Role } from '~/generated/isFeatureEnabledFragment.graphql';
 import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
-  ART_GOBBLERS = 'ART_GOBBLERS',
-  ADMIRE_COMMENT = 'ADMIRE_COMMENT',
   WHITE_RHINO = 'WHITE_RHINO',
   EMAIL = 'EMAIL',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: false,
-  ADMIRE_COMMENT: false,
   WHITE_RHINO: false,
   EMAIL: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: true,
-  ADMIRE_COMMENT: true,
   WHITE_RHINO: true,
   EMAIL: true,
 };
 
 const EMPLOYEE_FLAGS: Record<FeatureFlag, boolean> = {
-  ART_GOBBLERS: false,
-  ADMIRE_COMMENT: true,
   WHITE_RHINO: true,
   EMAIL: true,
+};
+
+const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
+  ADMIN: {
+    WHITE_RHINO: true,
+    EMAIL: true,
+  },
+  BETA_TESTER: {
+    WHITE_RHINO: true,
+    EMAIL: true,
+  },
+  // In case a new role gets added, how do we want to handle that new role
+  // if the client hasn't been updated to handle the new role.
+  '%future added value': {
+    WHITE_RHINO: false,
+    EMAIL: false,
+  },
 };
 
 const EMPLOYEE_USER_IDS = new Set(
@@ -52,6 +61,7 @@ export default function isFeatureEnabled(
           ... on Viewer {
             user {
               dbid
+              roles
             }
           }
         }
@@ -62,18 +72,39 @@ export default function isFeatureEnabled(
 
   const userId = result?.viewer?.user?.dbid;
 
-  const isEnabledBasedOnEnvironment = isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
-
-  // if the user is not logged in, determine based on environment
-  if (!userId) {
-    return isEnabledBasedOnEnvironment;
+  function checkEnvironment() {
+    return isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
   }
 
-  // if employee, determine based on employee flag
-  if (EMPLOYEE_USER_IDS.has(userId)) {
-    return EMPLOYEE_FLAGS[flag];
+  function checkEmployee() {
+    if (userId && EMPLOYEE_USER_IDS.has(userId)) {
+      return EMPLOYEE_FLAGS[flag];
+    }
+
+    return false;
   }
 
-  // finally, determine by environment
-  return isEnabledBasedOnEnvironment;
+  function checkRole() {
+    const roles = result.viewer?.user?.roles ?? [];
+
+    const anyRoleEnablesFeatureFlag = roles.some((role) => {
+      if (!role) {
+        return false;
+      }
+
+      const roleEnablesFeatureFlag = ROLE_FLAGS[role][flag];
+
+      return roleEnablesFeatureFlag;
+    });
+
+    return anyRoleEnablesFeatureFlag;
+  }
+
+  const checks = [checkEnvironment(), checkEmployee(), checkRole()];
+
+  // If any of the checks tell us the feature flag is enabled
+  // then the feature flag should be enabled.
+  const isEnabled = checks.some((check) => check === true);
+
+  return isEnabled;
 }
