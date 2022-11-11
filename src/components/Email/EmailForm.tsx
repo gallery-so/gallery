@@ -92,7 +92,7 @@ function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
     setSavePending(true);
     function pushErrorToast() {
       pushToast({
-        autoClose: true,
+        autoClose: false,
         message: `Something went wrong while saving your email address. We are looking into it.`,
       });
     }
@@ -117,7 +117,7 @@ function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
       } else {
         // SUCCESS
         pushToast({
-          autoClose: true,
+          autoClose: false,
           message: toastSuccessCopy,
         });
         setIsEditMode(false);
@@ -142,7 +142,7 @@ function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
       <VStack gap={8}>
         <StyledInput
           onChange={handleEmailChange}
-          placeholder="Enter your email address..."
+          placeholder="Email address"
           defaultValue={savedEmail || ''}
           autoFocus
           disabled={savePending}
