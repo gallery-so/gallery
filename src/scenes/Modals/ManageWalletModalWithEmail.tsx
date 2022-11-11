@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
+import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { ManageWalletModalWithEmailFragment$key } from '~/generated/ManageWalletModalWithEmailFragment.graphql';
 
@@ -31,6 +32,7 @@ function ManageWalletsModalWithEmail({
         viewer @required(action: THROW) {
           ... on Viewer {
             email @required(action: THROW) {
+              email
               emailNotificationSettings {
                 unsubscribedFromAll
                 unsubscribedFromNotifications
@@ -39,6 +41,7 @@ function ManageWalletsModalWithEmail({
           }
         }
 
+        ...EmailManagerFragment
         ...ManageWalletsFragment
       }
     `,
@@ -52,9 +55,17 @@ function ManageWalletsModalWithEmail({
   const isEmailNotificationUnsubscribed =
     query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
 
+  // Set the initial state of the email notification toggle
+  // so we can instantly toggle it on/off without waiting for the mutation to complete
   useEffect(() => {
-    setIsEmailNotificationChecked(isEmailNotificationUnsubscribed);
+    setIsEmailNotificationChecked(!isEmailNotificationUnsubscribed);
   }, [isEmailNotificationUnsubscribed]);
+
+  // If the user already have email attached, toggle the email manager ui
+  const userEmail = query?.viewer?.email?.email;
+  useEffect(() => {
+    setIsShowAddEmail(Boolean(userEmail));
+  }, [userEmail]);
 
   // TODO: Check it again after update notication setting deployed
   const handleEmailNotificationChange = async (checked: boolean) => {
@@ -91,15 +102,7 @@ function ManageWalletsModalWithEmail({
         </VStack>
         <StyledButtonContaienr>
           {isShowAddEmail ? (
-            <VStack gap={16}>
-              <BaseM>Add email address content here</BaseM>
-              <HStack align="center" justify="space-between">
-                <Button variant="secondary" onClick={() => setIsShowAddEmail(false)}>
-                  Cancel
-                </Button>
-                <Button variant="primary">Save</Button>
-              </HStack>
-            </VStack>
+            <EmailManager queryRef={query} />
           ) : (
             <StyledButton variant="secondary" onClick={handleAddEmail}>
               add email address
@@ -108,12 +111,15 @@ function ManageWalletsModalWithEmail({
         </StyledButtonContaienr>
       </VStack>
       <StyledHr />
-      <ManageWallets
-        queryRef={query}
-        newAddress={newAddress}
-        onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-        onEthAddWalletSuccess={onEthAddWalletSuccess}
-      />
+      <VStack>
+        <TitleDiatypeL>Manage Accounts</TitleDiatypeL>
+        <ManageWallets
+          queryRef={query}
+          newAddress={newAddress}
+          onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+          onEthAddWalletSuccess={onEthAddWalletSuccess}
+        />
+      </VStack>
     </StyledManageWalletsModal>
   );
 }
