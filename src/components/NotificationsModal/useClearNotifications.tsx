@@ -20,14 +20,26 @@ export function useClearNotifications() {
   const reportError = useReportError();
   return useCallback(async () => {
     const updater: SelectorStoreUpdater<useClearNotificationsMutation['response']> = (store) => {
-      const connectionId = ConnectionHandler.getConnectionID(
-        'client:root:viewer',
-        'ProfileDropdownContentFragment_notifications'
-      );
+      const connectionIds = [
+        ConnectionHandler.getConnectionID(
+          'client:root:viewer',
+          'FeedLeftContentFragment_notifications'
+        ),
+        ConnectionHandler.getConnectionID(
+          'client:root:viewer',
+          'ProfileDropdownFragment_notifications'
+        ),
+        ConnectionHandler.getConnectionID(
+          'client:root:viewer',
+          'ProfileDropdownContentFragment_notifications'
+        ),
+      ];
 
-      const connection = store.get(connectionId);
+      for (const connectionId of connectionIds) {
+        const connection = store.get(connectionId);
 
-      connection?.setValue(0, 'unseenCount');
+        connection?.setValue(0, 'unseenCount');
+      }
     };
 
     try {

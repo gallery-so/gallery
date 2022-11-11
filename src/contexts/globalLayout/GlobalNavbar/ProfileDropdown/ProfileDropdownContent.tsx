@@ -115,7 +115,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
-  const isWhiteRinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
+  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   return (
     <>
@@ -136,7 +136,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-          {isWhiteRinoEnabled && (
+          {isWhiteRhinoEnabled && (
             <NotificationsDropdownItem onClick={handleNotificationsClick}>
               <HStack align="center" gap={10}>
                 <div>NOTIFICATIONS</div>
