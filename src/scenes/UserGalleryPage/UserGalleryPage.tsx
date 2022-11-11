@@ -11,8 +11,8 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 
-import ManageWalletsModalWithEmail from '../Modals/ManageWalletModalWithEmail';
-import useVerifyEmailOnPage from '../Modals/useVerifyEmailOnPage';
+import ManageWalletsModalWithEmail from '../../components/Email/ManageWalletModalWithEmail';
+import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
