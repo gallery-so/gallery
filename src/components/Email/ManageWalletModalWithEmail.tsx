@@ -58,10 +58,7 @@ function ManageWalletsModalWithEmail({
 
   // Invert the value since in the db stored as unsubscribe while in the UI it's subscribe
   const isEmailNotificationSubscribed =
-    !query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
-
-  console.log(query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications);
-  console.log(isEmailNotificationSubscribed);
+    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications || false;
 
   const isEmailUnsubscribedFromAll =
     !!query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
