@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -72,30 +72,40 @@ function ManageWalletsModalWithEmail({
   }, [userEmail]);
 
   // TODO: Check it again after update notication setting deployed
-  const handleEmailNotificationChange = async (checked: boolean) => {
-    try {
-      setIsEmailNotificationChecked(checked);
-      const response = await updateEmailNotificationSettings(checked);
+  const [isPending, setIsPending] = useState(false);
 
-      // If its failed, turn off the toggle
-      if (!response?.updateEmailNotificationSettings) {
-        setIsEmailNotificationChecked(false);
+  const handleEmailNotificationChange = useCallback(
+    async (checked: boolean) => {
+      setIsPending(true);
+      try {
+        setIsEmailNotificationChecked(checked);
+        const response = await updateEmailNotificationSettings(checked);
+        // If its failed, revert the toggle state
+        if (!response?.updateEmailNotificationSettings) {
+          setIsEmailNotificationChecked(!checked);
+          pushToast({
+            message: 'Settings successfully updated. You will now receive notification emails',
+          });
+          return;
+        }
         pushToast({
-          message: 'Settings successfully updated. You will now receive notification emails',
+          message: 'Settings successfully updated. You will no longer receive notification emails',
         });
-        return;
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError('Failed to update email notification settings');
+        }
+        setIsEmailNotificationChecked(!checked);
+      } finally {
+        setIsPending(false);
       }
+    },
+    [pushToast, reportError, updateEmailNotificationSettings]
+  );
 
-      pushToast({
-        message: 'Settings successfully updated. You will no longer receive notification emails',
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        reportError('Failed to update email notification settings');
-      }
-      setIsEmailNotificationChecked(checked);
-    }
-  };
+  const toggleEmailNotification = useCallback(() => {
+    handleEmailNotificationChange(!isEmailNotificationChecked);
+  }, [handleEmailNotificationChange, isEmailNotificationChecked]);
 
   const handleAddEmail = () => {
     setIsShowAddEmail(true);
@@ -111,7 +121,11 @@ function ManageWalletsModalWithEmail({
             <BaseM>
               Receive weekly recaps that show your most recent admires, comments, and followers.
             </BaseM>
-            <Toggle checked={isEmailNotificationChecked} onChange={handleEmailNotificationChange} />
+            <Toggle
+              checked={isEmailNotificationChecked}
+              isPending={isPending}
+              onChange={toggleEmailNotification}
+            />
           </HStack>
         </VStack>
         <StyledButtonContaienr>
