@@ -32,6 +32,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
         ...UserGalleryFragment
         ...ManageWalletModalWithEmailFragment
+        ...useVerifyEmailOnPageQueryFragment
       }
     `,
     queryRef
@@ -41,7 +42,8 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
-  useVerifyEmailOnPage();
+
+  useVerifyEmailOnPage(query);
 
   useEffect(() => {
     track('Page View: User Gallery', { username });

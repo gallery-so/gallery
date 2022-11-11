@@ -1,13 +1,31 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { graphql } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailOnPageMutation } from '~/generated/useVerifyEmailOnPageMutation.graphql';
+import { useVerifyEmailOnPageQueryFragment$key } from '~/generated/useVerifyEmailOnPageQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
-export default function useVerifyEmailOnPage() {
+export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQueryFragment$key) {
+  const query = useFragment(
+    graphql`
+      fragment useVerifyEmailOnPageQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            email {
+              verificationStatus
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const verificationStatus = query.viewer?.email?.verificationStatus;
+
   const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailOnPageMutation>(graphql`
     mutation useVerifyEmailOnPageMutation($token: String!) @raw_response_type {
       verifyEmail(token: $token) {
@@ -39,7 +57,8 @@ export default function useVerifyEmailOnPage() {
   };
 
   useEffect(() => {
-    if (!verifyEmail) return;
+    // If the user is already verified and have invalid verifyEmail, don't do anything
+    if (!verifyEmail || verificationStatus === 'Verified') return;
     const handleVerifyEmail = async (token: string) => {
       try {
         const response = await verifyEmailMutate({
@@ -69,5 +88,5 @@ export default function useVerifyEmailOnPage() {
       }
     };
     handleVerifyEmail(verifyEmail as string);
-  }, [pushToast, verifyEmail, verifyEmailMutate]);
+  }, [pushToast, verifyEmail, verifyEmailMutate, verificationStatus]);
 }
