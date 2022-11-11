@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -9,6 +9,8 @@ import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text
 import Toggle from '~/components/core/Toggle/Toggle';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { ManageWalletModalWithEmailFragment$key } from '~/generated/ManageWalletModalWithEmailFragment.graphql';
+
+import useUpdateEmailNotificationSettings from './useUpdateEmailNotificationSettings';
 
 type Props = {
   queryRef: ManageWalletModalWithEmailFragment$key;
@@ -26,15 +28,44 @@ function ManageWalletsModalWithEmail({
   const query = useFragment(
     graphql`
       fragment ManageWalletModalWithEmailFragment on Query {
+        viewer @required(action: THROW) {
+          ... on Viewer {
+            email @required(action: THROW) {
+              emailNotificationSettings {
+                unsubscribedFromAll
+                unsubscribedFromNotifications
+              }
+            }
+          }
+        }
+
         ...ManageWalletsFragment
       }
     `,
     queryRef
   );
 
-  // TODO: Replace with mutation
+  const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
   const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(false);
   const [isShowAddEmail, setIsShowAddEmail] = useState(false);
+
+  const isEmailNotificationUnsubscribed =
+    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications ?? false;
+
+  useEffect(() => {
+    setIsEmailNotificationChecked(isEmailNotificationUnsubscribed);
+  }, [isEmailNotificationUnsubscribed]);
+
+  // TODO: Check it again after update notication setting deployed
+  const handleEmailNotificationChange = async (checked: boolean) => {
+    try {
+      setIsEmailNotificationChecked(checked);
+      await updateEmailNotificationSettings(checked);
+    } catch (error) {
+      console.error(error);
+      // TODO: Show error message in toast?
+    }
+  };
 
   const handleAddEmail = () => {
     setIsShowAddEmail(true);
@@ -50,7 +81,7 @@ function ManageWalletsModalWithEmail({
             <BaseM>
               Receive weekly recaps that show your most recent admires, comments, and followers.
             </BaseM>
-            <Toggle checked={isEmailNotificationChecked} onChange={setIsEmailNotificationChecked} />
+            <Toggle checked={isEmailNotificationChecked} onChange={handleEmailNotificationChange} />
           </HStack>
         </VStack>
         <StyledButtonContaienr>
