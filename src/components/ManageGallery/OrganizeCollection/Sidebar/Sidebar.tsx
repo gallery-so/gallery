@@ -151,9 +151,16 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         return true;
       }
 
+      if (token.chain !== selectedChain) {
+        return false;
+      }
+
       const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
 
-      return token.chain === selectedChain && (selectedView === 'Hidden' ? isSpam : !isSpam);
+      if (selectedView === 'Hidden') {
+        return isSpam;
+      }
+      return !isSpam;
     });
   }, [
     editModeTokensSearchResults,
@@ -241,7 +248,7 @@ const StyledSidebarContainer = styled(VStack)`
 `;
 
 const AddBlankSpaceButton = styled(Button)`
-  margin: 4px 0;
+  margin-bottom: 8px;
 `;
 
 const StyledSidebar = styled.div<{ navbarHeight: number }>`
@@ -263,8 +270,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  min-height: 52px;
-  padding-bottom: 16px;
+  min-height: 32px;
 `;
 
 export default memo(Sidebar);

@@ -19,15 +19,15 @@ export function EmptySidebar({ chain, view, reason }: Props) {
   // and then forget to handle that new case here
   const subtext: ReactNode = useMemo(() => {
     if (reason === 'no-nfts') {
-      return (
-        <BaseM>
-          You do not have any {view.toLowerCase()} {chain} pieces
-        </BaseM>
-      );
+      return <BaseM>You do not have any {chain} pieces</BaseM>;
     } else if (reason === 'no-search-results') {
       return <BaseM>No pieces matching your search query</BaseM>;
     }
-  }, [chain, reason, view]);
+  }, [chain, reason]);
+
+  if (view === 'Hidden') {
+    return null;
+  }
 
   return (
     <StyledVStack grow align="center" justify="center">

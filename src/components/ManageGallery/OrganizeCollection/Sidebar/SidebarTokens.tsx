@@ -53,21 +53,19 @@ export const SidebarTokens = ({
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
-      const groups = groupCollectionsByAddress({ tokens, editModeTokens });
-      const matchingCollection = groups.find((group) => group.address === address);
+      const tokenIds = tokens
+        .filter((token) => token.contract?.contractAddress?.address === address)
+        .map((token) => token.dbid);
 
-      if (!matchingCollection) {
+      if (tokenIds.length === 0) {
         throw new Error(
-          `No matching collection group found for ${address} to mark as ${
-            isSpam ? 'spam' : 'not spam'
-          }`
+          `No matching token IDs found for ${address} to mark as ${isSpam ? 'spam' : 'not spam'}`
         );
       }
 
-      const tokenIds = matchingCollection.tokens.map((t) => t.token.dbid);
       setSpamPreference({ tokens: tokenIds, isSpam });
     },
-    [tokens, editModeTokens, setSpamPreference]
+    [tokens, setSpamPreference]
   );
 
   const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());

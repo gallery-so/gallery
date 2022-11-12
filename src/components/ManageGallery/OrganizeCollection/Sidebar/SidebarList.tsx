@@ -1,12 +1,11 @@
 import throttle from 'lodash.throttle';
-import Hide from 'public/icons/hide.svg';
-import Show from 'public/icons/show.svg';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { graphql } from 'react-relay';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
+import colors from '~/components/core/colors';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
@@ -19,6 +18,8 @@ import {
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
+import HideIcon from '~/icons/HideIcon';
+import ShowIcon from '~/icons/ShowIcon';
 
 import { SidebarView } from './SidebarViewSelector';
 
@@ -67,41 +68,41 @@ function CollectionTitle({
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <CollectionTitleContainer
-      expanded={row.expanded}
-      onClick={() => onToggleExpanded(row.address)}
-      key={key}
-      style={style}
-      onMouseEnter={() => setShowIcon(true)}
-      onMouseLeave={() => setShowIcon(false)}
-    >
-      <ExpandedIcon expanded={row.expanded} />
+    <CollectionTitleRow style={style}>
+      <CollectionTitleContainer
+        onClick={() => onToggleExpanded(row.address)}
+        key={key}
+        onMouseEnter={() => setShowIcon(true)}
+        onMouseLeave={() => setShowIcon(false)}
+      >
+        <ExpandedIcon expanded={row.expanded} />
 
-      <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
+        <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
 
-      {showIcon && (
-        <>
-          <ShowHideContainer
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
-            }}
-          >
-            {selectedView === 'Hidden' ? <Show /> : <Hide />}
-          </ShowHideContainer>
-          <StyledTooltip
-            text={selectedView === 'Hidden' ? 'Show' : 'Hide'}
-            description={`This will move "${row.title}" to the ${
-              selectedView === 'Hidden' ? 'Collected' : 'Hidden'
-            } folder.`}
-            whiteSpace="normal"
-            visible={showTooltip}
-          />
-        </>
-      )}
-    </CollectionTitleContainer>
+        {showIcon && (
+          <>
+            <ShowHideContainer
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
+              }}
+            >
+              {selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
+            </ShowHideContainer>
+            <StyledTooltip
+              text={selectedView === 'Hidden' ? 'Show' : 'Hide'}
+              description={`This will move "${row.title}" to your ${
+                selectedView === 'Hidden' ? 'Collected' : 'Hidden'
+              } folder.`}
+              whiteSpace="normal"
+              visible={showTooltip}
+            />
+          </>
+        )}
+      </CollectionTitleContainer>
+    </CollectionTitleRow>
   );
 }
 
@@ -259,15 +260,24 @@ const CollectionTitleText = styled(TitleXS)`
   overflow: hidden;
 `;
 
-const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded: boolean }>`
+const CollectionTitleRow = styled.div`
+  padding-bottom: ${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px;
+`;
+
+const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`
   display: flex;
   align-items: center;
   gap: 4px;
-
   cursor: pointer;
 
-  padding-bottom: ${({ expanded }) =>
-    expanded ? `${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px` : '0px'};
+  height: ${SIDEBAR_COLLECTION_TITLE_HEIGHT}px;
+  padding: 0 8px;
+
+  border-radius: 2px;
+
+  &:hover {
+    background: ${colors.faint};
+  }
 `;
 
 const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
@@ -291,7 +301,7 @@ const ShowHideContainer = styled.div`
 
 const StyledTooltip = styled(Tooltip)<{ visible: boolean }>`
   opacity: ${({ visible }) => (visible ? 1 : 0)};
-  width: 50%;
+  width: 130px;
   right: 0;
   top: 30px;
   z-index: 1;
