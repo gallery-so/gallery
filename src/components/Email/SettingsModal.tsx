@@ -11,18 +11,18 @@ import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { ManageWalletModalWithEmailFragment$key } from '~/generated/ManageWalletModalWithEmailFragment.graphql';
+import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
 
 import useUpdateEmailNotificationSettings from './useUpdateEmailNotificationSettings';
 
 type Props = {
-  queryRef: ManageWalletModalWithEmailFragment$key;
+  queryRef: SettingsModalFragment$key;
   newAddress?: string;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
 };
 
-function ManageWalletsModalWithEmail({
+function SettingsModal({
   newAddress,
   queryRef,
   onEthAddWalletSuccess,
@@ -30,7 +30,7 @@ function ManageWalletsModalWithEmail({
 }: Props) {
   const query = useFragment(
     graphql`
-      fragment ManageWalletModalWithEmailFragment on Query {
+      fragment SettingsModalFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             email @required(action: THROW) {
@@ -52,7 +52,7 @@ function ManageWalletsModalWithEmail({
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
   const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(false);
-  const [isShowAddEmail, setIsShowAddEmail] = useState(false);
+  const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState(false);
   const { pushToast } = useToastActions();
   const reportError = useReportError();
 
@@ -72,7 +72,7 @@ function ManageWalletsModalWithEmail({
   // If the user already have email attached, toggle the email manager ui
   const userEmail = query?.viewer?.email?.email;
   useEffect(() => {
-    setIsShowAddEmail(Boolean(userEmail));
+    setShouldDisplayAddEmailInput(Boolean(userEmail));
   }, [userEmail]);
 
   const [isPending, setIsPending] = useState(false);
@@ -90,7 +90,6 @@ function ManageWalletsModalWithEmail({
 
         // If its failed, revert the toggle state
         if (!response?.updateEmailNotificationSettings) {
-          // setIsEmailNotificationChecked(!checked);
           pushToast({
             message:
               'Settings successfully updated. You will no longer receive notification emails',
@@ -120,11 +119,11 @@ function ManageWalletsModalWithEmail({
   }, [handleEmailNotificationChange, isEmailNotificationChecked]);
 
   const handleOpenEmailManager = useCallback(() => {
-    setIsShowAddEmail(true);
+    setShouldDisplayAddEmailInput(true);
   }, []);
 
   const handleCloseEmailManager = useCallback(() => {
-    setIsShowAddEmail(false);
+    setShouldDisplayAddEmailInput(false);
   }, []);
 
   return (
@@ -145,8 +144,8 @@ function ManageWalletsModalWithEmail({
           </HStack>
         </VStack>
         <StyledButtonContaienr>
-          {isShowAddEmail ? (
-            <EmailManager queryRef={query} onClosed={handleCloseEmailManager} />
+          {shouldDisplayAddEmailInput ? (
+            <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
           ) : (
             <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
               add email address
@@ -190,4 +189,4 @@ const StyledButton = styled(Button)`
   padding: 8px 12px;
 `;
 
-export default ManageWalletsModalWithEmail;
+export default SettingsModal;

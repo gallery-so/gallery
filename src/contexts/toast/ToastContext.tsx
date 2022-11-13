@@ -3,12 +3,13 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { AnimatedToast } from './Toast';
 
 type DismissToastHandler = () => void;
+type ToastVariant = 'success' | 'error';
 
 type ToastProps = {
   message: string;
   onDismiss?: DismissToastHandler;
   autoClose?: boolean;
-  variant?: 'success' | 'error';
+  variant?: ToastVariant;
 };
 
 type ToastActions = {
@@ -35,7 +36,7 @@ type ToastType = {
   message: string;
   onDismiss: DismissToastHandler;
   autoClose: boolean;
-  variant: 'success' | 'error';
+  variant: ToastVariant;
 };
 
 type Props = { children: ReactNode };

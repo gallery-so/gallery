@@ -10,10 +10,10 @@ import EmailVerificationStatus from './EmailVerificationStatus';
 
 type Props = {
   queryRef: EmailManagerFragment$key;
-  onClosed?: () => void;
+  onClose?: () => void;
 };
 
-function EmailManager({ queryRef, onClosed }: Props) {
+function EmailManager({ queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment EmailManagerFragment on Query {
@@ -46,7 +46,7 @@ function EmailManager({ queryRef, onClosed }: Props) {
   return (
     <StyledEmailManager isOnboarding={isOnboarding}>
       {showInput ? (
-        <EmailForm queryRef={query} setIsEditMode={setIsEditMode} onClosed={onClosed} />
+        <EmailForm queryRef={query} setIsEditMode={setIsEditMode} onClose={onClose} />
       ) : (
         <EmailVerificationStatus queryRef={query} setIsEditMode={setIsEditMode} />
       )}

@@ -14,7 +14,7 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
-import ManageWalletsModalWithEmail from '~/components/Email/ManageWalletModalWithEmail';
+import SettingsModal from '~/components/Email/SettingsModal';
 import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
@@ -58,7 +58,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         ...getEditGalleryUrlFragment
         ...ManageWalletsModalFragment
-        ...ManageWalletModalWithEmailFragment
+        ...SettingsModalFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -77,7 +77,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
       hideModal();
 
       showModal({
-        content: <ManageWalletsModalWithEmail queryRef={query} />,
+        content: <SettingsModal queryRef={query} />,
         headerText: 'Settings',
       });
     };
@@ -102,7 +102,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   const handleManageWalletsClick = useCallback(() => {
     if (isEmailFeatureEnabled) {
       showModal({
-        content: <ManageWalletsModalWithEmail queryRef={query} />,
+        content: <SettingsModal queryRef={query} />,
         headerText: 'Settings',
       });
       return;

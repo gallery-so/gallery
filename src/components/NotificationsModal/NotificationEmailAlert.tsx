@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -29,7 +30,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
 
   const { showModal, hideModal } = useModalActions();
 
-  const handleEnableEmails = () => {
+  const handleEnableEmails = useCallback(() => {
     // Hide notification modal
     hideModal();
 
@@ -37,7 +38,8 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
       content: <ManageWalletsModal queryRef={query} />,
       headerText: 'Manage accounts',
     });
-  };
+  }, [hideModal, query, showModal]);
+
   const handleDismiss = () => {
     onDismiss();
   };

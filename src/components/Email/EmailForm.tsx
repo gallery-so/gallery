@@ -17,10 +17,10 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 type Props = {
   setIsEditMode: (editMode: boolean) => void;
   queryRef: EmailFormFragment$key;
-  onClosed?: () => void;
+  onClose?: () => void;
 };
 
-function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
+function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment EmailFormFragment on Query {
@@ -63,7 +63,7 @@ function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
   const [email, setEmail] = useState(savedEmail ?? '');
   const [savePending, setSavePending] = useState(false);
 
-  const showCancelButton = useMemo(() => !!savedEmail || onClosed, [onClosed, savedEmail]);
+  const showCancelButton = useMemo(() => !!savedEmail || onClose, [onClose, savedEmail]);
   const { pushToast } = useToastActions();
 
   const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,12 +75,12 @@ function EmailForm({ setIsEditMode, queryRef, onClosed }: Props) {
   const reportError = useReportError();
 
   const handleCancelClick = useCallback(() => {
-    if (onClosed) {
-      onClosed();
+    if (onClose) {
+      onClose();
     } else {
       setIsEditMode(false);
     }
-  }, [onClosed, setIsEditMode]);
+  }, [onClose, setIsEditMode]);
 
   const { route } = useRouter();
   const isOnboarding = route === '/onboarding/add-email';

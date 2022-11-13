@@ -12,7 +12,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-import ManageWalletsModalWithEmail from '../../components/Email/ManageWalletModalWithEmail';
+import SettingsModal from '../../components/Email/SettingsModal';
 import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
@@ -32,7 +32,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
         }
 
         ...UserGalleryFragment
-        ...ManageWalletModalWithEmailFragment
+        ...SettingsModalFragment
         ...useVerifyEmailOnPageQueryFragment
         ...isFeatureEnabledFragment
       }
@@ -64,7 +64,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
     // Only show the modal if the user is logged in and the settings query param is set
     if (settings === 'true' && isLoggedIn && isEmailFeatureEnabled) {
       showModal({
-        content: <ManageWalletsModalWithEmail queryRef={query} />,
+        content: <SettingsModal queryRef={query} />,
         headerText: 'Settings',
       });
     }
