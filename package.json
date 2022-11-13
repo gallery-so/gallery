@@ -7,6 +7,7 @@
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "nextjs-routes; graphql-codegen; tsc --noEmit",
     "relay": "mkdir __generated__; relay-compiler",
+    "fetch-schema": "curl https://raw.githubusercontent.com/gallery-so/go-gallery/main/graphql/schema/schema.graphql > schema.graphql",
     "relay:watch": "mkdir __generated__; relay-compiler --watch",
     "synpress:open": "synpress open --configFile cypress.config.ts",
     "synpress:run": "synpress run  --configFile cypress.config.ts",
