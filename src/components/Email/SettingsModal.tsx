@@ -104,7 +104,9 @@ function SettingsModal({
         if (error instanceof Error) {
           reportError('Failed to update email notification settings');
         }
-
+        pushToast({
+          message: 'Unfortunately there was an error to update your notification settings',
+        });
         setIsEmailNotificationChecked(!checked);
       } finally {
         setIsPending(false);
