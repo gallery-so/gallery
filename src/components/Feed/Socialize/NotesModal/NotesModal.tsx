@@ -12,7 +12,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
+import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';
 import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
@@ -139,7 +139,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     <ModalContent fullscreen={fullscreen}>
       <WrappingVStack>
         <StyledHeader>
-          <TitleXS>NOTES</TitleXS>
+          <TitleDiatypeM>Notes</TitleDiatypeM>
         </StyledHeader>
         <VStack grow>
           <AutoSizer>
