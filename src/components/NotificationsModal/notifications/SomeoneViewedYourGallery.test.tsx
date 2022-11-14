@@ -66,7 +66,7 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
                   __typename: 'Gallery',
                   id: `Gallery:user-${index}-gallery`,
                   collections: null,
-                } as const,
+                },
               ] as const,
               badges: null,
               followers: null,
