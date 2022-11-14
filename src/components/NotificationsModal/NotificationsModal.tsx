@@ -3,6 +3,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import Loader from '~/components/core/Loader/Loader';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   NotificationList,
@@ -12,7 +13,7 @@ import { useClearNotifications } from '~/components/NotificationsModal/useClearN
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
 
-import Loader from '../core/Loader/Loader';
+import { VStack } from '../core/Spacer/Stack';
 
 type NotificationsModalProps = {
   fullscreen: boolean;
@@ -45,9 +46,9 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
 
       <Suspense
         fallback={
-          <LoadingContent>
-            <Loader inverted size="medium" />
-          </LoadingContent>
+          <VStack grow justify="center" align="center">
+            <Loader size="large" />
+          </VStack>
         }
       >
         <NotificationList queryRef={query} />
@@ -68,12 +69,4 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 4px;
-`;
-
-const LoadingContent = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
