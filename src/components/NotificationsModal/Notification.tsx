@@ -49,6 +49,14 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           }
         }
 
+        ... on SomeoneViewedYourGalleryNotification {
+          userViewers {
+            pageInfo {
+              total
+            }
+          }
+        }
+
         ... on GroupedNotification {
           count
         }
@@ -89,6 +97,17 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
    * is not actionable.
    */
   const handleNotificationClick = useMemo(() => {
+    function showUserListModal() {
+      showModal({
+        content: (
+          <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
+        ),
+        isFullPage: isMobile,
+        isPaddingDisabled: true,
+        headerVariant: 'standard',
+      });
+    }
+
     if (notification.feedEvent) {
       const username = query.viewer?.user?.username;
       const eventId = notification.feedEvent.dbid;
@@ -98,25 +117,26 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           push({ pathname: '/[username]/activity', query: { username, eventId } });
         }
       };
+    } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
+      const count = notification.userViewers?.pageInfo?.total ?? 0;
+
+      if (count > 0) {
+        return showUserListModal;
+      }
+
+      return undefined;
     } else if (notification.count && notification.count > 1) {
-      return function showUserListModal() {
-        showModal({
-          content: (
-            <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
-          ),
-          isFullPage: isMobile,
-          isPaddingDisabled: true,
-          headerVariant: 'standard',
-        });
-      };
+      return showUserListModal;
     }
 
     return undefined;
   }, [
     isMobile,
+    notification.__typename,
     notification.count,
     notification.feedEvent,
     notification.id,
+    notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
     showModal,
