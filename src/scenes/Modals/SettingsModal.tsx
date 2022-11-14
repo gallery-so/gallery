@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -13,7 +13,7 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
 
-import useUpdateEmailNotificationSettings from './useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings from '../../components/Email/useUpdateEmailNotificationSettings';
 
 type Props = {
   queryRef: SettingsModalFragment$key;
@@ -51,35 +51,27 @@ function SettingsModal({
   );
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
-  const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(false);
-  const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState(false);
+
+  const isEmailNotificationSubscribed =
+    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications || false;
+  const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(
+    isEmailNotificationSubscribed
+  );
   const { pushToast } = useToastActions();
   const reportError = useReportError();
 
-  // Invert the value since in the db stored as unsubscribe while in the UI it's subscribe
-  const isEmailNotificationSubscribed =
-    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications || false;
-
   const isEmailUnsubscribedFromAll =
-    !!query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
-
-  // Set the initial state of the email notification toggle
-  // so we can instantly toggle it on/off without waiting for the mutation to complete
-  useEffect(() => {
-    setIsEmailNotificationChecked(isEmailNotificationSubscribed);
-  }, [isEmailNotificationSubscribed]);
+    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
 
   // If the user already have email attached, toggle the email manager ui
   const userEmail = query?.viewer?.email?.email;
-  useEffect(() => {
-    setShouldDisplayAddEmailInput(Boolean(userEmail));
-  }, [userEmail]);
+  const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState(Boolean(userEmail));
 
   const [isPending, setIsPending] = useState(false);
 
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
-      const unsubscribedFromNotifications = !checked;
+      const unsubscribedFromNotifications = checked;
       setIsEmailNotificationChecked(checked);
       setIsPending(true);
       try {
@@ -88,7 +80,6 @@ function SettingsModal({
           isEmailUnsubscribedFromAll
         );
 
-        // If its failed, revert the toggle state
         if (!response?.updateEmailNotificationSettings) {
           pushToast({
             message:
@@ -107,6 +98,7 @@ function SettingsModal({
         pushToast({
           message: 'Unfortunately there was an error to update your notification settings',
         });
+        // If its failed, revert the toggle state
         setIsEmailNotificationChecked(!checked);
       } finally {
         setIsPending(false);
@@ -115,18 +107,22 @@ function SettingsModal({
     [isEmailUnsubscribedFromAll, pushToast, reportError, updateEmailNotificationSettings]
   );
 
-  const toggleEmailNotification = useCallback(() => {
-    // Invert the value from subscribe to unsubscribe
-    handleEmailNotificationChange(!isEmailNotificationChecked);
-  }, [handleEmailNotificationChange, isEmailNotificationChecked]);
+  const toggleEmailNotification = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      handleEmailNotificationChange(event.target.checked);
+    },
+    [handleEmailNotificationChange]
+  );
 
   const handleOpenEmailManager = useCallback(() => {
     setShouldDisplayAddEmailInput(true);
   }, []);
 
   const handleCloseEmailManager = useCallback(() => {
-    setShouldDisplayAddEmailInput(false);
-  }, []);
+    if (!userEmail) {
+      setShouldDisplayAddEmailInput(false);
+    }
+  }, [userEmail]);
 
   return (
     <StyledManageWalletsModal gap={24}>
