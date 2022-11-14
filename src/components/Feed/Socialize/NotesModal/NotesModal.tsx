@@ -16,7 +16,7 @@ import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';
 import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
-import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 
 export const NOTES_PER_PAGE = 10;
@@ -168,7 +168,7 @@ const WrappingVStack = styled(VStack)`
 `;
 
 const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
   padding-left: 12px;
 `;
 
@@ -177,5 +177,5 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_THICC_PX}px 8px;
+  padding: ${MODAL_PADDING_PX}px 8px;
 `;
